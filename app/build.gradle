@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -60,4 +61,13 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    def room_version = "2.5.0"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    def accompanist_version = "0.28.0"
+    implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"
 }
