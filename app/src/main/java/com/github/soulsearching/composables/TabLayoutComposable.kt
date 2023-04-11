@@ -9,18 +9,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.R
 import com.github.soulsearching.classes.TabRowItem
 import com.github.soulsearching.composables.tabLayoutScreens.MusicsScreen
 import com.github.soulsearching.composables.tabLayoutScreens.PlaylistsScreen
-import com.google.accompanist.pager.rememberPagerState
-import com.github.soulsearching.R
-import com.github.soulsearching.database.AppDatabase
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)

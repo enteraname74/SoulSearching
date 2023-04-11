@@ -4,4 +4,15 @@
     <string name="playlists">Playlists</string>
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
+
+    <!-- content description strings -->
+    <string name="navigation_drawer_desc">Navigation drawer button</string>
+    <string name="shuffle_button_desc">Shuffle button</string>
+
+    <!-- Bottom sheets strings -->
+    <string name="add_to_playlist">Add to a playlist</string>
+    <string name="add_to_shortcuts">Add to shortcuts</string>
+    <string name="delete_music">Delete this music</string>
+    <string name="modify_music">Modify this music</string>
+    <string name="play_next">Play next</string>
 </resources>

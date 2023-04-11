@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 
 @Composable
@@ -25,9 +26,9 @@ fun MainMenuHeaderComposable() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(Constants.ImageSize.medium),
             imageVector = Icons.Default.Menu,
-            contentDescription = "",
+            contentDescription = stringResource(id = R.string.navigation_drawer_desc),
             tint = MaterialTheme.colorScheme.onPrimary
         )
         Text(
@@ -39,7 +40,7 @@ fun MainMenuHeaderComposable() {
         Icon(
             modifier = Modifier.size(32.dp),
             imageVector = Icons.Default.Shuffle,
-            contentDescription = "",
+            contentDescription = stringResource(id = R.string.shuffle_button_desc),
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }

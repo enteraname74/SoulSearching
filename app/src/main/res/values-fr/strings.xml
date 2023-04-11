@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Soul Searching</string>
+    <string name="musics">Musiques</string>
+    <string name="playlists">Playlists</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artistes</string>
+
+    <!-- content description strings -->
+    <string name="navigation_drawer_desc">Bouton pour le menu de navigation</string>
+    <string name="shuffle_button_desc">Bouton pour jouer une liste de musique en aléatoire</string>
+
+    <!-- Bottom sheets strings -->
+    <string name="add_to_playlist">Ajouter à une playlist</string>
+    <string name="add_to_shortcuts">Ajouter aux raccourcis</string>
+    <string name="delete_music">Supprimer cette musique</string>
+    <string name="modify_music">Modifier cette musique</string>
+    <string name="play_next">Jouer ensuite</string>
+</resources>

@@ -1,7 +1,8 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,17 +17,20 @@ import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicItemComposable(
     music: Music,
-    onClick : (MusicEvent) -> Unit
+    onClick: (MusicEvent) -> Unit,
+    onLongClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onClick(MusicEvent.DeleteMusic(music))
-            }
+            .combinedClickable(
+                onClick = {},
+                onLongClick = onLongClick
+            )
     ) {
         if (music.albumCover != null) {
             Image(
