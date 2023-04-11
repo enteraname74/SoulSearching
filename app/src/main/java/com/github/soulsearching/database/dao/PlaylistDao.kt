@@ -1,12 +1,10 @@
 package com.github.soulsearching.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Upsert
-import com.github.soulsearching.database.model.Music
+import androidx.room.*
 import com.github.soulsearching.database.model.Playlist
+import com.github.soulsearching.database.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Dao
 interface PlaylistDao {
@@ -19,4 +17,11 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM Playlist ORDER BY name ASC")
     fun getAllPlaylists(): Flow<List<Playlist>>
+
+    @Query("SELECT playlistId FROM Playlist ORDER BY name ASC LIMIT 1")
+    fun getFirstPlaylistId(): UUID
+
+    @Transaction
+    @Query("SELECT * FROM Playlist")
+    fun getPlaylistsWithSongs(): Flow<List<PlaylistWithMusics>>
 }

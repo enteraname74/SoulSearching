@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,14 +12,21 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.R
+import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.events.MusicEvent
 
 @Composable
-fun MusicComposable(music: Music) {
+fun MusicItemComposable(
+    music: Music,
+    onClick : (MusicEvent) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onClick(MusicEvent.DeleteMusic(music))
+            }
     ) {
         if (music.albumCover != null) {
             Image(
@@ -30,9 +38,10 @@ fun MusicComposable(music: Music) {
             )
         } else {
             Image(
+                modifier = Modifier.size(55.dp),
                 painter = painterResource(id = R.drawable.ic_saxophone_svg),
                 contentDescription = "",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary)
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         }
         Column(
@@ -47,7 +56,7 @@ fun MusicComposable(music: Music) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "{${music.artist}} | {${music.album}",
+                text = "${music.artist} | ${music.album}",
                 color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

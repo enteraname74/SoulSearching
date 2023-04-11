@@ -3,17 +3,22 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.database.dao.MusicPlaylistDao
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class MusicViewModel(
-    private val dao : MusicDao
+@HiltViewModel
+class MusicViewModel @Inject constructor(
+    private val musicDao : MusicDao,
+    private val musicPlaylistDao : MusicPlaylistDao
 ): ViewModel() {
-    private val _musics = dao.getAllMusics().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _musics = musicDao.getAllMusics().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(MusicState())
     // On combine nos 2 flows en un seul.
@@ -27,14 +32,15 @@ class MusicViewModel(
         MusicState()
     )
 
-    fun onEvent(event: MusicEvent) {
+    fun onMusicEvent(event: MusicEvent) {
         when(event) {
             is MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
-                    dao.deleteMusic(event.music)
+                    musicDao.deleteMusic(event.music)
+                    musicPlaylistDao.deleteMusicFromAllPlaylists(event.music.musicId)
                 }
             }
-            MusicEvent.SaveMusic -> {
+            MusicEvent.AddMusic -> {
                 val name = state.value.name
 
                 val music = Music(
@@ -47,7 +53,7 @@ class MusicViewModel(
                 )
 
                 viewModelScope.launch {
-                    dao.insertMusic(music)
+                    musicDao.insertMusic(music)
                 }
             }
             is MusicEvent.SetCover -> {
@@ -60,6 +66,7 @@ class MusicViewModel(
                     name = event.name
                 ) }
             }
+            else -> {}
         }
     }
 }
