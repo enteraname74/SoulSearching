@@ -1,5 +1,6 @@
 package com.github.soulsearching
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,20 +17,20 @@ import com.github.soulsearching.composables.TabLayoutComposable
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.MusicViewModel
-import com.github.soulsearching.viewModels.PlaylistViewModel
+import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val musicViewModel : MusicViewModel by viewModels()
-    private val playlistViewModel : PlaylistViewModel by viewModels()
+    private val musicViewModel: MusicViewModel by viewModels()
+    private val allPlaylistsViewModel: AllPlaylistsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val musicState by musicViewModel.state.collectAsState()
-            val playlistState by playlistViewModel.state.collectAsState()
+            val playlistState by allPlaylistsViewModel.state.collectAsState()
 
             SoulSearchingTheme {
                 Column(
@@ -41,14 +42,16 @@ class MainActivity : AppCompatActivity() {
 
                     TestButtons(
                         onMusicEvent = musicViewModel::onMusicEvent,
-                        onPlaylistEvent = playlistViewModel::onPlaylistEvent
+                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
                     )
 
                     TabLayoutComposable(
                         musicState = musicState,
                         playlistsState = playlistState,
                         onMusicEvent = musicViewModel::onMusicEvent,
-                        onPlaylistEvent = playlistViewModel::onPlaylistEvent,
+                        onPlaylistClick = {
+                            startActivity(Intent(applicationContext, SelectedPlaylistActivity::class.java))
+                        },
                     )
                 }
             }

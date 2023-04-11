@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,23 +10,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
+import com.github.soulsearching.SelectedPlaylistActivity
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.PlaylistEvent
 
 @Composable
 fun PlaylistItemComposable(
     playlist: Playlist,
-    onClick : (PlaylistEvent) -> Unit
+    onClick : () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onClick(PlaylistEvent.DeletePlaylist(playlist))
+                onClick()
             }
     ) {
         if (playlist.playlistCover != null) {

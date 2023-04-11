@@ -21,7 +21,7 @@ fun MusicFileBottomSheet() {
         .padding(Constants.Spacing.veryLarge),
         verticalArrangement = Arrangement.spacedBy(Constants.Spacing.veryLarge)
     ) {
-        BottomSheetRow(icon = Icons.Default.Add, text = stringResource(id = R.string.add_to_playlist), onClick = { Log.d("tETS", "tzedgez")})
+        BottomSheetRow(icon = Icons.Default.PlaylistAdd, text = stringResource(id = R.string.add_to_playlist), onClick = {})
         BottomSheetRow(icon = Icons.Default.DoubleArrow, text = stringResource(id = R.string.add_to_shortcuts), onClick = {})
         BottomSheetRow(icon = Icons.Default.Delete, text = stringResource(id = R.string.delete_music), onClick = {})
         BottomSheetRow(icon = Icons.Default.Edit, text = stringResource(id = R.string.modify_music), onClick = {})

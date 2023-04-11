@@ -16,7 +16,7 @@ import com.github.soulsearching.states.PlaylistState
 @Composable
 fun PlaylistsScreen(
     state: PlaylistState,
-    onEvent: (PlaylistEvent) -> Unit
+    onPlaylistClick : () -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -25,7 +25,7 @@ fun PlaylistsScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(state.playlists) { playlist ->
-            PlaylistItemComposable(playlist = playlist, onClick = onEvent)
+            PlaylistItemComposable(playlist = playlist, onClick = onPlaylistClick)
         }
     }
 }

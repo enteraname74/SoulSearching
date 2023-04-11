@@ -16,7 +16,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class PlaylistViewModel @Inject constructor(
+class AllPlaylistsViewModel @Inject constructor(
     private val dao : PlaylistDao
 ): ViewModel() {
     private val _playlists = dao.getAllPlaylists().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -33,7 +33,7 @@ class PlaylistViewModel @Inject constructor(
         PlaylistState()
     )
 
-    fun onPlaylistEvent(event: PlaylistEvent) {
+    fun onPlaylistsEvent(event: PlaylistEvent) {
         when(event){
             PlaylistEvent.AddPlaylist -> {
                 viewModelScope.launch {

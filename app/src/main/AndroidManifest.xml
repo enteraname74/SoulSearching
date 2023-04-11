@@ -13,6 +13,11 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <activity
+            android:name=".SelectedPlaylistActivity"
+            android:exported="false"
+            android:label="@string/title_activity_selected_playlist"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SoulSearching">

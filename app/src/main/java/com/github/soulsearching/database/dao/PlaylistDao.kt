@@ -22,6 +22,6 @@ interface PlaylistDao {
     fun getFirstPlaylistId(): UUID
 
     @Transaction
-    @Query("SELECT * FROM Playlist")
-    fun getPlaylistsWithSongs(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM Playlist WHERE playlistId = :playlistId")
+    fun getPlaylistWithSongs(playlistId : UUID): Flow<PlaylistWithMusics>
 }

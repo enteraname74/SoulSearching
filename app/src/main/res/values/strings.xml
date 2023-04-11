@@ -15,4 +15,5 @@
     <string name="delete_music">Delete this music</string>
     <string name="modify_music">Modify this music</string>
     <string name="play_next">Play next</string>
+    <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
 </resources>
