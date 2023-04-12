@@ -1,6 +1,8 @@
 package com.github.soulsearching.composables.screens
 
 
+import android.content.Intent
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,20 +22,23 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ModifyMusicActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.bottomSheets.MusicFileBottomSheet
+import com.github.soulsearching.database.model.Music
 import kotlinx.coroutines.launch
 
 @Composable
@@ -134,6 +139,7 @@ fun PlaylistPanel() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlaylistMusicList() {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -145,10 +151,23 @@ fun PlaylistMusicList() {
         coroutineScope.launch { modalSheetState.hide() }
     }
 
+    var selectedMusicLongClick : Music? by rememberSaveable {
+        mutableStateOf(null)
+    }
+
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetContent = {
-            MusicFileBottomSheet()
+            MusicFileBottomSheet(
+                modifyAction = {
+                    val intent = Intent(context, ModifyMusicActivity::class.java)
+                    intent.putExtra(
+                        "musicId",
+                        selectedMusicLongClick!!.musicId.toString()
+                    )
+                    context.startActivity(intent)
+                }
+            )
         }
     ) {
         LazyColumn(

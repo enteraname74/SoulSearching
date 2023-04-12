@@ -8,6 +8,9 @@
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Navigation drawer button</string>
     <string name="shuffle_button_desc">Shuffle button</string>
+    <string name="back_button">Back button</string>
+    <string name="header_bar_right_button">Header bar right button</string>
+    <string name="image">Image</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Add to a playlist</string>
@@ -16,4 +19,12 @@
     <string name="modify_music">Modify this music</string>
     <string name="play_next">Play next</string>
     <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
+    <string name="title_activity_modify_music">ModifyMusicActivity</string>
+
+    <!-- Modify music strings -->
+    <string name="music_information">Music information</string>
+    <string name="album_cover">Album cover</string>
+    <string name="music_name">Music\'s name</string>
+    <string name="music_artist_name">Music\'s artist</string>
+    <string name="music_album_name">Music\'s album</string>
 </resources>

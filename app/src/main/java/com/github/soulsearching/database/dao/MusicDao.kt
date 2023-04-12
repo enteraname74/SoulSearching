@@ -17,8 +17,8 @@ interface MusicDao {
     @Delete
     suspend fun deleteMusic(music : Music)
 
-    @Query("SELECT musicId FROM Music ORDER BY name ASC LIMIT 1")
-    fun getFirstMusicId(): UUID
+    @Query("SELECT * FROM Music WHERE musicId = :musicId LIMIT 1")
+    fun getMusicFromId(musicId : UUID): Music
 
     @Query("SELECT * FROM Music ORDER BY name ASC")
     fun getAllMusics(): Flow<List<Music>>

@@ -5,6 +5,9 @@ import com.github.soulsearching.database.model.Music
 
 data class MusicState(
     val musics: List<Music> = emptyList(),
-    val name : String = "",
-    val cover : Bitmap? = null
+    val selectedMusic : Music? = null,
+    var name : String = "",
+    var artist : String = "",
+    var album : String = "",
+    var cover : Bitmap? = null
 )

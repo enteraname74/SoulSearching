@@ -9,6 +9,9 @@
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Bouton pour le menu de navigation</string>
     <string name="shuffle_button_desc">Bouton pour jouer une liste de musique en aléatoire</string>
+    <string name="back_button">Bouton de retour</string>
+    <string name="header_bar_right_button">Bouton droit de la bar d\'état</string>
+    <string name="image">Image</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Ajouter à une playlist</string>
@@ -16,4 +19,13 @@
     <string name="delete_music">Supprimer cette musique</string>
     <string name="modify_music">Modifier cette musique</string>
     <string name="play_next">Jouer ensuite</string>
+    <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
+    <string name="title_activity_modify_music">ModifyMusicActivity</string>
+
+    <!-- Modify music strings -->
+    <string name="music_information">Informations de la musique</string>
+    <string name="album_cover">Couverture de l\'album</string>
+    <string name="music_name">Nom de la musique</string>
+    <string name="music_artist_name">Nom de l\'artiste</string>
+    <string name="music_album_name">Nom de l\'album</string>
 </resources>

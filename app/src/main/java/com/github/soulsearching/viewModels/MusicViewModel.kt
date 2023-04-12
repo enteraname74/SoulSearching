@@ -56,16 +56,6 @@ class MusicViewModel @Inject constructor(
                     musicDao.insertMusic(music)
                 }
             }
-            is MusicEvent.SetCover -> {
-                _state.update { it.copy(
-                    cover = event.cover
-                ) }
-            }
-            is MusicEvent.SetName -> {
-                _state.update { it.copy(
-                    name = event.name
-                ) }
-            }
             else -> {}
         }
     }
