@@ -1,44 +1,56 @@
 package com.github.soulsearching
 
+import android.app.Activity
+import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.MediaStore
+import android.util.Size
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.ModifyMusicViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ModifyMusicActivity : ComponentActivity() {
-    private val viewModel : ModifyMusicViewModel by viewModels()
+    private val viewModel: ModifyMusicViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val configuration = LocalConfiguration.current
+            val focusManager = LocalFocusManager.current
 
-            var musicId : UUID? by rememberSaveable {
+            var musicId: UUID? by rememberSaveable {
                 mutableStateOf(null)
             }
 
@@ -55,80 +67,86 @@ class ModifyMusicActivity : ComponentActivity() {
                         AppHeaderBar(
                             title = stringResource(id = R.string.music_information),
                             leftAction = { finish() },
-                            topRightIcon = Icons.Default.Done
+                            topRightIcon = Icons.Default.Done,
+                            rightAction = {
+                                viewModel.onMusicEvent(MusicEvent.UpdateMusic)
+                                finish()
+                            }
                         )
                     },
                     content = { padding ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.secondary)
-                                .padding(padding)
-                                .padding(top = Constants.Spacing.medium)
-                                .verticalScroll(rememberScrollState()),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(Constants.Spacing.medium),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    modifier = Modifier.padding(bottom = Constants.Spacing.medium),
-                                    text = stringResource(id = R.string.album_cover),
-                                    color = MaterialTheme.colorScheme.onSecondary
-                                )
-                                AppImage(bitmap = null, size = 200.dp)
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .weight(1F)
-                                    .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
-                                    .background(color = MaterialTheme.colorScheme.primary)
-                                    .padding(Constants.Spacing.medium)
-                            ) {
-                                Spacer(
+                        when (configuration.orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> {
+                                Row(
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(1F)
-                                )
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(3F),
-                                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.secondary)
+                                        .padding(padding)
                                 ) {
-                                    TextField(
-                                        value = state.value.name,
-                                        onValueChange = {},
-                                        label = { Text(text = stringResource(id = R.string.music_name)) },
-                                        singleLine = true,
-                                        colors = TextFieldDefaults.textFieldColors(
-                                            containerColor = Color.Transparent,
-                                            textColor = MaterialTheme.colorScheme.onPrimary
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(Constants.Spacing.medium)
+                                            .weight(1F),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(bottom = Constants.Spacing.medium),
+                                            text = stringResource(id = R.string.album_cover),
+                                            color = MaterialTheme.colorScheme.onSecondary
                                         )
-                                    )
-                                    TextField(
-                                        value = state.value.album,
-                                        onValueChange = {},
-                                        label = { Text(text = stringResource(id = R.string.music_album_name)) },
-                                        singleLine = true
-                                    )
-                                    TextField(
-                                        value = state.value.artist,
-                                        onValueChange = {},
-                                        label = { Text(text = stringResource(id = R.string.music_artist_name)) },
-                                        singleLine = true
+                                        AppImage(
+                                            bitmap = state.value.cover,
+                                            size = 200.dp,
+                                            onClick = { selectImage() }
+                                        )
+                                    }
+                                    TextFields(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .weight(2F)
+                                            .background(color = MaterialTheme.colorScheme.primary)
+                                            .padding(Constants.Spacing.medium),
+                                        state = state
                                     )
                                 }
-                                Spacer(
+                            }
+                            else -> {
+                                Column(
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .weight(1F)
-                                )
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.secondary)
+                                        .padding(padding)
+                                        .padding(top = Constants.Spacing.medium),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(Constants.Spacing.medium),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.padding(bottom = Constants.Spacing.medium),
+                                            text = stringResource(id = R.string.album_cover),
+                                            color = MaterialTheme.colorScheme.onSecondary
+                                        )
+                                        AppImage(
+                                            bitmap = state.value.cover,
+                                            size = 200.dp,
+                                            onClick = { selectImage() }
+                                        )
+                                    }
+                                    TextFields(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .weight(1F)
+                                            .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
+                                            .background(color = MaterialTheme.colorScheme.primary)
+                                            .padding(Constants.Spacing.medium),
+                                        state = state
+                                    )
+                                }
                             }
                         }
                     }
@@ -136,4 +154,85 @@ class ModifyMusicActivity : ComponentActivity() {
             }
         }
     }
+
+    @Composable
+    fun TextFields(modifier: Modifier, state: State<MusicState>) {
+        Row(
+            modifier = modifier
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1F)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(3F),
+                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+            ) {
+                TextField(
+                    value = state.value.name,
+                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetName(it)) },
+                    label = { Text(text = stringResource(id = R.string.music_name)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.Transparent,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        cursorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                TextField(
+                    value = state.value.album,
+                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetAlbum(it)) },
+                    label = { Text(text = stringResource(id = R.string.music_album_name)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.Transparent,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        cursorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+                TextField(
+                    value = state.value.artist,
+                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetArtist(it)) },
+                    label = { Text(text = stringResource(id = R.string.music_artist_name)) },
+                    singleLine = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.Transparent,
+                        textColor = MaterialTheme.colorScheme.onPrimary,
+                        cursorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1F)
+            )
+        }
+    }
+
+    private fun selectImage() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        resultImageLauncher.launch(intent)
+    }
+
+    private var resultImageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri: Uri? = result.data?.data
+                viewModel.onMusicEvent(
+                    MusicEvent.SetCover(
+                        Utils.getBitmapFromUri(uri as Uri, contentResolver)
+                    )
+                )
+            }
+        }
 }

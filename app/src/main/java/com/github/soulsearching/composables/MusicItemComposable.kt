@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
@@ -31,23 +32,10 @@ fun MusicItemComposable(
                 onClick = {},
                 onLongClick = onLongClick
             )
+            .padding(Constants.Spacing.medium),
+        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
     ) {
-        if (music.albumCover != null) {
-            Image(
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(24.dp),
-                bitmap = music.albumCover!!.asImageBitmap(),
-                contentDescription = ""
-            )
-        } else {
-            Image(
-                modifier = Modifier.size(55.dp),
-                painter = painterResource(id = R.drawable.ic_saxophone_svg),
-                contentDescription = "",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
-            )
-        }
+        AppImage(bitmap = music.albumCover, size = 55.dp)
         Column(
             modifier = Modifier
                 .fillMaxHeight(),

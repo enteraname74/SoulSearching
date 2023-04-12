@@ -55,7 +55,6 @@ fun MusicsScreen(
         sheetContent = {
             MusicFileBottomSheet(
                 modifyAction = {
-
                     Log.d("UUID", selectedMusicLongClick!!.toString())
                     val intent = Intent(context, ModifyMusicActivity::class.java)
                     intent.putExtra(
@@ -63,6 +62,7 @@ fun MusicsScreen(
                         selectedMusicLongClick!!.toString()
                     )
                     context.startActivity(intent)
+                    coroutineScope.launch { modalSheetState.hide() }
                 }
             )
         }
@@ -71,8 +71,7 @@ fun MusicsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.secondary)
-                .padding(Constants.Spacing.large),
-            verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+                .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium)
         ) {
             items(state.musics) { music ->
                 MusicItemComposable(
