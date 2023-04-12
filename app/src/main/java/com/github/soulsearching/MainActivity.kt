@@ -49,9 +49,7 @@ class MainActivity : AppCompatActivity() {
                         musicState = musicState,
                         playlistsState = playlistState,
                         onMusicEvent = musicViewModel::onMusicEvent,
-                        onPlaylistClick = {
-                            startActivity(Intent(applicationContext, SelectedPlaylistActivity::class.java))
-                        },
+                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
                     )
                 }
             }

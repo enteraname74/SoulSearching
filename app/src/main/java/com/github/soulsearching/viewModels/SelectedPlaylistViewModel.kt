@@ -1,11 +1,13 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.database.model.PlaylistWithMusics
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.states.SelectedPlaylistState
@@ -23,9 +25,10 @@ class SelectedPlaylistViewModel @Inject constructor(
 
     // On combine nos 2 flows en un seul.
     private val _state = MutableStateFlow(SelectedPlaylistState())
-    lateinit var state: StateFlow<SelectedPlaylistState>
+    var state: StateFlow<SelectedPlaylistState> = _state
 
-    fun getSelectedPlaylist(playlistId: UUID) {
+    fun setSelectedPlaylist(playlistId: UUID) {
+        Log.d("Id used :", playlistId.toString())
         _selectedPlaylistMusics = playlistDao
             .getPlaylistWithSongs(playlistId = playlistId)
             .stateIn(
@@ -47,10 +50,17 @@ class SelectedPlaylistViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5000),
             SelectedPlaylistState()
         )
+        Log.d("Playlist info : ", _selectedPlaylistMusics.value.toString())
+        _state.update { it.copy(
+            playlistWithMusics = _selectedPlaylistMusics.value
+        ) }
     }
 
     fun onPlaylistsEvent(event: PlaylistEvent) {
         when (event) {
         }
+    }
+
+    fun onMusicEvent(event: MusicEvent) {
     }
 }

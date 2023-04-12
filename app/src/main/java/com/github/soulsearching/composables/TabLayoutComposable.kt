@@ -14,6 +14,7 @@ import com.github.soulsearching.classes.TabRowItem
 import com.github.soulsearching.composables.tabLayoutScreens.MusicsScreen
 import com.github.soulsearching.composables.tabLayoutScreens.PlaylistsScreen
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -27,7 +28,7 @@ fun TabLayoutComposable(
     musicState: MusicState,
     playlistsState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistClick: () -> Unit
+    onPlaylistEvent: (PlaylistEvent) -> Unit
 ) {
     val tabRowItems = listOf(
         TabRowItem(
@@ -41,15 +42,15 @@ fun TabLayoutComposable(
         ),
         TabRowItem(
             title = stringResource(R.string.playlists),
-            screen = { PlaylistsScreen(state = playlistsState, onPlaylistClick = onPlaylistClick) }
+            screen = { PlaylistsScreen(state = playlistsState) }
         ),
         TabRowItem(
             title = stringResource(R.string.albums),
-            screen = { PlaylistsScreen(state = playlistsState, onPlaylistClick = onPlaylistClick) }
+            screen = { PlaylistsScreen(state = playlistsState) }
         ),
         TabRowItem(
             title = stringResource(R.string.artists),
-            screen = { PlaylistsScreen(state = playlistsState, onPlaylistClick = onPlaylistClick) }
+            screen = { PlaylistsScreen(state = playlistsState) }
         )
     )
 

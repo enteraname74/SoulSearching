@@ -65,6 +65,9 @@ fun MusicsScreen(
                 },
                 removeAction = {
                     onEvent(MusicEvent.DeleteDialog(isShown = true))
+                },
+                addToPlaylistAction = {
+                    onEvent(MusicEvent.AddToPlaylist)
                 }
             )
         }

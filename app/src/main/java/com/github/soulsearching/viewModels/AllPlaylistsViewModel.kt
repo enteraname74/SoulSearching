@@ -7,10 +7,7 @@ import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -49,6 +46,11 @@ class AllPlaylistsViewModel @Inject constructor(
                 viewModelScope.launch {
                     dao.deletePlaylist(event.playlist)
                 }
+            }
+            is PlaylistEvent.SetSelectedPlaylist -> {
+                _state.update { it.copy(
+                    selectedPlaylist = event.playlist
+                ) }
             }
         }
     }

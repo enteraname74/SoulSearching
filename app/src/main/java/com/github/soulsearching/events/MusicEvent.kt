@@ -8,6 +8,7 @@ sealed interface MusicEvent {
     object AddMusic : MusicEvent
     object UpdateMusic : MusicEvent
     object DeleteMusic : MusicEvent
+    object AddToPlaylist: MusicEvent
     data class DeleteDialog(val isShown : Boolean) : MusicEvent
     data class SetSelectedMusic(val music : Music) : MusicEvent
     data class SetName(val name: String) : MusicEvent

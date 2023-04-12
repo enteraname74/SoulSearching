@@ -1,13 +1,13 @@
 package com.github.soulsearching.composables.screens
 
 
-import android.content.Intent
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -23,9 +23,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -35,41 +35,63 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.ModifyMusicActivity
 import com.github.soulsearching.R
+import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomSheets.MusicFileBottomSheet
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.SelectedPlaylistState
 import kotlinx.coroutines.launch
 
 @Composable
 fun PlaylistScreen(
-    state : MusicState,
-    onEvent : (MusicEvent) -> Unit
+    selectedPlaylistState: SelectedPlaylistState,
+    onMusicEvent: (MusicEvent) -> Unit,
+    onPlaylistEvent: (PlaylistEvent) -> Unit
 ) {
-    Column(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
-        TopPlaylistInformation()
-        Column(modifier = Modifier.offset(y = (-40).dp)) {
-            PlaylistPanel()
-            PlaylistMusicList(
-                state = state,
-                onEvent = onEvent
-            )
-        }
+        val maxHeight = this.maxHeight
+        val topHeight = maxHeight / 3
+        val centerHeight = 80.dp
+        val bottomHeight = maxHeight * 2 / 3
+        val centerPaddingBottom = bottomHeight - centerHeight / 2
+
+        TopPlaylistInformation(
+            selectedPlaylistState = selectedPlaylistState,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .height(topHeight)
+        )
+        PlaylistPanel(
+            modifier = Modifier
+                .padding(bottom = centerPaddingBottom)
+                .fillMaxWidth()
+                .height(centerHeight)
+                .align(Alignment.BottomCenter)
+        )
+        PlaylistMusicList(
+            selectedPlaylistState = selectedPlaylistState,
+            onEvent = onMusicEvent,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .height(bottomHeight - (bottomHeight - centerPaddingBottom))
+        )
     }
 }
 
 @Composable
-fun TopPlaylistInformation() {
+fun TopPlaylistInformation(
+    selectedPlaylistState : SelectedPlaylistState,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
+            .composed { modifier }
     ) {
         Image(
             modifier = Modifier.fillMaxWidth(),
@@ -101,7 +123,7 @@ fun TopPlaylistInformation() {
                         start = Constants.Spacing.medium,
                         top = Constants.Spacing.medium
                     ),
-                text = "Nom Playlist",
+                text = if (selectedPlaylistState.playlistWithMusics != null) selectedPlaylistState.playlistWithMusics!!.playlist.name else "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.onPrimary,
@@ -113,9 +135,12 @@ fun TopPlaylistInformation() {
 }
 
 @Composable
-fun PlaylistPanel() {
+fun PlaylistPanel(
+    modifier: Modifier = Modifier
+) {
     Row(modifier = Modifier
         .fillMaxWidth()
+        .composed { modifier }
         .clip(RoundedCornerShape(30.dp))
         .padding(Constants.Spacing.medium)
         .background(MaterialTheme.colorScheme.secondary)
@@ -125,7 +150,7 @@ fun PlaylistPanel() {
     ) {
         Image(
             modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Edit, 
+            imageVector = Icons.Default.Edit,
             contentDescription = "",
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
         )
@@ -144,11 +169,13 @@ fun PlaylistPanel() {
     }
 }
 
+@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlaylistMusicList(
-    state : MusicState,
-    onEvent : (MusicEvent) -> Unit
+    selectedPlaylistState: SelectedPlaylistState,
+    onEvent: (MusicEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -167,6 +194,7 @@ fun PlaylistMusicList(
         sheetContent = {
             MusicFileBottomSheet(
                 modifyAction = {
+                    /*
                     val intent = Intent(context, ModifyMusicActivity::class.java)
                     intent.putExtra(
                         "musicId",
@@ -174,36 +202,39 @@ fun PlaylistMusicList(
                     )
                     context.startActivity(intent)
                     coroutineScope.launch { modalSheetState.hide() }
+
+                     */
                 },
                 removeAction = {
                     onEvent(MusicEvent.DeleteMusic)
                     coroutineScope.launch { modalSheetState.hide() }
-                }
+                },
+                addToPlaylistAction = {}
             )
         }
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .composed { modifier }
                 .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
                 .background(color = MaterialTheme.colorScheme.secondary)
                 .padding(Constants.Spacing.large),
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            /*
-            items(state.musics) { music ->
-                MusicItemComposable(
-                    music = music,
-                    onClick = onEvent,
-                    onLongClick = {
-                        coroutineScope.launch {
-                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+            if (selectedPlaylistState.playlistWithMusics != null) {
+                items(selectedPlaylistState.playlistWithMusics!!.musics) { music ->
+                    MusicItemComposable(
+                        music = music,
+                        onClick = onEvent,
+                        onLongClick = {
+                            coroutineScope.launch {
+                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
-
-             */
         }
     }
 }
