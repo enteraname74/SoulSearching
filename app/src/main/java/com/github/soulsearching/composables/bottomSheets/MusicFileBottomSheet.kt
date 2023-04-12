@@ -13,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.events.MusicEvent
 
 @Composable
 fun MusicFileBottomSheet(
-    modifyAction : () -> Unit
+    modifyAction : () -> Unit,
+    removeAction : () -> Unit
 ) {
     Column(modifier = Modifier
         .background(MaterialTheme.colorScheme.primary)
@@ -25,7 +27,7 @@ fun MusicFileBottomSheet(
     ) {
         BottomSheetRow(icon = Icons.Default.PlaylistAdd, text = stringResource(id = R.string.add_to_playlist), onClick = {})
         BottomSheetRow(icon = Icons.Default.DoubleArrow, text = stringResource(id = R.string.add_to_shortcuts), onClick = {})
-        BottomSheetRow(icon = Icons.Default.Delete, text = stringResource(id = R.string.delete_music), onClick = {})
+        BottomSheetRow(icon = Icons.Default.Delete, text = stringResource(id = R.string.delete_music), onClick = removeAction)
         BottomSheetRow(icon = Icons.Default.Edit, text = stringResource(id = R.string.modify_music), onClick = modifyAction)
         BottomSheetRow(icon = Icons.Default.PlaylistPlay, text = stringResource(id = R.string.play_next), onClick = {})
     }

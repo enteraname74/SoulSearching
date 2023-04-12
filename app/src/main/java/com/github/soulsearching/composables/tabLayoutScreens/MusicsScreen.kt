@@ -63,6 +63,9 @@ fun MusicsScreen(
                     )
                     context.startActivity(intent)
                     coroutineScope.launch { modalSheetState.hide() }
+                },
+                removeAction = {
+                    onEvent(MusicEvent.DeleteMusic(sle))
                 }
             )
         }
@@ -79,7 +82,7 @@ fun MusicsScreen(
                     onClick = onEvent,
                     onLongClick = {
                         coroutineScope.launch {
-                            selectedMusicLongClick = music.musicId
+
                             modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
                         }
                     }
