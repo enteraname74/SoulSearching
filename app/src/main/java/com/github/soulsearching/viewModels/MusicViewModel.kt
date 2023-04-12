@@ -34,10 +34,15 @@ class MusicViewModel @Inject constructor(
 
     fun onMusicEvent(event: MusicEvent) {
         when(event) {
-            is MusicEvent.DeleteMusic -> {
+            is MusicEvent.DeleteDialog -> {
+                _state.update { it.copy(
+                    isDeleteDialogShown = event.isShown
+                ) }
+            }
+            MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
-                    musicDao.deleteMusic(event.music)
-                    musicPlaylistDao.deleteMusicFromAllPlaylists(event.music.musicId)
+                    musicDao.deleteMusic(state.value.selectedMusic as Music)
+                    musicPlaylistDao.deleteMusicFromAllPlaylists(state.value.selectedMusic!!.musicId)
                 }
             }
             MusicEvent.AddMusic -> {
@@ -55,6 +60,11 @@ class MusicViewModel @Inject constructor(
                 viewModelScope.launch {
                     musicDao.insertMusic(music)
                 }
+            }
+            is MusicEvent.SetSelectedMusic -> {
+                _state.update { it.copy(
+                    selectedMusic = event.music
+                ) }
             }
             else -> {}
         }

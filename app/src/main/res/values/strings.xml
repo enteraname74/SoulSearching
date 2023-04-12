@@ -27,4 +27,10 @@
     <string name="music_name">Music\'s name</string>
     <string name="music_artist_name">Music\'s artist</string>
     <string name="music_album_name">Music\'s album</string>
+
+    <!-- Dialog strings -->
+    <string name="delete_dialog_message">Are you sure to delete this music ?</string>
+    <string name="delete_dialog_info">You can retrieve it in the "deleted musics" section of the application.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

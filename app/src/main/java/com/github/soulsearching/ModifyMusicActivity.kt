@@ -3,17 +3,15 @@ package com.github.soulsearching
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Size
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -98,7 +96,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                         AppImage(
                                             bitmap = state.value.cover,
                                             size = 200.dp,
-                                            onClick = { selectImage() }
+                                            modifier = Modifier.clickable { selectImage() }
                                         )
                                     }
                                     TextFields(
@@ -134,7 +132,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                         AppImage(
                                             bitmap = state.value.cover,
                                             size = 200.dp,
-                                            onClick = { selectImage() }
+                                            modifier = Modifier.clickable { selectImage() }
                                         )
                                     }
                                     TextFields(

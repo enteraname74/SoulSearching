@@ -39,10 +39,15 @@ import com.github.soulsearching.ModifyMusicActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.bottomSheets.MusicFileBottomSheet
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.launch
 
 @Composable
-fun PlaylistScreen() {
+fun PlaylistScreen(
+    state : MusicState,
+    onEvent : (MusicEvent) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +56,10 @@ fun PlaylistScreen() {
         TopPlaylistInformation()
         Column(modifier = Modifier.offset(y = (-40).dp)) {
             PlaylistPanel()
-            PlaylistMusicList()
+            PlaylistMusicList(
+                state = state,
+                onEvent = onEvent
+            )
         }
     }
 }
@@ -138,7 +146,10 @@ fun PlaylistPanel() {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PlaylistMusicList() {
+fun PlaylistMusicList(
+    state : MusicState,
+    onEvent : (MusicEvent) -> Unit
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
@@ -151,10 +162,6 @@ fun PlaylistMusicList() {
         coroutineScope.launch { modalSheetState.hide() }
     }
 
-    var selectedMusicLongClick : Music? by rememberSaveable {
-        mutableStateOf(null)
-    }
-
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetContent = {
@@ -163,9 +170,14 @@ fun PlaylistMusicList() {
                     val intent = Intent(context, ModifyMusicActivity::class.java)
                     intent.putExtra(
                         "musicId",
-                        selectedMusicLongClick!!.musicId.toString()
+                        state.selectedMusic!!.musicId.toString()
                     )
                     context.startActivity(intent)
+                    coroutineScope.launch { modalSheetState.hide() }
+                },
+                removeAction = {
+                    onEvent(MusicEvent.DeleteMusic)
+                    coroutineScope.launch { modalSheetState.hide() }
                 }
             )
         }

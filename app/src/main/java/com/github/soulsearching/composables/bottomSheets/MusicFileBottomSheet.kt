@@ -22,8 +22,7 @@ fun MusicFileBottomSheet(
 ) {
     Column(modifier = Modifier
         .background(MaterialTheme.colorScheme.primary)
-        .padding(Constants.Spacing.veryLarge),
-        verticalArrangement = Arrangement.spacedBy(Constants.Spacing.veryLarge)
+        .padding(Constants.Spacing.large)
     ) {
         BottomSheetRow(icon = Icons.Default.PlaylistAdd, text = stringResource(id = R.string.add_to_playlist), onClick = {})
         BottomSheetRow(icon = Icons.Default.DoubleArrow, text = stringResource(id = R.string.add_to_shortcuts), onClick = {})
