@@ -5,6 +5,7 @@ import com.github.soulsearching.database.model.Music
 
 data class MusicState(
     val musics: List<Music> = emptyList(),
+    val isBottomSheetShown : Boolean = false,
     val isDeleteDialogShown : Boolean = false,
     val selectedMusic : Music? = null,
     var name : String = "",

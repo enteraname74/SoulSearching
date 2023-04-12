@@ -41,7 +41,7 @@ import java.util.*
 class ModifyMusicActivity : ComponentActivity() {
     private val viewModel: ModifyMusicViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -174,12 +174,13 @@ class ModifyMusicActivity : ComponentActivity() {
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.music_name)) },
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        textColor = MaterialTheme.colorScheme.onPrimary,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
                 TextField(
@@ -187,12 +188,13 @@ class ModifyMusicActivity : ComponentActivity() {
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetAlbum(it)) },
                     label = { Text(text = stringResource(id = R.string.music_album_name)) },
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        textColor = MaterialTheme.colorScheme.onPrimary,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
                 TextField(
@@ -200,12 +202,13 @@ class ModifyMusicActivity : ComponentActivity() {
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetArtist(it)) },
                     label = { Text(text = stringResource(id = R.string.music_artist_name)) },
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        textColor = MaterialTheme.colorScheme.onPrimary,
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }

@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.Constants
@@ -23,9 +23,8 @@ import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.launch
-import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicsScreen(
     state: MusicState,
@@ -33,11 +32,7 @@ fun MusicsScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true
-    )
+    val modalSheetState = rememberModalBottomSheetState()
 
     BackHandler(modalSheetState.isVisible) {
         coroutineScope.launch { modalSheetState.hide() }
@@ -46,16 +41,49 @@ fun MusicsScreen(
     if (state.isDeleteDialogShown) {
         DeleteMusicDialog(
             onMusicEvent = onEvent,
-            confirmAction = {coroutineScope.launch { modalSheetState.hide() }}
+            confirmAction = {
+                coroutineScope.launch { modalSheetState.hide() }.invokeOnCompletion {
+                    if (!modalSheetState.isVisible) {
+                        onEvent(MusicEvent.BottomSheet(isShown = false))
+                    }
+                }
+            }
         )
     }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.secondary)
+            .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium)
+    ) {
+        items(state.musics) { music ->
+            MusicItemComposable(
+                music = music,
+                onClick = onEvent,
+                onLongClick = {
+                    coroutineScope.launch {
+                        onEvent(MusicEvent.SetSelectedMusic(music))
+                        onEvent(MusicEvent.BottomSheet(isShown = true))
+                    }
+                }
+            )
+        }
+    }
 
-    ModalBottomSheetLayout(
-        sheetState = modalSheetState,
-        sheetContent = {
+    if (state.isBottomSheetShown) {
+        ModalBottomSheet(
+            onDismissRequest = { onEvent(MusicEvent.BottomSheet(isShown = false)) },
+            sheetState = modalSheetState,
+            dragHandle = {}
+        ) {
             MusicFileBottomSheet(
                 modifyAction = {
-                    coroutineScope.launch { modalSheetState.hide() }
+                    coroutineScope.launch { modalSheetState.hide() }.invokeOnCompletion {
+                        if (!modalSheetState.isVisible) {
+                            onEvent(MusicEvent.BottomSheet(isShown = false))
+                        }
+                    }
+
                     val intent = Intent(context, ModifyMusicActivity::class.java)
                     intent.putExtra(
                         "musicId",
@@ -66,30 +94,8 @@ fun MusicsScreen(
                 removeAction = {
                     onEvent(MusicEvent.DeleteDialog(isShown = true))
                 },
-                addToPlaylistAction = {
-                    onEvent(MusicEvent.AddToPlaylist)
-                }
+                addToPlaylistAction = { onEvent(MusicEvent.AddToPlaylist) }
             )
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.secondary)
-                .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium)
-        ) {
-            items(state.musics) { music ->
-                MusicItemComposable(
-                    music = music,
-                    onClick = onEvent,
-                    onLongClick = {
-                        coroutineScope.launch {
-                            onEvent(MusicEvent.SetSelectedMusic(music))
-                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                        }
-                    }
-                )
-            }
         }
     }
 }

@@ -82,6 +82,11 @@ class MusicViewModel @Inject constructor(
                     )
                 }
             }
+            is MusicEvent.BottomSheet -> {
+                _state.update { it.copy(
+                    isBottomSheetShown = event.isShown
+                ) }
+            }
             else -> {}
         }
     }

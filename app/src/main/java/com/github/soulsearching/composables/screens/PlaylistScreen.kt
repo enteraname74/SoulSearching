@@ -229,7 +229,7 @@ fun PlaylistMusicList(
                         onClick = onEvent,
                         onLongClick = {
                             coroutineScope.launch {
-                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                                //modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
                             }
                         }
                     )
