@@ -18,7 +18,7 @@ import com.github.soulsearching.database.model.*
         MusicAlbum::class,
         MusicArtist::class
     ],
-    version = 2
+    version = 3
 )
 
 @TypeConverters(Converters::class)

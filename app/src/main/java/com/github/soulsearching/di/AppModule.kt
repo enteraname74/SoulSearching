@@ -35,6 +35,16 @@ class AppModule {
     }
 
     @Provides
+    fun provideAlbumDao(appDatabase: AppDatabase) : AlbumDao {
+        return appDatabase.albumDao
+    }
+
+    @Provides
+    fun provideArtistDao(appDatabase: AppDatabase) : ArtistDao {
+        return appDatabase.artistDao
+    }
+
+    @Provides
     fun provideMusicPlaylistDao(appDatabase: AppDatabase) : MusicPlaylistDao {
         return appDatabase.musicPlaylistDao
     }
