@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
+    <string name="title_activity_modify_music">ModifyMusicActivity</string>
+    <string name="title_activity_modify_playlist">ModifyPlaylistActivity</string>
     <string name="app_name">Soul Searching</string>
     <string name="musics">Musiques</string>
     <string name="playlists">Playlists</string>
@@ -19,8 +22,6 @@
     <string name="delete_music">Supprimer cette musique</string>
     <string name="modify_music">Modifier cette musique</string>
     <string name="play_next">Jouer ensuite</string>
-    <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
-    <string name="title_activity_modify_music">ModifyMusicActivity</string>
 
     <!-- Modify music strings -->
     <string name="music_information">Informations de la musique</string>
@@ -34,4 +35,9 @@
     <string name="delete_dialog_info">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
     <string name="delete">Supprimer</string>
     <string name="cancel">Annuler</string>
+
+    <!-- Modify playlist strings -->
+    <string name="playlist_information">Informations de la playlist</string>
+    <string name="playlist_cover">Couverture de la playlist</string>
+    <string name="playlist_name">Nom de la playlist</string>
 </resources>

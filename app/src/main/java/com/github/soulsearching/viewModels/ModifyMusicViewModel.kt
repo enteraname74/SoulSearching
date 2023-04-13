@@ -23,7 +23,6 @@ class ModifyMusicViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MusicState())
-    // On combine nos 2 flows en un seul.
     val state = _state.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),

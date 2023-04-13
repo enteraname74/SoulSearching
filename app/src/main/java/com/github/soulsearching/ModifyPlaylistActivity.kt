@@ -34,31 +34,35 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.ModifyMusicViewModel
+import com.github.soulsearching.viewModels.ModifyPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class ModifyMusicActivity : ComponentActivity() {
-    private val viewModel: ModifyMusicViewModel by viewModels()
+class ModifyPlaylistActivity : ComponentActivity() {
+    private val viewModel: ModifyPlaylistViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             val configuration = LocalConfiguration.current
             val focusManager = LocalFocusManager.current
 
-            var musicId: UUID? by rememberSaveable {
-                mutableStateOf(null)
+            var isPlaylistFetched by rememberSaveable {
+                mutableStateOf(false)
             }
 
-            if (musicId == null) {
-                musicId = UUID.fromString(intent.extras?.getString("musicId"))
-                viewModel.getMusicFromId(musicId as UUID)
+            if (!isPlaylistFetched) {
+                viewModel.onPlaylistEvent(
+                    PlaylistEvent.PlaylistFromId(
+                        playlistId = UUID.fromString(intent.extras?.getString("playlistId"))
+                    )
+                )
+                isPlaylistFetched = true
             }
 
             val state = viewModel.state.collectAsState()
@@ -67,17 +71,17 @@ class ModifyMusicActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         AppHeaderBar(
-                            title = stringResource(id = R.string.music_information),
+                            title = stringResource(id = R.string.playlist_information),
                             leftAction = { finish() },
                             rightIcon = Icons.Default.Done,
                             rightAction = {
-                                viewModel.onMusicEvent(MusicEvent.UpdateMusic)
+                                viewModel.onPlaylistEvent(PlaylistEvent.UpdatePlaylist)
                                 finish()
                             }
                         )
                     },
-                    content = { padding ->
-                        when (configuration.orientation) {
+                    content = {padding ->
+                        when(configuration.orientation) {
                             Configuration.ORIENTATION_LANDSCAPE -> {
                                 Row(
                                     modifier = Modifier
@@ -99,7 +103,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                     ) {
                                         Text(
                                             modifier = Modifier.padding(bottom = Constants.Spacing.medium),
-                                            text = stringResource(id = R.string.album_cover),
+                                            text = stringResource(id = R.string.playlist_cover),
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
@@ -141,7 +145,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                     ) {
                                         Text(
                                             modifier = Modifier.padding(bottom = Constants.Spacing.medium),
-                                            text = stringResource(id = R.string.album_cover),
+                                            text = stringResource(id = R.string.playlist_cover),
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
@@ -169,11 +173,10 @@ class ModifyMusicActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TextFields(
         modifier: Modifier,
-        state: State<MusicState>,
+        state: State<PlaylistState>,
         focusManager: FocusManager
     ) {
         Row(
@@ -192,44 +195,8 @@ class ModifyMusicActivity : ComponentActivity() {
             ) {
                 TextField(
                     value = state.value.name,
-                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetName(it)) },
-                    label = { Text(text = stringResource(id = R.string.music_name)) },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedContainerColor = Color.Transparent
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    )
-                )
-                TextField(
-                    value = state.value.album,
-                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetAlbum(it)) },
-                    label = { Text(text = stringResource(id = R.string.music_album_name)) },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedContainerColor = Color.Transparent
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    )
-                )
-                TextField(
-                    value = state.value.artist,
-                    onValueChange = { viewModel.onMusicEvent(MusicEvent.SetArtist(it)) },
-                    label = { Text(text = stringResource(id = R.string.music_artist_name)) },
+                    onValueChange = { viewModel.onPlaylistEvent(PlaylistEvent.SetName(it)) },
+                    label = { Text(text = stringResource(id = R.string.playlist_name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
@@ -262,8 +229,8 @@ class ModifyMusicActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                viewModel.onMusicEvent(
-                    MusicEvent.SetCover(
+                viewModel.onPlaylistEvent(
+                    PlaylistEvent.SetCover(
                         Utils.getBitmapFromUri(uri as Uri, contentResolver)
                     )
                 )

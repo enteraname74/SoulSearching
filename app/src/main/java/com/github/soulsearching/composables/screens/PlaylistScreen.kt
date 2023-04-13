@@ -3,7 +3,9 @@ package com.github.soulsearching.composables.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -32,7 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ModifyPlaylistActivity
 import com.github.soulsearching.R
+import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicList
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -47,13 +52,14 @@ fun PlaylistScreen(
     onPlaylistEvent: (PlaylistEvent) -> Unit
 ) {
     val configuration = LocalConfiguration.current
+    val activity = LocalContext.current as Activity
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
-        when(configuration.orientation) {
+        when (configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 val maxWidth = this.maxWidth
                 val startWidth = maxWidth / 2
@@ -74,7 +80,15 @@ fun PlaylistScreen(
                         .padding(end = centerPaddingEnd)
                         .fillMaxHeight()
                         .width(centerWidth)
-                        .align(Alignment.CenterEnd)
+                        .align(Alignment.CenterEnd),
+                    editAction = {
+                        val intent = Intent(activity, ModifyPlaylistActivity::class.java)
+                        intent.putExtra(
+                            "playlistId",
+                            selectedPlaylistState.playlistWithMusics!!.playlist.playlistId.toString()
+                        )
+                        activity.startActivity(intent)
+                    }
                 )
                 MusicList(
                     state = musicState,
@@ -107,7 +121,15 @@ fun PlaylistScreen(
                         .padding(bottom = centerPaddingBottom)
                         .fillMaxWidth()
                         .height(centerHeight)
-                        .align(Alignment.BottomCenter)
+                        .align(Alignment.BottomCenter),
+                    editAction = {
+                        val intent = Intent(activity, ModifyPlaylistActivity::class.java)
+                        intent.putExtra(
+                            "playlistId",
+                            selectedPlaylistState.playlistWithMusics!!.playlist.playlistId.toString()
+                        )
+                        activity.startActivity(intent)
+                    }
                 )
                 MusicList(
                     state = musicState,
@@ -130,20 +152,34 @@ fun PlaylistScreen(
 fun TopPlaylistInformation(
     selectedPlaylistState: SelectedPlaylistState,
     modifier: Modifier = Modifier,
-    alignment : Alignment
+    alignment: Alignment
 ) {
+
     val activity = LocalContext.current as Activity
 
     Box(
         modifier = modifier
     ) {
-        Image(
-            modifier = Modifier.fillMaxWidth(),
-            painter = painterResource(id = R.drawable.ic_saxophone_svg),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-        )
+        if (selectedPlaylistState.playlistWithMusics != null) {
+            if (selectedPlaylistState.playlistWithMusics!!.playlist.playlistCover != null) {
+                Log.d("Image bitmap : ", selectedPlaylistState.playlistWithMusics!!.playlist.playlistCover!!.toString())
+                Image(
+                    modifier = Modifier.fillMaxWidth(),
+                    bitmap = selectedPlaylistState.playlistWithMusics!!.playlist.playlistCover!!.asImageBitmap(),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop
+                )
+            }
+        } else {
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = painterResource(id = R.drawable.ic_saxophone_svg),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+            )
+        }
+
         Image(
             modifier = Modifier
                 .align(alignment)
@@ -184,7 +220,8 @@ fun TopPlaylistInformation(
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun ColumnPlaylistPanel(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    editAction: () -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxHeight()
@@ -196,23 +233,8 @@ fun ColumnPlaylistPanel(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Edit,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
-        )
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.PlaylistAdd,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
-        )
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Shuffle,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+        ImagesButton(
+            editAction = editAction
         )
     }
 }
@@ -220,7 +242,8 @@ fun ColumnPlaylistPanel(
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun RowPlaylistPanel(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    editAction: () -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -232,23 +255,36 @@ fun RowPlaylistPanel(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Edit,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
-        )
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.PlaylistAdd,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
-        )
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Shuffle,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+        ImagesButton(
+            editAction = editAction
         )
     }
+}
+
+@Composable
+fun ImagesButton(
+    editAction: () -> Unit
+) {
+    Image(
+        modifier = Modifier
+            .size(Constants.ImageSize.medium)
+            .clickable {
+                editAction()
+            },
+        imageVector = Icons.Default.Edit,
+        contentDescription = "",
+        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+    )
+    Image(
+        modifier = Modifier.size(Constants.ImageSize.medium),
+        imageVector = Icons.Default.PlaylistAdd,
+        contentDescription = "",
+        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+    )
+    Image(
+        modifier = Modifier.size(Constants.ImageSize.medium),
+        imageVector = Icons.Default.Shuffle,
+        contentDescription = "",
+        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+    )
 }

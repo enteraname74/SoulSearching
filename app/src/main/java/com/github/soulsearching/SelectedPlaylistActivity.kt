@@ -1,6 +1,7 @@
 package com.github.soulsearching
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -32,6 +33,9 @@ class SelectedPlaylistActivity : ComponentActivity() {
                 if (!isPlaylistFetched) {
                     viewModel.setSelectedPlaylist(UUID.fromString(intent.extras?.getString("playlistId")))
                     isPlaylistFetched = true
+                }
+                if (playlistState.playlistWithMusics != null) {
+                    Log.d("On create", playlistState.playlistWithMusics!!.playlist.playlistCover.toString())
                 }
 
                 PlaylistScreen(

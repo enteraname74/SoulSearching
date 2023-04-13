@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ModifyPlaylistActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.SelectedPlaylistActivity
 import com.github.soulsearching.database.model.Playlist
@@ -25,6 +27,8 @@ fun PlaylistItemComposable(
     playlist: Playlist,
     onClick : () -> Unit
 ) {
+    val activity = LocalContext.current as Activity
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

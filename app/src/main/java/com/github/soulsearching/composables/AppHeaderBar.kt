@@ -14,9 +14,9 @@ import com.github.soulsearching.R
 fun AppHeaderBar(
     title : String,
     leftAction : () -> Unit,
-    topLeftIcon : ImageVector = Icons.Default.ArrowBack,
+    leftIcon : ImageVector = Icons.Default.ArrowBack,
     rightAction : () -> Unit = {},
-    topRightIcon : ImageVector? = null
+    rightIcon : ImageVector? = null
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -35,16 +35,16 @@ fun AppHeaderBar(
         navigationIcon = {
             IconButton(onClick = leftAction) {
                 Icon(
-                    imageVector = topLeftIcon,
+                    imageVector = leftIcon,
                     contentDescription = stringResource(id = R.string.back_button),
                 )
             }
         },
         actions = {
-            if (topRightIcon != null) {
+            if (rightIcon != null) {
                 IconButton(onClick = rightAction) {
                     Icon(
-                        imageVector = topRightIcon,
+                        imageVector = rightIcon,
                         contentDescription = stringResource(id = R.string.header_bar_right_button)
                     )
                 }
