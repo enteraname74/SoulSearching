@@ -10,9 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.soulsearching.composables.screens.PlaylistScreen
-import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.MusicViewModel
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -25,7 +23,8 @@ class SelectedPlaylistActivity : ComponentActivity() {
 
         setContent {
             SoulSearchingTheme {
-                val state by viewModel.state.collectAsState()
+                val playlistState by viewModel.playlistState.collectAsState()
+                val musicState by viewModel.musicState.collectAsState()
 
                 var isPlaylistFetched by rememberSaveable {
                     mutableStateOf(false)
@@ -38,7 +37,8 @@ class SelectedPlaylistActivity : ComponentActivity() {
                 PlaylistScreen(
                     onPlaylistEvent = viewModel::onPlaylistsEvent,
                     onMusicEvent = viewModel::onMusicEvent,
-                    selectedPlaylistState = state
+                    selectedPlaylistState = playlistState,
+                    musicState = musicState
                 )
             }
         }

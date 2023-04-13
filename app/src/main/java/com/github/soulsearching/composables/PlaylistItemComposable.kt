@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.SelectedPlaylistActivity
 import com.github.soulsearching.database.model.Playlist
@@ -30,22 +31,10 @@ fun PlaylistItemComposable(
             .clickable {
                 onClick()
             }
+            .padding(Constants.Spacing.medium),
+        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
     ) {
-        if (playlist.playlistCover != null) {
-            Image(
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(24.dp),
-                bitmap = playlist.playlistCover!!.asImageBitmap(),
-                contentDescription = ""
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_saxophone_svg),
-                contentDescription = "",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary)
-            )
-        }
+        AppImage(bitmap = playlist.playlistCover, size = 55.dp)
         Column(
             modifier = Modifier
                 .fillMaxHeight(),
