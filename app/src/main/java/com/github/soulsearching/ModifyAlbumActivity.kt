@@ -37,11 +37,13 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.SelectedAlbumViewModel
+import com.github.soulsearching.viewModels.ModifyAlbumViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ModifyAlbumActivity : ComponentActivity() {
-    private val viewModel: SelectedAlbumViewModel by viewModels()
+    private val viewModel: ModifyAlbumViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,7 +118,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             .weight(2F)
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        state = state,
+                                        albumState = state,
                                         focusManager = focusManager
                                     )
                                 }
@@ -159,7 +161,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        state = state,
+                                        albumState = state,
                                         focusManager = focusManager
                                     )
                                 }
@@ -174,7 +176,7 @@ class ModifyAlbumActivity : ComponentActivity() {
     @Composable
     fun TextFields(
         modifier: Modifier,
-        state: AlbumState,
+        albumState: AlbumState,
         focusManager: FocusManager
     ) {
         Row(
@@ -192,7 +194,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = state.name,
+                    value = albumState.name,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,
@@ -210,7 +212,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                     )
                 )
                 TextField(
-                    value = state.name,
+                    value = albumState.artist,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetArtist(it)) },
                     label = { Text(text = stringResource(id = R.string.artist_name)) },
                     singleLine = true,
@@ -221,7 +223,8 @@ class ModifyAlbumActivity : ComponentActivity() {
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedContainerColor = Color.Transparent
+                        focusedContainerColor = Color.Transparent,
+                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }

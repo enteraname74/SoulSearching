@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.PlaylistDao
@@ -29,12 +30,13 @@ class ModifyPlaylistViewModel @Inject constructor(
     )
 
     fun onPlaylistEvent(event : PlaylistEvent) {
+        Log.d("EVENT", "EVE?T")
         when(event) {
             PlaylistEvent.UpdatePlaylist -> {
                 viewModelScope.launch {
                     playlistDao.insertPlaylist(
                         Playlist(
-                            playlistId = state.value.selectedPlaylist!!.playlistId,
+                            playlistId = state.value.selectedPlaylist.playlistId,
                             name = state.value.name,
                             playlistCover = state.value.cover
                         )

@@ -8,8 +8,8 @@ interface AlbumEvent {
     object UpdateAlbum : AlbumEvent
     data class AlbumFromID(val albumId : UUID) : AlbumEvent
     data class DeleteAlbum(val album: Album) : AlbumEvent
-    data class AddAlbum(val album: Album) : AlbumEvent
+    data class AlbumWithMusicsFromId(val albumId : UUID) : AlbumEvent
     data class SetName(val name: String) : AlbumEvent
-    data class SetArtist(val name: String) : AlbumEvent
+    data class SetArtist(val artist: String) : AlbumEvent
     data class SetCover(val cover : Bitmap) : AlbumEvent
 }

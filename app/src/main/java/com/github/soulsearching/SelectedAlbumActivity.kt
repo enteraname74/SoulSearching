@@ -19,12 +19,11 @@ import java.util.*
 @AndroidEntryPoint
 class SelectedAlbumActivity : ComponentActivity() {
     private val viewModel : SelectedAlbumViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             SoulSearchingTheme {
-                val albumState by viewModel.albumState.collectAsState()
+                val albumState by viewModel.selectedAlbumState.collectAsState()
                 val musicState by viewModel.musicState.collectAsState()
 
                 var isAlbumFetched by rememberSaveable {

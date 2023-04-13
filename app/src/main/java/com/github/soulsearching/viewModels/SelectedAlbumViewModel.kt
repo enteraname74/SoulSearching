@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
@@ -9,6 +10,7 @@ import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +31,8 @@ class SelectedAlbumViewModel @Inject constructor(
 ) : ViewModel() {
     private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics> = MutableStateFlow(AlbumWithMusics())
 
-    private val _albumState = MutableStateFlow(SelectedAlbumState())
-    var albumState: StateFlow<SelectedAlbumState> = _albumState
+    private val _selectedAlbumState = MutableStateFlow(SelectedAlbumState())
+    var selectedAlbumState: StateFlow<SelectedAlbumState> = _selectedAlbumState
 
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
@@ -42,7 +44,7 @@ class SelectedAlbumViewModel @Inject constructor(
                 viewModelScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
             )
 
-        albumState = combine(_albumState, _selectedAlbumWithMusics) { state, album ->
+        selectedAlbumState = combine(_selectedAlbumState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
                 albumWithMusics = album
             )
@@ -62,7 +64,7 @@ class SelectedAlbumViewModel @Inject constructor(
             MusicState()
         )
 
-        _albumState.update {
+        _selectedAlbumState.update {
             it.copy(
                 albumWithMusics = _selectedAlbumWithMusics.value
             )
@@ -143,45 +145,8 @@ class SelectedAlbumViewModel @Inject constructor(
     }
 
     fun onAlbumEvent(event : AlbumEvent) {
+        Log.d("EVENT", event.toString())
         when(event) {
-            AlbumEvent.UpdateAlbum -> {
-                viewModelScope.launch {
-                    albumDao.insertAlbum(
-                        Album(
-                            albumId = albumState.value.albumWithMusics.album.albumId,
-                            name = albumState.value.albumWithMusics.album.name,
-                            albumCover = albumState.value.albumWithMusics.album.albumCover
-                        )
-                    )
-                }
-            }
-            is AlbumEvent.AlbumFromID -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val album = albumDao.getAlbumFromId(event.albumId)
-                    _albumState.update { it.copy(
-                        albumWithMusics = album,
-                    ) }
-                }
-            }
-            is AlbumEvent.SetName -> {
-                _albumState.update { it.copy(
-                    albumWithMusics = albumState.value.albumWithMusics.copy(
-                        album = albumState.value.albumWithMusics.album.copy(
-                            name = event.name
-                        )
-                    )
-                ) }
-            }
-            is AlbumEvent.SetCover -> {
-                _albumState.update { it.copy(
-                    albumWithMusics = albumState.value.albumWithMusics.copy(
-                        album = albumState.value.albumWithMusics.album.copy(
-                            albumCover = event.cover
-                        )
-                    )
-                ) }
-            }
-            else -> {}
         }
     }
 }

@@ -14,4 +14,7 @@ interface MusicAlbumDao {
 
     @Query("DELETE FROM MusicAlbum WHERE musicId = :musicId")
     suspend fun deleteMusicFromAlbum(musicId : UUID)
+
+    @Query("SELECT musicId FROM MusicAlbum WHERE albumId = :albumId")
+    fun getMusicsIdsFromAlbumId(albumId : UUID) : List<UUID>
 }
