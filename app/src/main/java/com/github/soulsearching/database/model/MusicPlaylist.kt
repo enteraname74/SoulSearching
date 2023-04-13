@@ -5,6 +5,6 @@ import java.util.UUID
 
 @Entity(primaryKeys = ["musicId", "playlistId"])
 data class MusicPlaylist(
-    val musicId: UUID,
-    val playlistId: UUID
+    val musicId: UUID = UUID.randomUUID(),
+    val playlistId: UUID = UUID.randomUUID()
 )

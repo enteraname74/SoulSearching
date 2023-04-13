@@ -8,8 +8,8 @@ import java.util.*
 @Entity
 data class Album(
     @PrimaryKey
-    val albumId : UUID,
-    var name : String,
+    val albumId : UUID = UUID.randomUUID(),
+    var name : String = "",
     var albumCover : Bitmap? = null,
-    var artist : String
+    var artist : String = ""
 )

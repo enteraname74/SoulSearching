@@ -19,6 +19,9 @@ interface ArtistDao {
     @Query("SELECT * FROM Artist ORDER BY name ASC")
     fun getAllArtists(): Flow<List<Artist>>
 
+    @Query("SELECT * FROM Artist WHERE name = :name")
+    fun getArtistFromInfo(name : String) : Artist?
+
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
     fun getArtistWithSongs(artistId : UUID): Flow<ArtistWithMusics>

@@ -8,8 +8,8 @@ import java.util.UUID
 @Entity
 data class Playlist(
     @PrimaryKey
-    val playlistId: UUID,
-    var name: String,
+    val playlistId: UUID = UUID.randomUUID(),
+    var name: String = "",
     var playlistCover: Bitmap? = null,
     val isFavorite: Boolean = false
 )

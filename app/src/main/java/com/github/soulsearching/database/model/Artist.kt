@@ -8,7 +8,7 @@ import java.util.*
 @Entity
 data class Artist(
     @PrimaryKey
-    val artistId: UUID,
-    var name: String,
+    val artistId: UUID = UUID.randomUUID(),
+    var name: String = "",
     var artistCover: Bitmap? = null
 )

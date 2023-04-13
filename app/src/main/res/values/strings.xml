@@ -39,4 +39,6 @@
     <string name="playlist_information">Playlist\'s information</string>
     <string name="playlist_cover">Playlist\'s cover</string>
     <string name="playlist_name">Playlist\'s name</string>
+    <string name="title_activity_selected_album">SelectedAlbumActivity</string>
+    <string name="title_activity_modify_album">ModifyAlbumActivity</string>
 </resources>

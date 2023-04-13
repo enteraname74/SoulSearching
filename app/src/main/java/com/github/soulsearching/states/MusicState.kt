@@ -7,7 +7,7 @@ data class MusicState(
     val musics: List<Music> = emptyList(),
     val isBottomSheetShown : Boolean = false,
     val isDeleteDialogShown : Boolean = false,
-    val selectedMusic : Music? = null,
+    val selectedMusic : Music = Music(),
     var name : String = "",
     var artist : String = "",
     var album : String = "",

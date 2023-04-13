@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
+import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicPlaylist
-import com.github.soulsearching.database.model.PlaylistWithMusics
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.states.SelectedPlaylistState
+import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,43 +18,41 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SelectedPlaylistViewModel @Inject constructor(
-    private val playlistDao: PlaylistDao,
+class SelectedAlbumViewModel @Inject constructor(
+    private val albumDao: AlbumDao,
     private val musicDao: MusicDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
     private val musicAlbumDao: MusicAlbumDao,
+    private val musicPlaylistDao : MusicPlaylistDao,
     private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
-    private var _selectedPlaylistMusics: StateFlow<PlaylistWithMusics> = MutableStateFlow(
-        PlaylistWithMusics()
-    )
+    private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics> = MutableStateFlow(AlbumWithMusics())
 
-    private val _playlistState = MutableStateFlow(SelectedPlaylistState())
-    var playlistState: StateFlow<SelectedPlaylistState> = _playlistState
+    private val _albumState = MutableStateFlow(SelectedAlbumState())
+    var albumState: StateFlow<SelectedAlbumState> = _albumState
 
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
-    fun setSelectedPlaylist(playlistId: UUID) {
-        _selectedPlaylistMusics = playlistDao
-            .getPlaylistWithSongs(playlistId = playlistId)
+    fun setSelectedAlbum(albumId: UUID) {
+        _selectedAlbumWithMusics = albumDao
+            .getAlbumWithSongs(albumId = albumId)
             .stateIn(
-                viewModelScope, SharingStarted.WhileSubscribed(), PlaylistWithMusics()
+                viewModelScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
             )
 
-        playlistState = combine(_playlistState, _selectedPlaylistMusics) { state, playlist ->
+        albumState = combine(_albumState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                playlistWithMusics = playlist
+                albumWithMusics = album
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            SelectedPlaylistState()
+            SelectedAlbumState()
         )
 
-        musicState = combine(_musicState, _selectedPlaylistMusics) { state, playlist ->
+        musicState = combine(_musicState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                musics = playlist.musics
+                musics = album.musics
             )
         }.stateIn(
             viewModelScope,
@@ -63,15 +60,15 @@ class SelectedPlaylistViewModel @Inject constructor(
             MusicState()
         )
 
-        _playlistState.update {
+        _albumState.update {
             it.copy(
-                playlistWithMusics = _selectedPlaylistMusics.value
+                albumWithMusics = _selectedAlbumWithMusics.value
             )
         }
 
         _musicState.update {
             it.copy(
-                musics = _selectedPlaylistMusics.value.musics
+                musics = _selectedAlbumWithMusics.value.musics
             )
         }
     }
@@ -121,6 +118,7 @@ class SelectedPlaylistViewModel @Inject constructor(
             }
             MusicEvent.AddToPlaylist -> {
                 CoroutineScope(Dispatchers.IO).launch {
+                    /*
                     val firstPlaylistId = playlistDao.getFirstPlaylistId()
                     musicPlaylistDao.insertMusicIntoPlaylist(
                         MusicPlaylist(
@@ -128,6 +126,7 @@ class SelectedPlaylistViewModel @Inject constructor(
                             playlistId = firstPlaylistId
                         )
                     )
+                     */
                 }
             }
             is MusicEvent.BottomSheet -> {

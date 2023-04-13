@@ -5,7 +5,7 @@ import com.github.soulsearching.database.model.Playlist
 
 data class PlaylistState(
     val playlists: List<Playlist> = emptyList(),
-    val selectedPlaylist : Playlist? = null,
+    val selectedPlaylist : Playlist = Playlist(),
     val cover : Bitmap? = null,
     val name : String = ""
 )

@@ -12,39 +12,39 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.github.soulsearching.composables.screens.PlaylistScreen
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
+import com.github.soulsearching.viewModels.SelectedAlbumViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class SelectedPlaylistActivity : ComponentActivity() {
-    private val viewModel : SelectedPlaylistViewModel by viewModels()
+class SelectedAlbumActivity : ComponentActivity() {
+    private val viewModel : SelectedAlbumViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             SoulSearchingTheme {
-                val playlistState by viewModel.playlistState.collectAsState()
+                val albumState by viewModel.albumState.collectAsState()
                 val musicState by viewModel.musicState.collectAsState()
 
-                var isPlaylistFetched by rememberSaveable {
+                var isAlbumFetched by rememberSaveable {
                     mutableStateOf(false)
                 }
-                if (!isPlaylistFetched) {
-                    viewModel.setSelectedPlaylist(UUID.fromString(intent.extras?.getString("playlistId")))
-                    isPlaylistFetched = true
+                if (!isAlbumFetched) {
+                    viewModel.setSelectedAlbum(UUID.fromString(intent.extras?.getString("albumId")))
+                    isAlbumFetched = true
                 }
 
                 PlaylistScreen(
                     onMusicEvent = viewModel::onMusicEvent,
                     musicState = musicState,
-                    title = playlistState.playlistWithMusics.playlist.name,
-                    image = playlistState.playlistWithMusics.playlist.playlistCover,
+                    title = albumState.albumWithMusics.album.name,
+                    image = albumState.albumWithMusics.album.albumCover,
                     editAction = {
-                        val intent = Intent(applicationContext, ModifyPlaylistActivity::class.java)
+                        val intent = Intent(applicationContext, ModifyAlbumActivity::class.java)
                         intent.putExtra(
-                            "playlistId",
-                            playlistState.playlistWithMusics.playlist.playlistId.toString()
+                            "albumId",
+                            albumState.albumWithMusics.album.albumId.toString()
                         )
                         startActivity(intent)
                     }

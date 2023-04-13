@@ -13,6 +13,16 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <activity
+            android:name=".ModifyAlbumActivity"
+            android:exported="false"
+            android:label="@string/title_activity_modify_album"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
+            android:name=".SelectedAlbumActivity"
+            android:exported="false"
+            android:label="@string/title_activity_selected_album"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
             android:name=".ModifyPlaylistActivity"
             android:exported="false"
             android:label="@string/title_activity_modify_playlist"
