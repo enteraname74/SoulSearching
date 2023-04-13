@@ -2,9 +2,11 @@ package com.github.soulsearching.composables.screens
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -83,11 +85,14 @@ fun PlaylistScreen(
     }
 }
 
+@SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun TopPlaylistInformation(
     selectedPlaylistState : SelectedPlaylistState,
     modifier: Modifier = Modifier
 ) {
+    val activity = LocalContext.current as Activity
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,7 +110,10 @@ fun TopPlaylistInformation(
                 .align(Alignment.TopStart)
                 .padding(Constants.Spacing.medium)
                 .size(Constants.ImageSize.medium)
-                .background(MaterialTheme.colorScheme.primary, CircleShape),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.6F), CircleShape)
+                .clickable {
+                    activity.finish()
+                },
             imageVector = Icons.Default.ArrowBack,
             contentDescription = "",
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
@@ -134,6 +142,7 @@ fun TopPlaylistInformation(
     }
 }
 
+@SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun PlaylistPanel(
     modifier: Modifier = Modifier

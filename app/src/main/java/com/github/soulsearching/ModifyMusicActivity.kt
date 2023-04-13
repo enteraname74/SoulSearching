@@ -12,8 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
@@ -22,7 +24,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -80,6 +84,11 @@ class ModifyMusicActivity : ComponentActivity() {
                                         .fillMaxSize()
                                         .background(MaterialTheme.colorScheme.secondary)
                                         .padding(padding)
+                                        .pointerInput(Unit) {
+                                            detectTapGestures(onTap = {
+                                                focusManager.clearFocus()
+                                            })
+                                        }
                                 ) {
                                     Column(
                                         modifier = Modifier
@@ -105,7 +114,8 @@ class ModifyMusicActivity : ComponentActivity() {
                                             .weight(2F)
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        state = state
+                                        state = state,
+                                        focusManager = focusManager
                                     )
                                 }
                             }
@@ -115,7 +125,12 @@ class ModifyMusicActivity : ComponentActivity() {
                                         .fillMaxSize()
                                         .background(MaterialTheme.colorScheme.secondary)
                                         .padding(padding)
-                                        .padding(top = Constants.Spacing.medium),
+                                        .padding(top = Constants.Spacing.medium)
+                                        .pointerInput(Unit) {
+                                            detectTapGestures(onTap = {
+                                                focusManager.clearFocus()
+                                            })
+                                        },
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Column(
@@ -142,7 +157,8 @@ class ModifyMusicActivity : ComponentActivity() {
                                             .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        state = state
+                                        state = state,
+                                        focusManager = focusManager
                                     )
                                 }
                             }
@@ -154,7 +170,11 @@ class ModifyMusicActivity : ComponentActivity() {
     }
 
     @Composable
-    fun TextFields(modifier: Modifier, state: State<MusicState>) {
+    fun TextFields(
+        modifier: Modifier,
+        state: State<MusicState>,
+        focusManager: FocusManager
+    ) {
         Row(
             modifier = modifier
         ) {
@@ -180,7 +200,11 @@ class ModifyMusicActivity : ComponentActivity() {
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedContainerColor = Color.Transparent
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
                     )
                 )
                 TextField(
@@ -194,7 +218,11 @@ class ModifyMusicActivity : ComponentActivity() {
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedContainerColor = Color.Transparent
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
                     )
                 )
                 TextField(
@@ -208,7 +236,11 @@ class ModifyMusicActivity : ComponentActivity() {
                         cursorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        focusedContainerColor = Color.Transparent
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
                     )
                 )
             }
