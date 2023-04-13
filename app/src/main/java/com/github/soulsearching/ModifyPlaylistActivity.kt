@@ -65,7 +65,7 @@ class ModifyPlaylistActivity : ComponentActivity() {
                 isPlaylistFetched = true
             }
 
-            val state = viewModel.state.collectAsState()
+            val state by viewModel.state.collectAsState()
 
             SoulSearchingTheme {
                 Scaffold(
@@ -107,7 +107,7 @@ class ModifyPlaylistActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.value.cover,
+                                            bitmap = state.cover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -149,7 +149,7 @@ class ModifyPlaylistActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.value.cover,
+                                            bitmap = state.cover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -176,7 +176,7 @@ class ModifyPlaylistActivity : ComponentActivity() {
     @Composable
     fun TextFields(
         modifier: Modifier,
-        state: State<PlaylistState>,
+        state: PlaylistState,
         focusManager: FocusManager
     ) {
         Row(
@@ -194,7 +194,7 @@ class ModifyPlaylistActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = state.value.name,
+                    value = state.name,
                     onValueChange = { viewModel.onPlaylistEvent(PlaylistEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.playlist_name)) },
                     singleLine = true,

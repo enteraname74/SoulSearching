@@ -45,7 +45,6 @@ import java.util.*
 class ModifyMusicActivity : ComponentActivity() {
     private val viewModel: ModifyMusicViewModel by viewModels()
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -61,7 +60,7 @@ class ModifyMusicActivity : ComponentActivity() {
                 viewModel.getMusicFromId(musicId as UUID)
             }
 
-            val state = viewModel.state.collectAsState()
+            val state by viewModel.state.collectAsState()
 
             SoulSearchingTheme {
                 Scaffold(
@@ -103,7 +102,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.value.cover,
+                                            bitmap = state.cover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -145,7 +144,7 @@ class ModifyMusicActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.value.cover,
+                                            bitmap = state.cover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -169,11 +168,10 @@ class ModifyMusicActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TextFields(
         modifier: Modifier,
-        state: State<MusicState>,
+        state: MusicState,
         focusManager: FocusManager
     ) {
         Row(
@@ -191,7 +189,7 @@ class ModifyMusicActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = state.value.name,
+                    value = state.name,
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.music_name)) },
                     singleLine = true,
@@ -209,9 +207,9 @@ class ModifyMusicActivity : ComponentActivity() {
                     )
                 )
                 TextField(
-                    value = state.value.album,
+                    value = state.album,
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetAlbum(it)) },
-                    label = { Text(text = stringResource(id = R.string.music_album_name)) },
+                    label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
@@ -227,9 +225,9 @@ class ModifyMusicActivity : ComponentActivity() {
                     )
                 )
                 TextField(
-                    value = state.value.artist,
+                    value = state.artist,
                     onValueChange = { viewModel.onMusicEvent(MusicEvent.SetArtist(it)) },
-                    label = { Text(text = stringResource(id = R.string.music_artist_name)) },
+                    label = { Text(text = stringResource(id = R.string.artist_name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,

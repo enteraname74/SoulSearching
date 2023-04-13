@@ -3,6 +3,9 @@
     <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
     <string name="title_activity_modify_music">ModifyMusicActivity</string>
     <string name="title_activity_modify_playlist">ModifyPlaylistActivity</string>
+    <string name="title_activity_selected_album">SelectedAlbumActivity</string>
+    <string name="title_activity_modify_album">ModifyAlbumActivity</string>
+
     <string name="app_name">Soul Searching</string>
     <string name="musics">Musiques</string>
     <string name="playlists">Playlists</string>
@@ -27,8 +30,8 @@
     <string name="music_information">Informations de la musique</string>
     <string name="album_cover">Couverture de l\'album</string>
     <string name="music_name">Nom de la musique</string>
-    <string name="music_artist_name">Nom de l\'artiste</string>
-    <string name="music_album_name">Nom de l\'album</string>
+    <string name="artist_name">Nom de l\'artiste</string>
+    <string name="album_name">Nom de l\'album</string>
 
     <!-- Dialog strings -->
     <string name="delete_dialog_message">Voulez-vous vraiment supprimer cette musique ?</string>
@@ -40,4 +43,7 @@
     <string name="playlist_information">Informations de la playlist</string>
     <string name="playlist_cover">Couverture de la playlist</string>
     <string name="playlist_name">Nom de la playlist</string>
+
+    <!-- Modify album strings -->
+    <string name="album_information">Informations de l\'album</string>
 </resources>

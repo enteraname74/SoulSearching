@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
+import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
@@ -135,6 +137,49 @@ class SelectedAlbumViewModel @Inject constructor(
                         isBottomSheetShown = event.isShown
                     )
                 }
+            }
+            else -> {}
+        }
+    }
+
+    fun onAlbumEvent(event : AlbumEvent) {
+        when(event) {
+            AlbumEvent.UpdateAlbum -> {
+                viewModelScope.launch {
+                    albumDao.insertAlbum(
+                        Album(
+                            albumId = albumState.value.albumWithMusics.album.albumId,
+                            name = albumState.value.albumWithMusics.album.name,
+                            albumCover = albumState.value.albumWithMusics.album.albumCover
+                        )
+                    )
+                }
+            }
+            is AlbumEvent.AlbumFromID -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val album = albumDao.getAlbumFromId(event.albumId)
+                    _albumState.update { it.copy(
+                        albumWithMusics = album,
+                    ) }
+                }
+            }
+            is AlbumEvent.SetName -> {
+                _albumState.update { it.copy(
+                    albumWithMusics = albumState.value.albumWithMusics.copy(
+                        album = albumState.value.albumWithMusics.album.copy(
+                            name = event.name
+                        )
+                    )
+                ) }
+            }
+            is AlbumEvent.SetCover -> {
+                _albumState.update { it.copy(
+                    albumWithMusics = albumState.value.albumWithMusics.copy(
+                        album = albumState.value.albumWithMusics.album.copy(
+                            albumCover = event.cover
+                        )
+                    )
+                ) }
             }
             else -> {}
         }
