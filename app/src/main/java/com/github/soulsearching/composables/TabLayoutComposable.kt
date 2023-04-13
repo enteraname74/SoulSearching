@@ -11,10 +11,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.TabRowItem
+import com.github.soulsearching.composables.tabLayoutScreens.AlbumsScreen
+import com.github.soulsearching.composables.tabLayoutScreens.ArtistsScreen
 import com.github.soulsearching.composables.tabLayoutScreens.MusicsScreen
 import com.github.soulsearching.composables.tabLayoutScreens.PlaylistsScreen
+import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.AlbumState
+import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -28,7 +34,11 @@ fun TabLayoutComposable(
     musicState: MusicState,
     playlistsState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit
+    onPlaylistEvent: (PlaylistEvent) -> Unit,
+    albumState: AlbumState,
+    onAlbumEvent: (AlbumEvent) -> Unit,
+    artistState: ArtistState,
+    onArtistEvent: (ArtistEvent) -> Unit
 ) {
     val tabRowItems = listOf(
         TabRowItem(
@@ -46,11 +56,11 @@ fun TabLayoutComposable(
         ),
         TabRowItem(
             title = stringResource(R.string.albums),
-            screen = { PlaylistsScreen(state = playlistsState) }
+            screen = { AlbumsScreen(state = albumState) }
         ),
         TabRowItem(
             title = stringResource(R.string.artists),
-            screen = { PlaylistsScreen(state = playlistsState) }
+            screen = { ArtistsScreen(state = artistState) }
         )
     )
 

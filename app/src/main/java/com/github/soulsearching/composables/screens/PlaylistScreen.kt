@@ -169,15 +169,15 @@ fun TopPlaylistInformation(
                     contentDescription = "",
                     contentScale = ContentScale.Crop
                 )
+            } else {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.ic_saxophone_svg),
+                    contentDescription = "",
+                    contentScale = ContentScale.FillHeight,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                )
             }
-        } else {
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = painterResource(id = R.drawable.ic_saxophone_svg),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
-            )
         }
 
         Image(
@@ -267,6 +267,7 @@ fun ImagesButton(
 ) {
     Image(
         modifier = Modifier
+            .padding(Constants.Spacing.medium)
             .size(Constants.ImageSize.medium)
             .clickable {
                 editAction()

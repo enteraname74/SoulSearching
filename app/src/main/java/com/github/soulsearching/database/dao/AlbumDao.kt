@@ -1,11 +1,10 @@
 package com.github.soulsearching.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room.*
 import com.github.soulsearching.database.model.Album
+import com.github.soulsearching.database.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Dao
 interface AlbumDao {
@@ -18,4 +17,8 @@ interface AlbumDao {
 
     @Query("SELECT * FROM Album ORDER BY name ASC")
     fun getAllAlbums(): Flow<List<Album>>
+
+    @Transaction
+    @Query("SELECT * FROM Album WHERE albumId = :albumId")
+    fun getAlbumWithSongs(albumId : UUID): Flow<AlbumWithMusics>
 }

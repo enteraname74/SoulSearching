@@ -13,11 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.SelectedPlaylistActivity
 import com.github.soulsearching.composables.GridPlaylistComposable
+import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.PlaylistState
 
 @Composable
-fun PlaylistsScreen(
-    state: PlaylistState
+fun AlbumsScreen(
+    state: AlbumState
 ) {
     val context = LocalContext.current
     LazyVerticalGrid(
@@ -26,18 +27,20 @@ fun PlaylistsScreen(
             .background(color = MaterialTheme.colorScheme.secondary),
         columns = GridCells.Adaptive(196.dp)
     ) {
-        items(state.playlists) { playlist ->
+        items(state.albums) { album ->
             GridPlaylistComposable(
-                image = playlist.playlistCover,
-                title = playlist.name,
-                text = "small talk...",
+                image = album.albumCover,
+                title = album.name,
+                text = album.artist,
                 onClick = {
+                    /*
                     val intent = Intent(context, SelectedPlaylistActivity::class.java)
                     intent.putExtra(
                         "playlistId",
-                        playlist.playlistId.toString()
+                        album.playlistId.toString()
                     )
                     context.startActivity(intent)
+                     */
                 }
             )
         }

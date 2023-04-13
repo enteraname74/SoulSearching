@@ -18,7 +18,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MusicViewModel @Inject constructor(
+class AllMusicsViewModel @Inject constructor(
     private val musicDao : MusicDao,
     private val playlistDao : PlaylistDao,
     private val musicPlaylistDao : MusicPlaylistDao

@@ -1,6 +1,5 @@
 package com.github.soulsearching
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,21 +15,28 @@ import com.github.soulsearching.composables.MainMenuHeaderComposable
 import com.github.soulsearching.composables.TabLayoutComposable
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.MusicViewModel
+import com.github.soulsearching.viewModels.AllAlbumsViewModel
+import com.github.soulsearching.viewModels.AllArtistsViewModel
+import com.github.soulsearching.viewModels.AllMusicsViewModel
 import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val musicViewModel: MusicViewModel by viewModels()
+    private val allMusicsViewModel: AllMusicsViewModel by viewModels()
     private val allPlaylistsViewModel: AllPlaylistsViewModel by viewModels()
+    private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
+    private val allArtistsViewModel: AllArtistsViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override
+    fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val musicState by musicViewModel.state.collectAsState()
+            val musicState by allMusicsViewModel.state.collectAsState()
             val playlistState by allPlaylistsViewModel.state.collectAsState()
+            val albumState by allAlbumsViewModel.state.collectAsState()
+            val artistState by allArtistsViewModel.state.collectAsState()
 
             SoulSearchingTheme {
                 Column(
@@ -41,15 +47,19 @@ class MainActivity : AppCompatActivity() {
                     MainMenuHeaderComposable()
 
                     TestButtons(
-                        onMusicEvent = musicViewModel::onMusicEvent,
+                        onMusicEvent = allMusicsViewModel::onMusicEvent,
                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
                     )
 
                     TabLayoutComposable(
                         musicState = musicState,
                         playlistsState = playlistState,
-                        onMusicEvent = musicViewModel::onMusicEvent,
-                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
+                        albumState  = albumState,
+                        artistState = artistState,
+                        onMusicEvent = allMusicsViewModel::onMusicEvent,
+                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,
+                        onAlbumEvent = allAlbumsViewModel::onAlbumEvent,
+                        onArtistEvent = allArtistsViewModel::onArtistEvent
                     )
                 }
             }
