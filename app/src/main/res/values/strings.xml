@@ -45,4 +45,6 @@
 
     <!-- Modify album strings -->
     <string name="album_information">Album\'s information</string>
+    <string name="title_activity_selected_artist">SelectedArtistActivity</string>
+    <string name="title_activity_modify_artist">ModifyArtistActivity</string>
 </resources>

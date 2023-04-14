@@ -11,10 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.SelectedPlaylistActivity
+import com.github.soulsearching.SelectedArtistActivity
 import com.github.soulsearching.composables.GridPlaylistComposable
 import com.github.soulsearching.states.ArtistState
-import com.github.soulsearching.states.PlaylistState
 
 @Composable
 fun ArtistsScreen(
@@ -33,14 +32,12 @@ fun ArtistsScreen(
                 title = artist.name,
                 text = "small talk...",
                 onClick = {
-                    /*
-                    val intent = Intent(context, SelectedPlaylistActivity::class.java)
+                    val intent = Intent(context, SelectedArtistActivity::class.java)
                     intent.putExtra(
-                        "playlistId",
-                        playlist.playlistId.toString()
+                        "artistId",
+                        artist.artistId.toString()
                     )
                     context.startActivity(intent)
-                     */
                 }
             )
         }

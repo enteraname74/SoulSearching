@@ -24,4 +24,8 @@ interface ArtistDao {
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
     fun getArtistWithMusics(artistId : UUID): Flow<ArtistWithMusics>
+
+    @Transaction
+    @Query("SELECT * FROM Artist WHERE artistId = :artistId")
+    fun getArtistWithMusicsSimple(artistId : UUID): ArtistWithMusics
 }

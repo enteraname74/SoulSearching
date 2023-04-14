@@ -34,16 +34,16 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.states.SelectedAlbumState
+import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.states.SelectedArtistState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.ModifyAlbumViewModel
+import com.github.soulsearching.viewModels.ModifyArtistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class ModifyAlbumActivity : ComponentActivity() {
-    private val viewModel: ModifyAlbumViewModel by viewModels()
+class ModifyArtistActivity : ComponentActivity() {
+    private val viewModel: ModifyArtistViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,17 +52,17 @@ class ModifyAlbumActivity : ComponentActivity() {
             val configuration = LocalConfiguration.current
             val focusManager = LocalFocusManager.current
 
-            var isAlbumFetched by rememberSaveable {
+            var isArtistFetched by rememberSaveable {
                 mutableStateOf(false)
             }
 
-            if (!isAlbumFetched) {
-                viewModel.onAlbumEvent(
-                    AlbumEvent.AlbumFromID(
-                        albumId = UUID.fromString(intent.extras?.getString("albumId"))
+            if (!isArtistFetched) {
+                viewModel.onArtistEvent(
+                    ArtistEvent.ArtistFromId(
+                        artistId = UUID.fromString(intent.extras?.getString("artistId"))
                     )
                 )
-                isAlbumFetched = true
+                isArtistFetched = true
             }
 
             val state by viewModel.state.collectAsState()
@@ -75,7 +75,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                             leftAction = { finish() },
                             rightIcon = Icons.Default.Done,
                             rightAction = {
-                                viewModel.onAlbumEvent(AlbumEvent.UpdateAlbum)
+                                viewModel.onArtistEvent(ArtistEvent.UpdateArtist)
                                 finish()
                             }
                         )
@@ -107,7 +107,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.albumWithMusics.album.albumCover,
+                                            bitmap = state.artistWithMusics.artist.artistCover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -118,7 +118,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             .weight(2F)
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        selectedAlbumState = state,
+                                        selectedArtistState = state,
                                         focusManager = focusManager
                                     )
                                 }
@@ -149,7 +149,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.albumWithMusics.album.albumCover,
+                                            bitmap = state.artistWithMusics.artist.artistCover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -161,7 +161,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                             .background(color = MaterialTheme.colorScheme.primary)
                                             .padding(Constants.Spacing.medium),
-                                        selectedAlbumState = state,
+                                        selectedArtistState = state,
                                         focusManager = focusManager
                                     )
                                 }
@@ -176,7 +176,7 @@ class ModifyAlbumActivity : ComponentActivity() {
     @Composable
     fun TextFields(
         modifier: Modifier,
-        selectedAlbumState: SelectedAlbumState,
+        selectedArtistState: SelectedArtistState,
         focusManager: FocusManager
     ) {
         Row(
@@ -194,8 +194,8 @@ class ModifyAlbumActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = selectedAlbumState.albumWithMusics.album.name,
-                    onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
+                    value = selectedArtistState.artistWithMusics.artist.name,
+                    onValueChange = { viewModel.onArtistEvent(ArtistEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
@@ -206,25 +206,6 @@ class ModifyAlbumActivity : ComponentActivity() {
                         focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         focusedContainerColor = Color.Transparent
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    )
-                )
-                TextField(
-                    value = selectedAlbumState.albumWithMusics.album.artist,
-                    onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetArtist(it)) },
-                    label = { Text(text = stringResource(id = R.string.artist_name)) },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedContainerColor = Color.Transparent,
-                        focusedLeadingIconColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
@@ -248,8 +229,8 @@ class ModifyAlbumActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                viewModel.onAlbumEvent(
-                    AlbumEvent.SetCover(
+                viewModel.onArtistEvent(
+                    ArtistEvent.SetCover(
                         Utils.getBitmapFromUri(uri as Uri, contentResolver)
                     )
                 )

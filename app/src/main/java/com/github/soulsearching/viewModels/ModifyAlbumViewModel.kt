@@ -3,11 +3,9 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -22,8 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ModifyAlbumViewModel @Inject constructor(
     private val musicDao: MusicDao,
-    private val albumDao: AlbumDao,
-    private val musicAlbumDao: MusicAlbumDao
+    private val albumDao: AlbumDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
@@ -44,6 +41,8 @@ class ModifyAlbumViewModel @Inject constructor(
                             artist = state.value.albumWithMusics.album.artist,
                         )
                     )
+                }
+                CoroutineScope(Dispatchers.IO).launch {
                     // On met à jour les musiques de l'album :
                     for (music in state.value.albumWithMusics.musics) {
                         musicDao.insertMusic(
