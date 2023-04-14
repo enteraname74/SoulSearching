@@ -70,13 +70,13 @@ class ModifyMusicViewModel @Inject constructor(
                 viewModelScope.launch {
                     musicDao.insertMusic(
                         Music(
-                            musicId = state.value.selectedMusic!!.musicId,
-                            name = state.value.name,
-                            album = state.value.album,
-                            artist = state.value.artist,
+                            musicId = state.value.selectedMusic.musicId,
+                            name = state.value.name.trim(),
+                            album = state.value.album.trim(),
+                            artist = state.value.artist.trim(),
                             albumCover = state.value.cover,
-                            path = state.value.selectedMusic!!.path,
-                            duration = state.value.selectedMusic!!.duration
+                            path = state.value.selectedMusic.path,
+                            duration = state.value.selectedMusic.duration
                         )
                     )
                 }

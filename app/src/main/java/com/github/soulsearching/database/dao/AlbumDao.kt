@@ -19,10 +19,6 @@ interface AlbumDao {
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
     fun getAllAlbums(): Flow<List<Album>>
 
-    @Transaction
-    @Query("SELECT Album.* FROM Album INNER JOIN Artist ON Album.albumName = :name AND Artist.artistName = :artist")
-    fun getAlbumFromInfo(name : String, artist : String) : AlbumWithArtist?
-
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun getAlbumFromId(albumId: UUID) : Album
 
@@ -39,6 +35,10 @@ interface AlbumDao {
     fun getAllAlbumsWithArtist() : Flow<List<AlbumWithArtist>>
 
     @Transaction
-    @Query("SELECT * FROM Album ORDER BY albumName ASC")
+    @Query("SELECT * FROM Album")
     fun getAllAlbumsWithArtistSimple() : List<AlbumWithArtist>
+
+    @Transaction
+    @Query("SELECT * FROM Album")
+    fun getAllAlbumsWithMusicsSimple() : List<AlbumWithMusics>
 }

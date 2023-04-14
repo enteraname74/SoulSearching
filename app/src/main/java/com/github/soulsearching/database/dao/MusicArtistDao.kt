@@ -10,7 +10,6 @@ interface MusicArtistDao {
     @Upsert
     suspend fun insertMusicIntoArtist(musicArtist: MusicArtist)
 
-
     @Query("UPDATE MusicArtist SET artistId = :newArtistId WHERE musicId = :musicId")
     suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID)
 

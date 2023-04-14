@@ -30,7 +30,7 @@ fun AlbumsScreen(
             GridPlaylistComposable(
                 image = albumWithArtist.album.albumCover,
                 title = albumWithArtist.album.albumName,
-                text = albumWithArtist.artist!!.artistName,
+                text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
                 onClick = {
 
                     val intent = Intent(context, SelectedAlbumActivity::class.java)

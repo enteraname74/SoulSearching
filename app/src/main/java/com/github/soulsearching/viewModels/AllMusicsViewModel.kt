@@ -83,8 +83,11 @@ class AllMusicsViewModel @Inject constructor(
                         (it.album.albumName == music.album)
                                 && (it.artist!!.artistName == music.artist)
                     }
+                    val correspondingArtist = artistDao.getArtistFromInfo(
+                        artistName = music.artist
+                    )
                     var albumId = UUID.randomUUID()
-                    var artistId = UUID.randomUUID()
+                    var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
                     if (correspondingAlbum == null) {
                         albumDao.insertAlbum(
                             Album(
@@ -93,12 +96,6 @@ class AllMusicsViewModel @Inject constructor(
                                 albumCover = music.albumCover,
                             )
                         )
-                        val artist = Artist(
-                            artistId = artistId,
-                            artistName = music.artist,
-                            artistCover = music.albumCover
-                        )
-                        Log.d("INFOS", artist.toString())
                         artistDao.insertArtist(
                             Artist(
                                 artistId = artistId,
@@ -106,7 +103,6 @@ class AllMusicsViewModel @Inject constructor(
                                 artistCover = music.albumCover
                             )
                         )
-
                         albumArtistDao.insertAlbumIntoArtist(
                             AlbumArtist(
                                 albumId = albumId,
@@ -115,11 +111,9 @@ class AllMusicsViewModel @Inject constructor(
                         )
 
                     } else {
-                        Log.d("CORRESPONDING", correspondingAlbum.toString())
                         albumId = correspondingAlbum.album.albumId
                         artistId = correspondingAlbum.artist!!.artistId
                     }
-
                     musicAlbumDao.insertMusicIntoAlbum(
                         MusicAlbum(
                             musicId = music.musicId,

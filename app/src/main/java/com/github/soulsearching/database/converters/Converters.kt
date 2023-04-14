@@ -4,10 +4,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.room.TypeConverter
+import com.github.soulsearching.database.model.Artist
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.ByteArrayOutputStream
 
 class Converters {
-
     @TypeConverter
     fun bitmapToString(bitmap: Bitmap?): String {
 

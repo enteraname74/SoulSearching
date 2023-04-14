@@ -38,13 +38,13 @@ class ModifyAlbumViewModel @Inject constructor(
                     albumDao.insertAlbum(
                         Album(
                             albumId = state.value.albumWithMusics.album.albumId,
-                            albumName = state.value.albumWithMusics.album.albumName,
+                            albumName = state.value.albumWithMusics.album.albumName.trim(),
                             albumCover = state.value.albumWithMusics.album.albumCover
                         )
                     )
                     artistDao.insertArtist(
                         state.value.albumWithMusics.artist.copy(
-                            artistName = state.value.albumWithMusics.artist.artistName
+                            artistName = state.value.albumWithMusics.artist.artistName.trim()
                         )
                     )
                 }
@@ -53,9 +53,9 @@ class ModifyAlbumViewModel @Inject constructor(
                     for (music in state.value.albumWithMusics.musics) {
                         musicDao.insertMusic(
                             music.copy(
-                                album = state.value.albumWithMusics.album.albumName,
+                                album = state.value.albumWithMusics.album.albumName.trim(),
                                 albumCover = state.value.albumWithMusics.album.albumCover,
-                                artist = state.value.albumWithMusics.artist.artistName
+                                artist = state.value.albumWithMusics.artist.artistName.trim()
                             )
                         )
                     }
