@@ -194,7 +194,7 @@ class ModifyArtistActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = selectedArtistState.artistWithMusics.artist.name,
+                    value = selectedArtistState.artistWithMusics.artist.artistName,
                     onValueChange = { viewModel.onArtistEvent(ArtistEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,

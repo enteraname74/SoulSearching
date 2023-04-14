@@ -194,7 +194,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = selectedAlbumState.albumWithMusics.album.name,
+                    value = selectedAlbumState.albumWithMusics.album.albumName,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,

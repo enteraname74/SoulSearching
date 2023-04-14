@@ -80,7 +80,7 @@ class AllMusicsViewModel @Inject constructor(
                         albumDao.insertAlbum(
                             Album(
                                 albumId = UUID.randomUUID(),
-                                name = music.album,
+                                albumName = music.album,
                                 albumCover = music.albumCover,
                                 artist = music.artist
                             )
@@ -94,7 +94,7 @@ class AllMusicsViewModel @Inject constructor(
                         artistDao.insertArtist(
                             Artist(
                                 artistId = UUID.randomUUID(),
-                                name = music.artist,
+                                artistName = music.artist,
                                 artistCover = music.albumCover
                             )
                         )

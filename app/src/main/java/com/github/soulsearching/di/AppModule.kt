@@ -25,37 +25,42 @@ class AppModule {
     }
 
     @Provides
-    fun provideMusicDao(appDatabase: AppDatabase) : MusicDao {
+    fun provideMusicDao(appDatabase: AppDatabase): MusicDao {
         return appDatabase.musicDao
     }
 
     @Provides
-    fun providePlaylistDao(appDatabase: AppDatabase) : PlaylistDao {
+    fun providePlaylistDao(appDatabase: AppDatabase): PlaylistDao {
         return appDatabase.playlistDao
     }
 
     @Provides
-    fun provideAlbumDao(appDatabase: AppDatabase) : AlbumDao {
+    fun provideAlbumDao(appDatabase: AppDatabase): AlbumDao {
         return appDatabase.albumDao
     }
 
     @Provides
-    fun provideArtistDao(appDatabase: AppDatabase) : ArtistDao {
+    fun provideArtistDao(appDatabase: AppDatabase): ArtistDao {
         return appDatabase.artistDao
     }
 
     @Provides
-    fun provideMusicPlaylistDao(appDatabase: AppDatabase) : MusicPlaylistDao {
+    fun provideMusicPlaylistDao(appDatabase: AppDatabase): MusicPlaylistDao {
         return appDatabase.musicPlaylistDao
     }
 
     @Provides
-    fun provideMusicAlbumDao(appDatabase: AppDatabase) : MusicAlbumDao {
+    fun provideMusicAlbumDao(appDatabase: AppDatabase): MusicAlbumDao {
         return appDatabase.musicAlbumDao
     }
 
     @Provides
-    fun provideMusicArtistDao(appDatabase: AppDatabase) : MusicArtistDao {
+    fun provideMusicArtistDao(appDatabase: AppDatabase): MusicArtistDao {
         return appDatabase.musicArtistDao
+    }
+
+    @Provides
+    fun provideAlbumArtistDao(appDatabase: AppDatabase): AlbumArtistDao {
+        return appDatabase.albumArtistDao
     }
 }

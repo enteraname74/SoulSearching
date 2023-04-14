@@ -37,7 +37,7 @@ class SelectedAlbumActivity : ComponentActivity() {
                 PlaylistScreen(
                     onMusicEvent = viewModel::onMusicEvent,
                     musicState = musicState,
-                    title = albumState.albumWithMusics.album.name,
+                    title = albumState.albumWithMusics.album.albumName,
                     image = albumState.albumWithMusics.album.albumCover,
                     editAction = {
                         val intent = Intent(applicationContext, ModifyAlbumActivity::class.java)

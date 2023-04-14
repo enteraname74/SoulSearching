@@ -11,5 +11,11 @@ data class AlbumWithMusics(
         entityColumn = "musicId",
         associateBy = Junction(MusicAlbum::class)
     )
-    val musics : List<Music> = emptyList()
+    val musics : List<Music> = emptyList(),
+    @Relation(
+        parentColumn = "albumId",
+        entityColumn = "artistId",
+        associateBy = Junction(AlbumArtist::class)
+    )
+    val artist : Artist = Artist()
 )

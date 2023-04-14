@@ -29,7 +29,7 @@ fun ArtistsScreen(
         items(state.artists) { artist ->
             GridPlaylistComposable(
                 image = artist.artistCover,
-                title = artist.name,
+                title = artist.artistName,
                 text = "small talk...",
                 onClick = {
                     val intent = Intent(context, SelectedArtistActivity::class.java)

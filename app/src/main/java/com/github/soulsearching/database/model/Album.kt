@@ -9,7 +9,6 @@ import java.util.*
 data class Album(
     @PrimaryKey
     val albumId : UUID = UUID.randomUUID(),
-    var name : String = "",
+    var albumName : String = "",
     var albumCover : Bitmap? = null,
-    var artist : String = ""
 )

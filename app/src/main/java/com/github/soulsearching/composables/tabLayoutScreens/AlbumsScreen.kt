@@ -29,7 +29,7 @@ fun AlbumsScreen(
         items(state.albums) { album ->
             GridPlaylistComposable(
                 image = album.albumCover,
-                title = album.name,
+                title = album.albumName,
                 text = album.artist,
                 onClick = {
 

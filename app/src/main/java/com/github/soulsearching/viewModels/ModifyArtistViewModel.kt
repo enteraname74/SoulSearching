@@ -39,7 +39,7 @@ class ModifyArtistViewModel @Inject constructor(
                     artistDao.insertArtist(
                         Artist(
                             artistId = state.value.artistWithMusics.artist.artistId,
-                            name = state.value.artistWithMusics.artist.name,
+                            artistName = state.value.artistWithMusics.artist.artistName,
                             artistCover = state.value.artistWithMusics.artist.artistCover,
                         )
                     )
@@ -49,7 +49,7 @@ class ModifyArtistViewModel @Inject constructor(
                     for (music in state.value.artistWithMusics.musics) {
                         musicDao.insertMusic(
                             music.copy(
-                                artist = state.value.artistWithMusics.artist.name
+                                artist = state.value.artistWithMusics.artist.artistName
                             )
                         )
                     }
@@ -70,7 +70,7 @@ class ModifyArtistViewModel @Inject constructor(
                     it.copy(
                         artistWithMusics = it.artistWithMusics.copy(
                             artist = it.artistWithMusics.artist.copy(
-                                name = event.name
+                                artistName = event.name
                             )
                         )
                     )

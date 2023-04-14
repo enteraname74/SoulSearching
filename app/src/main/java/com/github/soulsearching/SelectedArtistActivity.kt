@@ -38,7 +38,7 @@ class SelectedArtistActivity : ComponentActivity() {
                 PlaylistScreen(
                     onMusicEvent = viewModel::onMusicEvent,
                     musicState = musicState,
-                    title = artistState.artistWithMusics.artist.name,
+                    title = artistState.artistWithMusics.artist.artistName,
                     image = artistState.artistWithMusics.artist.artistCover,
                     editAction = {
                         val intent = Intent(applicationContext, ModifyArtistActivity::class.java)

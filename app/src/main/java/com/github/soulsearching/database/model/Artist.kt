@@ -9,6 +9,6 @@ import java.util.*
 data class Artist(
     @PrimaryKey
     val artistId: UUID = UUID.randomUUID(),
-    var name: String = "",
+    var artistName: String = "",
     var artistCover: Bitmap? = null
 )
