@@ -5,12 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +37,7 @@ class SelectedAlbumViewModel @Inject constructor(
 
     fun setSelectedAlbum(albumId: UUID) {
         _selectedAlbumWithMusics = albumDao
-            .getAlbumWithSongs(albumId = albumId)
+            .getAlbumWithMusics(albumId = albumId)
             .stateIn(
                 viewModelScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
             )

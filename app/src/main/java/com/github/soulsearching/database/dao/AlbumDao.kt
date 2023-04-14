@@ -3,7 +3,6 @@ package com.github.soulsearching.database.dao
 import androidx.room.*
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithMusics
-import com.github.soulsearching.database.model.Playlist
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -27,5 +26,9 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumWithSongs(albumId : UUID): Flow<AlbumWithMusics>
+    fun getAlbumWithMusics(albumId : UUID): Flow<AlbumWithMusics>
+
+    @Transaction
+    @Query("SELECT * FROM Album WHERE albumId = :albumId")
+    fun getAlbumWithMusicsSimple(albumId : UUID): AlbumWithMusics
 }

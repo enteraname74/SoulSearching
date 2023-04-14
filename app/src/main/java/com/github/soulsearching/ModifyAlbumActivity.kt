@@ -36,6 +36,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
+import com.github.soulsearching.states.SelectedAlbumState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.ModifyAlbumViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,7 +108,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.cover,
+                                            bitmap = state.albumWithMusics.album.albumCover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -149,7 +150,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
-                                            bitmap = state.cover,
+                                            bitmap = state.albumWithMusics.album.albumCover,
                                             size = 200.dp,
                                             modifier = Modifier.clickable { selectImage() }
                                         )
@@ -176,7 +177,7 @@ class ModifyAlbumActivity : ComponentActivity() {
     @Composable
     fun TextFields(
         modifier: Modifier,
-        albumState: AlbumState,
+        albumState: SelectedAlbumState,
         focusManager: FocusManager
     ) {
         Row(
@@ -194,7 +195,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
             ) {
                 TextField(
-                    value = albumState.name,
+                    value = albumState.albumWithMusics.album.name,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
                     label = { Text(text = stringResource(id = R.string.album_name)) },
                     singleLine = true,
@@ -212,7 +213,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                     )
                 )
                 TextField(
-                    value = albumState.artist,
+                    value = albumState.albumWithMusics.album.artist,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetArtist(it)) },
                     label = { Text(text = stringResource(id = R.string.artist_name)) },
                     singleLine = true,

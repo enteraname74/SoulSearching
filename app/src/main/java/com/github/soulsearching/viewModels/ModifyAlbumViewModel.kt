@@ -8,6 +8,7 @@ import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
+import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,33 +25,32 @@ class ModifyAlbumViewModel @Inject constructor(
     private val albumDao: AlbumDao,
     private val musicAlbumDao: MusicAlbumDao
 ) : ViewModel() {
-    private val _state = MutableStateFlow(AlbumState())
+    private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        AlbumState()
+        SelectedAlbumState()
     )
 
-    fun onAlbumEvent(event : AlbumEvent) {
-        when(event) {
+    fun onAlbumEvent(event: AlbumEvent) {
+        when (event) {
             AlbumEvent.UpdateAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     albumDao.insertAlbum(
                         Album(
-                            albumId = state.value.selectedAlbum.albumId,
-                            name = state.value.name,
-                            albumCover = state.value.cover,
-                            artist = state.value.artist,
+                            albumId = state.value.albumWithMusics.album.albumId,
+                            name = state.value.albumWithMusics.album.name,
+                            albumCover = state.value.albumWithMusics.album.albumCover,
+                            artist = state.value.albumWithMusics.album.artist,
                         )
                     )
                     // On met à jour les musiques de l'album :
-                    val musicsIds = musicAlbumDao.getMusicsIdsFromAlbumId(state.value.selectedAlbum.albumId)
-                    for (musicId in musicsIds) {
+                    for (music in state.value.albumWithMusics.musics) {
                         musicDao.insertMusic(
-                            musicDao.getMusicFromId(musicId).copy(
-                                album = state.value.name,
-                                albumCover = state.value.cover,
-                                artist = state.value.artist
+                            music.copy(
+                                album = state.value.albumWithMusics.album.name,
+                                albumCover = state.value.albumWithMusics.album.albumCover,
+                                artist = state.value.albumWithMusics.album.artist
                             )
                         )
                     }
@@ -58,29 +58,46 @@ class ModifyAlbumViewModel @Inject constructor(
             }
             is AlbumEvent.AlbumFromID -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val album = albumDao.getAlbumFromId(event.albumId)
-                    _state.update { it.copy(
-                        selectedAlbum = album,
-                        name = album.name,
-                        artist = album.artist,
-                        cover = album.albumCover
-                    ) }
+                    val album = albumDao.getAlbumWithMusicsSimple(event.albumId)
+                    _state.update {
+                        it.copy(
+                            albumWithMusics = album
+                        )
+                    }
                 }
             }
             is AlbumEvent.SetName -> {
-                _state.update { it.copy(
-                    name = event.name
-                ) }
+                _state.update {
+                    it.copy(
+                        albumWithMusics = it.albumWithMusics.copy(
+                            album = it.albumWithMusics.album.copy(
+                                name = event.name
+                            )
+                        )
+                    )
+                }
             }
             is AlbumEvent.SetCover -> {
-                _state.update { it.copy(
-                    cover = event.cover
-                ) }
+                _state.update {
+                    it.copy(
+                        albumWithMusics = it.albumWithMusics.copy(
+                            album = it.albumWithMusics.album.copy(
+                                albumCover = event.cover
+                            )
+                        )
+                    )
+                }
             }
             is AlbumEvent.SetArtist -> {
-                _state.update { it.copy(
-                    artist = event.artist
-                ) }
+                _state.update {
+                    it.copy(
+                        albumWithMusics = it.albumWithMusics.copy(
+                            album = it.albumWithMusics.album.copy(
+                                artist = event.artist
+                            )
+                        )
+                    )
+                }
             }
             else -> {}
         }

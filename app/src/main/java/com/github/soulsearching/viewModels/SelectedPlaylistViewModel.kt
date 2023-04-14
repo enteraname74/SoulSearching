@@ -38,7 +38,7 @@ class SelectedPlaylistViewModel @Inject constructor(
 
     fun setSelectedPlaylist(playlistId: UUID) {
         _selectedPlaylistMusics = playlistDao
-            .getPlaylistWithSongs(playlistId = playlistId)
+            .getPlaylistWithMusics(playlistId = playlistId)
             .stateIn(
                 viewModelScope, SharingStarted.WhileSubscribed(), PlaylistWithMusics()
             )
