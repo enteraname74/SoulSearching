@@ -1,11 +1,14 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.ArtistDao
 import com.github.soulsearching.database.dao.MusicArtistDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.database.model.Artist
+import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.soulsearching.database.model.MusicArtist
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,9 +46,28 @@ class ModifyArtistViewModel @Inject constructor(
                             artistCover = state.value.artistWithMusics.artist.artistCover,
                         )
                     )
+                    // Vérifions si il n'y a pas deux fois le même nom d'artiste :
+                    val possibleDuplicate : ArtistWithMusics? = artistDao.getPossibleDuplicatedArtistName(
+                        artistName = state.value.artistWithMusics.artist.artistName,
+                        artistId = state.value.artistWithMusics.artist.artistId
+                    )
+                    if (possibleDuplicate != null) {
+                        /*
+                        Il y a un doublon !
+                        Il faut rediriger l'id des musiques du doublon vers l'id de l'artiste actuel.
+                         */
+                        Log.d("Doublons !", possibleDuplicate.musics.size.toString())
+                        for (music in possibleDuplicate.musics) {
+                            musicArtistDao.updateArtistOfMusic(
+                                musicId = music.musicId,
+                                newArtistId = state.value.artistWithMusics.artist.artistId
+                            )
+                        }
+
+                    }
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    // On met à jour les musiques de l'album :
+                    // On met à jour les musiques de l'artiste :
                     for (music in state.value.artistWithMusics.musics) {
                         musicDao.insertMusic(
                             music.copy(

@@ -76,14 +76,16 @@ class AllMusicsViewModel @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     musicDao.insertMusic(music)
 
-                    var correspondingAlbum = albumDao.getAlbumFromInfo(
-                        name = music.album,
-                        artist = music.artist
-                    )
-
+                    Log.d("PRE CONDITIONS", music.album)
+                    Log.d("PRE CONDITIONS", music.artist)
+                    val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
+                    val correspondingAlbum = allAlbums.find {
+                        (it.album.albumName == music.album)
+                                && (it.artist!!.artistName == music.artist)
+                    }
+                    var albumId = UUID.randomUUID()
+                    var artistId = UUID.randomUUID()
                     if (correspondingAlbum == null) {
-                        val albumId = UUID.randomUUID()
-                        val artistId = UUID.randomUUID()
                         albumDao.insertAlbum(
                             Album(
                                 albumId = albumId,
@@ -111,23 +113,23 @@ class AllMusicsViewModel @Inject constructor(
                                 artistId = artistId
                             )
                         )
-                        correspondingAlbum = albumDao.getAlbumFromInfo(
-                            name = music.album,
-                            artist = music.artist
-                        )
 
+                    } else {
+                        Log.d("CORRESPONDING", correspondingAlbum.toString())
+                        albumId = correspondingAlbum.album.albumId
+                        artistId = correspondingAlbum.artist!!.artistId
                     }
 
                     musicAlbumDao.insertMusicIntoAlbum(
                         MusicAlbum(
                             musicId = music.musicId,
-                            albumId = correspondingAlbum!!.album.albumId
+                            albumId = albumId
                         )
                     )
                     musicArtistDao.insertMusicIntoArtist(
                         MusicArtist(
                             musicId = music.musicId,
-                            artistId = correspondingAlbum.artist!!.artistId
+                            artistId = artistId
                         )
                     )
                 }

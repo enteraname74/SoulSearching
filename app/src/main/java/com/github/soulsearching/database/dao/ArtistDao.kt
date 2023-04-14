@@ -10,22 +10,26 @@ import java.util.*
 interface ArtistDao {
 
     @Upsert
-    suspend fun insertArtist(artist : Artist)
+    suspend fun insertArtist(artist: Artist)
 
     @Delete
-    suspend fun deleteArtist(artist : Artist)
+    suspend fun deleteArtist(artist: Artist)
 
     @Query("SELECT * FROM Artist ORDER BY artistName ASC")
     fun getAllArtists(): Flow<List<Artist>>
 
+    @Transaction
+    @Query("SELECT * FROM Artist WHERE artistName = :artistName AND artistId != :artistId")
+    fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : ArtistWithMusics?
+
     @Query("SELECT * FROM Artist WHERE artistName = :artistName")
-    fun getArtistFromInfo(artistName : String) : Artist?
+    fun getArtistFromInfo(artistName: String): Artist?
 
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistWithMusics(artistId : UUID): Flow<ArtistWithMusics>
+    fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics>
 
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistWithMusicsSimple(artistId : UUID): ArtistWithMusics
+    fun getArtistWithMusicsSimple(artistId: UUID): ArtistWithMusics
 }
