@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                     TabLayoutComposable(
                         musicState = musicState,
                         playlistsState = playlistState,
-                        albumState  = albumState,
+                        albumWithArtistState  = albumState,
                         artistState = artistState,
                         onMusicEvent = allMusicsViewModel::onMusicEvent,
                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,

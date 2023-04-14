@@ -3,6 +3,7 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.AlbumDao
+import com.github.soulsearching.database.dao.ArtistDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.events.AlbumEvent
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ModifyAlbumViewModel @Inject constructor(
     private val musicDao: MusicDao,
-    private val albumDao: AlbumDao
+    private val albumDao: AlbumDao,
+    private val artistDao: ArtistDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
@@ -37,8 +39,12 @@ class ModifyAlbumViewModel @Inject constructor(
                         Album(
                             albumId = state.value.albumWithMusics.album.albumId,
                             albumName = state.value.albumWithMusics.album.albumName,
-                            albumCover = state.value.albumWithMusics.album.albumCover,
-                            artist = state.value.albumWithMusics.album.artist,
+                            albumCover = state.value.albumWithMusics.album.albumCover
+                        )
+                    )
+                    artistDao.insertArtist(
+                        state.value.albumWithMusics.artist.copy(
+                            artistName = state.value.albumWithMusics.artist.artistName
                         )
                     )
                 }
@@ -49,7 +55,7 @@ class ModifyAlbumViewModel @Inject constructor(
                             music.copy(
                                 album = state.value.albumWithMusics.album.albumName,
                                 albumCover = state.value.albumWithMusics.album.albumCover,
-                                artist = state.value.albumWithMusics.album.artist
+                                artist = state.value.albumWithMusics.artist.artistName
                             )
                         )
                     }
@@ -91,8 +97,8 @@ class ModifyAlbumViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         albumWithMusics = it.albumWithMusics.copy(
-                            album = it.albumWithMusics.album.copy(
-                                artist = event.artist
+                            artist = it.albumWithMusics.artist.copy(
+                                artistName = event.artist
                             )
                         )
                     )

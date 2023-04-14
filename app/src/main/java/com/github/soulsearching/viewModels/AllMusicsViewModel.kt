@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
@@ -17,19 +18,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
-    private val musicDao : MusicDao,
-    private val playlistDao : PlaylistDao,
-    private val musicPlaylistDao : MusicPlaylistDao,
+    private val musicDao: MusicDao,
+    private val playlistDao: PlaylistDao,
+    private val musicPlaylistDao: MusicPlaylistDao,
     private val albumDao: AlbumDao,
     private val artistDao: ArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
-    private val musicArtistDao: MusicArtistDao
-): ViewModel() {
-    private val _musics = musicDao.getAllMusics().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val musicArtistDao: MusicArtistDao,
+    private val albumArtistDao: AlbumArtistDao
+) : ViewModel() {
+    private val _musics = musicDao.getAllMusics()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(MusicState())
+
     // On combine nos 2 flows en un seul.
-    val state = combine(_state, _musics) {state, musics ->
+    val state = combine(_state, _musics) { state, musics ->
         state.copy(
             musics = musics
         )
@@ -40,11 +44,13 @@ class AllMusicsViewModel @Inject constructor(
     )
 
     fun onMusicEvent(event: MusicEvent) {
-        when(event) {
+        when (event) {
             is MusicEvent.DeleteDialog -> {
-                _state.update { it.copy(
-                    isDeleteDialogShown = event.isShown
-                ) }
+                _state.update {
+                    it.copy(
+                        isDeleteDialogShown = event.isShown
+                    )
+                }
             }
             MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
@@ -67,59 +73,71 @@ class AllMusicsViewModel @Inject constructor(
                     path = ""
                 )
 
-                CoroutineScope(Dispatchers.IO).launch{
+                CoroutineScope(Dispatchers.IO).launch {
                     musicDao.insertMusic(music)
+
                     var correspondingAlbum = albumDao.getAlbumFromInfo(
                         name = music.album,
                         artist = music.artist
                     )
-                    var correspondingArtist = artistDao.getArtistFromInfo(
-                        name = music.artist
-                    )
+
                     if (correspondingAlbum == null) {
+                        val albumId = UUID.randomUUID()
+                        val artistId = UUID.randomUUID()
                         albumDao.insertAlbum(
                             Album(
-                                albumId = UUID.randomUUID(),
+                                albumId = albumId,
                                 albumName = music.album,
                                 albumCover = music.albumCover,
-                                artist = music.artist
+                            )
+                        )
+                        val artist = Artist(
+                            artistId = artistId,
+                            artistName = music.artist,
+                            artistCover = music.albumCover
+                        )
+                        Log.d("INFOS", artist.toString())
+                        artistDao.insertArtist(
+                            Artist(
+                                artistId = artistId,
+                                artistName = music.artist,
+                                artistCover = music.albumCover
+                            )
+                        )
+
+                        albumArtistDao.insertAlbumIntoArtist(
+                            AlbumArtist(
+                                albumId = albumId,
+                                artistId = artistId
                             )
                         )
                         correspondingAlbum = albumDao.getAlbumFromInfo(
                             name = music.album,
                             artist = music.artist
                         )
+
                     }
-                    if (correspondingArtist == null) {
-                        artistDao.insertArtist(
-                            Artist(
-                                artistId = UUID.randomUUID(),
-                                artistName = music.artist,
-                                artistCover = music.albumCover
-                            )
-                        )
-                        correspondingArtist = artistDao.getArtistFromInfo(
-                            name = music.artist
-                        )
-                    }
+
                     musicAlbumDao.insertMusicIntoAlbum(
                         MusicAlbum(
                             musicId = music.musicId,
-                            albumId = correspondingAlbum!!.albumId
+                            albumId = correspondingAlbum!!.album.albumId
                         )
                     )
                     musicArtistDao.insertMusicIntoArtist(
                         MusicArtist(
                             musicId = music.musicId,
-                            artistId = correspondingArtist!!.artistId
+                            artistId = correspondingAlbum.artist!!.artistId
                         )
                     )
                 }
             }
             is MusicEvent.SetSelectedMusic -> {
-                _state.update { it.copy(
-                    selectedMusic = event.music
-                ) }
+                _state.update {
+                    it.copy(
+                        selectedMusic = event.music
+                    )
+                }
             }
             MusicEvent.AddToPlaylist -> {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -133,9 +151,11 @@ class AllMusicsViewModel @Inject constructor(
                 }
             }
             is MusicEvent.BottomSheet -> {
-                _state.update { it.copy(
-                    isBottomSheetShown = event.isShown
-                ) }
+                _state.update {
+                    it.copy(
+                        isBottomSheetShown = event.isShown
+                    )
+                }
             }
             else -> {}
         }

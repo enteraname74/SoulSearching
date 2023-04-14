@@ -19,10 +19,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.states.AlbumState
-import com.github.soulsearching.states.ArtistState
-import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.states.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -35,7 +32,7 @@ fun TabLayoutComposable(
     playlistsState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    albumState: AlbumState,
+    albumWithArtistState: AlbumWithArtistState,
     onAlbumEvent: (AlbumEvent) -> Unit,
     artistState: ArtistState,
     onArtistEvent: (ArtistEvent) -> Unit
@@ -56,7 +53,7 @@ fun TabLayoutComposable(
         ),
         TabRowItem(
             title = stringResource(R.string.albums),
-            screen = { AlbumsScreen(state = albumState) }
+            screen = { AlbumsScreen(state = albumWithArtistState) }
         ),
         TabRowItem(
             title = stringResource(R.string.artists),

@@ -2,6 +2,7 @@ package com.github.soulsearching.database.dao
 
 import androidx.room.*
 import com.github.soulsearching.database.model.Album
+import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -15,11 +16,12 @@ interface AlbumDao {
     @Delete
     suspend fun deleteAlbum(album : Album)
 
-    @Query("SELECT * FROM Album ORDER BY name ASC")
+    @Query("SELECT * FROM Album ORDER BY albumName ASC")
     fun getAllAlbums(): Flow<List<Album>>
 
-    @Query("SELECT * FROM Album WHERE name = :name AND artist = :artist")
-    fun getAlbumFromInfo(name : String, artist : String) : Album?
+    @Transaction
+    @Query("SELECT Album.* FROM Album JOIN Artist ON Album.albumName = :name AND Artist.artistName = :artist")
+    fun getAlbumFromInfo(name : String, artist : String) : AlbumWithArtist?
 
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun getAlbumFromId(albumId: UUID) : Album
@@ -31,4 +33,8 @@ interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun getAlbumWithMusicsSimple(albumId : UUID): AlbumWithMusics
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY albumName ASC")
+    fun getAllAlbumsWithArtist() : Flow<List<AlbumWithArtist>>
 }

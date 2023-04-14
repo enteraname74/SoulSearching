@@ -15,11 +15,11 @@ interface ArtistDao {
     @Delete
     suspend fun deleteArtist(artist : Artist)
 
-    @Query("SELECT * FROM Artist ORDER BY name ASC")
+    @Query("SELECT * FROM Artist ORDER BY artistName ASC")
     fun getAllArtists(): Flow<List<Artist>>
 
-    @Query("SELECT * FROM Artist WHERE name = :name")
-    fun getArtistFromInfo(name : String) : Artist?
+    @Query("SELECT * FROM Artist WHERE artistName = :artistName")
+    fun getArtistFromInfo(artistName : String) : Artist?
 
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")

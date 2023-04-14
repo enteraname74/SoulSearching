@@ -7,8 +7,9 @@ import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 
 class Converters {
+
     @TypeConverter
-    fun BitmapToString(bitmap: Bitmap?): String {
+    fun bitmapToString(bitmap: Bitmap?): String {
 
         if (bitmap == null) return ""
 
@@ -19,7 +20,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun StringToBitmap(string: String): Bitmap? {
+    fun stringToBitmap(string: String): Bitmap? {
 
         if (string == "") return null
 
