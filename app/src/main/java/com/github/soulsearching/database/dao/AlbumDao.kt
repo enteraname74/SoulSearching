@@ -41,4 +41,9 @@ interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM Album")
     fun getAllAlbumsWithMusicsSimple(): List<AlbumWithMusics>
+
+    @Query(
+        "SELECT Album.* FROM Album INNER JOIN AlbumArtist ON Album.albumId = AlbumArtist.albumId AND Album.albumName = :albumName AND AlbumArtist.artistId = :artistId"
+    )
+    fun getCorrespondingAlbum(albumName : String, artistId : UUID) : Album?
 }

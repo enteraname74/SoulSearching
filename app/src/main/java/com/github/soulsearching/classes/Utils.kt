@@ -137,7 +137,6 @@ class Utils {
             currentAlbum: String,
             currentCover: Bitmap?,
         ) {
-            Log.d("¨RE", "modifyAlbum")
             // On récupère l'ancien album :
             val legacyAlbum = getCorrespondingAlbum(
                 musicId = legacyMusic.musicId,
@@ -145,14 +144,14 @@ class Utils {
                 musicAlbumDao = musicAlbumDao
             )
 
-            var newAlbum = getCorrespondingAlbum(
-                musicId = legacyMusic.musicId,
-                albumDao = albumDao,
-                musicAlbumDao = musicAlbumDao
+            var newAlbum = albumDao.getCorrespondingAlbum(
+                albumName = currentAlbum,
+                artistId = artist.artistId
             )
 
             if (newAlbum == null) {
                 // C'est un nouvel album, il faut le créer :
+                println("Nouvel album !")
                 val album = Album(
                     albumName = currentAlbum,
                     albumCover = currentCover
