@@ -140,7 +140,7 @@ class AllMusicsViewModel @Inject constructor(
                     val firstPlaylistId = playlistDao.getFirstPlaylistId()
                     musicPlaylistDao.insertMusicIntoPlaylist(
                         MusicPlaylist(
-                            musicId = state.value.selectedMusic!!.musicId,
+                            musicId = state.value.selectedMusic.musicId,
                             playlistId = firstPlaylistId
                         )
                     )

@@ -212,7 +212,7 @@ class ModifyAlbumActivity : ComponentActivity() {
                     )
                 )
                 TextField(
-                    value = selectedAlbumState.albumWithMusics.artist.artistName,
+                    value = selectedAlbumState.albumWithMusics.artist!!.artistName,
                     onValueChange = { viewModel.onAlbumEvent(AlbumEvent.SetArtist(it)) },
                     label = { Text(text = stringResource(id = R.string.artist_name)) },
                     singleLine = true,

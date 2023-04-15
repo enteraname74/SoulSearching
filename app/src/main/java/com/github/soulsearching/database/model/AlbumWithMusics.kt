@@ -17,5 +17,5 @@ data class AlbumWithMusics(
         entityColumn = "artistId",
         associateBy = Junction(AlbumArtist::class)
     )
-    val artist: Artist = Artist()
+    val artist: Artist? = Artist()
 )

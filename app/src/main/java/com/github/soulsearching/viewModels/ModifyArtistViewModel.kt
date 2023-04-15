@@ -49,7 +49,7 @@ class ModifyArtistViewModel @Inject constructor(
 
                     // On redirige les potentiels albums de l'artiste :
                     val legacyArtistOfAlbums = albumDao.getAllAlbumsWithMusicsSimple().filter {
-                        (it.artist.artistName == state.value.artistWithMusics.artist.artistName.trim())
+                        (it.artist!!.artistName == state.value.artistWithMusics.artist.artistName.trim())
                     }
 
                     Log.d("LEGACY ALBUMS", legacyArtistOfAlbums.size.toString())
@@ -69,7 +69,7 @@ class ModifyArtistViewModel @Inject constructor(
                     for (entry in albumsOrderedByAppearance.entries) {
                         val albumWithMusicToUpdate = legacyArtistOfAlbums.find {
                             (it.album.albumName == entry.key)
-                                    && (it.artist.artistId != state.value.artistWithMusics.artist.artistId)
+                                    && (it.artist!!.artistId != state.value.artistWithMusics.artist.artistId)
                         }
                         if (entry.value == 2) {
                             // Il y a deux fois le même album !
@@ -79,7 +79,7 @@ class ModifyArtistViewModel @Inject constructor(
                                     musicId = music.musicId,
                                     newAlbumId = legacyArtistOfAlbums.find {
                                         (it.album.albumName == entry.key)
-                                                && (it.artist.artistId == state.value.artistWithMusics.artist.artistId)
+                                                && (it.artist!!.artistId == state.value.artistWithMusics.artist.artistId)
                                     }!!.album.albumId
                                 )
                             }
