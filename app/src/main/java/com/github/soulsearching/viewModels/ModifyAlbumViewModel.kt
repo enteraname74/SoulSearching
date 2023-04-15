@@ -56,8 +56,10 @@ class ModifyAlbumViewModel @Inject constructor(
                         )
                         // Si ce nouvel artiste n'existe pas, on le crée :
                         if (newArtist == null) {
+                            Log.d("Cover is null", (state.value.albumWithMusics.album.albumCover == null).toString())
                             newArtist = Artist(
-                                artistName = state.value.albumWithMusics.artist!!.artistName.trim()
+                                artistName = state.value.albumWithMusics.artist!!.artistName.trim(),
+                                artistCover = state.value.albumWithMusics.album.albumCover
                             )
                             artistDao.insertArtist(
                                 artist = newArtist
