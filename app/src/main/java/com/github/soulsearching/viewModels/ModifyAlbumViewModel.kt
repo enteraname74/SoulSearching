@@ -1,11 +1,11 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.model.Album
+import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.database.dao.*
+import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,10 @@ import javax.inject.Inject
 class ModifyAlbumViewModel @Inject constructor(
     private val musicDao: MusicDao,
     private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao
+    private val artistDao: ArtistDao,
+    private val musicArtistDao: MusicArtistDao,
+    private val musicAlbumDao: MusicAlbumDao,
+    private val albumArtistDao: AlbumArtistDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
@@ -35,22 +38,104 @@ class ModifyAlbumViewModel @Inject constructor(
         when (event) {
             AlbumEvent.UpdateAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    albumDao.insertAlbum(
-                        Album(
-                            albumId = state.value.albumWithMusics.album.albumId,
-                            albumName = state.value.albumWithMusics.album.albumName.trim(),
-                            albumCover = state.value.albumWithMusics.album.albumCover
-                        )
+
+                    val initialAlbum = albumDao.getAlbumFromId(
+                        albumId = state.value.albumWithMusics.album.albumId
                     )
-                    artistDao.insertArtist(
-                        state.value.albumWithMusics.artist!!.copy(
+
+                    val initialArtist = artistDao.getArtistFromId(
+                        artistId = state.value.albumWithMusics.artist!!.artistId
+                    )
+                    var currentArtist = initialArtist
+
+                    Log.d("NEW ARTIST", state.value.albumWithMusics.artist!!.artistName.trim())
+                    if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist.artistName) {
+                        // On cherche le nouvel artiste correspondant :
+                        var newArtist = artistDao.getArtistFromInfo(
                             artistName = state.value.albumWithMusics.artist!!.artistName.trim()
                         )
+                        // Si ce nouvel artiste n'existe pas, on le crée :
+                        if (newArtist == null) {
+                            newArtist = Artist(
+                                artistName = state.value.albumWithMusics.artist!!.artistName.trim()
+                            )
+                            artistDao.insertArtist(
+                                artist = newArtist
+                            )
+                        }
+                        // On met à jour le lien vers l'artiste :
+                        albumArtistDao.updateArtistOfAlbum(
+                            albumId = state.value.albumWithMusics.album.albumId,
+                            newArtistId = newArtist.artistId
+                        )
+
+                        val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
+                            albumId = state.value.albumWithMusics.album.albumId,
+                            albumName = state.value.albumWithMusics.album.albumName.trim(),
+                            artistId = newArtist.artistId
+                        )
+
+                        if (duplicateAlbum != null){
+                            /*
+                             Un album a le même nom d'album et d'artiste !
+                             On redirige les musiques de l'album dupliqué :
+                             */
+                            musicAlbumDao.updateMusicsAlbum(
+                                newAlbumId = state.value.albumWithMusics.album.albumId,
+                                legacyAlbumId = duplicateAlbum.albumId
+                            )
+                            // On supprime l'ancien album :
+                            albumArtistDao.deleteAlbumFromArtist(
+                                albumId = duplicateAlbum.albumId
+                            )
+                            albumDao.deleteAlbum(
+                                album = duplicateAlbum
+                            )
+                        }
+                        currentArtist = newArtist
+                        Log.d("SET NEW ARTIST ID", currentArtist.artistId.toString())
+                        Log.d("LEGACY ID", initialArtist.artistId.toString())
+                    } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName){
+                        val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
+                            albumId = state.value.albumWithMusics.album.albumId,
+                            albumName = state.value.albumWithMusics.album.albumName.trim(),
+                            artistId = state.value.albumWithMusics.artist!!.artistId
+                        )
+
+                        if (duplicateAlbum != null){
+                            /*
+                             Un album a le même nom d'album et d'artiste !
+                             On redirige les musiques de l'album dupliqué :
+                             */
+                            musicAlbumDao.updateMusicsAlbum(
+                                newAlbumId = state.value.albumWithMusics.album.albumId,
+                                legacyAlbumId = duplicateAlbum.albumId
+                            )
+                            // On supprime l'ancien album :
+                            albumArtistDao.deleteAlbumFromArtist(
+                                albumId = duplicateAlbum.albumId
+                            )
+                            albumDao.deleteAlbum(
+                                album = duplicateAlbum
+                            )
+                        }
+                    }
+
+                    // On modifie notre album :
+                    albumDao.insertAlbum(
+                        state.value.albumWithMusics.album.apply {
+                            this.albumName.trim()
+                        }
                     )
-                }
-                CoroutineScope(Dispatchers.IO).launch {
+
                     // On met à jour les musiques de l'album :
-                    for (music in state.value.albumWithMusics.musics) {
+                    val musicsFromAlbum = musicDao.getMusicsFromAlbum(
+                        albumId = state.value.albumWithMusics.album.albumId
+                    )
+                    Log.d("NEW ARTIST ID", currentArtist.artistId.toString())
+                    Log.d("LEGACY ARTIST ID", initialArtist.artistId.toString())
+                    for (music in musicsFromAlbum) {
+                        // On modifie les infos de chaque musique
                         musicDao.insertMusic(
                             music.copy(
                                 album = state.value.albumWithMusics.album.albumName.trim(),
@@ -58,7 +143,19 @@ class ModifyAlbumViewModel @Inject constructor(
                                 artist = state.value.albumWithMusics.artist!!.artistName.trim()
                             )
                         )
+                        // Ainsi que leur liens :
+                        musicArtistDao.updateArtistOfMusic(
+                            musicId = music.musicId,
+                            newArtistId = currentArtist.artistId
+                        )
                     }
+
+                    // On vérifie si l'ancien artiste possède encore des musiques :
+                    Utils.checkAndDeleteArtist(
+                        artistToCheck = initialArtist,
+                        musicArtistDao = musicArtistDao,
+                        artistDao = artistDao
+                    )
                 }
             }
             is AlbumEvent.AlbumFromID -> {

@@ -19,4 +19,7 @@ interface MusicDao {
 
     @Query("SELECT * FROM Music ORDER BY name ASC")
     fun getAllMusics(): Flow<List<Music>>
+
+    @Query("SELECT Music.* FROM Music INNER JOIN MusicAlbum WHERE Music.musicId = MusicAlbum.musicId AND MusicAlbum.albumId = :albumId")
+    fun getMusicsFromAlbum(albumId : UUID) : List<Music>
 }

@@ -18,6 +18,9 @@ interface MusicAlbumDao {
     @Query("UPDATE MusicAlbum SET albumId = :newAlbumId WHERE musicId = :musicId")
     suspend fun updateAlbumOfMusic(musicId: UUID, newAlbumId: UUID)
 
+    @Query("UPDATE MusicAlbum SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId : UUID)
+
     @Query("SELECT musicId FROM MusicAlbum WHERE albumId = :albumId")
     fun getMusicsIdsFromAlbumId(albumId : UUID) : List<UUID>
 

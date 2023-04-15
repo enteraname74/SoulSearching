@@ -45,5 +45,10 @@ interface AlbumDao {
     @Query(
         "SELECT Album.* FROM Album INNER JOIN AlbumArtist ON Album.albumId = AlbumArtist.albumId AND Album.albumName = :albumName AND AlbumArtist.artistId = :artistId"
     )
-    fun getCorrespondingAlbum(albumName : String, artistId : UUID) : Album?
+    fun getCorrespondingAlbum(albumName: String, artistId: UUID): Album?
+
+    @Query(
+        "SELECT Album.* FROM Album INNER JOIN AlbumArtist ON Album.albumId = AlbumArtist.albumId AND Album.albumName = :albumName AND AlbumArtist.artistId = :artistId AND Album.albumId != :albumId"
+    )
+    fun getPossibleDuplicateAlbum(albumId: UUID, albumName: String, artistId: UUID): Album?
 }
