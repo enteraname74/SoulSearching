@@ -71,7 +71,7 @@ class ModifyArtistActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         AppHeaderBar(
-                            title = stringResource(id = R.string.album_information),
+                            title = stringResource(id = R.string.artist_information),
                             leftAction = { finish() },
                             rightIcon = Icons.Default.Done,
                             rightAction = {
@@ -103,7 +103,7 @@ class ModifyArtistActivity : ComponentActivity() {
                                     ) {
                                         Text(
                                             modifier = Modifier.padding(bottom = Constants.Spacing.medium),
-                                            text = stringResource(id = R.string.album_cover),
+                                            text = stringResource(id = R.string.artist_cover),
                                             color = MaterialTheme.colorScheme.onSecondary
                                         )
                                         AppImage(
@@ -196,7 +196,7 @@ class ModifyArtistActivity : ComponentActivity() {
                 TextField(
                     value = selectedArtistState.artistWithMusics.artist.artistName,
                     onValueChange = { viewModel.onArtistEvent(ArtistEvent.SetName(it)) },
-                    label = { Text(text = stringResource(id = R.string.album_name)) },
+                    label = { Text(text = stringResource(id = R.string.artist_name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,

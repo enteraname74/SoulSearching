@@ -5,6 +5,8 @@
     <string name="title_activity_modify_playlist">ModifyPlaylistActivity</string>
     <string name="title_activity_selected_album">SelectedAlbumActivity</string>
     <string name="title_activity_modify_album">ModifyAlbumActivity</string>
+    <string name="title_activity_selected_artist">SelectedArtistActivity</string>
+    <string name="title_activity_modify_artist">ModifyArtistActivity</string>
 
     <string name="app_name">Soul Searching</string>
     <string name="musics">Musiques</string>
@@ -46,4 +48,8 @@
 
     <!-- Modify album strings -->
     <string name="album_information">Informations de l\'album</string>
+
+    <!-- Modify artist strings -->
+    <string name="artist_information">Informations de l\'artiste</string>
+    <string name="artist_cover">Couverture de l\'artiste</string>
 </resources>
