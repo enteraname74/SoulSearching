@@ -92,6 +92,9 @@ class Utils {
             musicAlbumDao: MusicAlbumDao,
             albumArtistDao: AlbumArtistDao
         ) {
+            Log.d("TOT", musicAlbumDao.getNumberOfMusicsFromAlbum(
+                albumId = albumToCheck.albumId
+            ).toString())
             if (musicAlbumDao.getNumberOfMusicsFromAlbum(
                     albumId = albumToCheck.albumId
                 ) == 0
@@ -110,7 +113,7 @@ class Utils {
             artistDao: ArtistDao
         ) {
             Log.d(
-                "Number of musics in artist", "{${artistToCheck.artistName}" +
+                "Number of musics in artist", artistToCheck.artistName + " : " +
                         musicArtistDao.getNumberOfMusicsFromArtist(artistId = artistToCheck.artistId)
                             .toString()
             )

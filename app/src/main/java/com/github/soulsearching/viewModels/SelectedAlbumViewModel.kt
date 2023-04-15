@@ -87,7 +87,7 @@ class SelectedAlbumViewModel @Inject constructor(
                 }
             }
             MusicEvent.DeleteMusic -> {
-                viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     Utils.removeMusicFromApp(
                         musicDao = musicDao,
                         albumDao = albumDao,
