@@ -22,10 +22,12 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectedAlbumViewModel @Inject constructor(
     private val albumDao: AlbumDao,
+    private val artistDao: ArtistDao,
     private val musicDao: MusicDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val musicPlaylistDao : MusicPlaylistDao,
-    private val musicArtistDao: MusicArtistDao
+    private val musicArtistDao: MusicArtistDao,
+    private val albumArtistDao: AlbumArtistDao
 ) : ViewModel() {
     private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics> = MutableStateFlow(AlbumWithMusics())
 
@@ -87,11 +89,14 @@ class SelectedAlbumViewModel @Inject constructor(
             MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
                     Utils.removeMusicFromApp(
-                        musicDao,
-                        musicPlaylistDao,
-                        musicAlbumDao,
-                        musicArtistDao,
-                        musicState.value.selectedMusic
+                        musicDao = musicDao,
+                        albumDao = albumDao,
+                        artistDao = artistDao,
+                        albumArtistDao = albumArtistDao,
+                        musicPlaylistDao = musicPlaylistDao,
+                        musicAlbumDao = musicAlbumDao,
+                        musicArtistDao = musicArtistDao,
+                        musicToRemove = musicState.value.selectedMusic
                     )
                 }
             }

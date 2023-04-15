@@ -55,11 +55,14 @@ class AllMusicsViewModel @Inject constructor(
             MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
                     Utils.removeMusicFromApp(
-                        musicDao,
-                        musicPlaylistDao,
-                        musicAlbumDao,
-                        musicArtistDao,
-                        state.value.selectedMusic
+                        musicDao = musicDao,
+                        albumDao = albumDao,
+                        artistDao = artistDao,
+                        albumArtistDao = albumArtistDao,
+                        musicPlaylistDao = musicPlaylistDao,
+                        musicAlbumDao = musicAlbumDao,
+                        musicArtistDao = musicArtistDao,
+                        musicToRemove = state.value.selectedMusic
                     )
                 }
             }
@@ -78,14 +81,15 @@ class AllMusicsViewModel @Inject constructor(
 
                     Log.d("PRE CONDITIONS", music.album)
                     Log.d("PRE CONDITIONS", music.artist)
+                    val correspondingArtist = artistDao.getArtistFromInfo(
+                        artistName = music.artist
+                    )
                     val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
+                    Log.d("Infos", allAlbums.toString())
                     val correspondingAlbum = allAlbums.find {
                         (it.album.albumName == music.album)
                                 && (it.artist!!.artistName == music.artist)
                     }
-                    val correspondingArtist = artistDao.getArtistFromInfo(
-                        artistName = music.artist
-                    )
                     var albumId = UUID.randomUUID()
                     var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
                     if (correspondingAlbum == null) {

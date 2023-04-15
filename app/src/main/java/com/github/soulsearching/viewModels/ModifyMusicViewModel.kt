@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
@@ -87,16 +85,15 @@ class ModifyMusicViewModel @Inject constructor(
             is MusicEvent.UpdateMusic -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (state.value.selectedMusic.artist != state.value.artist.trim()) {
-                        // On supprime d'abord l'ancien lien.
-                        musicArtistDao.deleteMusicFromArtist(
-                            musicId = state.value.selectedMusic.musicId
+                        val legacyArtist = artistDao.getArtistFromInfo(
+                            artistName = state.value.selectedMusic.artist
                         )
-
                         var newArtist = artistDao.getArtistFromInfo(
                             artistName = state.value.artist.trim()
                         )
                         if (newArtist == null) {
                             // C'est un nouvel artist, il faut le créer :
+                            Log.d("Nouvel artiste", "nouvel artiste")
                             newArtist = Artist(
                                 artistName = state.value.artist.trim(),
                                 artistCover = state.value.cover
@@ -106,43 +103,41 @@ class ModifyMusicViewModel @Inject constructor(
                             )
                         }
 
-                        // On vérifie si on peut supprimer l'ancien artiste :
-                        val artistWithMusics = artistDao.getArtistWithMusicsSimple(
-                            artistDao.getArtistFromInfo(
-                                artistName = state.value.selectedMusic.artist
-                            )!!.artistId
-                        )
-                        Utils.checkAndDeleteArtist(
-                            artistToCheck = artistWithMusics.artist,
-                            musicsFromArtist = artistWithMusics.musics,
-                            artistDao = artistDao
-                        )
-
                         // On met les infos de la musique à jour :
                         musicArtistDao.updateArtistOfMusic(
                             musicId = state.value.selectedMusic.musicId,
                             newArtistId = newArtist.artistId
                         )
+
                         Utils.modifyMusicAlbum(
+                            artist = newArtist,
                             musicAlbumDao = musicAlbumDao,
                             albumDao = albumDao,
-                            artistDao = artistDao,
                             albumArtistDao = albumArtistDao,
                             legacyMusic = state.value.selectedMusic,
-                            currentAlbum = state.value.album,
-                            currentCover = state.value.cover,
-                            currentArtist = state.value.artist
+                            currentAlbum = state.value.album.trim(),
+                            currentCover = state.value.cover
+                        )
+                        Utils.checkAndDeleteArtist(
+                            artistToCheck = legacyArtist!!,
+                            artistDao = artistDao,
+                            musicArtistDao = musicArtistDao
                         )
                     } else if (state.value.selectedMusic.album != state.value.album) {
+                        val artist = Utils.getCorrespondingArtist(
+                            musicId = state.value.selectedMusic.musicId,
+                            artistDao = artistDao,
+                            musicArtistDao = musicArtistDao
+                        )
+
                         Utils.modifyMusicAlbum(
                             musicAlbumDao = musicAlbumDao,
                             albumDao = albumDao,
-                            artistDao = artistDao,
                             albumArtistDao = albumArtistDao,
                             legacyMusic = state.value.selectedMusic,
-                            currentAlbum = state.value.album,
+                            currentAlbum = state.value.album.trim(),
                             currentCover = state.value.cover,
-                            currentArtist = state.value.artist
+                            artist = artist!!
                         )
                     }
 

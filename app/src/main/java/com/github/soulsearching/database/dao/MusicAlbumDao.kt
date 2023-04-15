@@ -20,4 +20,10 @@ interface MusicAlbumDao {
 
     @Query("SELECT musicId FROM MusicAlbum WHERE albumId = :albumId")
     fun getMusicsIdsFromAlbumId(albumId : UUID) : List<UUID>
+
+    @Query("SELECT albumId FROM MusicAlbum WHERE musicId = :musicId")
+    fun getAlbumIdFromMusicId(musicId: UUID) : UUID?
+
+    @Query("SELECT COUNT(*) FROM MusicAlbum WHERE albumId = :albumId")
+    fun getNumberOfMusicsFromAlbum(albumId : UUID) : Int
 }

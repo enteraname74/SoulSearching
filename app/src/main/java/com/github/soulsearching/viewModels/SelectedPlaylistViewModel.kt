@@ -22,6 +22,9 @@ import javax.inject.Inject
 class SelectedPlaylistViewModel @Inject constructor(
     private val playlistDao: PlaylistDao,
     private val musicDao: MusicDao,
+    private val artistDao: ArtistDao,
+    private val albumDao: AlbumDao,
+    private val albumArtistDao: AlbumArtistDao,
     private val musicPlaylistDao: MusicPlaylistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao
@@ -88,11 +91,14 @@ class SelectedPlaylistViewModel @Inject constructor(
             MusicEvent.DeleteMusic -> {
                 viewModelScope.launch {
                     Utils.removeMusicFromApp(
-                        musicDao,
-                        musicPlaylistDao,
-                        musicAlbumDao,
-                        musicArtistDao,
-                        musicState.value.selectedMusic
+                        musicDao = musicDao,
+                        albumDao = albumDao,
+                        artistDao = artistDao,
+                        albumArtistDao = albumArtistDao,
+                        musicPlaylistDao = musicPlaylistDao,
+                        musicAlbumDao = musicAlbumDao,
+                        musicArtistDao = musicArtistDao,
+                        musicToRemove = musicState.value.selectedMusic
                     )
                 }
             }

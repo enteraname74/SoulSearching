@@ -1,6 +1,7 @@
 package com.github.soulsearching.database.dao
 
 import androidx.room.*
+import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,9 @@ interface ArtistDao {
 
     @Delete
     suspend fun deleteArtist(artist: Artist)
+
+    @Query("SELECT * FROM Artist WHERE artistId = :artistId")
+    fun getArtistFromId(artistId: UUID) : Artist
 
     @Query("SELECT * FROM Artist ORDER BY artistName ASC")
     fun getAllArtists(): Flow<List<Artist>>

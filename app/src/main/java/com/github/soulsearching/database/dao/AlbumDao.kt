@@ -14,31 +14,31 @@ interface AlbumDao {
     suspend fun insertAlbum(album: Album)
 
     @Delete
-    suspend fun deleteAlbum(album : Album)
+    suspend fun deleteAlbum(album: Album)
 
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
     fun getAllAlbums(): Flow<List<Album>>
 
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumFromId(albumId: UUID) : Album
+    fun getAlbumFromId(albumId: UUID): Album
 
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumWithMusics(albumId : UUID): Flow<AlbumWithMusics>
+    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics>
 
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumWithMusicsSimple(albumId : UUID): AlbumWithMusics
+    fun getAlbumWithMusicsSimple(albumId: UUID): AlbumWithMusics
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
-    fun getAllAlbumsWithArtist() : Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
 
     @Transaction
     @Query("SELECT * FROM Album")
-    fun getAllAlbumsWithArtistSimple() : List<AlbumWithArtist>
+    fun getAllAlbumsWithArtistSimple(): List<AlbumWithArtist>
 
     @Transaction
     @Query("SELECT * FROM Album")
-    fun getAllAlbumsWithMusicsSimple() : List<AlbumWithMusics>
+    fun getAllAlbumsWithMusicsSimple(): List<AlbumWithMusics>
 }
