@@ -13,6 +13,21 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <activity
+            android:name=".MoreArtistsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_more_artists"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
+            android:name=".MoreAlbumsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_more_albums"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
+            android:name=".MorePlaylistsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_more_playlists"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
             android:name=".ModifyArtistActivity"
             android:exported="false"
             android:label="@string/title_activity_modify_artist"

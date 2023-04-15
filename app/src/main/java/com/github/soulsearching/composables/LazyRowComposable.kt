@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,11 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GridPlaylistComposable(
+fun LazyRowComposable(
     image : Bitmap?,
     title : String,
     text : String,
@@ -32,7 +35,6 @@ fun GridPlaylistComposable(
 ) {
     Column(
         modifier = Modifier
-            .padding(10.dp)
             .combinedClickable(
                 onClick = {
                     onClick()
@@ -44,7 +46,7 @@ fun GridPlaylistComposable(
 
     ) {
         val modifierBase = Modifier
-            .size(176.dp)
+            .size(Constants.ImageSize.veryLarge)
             .clip(RoundedCornerShape(percent = 4))
 
         if (image != null) {
@@ -67,12 +69,14 @@ fun GridPlaylistComposable(
             text = title,
             color = MaterialTheme.colorScheme.onSecondary,
             fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.labelSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

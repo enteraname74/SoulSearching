@@ -32,7 +32,6 @@ fun AlbumsScreen(
                 title = albumWithArtist.album.albumName,
                 text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
                 onClick = {
-
                     val intent = Intent(context, SelectedAlbumActivity::class.java)
                     intent.putExtra(
                         "albumId",

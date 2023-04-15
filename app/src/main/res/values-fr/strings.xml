@@ -13,6 +13,8 @@
     <string name="playlists">Playlists</string>
     <string name="albums">Albums</string>
     <string name="artists">Artistes</string>
+    <string name="shortcuts">Raccourcis</string>
+    <string name="more">Plus</string>
 
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Bouton pour le menu de navigation</string>

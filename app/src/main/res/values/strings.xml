@@ -12,6 +12,8 @@
     <string name="playlists">Playlists</string>
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
+    <string name="shortcuts">Shortcuts</string>
+    <string name="more">More</string>
 
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Navigation drawer button</string>
@@ -51,5 +53,8 @@
     <!-- Modify artist strings -->
     <string name="artist_information">Artist\'s information</string>
     <string name="artist_cover">Artist\'s cover</string>
+    <string name="title_activity_more_playlists">MorePlaylistsActivity</string>
+    <string name="title_activity_more_albums">MoreAlbumsActivity</string>
+    <string name="title_activity_more_artists">MoreArtistsActivity</string>
 
 </resources>

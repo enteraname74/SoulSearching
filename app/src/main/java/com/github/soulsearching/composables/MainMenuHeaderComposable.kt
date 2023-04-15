@@ -1,8 +1,10 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +23,8 @@ fun MainMenuHeaderComposable() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(Constants.Spacing.medium),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -38,8 +41,8 @@ fun MainMenuHeaderComposable() {
             fontWeight = FontWeight.Bold
         )
         Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = Icons.Default.Shuffle,
+            modifier = Modifier.size(Constants.ImageSize.medium),
+            imageVector = Icons.Default.Search,
             contentDescription = stringResource(id = R.string.shuffle_button_desc),
             tint = MaterialTheme.colorScheme.onPrimary
         )
