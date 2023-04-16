@@ -9,6 +9,7 @@ interface PlaylistEvent {
     object UpdatePlaylist : PlaylistEvent
     data class DeletePlaylist(val playlist: Playlist) : PlaylistEvent
     data class SetSelectedPlaylist(val playlist: Playlist) : PlaylistEvent
+    data class TogglePlaylistSelectedState(val playlist: Playlist) : PlaylistEvent
     data class PlaylistFromId(val playlistId: UUID) : PlaylistEvent
     data class SetCover(val cover: Bitmap) : PlaylistEvent
     data class SetName(val name: String) : PlaylistEvent

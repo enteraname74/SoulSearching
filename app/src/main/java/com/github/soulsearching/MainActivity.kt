@@ -2,6 +2,7 @@ package com.github.soulsearching
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -20,7 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.composables.*
-import com.github.soulsearching.composables.bottomSheets.BottomSheetMenu
+import com.github.soulsearching.composables.bottomSheets.AddToPlaylistBottomSheet
+import com.github.soulsearching.composables.bottomSheets.MusicBottomSheetMenu
 import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.events.MusicEvent
@@ -54,8 +56,16 @@ class MainActivity : AppCompatActivity() {
             val musicModalSheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true
             )
+            val addToPlaylistModalSheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
+            )
+
+            BackHandler(addToPlaylistModalSheetState.isVisible) {
+                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
+            }
 
             BackHandler(musicModalSheetState.isVisible) {
+                Log.d("STOP VISIBLE", "STOP VISIBLE")
                 coroutineScope.launch { musicModalSheetState.hide() }
             }
 
@@ -64,29 +74,47 @@ class MainActivity : AppCompatActivity() {
                     DeleteMusicDialog(
                         onMusicEvent = allMusicsViewModel::onMusicEvent,
                         confirmAction = {
-                            coroutineScope.launch { musicModalSheetState.hide() }.invokeOnCompletion {
-                                if (!musicModalSheetState.isVisible) {
-                                    allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false))
+                            coroutineScope.launch { musicModalSheetState.hide() }
+                                .invokeOnCompletion {
+                                    if (!musicModalSheetState.isVisible) {
+                                        allMusicsViewModel.onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = false
+                                            )
+                                        )
+                                    }
                                 }
-                            }
                         }
                     )
                 }
+
                 if (musicState.isBottomSheetShown) {
                     ModalBottomSheet(
-                        onDismissRequest = { allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false)) },
+                        onDismissRequest = {
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.BottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        },
                         sheetState = musicModalSheetState,
                         dragHandle = {}
                     ) {
-                        BottomSheetMenu(
+                        MusicBottomSheetMenu(
                             modifyAction = {
-                                coroutineScope.launch { musicModalSheetState.hide() }.invokeOnCompletion {
-                                    if (!musicModalSheetState.isVisible) {
-                                        allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false))
+                                coroutineScope.launch { musicModalSheetState.hide() }
+                                    .invokeOnCompletion {
+                                        if (!musicModalSheetState.isVisible) {
+                                            allMusicsViewModel.onMusicEvent(
+                                                MusicEvent.BottomSheet(
+                                                    isShown = false
+                                                )
+                                            )
+                                        }
                                     }
-                                }
 
-                                val intent = Intent(applicationContext, ModifyMusicActivity::class.java)
+                                val intent =
+                                    Intent(applicationContext, ModifyMusicActivity::class.java)
                                 intent.putExtra(
                                     "musicId",
                                     musicState.selectedMusic.musicId.toString()
@@ -96,7 +124,46 @@ class MainActivity : AppCompatActivity() {
                             removeAction = {
                                 allMusicsViewModel.onMusicEvent(MusicEvent.DeleteDialog(isShown = true))
                             },
-                            addToPlaylistAction = { allMusicsViewModel.onMusicEvent(MusicEvent.AddToPlaylist) }
+                            addToPlaylistAction = {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.AddToPlaylistBottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        )
+                    }
+                }
+
+                if (musicState.isAddToPlaylistDialogShown) {
+                    ModalBottomSheet(
+                        modifier = Modifier.fillMaxSize(),
+                        onDismissRequest = {
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.AddToPlaylistBottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        },
+                        sheetState = musicModalSheetState,
+                        dragHandle = {}
+                    ) {
+                        AddToPlaylistBottomSheet(
+                            playlistState = playlistState,
+                            onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,
+                            cancelAction = {
+                                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
+                                    .invokeOnCompletion {
+                                        if (!addToPlaylistModalSheetState.isVisible) {
+                                            allMusicsViewModel.onMusicEvent(
+                                                MusicEvent.AddToPlaylistBottomSheet(
+                                                    isShown = false
+                                                )
+                                            )
+                                        }
+                                    }
+                            },
+                            validationAction = {}
                         )
                     }
                 }
@@ -279,8 +346,16 @@ class MainActivity : AppCompatActivity() {
                                         onClick = allMusicsViewModel::onMusicEvent,
                                         onLongClick = {
                                             coroutineScope.launch {
-                                                allMusicsViewModel.onMusicEvent(MusicEvent.SetSelectedMusic(music))
-                                                allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+                                                allMusicsViewModel.onMusicEvent(
+                                                    MusicEvent.SetSelectedMusic(
+                                                        music
+                                                    )
+                                                )
+                                                allMusicsViewModel.onMusicEvent(
+                                                    MusicEvent.BottomSheet(
+                                                        isShown = true
+                                                    )
+                                                )
                                             }
                                         }
                                     )

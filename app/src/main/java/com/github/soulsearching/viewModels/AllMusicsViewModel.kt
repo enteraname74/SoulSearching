@@ -157,6 +157,13 @@ class AllMusicsViewModel @Inject constructor(
                     )
                 }
             }
+            is MusicEvent.AddToPlaylistBottomSheet -> {
+                _state.update {
+                    it.copy(
+                        isAddToPlaylistDialogShown = event.isShown
+                    )
+                }
+            }
             else -> {}
         }
     }

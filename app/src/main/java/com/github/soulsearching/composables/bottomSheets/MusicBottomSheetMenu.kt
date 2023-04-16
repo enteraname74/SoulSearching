@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables.bottomSheets
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,33 +13,27 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 
 @Composable
-fun BottomSheetMenu(
+fun MusicBottomSheetMenu(
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
     addToShortcutsAction: () -> Unit = {},
-    addToPlaylistAction: () -> Unit = {}
+    addToPlaylistAction: () -> Unit = {},
+    playNextAction : () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.primary)
             .padding(Constants.Spacing.large)
     ) {
-        Log.d("DIFFERENT", (addToShortcutsAction != {}).toString())
-        if (addToShortcutsAction != {}) {
-            BottomSheetRow(
-                icon = Icons.Default.DoubleArrow,
-                text = stringResource(id = R.string.add_to_shortcuts),
-                onClick = {})
-        }
-        if (addToPlaylistAction != {}) BottomSheetRow(
+        BottomSheetRow(
+            icon = Icons.Default.DoubleArrow,
+            text = stringResource(id = R.string.add_to_shortcuts),
+            onClick = addToShortcutsAction
+        )
+        BottomSheetRow(
             icon = Icons.Default.PlaylistAdd,
             text = stringResource(id = R.string.add_to_playlist),
             onClick = addToPlaylistAction
-        )
-        BottomSheetRow(
-            icon = Icons.Default.Delete,
-            text = stringResource(id = R.string.delete_music),
-            onClick = removeAction
         )
         BottomSheetRow(
             icon = Icons.Default.Edit,
@@ -50,6 +43,12 @@ fun BottomSheetMenu(
         BottomSheetRow(
             icon = Icons.Default.PlaylistPlay,
             text = stringResource(id = R.string.play_next),
-            onClick = {})
+            onClick = playNextAction
+        )
+        BottomSheetRow(
+            icon = Icons.Default.Delete,
+            text = stringResource(id = R.string.delete_music),
+            onClick = removeAction
+        )
     }
 }
