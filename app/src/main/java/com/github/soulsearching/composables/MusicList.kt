@@ -27,7 +27,9 @@ fun MusicList(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val modalSheetState = rememberModalBottomSheetState()
+    val modalSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     BackHandler(modalSheetState.isVisible) {
         coroutineScope.launch { modalSheetState.hide() }
