@@ -22,6 +22,7 @@
     <string name="back_button">Bouton de retour</string>
     <string name="header_bar_right_button">Bouton droit de la bar d\'état</string>
     <string name="image">Image</string>
+    <string name="search_button">Bouton de recherche</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Ajouter à une playlist</string>

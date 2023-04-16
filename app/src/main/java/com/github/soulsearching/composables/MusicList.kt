@@ -12,7 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.ModifyMusicActivity
-import com.github.soulsearching.composables.bottomSheets.MusicFileBottomSheet
+import com.github.soulsearching.composables.bottomSheets.BottomSheetMenu
 import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
@@ -70,7 +70,7 @@ fun MusicList(
             sheetState = modalSheetState,
             dragHandle = {}
         ) {
-            MusicFileBottomSheet(
+            BottomSheetMenu(
                 modifyAction = {
                     coroutineScope.launch { modalSheetState.hide() }.invokeOnCompletion {
                         if (!modalSheetState.isVisible) {
@@ -81,7 +81,7 @@ fun MusicList(
                     val intent = Intent(context, ModifyMusicActivity::class.java)
                     intent.putExtra(
                         "musicId",
-                        state.selectedMusic!!.musicId.toString()
+                        state.selectedMusic.musicId.toString()
                     )
                     context.startActivity(intent)
                 },

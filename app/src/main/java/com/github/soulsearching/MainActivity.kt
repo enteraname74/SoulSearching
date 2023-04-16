@@ -2,6 +2,7 @@ package com.github.soulsearching
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,24 +12,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.composables.*
+import com.github.soulsearching.composables.bottomSheets.BottomSheetMenu
+import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.composables.screens.TestButtons
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
 import com.github.soulsearching.viewModels.AllArtistsViewModel
 import com.github.soulsearching.viewModels.AllMusicsViewModel
 import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
     private val allArtistsViewModel: AllArtistsViewModel by viewModels()
 
-    @OptIn(ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,57 @@ class MainActivity : AppCompatActivity() {
             val albumState by allAlbumsViewModel.state.collectAsState()
             val artistState by allArtistsViewModel.state.collectAsState()
 
+            val coroutineScope = rememberCoroutineScope()
+            val musicModalSheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
+            )
+
+            BackHandler(musicModalSheetState.isVisible) {
+                coroutineScope.launch { musicModalSheetState.hide() }
+            }
+
             SoulSearchingTheme {
+                if (musicState.isDeleteDialogShown) {
+                    DeleteMusicDialog(
+                        onMusicEvent = allMusicsViewModel::onMusicEvent,
+                        confirmAction = {
+                            coroutineScope.launch { musicModalSheetState.hide() }.invokeOnCompletion {
+                                if (!musicModalSheetState.isVisible) {
+                                    allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false))
+                                }
+                            }
+                        }
+                    )
+                }
+                if (musicState.isBottomSheetShown) {
+                    ModalBottomSheet(
+                        onDismissRequest = { allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false)) },
+                        sheetState = musicModalSheetState,
+                        dragHandle = {}
+                    ) {
+                        BottomSheetMenu(
+                            modifyAction = {
+                                coroutineScope.launch { musicModalSheetState.hide() }.invokeOnCompletion {
+                                    if (!musicModalSheetState.isVisible) {
+                                        allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = false))
+                                    }
+                                }
+
+                                val intent = Intent(applicationContext, ModifyMusicActivity::class.java)
+                                intent.putExtra(
+                                    "musicId",
+                                    musicState.selectedMusic.musicId.toString()
+                                )
+                                startActivity(intent)
+                            },
+                            removeAction = {
+                                allMusicsViewModel.onMusicEvent(MusicEvent.DeleteDialog(isShown = true))
+                            },
+                            addToPlaylistAction = { allMusicsViewModel.onMusicEvent(MusicEvent.AddToPlaylist) }
+                        )
+                    }
+                }
+
                 Scaffold(
                     topBar = { MainMenuHeaderComposable() },
                     content = { paddingValues ->
@@ -83,13 +135,21 @@ class MainActivity : AppCompatActivity() {
                                     SubMenuComposable(
                                         title = stringResource(id = R.string.playlists),
                                         moreAction = {
-                                            startActivity(Intent(applicationContext, MorePlaylistsActivity::class.java))
+                                            startActivity(
+                                                Intent(
+                                                    applicationContext,
+                                                    MorePlaylistsActivity::class.java
+                                                )
+                                            )
                                         }
                                     )
                                     LazyRow(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium),
+                                            .padding(
+                                                start = Constants.Spacing.medium,
+                                                end = Constants.Spacing.medium
+                                            ),
                                         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
                                     ) {
                                         items(playlistState.playlists) { playlist ->
@@ -122,13 +182,21 @@ class MainActivity : AppCompatActivity() {
                                     SubMenuComposable(
                                         title = stringResource(id = R.string.albums),
                                         moreAction = {
-                                            startActivity(Intent(applicationContext, MoreAlbumsActivity::class.java))
+                                            startActivity(
+                                                Intent(
+                                                    applicationContext,
+                                                    MoreAlbumsActivity::class.java
+                                                )
+                                            )
                                         }
                                     )
                                     LazyRow(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium),
+                                            .padding(
+                                                start = Constants.Spacing.medium,
+                                                end = Constants.Spacing.medium
+                                            ),
                                         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
                                     ) {
                                         items(albumState.albums) { albumWithArtist ->
@@ -161,13 +229,21 @@ class MainActivity : AppCompatActivity() {
                                     SubMenuComposable(
                                         title = stringResource(id = R.string.artists),
                                         moreAction = {
-                                            startActivity(Intent(applicationContext, MoreArtistsActivity::class.java))
+                                            startActivity(
+                                                Intent(
+                                                    applicationContext,
+                                                    MoreArtistsActivity::class.java
+                                                )
+                                            )
                                         }
                                     )
                                     LazyRow(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = Constants.Spacing.medium, end = Constants.Spacing.medium),
+                                            .padding(
+                                                start = Constants.Spacing.medium,
+                                                end = Constants.Spacing.medium
+                                            ),
                                         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
                                     ) {
                                         items(artistState.artists) { artist ->
@@ -192,28 +268,23 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                             stickyHeader {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(MaterialTheme.colorScheme.primary)
-                                        .padding(Constants.Spacing.medium),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.musics),
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.headlineSmall
-                                    )
-                                }
+                                MusicSubMenuComposable(
+                                    shuffleAction = {}
+                                )
                             }
                             items(musicState.musics) { music ->
-                                MusicItemComposable(
-                                    music = music,
-                                    onClick = allMusicsViewModel::onMusicEvent,
-                                    onLongClick = {
-                                    }
-                                )
+                                Row(Modifier.animateItemPlacement()) {
+                                    MusicItemComposable(
+                                        music = music,
+                                        onClick = allMusicsViewModel::onMusicEvent,
+                                        onLongClick = {
+                                            coroutineScope.launch {
+                                                allMusicsViewModel.onMusicEvent(MusicEvent.SetSelectedMusic(music))
+                                                allMusicsViewModel.onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+                                            }
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
