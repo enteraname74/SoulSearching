@@ -1,61 +1,71 @@
 package com.github.soulsearching.composables.bottomSheets
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.Constants
-import com.github.soulsearching.R
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlaylistSelectableComposable
+import com.github.soulsearching.database.model.Playlist
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import kotlinx.coroutines.launch
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddToPlaylistBottomSheet(
-    playlistState: PlaylistState,
-    onPlaylistEvent : (PlaylistEvent) -> Unit,
-    cancelAction : () -> Unit,
-    validationAction : () -> Unit
+    selectedMusicId: UUID,
+    onMusicEvent: (MusicEvent) -> Unit,
+    onPlaylistsEvent: (PlaylistEvent) -> Unit,
+    musicModalSheetState : SheetState,
+    addToPlaylistModalSheetState : SheetState,
+    playlistState : PlaylistState,
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.primary)
-        .padding(Constants.Spacing.medium)
+    val coroutineScope = rememberCoroutineScope()
+
+    ModalBottomSheet(
+        modifier = Modifier.fillMaxSize(),
+        onDismissRequest = {
+            onMusicEvent(
+                MusicEvent.AddToPlaylistBottomSheet(
+                    isShown = false
+                )
+            )
+        },
+        sheetState = musicModalSheetState,
+        dragHandle = {}
     ) {
-        AppHeaderBar(
-            title = stringResource(id = R.string.add_to_playlist),
-            leftAction = cancelAction,
-            rightAction = validationAction,
-            rightIcon = Icons.Default.Done
-        )
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
-        ) {
-            items(playlistState.playlists) { playlist ->
-                if (playlist in playlistState.multiplePlaylistSelected) {
-                    PlaylistSelectableComposable(
-                        playlist = playlist,
-                        onClick = { onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlist)) },
-                        isSelected = true
-                    )
-                } else {
-                    PlaylistSelectableComposable(
-                        playlist = playlist,
-                        onClick = { onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlist)) },
-                        isSelected = false
-                    )
-                }
+        AddToPlaylistMenuBottomSheet(
+            playlistState = playlistState,
+            onPlaylistEvent = onPlaylistsEvent,
+            cancelAction = {
+                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!addToPlaylistModalSheetState.isVisible) {
+                            onMusicEvent(
+                                MusicEvent.AddToPlaylistBottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        }
+                    }
+            },
+            validationAction = {
+                onPlaylistsEvent(PlaylistEvent.AddMusicToPlaylists(musicId = selectedMusicId))
+                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!addToPlaylistModalSheetState.isVisible) {
+                            onMusicEvent(
+                                MusicEvent.AddToPlaylistBottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        }
+                    }
             }
-        }
+        )
     }
 }

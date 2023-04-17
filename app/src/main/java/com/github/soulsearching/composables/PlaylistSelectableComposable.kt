@@ -14,15 +14,15 @@ import com.github.soulsearching.events.PlaylistEvent
 
 @Composable
 fun PlaylistSelectableComposable(
-    playlist : Playlist,
-    onClick : () -> Unit,
-    isSelected : Boolean
+    playlist: Playlist,
+    onClick: () -> Unit,
+    isSelected: Boolean
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onClick
+                onClick()
             }
             .padding(Constants.Spacing.medium),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -54,10 +54,11 @@ fun PlaylistSelectableComposable(
         }
         Checkbox(
             checked = isSelected,
-            onCheckedChange = {},
+            onCheckedChange = {
+                onClick()
+            },
             colors = CheckboxDefaults.colors(
-                checkedColor = MaterialTheme.colorScheme.onSecondary,
-                uncheckedColor = MaterialTheme.colorScheme.onSecondary
+                checkmarkColor = MaterialTheme.colorScheme.onPrimary
             )
         )
     }

@@ -1,6 +1,5 @@
 package com.github.soulsearching
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -11,9 +10,11 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.AddToPlaylistBottomSheet
-import com.github.soulsearching.composables.bottomSheets.MusicBottomSheetMenu
+import com.github.soulsearching.composables.bottomSheets.MusicBottomSheet
 import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.events.MusicEvent
@@ -34,6 +35,7 @@ import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@Suppress("UNCHECKED_CAST")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -89,83 +91,23 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (musicState.isBottomSheetShown) {
-                    ModalBottomSheet(
-                        onDismissRequest = {
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        },
-                        sheetState = musicModalSheetState,
-                        dragHandle = {}
-                    ) {
-                        MusicBottomSheetMenu(
-                            modifyAction = {
-                                coroutineScope.launch { musicModalSheetState.hide() }
-                                    .invokeOnCompletion {
-                                        if (!musicModalSheetState.isVisible) {
-                                            allMusicsViewModel.onMusicEvent(
-                                                MusicEvent.BottomSheet(
-                                                    isShown = false
-                                                )
-                                            )
-                                        }
-                                    }
-
-                                val intent =
-                                    Intent(applicationContext, ModifyMusicActivity::class.java)
-                                intent.putExtra(
-                                    "musicId",
-                                    musicState.selectedMusic.musicId.toString()
-                                )
-                                startActivity(intent)
-                            },
-                            removeAction = {
-                                allMusicsViewModel.onMusicEvent(MusicEvent.DeleteDialog(isShown = true))
-                            },
-                            addToPlaylistAction = {
-                                allMusicsViewModel.onMusicEvent(
-                                    MusicEvent.AddToPlaylistBottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        )
-                    }
+                    MusicBottomSheet(
+                        onMusicEvent = allMusicsViewModel::onMusicEvent,
+                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,
+                        musicModalSheetState = musicModalSheetState,
+                        musicState = musicState
+                    )
                 }
 
                 if (musicState.isAddToPlaylistDialogShown) {
-                    ModalBottomSheet(
-                        modifier = Modifier.fillMaxSize(),
-                        onDismissRequest = {
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.AddToPlaylistBottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        },
-                        sheetState = musicModalSheetState,
-                        dragHandle = {}
-                    ) {
-                        AddToPlaylistBottomSheet(
-                            playlistState = playlistState,
-                            onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,
-                            cancelAction = {
-                                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
-                                    .invokeOnCompletion {
-                                        if (!addToPlaylistModalSheetState.isVisible) {
-                                            allMusicsViewModel.onMusicEvent(
-                                                MusicEvent.AddToPlaylistBottomSheet(
-                                                    isShown = false
-                                                )
-                                            )
-                                        }
-                                    }
-                            },
-                            validationAction = {}
-                        )
-                    }
+                    AddToPlaylistBottomSheet(
+                        selectedMusicId = musicState.selectedMusic.musicId,
+                        onMusicEvent = allMusicsViewModel::onMusicEvent,
+                        onPlaylistsEvent = allPlaylistsViewModel::onPlaylistsEvent,
+                        musicModalSheetState = musicModalSheetState,
+                        addToPlaylistModalSheetState = addToPlaylistModalSheetState,
+                        playlistState = playlistState
+                    )
                 }
 
                 Scaffold(
@@ -194,145 +136,25 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                             item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 24.dp)
-                                ) {
-                                    SubMenuComposable(
-                                        title = stringResource(id = R.string.playlists),
-                                        moreAction = {
-                                            startActivity(
-                                                Intent(
-                                                    applicationContext,
-                                                    MorePlaylistsActivity::class.java
-                                                )
-                                            )
-                                        }
-                                    )
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(
-                                                start = Constants.Spacing.medium,
-                                                end = Constants.Spacing.medium
-                                            ),
-                                        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
-                                    ) {
-                                        items(playlistState.playlists) { playlist ->
-                                            LazyRowComposable(
-                                                image = playlist.playlistCover,
-                                                title = playlist.name,
-                                                text = "",
-                                                onClick = {
-                                                    val intent = Intent(
-                                                        applicationContext,
-                                                        SelectedPlaylistActivity::class.java
-                                                    )
-                                                    intent.putExtra(
-                                                        "playlistId",
-                                                        playlist.playlistId.toString()
-                                                    )
-                                                    startActivity(intent)
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
+                                MainMenuLazyListRow(
+                                    list = playlistState.playlists,
+                                    title = stringResource(id = R.string.playlists),
+                                    moreActivity = MorePlaylistsActivity::class.java as Class<Any>
+                                )
                             }
                             item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 24.dp)
-                                ) {
-                                    SubMenuComposable(
-                                        title = stringResource(id = R.string.albums),
-                                        moreAction = {
-                                            startActivity(
-                                                Intent(
-                                                    applicationContext,
-                                                    MoreAlbumsActivity::class.java
-                                                )
-                                            )
-                                        }
-                                    )
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(
-                                                start = Constants.Spacing.medium,
-                                                end = Constants.Spacing.medium
-                                            ),
-                                        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
-                                    ) {
-                                        items(albumState.albums) { albumWithArtist ->
-                                            LazyRowComposable(
-                                                image = albumWithArtist.album.albumCover,
-                                                title = albumWithArtist.album.albumName,
-                                                text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
-                                                onClick = {
-                                                    val intent = Intent(
-                                                        applicationContext,
-                                                        SelectedAlbumActivity::class.java
-                                                    )
-                                                    intent.putExtra(
-                                                        "albumId",
-                                                        albumWithArtist.album.albumId.toString()
-                                                    )
-                                                    startActivity(intent)
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
+                                MainMenuLazyListRow(
+                                    list = albumState.albums,
+                                    title = stringResource(id = R.string.albums),
+                                    moreActivity = MoreAlbumsActivity::class.java as Class<Any>
+                                )
                             }
                             item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 24.dp)
-                                ) {
-                                    SubMenuComposable(
-                                        title = stringResource(id = R.string.artists),
-                                        moreAction = {
-                                            startActivity(
-                                                Intent(
-                                                    applicationContext,
-                                                    MoreArtistsActivity::class.java
-                                                )
-                                            )
-                                        }
-                                    )
-                                    LazyRow(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(
-                                                start = Constants.Spacing.medium,
-                                                end = Constants.Spacing.medium
-                                            ),
-                                        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
-                                    ) {
-                                        items(artistState.artists) { artist ->
-                                            LazyRowComposable(
-                                                image = artist.artistCover,
-                                                title = artist.artistName,
-                                                text = "",
-                                                onClick = {
-                                                    val intent = Intent(
-                                                        applicationContext,
-                                                        SelectedArtistActivity::class.java
-                                                    )
-                                                    intent.putExtra(
-                                                        "artistId",
-                                                        artist.artistId.toString()
-                                                    )
-                                                    startActivity(intent)
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
+                                MainMenuLazyListRow(
+                                    list = artistState.artists,
+                                    title = stringResource(id = R.string.artists),
+                                    moreActivity = MoreArtistsActivity::class.java as Class<Any>
+                                )
                             }
                             stickyHeader {
                                 MusicSubMenuComposable(
@@ -368,4 +190,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
