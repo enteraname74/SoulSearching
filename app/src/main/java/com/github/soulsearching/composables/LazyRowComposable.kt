@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
@@ -22,9 +24,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 
+@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyRowComposable(
+    modifier : Modifier = Modifier,
     image : Bitmap?,
     title : String,
     text : String,
@@ -33,6 +37,9 @@ fun LazyRowComposable(
 ) {
     Column(
         modifier = Modifier
+            .composed {
+                modifier
+            }
             .combinedClickable(
                 onClick = {
                     onClick()
