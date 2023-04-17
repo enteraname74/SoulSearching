@@ -19,11 +19,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.AddToPlaylistBottomSheet
 import com.github.soulsearching.composables.bottomSheets.MusicBottomSheet
+import com.github.soulsearching.composables.bottomSheets.TestBottomSheet
 import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.events.MusicEvent
@@ -109,83 +111,92 @@ class MainActivity : AppCompatActivity() {
                         playlistState = playlistState
                     )
                 }
-
-                Scaffold(
-                    topBar = { MainMenuHeaderComposable() },
-                    content = { paddingValues ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues)
-                                .background(MaterialTheme.colorScheme.primary)
-                        ) {
-                            item {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 24.dp)
-                                ) {
-                                    SubMenuComposable(
-                                        title = stringResource(id = R.string.shortcuts),
-                                        moreAction = {}
-                                    )
-                                    TestButtons(
-                                        onMusicEvent = allMusicsViewModel::onMusicEvent,
-                                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    val constraintsScope = this
+                    val maxHeight = with(LocalDensity.current) {
+                        constraintsScope.maxHeight.toPx()
+                    }
+                    Scaffold(
+                        topBar = { MainMenuHeaderComposable() },
+                        content = { paddingValues ->
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .padding(paddingValues)
+                            ) {
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 24.dp)
+                                    ) {
+                                        SubMenuComposable(
+                                            title = stringResource(id = R.string.shortcuts),
+                                            moreAction = {}
+                                        )
+                                        TestButtons(
+                                            onMusicEvent = allMusicsViewModel::onMusicEvent,
+                                            onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
+                                        )
+                                    }
+                                }
+                                item {
+                                    MainMenuLazyListRow(
+                                        list = playlistState.playlists,
+                                        title = stringResource(id = R.string.playlists),
+                                        moreActivity = MorePlaylistsActivity::class.java as Class<Any>
                                     )
                                 }
-                            }
-                            item {
-                                MainMenuLazyListRow(
-                                    list = playlistState.playlists,
-                                    title = stringResource(id = R.string.playlists),
-                                    moreActivity = MorePlaylistsActivity::class.java as Class<Any>
-                                )
-                            }
-                            item {
-                                MainMenuLazyListRow(
-                                    list = albumState.albums,
-                                    title = stringResource(id = R.string.albums),
-                                    moreActivity = MoreAlbumsActivity::class.java as Class<Any>
-                                )
-                            }
-                            item {
-                                MainMenuLazyListRow(
-                                    list = artistState.artists,
-                                    title = stringResource(id = R.string.artists),
-                                    moreActivity = MoreArtistsActivity::class.java as Class<Any>
-                                )
-                            }
-                            stickyHeader {
-                                MusicSubMenuComposable(
-                                    shuffleAction = {}
-                                )
-                            }
-                            items(musicState.musics) { music ->
-                                Row(Modifier.animateItemPlacement()) {
-                                    MusicItemComposable(
-                                        music = music,
-                                        onClick = allMusicsViewModel::onMusicEvent,
-                                        onLongClick = {
-                                            coroutineScope.launch {
-                                                allMusicsViewModel.onMusicEvent(
-                                                    MusicEvent.SetSelectedMusic(
-                                                        music
-                                                    )
-                                                )
-                                                allMusicsViewModel.onMusicEvent(
-                                                    MusicEvent.BottomSheet(
-                                                        isShown = true
-                                                    )
-                                                )
-                                            }
-                                        }
+                                item {
+                                    MainMenuLazyListRow(
+                                        list = albumState.albums,
+                                        title = stringResource(id = R.string.albums),
+                                        moreActivity = MoreAlbumsActivity::class.java as Class<Any>
                                     )
+                                }
+                                item {
+                                    MainMenuLazyListRow(
+                                        list = artistState.artists,
+                                        title = stringResource(id = R.string.artists),
+                                        moreActivity = MoreArtistsActivity::class.java as Class<Any>
+                                    )
+                                }
+                                stickyHeader {
+                                    MusicSubMenuComposable(
+                                        shuffleAction = {}
+                                    )
+                                }
+                                items(musicState.musics) { music ->
+                                    Row(Modifier.animateItemPlacement()) {
+                                        MusicItemComposable(
+                                            music = music,
+                                            onClick = allMusicsViewModel::onMusicEvent,
+                                            onLongClick = {
+                                                coroutineScope.launch {
+                                                    allMusicsViewModel.onMusicEvent(
+                                                        MusicEvent.SetSelectedMusic(
+                                                            music
+                                                        )
+                                                    )
+                                                    allMusicsViewModel.onMusicEvent(
+                                                        MusicEvent.BottomSheet(
+                                                            isShown = true
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                    TestBottomSheet(maxHeight = maxHeight)
+                }
             }
         }
     }

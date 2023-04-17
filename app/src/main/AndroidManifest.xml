@@ -13,6 +13,11 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <activity
+            android:name=".TestActivity"
+            android:exported="false"
+            android:label="@string/title_activity_test"
+            android:theme="@style/Theme.SoulSearching" />
+        <activity
             android:name=".MoreArtistsActivity"
             android:exported="false"
             android:label="@string/title_activity_more_artists"

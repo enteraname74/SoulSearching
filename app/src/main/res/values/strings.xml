@@ -57,5 +57,6 @@
     <string name="title_activity_more_playlists">MorePlaylistsActivity</string>
     <string name="title_activity_more_albums">MoreAlbumsActivity</string>
     <string name="title_activity_more_artists">MoreArtistsActivity</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>
