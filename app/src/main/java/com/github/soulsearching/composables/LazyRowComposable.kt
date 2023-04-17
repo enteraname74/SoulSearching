@@ -41,6 +41,7 @@ fun LazyRowComposable(
                     onLongClick()
                 }
             )
+
     ) {
         val modifierBase = Modifier
             .size(Constants.ImageSize.veryLarge)

@@ -76,10 +76,6 @@ class AllMusicsViewModel @Inject constructor(
                 )
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    musicDao.insertMusic(music)
-
-                    Log.d("PRE CONDITIONS", music.album)
-                    Log.d("PRE CONDITIONS", music.artist)
                     val correspondingArtist = artistDao.getArtistFromInfo(
                         artistName = music.artist
                     )
@@ -116,7 +112,12 @@ class AllMusicsViewModel @Inject constructor(
                     } else {
                         albumId = correspondingAlbum.album.albumId
                         artistId = correspondingAlbum.artist!!.artistId
+                        // Si la musique n'a pas de couverture, on lui donne celle de son album :
+                        if (music.albumCover == null) {
+                            music.albumCover = correspondingAlbum.album.albumCover
+                        }
                     }
+                    musicDao.insertMusic(music)
                     musicAlbumDao.insertMusicIntoAlbum(
                         MusicAlbum(
                             musicId = music.musicId,

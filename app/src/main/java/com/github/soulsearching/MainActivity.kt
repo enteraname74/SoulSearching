@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                         content = { paddingValues ->
                             LazyColumn(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .fillMaxSize()
                                     .background(MaterialTheme.colorScheme.primary)
                                     .padding(paddingValues)
                             ) {
