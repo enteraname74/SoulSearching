@@ -31,6 +31,7 @@ class AllMusicsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(MusicState())
+    private var isAddingMusic = false
 
     // On combine nos 2 flows en un seul.
     val state = combine(_state, _musics) { state, musics ->
@@ -66,70 +67,74 @@ class AllMusicsViewModel @Inject constructor(
                 }
             }
             MusicEvent.AddMusic -> {
-                val music = Music(
-                    musicId = UUID.randomUUID(),
-                    name = "Nom Musique",
-                    album = "Nom Album",
-                    artist = "Nom Artiste",
-                    duration = 1000L,
-                    path = ""
-                )
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    val correspondingArtist = artistDao.getArtistFromInfo(
-                        artistName = music.artist
+                if (!isAddingMusic) {
+                    isAddingMusic = true
+                    val music = Music(
+                        musicId = UUID.randomUUID(),
+                        name = "Nom Musique",
+                        album = "Nom Album",
+                        artist = "Nom Artiste",
+                        duration = 1000L,
+                        path = ""
                     )
-                    val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
-                    Log.d("Infos", allAlbums.toString())
-                    val correspondingAlbum = allAlbums.find {
-                        (it.album.albumName == music.album)
-                                && (it.artist!!.artistName == music.artist)
-                    }
-                    var albumId = UUID.randomUUID()
-                    var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
-                    if (correspondingAlbum == null) {
-                        albumDao.insertAlbum(
-                            Album(
-                                albumId = albumId,
-                                albumName = music.album,
-                                albumCover = music.albumCover,
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val correspondingArtist = artistDao.getArtistFromInfo(
+                            artistName = music.artist
+                        )
+                        val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
+                        Log.d("Infos", allAlbums.toString())
+                        val correspondingAlbum = allAlbums.find {
+                            (it.album.albumName == music.album)
+                                    && (it.artist!!.artistName == music.artist)
+                        }
+                        var albumId = UUID.randomUUID()
+                        var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
+                        if (correspondingAlbum == null) {
+                            albumDao.insertAlbum(
+                                Album(
+                                    albumId = albumId,
+                                    albumName = music.album,
+                                    albumCover = music.albumCover,
+                                )
+                            )
+                            artistDao.insertArtist(
+                                Artist(
+                                    artistId = artistId,
+                                    artistName = music.artist,
+                                    artistCover = music.albumCover
+                                )
+                            )
+                            albumArtistDao.insertAlbumIntoArtist(
+                                AlbumArtist(
+                                    albumId = albumId,
+                                    artistId = artistId
+                                )
+                            )
+
+                        } else {
+                            albumId = correspondingAlbum.album.albumId
+                            artistId = correspondingAlbum.artist!!.artistId
+                            // Si la musique n'a pas de couverture, on lui donne celle de son album :
+                            if (music.albumCover == null) {
+                                music.albumCover = correspondingAlbum.album.albumCover
+                            }
+                        }
+                        musicDao.insertMusic(music)
+                        musicAlbumDao.insertMusicIntoAlbum(
+                            MusicAlbum(
+                                musicId = music.musicId,
+                                albumId = albumId
                             )
                         )
-                        artistDao.insertArtist(
-                            Artist(
-                                artistId = artistId,
-                                artistName = music.artist,
-                                artistCover = music.albumCover
-                            )
-                        )
-                        albumArtistDao.insertAlbumIntoArtist(
-                            AlbumArtist(
-                                albumId = albumId,
+                        musicArtistDao.insertMusicIntoArtist(
+                            MusicArtist(
+                                musicId = music.musicId,
                                 artistId = artistId
                             )
                         )
-
-                    } else {
-                        albumId = correspondingAlbum.album.albumId
-                        artistId = correspondingAlbum.artist!!.artistId
-                        // Si la musique n'a pas de couverture, on lui donne celle de son album :
-                        if (music.albumCover == null) {
-                            music.albumCover = correspondingAlbum.album.albumCover
-                        }
+                        isAddingMusic = false
                     }
-                    musicDao.insertMusic(music)
-                    musicAlbumDao.insertMusicIntoAlbum(
-                        MusicAlbum(
-                            musicId = music.musicId,
-                            albumId = albumId
-                        )
-                    )
-                    musicArtistDao.insertMusicIntoArtist(
-                        MusicArtist(
-                            musicId = music.musicId,
-                            artistId = artistId
-                        )
-                    )
                 }
             }
             is MusicEvent.SetSelectedMusic -> {

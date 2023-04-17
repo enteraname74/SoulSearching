@@ -148,21 +148,24 @@ class MainActivity : AppCompatActivity() {
                                     MainMenuLazyListRow(
                                         list = playlistState.playlists,
                                         title = stringResource(id = R.string.playlists),
-                                        moreActivity = MorePlaylistsActivity::class.java as Class<Any>
+                                        moreActivity = MorePlaylistsActivity::class.java as Class<Any>,
+                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
                                     )
                                 }
                                 item {
                                     MainMenuLazyListRow(
                                         list = albumState.albums,
                                         title = stringResource(id = R.string.albums),
-                                        moreActivity = MoreAlbumsActivity::class.java as Class<Any>
+                                        moreActivity = MoreAlbumsActivity::class.java as Class<Any>,
+                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
                                     )
                                 }
                                 item {
                                     MainMenuLazyListRow(
                                         list = artistState.artists,
                                         title = stringResource(id = R.string.artists),
-                                        moreActivity = MoreArtistsActivity::class.java as Class<Any>
+                                        moreActivity = MoreArtistsActivity::class.java as Class<Any>,
+                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
                                     )
                                 }
                                 stickyHeader {

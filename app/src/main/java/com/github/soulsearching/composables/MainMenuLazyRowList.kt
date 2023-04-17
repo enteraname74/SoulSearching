@@ -17,17 +17,18 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SelectedAlbumActivity
 import com.github.soulsearching.SelectedArtistActivity
 import com.github.soulsearching.SelectedPlaylistActivity
-import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.Playlist
+import com.github.soulsearching.events.AlbumEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainMenuLazyListRow(
     list : List<Any>,
     title : String,
-    moreActivity : Class<Any>
+    moreActivity : Class<Any>,
+    deleteAlbumAction : (AlbumEvent) -> Unit
 ) {
 
     val context = LocalContext.current as Activity
@@ -95,7 +96,8 @@ fun MainMenuLazyListRow(
                                     element.album.albumId.toString()
                                 )
                                 context.startActivity(intent)
-                            }
+                            },
+                            onLongClick = { deleteAlbumAction(AlbumEvent.DeleteAlbum(album = element.album)) }
                         )
                     }
                     is Artist -> {

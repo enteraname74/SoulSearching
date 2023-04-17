@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +33,10 @@ class AllAlbumsViewModel @Inject constructor(
 
     fun onAlbumEvent(event : AlbumEvent) {
         when(event){
+            is AlbumEvent.DeleteAlbum ->
+                viewModelScope.launch {
+                    albumDao.deleteAlbum(event.album)
+                }
             else -> {}
         }
     }
