@@ -1,10 +1,29 @@
 package com.github.soulsearching.database.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity(primaryKeys = ["musicId", "artistId"])
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = Music::class,
+            parentColumns = ["musicId"],
+            childColumns = ["musicId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Artist::class,
+            parentColumns = ["artistId"],
+            childColumns = ["artistId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class MusicArtist(
-    val musicId: UUID = UUID.randomUUID(),
-    val artistId: UUID = UUID.randomUUID()
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
+    @ColumnInfo(index = true) val artistId: UUID = UUID.randomUUID()
 )

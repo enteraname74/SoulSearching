@@ -59,7 +59,6 @@ class AllMusicsViewModel @Inject constructor(
                         albumDao = albumDao,
                         artistDao = artistDao,
                         albumArtistDao = albumArtistDao,
-                        musicPlaylistDao = musicPlaylistDao,
                         musicAlbumDao = musicAlbumDao,
                         musicArtistDao = musicArtistDao,
                         musicToRemove = state.value.selectedMusic

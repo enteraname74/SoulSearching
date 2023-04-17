@@ -26,7 +26,6 @@ class SelectedArtistViewModel @Inject constructor(
     private val albumDao: AlbumDao,
     private val albumArtistDao: AlbumArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
-    private val musicPlaylistDao : MusicPlaylistDao,
     private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
     private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics> = MutableStateFlow(ArtistWithMusics())
@@ -93,7 +92,6 @@ class SelectedArtistViewModel @Inject constructor(
                         albumDao = albumDao,
                         artistDao = artistDao,
                         albumArtistDao = albumArtistDao,
-                        musicPlaylistDao = musicPlaylistDao,
                         musicAlbumDao = musicAlbumDao,
                         musicArtistDao = musicArtistDao,
                         musicToRemove = musicState.value.selectedMusic

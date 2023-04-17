@@ -25,7 +25,6 @@ class SelectedAlbumViewModel @Inject constructor(
     private val artistDao: ArtistDao,
     private val musicDao: MusicDao,
     private val musicAlbumDao: MusicAlbumDao,
-    private val musicPlaylistDao : MusicPlaylistDao,
     private val musicArtistDao: MusicArtistDao,
     private val albumArtistDao: AlbumArtistDao
 ) : ViewModel() {
@@ -93,7 +92,6 @@ class SelectedAlbumViewModel @Inject constructor(
                         albumDao = albumDao,
                         artistDao = artistDao,
                         albumArtistDao = albumArtistDao,
-                        musicPlaylistDao = musicPlaylistDao,
                         musicAlbumDao = musicAlbumDao,
                         musicArtistDao = musicArtistDao,
                         musicToRemove = musicState.value.selectedMusic

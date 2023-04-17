@@ -38,7 +38,6 @@ class Utils {
             albumDao: AlbumDao,
             artistDao: ArtistDao,
             albumArtistDao: AlbumArtistDao,
-            musicPlaylistDao: MusicPlaylistDao,
             musicAlbumDao: MusicAlbumDao,
             musicArtistDao: MusicArtistDao,
             musicToRemove: Music
@@ -53,9 +52,6 @@ class Utils {
             )
 
             musicDao.deleteMusic(music = musicToRemove)
-            musicPlaylistDao.deleteMusicFromAllPlaylists(musicId = musicToRemove.musicId)
-            musicAlbumDao.deleteMusicFromAlbum(musicId = musicToRemove.musicId)
-            musicArtistDao.deleteMusicFromArtist(musicId = musicToRemove.musicId)
 
             checkAndDeleteAlbum(
                 albumToCheck = album!!,
