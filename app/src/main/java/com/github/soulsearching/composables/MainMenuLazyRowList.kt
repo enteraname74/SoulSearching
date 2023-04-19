@@ -29,6 +29,7 @@ fun MainMenuLazyListRow(
     navigateToPlaylist: (String) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
+    playlistBottomSheetAction : (Playlist) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -70,7 +71,8 @@ fun MainMenuLazyListRow(
                             text = "",
                             onClick = {
                                 navigateToPlaylist(element.playlistId.toString())
-                            }
+                            },
+                            onLongClick = { playlistBottomSheetAction(element) }
                         )
                     }
                     is AlbumWithArtist -> {

@@ -20,26 +20,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
+import com.github.soulsearching.database.model.Playlist
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GridPlaylistComposable(
-    image : Bitmap?,
-    title : String,
-    text : String,
-    onClick : () -> Unit,
-    onLongClick : () -> Unit = {}
+    image: Bitmap?,
+    title: String,
+    text: String,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .padding(10.dp)
             .combinedClickable(
-                onClick = {
-                    onClick()
-                },
-                onLongClick = {
-                    onLongClick()
-                }
+                onClick = { onClick() },
+                onLongClick = { onLongClick() }
+
             )
 
     ) {

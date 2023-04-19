@@ -35,8 +35,8 @@ fun SelectedPlaylistScreen(
         playlistState = playlistState,
         onPlaylistEvent = onPlaylistEvent,
         musicState = musicState,
-        title = selectedPlaylistState.playlistWithMusics.playlist.name,
-        image = selectedPlaylistState.playlistWithMusics.playlist.playlistCover,
+        title = if (selectedPlaylistState.playlistWithMusics != null) selectedPlaylistState.playlistWithMusics!!.playlist.name else "",
+        image = selectedPlaylistState.playlistWithMusics!!.playlist.playlistCover,
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },

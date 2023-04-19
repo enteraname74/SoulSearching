@@ -8,7 +8,7 @@ import java.util.UUID
 interface PlaylistEvent {
     object AddPlaylist : PlaylistEvent
     object UpdatePlaylist : PlaylistEvent
-    data class DeletePlaylist(val playlist: Playlist) : PlaylistEvent
+    object DeletePlaylist : PlaylistEvent
     data class SetSelectedPlaylist(val playlist: Playlist) : PlaylistEvent
     data class TogglePlaylistSelectedState(val playlistId: UUID) : PlaylistEvent
     data class PlaylistFromId(val playlistId: UUID) : PlaylistEvent
@@ -16,4 +16,6 @@ interface PlaylistEvent {
     data class SetName(val name: String) : PlaylistEvent
     data class PlaylistsSelection(val musicId: UUID) : PlaylistEvent
     data class AddMusicToPlaylists(val musicId: UUID) : PlaylistEvent
+    data class BottomSheet(val isShown: Boolean) : PlaylistEvent
+    data class DeleteDialog(val isShown: Boolean) : PlaylistEvent
 }

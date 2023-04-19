@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,14 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.composables.bottomSheets.BottomSheetRow
 
 @Composable
 fun MusicBottomSheetMenu(
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
     addToShortcutsAction: () -> Unit = {},
-    addToPlaylistAction: () -> Unit = {},
-    playNextAction : () -> Unit = {}
+    addToPlaylistAction: () -> Unit,
+    playNextAction : () -> Unit
 ) {
     Column(
         modifier = Modifier

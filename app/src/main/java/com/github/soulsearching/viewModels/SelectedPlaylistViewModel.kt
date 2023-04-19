@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import com.github.soulsearching.events.MusicEvent
@@ -24,7 +24,7 @@ class SelectedPlaylistViewModel @Inject constructor(
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
-    private var _selectedPlaylistMusics: StateFlow<PlaylistWithMusics> = MutableStateFlow(
+    private var _selectedPlaylistMusics: StateFlow<PlaylistWithMusics?> = MutableStateFlow(
         PlaylistWithMusics()
     )
 
@@ -41,7 +41,9 @@ class SelectedPlaylistViewModel @Inject constructor(
                 viewModelScope, SharingStarted.WhileSubscribed(), PlaylistWithMusics()
             )
 
-        selectedPlaylistState = combine(_selectedPlaylistState, _selectedPlaylistMusics) { state, playlist ->
+        selectedPlaylistState = combine(_selectedPlaylistState,
+            _selectedPlaylistMusics
+        ) { state, playlist ->
             state.copy(
                 playlistWithMusics = playlist
             )
@@ -53,7 +55,7 @@ class SelectedPlaylistViewModel @Inject constructor(
 
         musicState = combine(_musicState, _selectedPlaylistMusics) { state, playlist ->
             state.copy(
-                musics = playlist.musics
+                musics = playlist?.musics ?: emptyList()
             )
         }.stateIn(
             viewModelScope,
@@ -69,13 +71,13 @@ class SelectedPlaylistViewModel @Inject constructor(
 
         _musicState.update {
             it.copy(
-                musics = _selectedPlaylistMusics.value.musics
+                musics = _selectedPlaylistMusics.value!!.musics
             )
         }
     }
 
     fun onMusicEvent(event : MusicEvent) {
-        Utils.onMusicEvent(
+        EventUtils.onMusicEvent(
             event = event,
             _state = _musicState,
             state = musicState,

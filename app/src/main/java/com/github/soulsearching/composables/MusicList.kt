@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.composables.bottomSheets.MusicBottomSheetsEvent
+import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -23,7 +23,7 @@ fun MusicList(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    MusicBottomSheetsEvent(
+    MusicBottomSheetEvents(
         musicState = musicState,
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
@@ -34,17 +34,19 @@ fun MusicList(
     LazyColumn(
         modifier = modifier
     ) {
-        items(musicState.musics) { music ->
-            MusicItemComposable(
-                music = music,
-                onClick = onMusicEvent,
-                onLongClick = {
-                    coroutineScope.launch {
-                        onMusicEvent(MusicEvent.SetSelectedMusic(music))
-                        onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+        if (musicState.musics != null){
+            items(musicState.musics) { music ->
+                MusicItemComposable(
+                    music = music,
+                    onClick = onMusicEvent,
+                    onLongClick = {
+                        coroutineScope.launch {
+                            onMusicEvent(MusicEvent.SetSelectedMusic(music))
+                            onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

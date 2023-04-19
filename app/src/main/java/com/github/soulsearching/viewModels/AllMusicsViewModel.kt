@@ -2,6 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.events.MusicEvent
@@ -41,7 +42,7 @@ class AllMusicsViewModel @Inject constructor(
     )
 
     fun onMusicEvent(event: MusicEvent) {
-        Utils.onMusicEvent(
+        EventUtils.onMusicEvent(
             event = event,
             _state = _state,
             state = state,

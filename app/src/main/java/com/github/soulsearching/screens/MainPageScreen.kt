@@ -19,9 +19,11 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.*
-import com.github.soulsearching.composables.bottomSheets.MusicBottomSheetsEvent
+import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
 import com.github.soulsearching.viewModels.AllArtistsViewModel
 import com.github.soulsearching.viewModels.AllMusicsViewModel
@@ -43,7 +45,8 @@ fun MainPageScreen(
     navigateToMoreArtists : () -> Unit,
     navigateToMoreShortcuts : () -> Unit,
     navigateToMoreAlbums : () -> Unit,
-    navigateToModifyMusic : (String) -> Unit
+    navigateToModifyMusic : (String) -> Unit,
+    navigateToModifyPlaylist : (String) -> Unit
 ) {
     val musicState by allMusicsViewModel.state.collectAsState()
     val playlistState by allPlaylistsViewModel.state.collectAsState()
@@ -52,12 +55,18 @@ fun MainPageScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    MusicBottomSheetsEvent(
+    MusicBottomSheetEvents(
         musicState = musicState,
         playlistState = playlistState,
         onMusicEvent = allMusicsViewModel::onMusicEvent,
         onPlaylistsEvent = allPlaylistsViewModel::onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic
+    )
+
+    PlaylistBottomSheetEvents(
+        playlistState = playlistState,
+        onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+        navigateToModifyPlaylist = navigateToModifyPlaylist
     )
 
     Scaffold(
@@ -101,7 +110,21 @@ fun MainPageScreen(
                         list = playlistState.playlists,
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
-                        navigateToPlaylist = navigateToPlaylist
+                        navigateToPlaylist = navigateToPlaylist,
+                        playlistBottomSheetAction = {
+                            coroutineScope.launch {
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.SetSelectedPlaylist(
+                                        it
+                                    )
+                                )
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        }
                     )
                 }
                 item {
@@ -140,26 +163,28 @@ fun MainPageScreen(
                         }
                     )
                 }
-                items(musicState.musics) { music ->
-                    Row(Modifier.animateItemPlacement()) {
-                        MusicItemComposable(
-                            music = music,
-                            onClick = allMusicsViewModel::onMusicEvent,
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    allMusicsViewModel.onMusicEvent(
-                                        MusicEvent.SetSelectedMusic(
-                                            music
+                if (musicState.musics != null) {
+                    items(musicState.musics!!) { music ->
+                        Row(Modifier.animateItemPlacement()) {
+                            MusicItemComposable(
+                                music = music,
+                                onClick = allMusicsViewModel::onMusicEvent,
+                                onLongClick = {
+                                    coroutineScope.launch {
+                                        allMusicsViewModel.onMusicEvent(
+                                            MusicEvent.SetSelectedMusic(
+                                                music
+                                            )
                                         )
-                                    )
-                                    allMusicsViewModel.onMusicEvent(
-                                        MusicEvent.BottomSheet(
-                                            isShown = true
+                                        allMusicsViewModel.onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = true
+                                            )
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

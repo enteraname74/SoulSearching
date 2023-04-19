@@ -89,6 +89,9 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 navigateToModifyMusic = {
                                     navController.navigate("modifyMusic/$it")
+                                },
+                                navigateToModifyPlaylist = {
+                                    navController.navigate("modifyPlaylist/$it")
                                 }
                             )
                         }
@@ -212,7 +215,8 @@ class MainActivity : AppCompatActivity() {
                             MorePlaylistsScreen(
                                 allPlaylistsViewModel = allPlaylistsViewModel,
                                 navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
-                                finishAction = { navController.popBackStack() }
+                                finishAction = { navController.popBackStack() },
+                                navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") }
                             )
                         }
                         composable(

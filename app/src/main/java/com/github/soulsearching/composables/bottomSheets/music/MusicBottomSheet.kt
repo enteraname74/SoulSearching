@@ -1,10 +1,11 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetMenu
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -69,7 +70,8 @@ fun MusicBottomSheet(
                         )
                     }
                 }
-            }
+            },
+            playNextAction = {}
         )
     }
 }

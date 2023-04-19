@@ -8,9 +8,11 @@ import kotlin.collections.ArrayList
 
 data class PlaylistState(
     val playlists: List<Playlist> = emptyList(),
-    val selectedPlaylist : Playlist = Playlist(),
-    val playlistsWithoutMusicId : List<PlaylistWithMusics> = emptyList(),
-    val multiplePlaylistSelected : ArrayList<UUID> = ArrayList(),
-    val cover : Bitmap? = null,
-    val name : String = ""
+    val selectedPlaylist: Playlist = Playlist(),
+    val playlistsWithoutMusicId: List<PlaylistWithMusics> = emptyList(),
+    val multiplePlaylistSelected: ArrayList<UUID> = ArrayList(),
+    val cover: Bitmap? = null,
+    val name: String = "",
+    val isDeleteDialogShown: Boolean = false,
+    val isBottomSheetShown: Boolean = false,
 )

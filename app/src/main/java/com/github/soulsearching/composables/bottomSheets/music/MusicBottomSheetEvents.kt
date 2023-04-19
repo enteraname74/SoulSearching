@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MusicBottomSheetsEvent(
+fun MusicBottomSheetEvents(
     musicState: MusicState,
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
