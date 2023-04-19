@@ -221,7 +221,7 @@ fun ModifyAlbumTextFields(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(3F),
+                .weight(4F),
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             AppTextField(
