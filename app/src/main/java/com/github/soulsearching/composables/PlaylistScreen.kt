@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.screens
+package com.github.soulsearching.composables
 
 
 import android.annotation.SuppressLint
@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.composables.MusicList
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
 import com.github.soulsearching.events.MusicEvent

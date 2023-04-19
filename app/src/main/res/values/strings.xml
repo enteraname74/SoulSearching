@@ -24,6 +24,10 @@
     <string name="modify_music">Modify this music</string>
     <string name="delete_playlist">Delete this playlist</string>
     <string name="modify_playlist">Modify this playlist</string>
+    <string name="delete_album">Delete this album</string>
+    <string name="modify_album">Modify this album</string>
+    <string name="delete_artist">Delete this artist</string>
+    <string name="modify_artist">Modify this artist</string>
     <string name="play_next">Play next</string>
 
     <!-- Modify music strings -->
@@ -36,6 +40,8 @@
     <!-- Dialog strings -->
     <string name="delete_music_dialog_title">Are you sure to delete this music ?</string>
     <string name="delete_playlist_dialog_title">Are you sure to delete this playlist ?</string>
+    <string name="delete_album_dialog_title">Are you sure to delete this album ?</string>
+    <string name="delete_artist_dialog_title">Are you sure to delete this artist ?</string>
     <string name="delete_music_dialog_text">You can retrieve it in the "deleted musics" section of the application.</string>
     <string name="create_playlist_dialog_title">Create a new playlist !</string>
     <string name="delete">Delete</string>
@@ -59,4 +65,8 @@
     <string name="sort_by_most_listened">Sort by most listened</string>
     <string name="sort_by_name">Sort by name</string>
     <string name="sort_by_asc_or_dsc">ascending or descending Sort</string>
+
+    <!-- Number of musics strings -->
+    <string name="multiple_musics">%1$d musics</string>
+    <string name="one_music">1 music</string>
 </resources>

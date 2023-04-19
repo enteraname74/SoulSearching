@@ -25,6 +25,10 @@
     <string name="modify_music">Modifier cette musique</string>
     <string name="delete_playlist">Supprimer cette playlist</string>
     <string name="modify_playlist">Modifier cette playlist</string>
+    <string name="delete_album">Supprimer cet album</string>
+    <string name="modify_album">Modifier cet album</string>
+    <string name="delete_artist">Supprimer cette artiste</string>
+    <string name="modify_artist">Modifier cet artiste</string>
     <string name="play_next">Jouer ensuite</string>
 
     <!-- Modify music strings -->
@@ -37,6 +41,8 @@
     <!-- Dialog strings -->
     <string name="delete_music_dialog_title">Voulez-vous vraiment supprimer cette musique ?</string>
     <string name="delete_playlist_dialog_title">Voulez-vous vraiment supprimer cette playlist ?</string>
+    <string name="delete_album_dialog_title">Voulez-vous vraiment supprimer cet albume ?</string>
+    <string name="delete_artist_dialog_title">Voulez-vous vraiment supprimer cet artiste ?</string>
     <string name="delete_music_dialog_text">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
     <string name="create_playlist_dialog_title">Create a new playlist !</string>
     <string name="delete">Supprimer</string>
@@ -60,4 +66,8 @@
     <string name="sort_by_most_listened">Trier par le nombre d\'écoutes</string>
     <string name="sort_by_name">Trier par nom</string>
     <string name="sort_by_asc_or_dsc">Tri ascendant ou descendant</string>
+
+    <!-- Number of musics strings -->
+    <string name="multiple_musics">%1$d musiques</string>
+    <string name="one_music">1 musique</string>
 </resources>

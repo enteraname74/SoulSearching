@@ -20,7 +20,7 @@ class AllPlaylistsViewModel @Inject constructor(
     private val playlistDao : PlaylistDao,
     private val musicPlaylistDao: MusicPlaylistDao
 ): ViewModel() {
-    private val _playlists = playlistDao.getAllPlaylists().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _playlists = playlistDao.getAllPlaylistsWithMusics().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(PlaylistState())
     // On combine nos 2 flows en un seul.

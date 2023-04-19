@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.screens
+package com.github.soulsearching.composables
 
 import android.app.Activity
 import androidx.compose.foundation.layout.fillMaxWidth

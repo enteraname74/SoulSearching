@@ -7,7 +7,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class PlaylistState(
-    val playlists: List<Playlist> = emptyList(),
+    val playlists: List<PlaylistWithMusics> = emptyList(),
     val selectedPlaylist: Playlist = Playlist(),
     val playlistsWithoutMusicId: List<PlaylistWithMusics> = emptyList(),
     val multiplePlaylistSelected: ArrayList<UUID> = ArrayList(),

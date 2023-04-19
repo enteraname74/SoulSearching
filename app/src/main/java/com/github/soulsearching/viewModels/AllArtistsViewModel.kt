@@ -17,7 +17,7 @@ import javax.inject.Inject
 class AllArtistsViewModel @Inject constructor(
     private val artistDao : ArtistDao
 ) : ViewModel() {
-    private val _artists = artistDao.getAllArtists().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _artists = artistDao.getAllArtistsWithMusics().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(ArtistState())
     val state = combine(_artists, _state) { artists, state ->

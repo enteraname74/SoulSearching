@@ -23,7 +23,9 @@ import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
-import com.github.soulsearching.composables.screens.TestButtons
+import com.github.soulsearching.composables.TestButtons
+import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
@@ -154,7 +156,21 @@ fun MainPageScreen(
                         list = albumState.albums,
                         title = stringResource(id = R.string.albums),
                         navigateToMore = navigateToMoreAlbums,
-                        navigateToAlbum = navigateToAlbum
+                        navigateToAlbum = navigateToAlbum,
+                        albumBottomSheetAction = {
+                            coroutineScope.launch {
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.SetSelectedAlbum(
+                                        it
+                                    )
+                                )
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        }
                     )
                 }
                 item {
@@ -162,7 +178,21 @@ fun MainPageScreen(
                         list = artistState.artists,
                         title = stringResource(id = R.string.artists),
                         navigateToMore = navigateToMoreArtists,
-                        navigateToArtist = navigateToArtist
+                        navigateToArtist = navigateToArtist,
+                        artistBottomSheetAction = {
+                            coroutineScope.launch {
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.SetSelectedArtist(
+                                        it
+                                    )
+                                )
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        }
                     )
                 }
                 stickyHeader {

@@ -44,13 +44,20 @@ fun MoreArtistsScreen(
                     .background(color = MaterialTheme.colorScheme.secondary),
                 columns = GridCells.Adaptive(196.dp)
             ) {
-                items(artistState.artists) { artist ->
+                items(artistState.artists) { artistWithMusics ->
                     GridPlaylistComposable(
-                        image = artist.artistCover,
-                        title = artist.artistName,
-                        text = "small talk...",
+                        image = artistWithMusics.artist.artistCover,
+                        title = artistWithMusics.artist.artistName,
+                        text = if (artistWithMusics.musics.size == 1) {
+                            stringResource(id = R.string.one_music)
+                        } else {
+                            stringResource(
+                                id = R.string.multiple_musics,
+                                artistWithMusics.musics.size
+                            )
+                        },
                         onClick = {
-                            navigateToSelectedArtist(artist.artistId.toString())
+                            navigateToSelectedArtist(artistWithMusics.artist.artistId.toString())
                         }
                     )
                 }

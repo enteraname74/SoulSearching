@@ -48,7 +48,6 @@ class ModifyAlbumViewModel @Inject constructor(
                     )
                     var currentArtist = initialArtist
 
-                    Log.d("NEW ARTIST", state.value.albumWithMusics.artist!!.artistName.trim())
                     if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist.artistName) {
                         // On cherche le nouvel artiste correspondant :
                         var newArtist = artistDao.getArtistFromInfo(
@@ -56,7 +55,6 @@ class ModifyAlbumViewModel @Inject constructor(
                         )
                         // Si ce nouvel artiste n'existe pas, on le crée :
                         if (newArtist == null) {
-                            Log.d("Cover is null", (state.value.albumWithMusics.album.albumCover == null).toString())
                             newArtist = Artist(
                                 artistName = state.value.albumWithMusics.artist!!.artistName.trim(),
                                 artistCover = state.value.albumWithMusics.album.albumCover
@@ -95,8 +93,6 @@ class ModifyAlbumViewModel @Inject constructor(
                             )
                         }
                         currentArtist = newArtist
-                        Log.d("SET NEW ARTIST ID", currentArtist.artistId.toString())
-                        Log.d("LEGACY ID", initialArtist.artistId.toString())
                     } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName){
                         val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
                             albumId = state.value.albumWithMusics.album.albumId,
@@ -134,8 +130,6 @@ class ModifyAlbumViewModel @Inject constructor(
                     val musicsFromAlbum = musicDao.getMusicsFromAlbum(
                         albumId = state.value.albumWithMusics.album.albumId
                     )
-                    Log.d("NEW ARTIST ID", currentArtist.artistId.toString())
-                    Log.d("LEGACY ARTIST ID", initialArtist.artistId.toString())
                     for (music in musicsFromAlbum) {
                         // On modifie les infos de chaque musique
                         musicDao.insertMusic(

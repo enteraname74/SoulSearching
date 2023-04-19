@@ -315,7 +315,7 @@ class EventUtils {
                 }
                 is PlaylistEvent.SetSelectedPlaylist -> {
                     _state.update { it.copy(
-                        selectedPlaylist = event.playlist
+                        selectedPlaylist = event.playlistWithMusics.playlist
                     ) }
                 }
                 is PlaylistEvent.TogglePlaylistSelectedState -> {

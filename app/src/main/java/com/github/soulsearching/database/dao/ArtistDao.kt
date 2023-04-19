@@ -23,6 +23,10 @@ interface ArtistDao {
     fun getAllArtists(): Flow<List<Artist>>
 
     @Transaction
+    @Query("SELECT * FROM Artist ORDER BY artistName ASC")
+    fun getAllArtistsWithMusics(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
     @Query("SELECT * FROM Artist WHERE artistName = :artistName AND artistId != :artistId")
     fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : ArtistWithMusics?
 

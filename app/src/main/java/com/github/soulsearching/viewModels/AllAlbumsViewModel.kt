@@ -35,7 +35,6 @@ class AllAlbumsViewModel @Inject constructor(
         when(event){
             is AlbumEvent.DeleteAlbum ->
                 viewModelScope.launch {
-                    albumDao.deleteAlbum(event.album)
                 }
             else -> {}
         }

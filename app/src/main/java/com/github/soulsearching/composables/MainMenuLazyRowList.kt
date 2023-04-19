@@ -1,13 +1,9 @@
 package com.github.soulsearching.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.AlbumWithArtist
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.Playlist
+import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.soulsearching.database.model.PlaylistWithMusics
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,8 +27,10 @@ fun MainMenuLazyListRow(
     navigateToPlaylist: (String) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
-    playlistBottomSheetAction : (Playlist) -> Unit = {},
-    createPlaylistComposable : @Composable (() -> Unit) = {}
+    playlistBottomSheetAction: (PlaylistWithMusics) -> Unit = {},
+    albumBottomSheetAction: (AlbumWithArtist) -> Unit = {},
+    artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
+    createPlaylistComposable: @Composable (() -> Unit) = {}
 ) {
     Column(
         modifier = Modifier
@@ -72,14 +70,18 @@ fun MainMenuLazyListRow(
             items(list) { element ->
                 val modifier = Modifier.animateItemPlacement()
                 when (element) {
-                    is Playlist -> {
+                    is PlaylistWithMusics -> {
                         LazyRowComposable(
                             modifier = modifier,
-                            image = element.playlistCover,
-                            title = element.name,
-                            text = "",
+                            image = element.playlist.playlistCover,
+                            title = element.playlist.name,
+                            text = if (element.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else stringResource(
+                                id = R.string.multiple_musics, element.musics.size
+                            ),
                             onClick = {
-                                navigateToPlaylist(element.playlistId.toString())
+                                navigateToPlaylist(element.playlist.playlistId.toString())
                             },
                             onLongClick = { playlistBottomSheetAction(element) }
                         )
@@ -92,18 +94,24 @@ fun MainMenuLazyListRow(
                             text = if (element.artist != null) element.artist.artistName else "",
                             onClick = {
                                 navigateToAlbum(element.album.albumId.toString())
-                            }
+                            },
+                            onLongClick = { albumBottomSheetAction(element) }
                         )
                     }
-                    is Artist -> {
+                    is ArtistWithMusics -> {
                         LazyRowComposable(
                             modifier = modifier,
-                            image = element.artistCover,
-                            title = element.artistName,
-                            text = "",
+                            image = element.artist.artistCover,
+                            title = element.artist.artistName,
+                            text = if (element.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else stringResource(
+                                id = R.string.multiple_musics, element.musics.size
+                            ),
                             onClick = {
-                                navigateToArtist(element.artistId.toString())
-                            }
+                                navigateToArtist(element.artist.artistId.toString())
+                            },
+                            onLongClick = { artistBottomSheetAction(element) }
                         )
                     }
                 }

@@ -28,7 +28,7 @@ fun MorePlaylistsScreen(
     allPlaylistsViewModel: AllPlaylistsViewModel,
     navigateToSelectedPlaylist: (String) -> Unit,
     finishAction: () -> Unit,
-    navigateToModifyPlaylist : (String) -> Unit
+    navigateToModifyPlaylist: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -56,19 +56,26 @@ fun MorePlaylistsScreen(
                 columns = GridCells.Adaptive(196.dp)
             ) {
 
-                items(playlistState.playlists) { playlist ->
+                items(playlistState.playlists) { playlistWithMusics ->
                     GridPlaylistComposable(
-                        image = playlist.playlistCover,
-                        title = playlist.name,
-                        text = "small talk...",
+                        image = playlistWithMusics.playlist.playlistCover,
+                        title = playlistWithMusics.playlist.name,
+                        text = if (playlistWithMusics.musics.size == 1) {
+                            stringResource(id = R.string.one_music)
+                        } else {
+                            stringResource(
+                                id = R.string.multiple_musics,
+                                playlistWithMusics.musics.size
+                            )
+                        },
                         onClick = {
-                            navigateToSelectedPlaylist(playlist.playlistId.toString())
+                            navigateToSelectedPlaylist(playlistWithMusics.playlist.playlistId.toString())
                         },
                         onLongClick = {
                             coroutineScope.launch {
                                 allPlaylistsViewModel.onPlaylistEvent(
                                     PlaylistEvent.SetSelectedPlaylist(
-                                        playlist
+                                        playlistWithMusics
                                     )
                                 )
                                 allPlaylistsViewModel.onPlaylistEvent(

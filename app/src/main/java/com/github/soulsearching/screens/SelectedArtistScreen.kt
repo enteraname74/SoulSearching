@@ -2,7 +2,7 @@ package com.github.soulsearching.screens
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import com.github.soulsearching.composables.screens.PlaylistScreen
+import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedArtistViewModel
