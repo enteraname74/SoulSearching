@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
-import com.github.soulsearching.database.model.Playlist
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

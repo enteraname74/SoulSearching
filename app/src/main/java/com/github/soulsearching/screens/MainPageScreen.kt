@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.*
+import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
+import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
-import com.github.soulsearching.composables.TestButtons
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -50,7 +51,9 @@ fun MainPageScreen(
     navigateToMoreShortcuts: () -> Unit,
     navigateToMoreAlbums: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    navigateToModifyPlaylist: (String) -> Unit
+    navigateToModifyPlaylist: (String) -> Unit,
+    navigateToModifyAlbum: (String) -> Unit,
+    navigateToModifyArtist: (String) -> Unit
 ) {
     val musicState by allMusicsViewModel.state.collectAsState()
     val playlistState by allPlaylistsViewModel.state.collectAsState()
@@ -71,6 +74,18 @@ fun MainPageScreen(
         playlistState = playlistState,
         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
         navigateToModifyPlaylist = navigateToModifyPlaylist
+    )
+
+    AlbumBottomSheetEvents(
+        albumState = albumState,
+        onAlbumEvent = allAlbumsViewModel::onAlbumEvent,
+        navigateToModifyAlbum = navigateToModifyAlbum
+    )
+
+    ArtistBottomSheetEvents(
+        artistState = artistState,
+        onArtistEvent = allArtistsViewModel::onArtistEvent,
+        navigateToModifyArtist = navigateToModifyArtist
     )
 
     if (playlistState.isCreatePlaylistDialogShown) {
@@ -186,8 +201,8 @@ fun MainPageScreen(
                                         it
                                     )
                                 )
-                                allAlbumsViewModel.onAlbumEvent(
-                                    AlbumEvent.BottomSheet(
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.BottomSheet(
                                         isShown = true
                                     )
                                 )

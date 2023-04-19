@@ -3,14 +3,10 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +28,21 @@ class AllArtistsViewModel @Inject constructor(
 
     fun onArtistEvent(event : ArtistEvent) {
         when(event){
+            is ArtistEvent.SetSelectedArtist -> {
+                _state.update { it.copy(
+                    selectedArtistWithMusics = event.artistWithMusics
+                ) }
+            }
+            is ArtistEvent.BottomSheet -> {
+                _state.update { it.copy(
+                    isBottomSheetShown = event.isShown
+                ) }
+            }
+            is ArtistEvent.DeleteDialog -> {
+                _state.update { it.copy(
+                    isDeleteDialogShown = event.isShown
+                ) }
+            }
             else -> {}
         }
     }

@@ -11,22 +11,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.GridPlaylistComposable
+import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
+import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MoreAlbumsScreen(
     allAlbumsViewModel: AllAlbumsViewModel,
     navigateToSelectedAlbum: (String) -> Unit,
+    navigateToModifyAlbum: (String) -> Unit,
     finishAction: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
 
     val albumState by allAlbumsViewModel.state.collectAsState()
+
+    AlbumBottomSheetEvents(
+        albumState = albumState,
+        onAlbumEvent = allAlbumsViewModel::onAlbumEvent,
+        navigateToModifyAlbum = navigateToModifyAlbum
+    )
 
     Scaffold(
         topBar = {
@@ -48,7 +60,21 @@ fun MoreAlbumsScreen(
                         image = albumWithArtist.album.albumCover,
                         title = albumWithArtist.album.albumName,
                         text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
-                        onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) }
+                        onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) },
+                        onLongClick = {
+                            coroutineScope.launch {
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.SetSelectedAlbum(
+                                        albumWithArtist
+                                    )
+                                )
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        }
                     )
                 }
             }

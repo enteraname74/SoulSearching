@@ -92,6 +92,12 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 navigateToModifyPlaylist = {
                                     navController.navigate("modifyPlaylist/$it")
+                                },
+                                navigateToModifyAlbum = {
+                                    navController.navigate("modifyAlbum/$it")
+                                },
+                                navigateToModifyArtist = {
+                                    navController.navigate("modifyArtist/$it")
                                 }
                             )
                         }
@@ -225,7 +231,8 @@ class MainActivity : AppCompatActivity() {
                             MoreAlbumsScreen(
                                 allAlbumsViewModel = allAlbumsViewModel,
                                 navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
-                                finishAction = { navController.popBackStack() }
+                                finishAction = { navController.popBackStack() },
+                                navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") }
                             )
                         }
                         composable(
@@ -234,7 +241,8 @@ class MainActivity : AppCompatActivity() {
                             MoreArtistsScreen(
                                 allArtistsViewModel = allArtistsViewModel,
                                 navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
-                                finishAction = { navController.popBackStack() }
+                                finishAction = { navController.popBackStack() },
+                                navigateToModifyArtist = { navController.navigate("modifyArtist/$it") }
                             )
                         }
                     }

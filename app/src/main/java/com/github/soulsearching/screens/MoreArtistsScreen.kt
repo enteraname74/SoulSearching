@@ -11,23 +11,34 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.GridPlaylistComposable
-import com.github.soulsearching.states.ArtistState
+import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
+import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewModels.AllArtistsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MoreArtistsScreen(
     allArtistsViewModel: AllArtistsViewModel,
     navigateToSelectedArtist: (String) -> Unit,
+    navigateToModifyArtist: (String) -> Unit,
     finishAction: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
 
     val artistState by allArtistsViewModel.state.collectAsState()
+
+    ArtistBottomSheetEvents(
+        artistState = artistState,
+        onArtistEvent = allArtistsViewModel::onArtistEvent,
+        navigateToModifyArtist = navigateToModifyArtist
+    )
 
     Scaffold(
         topBar = {
@@ -58,6 +69,20 @@ fun MoreArtistsScreen(
                         },
                         onClick = {
                             navigateToSelectedArtist(artistWithMusics.artist.artistId.toString())
+                        },
+                        onLongClick = {
+                            coroutineScope.launch {
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.SetSelectedArtist(
+                                        artistWithMusics
+                                    )
+                                )
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
                         }
                     )
                 }

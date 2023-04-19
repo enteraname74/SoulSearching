@@ -1,12 +1,11 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumWithMusics
+import com.github.soulsearching.database.model.AlbumWithArtist
 
 data class AlbumState(
-    val albums: List<Album> = emptyList(),
-    val selectedAlbum : AlbumWithMusics = AlbumWithMusics(),
+    val albums: List<AlbumWithArtist> = emptyList(),
+    val selectedAlbumWithArtist : AlbumWithArtist = AlbumWithArtist(),
     val cover : Bitmap? = null,
     val name : String = "",
     val artist : String = "",

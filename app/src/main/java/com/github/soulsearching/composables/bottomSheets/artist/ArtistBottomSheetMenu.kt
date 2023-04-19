@@ -33,12 +33,12 @@ fun ArtistBottomSheetMenu(
         )
         BottomSheetRow(
             icon = Icons.Default.Edit,
-            text = stringResource(id = R.string.modify_album),
+            text = stringResource(id = R.string.modify_artist),
             onClick = modifyAction
         )
         BottomSheetRow(
             icon = Icons.Default.Delete,
-            text = stringResource(id = R.string.delete_album),
+            text = stringResource(id = R.string.delete_artist),
             onClick = deleteAction
         )
     }

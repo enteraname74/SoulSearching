@@ -5,12 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.AlbumDao
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
-import com.github.soulsearching.states.AlbumWithArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +16,7 @@ class AllAlbumsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _albums = albumDao.getAllAlbumsWithArtist().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    private val _state = MutableStateFlow(AlbumWithArtistState())
+    private val _state = MutableStateFlow(AlbumState())
     val state = combine(_albums, _state) { albums, state ->
         state.copy(
             albums = albums
@@ -28,7 +24,7 @@ class AllAlbumsViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
-        AlbumWithArtistState()
+        AlbumState()
     )
 
     fun onAlbumEvent(event : AlbumEvent) {
@@ -36,6 +32,21 @@ class AllAlbumsViewModel @Inject constructor(
             is AlbumEvent.DeleteAlbum ->
                 viewModelScope.launch {
                 }
+            is AlbumEvent.SetSelectedAlbum -> {
+                _state.update { it.copy(
+                    selectedAlbumWithArtist = event.albumWithArtist
+                ) }
+            }
+            is AlbumEvent.BottomSheet -> {
+                _state.update { it.copy(
+                    isBottomSheetShown = event.isShown
+                ) }
+            }
+            is AlbumEvent.DeleteDialog -> {
+                _state.update { it.copy(
+                    isDeleteDialogShown = event.isShown
+                ) }
+            }
             else -> {}
         }
     }

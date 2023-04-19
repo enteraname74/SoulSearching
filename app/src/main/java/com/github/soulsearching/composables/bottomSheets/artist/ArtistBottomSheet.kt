@@ -40,7 +40,7 @@ fun ArtistBottomSheet(
                                     isShown = false
                                 )
                             )
-                            navigateToModifyArtist(artistState.selectedArtist.artistId.toString())
+                            navigateToModifyArtist(artistState.selectedArtistWithMusics.artist.artistId.toString())
                         }
                     }
             },

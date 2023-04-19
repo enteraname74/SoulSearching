@@ -40,7 +40,7 @@ fun AlbumBottomSheet(
                                     isShown = false
                                 )
                             )
-                            navigateToModifyAlbum(albumState.selectedAlbum.album.albumId.toString())
+                            navigateToModifyAlbum(albumState.selectedAlbumWithArtist.album.albumId.toString())
                         }
                     }
             },
