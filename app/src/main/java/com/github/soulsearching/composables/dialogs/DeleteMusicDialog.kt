@@ -42,17 +42,17 @@ fun DeleteMusicDialog(
                 )
             }
         },
-        text = {
-            Text(
-                text = stringResource(id = R.string.delete_music_dialog_info),
-                textAlign = TextAlign.Center
-            )
-        },
         title = {
             Text(
-                text = stringResource(id = R.string.delete_music_dialog_message),
+                text = stringResource(id = R.string.delete_music_dialog_title),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.delete_music_dialog_text),
+                textAlign = TextAlign.Center
             )
         },
         icon = {

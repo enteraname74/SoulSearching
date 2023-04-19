@@ -15,6 +15,7 @@
     <string name="image">Image</string>
     <string name="search_button">Search button</string>
     <string name="more_button">More button</string>
+    <string name="create_playlist_button">Create playlist button</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Add to a playlist</string>
@@ -33,11 +34,13 @@
     <string name="album_name">Album\'s name</string>
 
     <!-- Dialog strings -->
-    <string name="delete_music_dialog_message">Are you sure to delete this music ?</string>
-    <string name="delete_playlist_dialog_message">Are you sure to delete this playlist ?</string>
-    <string name="delete_music_dialog_info">You can retrieve it in the "deleted musics" section of the application.</string>
+    <string name="delete_music_dialog_title">Are you sure to delete this music ?</string>
+    <string name="delete_playlist_dialog_title">Are you sure to delete this playlist ?</string>
+    <string name="delete_music_dialog_text">You can retrieve it in the "deleted musics" section of the application.</string>
+    <string name="create_playlist_dialog_title">Create a new playlist !</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
 
     <!-- Modify playlist strings -->
     <string name="playlist_information">Playlist\'s information</string>

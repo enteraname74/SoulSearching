@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
+import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
 import com.github.soulsearching.composables.screens.TestButtons
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -34,19 +36,19 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPageScreen(
-    allMusicsViewModel : AllMusicsViewModel,
-    allPlaylistsViewModel : AllPlaylistsViewModel,
-    allAlbumsViewModel : AllAlbumsViewModel,
+    allMusicsViewModel: AllMusicsViewModel,
+    allPlaylistsViewModel: AllPlaylistsViewModel,
+    allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
-    navigateToPlaylist : (String) -> Unit,
-    navigateToAlbum : (String) -> Unit,
-    navigateToArtist : (String) -> Unit,
-    navigateToMorePlaylist : () -> Unit,
-    navigateToMoreArtists : () -> Unit,
-    navigateToMoreShortcuts : () -> Unit,
-    navigateToMoreAlbums : () -> Unit,
-    navigateToModifyMusic : (String) -> Unit,
-    navigateToModifyPlaylist : (String) -> Unit
+    navigateToPlaylist: (String) -> Unit,
+    navigateToAlbum: (String) -> Unit,
+    navigateToArtist: (String) -> Unit,
+    navigateToMorePlaylist: () -> Unit,
+    navigateToMoreArtists: () -> Unit,
+    navigateToMoreShortcuts: () -> Unit,
+    navigateToMoreAlbums: () -> Unit,
+    navigateToModifyMusic: (String) -> Unit,
+    navigateToModifyPlaylist: (String) -> Unit
 ) {
     val musicState by allMusicsViewModel.state.collectAsState()
     val playlistState by allPlaylistsViewModel.state.collectAsState()
@@ -68,6 +70,10 @@ fun MainPageScreen(
         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
         navigateToModifyPlaylist = navigateToModifyPlaylist
     )
+
+    if (playlistState.isCreatePlaylistDialogShown) {
+        CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent)
+    }
 
     Scaffold(
         topBar = { MainMenuHeaderComposable() },
@@ -124,6 +130,22 @@ fun MainPageScreen(
                                     )
                                 )
                             }
+                        },
+                        createPlaylistComposable = {
+                            Icon(
+                                modifier = Modifier
+                                    .clickable {
+                                        allPlaylistsViewModel.onPlaylistEvent(
+                                            PlaylistEvent.CreatePlaylistDialog(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                    .size(Constants.ImageSize.medium),
+                                imageVector = Icons.Default.Add,
+                                contentDescription = stringResource(id = R.string.create_playlist_button),
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
                     )
                 }
@@ -163,28 +185,26 @@ fun MainPageScreen(
                         }
                     )
                 }
-                if (musicState.musics != null) {
-                    items(musicState.musics!!) { music ->
-                        Row(Modifier.animateItemPlacement()) {
-                            MusicItemComposable(
-                                music = music,
-                                onClick = allMusicsViewModel::onMusicEvent,
-                                onLongClick = {
-                                    coroutineScope.launch {
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.SetSelectedMusic(
-                                                music
-                                            )
+                items(musicState.musics) { music ->
+                    Row(Modifier.animateItemPlacement()) {
+                        MusicItemComposable(
+                            music = music,
+                            onClick = allMusicsViewModel::onMusicEvent,
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allMusicsViewModel.onMusicEvent(
+                                        MusicEvent.SetSelectedMusic(
+                                            music
                                         )
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.BottomSheet(
-                                                isShown = true
-                                            )
+                                    )
+                                    allMusicsViewModel.onMusicEvent(
+                                        MusicEvent.BottomSheet(
+                                            isShown = true
                                         )
-                                    }
+                                    )
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }

@@ -15,4 +15,5 @@ data class PlaylistState(
     val name: String = "",
     val isDeleteDialogShown: Boolean = false,
     val isBottomSheetShown: Boolean = false,
+    val isCreatePlaylistDialogShown: Boolean = false,
 )

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 
@@ -41,7 +42,7 @@ fun SubMenuComposable(
             text = title,
             color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

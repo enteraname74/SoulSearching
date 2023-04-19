@@ -277,12 +277,17 @@ class EventUtils {
                         isDeleteDialogShown = event.isShown
                     ) }
                 }
+                is PlaylistEvent.CreatePlaylistDialog -> {
+                    _state.update { it.copy(
+                        isCreatePlaylistDialogShown = event.isShown
+                    ) }
+                }
                 is PlaylistEvent.AddPlaylist -> {
                     CoroutineScope(Dispatchers.IO).launch {
                         playlistDao.insertPlaylist(
                             Playlist(
                                 playlistId = UUID.randomUUID(),
-                                name = "test"
+                                name = event.name
                             )
                         )
                     }

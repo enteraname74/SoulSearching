@@ -44,7 +44,7 @@ fun SortOptionsComposable(
             )
             Icon(
                 modifier = Modifier
-                    .clickable { sortByDateAction() }
+                    .clickable { sortByMostListenedAction() }
                     .padding(Constants.Spacing.small)
                     .size(
                         Constants.ImageSize.small
@@ -55,7 +55,7 @@ fun SortOptionsComposable(
             )
             Icon(
                 modifier = Modifier
-                    .clickable { sortByDateAction() }
+                    .clickable { sortByName() }
                     .padding(Constants.Spacing.small)
                     .size(
                         Constants.ImageSize.small
@@ -67,7 +67,7 @@ fun SortOptionsComposable(
         }
         Icon(
             modifier = Modifier
-                .clickable { sortByDateAction() }
+                .clickable { setSortTypeAction() }
                 .padding(Constants.Spacing.small)
                 .size(
                     Constants.ImageSize.small

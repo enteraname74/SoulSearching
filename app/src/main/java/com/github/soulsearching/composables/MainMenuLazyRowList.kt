@@ -1,16 +1,18 @@
 package com.github.soulsearching.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,7 +31,8 @@ fun MainMenuLazyListRow(
     navigateToPlaylist: (String) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
-    playlistBottomSheetAction : (Playlist) -> Unit = {}
+    playlistBottomSheetAction : (Playlist) -> Unit = {},
+    createPlaylistComposable : @Composable (() -> Unit) = {}
 ) {
     Column(
         modifier = Modifier
@@ -43,11 +46,17 @@ fun MainMenuLazyListRow(
             sortByName = {},
             setSortTypeAction = {},
             rightComposable = {
-                TextButton(onClick = navigateToMore) {
-                    Text(
-                        text = stringResource(id = R.string.more),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    createPlaylistComposable()
+                    TextButton(onClick = navigateToMore) {
+                        Text(
+                            text = stringResource(id = R.string.more),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
             }
         )

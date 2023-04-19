@@ -41,12 +41,6 @@ fun TestButtons(
         }
 
         item {
-            Button(onClick = { onPlaylistEvent(PlaylistEvent.AddPlaylist) }) {
-                Text("Test crea playlist")
-            }
-        }
-
-        item {
             Button(onClick = { /*TODO*/ }) {
                 Text("Test ajout last play")
             }

@@ -18,7 +18,7 @@ fun MusicList(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    navigateToModifyMusic : (String) -> Unit,
+    navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -34,19 +34,17 @@ fun MusicList(
     LazyColumn(
         modifier = modifier
     ) {
-        if (musicState.musics != null){
-            items(musicState.musics) { music ->
-                MusicItemComposable(
-                    music = music,
-                    onClick = onMusicEvent,
-                    onLongClick = {
-                        coroutineScope.launch {
-                            onMusicEvent(MusicEvent.SetSelectedMusic(music))
-                            onMusicEvent(MusicEvent.BottomSheet(isShown = true))
-                        }
+        items(musicState.musics) { music ->
+            MusicItemComposable(
+                music = music,
+                onClick = onMusicEvent,
+                onLongClick = {
+                    coroutineScope.launch {
+                        onMusicEvent(MusicEvent.SetSelectedMusic(music))
+                        onMusicEvent(MusicEvent.BottomSheet(isShown = true))
                     }
-                )
-            }
+                }
+            )
         }
     }
 }

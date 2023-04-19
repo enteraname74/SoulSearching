@@ -6,9 +6,9 @@ import com.github.soulsearching.database.model.Playlist
 import java.util.UUID
 
 interface PlaylistEvent {
-    object AddPlaylist : PlaylistEvent
     object UpdatePlaylist : PlaylistEvent
     object DeletePlaylist : PlaylistEvent
+    data class AddPlaylist(val name : String) : PlaylistEvent
     data class SetSelectedPlaylist(val playlist: Playlist) : PlaylistEvent
     data class TogglePlaylistSelectedState(val playlistId: UUID) : PlaylistEvent
     data class PlaylistFromId(val playlistId: UUID) : PlaylistEvent
@@ -18,4 +18,5 @@ interface PlaylistEvent {
     data class AddMusicToPlaylists(val musicId: UUID) : PlaylistEvent
     data class BottomSheet(val isShown: Boolean) : PlaylistEvent
     data class DeleteDialog(val isShown: Boolean) : PlaylistEvent
+    data class CreatePlaylistDialog(val isShown: Boolean) : PlaylistEvent
 }

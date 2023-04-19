@@ -16,6 +16,7 @@
     <string name="image">Image</string>
     <string name="search_button">Bouton de recherche</string>
     <string name="more_button">Bouton pour plus d\'options</string>
+    <string name="create_playlist_button">Bouton pour créer une playlist</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Ajouter à une playlist</string>
@@ -34,11 +35,13 @@
     <string name="album_name">Nom de l\'album</string>
 
     <!-- Dialog strings -->
-    <string name="delete_music_dialog_message">Voulez-vous vraiment supprimer cette musique ?</string>
-    <string name="delete_playlist_dialog_message">Voulez-vous vraiment supprimer cette playlist ?</string>
-    <string name="delete_music_dialog_info">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
+    <string name="delete_music_dialog_title">Voulez-vous vraiment supprimer cette musique ?</string>
+    <string name="delete_playlist_dialog_title">Voulez-vous vraiment supprimer cette playlist ?</string>
+    <string name="delete_music_dialog_text">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
+    <string name="create_playlist_dialog_title">Create a new playlist !</string>
     <string name="delete">Supprimer</string>
     <string name="cancel">Annuler</string>
+    <string name="create">Créer</string>
 
     <!-- Modify playlist strings -->
     <string name="playlist_information">Informations de la playlist</string>
