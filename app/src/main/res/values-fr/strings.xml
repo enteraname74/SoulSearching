@@ -48,4 +48,10 @@
     <!-- Modify artist strings -->
     <string name="artist_information">Informations de l\'artiste</string>
     <string name="artist_cover">Couverture de l\'artiste</string>
+
+    <!-- Sort strings -->
+    <string name="sort_by_date_added">Trier par data d\'ajout</string>
+    <string name="sort_by_most_listened">Trier par le nombre d\'écoutes</string>
+    <string name="sort_by_name">Trier par nom</string>
+    <string name="sort_by_asc_or_dsc">Tri ascendant ou descendant</string>
 </resources>

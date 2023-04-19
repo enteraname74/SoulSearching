@@ -2,11 +2,13 @@ package com.github.soulsearching.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.MusicBottomSheetsEvent
@@ -74,7 +77,18 @@ fun MainPageScreen(
                     ) {
                         SubMenuComposable(
                             title = stringResource(id = R.string.shortcuts),
-                            moreAction = {}
+                            sortByDateAction = {},
+                            sortByMostListenedAction = {},
+                            sortByName = {},
+                            setSortTypeAction = {},
+                            rightComposable = {
+                                TextButton(onClick = {}) {
+                                    Text(
+                                        text = stringResource(id = R.string.more),
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                            }
                         )
                         TestButtons(
                             onMusicEvent = allMusicsViewModel::onMusicEvent,
@@ -107,8 +121,23 @@ fun MainPageScreen(
                     )
                 }
                 stickyHeader {
-                    MusicSubMenuComposable(
-                        shuffleAction = {}
+                    SubMenuComposable(
+                        title = stringResource(id = R.string.musics),
+                        sortByDateAction = {},
+                        sortByMostListenedAction = {},
+                        sortByName = {},
+                        setSortTypeAction = {},
+                        rightComposable = {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(start = Constants.Spacing.large)
+                                    .size(Constants.ImageSize.medium)
+                                    .clickable {},
+                                imageVector = Icons.Default.Shuffle,
+                                contentDescription = stringResource(id = R.string.shuffle_button_desc),
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     )
                 }
                 items(musicState.musics) { music ->

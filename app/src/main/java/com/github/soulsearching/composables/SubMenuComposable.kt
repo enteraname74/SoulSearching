@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,11 +19,16 @@ import com.github.soulsearching.R
 @Composable
 fun SubMenuComposable(
     title: String,
-    moreAction: () -> Unit
+    sortByDateAction: () -> Unit,
+    sortByMostListenedAction: () -> Unit,
+    sortByName: () -> Unit,
+    setSortTypeAction: () -> Unit,
+    rightComposable: @Composable (() -> Unit)
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.primary)
             .padding(
                 top = Constants.Spacing.medium,
                 start = Constants.Spacing.medium,
@@ -37,11 +43,17 @@ fun SubMenuComposable(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall
         )
-        TextButton(onClick = moreAction) {
-            Text(
-                text = stringResource(id = R.string.more),
-                color = MaterialTheme.colorScheme.onPrimary
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+        ) {
+            SortOptionsComposable(
+                sortByDateAction = sortByDateAction,
+                sortByMostListenedAction = sortByMostListenedAction,
+                sortByName = sortByName,
+                setSortTypeAction = setSortTypeAction
             )
+            rightComposable()
         }
     }
 }

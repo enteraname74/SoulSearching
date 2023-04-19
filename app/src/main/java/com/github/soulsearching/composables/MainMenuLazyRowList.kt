@@ -7,10 +7,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.R
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.Playlist
@@ -32,7 +37,18 @@ fun MainMenuLazyListRow(
     ) {
         SubMenuComposable(
             title = title,
-            moreAction = navigateToMore
+            sortByDateAction = {},
+            sortByMostListenedAction = {},
+            sortByName = {},
+            setSortTypeAction = {},
+            rightComposable = {
+                TextButton(onClick = navigateToMore) {
+                    Text(
+                        text = stringResource(id = R.string.more),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
         )
         LazyRow(
             modifier = Modifier

@@ -47,4 +47,10 @@
     <!-- Modify artist strings -->
     <string name="artist_information">Artist\'s information</string>
     <string name="artist_cover">Artist\'s cover</string>
+
+    <!-- Sort strings -->
+    <string name="sort_by_date_added">Sort by date added</string>
+    <string name="sort_by_most_listened">Sort by most listened</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="sort_by_asc_or_dsc">ascending or descending Sort</string>
 </resources>
