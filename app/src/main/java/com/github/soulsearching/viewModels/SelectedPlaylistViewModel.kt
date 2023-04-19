@@ -4,17 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicPlaylist
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedPlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -33,8 +28,8 @@ class SelectedPlaylistViewModel @Inject constructor(
         PlaylistWithMusics()
     )
 
-    private val _playlistState = MutableStateFlow(SelectedPlaylistState())
-    var playlistState: StateFlow<SelectedPlaylistState> = _playlistState
+    private val _selectedPlaylistState = MutableStateFlow(SelectedPlaylistState())
+    var selectedPlaylistState: StateFlow<SelectedPlaylistState> = _selectedPlaylistState
 
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
@@ -46,7 +41,7 @@ class SelectedPlaylistViewModel @Inject constructor(
                 viewModelScope, SharingStarted.WhileSubscribed(), PlaylistWithMusics()
             )
 
-        playlistState = combine(_playlistState, _selectedPlaylistMusics) { state, playlist ->
+        selectedPlaylistState = combine(_selectedPlaylistState, _selectedPlaylistMusics) { state, playlist ->
             state.copy(
                 playlistWithMusics = playlist
             )
@@ -66,7 +61,7 @@ class SelectedPlaylistViewModel @Inject constructor(
             MusicState()
         )
 
-        _playlistState.update {
+        _selectedPlaylistState.update {
             it.copy(
                 playlistWithMusics = _selectedPlaylistMusics.value
             )
@@ -79,70 +74,19 @@ class SelectedPlaylistViewModel @Inject constructor(
         }
     }
 
-    fun onMusicEvent(event: MusicEvent) {
-        when (event) {
-            is MusicEvent.DeleteDialog -> {
-                _musicState.update {
-                    it.copy(
-                        isDeleteDialogShown = event.isShown
-                    )
-                }
-            }
-            MusicEvent.DeleteMusic -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    Utils.removeMusicFromApp(
-                        musicDao = musicDao,
-                        albumDao = albumDao,
-                        artistDao = artistDao,
-                        albumArtistDao = albumArtistDao,
-                        musicAlbumDao = musicAlbumDao,
-                        musicArtistDao = musicArtistDao,
-                        musicToRemove = musicState.value.selectedMusic
-                    )
-                }
-            }
-            MusicEvent.AddMusic -> {
-                val name = musicState.value.name
-
-                val music = Music(
-                    musicId = UUID.randomUUID(),
-                    name = name,
-                    album = "",
-                    artist = "",
-                    duration = 1000L,
-                    path = ""
-                )
-
-                viewModelScope.launch {
-                    musicDao.insertMusic(music)
-                }
-            }
-            is MusicEvent.SetSelectedMusic -> {
-                _musicState.update {
-                    it.copy(
-                        selectedMusic = event.music
-                    )
-                }
-            }
-            MusicEvent.AddToPlaylist -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val firstPlaylistId = playlistDao.getFirstPlaylistId()
-                    musicPlaylistDao.insertMusicIntoPlaylist(
-                        MusicPlaylist(
-                            musicId = musicState.value.selectedMusic.musicId,
-                            playlistId = firstPlaylistId
-                        )
-                    )
-                }
-            }
-            is MusicEvent.BottomSheet -> {
-                _musicState.update {
-                    it.copy(
-                        isBottomSheetShown = event.isShown
-                    )
-                }
-            }
-            else -> {}
-        }
+    fun onMusicEvent(event : MusicEvent) {
+        Utils.onMusicEvent(
+            event = event,
+            _state = _musicState,
+            state = musicState,
+            musicDao = musicDao,
+            playlistDao = playlistDao,
+            albumDao = albumDao,
+            artistDao = artistDao,
+            musicPlaylistDao = musicPlaylistDao,
+            musicAlbumDao = musicAlbumDao,
+            musicArtistDao = musicArtistDao,
+            albumArtistDao = albumArtistDao
+        )
     }
 }

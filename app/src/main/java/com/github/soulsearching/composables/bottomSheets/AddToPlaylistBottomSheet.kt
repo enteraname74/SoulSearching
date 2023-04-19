@@ -7,7 +7,6 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
@@ -54,10 +53,10 @@ fun AddToPlaylistBottomSheet(
                     }
             },
             validationAction = {
-                onPlaylistsEvent(PlaylistEvent.AddMusicToPlaylists(musicId = selectedMusicId))
                 coroutineScope.launch { addToPlaylistModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!addToPlaylistModalSheetState.isVisible) {
+                            onPlaylistsEvent(PlaylistEvent.AddMusicToPlaylists(musicId = selectedMusicId))
                             onMusicEvent(
                                 MusicEvent.AddToPlaylistBottomSheet(
                                     isShown = false

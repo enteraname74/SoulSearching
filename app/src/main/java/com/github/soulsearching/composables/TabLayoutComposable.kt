@@ -1,5 +1,5 @@
 package com.github.soulsearching.composables
-
+/*
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -25,6 +25,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TabLayoutComposable(
@@ -37,6 +38,7 @@ fun TabLayoutComposable(
     artistState: ArtistState,
     onArtistEvent: (ArtistEvent) -> Unit
 ) {
+
     val tabRowItems = listOf(
         TabRowItem(
             title = stringResource(R.string.musics),
@@ -103,4 +105,6 @@ fun TabLayoutComposable(
     ) {
         tabRowItems[it].screen()
     }
+
 }
+ */

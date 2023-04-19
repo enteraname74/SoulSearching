@@ -2,7 +2,6 @@ package com.github.soulsearching.composables.screens
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,15 +34,21 @@ import com.github.soulsearching.composables.MusicList
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
 
 @Composable
 fun PlaylistScreen(
     musicState: MusicState,
+    playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
+    onPlaylistEvent: (PlaylistEvent) -> Unit,
     title : String,
     image : Bitmap?,
-    editAction : () -> Unit = {}
+    navigateToModifyPlaylist : () -> Unit = {},
+    navigateToModifyMusic : (String) -> Unit,
+    navigateBack : () -> Unit
 ) {
     val configuration = LocalConfiguration.current
 
@@ -68,7 +72,8 @@ fun PlaylistScreen(
                         .fillMaxHeight()
                         .align(Alignment.TopStart)
                         .width(startWidth),
-                    alignment = Alignment.TopStart
+                    alignment = Alignment.TopStart,
+                    navigateBack = navigateBack
                 )
                 ColumnPlaylistPanel(
                     modifier = Modifier
@@ -76,17 +81,20 @@ fun PlaylistScreen(
                         .fillMaxHeight()
                         .width(centerWidth)
                         .align(Alignment.CenterEnd),
-                    editAction = editAction
+                    editAction = navigateToModifyPlaylist
                 )
                 MusicList(
-                    state = musicState,
-                    onEvent = onMusicEvent,
+                    musicState = musicState,
+                    playlistState = playlistState,
+                    onMusicEvent = onMusicEvent,
+                    onPlaylistEvent = onPlaylistEvent,
+                    navigateToModifyMusic = navigateToModifyMusic,
                     modifier = Modifier
                         .fillMaxHeight()
                         .align(Alignment.TopEnd)
                         .width(endWidth - (endWidth - centerPaddingEnd))
                         .background(color = MaterialTheme.colorScheme.secondary)
-                        .padding(Constants.Spacing.large)
+                        .padding(Constants.Spacing.large),
                 )
             }
             else -> {
@@ -103,7 +111,8 @@ fun PlaylistScreen(
                         .fillMaxWidth()
                         .align(Alignment.TopStart)
                         .height(topHeight),
-                    alignment = Alignment.TopStart
+                    alignment = Alignment.TopStart,
+                    navigateBack = navigateBack
                 )
                 RowPlaylistPanel(
                     modifier = Modifier
@@ -111,11 +120,14 @@ fun PlaylistScreen(
                         .fillMaxWidth()
                         .height(centerHeight)
                         .align(Alignment.BottomCenter),
-                    editAction = editAction
+                    editAction = navigateToModifyPlaylist
                 )
                 MusicList(
-                    state = musicState,
-                    onEvent = onMusicEvent,
+                    musicState = musicState,
+                    playlistState = playlistState,
+                    onMusicEvent = onMusicEvent,
+                    onPlaylistEvent = onPlaylistEvent,
+                    navigateToModifyMusic = navigateToModifyMusic,
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomStart)
@@ -135,11 +147,9 @@ fun TopPlaylistInformation(
     title : String,
     image : Bitmap?,
     modifier: Modifier = Modifier,
-    alignment: Alignment
+    alignment: Alignment,
+    navigateBack: () -> Unit
 ) {
-
-    val activity = LocalContext.current as Activity
-
     Box(
         modifier = modifier
     ) {
@@ -167,7 +177,7 @@ fun TopPlaylistInformation(
                 .size(Constants.ImageSize.medium)
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.6F), CircleShape)
                 .clickable {
-                    activity.finish()
+                    navigateBack()
                 },
             imageVector = Icons.Default.ArrowBack,
             contentDescription = stringResource(id = R.string.playlist_cover),

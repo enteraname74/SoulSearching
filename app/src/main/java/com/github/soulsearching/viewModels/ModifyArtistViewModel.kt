@@ -90,7 +90,7 @@ class ModifyArtistViewModel @Inject constructor(
                         } else if (albumWithMusicToUpdate != null) {
                             // Sinon, on met à jour l'id de l'artiste
                             albumArtistDao.updateArtistOfAlbum(
-                                albumId = albumWithMusicToUpdate!!.album.albumId,
+                                albumId = albumWithMusicToUpdate.album.albumId,
                                 newArtistId = state.value.artistWithMusics.artist.artistId
                             )
                         }

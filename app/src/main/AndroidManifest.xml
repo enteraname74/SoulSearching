@@ -13,61 +13,6 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <activity
-            android:name=".TestActivity"
-            android:exported="false"
-            android:label="@string/title_activity_test"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".MoreArtistsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_more_artists"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".MoreAlbumsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_more_albums"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".MorePlaylistsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_more_playlists"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".ModifyArtistActivity"
-            android:exported="false"
-            android:label="@string/title_activity_modify_artist"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".SelectedArtistActivity"
-            android:exported="false"
-            android:label="@string/title_activity_selected_artist"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".ModifyAlbumActivity"
-            android:exported="false"
-            android:label="@string/title_activity_modify_album"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".SelectedAlbumActivity"
-            android:exported="false"
-            android:label="@string/title_activity_selected_album"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".ModifyPlaylistActivity"
-            android:exported="false"
-            android:label="@string/title_activity_modify_playlist"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".ModifyMusicActivity"
-            android:exported="false"
-            android:label="@string/title_activity_modify_music"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
-            android:name=".SelectedPlaylistActivity"
-            android:exported="false"
-            android:label="@string/title_activity_selected_playlist"
-            android:theme="@style/Theme.SoulSearching" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.SoulSearching">

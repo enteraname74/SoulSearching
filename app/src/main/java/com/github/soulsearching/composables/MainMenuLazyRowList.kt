@@ -1,7 +1,5 @@
 package com.github.soulsearching.composables
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,28 +9,22 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.SelectedAlbumActivity
-import com.github.soulsearching.SelectedArtistActivity
-import com.github.soulsearching.SelectedPlaylistActivity
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.Playlist
-import com.github.soulsearching.events.AlbumEvent
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainMenuLazyListRow(
-    list : List<Any>,
-    title : String,
-    moreActivity : Class<Any>,
-    deleteAlbumAction : (AlbumEvent) -> Unit
+    list: List<Any>,
+    title: String,
+    navigateToMore: () -> Unit,
+    navigateToPlaylist: (String) -> Unit = {},
+    navigateToAlbum: (String) -> Unit = {},
+    navigateToArtist: (String) -> Unit = {},
 ) {
-
-    val context = LocalContext.current as Activity
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,14 +32,7 @@ fun MainMenuLazyListRow(
     ) {
         SubMenuComposable(
             title = title,
-            moreAction = {
-                context.startActivity(
-                    Intent(
-                        context,
-                        moreActivity
-                    )
-                )
-            }
+            moreAction = navigateToMore
         )
         LazyRow(
             modifier = Modifier
@@ -58,9 +43,9 @@ fun MainMenuLazyListRow(
                 ),
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            items(list){element ->
+            items(list) { element ->
                 val modifier = Modifier.animateItemPlacement()
-                when(element) {
+                when (element) {
                     is Playlist -> {
                         LazyRowComposable(
                             modifier = modifier,
@@ -68,15 +53,7 @@ fun MainMenuLazyListRow(
                             title = element.name,
                             text = "",
                             onClick = {
-                                val intent = Intent(
-                                    context,
-                                    SelectedPlaylistActivity::class.java
-                                )
-                                intent.putExtra(
-                                    "playlistId",
-                                    element.playlistId.toString()
-                                )
-                                context.startActivity(intent)
+                                navigateToPlaylist(element.playlistId.toString())
                             }
                         )
                     }
@@ -87,17 +64,8 @@ fun MainMenuLazyListRow(
                             title = element.album.albumName,
                             text = if (element.artist != null) element.artist.artistName else "",
                             onClick = {
-                                val intent = Intent(
-                                    context,
-                                    SelectedAlbumActivity::class.java
-                                )
-                                intent.putExtra(
-                                    "albumId",
-                                    element.album.albumId.toString()
-                                )
-                                context.startActivity(intent)
-                            },
-                            onLongClick = { deleteAlbumAction(AlbumEvent.DeleteAlbum(album = element.album)) }
+                                navigateToAlbum(element.album.albumId.toString())
+                            }
                         )
                     }
                     is Artist -> {
@@ -107,15 +75,7 @@ fun MainMenuLazyListRow(
                             title = element.artistName,
                             text = "",
                             onClick = {
-                                val intent = Intent(
-                                    context,
-                                    SelectedArtistActivity::class.java
-                                )
-                                intent.putExtra(
-                                    "artistId",
-                                    element.artistId.toString()
-                                )
-                                context.startActivity(intent)
+                                navigateToArtist(element.artistId.toString())
                             }
                         )
                     }

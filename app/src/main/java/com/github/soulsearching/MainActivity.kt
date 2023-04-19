@@ -1,203 +1,239 @@
 package com.github.soulsearching
 
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.github.soulsearching.composables.*
-import com.github.soulsearching.composables.bottomSheets.AddToPlaylistBottomSheet
-import com.github.soulsearching.composables.bottomSheets.MusicBottomSheet
 import com.github.soulsearching.composables.bottomSheets.TestBottomSheet
-import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
-import com.github.soulsearching.composables.screens.TestButtons
-import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.screens.*
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.AllAlbumsViewModel
-import com.github.soulsearching.viewModels.AllArtistsViewModel
-import com.github.soulsearching.viewModels.AllMusicsViewModel
-import com.github.soulsearching.viewModels.AllPlaylistsViewModel
+import com.github.soulsearching.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @Suppress("UNCHECKED_CAST")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    // Main page view models
     private val allMusicsViewModel: AllMusicsViewModel by viewModels()
     private val allPlaylistsViewModel: AllPlaylistsViewModel by viewModels()
     private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
     private val allArtistsViewModel: AllArtistsViewModel by viewModels()
 
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+    // Selected page view models
+    private val selectedPlaylistViewModel: SelectedPlaylistViewModel by viewModels()
+    private val selectedAlbumViewModel: SelectedAlbumViewModel by viewModels()
+    private val selectedArtistsViewModel: SelectedArtistViewModel by viewModels()
+
+    // Modify page view models
+    private val modifyPlaylistViewModel: ModifyPlaylistViewModel by viewModels()
+    private val modifyAlbumViewModel: ModifyAlbumViewModel by viewModels()
+    private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
+    private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
+
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val musicState by allMusicsViewModel.state.collectAsState()
-            val playlistState by allPlaylistsViewModel.state.collectAsState()
-            val albumState by allAlbumsViewModel.state.collectAsState()
-            val artistState by allArtistsViewModel.state.collectAsState()
-
-            val coroutineScope = rememberCoroutineScope()
-            val musicModalSheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = true
-            )
-            val addToPlaylistModalSheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = true
-            )
-
-            BackHandler(addToPlaylistModalSheetState.isVisible) {
-                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
-            }
-
-            BackHandler(musicModalSheetState.isVisible) {
-                Log.d("STOP VISIBLE", "STOP VISIBLE")
-                coroutineScope.launch { musicModalSheetState.hide() }
-            }
-
             SoulSearchingTheme {
-                if (musicState.isDeleteDialogShown) {
-                    DeleteMusicDialog(
-                        onMusicEvent = allMusicsViewModel::onMusicEvent,
-                        confirmAction = {
-                            coroutineScope.launch { musicModalSheetState.hide() }
-                                .invokeOnCompletion {
-                                    if (!musicModalSheetState.isVisible) {
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.BottomSheet(
-                                                isShown = false
-                                            )
-                                        )
-                                    }
-                                }
-                        }
-                    )
-                }
 
-                if (musicState.isBottomSheetShown) {
-                    MusicBottomSheet(
-                        onMusicEvent = allMusicsViewModel::onMusicEvent,
-                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent,
-                        musicModalSheetState = musicModalSheetState,
-                        musicState = musicState
-                    )
-                }
+                val playlistState by allPlaylistsViewModel.state.collectAsState()
 
-                if (musicState.isAddToPlaylistDialogShown) {
-                    AddToPlaylistBottomSheet(
-                        selectedMusicId = musicState.selectedMusic.musicId,
-                        onMusicEvent = allMusicsViewModel::onMusicEvent,
-                        onPlaylistsEvent = allPlaylistsViewModel::onPlaylistsEvent,
-                        musicModalSheetState = musicModalSheetState,
-                        addToPlaylistModalSheetState = addToPlaylistModalSheetState,
-                        playlistState = playlistState
-                    )
-                }
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
+                    val navController = rememberNavController()
                     val constraintsScope = this
                     val maxHeight = with(LocalDensity.current) {
                         constraintsScope.maxHeight.toPx()
                     }
-                    Scaffold(
-                        topBar = { MainMenuHeaderComposable() },
-                        content = { paddingValues ->
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.primary)
-                                    .padding(paddingValues)
-                            ) {
-                                item {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 24.dp)
-                                    ) {
-                                        SubMenuComposable(
-                                            title = stringResource(id = R.string.shortcuts),
-                                            moreAction = {}
-                                        )
-                                        TestButtons(
-                                            onMusicEvent = allMusicsViewModel::onMusicEvent,
-                                            onPlaylistEvent = allPlaylistsViewModel::onPlaylistsEvent
-                                        )
-                                    }
+
+                    NavHost(navController = navController, startDestination = "mainPage") {
+                        composable("mainPage") {
+                            MainPageScreen(
+                                allMusicsViewModel = allMusicsViewModel,
+                                allPlaylistsViewModel = allPlaylistsViewModel,
+                                allAlbumsViewModel = allAlbumsViewModel,
+                                allArtistsViewModel = allArtistsViewModel,
+                                navigateToPlaylist = {
+                                    navController.navigate("selectedPlaylist/$it")
+                                },
+                                navigateToAlbum = {
+                                    navController.navigate("selectedAlbum/$it")
+                                },
+                                navigateToArtist = {
+                                    navController.navigate("selectedArtist/$it")
+                                },
+                                navigateToMoreAlbums = {
+                                    navController.navigate("moreAlbums")
+                                },
+                                navigateToMoreArtists = {
+                                    navController.navigate("moreArtists")
+                                },
+                                navigateToMorePlaylist = {
+                                    navController.navigate("morePlaylists")
+                                },
+                                navigateToMoreShortcuts = {
+                                    navController.navigate("moreShortcuts")
+                                },
+                                navigateToModifyMusic = {
+                                    navController.navigate("modifyMusic/$it")
                                 }
-                                item {
-                                    MainMenuLazyListRow(
-                                        list = playlistState.playlists,
-                                        title = stringResource(id = R.string.playlists),
-                                        moreActivity = MorePlaylistsActivity::class.java as Class<Any>,
-                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
-                                    )
-                                }
-                                item {
-                                    MainMenuLazyListRow(
-                                        list = albumState.albums,
-                                        title = stringResource(id = R.string.albums),
-                                        moreActivity = MoreAlbumsActivity::class.java as Class<Any>,
-                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
-                                    )
-                                }
-                                item {
-                                    MainMenuLazyListRow(
-                                        list = artistState.artists,
-                                        title = stringResource(id = R.string.artists),
-                                        moreActivity = MoreArtistsActivity::class.java as Class<Any>,
-                                        deleteAlbumAction = allAlbumsViewModel::onAlbumEvent
-                                    )
-                                }
-                                stickyHeader {
-                                    MusicSubMenuComposable(
-                                        shuffleAction = {}
-                                    )
-                                }
-                                items(musicState.musics) { music ->
-                                    Row(Modifier.animateItemPlacement()) {
-                                        MusicItemComposable(
-                                            music = music,
-                                            onClick = allMusicsViewModel::onMusicEvent,
-                                            onLongClick = {
-                                                coroutineScope.launch {
-                                                    allMusicsViewModel.onMusicEvent(
-                                                        MusicEvent.SetSelectedMusic(
-                                                            music
-                                                        )
-                                                    )
-                                                    allMusicsViewModel.onMusicEvent(
-                                                        MusicEvent.BottomSheet(
-                                                            isShown = true
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                        )
-                                    }
-                                }
-                            }
+                            )
                         }
-                    )
+                        composable(
+                            "selectedPlaylist/{playlistId}",
+                            arguments = listOf(navArgument("playlistId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            SelectedPlaylistScreen(
+                                selectedPlaylistViewModel = selectedPlaylistViewModel,
+                                navigateToModifyPlaylist = {
+                                    navController.navigate(
+                                        "modifyPlaylist/" + backStackEntry.arguments?.getString(
+                                            "playlistId"
+                                        )
+                                    )
+                                },
+                                selectedPlaylistId = backStackEntry.arguments?.getString("playlistId")!!,
+                                playlistState = playlistState,
+                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
+                                navigateBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "selectedAlbum/{albumId}",
+                            arguments = listOf(navArgument("albumId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            SelectedAlbumScreen(
+                                selectedAlbumViewModel = selectedAlbumViewModel,
+                                navigateToModifyAlbum = {
+                                    navController.navigate(
+                                        "modifyAlbum/" + backStackEntry.arguments?.getString(
+                                            "albumId"
+                                        )
+                                    )
+                                },
+                                selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
+                                playlistState = playlistState,
+                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
+                                navigateBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "selectedArtist/{artistId}",
+                            arguments = listOf(navArgument("artistId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            SelectedArtistScreen(
+                                selectedArtistViewModel = selectedArtistsViewModel,
+                                navigateToModifyArtist = {
+                                    navController.navigate(
+                                        "modifyArtist/" + backStackEntry.arguments?.getString(
+                                            "artistId"
+                                        )
+                                    )
+                                },
+                                selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
+                                playlistState = playlistState,
+                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
+                                navigateBack = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "modifyPlaylist/{playlistId}",
+                            arguments = listOf(navArgument("playlistId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            ModifyPlaylistScreen(
+                                modifyPlaylistViewModel = modifyPlaylistViewModel,
+                                selectedPlaylistId = backStackEntry.arguments?.getString("playlistId")!!,
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "modifyMusic/{musicId}",
+                            arguments = listOf(navArgument("musicId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            ModifyMusicScreen(
+                                modifyMusicViewModel = modifyMusicViewModel,
+                                selectedMusicId = backStackEntry.arguments?.getString("musicId")!!,
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "modifyAlbum/{albumId}",
+                            arguments = listOf(navArgument("albumId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            ModifyAlbumScreen(
+                                modifyAlbumViewModel = modifyAlbumViewModel,
+                                selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "modifyArtist/{artistId}",
+                            arguments = listOf(navArgument("artistId") {
+                                type = NavType.StringType
+                            })
+                        ) { backStackEntry ->
+                            ModifyArtistScreen(
+                                modifyArtistViewModel = modifyArtistViewModel,
+                                selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "morePlaylists"
+                        ) {
+                            MorePlaylistsScreen(
+                                allPlaylistsViewModel = allPlaylistsViewModel,
+                                navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "moreAlbums"
+                        ) {
+                            MoreAlbumsScreen(
+                                allAlbumsViewModel = allAlbumsViewModel,
+                                navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                        composable(
+                            "moreArtists"
+                        ) {
+                            MoreArtistsScreen(
+                                allArtistsViewModel = allArtistsViewModel,
+                                navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
+                                finishAction = { navController.popBackStack() }
+                            )
+                        }
+                    }
                     TestBottomSheet(maxHeight = maxHeight)
                 }
             }

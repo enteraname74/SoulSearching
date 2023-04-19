@@ -1,12 +1,4 @@
 <resources>
-    <string name="title_activity_selected_playlist">SelectedPlaylistActivity</string>
-    <string name="title_activity_modify_music">ModifyMusicActivity</string>
-    <string name="title_activity_modify_playlist">ModifyPlaylistActivity</string>
-    <string name="title_activity_selected_album">SelectedAlbumActivity</string>
-    <string name="title_activity_modify_album">ModifyAlbumActivity</string>
-    <string name="title_activity_selected_artist">SelectedArtistActivity</string>
-    <string name="title_activity_modify_artist">ModifyArtistActivity</string>
-
     <string name="app_name">Soul Searching</string>
     <string name="musics">Musics</string>
     <string name="playlists">Playlists</string>
@@ -22,6 +14,7 @@
     <string name="header_bar_right_button">Header bar right button</string>
     <string name="image">Image</string>
     <string name="search_button">Search button</string>
+    <string name="more_button">More button</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Add to a playlist</string>
@@ -32,10 +25,10 @@
 
     <!-- Modify music strings -->
     <string name="music_information">Music\'s information</string>
-    <string name="album_cover">Album cover</string>
+    <string name="album_cover">Album\'s cover</string>
     <string name="music_name">Music\'s name</string>
-    <string name="artist_name">Music\'s artist</string>
-    <string name="album_name">Music\'s album</string>
+    <string name="artist_name">Artist\'s name</string>
+    <string name="album_name">Album\'s name</string>
 
     <!-- Dialog strings -->
     <string name="delete_dialog_message">Are you sure to delete this music ?</string>
@@ -54,9 +47,4 @@
     <!-- Modify artist strings -->
     <string name="artist_information">Artist\'s information</string>
     <string name="artist_cover">Artist\'s cover</string>
-    <string name="title_activity_more_playlists">MorePlaylistsActivity</string>
-    <string name="title_activity_more_albums">MoreAlbumsActivity</string>
-    <string name="title_activity_more_artists">MoreArtistsActivity</string>
-    <string name="title_activity_test">TestActivity</string>
-
 </resources>

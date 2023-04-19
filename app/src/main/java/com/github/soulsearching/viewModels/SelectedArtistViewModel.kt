@@ -6,16 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ArtistWithMusics
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -24,6 +20,8 @@ class SelectedArtistViewModel @Inject constructor(
     private val artistDao: ArtistDao,
     private val musicDao: MusicDao,
     private val albumDao: AlbumDao,
+    private val playlistDao: PlaylistDao,
+    private val musicPlaylistDao: MusicPlaylistDao,
     private val albumArtistDao: AlbumArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao
@@ -77,72 +75,19 @@ class SelectedArtistViewModel @Inject constructor(
     }
 
     fun onMusicEvent(event: MusicEvent) {
-        when (event) {
-            is MusicEvent.DeleteDialog -> {
-                _musicState.update {
-                    it.copy(
-                        isDeleteDialogShown = event.isShown
-                    )
-                }
-            }
-            MusicEvent.DeleteMusic -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    Utils.removeMusicFromApp(
-                        musicDao = musicDao,
-                        albumDao = albumDao,
-                        artistDao = artistDao,
-                        albumArtistDao = albumArtistDao,
-                        musicAlbumDao = musicAlbumDao,
-                        musicArtistDao = musicArtistDao,
-                        musicToRemove = musicState.value.selectedMusic
-                    )
-                }
-            }
-            MusicEvent.AddMusic -> {
-                val name = musicState.value.name
-
-                val music = Music(
-                    musicId = UUID.randomUUID(),
-                    name = name,
-                    album = "",
-                    artist = "",
-                    duration = 1000L,
-                    path = ""
-                )
-
-                viewModelScope.launch {
-                    musicDao.insertMusic(music)
-                }
-            }
-            is MusicEvent.SetSelectedMusic -> {
-                _musicState.update {
-                    it.copy(
-                        selectedMusic = event.music
-                    )
-                }
-            }
-            MusicEvent.AddToPlaylist -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    /*
-                    val firstPlaylistId = playlistDao.getFirstPlaylistId()
-                    musicPlaylistDao.insertMusicIntoPlaylist(
-                        MusicPlaylist(
-                            musicId = musicState.value.selectedMusic.musicId,
-                            playlistId = firstPlaylistId
-                        )
-                    )
-                     */
-                }
-            }
-            is MusicEvent.BottomSheet -> {
-                _musicState.update {
-                    it.copy(
-                        isBottomSheetShown = event.isShown
-                    )
-                }
-            }
-            else -> {}
-        }
+        Utils.onMusicEvent(
+            event = event,
+            _state = _musicState,
+            state = musicState,
+            musicDao = musicDao,
+            playlistDao = playlistDao,
+            albumDao = albumDao,
+            artistDao = artistDao,
+            musicPlaylistDao = musicPlaylistDao,
+            musicAlbumDao = musicAlbumDao,
+            musicArtistDao = musicArtistDao,
+            albumArtistDao = albumArtistDao
+        )
     }
 
     fun onArtistEvent(event : AlbumEvent) {

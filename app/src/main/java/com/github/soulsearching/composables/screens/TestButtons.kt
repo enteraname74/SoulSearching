@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables.screens
 
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
@@ -11,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.TestActivity
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 
@@ -51,13 +49,6 @@ fun TestButtons(
         item {
             Button(onClick = { /*TODO*/ }) {
                 Text("Test ajout last play")
-            }
-        }
-        item {
-            Button(onClick = {
-                context.startActivity(Intent(context, TestActivity::class.java))
-            }) {
-                Text("Test activity")
             }
         }
     }

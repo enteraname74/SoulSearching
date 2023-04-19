@@ -5,17 +5,25 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.util.Size
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumArtist
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.database.model.*
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.*
 
 class Utils {
     companion object {
+        private var isAddingMusic = false
+
         fun getBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap {
             return if (Build.VERSION.SDK_INT >= 29) {
                 contentResolver.loadThumbnail(
@@ -33,7 +41,7 @@ class Utils {
             }
         }
 
-        suspend fun removeMusicFromApp(
+        private suspend fun removeMusicFromApp(
             musicDao: MusicDao,
             albumDao: AlbumDao,
             artistDao: ArtistDao,
@@ -88,9 +96,6 @@ class Utils {
             musicAlbumDao: MusicAlbumDao,
             albumArtistDao: AlbumArtistDao
         ) {
-            Log.d("TOT", musicAlbumDao.getNumberOfMusicsFromAlbum(
-                albumId = albumToCheck.albumId
-            ).toString())
             if (musicAlbumDao.getNumberOfMusicsFromAlbum(
                     albumId = albumToCheck.albumId
                 ) == 0
@@ -108,11 +113,6 @@ class Utils {
             musicArtistDao: MusicArtistDao,
             artistDao: ArtistDao
         ) {
-            Log.d(
-                "Number of musics in artist", artistToCheck.artistName + " : " +
-                        musicArtistDao.getNumberOfMusicsFromArtist(artistId = artistToCheck.artistId)
-                            .toString()
-            )
             if (musicArtistDao.getNumberOfMusicsFromArtist(
                     artistId = artistToCheck.artistId
                 ) == 0
@@ -210,6 +210,246 @@ class Utils {
                 artistDao.getArtistFromId(
                     artistId = artistId
                 )
+            }
+        }
+
+        fun onMusicEvent(
+            event : MusicEvent,
+            _state : MutableStateFlow<MusicState>,
+            state : StateFlow<MusicState>,
+            musicDao : MusicDao,
+            playlistDao: PlaylistDao,
+            albumDao : AlbumDao,
+            artistDao: ArtistDao,
+            musicPlaylistDao : MusicPlaylistDao,
+            musicAlbumDao: MusicAlbumDao,
+            musicArtistDao: MusicArtistDao,
+            albumArtistDao: AlbumArtistDao,
+        ) {
+            when (event) {
+                is MusicEvent.DeleteDialog -> {
+                    _state.update {
+                        it.copy(
+                            isDeleteDialogShown = event.isShown
+                        )
+                    }
+                }
+                MusicEvent.DeleteMusic -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        removeMusicFromApp(
+                            musicDao = musicDao,
+                            albumDao = albumDao,
+                            artistDao = artistDao,
+                            albumArtistDao = albumArtistDao,
+                            musicAlbumDao = musicAlbumDao,
+                            musicArtistDao = musicArtistDao,
+                            musicToRemove = state.value.selectedMusic
+                        )
+                    }
+                }
+                MusicEvent.AddMusic -> {
+                    if (!isAddingMusic) {
+                        isAddingMusic = true
+                        val music = Music(
+                            musicId = UUID.randomUUID(),
+                            name = "Nom Musique",
+                            album = "Nom Album",
+                            artist = "Nom Artiste",
+                            duration = 1000L,
+                            path = ""
+                        )
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val correspondingArtist = artistDao.getArtistFromInfo(
+                                artistName = music.artist
+                            )
+                            val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
+                            val correspondingAlbum = allAlbums.find {
+                                (it.album.albumName == music.album)
+                                        && (it.artist!!.artistName == music.artist)
+                            }
+                            var albumId = UUID.randomUUID()
+                            var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
+                            if (correspondingAlbum == null) {
+                                albumDao.insertAlbum(
+                                    Album(
+                                        albumId = albumId,
+                                        albumName = music.album,
+                                        albumCover = music.albumCover,
+                                    )
+                                )
+                                artistDao.insertArtist(
+                                    Artist(
+                                        artistId = artistId,
+                                        artistName = music.artist,
+                                        artistCover = music.albumCover
+                                    )
+                                )
+                                albumArtistDao.insertAlbumIntoArtist(
+                                    AlbumArtist(
+                                        albumId = albumId,
+                                        artistId = artistId
+                                    )
+                                )
+
+                            } else {
+                                albumId = correspondingAlbum.album.albumId
+                                artistId = correspondingAlbum.artist!!.artistId
+                                // Si la musique n'a pas de couverture, on lui donne celle de son album :
+                                if (music.albumCover == null) {
+                                    music.albumCover = correspondingAlbum.album.albumCover
+                                }
+                            }
+                            musicDao.insertMusic(music)
+                            musicAlbumDao.insertMusicIntoAlbum(
+                                MusicAlbum(
+                                    musicId = music.musicId,
+                                    albumId = albumId
+                                )
+                            )
+                            musicArtistDao.insertMusicIntoArtist(
+                                MusicArtist(
+                                    musicId = music.musicId,
+                                    artistId = artistId
+                                )
+                            )
+                            isAddingMusic = false
+                        }
+                    }
+                }
+                is MusicEvent.SetSelectedMusic -> {
+                    _state.update {
+                        it.copy(
+                            selectedMusic = event.music
+                        )
+                    }
+                }
+                MusicEvent.AddToPlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val firstPlaylistId = playlistDao.getFirstPlaylistId()
+                        musicPlaylistDao.insertMusicIntoPlaylist(
+                            MusicPlaylist(
+                                musicId = state.value.selectedMusic.musicId,
+                                playlistId = firstPlaylistId
+                            )
+                        )
+                    }
+                }
+                is MusicEvent.BottomSheet -> {
+                    _state.update {
+                        it.copy(
+                            isBottomSheetShown = event.isShown
+                        )
+                    }
+                }
+                is MusicEvent.AddToPlaylistBottomSheet -> {
+                    _state.update {
+                        it.copy(
+                            isAddToPlaylistDialogShown = event.isShown
+                        )
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        fun onPlaylistEvent(
+            event : PlaylistEvent,
+            _state : MutableStateFlow<PlaylistState>,
+            state : StateFlow<PlaylistState>,
+            playlistDao: PlaylistDao,
+            musicPlaylistDao: MusicPlaylistDao
+        ) {
+            when(event){
+                is PlaylistEvent.AddPlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playlistDao.insertPlaylist(
+                            Playlist(
+                                playlistId = UUID.randomUUID(),
+                                name = "test"
+                            )
+                        )
+                    }
+                }
+                is PlaylistEvent.AddMusicToPlaylists -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        for (selectedPlaylistId in state.value.multiplePlaylistSelected) {
+                            musicPlaylistDao.insertMusicIntoPlaylist(
+                                MusicPlaylist(
+                                    musicId = event.musicId,
+                                    playlistId = selectedPlaylistId
+                                )
+                            )
+                        }
+                        _state.update {it.copy(
+                            multiplePlaylistSelected = ArrayList()
+                        )
+                        }
+                    }
+                }
+                is PlaylistEvent.DeletePlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playlistDao.deletePlaylist(event.playlist)
+                    }
+                }
+                is PlaylistEvent.SetSelectedPlaylist -> {
+                    _state.update { it.copy(
+                        selectedPlaylist = event.playlist
+                    ) }
+                }
+                is PlaylistEvent.TogglePlaylistSelectedState -> {
+                    val newList = ArrayList(state.value.multiplePlaylistSelected)
+                    if (event.playlistId in newList) newList.remove(event.playlistId)
+                    else newList.add(event.playlistId)
+
+                    _state.update {it.copy(
+                        multiplePlaylistSelected = newList
+                    )
+                    }
+                }
+                is PlaylistEvent.PlaylistsSelection -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val playlists = playlistDao.getAllPlaylistsWithMusicsSimple().filter { playlistWithMusics ->
+                            playlistWithMusics.musics.find { it.musicId == event.musicId } == null
+                        }
+                        _state.update { it.copy(
+                            multiplePlaylistSelected = ArrayList(),
+                            playlistsWithoutMusicId = playlists
+                        ) }
+                    }
+                }
+                PlaylistEvent.UpdatePlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playlistDao.insertPlaylist(
+                            Playlist(
+                                playlistId = state.value.selectedPlaylist.playlistId,
+                                name = state.value.name,
+                                playlistCover = state.value.cover
+                            )
+                        )
+                    }
+                }
+                is PlaylistEvent.PlaylistFromId -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val playlist = playlistDao.getPlaylistFromId(event.playlistId)
+                        _state.update { it.copy(
+                            selectedPlaylist = playlist,
+                            name = playlist.name,
+                            cover = playlist.playlistCover
+                        ) }
+                    }
+                }
+                is PlaylistEvent.SetName -> {
+                    _state.update { it.copy(
+                        name = event.name
+                    ) }
+                }
+                is PlaylistEvent.SetCover -> {
+                    _state.update { it.copy(
+                        cover = event.cover
+                    ) }
+                }
+                else -> {}
             }
         }
     }
