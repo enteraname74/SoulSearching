@@ -40,14 +40,14 @@ class ModifyAlbumViewModel @Inject constructor(
 
                     val initialAlbum = albumDao.getAlbumFromId(
                         albumId = state.value.albumWithMusics.album.albumId
-                    )
+                    )!!
 
                     val initialArtist = artistDao.getArtistFromId(
                         artistId = state.value.albumWithMusics.artist!!.artistId
                     )
                     var currentArtist = initialArtist
 
-                    if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist.artistName) {
+                    if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist!!.artistName) {
                         // On cherche le nouvel artiste correspondant :
                         var newArtist = artistDao.getArtistFromInfo(
                             artistName = state.value.albumWithMusics.artist!!.artistName.trim()
@@ -74,7 +74,7 @@ class ModifyAlbumViewModel @Inject constructor(
                             artistId = newArtist.artistId
                         )
 
-                        if (duplicateAlbum != null){
+                        if (duplicateAlbum != null) {
                             /*
                              Un album a le même nom d'album et d'artiste !
                              On redirige les musiques de l'album dupliqué :
@@ -92,14 +92,14 @@ class ModifyAlbumViewModel @Inject constructor(
                             )
                         }
                         currentArtist = newArtist
-                    } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName){
+                    } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName) {
                         val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
                             albumId = state.value.albumWithMusics.album.albumId,
                             albumName = state.value.albumWithMusics.album.albumName.trim(),
                             artistId = state.value.albumWithMusics.artist!!.artistId
                         )
 
-                        if (duplicateAlbum != null){
+                        if (duplicateAlbum != null) {
                             /*
                              Un album a le même nom d'album et d'artiste !
                              On redirige les musiques de l'album dupliqué :
@@ -141,7 +141,7 @@ class ModifyAlbumViewModel @Inject constructor(
                         // Ainsi que leur liens :
                         musicArtistDao.updateArtistOfMusic(
                             musicId = music.musicId,
-                            newArtistId = currentArtist.artistId
+                            newArtistId = currentArtist!!.artistId
                         )
                     }
 

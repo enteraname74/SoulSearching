@@ -23,11 +23,11 @@ interface AlbumDao {
     fun getAllAlbums(): Flow<List<Album>>
 
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumFromId(albumId: UUID): Album
+    fun getAlbumFromId(albumId: UUID): Album?
 
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
-    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics>
+    fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?>
 
     @Transaction
     @Query("SELECT * FROM Album WHERE albumId = :albumId")

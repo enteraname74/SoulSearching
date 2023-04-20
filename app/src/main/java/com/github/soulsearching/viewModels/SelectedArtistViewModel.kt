@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
-import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.events.AlbumEvent
@@ -27,7 +26,7 @@ class SelectedArtistViewModel @Inject constructor(
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
-    private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics> = MutableStateFlow(ArtistWithMusics())
+    private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics?> = MutableStateFlow(ArtistWithMusics())
 
     private val _selectedArtistState = MutableStateFlow(SelectedArtistState())
     var selectedArtistState: StateFlow<SelectedArtistState> = _selectedArtistState
@@ -44,7 +43,7 @@ class SelectedArtistViewModel @Inject constructor(
 
         selectedArtistState = combine(_selectedArtistState, _selectedArtistWithMusics) { state, artist ->
             state.copy(
-                artistWithMusics = artist
+                artistWithMusics = artist ?: ArtistWithMusics()
             )
         }.stateIn(
             viewModelScope,
@@ -54,7 +53,7 @@ class SelectedArtistViewModel @Inject constructor(
 
         musicState = combine(_musicState, _selectedArtistWithMusics) { state, album ->
             state.copy(
-                musics = album.musics
+                musics = album?.musics ?: emptyList()
             )
         }.stateIn(
             viewModelScope,
@@ -64,15 +63,21 @@ class SelectedArtistViewModel @Inject constructor(
 
         _selectedArtistState.update {
             it.copy(
-                artistWithMusics = _selectedArtistWithMusics.value
+                artistWithMusics = _selectedArtistWithMusics.value ?: ArtistWithMusics()
             )
         }
 
         _musicState.update {
             it.copy(
-                musics = _selectedArtistWithMusics.value.musics
+                musics = _selectedArtistWithMusics.value?.musics ?: emptyList()
             )
         }
+    }
+
+    fun checkIfArtistIdDeleted(artistId : UUID) : Boolean{
+        return artistDao.getArtistFromId(
+            artistId
+        ) == null
     }
 
     fun onMusicEvent(event: MusicEvent) {

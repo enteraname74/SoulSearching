@@ -1,13 +1,10 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
-import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.AlbumWithMusics
-import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
@@ -27,7 +24,7 @@ class SelectedAlbumViewModel @Inject constructor(
     private val musicArtistDao: MusicArtistDao,
     private val albumArtistDao: AlbumArtistDao
 ) : ViewModel() {
-    private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics> = MutableStateFlow(AlbumWithMusics())
+    private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics?> = MutableStateFlow(AlbumWithMusics())
 
     private val _selectedAlbumState = MutableStateFlow(SelectedAlbumState())
     var selectedAlbumState: StateFlow<SelectedAlbumState> = _selectedAlbumState
@@ -44,7 +41,7 @@ class SelectedAlbumViewModel @Inject constructor(
 
         selectedAlbumState = combine(_selectedAlbumState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                albumWithMusics = album
+                albumWithMusics = album ?: AlbumWithMusics()
             )
         }.stateIn(
             viewModelScope,
@@ -54,25 +51,30 @@ class SelectedAlbumViewModel @Inject constructor(
 
         musicState = combine(_musicState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                musics = album.musics
+                musics = album?.musics ?: emptyList()
             )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             MusicState()
         )
-
         _selectedAlbumState.update {
             it.copy(
-                albumWithMusics = _selectedAlbumWithMusics.value
+                albumWithMusics = _selectedAlbumWithMusics.value ?: AlbumWithMusics()
             )
         }
 
         _musicState.update {
             it.copy(
-                musics = _selectedAlbumWithMusics.value.musics
+                musics = _selectedAlbumWithMusics.value?.musics ?: emptyList()
             )
         }
+    }
+
+    fun checkIfAlbumIsDeleted(albumId : UUID) : Boolean{
+        return albumDao.getAlbumFromId(
+            albumId
+        ) == null
     }
 
     fun onMusicEvent(event: MusicEvent) {
@@ -89,11 +91,5 @@ class SelectedAlbumViewModel @Inject constructor(
             musicArtistDao = musicArtistDao,
             albumArtistDao = albumArtistDao
         )
-    }
-
-    fun onAlbumEvent(event : AlbumEvent) {
-        Log.d("EVENT", event.toString())
-        when(event) {
-        }
     }
 }

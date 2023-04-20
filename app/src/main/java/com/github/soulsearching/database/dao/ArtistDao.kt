@@ -17,7 +17,7 @@ interface ArtistDao {
     suspend fun deleteArtist(artist: Artist)
 
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistFromId(artistId: UUID) : Artist
+    fun getArtistFromId(artistId: UUID) : Artist?
 
     @Query("SELECT * FROM Artist ORDER BY artistName ASC")
     fun getAllArtists(): Flow<List<Artist>>

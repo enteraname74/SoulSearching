@@ -6,6 +6,10 @@ import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedArtistViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 @Composable
@@ -28,6 +32,19 @@ fun SelectedArtistScreen(
 
     val artistWithMusicsState by selectedArtistViewModel.selectedArtistState.collectAsState()
     val musicState by selectedArtistViewModel.musicState.collectAsState()
+
+    if (musicState.musics.isEmpty()) {
+        // On doit quand même regarder si l'artiste correspondant existe avant de revenir en arrière
+        LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
+            CoroutineScope(Dispatchers.IO).launch {
+                if (selectedArtistViewModel.checkIfArtistIdDeleted(UUID.fromString(selectedArtistId))) {
+                    withContext(Dispatchers.Main) {
+                        navigateBack()
+                    }
+                }
+            }
+        }
+    }
 
     PlaylistScreen(
         navigateBack = navigateBack,
