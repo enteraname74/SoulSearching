@@ -3,7 +3,8 @@ package com.github.soulsearching.database.model
 import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
+import java.time.LocalDateTime
+import java.util.*
 
 @Entity
 data class Music(
@@ -14,5 +15,7 @@ data class Music(
     val artist: String = "",
     var albumCover: Bitmap? = null,
     var duration: Long = 0L,
-    var path: String = ""
+    var path: String = "",
+    var addedDate: LocalDateTime = LocalDateTime.now(),
+    var nbPlayed: Int = 0
 )

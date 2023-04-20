@@ -1,6 +1,8 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import java.util.*
@@ -16,4 +18,6 @@ data class PlaylistState(
     val isDeleteDialogShown: Boolean = false,
     val isBottomSheetShown: Boolean = false,
     val isCreatePlaylistDialogShown: Boolean = false,
+    var sortType: SortType = SortType.NAME,
+    var sortDirection: SortDirection = SortDirection.ASC
 )

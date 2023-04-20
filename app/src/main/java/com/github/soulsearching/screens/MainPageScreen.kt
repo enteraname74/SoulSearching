@@ -1,5 +1,6 @@
 package com.github.soulsearching.screens
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
@@ -163,7 +165,11 @@ fun MainPageScreen(
                                 contentDescription = stringResource(id = R.string.create_playlist_button),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
-                        }
+                        },
+                        sortByName = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.NAME)) },
+                        sortByMostListenedAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.NB_PLAYED)) },
+                        sortByDateAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.ADDED_DATE)) },
+                        setSortTypeAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetDirectionSort) }
                     )
                 }
                 item {
@@ -185,7 +191,11 @@ fun MainPageScreen(
                                     )
                                 )
                             }
-                        }
+                        },
+                        sortByName = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.NAME)) },
+                        sortByMostListenedAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.NB_PLAYED)) },
+                        sortByDateAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.ADDED_DATE)) },
+                        setSortTypeAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetDirectionSort) }
                     )
                 }
                 item {
@@ -207,16 +217,23 @@ fun MainPageScreen(
                                     )
                                 )
                             }
-                        }
+                        },
+                        sortByName = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.NAME)) },
+                        sortByMostListenedAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.NB_PLAYED)) },
+                        sortByDateAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.ADDED_DATE)) },
+                        setSortTypeAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetDirectionSort) }
                     )
                 }
                 stickyHeader {
                     SubMenuComposable(
                         title = stringResource(id = R.string.musics),
-                        sortByDateAction = {},
-                        sortByMostListenedAction = {},
-                        sortByName = {},
-                        setSortTypeAction = {},
+                        sortByDateAction = {
+                            Log.d("SORT", "SORT")
+                            allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE))
+                        },
+                        sortByMostListenedAction = { allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.NB_PLAYED)) },
+                        sortByName = { allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE)) },
+                        setSortTypeAction = { allMusicsViewModel.onMusicEvent(MusicEvent.SetDirectionSort) },
                         rightComposable = {
                             Icon(
                                 modifier = Modifier

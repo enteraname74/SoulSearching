@@ -20,7 +20,8 @@ interface AlbumDao {
     suspend fun getAllAlbumsFromArtist(artistId: UUID) : List<Album>
 
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
-    fun getAllAlbums(): Flow<List<Album>>
+    fun getAllAlbumsSortByNameAsc(): Flow<List<Album>>
+
 
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun getAlbumFromId(albumId: UUID): Album?
@@ -35,7 +36,27 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
-    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithArtistSortByNameAsc(): Flow<List<AlbumWithArtist>>
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY albumName DESC")
+    fun getAllAlbumsWithArtistSortByNameDesc(): Flow<List<AlbumWithArtist>>
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY addedDate ASC")
+    fun getAllAlbumsWithArtistSortByAddedDateAsc(): Flow<List<AlbumWithArtist>>
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY addedDate DESC")
+    fun getAllAlbumsWithArtistSortByAddedDateDesc(): Flow<List<AlbumWithArtist>>
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY nbPlayed ASC")
+    fun getAllAlbumsWithArtistSortByNbPlayedAsc(): Flow<List<AlbumWithArtist>>
+
+    @Transaction
+    @Query("SELECT * FROM Album ORDER BY nbPlayed DESC")
+    fun getAllAlbumsWithArtistSortByNbPlayedDesc(): Flow<List<AlbumWithArtist>>
 
     @Transaction
     @Query("SELECT * FROM Album")

@@ -4,10 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.room.TypeConverter
-import com.github.soulsearching.database.model.Artist
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
 
 class Converters {
     @TypeConverter
@@ -28,5 +26,15 @@ class Converters {
 
         val imageBytes = Base64.decode(string,0)
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+    }
+
+    @TypeConverter
+    fun localDateToLong(date : LocalDateTime) : String {
+        return date.toString()
+    }
+
+    @TypeConverter
+    fun stringToLocalDate(string : String) : LocalDateTime {
+        return LocalDateTime.parse(string)
     }
 }

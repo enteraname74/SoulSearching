@@ -22,7 +22,22 @@ interface MusicDao {
     fun getMusicFromId(musicId : UUID): Music
 
     @Query("SELECT * FROM Music ORDER BY name ASC")
-    fun getAllMusics(): Flow<List<Music>>
+    fun getAllMusicsSortByNameAsc(): Flow<List<Music>>
+
+    @Query("SELECT * FROM Music ORDER BY name DESC")
+    fun getAllMusicsSortByNameDesc(): Flow<List<Music>>
+
+    @Query("SELECT * FROM Music ORDER BY addedDate ASC")
+    fun getAllMusicsSortByAddedDateAsc(): Flow<List<Music>>
+
+    @Query("SELECT * FROM Music ORDER BY addedDate DESC")
+    fun getAllMusicsSortByAddedDateDesc(): Flow<List<Music>>
+
+    @Query("SELECT * FROM Music ORDER BY nbPlayed ASC")
+    fun getAllMusicsSortByNbPlayedAsc(): Flow<List<Music>>
+
+    @Query("SELECT * FROM Music ORDER BY nbPlayed DESC")
+    fun getAllMusicsSortByNbPlayedDesc(): Flow<List<Music>>
 
     @Query("SELECT Music.* FROM Music INNER JOIN MusicAlbum WHERE Music.musicId = MusicAlbum.musicId AND MusicAlbum.albumId = :albumId")
     fun getMusicsFromAlbum(albumId : UUID) : List<Music>

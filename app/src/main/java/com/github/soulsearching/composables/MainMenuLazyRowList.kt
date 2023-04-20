@@ -30,7 +30,11 @@ fun MainMenuLazyListRow(
     playlistBottomSheetAction: (PlaylistWithMusics) -> Unit = {},
     albumBottomSheetAction: (AlbumWithArtist) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
-    createPlaylistComposable: @Composable (() -> Unit) = {}
+    createPlaylistComposable: @Composable (() -> Unit) = {},
+    sortByName : () -> Unit,
+    sortByDateAction : () -> Unit,
+    sortByMostListenedAction : () -> Unit,
+    setSortTypeAction : () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -39,10 +43,10 @@ fun MainMenuLazyListRow(
     ) {
         SubMenuComposable(
             title = title,
-            sortByDateAction = {},
-            sortByMostListenedAction = {},
-            sortByName = {},
-            setSortTypeAction = {},
+            sortByDateAction = sortByDateAction,
+            sortByMostListenedAction = sortByMostListenedAction,
+            sortByName = sortByName,
+            setSortTypeAction = setSortTypeAction,
             rightComposable = {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),

@@ -17,13 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 
 @Composable
 fun SortOptionsComposable(
     sortByDateAction : () -> Unit,
     sortByMostListenedAction : () -> Unit,
     sortByName : () -> Unit,
-    setSortTypeAction : () -> Unit,
+    setSortTypeAction : () -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
@@ -40,7 +42,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Default.Schedule,
                 contentDescription = stringResource(id = R.string.sort_by_date_added),
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.tertiary
             )
             Icon(
                 modifier = Modifier

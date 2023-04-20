@@ -1,11 +1,15 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.dao.AlbumDao
 import com.github.soulsearching.database.dao.ArtistDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.ArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -20,13 +24,40 @@ class AllArtistsViewModel @Inject constructor(
     private val musicDao: MusicDao,
     private val albumDao: AlbumDao
 ) : ViewModel() {
-    private val _artists = artistDao.getAllArtistsWithMusics()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _sortType = MutableStateFlow(SortType.NAME)
+    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private val _artists = _sortDirection.flatMapLatest { sortDirection ->
+        _sortType.flatMapLatest { sortType ->
+            Log.d("CHANGE", "CHANGE")
+            when (sortDirection) {
+                SortDirection.ASC -> {
+                    when (sortType) {
+                        SortType.NAME -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
+                        SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateAsc()
+                        SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedAsc()
+                    }
+                }
+                SortDirection.DESC -> {
+                    when (sortType) {
+                        SortType.NAME -> artistDao.getAllArtistWithMusicsSortByNameDesc()
+                        SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateDesc()
+                        SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedDesc()
+                    }
+                }
+            }
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
 
     private val _state = MutableStateFlow(ArtistState())
-    val state = combine(_artists, _state) { artists, state ->
+    val state = combine(_artists, _state, _sortDirection, _sortType) { artists, state, sortDirection, sortType ->
         state.copy(
-            artists = artists
+            artists = artists,
+            sortDirection = sortDirection,
+            sortType = sortType
         )
     }.stateIn(
         viewModelScope,
@@ -73,6 +104,16 @@ class AllArtistsViewModel @Inject constructor(
                         isDeleteDialogShown = event.isShown
                     )
                 }
+            }
+            ArtistEvent.SetDirectionSort -> {
+                _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
+                    SortDirection.DESC
+                } else {
+                    SortDirection.ASC
+                }
+            }
+            is ArtistEvent.SetSortType -> {
+                _sortType.value = event.type
             }
             else -> {}
         }

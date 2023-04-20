@@ -20,7 +20,27 @@ interface PlaylistDao {
 
     @Transaction
     @Query("SELECT * FROM Playlist ORDER BY name ASC")
-    fun getAllPlaylistsWithMusics(): Flow<List<PlaylistWithMusics>>
+    fun getAllPlaylistsWithMusicsSortByNameAsc(): Flow<List<PlaylistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist ORDER BY name DESC")
+    fun getAllPlaylistWithMusicsSortByNameDesc(): Flow<List<PlaylistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist ORDER BY addedDate ASC")
+    fun getAllPlaylistWithMusicsSortByAddedDateAsc(): Flow<List<PlaylistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist ORDER BY addedDate DESC")
+    fun getAllPlaylistWithMusicsSortByAddedDateDesc(): Flow<List<PlaylistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist ORDER BY nbPlayed ASC")
+    fun getAllPlaylistWithMusicsSortByNbPlayedAsc(): Flow<List<PlaylistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist ORDER BY nbPlayed DESC")
+    fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<PlaylistWithMusics>>
 
     @Query("SELECT playlistId FROM Playlist ORDER BY name ASC LIMIT 1")
     fun getFirstPlaylistId(): UUID

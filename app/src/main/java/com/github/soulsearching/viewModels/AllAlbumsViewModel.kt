@@ -1,7 +1,10 @@
 package com.github.soulsearching.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.AlbumDao
 import com.github.soulsearching.database.dao.ArtistDao
@@ -18,17 +21,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AllAlbumsViewModel @Inject constructor(
-    private val albumDao : AlbumDao,
+    private val albumDao: AlbumDao,
     private val musicDao: MusicDao,
     private val artistDao: ArtistDao,
     private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
-    private val _albums = albumDao.getAllAlbumsWithArtist().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _sortType = MutableStateFlow(SortType.NAME)
+    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private val _albums = _sortDirection.flatMapLatest { sortDirection ->
+        _sortType.flatMapLatest { sortType ->
+            Log.d("CHANGE", "CHANGE")
+            when (sortDirection) {
+                SortDirection.ASC -> {
+                    when (sortType) {
+                        SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
+                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateAsc()
+                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedAsc()
+                    }
+                }
+                SortDirection.DESC -> {
+                    when (sortType) {
+                        SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameDesc()
+                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateDesc()
+                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedDesc()
+                    }
+                }
+            }
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
 
     private val _state = MutableStateFlow(AlbumState())
-    val state = combine(_albums, _state) { albums, state ->
+    val state = combine(
+        _albums,
+        _state,
+        _sortDirection,
+        _sortType
+    ) { albums, state, sortDirection, sortType ->
         state.copy(
-            albums = albums
+            albums = albums,
+            sortDirection = sortDirection,
+            sortType = sortType
         )
     }.stateIn(
         viewModelScope,
@@ -36,8 +72,8 @@ class AllAlbumsViewModel @Inject constructor(
         AlbumState()
     )
 
-    fun onAlbumEvent(event : AlbumEvent) {
-        when(event){
+    fun onAlbumEvent(event: AlbumEvent) {
+        when (event) {
             AlbumEvent.DeleteAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     // On supprime d'abord les musiques de l'album :
@@ -61,19 +97,35 @@ class AllAlbumsViewModel @Inject constructor(
                 viewModelScope.launch {
                 }
             is AlbumEvent.SetSelectedAlbum -> {
-                _state.update { it.copy(
-                    selectedAlbumWithArtist = event.albumWithArtist
-                ) }
+                _state.update {
+                    it.copy(
+                        selectedAlbumWithArtist = event.albumWithArtist
+                    )
+                }
             }
             is AlbumEvent.BottomSheet -> {
-                _state.update { it.copy(
-                    isBottomSheetShown = event.isShown
-                ) }
+                _state.update {
+                    it.copy(
+                        isBottomSheetShown = event.isShown
+                    )
+                }
             }
             is AlbumEvent.DeleteDialog -> {
-                _state.update { it.copy(
-                    isDeleteDialogShown = event.isShown
-                ) }
+                _state.update {
+                    it.copy(
+                        isDeleteDialogShown = event.isShown
+                    )
+                }
+            }
+            is AlbumEvent.SetSortType -> {
+                _sortType.value = event.type
+            }
+            AlbumEvent.SetDirectionSort -> {
+                _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
+                    SortDirection.DESC
+                } else {
+                    SortDirection.ASC
+                }
             }
             else -> {}
         }

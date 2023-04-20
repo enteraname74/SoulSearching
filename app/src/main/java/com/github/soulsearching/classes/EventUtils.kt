@@ -20,14 +20,16 @@ class EventUtils {
         private var isAddingMusic = false
 
         fun onMusicEvent(
-            event : MusicEvent,
-            _state : MutableStateFlow<MusicState>,
-            state : StateFlow<MusicState>,
-            musicDao : MusicDao,
+            event: MusicEvent,
+            _state: MutableStateFlow<MusicState>,
+            _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.NAME),
+            _sortDirection: MutableStateFlow<SortDirection> = MutableStateFlow(SortDirection.ASC),
+            state: StateFlow<MusicState>,
+            musicDao: MusicDao,
             playlistDao: PlaylistDao,
-            albumDao : AlbumDao,
+            albumDao: AlbumDao,
             artistDao: ArtistDao,
-            musicPlaylistDao : MusicPlaylistDao,
+            musicPlaylistDao: MusicPlaylistDao,
             musicAlbumDao: MusicAlbumDao,
             musicArtistDao: MusicArtistDao,
             albumArtistDao: AlbumArtistDao,
@@ -255,32 +257,50 @@ class EventUtils {
                         )
                     }
                 }
+                MusicEvent.SetDirectionSort -> {
+                    _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
+                        SortDirection.DESC
+                    } else {
+                        SortDirection.ASC
+                    }
+                }
+                is MusicEvent.SetSortType -> {
+                    _sortType.value = event.type
+                }
                 else -> {}
             }
         }
 
         fun onPlaylistEvent(
-            event : PlaylistEvent,
-            _state : MutableStateFlow<PlaylistState>,
-            state : StateFlow<PlaylistState>,
+            event: PlaylistEvent,
+            _state: MutableStateFlow<PlaylistState>,
+            _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.NAME),
+            _sortDirection: MutableStateFlow<SortDirection> = MutableStateFlow(SortDirection.ASC),
+            state: StateFlow<PlaylistState>,
             playlistDao: PlaylistDao,
             musicPlaylistDao: MusicPlaylistDao
         ) {
-            when(event){
+            when (event) {
                 is PlaylistEvent.BottomSheet -> {
-                    _state.update { it.copy(
-                        isBottomSheetShown = event.isShown
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isBottomSheetShown = event.isShown
+                        )
+                    }
                 }
                 is PlaylistEvent.DeleteDialog -> {
-                    _state.update { it.copy(
-                        isDeleteDialogShown = event.isShown
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isDeleteDialogShown = event.isShown
+                        )
+                    }
                 }
                 is PlaylistEvent.CreatePlaylistDialog -> {
-                    _state.update { it.copy(
-                        isCreatePlaylistDialogShown = event.isShown
-                    ) }
+                    _state.update {
+                        it.copy(
+                            isCreatePlaylistDialogShown = event.isShown
+                        )
+                    }
                 }
                 is PlaylistEvent.AddPlaylist -> {
                     CoroutineScope(Dispatchers.IO).launch {
@@ -302,9 +322,10 @@ class EventUtils {
                                 )
                             )
                         }
-                        _state.update {it.copy(
-                            multiplePlaylistSelected = ArrayList()
-                        )
+                        _state.update {
+                            it.copy(
+                                multiplePlaylistSelected = ArrayList()
+                            )
                         }
                     }
                 }
@@ -314,29 +335,35 @@ class EventUtils {
                     }
                 }
                 is PlaylistEvent.SetSelectedPlaylist -> {
-                    _state.update { it.copy(
-                        selectedPlaylist = event.playlistWithMusics.playlist
-                    ) }
+                    _state.update {
+                        it.copy(
+                            selectedPlaylist = event.playlistWithMusics.playlist
+                        )
+                    }
                 }
                 is PlaylistEvent.TogglePlaylistSelectedState -> {
                     val newList = ArrayList(state.value.multiplePlaylistSelected)
                     if (event.playlistId in newList) newList.remove(event.playlistId)
                     else newList.add(event.playlistId)
 
-                    _state.update {it.copy(
-                        multiplePlaylistSelected = newList
-                    )
+                    _state.update {
+                        it.copy(
+                            multiplePlaylistSelected = newList
+                        )
                     }
                 }
                 is PlaylistEvent.PlaylistsSelection -> {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val playlists = playlistDao.getAllPlaylistsWithMusicsSimple().filter { playlistWithMusics ->
-                            playlistWithMusics.musics.find { it.musicId == event.musicId } == null
+                        val playlists = playlistDao.getAllPlaylistsWithMusicsSimple()
+                            .filter { playlistWithMusics ->
+                                playlistWithMusics.musics.find { it.musicId == event.musicId } == null
+                            }
+                        _state.update {
+                            it.copy(
+                                multiplePlaylistSelected = ArrayList(),
+                                playlistsWithoutMusicId = playlists
+                            )
                         }
-                        _state.update { it.copy(
-                            multiplePlaylistSelected = ArrayList(),
-                            playlistsWithoutMusicId = playlists
-                        ) }
                     }
                 }
                 PlaylistEvent.UpdatePlaylist -> {
@@ -353,22 +380,38 @@ class EventUtils {
                 is PlaylistEvent.PlaylistFromId -> {
                     CoroutineScope(Dispatchers.IO).launch {
                         val playlist = playlistDao.getPlaylistFromId(event.playlistId)
-                        _state.update { it.copy(
-                            selectedPlaylist = playlist,
-                            name = playlist.name,
-                            cover = playlist.playlistCover
-                        ) }
+                        _state.update {
+                            it.copy(
+                                selectedPlaylist = playlist,
+                                name = playlist.name,
+                                cover = playlist.playlistCover
+                            )
+                        }
                     }
                 }
                 is PlaylistEvent.SetName -> {
-                    _state.update { it.copy(
-                        name = event.name
-                    ) }
+                    _state.update {
+                        it.copy(
+                            name = event.name
+                        )
+                    }
                 }
                 is PlaylistEvent.SetCover -> {
-                    _state.update { it.copy(
-                        cover = event.cover
-                    ) }
+                    _state.update {
+                        it.copy(
+                            cover = event.cover
+                        )
+                    }
+                }
+                PlaylistEvent.SetDirectionSort -> {
+                    _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
+                        SortDirection.DESC
+                    } else {
+                        SortDirection.ASC
+                    }
+                }
+                is PlaylistEvent.SetSortType -> {
+                    _sortType.value = event.type
                 }
                 else -> {}
             }

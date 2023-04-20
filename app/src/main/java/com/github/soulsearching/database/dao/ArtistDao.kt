@@ -1,7 +1,6 @@
 package com.github.soulsearching.database.dao
 
 import androidx.room.*
-import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +19,31 @@ interface ArtistDao {
     fun getArtistFromId(artistId: UUID) : Artist?
 
     @Query("SELECT * FROM Artist ORDER BY artistName ASC")
-    fun getAllArtists(): Flow<List<Artist>>
+    fun getAllArtistsSortByName(): Flow<List<Artist>>
 
     @Transaction
     @Query("SELECT * FROM Artist ORDER BY artistName ASC")
-    fun getAllArtistsWithMusics(): Flow<List<ArtistWithMusics>>
+    fun getAllArtistsWithMusicsSortByNameAsc(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist ORDER BY artistName DESC")
+    fun getAllArtistWithMusicsSortByNameDesc(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist ORDER BY addedDate ASC")
+    fun getAllArtistWithMusicsSortByAddedDateAsc(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist ORDER BY addedDate DESC")
+    fun getAllArtistWithMusicsSortByAddedDateDesc(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist ORDER BY nbPlayed ASC")
+    fun getAllArtistWithMusicsSortByNbPlayedAsc(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist ORDER BY nbPlayed DESC")
+    fun getAllArtistWithMusicsSortByNbPlayedDesc(): Flow<List<ArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistName = :artistName AND artistId != :artistId")
