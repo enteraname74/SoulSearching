@@ -124,11 +124,12 @@ fun MainPageScreen(
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
-                            }
+                            },
+                            sortType = 0,
+                            sortDirection = 0
                         )
                         TestButtons(
-                            onMusicEvent = allMusicsViewModel::onMusicEvent,
-                            onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent
+                            onMusicEvent = allMusicsViewModel::onMusicEvent
                         )
                     }
                 }
@@ -214,7 +215,9 @@ fun MainPageScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = playlistState.sortType,
+                        sortDirection = playlistState.sortDirection
                     )
                 }
                 item {
@@ -286,7 +289,9 @@ fun MainPageScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = albumState.sortType,
+                        sortDirection = albumState.sortDirection
                     )
                 }
                 item {
@@ -357,7 +362,9 @@ fun MainPageScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = artistState.sortType,
+                        sortDirection = artistState.sortDirection
                     )
                 }
                 stickyHeader {
@@ -418,7 +425,9 @@ fun MainPageScreen(
                                 contentDescription = stringResource(id = R.string.shuffle_button_desc),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
-                        }
+                        },
+                        sortType = musicState.sortType,
+                        sortDirection = musicState.sortDirection
                     )
                 }
                 items(musicState.musics) { music ->

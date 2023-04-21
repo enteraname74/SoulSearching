@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
 
 @Composable
 fun SubMenuComposable(
@@ -24,7 +20,10 @@ fun SubMenuComposable(
     sortByMostListenedAction: () -> Unit,
     sortByName: () -> Unit,
     setSortTypeAction: () -> Unit,
-    rightComposable: @Composable (() -> Unit)
+    rightComposable: @Composable (() -> Unit),
+    createPlaylistComposable: @Composable (() -> Unit) = {},
+    sortType : Int,
+    sortDirection : Int
 ) {
     Row(
         modifier = Modifier
@@ -48,11 +47,14 @@ fun SubMenuComposable(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
+            createPlaylistComposable()
             SortOptionsComposable(
                 sortByDateAction = sortByDateAction,
                 sortByMostListenedAction = sortByMostListenedAction,
                 sortByName = sortByName,
-                setSortTypeAction = setSortTypeAction
+                setSortTypeAction = setSortTypeAction,
+                sortDirection = sortDirection,
+                sortType = sortType
             )
             rightComposable()
         }

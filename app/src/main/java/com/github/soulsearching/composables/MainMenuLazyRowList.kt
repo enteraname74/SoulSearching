@@ -35,6 +35,8 @@ fun MainMenuLazyListRow(
     sortByDateAction : () -> Unit,
     sortByMostListenedAction : () -> Unit,
     setSortTypeAction : () -> Unit,
+    sortType : Int,
+    sortDirection : Int
 ) {
     Column(
         modifier = Modifier
@@ -52,7 +54,6 @@ fun MainMenuLazyListRow(
                     horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    createPlaylistComposable()
                     TextButton(onClick = navigateToMore) {
                         Text(
                             text = stringResource(id = R.string.more),
@@ -60,7 +61,10 @@ fun MainMenuLazyListRow(
                         )
                     }
                 }
-            }
+            },
+            sortType = sortType,
+            sortDirection = sortDirection,
+            createPlaylistComposable = createPlaylistComposable
         )
         LazyRow(
             modifier = Modifier

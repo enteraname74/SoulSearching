@@ -17,7 +17,8 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = thirdColorDark,
     onPrimary = textColorDark,
     onSecondary = textColorDark,
-    onTertiary = textColorDark
+    onTertiary = textColorDark,
+    outline = highLightedTextDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -26,7 +27,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = thirdColorLight,
     onPrimary = textColorLight,
     onSecondary = textColorLight,
-    onTertiary = textColorLight
+    onTertiary = textColorLight,
+    outline = highLightedTextLight
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

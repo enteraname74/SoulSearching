@@ -65,7 +65,7 @@ fun MoreArtistsScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     SortOptionsComposable(
-                        imageSize = 24.dp,
+                        imageSize = Constants.Spacing.large,
                         sortByName = {
                             allArtistsViewModel.onArtistEvent(
                                 ArtistEvent.SetSortType(
@@ -114,7 +114,9 @@ fun MoreArtistsScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = artistState.sortType,
+                        sortDirection = artistState.sortDirection
                     )
                 }
                 LazyVerticalGrid(

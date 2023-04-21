@@ -65,7 +65,7 @@ fun MorePlaylistsScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     SortOptionsComposable(
-                        imageSize = 24.dp,
+                        imageSize = Constants.Spacing.large,
                         sortByName = {
                             allPlaylistsViewModel.onPlaylistEvent(
                                 PlaylistEvent.SetSortType(
@@ -112,7 +112,9 @@ fun MorePlaylistsScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = playlistState.sortType,
+                        sortDirection = playlistState.sortDirection
                     )
                 }
                 LazyVerticalGrid(

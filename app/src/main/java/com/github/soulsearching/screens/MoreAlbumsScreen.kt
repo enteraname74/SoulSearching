@@ -68,7 +68,7 @@ fun MoreAlbumsScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     SortOptionsComposable(
-                        imageSize = 24.dp,
+                        imageSize = Constants.Spacing.large,
                         sortByName = {
                             allAlbumsViewModel.onAlbumEvent(
                                 AlbumEvent.SetSortType(
@@ -118,7 +118,9 @@ fun MoreAlbumsScreen(
                                 keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
                                 newValue = newDirection
                             )
-                        }
+                        },
+                        sortType = albumState.sortType,
+                        sortDirection = albumState.sortDirection
                     )
                 }
                 LazyVerticalGrid(
