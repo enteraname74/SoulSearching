@@ -75,7 +75,7 @@ fun MainMenuLazyListRow(
                 val modifier = Modifier.animateItemPlacement()
                 when (element) {
                     is PlaylistWithMusics -> {
-                        LazyRowComposable(
+                        BigPreviewComposable(
                             modifier = modifier,
                             image = element.playlist.playlistCover,
                             title = element.playlist.name,
@@ -91,7 +91,7 @@ fun MainMenuLazyListRow(
                         )
                     }
                     is AlbumWithArtist -> {
-                        LazyRowComposable(
+                        BigPreviewComposable(
                             modifier = modifier,
                             image = element.album.albumCover,
                             title = element.album.albumName,
@@ -103,7 +103,7 @@ fun MainMenuLazyListRow(
                         )
                     }
                     is ArtistWithMusics -> {
-                        LazyRowComposable(
+                        BigPreviewComposable(
                             modifier = modifier,
                             image = element.artist.artistCover,
                             title = element.artist.artistName,

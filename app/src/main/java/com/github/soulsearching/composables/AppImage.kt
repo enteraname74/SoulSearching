@@ -23,11 +23,12 @@ import com.github.soulsearching.R
 fun AppImage(
     bitmap : Bitmap?,
     size : Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    roundedPercent : Int = 10
 ) {
     val modifierBase = Modifier
         .size(size)
-        .clip(RoundedCornerShape(percent = 10))
+        .clip(RoundedCornerShape(percent = roundedPercent))
         .composed {
             modifier
         }

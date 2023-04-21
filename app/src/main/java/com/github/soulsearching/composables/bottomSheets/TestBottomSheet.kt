@@ -27,7 +27,7 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TestBottomSheet(maxHeight: Float) {
-    val swipeableState = rememberSwipeableState(initialValue = BottomSheetStates.EXPANDED)
+    val swipeableState = rememberSwipeableState(initialValue = BottomSheetStates.COLLAPSED)
     val coroutineScope = rememberCoroutineScope()
 
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {

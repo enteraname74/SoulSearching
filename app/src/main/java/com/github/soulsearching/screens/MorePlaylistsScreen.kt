@@ -1,8 +1,7 @@
 package com.github.soulsearching.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,9 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.GridPlaylistComposable
+import com.github.soulsearching.composables.BigPreviewComposable
+import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.AllPlaylistsViewModel
@@ -48,44 +52,109 @@ fun MorePlaylistsScreen(
             )
         },
         content = { paddingValues ->
-            LazyVerticalGrid(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = MaterialTheme.colorScheme.secondary),
-                columns = GridCells.Adaptive(196.dp)
+                    .background(color = MaterialTheme.colorScheme.secondary)
             ) {
-
-                items(playlistState.playlists) { playlistWithMusics ->
-                    GridPlaylistComposable(
-                        image = playlistWithMusics.playlist.playlistCover,
-                        title = playlistWithMusics.playlist.name,
-                        text = if (playlistWithMusics.musics.size == 1) {
-                            stringResource(id = R.string.one_music)
-                        } else {
-                            stringResource(
-                                id = R.string.multiple_musics,
-                                playlistWithMusics.musics.size
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Constants.Spacing.medium),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    SortOptionsComposable(
+                        imageSize = 24.dp,
+                        sortByName = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.NAME
                             )
                         },
-                        onClick = {
-                            navigateToSelectedPlaylist(playlistWithMusics.playlist.playlistId.toString())
+                        sortByMostListenedAction = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(SortType.NB_PLAYED)
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
                         },
-                        onLongClick = {
-                            coroutineScope.launch {
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.SetSelectedPlaylist(
-                                        playlistWithMusics
-                                    )
+                        sortByDateAction = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(
+                                    SortType.ADDED_DATE
                                 )
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.ADDED_DATE
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (playlistState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
                             }
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
                         }
                     )
+                }
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(color = MaterialTheme.colorScheme.secondary),
+                    columns = GridCells.Adaptive(196.dp)
+                ) {
+
+                    items(playlistState.playlists) { playlistWithMusics ->
+                        BigPreviewComposable(
+                            image = playlistWithMusics.playlist.playlistCover,
+                            title = playlistWithMusics.playlist.name,
+                            text = if (playlistWithMusics.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else {
+                                stringResource(
+                                    id = R.string.multiple_musics,
+                                    playlistWithMusics.musics.size
+                                )
+                            },
+                            onClick = {
+                                navigateToSelectedPlaylist(playlistWithMusics.playlist.playlistId.toString())
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSelectedPlaylist(
+                                            playlistWithMusics
+                                        )
+                                    )
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            imageSize = Constants.ImageSize.huge
+                        )
+                    }
                 }
             }
         }

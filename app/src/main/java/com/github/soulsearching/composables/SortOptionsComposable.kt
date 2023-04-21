@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.SortDirection
@@ -22,10 +23,11 @@ import com.github.soulsearching.classes.SortType
 
 @Composable
 fun SortOptionsComposable(
-    sortByDateAction : () -> Unit,
-    sortByMostListenedAction : () -> Unit,
-    sortByName : () -> Unit,
-    setSortTypeAction : () -> Unit
+    imageSize: Dp = Constants.ImageSize.small,
+    sortByDateAction: () -> Unit,
+    sortByMostListenedAction: () -> Unit,
+    sortByName: () -> Unit,
+    setSortTypeAction: () -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
@@ -38,7 +40,7 @@ fun SortOptionsComposable(
                     .clickable { sortByDateAction() }
                     .padding(Constants.Spacing.small)
                     .size(
-                        Constants.ImageSize.small
+                        imageSize
                     ),
                 imageVector = Icons.Default.Schedule,
                 contentDescription = stringResource(id = R.string.sort_by_date_added),
@@ -49,7 +51,7 @@ fun SortOptionsComposable(
                     .clickable { sortByMostListenedAction() }
                     .padding(Constants.Spacing.small)
                     .size(
-                        Constants.ImageSize.small
+                        imageSize
                     ),
                 imageVector = Icons.Default.Pin,
                 contentDescription = stringResource(id = R.string.sort_by_most_listened),
@@ -60,7 +62,7 @@ fun SortOptionsComposable(
                     .clickable { sortByName() }
                     .padding(Constants.Spacing.small)
                     .size(
-                        Constants.ImageSize.small
+                        imageSize
                     ),
                 imageVector = Icons.Default.SortByAlpha,
                 contentDescription = stringResource(id = R.string.sort_by_name),
@@ -72,7 +74,7 @@ fun SortOptionsComposable(
                 .clickable { setSortTypeAction() }
                 .padding(Constants.Spacing.small)
                 .size(
-                    Constants.ImageSize.small
+                    imageSize
                 ),
             imageVector = Icons.Default.North,
             contentDescription = stringResource(id = R.string.sort_by_asc_or_dsc),

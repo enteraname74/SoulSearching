@@ -1,8 +1,7 @@
 package com.github.soulsearching.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,9 +14,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.GridPlaylistComposable
+import com.github.soulsearching.composables.BigPreviewComposable
+import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewModels.AllArtistsViewModel
@@ -48,43 +52,110 @@ fun MoreArtistsScreen(
             )
         },
         content = { paddingValues ->
-            LazyVerticalGrid(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = MaterialTheme.colorScheme.secondary),
-                columns = GridCells.Adaptive(196.dp)
+                    .background(color = MaterialTheme.colorScheme.secondary)
             ) {
-                items(artistState.artists) { artistWithMusics ->
-                    GridPlaylistComposable(
-                        image = artistWithMusics.artist.artistCover,
-                        title = artistWithMusics.artist.artistName,
-                        text = if (artistWithMusics.musics.size == 1) {
-                            stringResource(id = R.string.one_music)
-                        } else {
-                            stringResource(
-                                id = R.string.multiple_musics,
-                                artistWithMusics.musics.size
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Constants.Spacing.medium),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    SortOptionsComposable(
+                        imageSize = 24.dp,
+                        sortByName = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.NAME
                             )
                         },
-                        onClick = {
-                            navigateToSelectedArtist(artistWithMusics.artist.artistId.toString())
+                        sortByMostListenedAction = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.NB_PLAYED
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
                         },
-                        onLongClick = {
-                            coroutineScope.launch {
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.SetSelectedArtist(
-                                        artistWithMusics
-                                    )
+                        sortByDateAction = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.ADDED_DATE
                                 )
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.ADDED_DATE
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
                             }
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
                         }
                     )
+                }
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .background(color = MaterialTheme.colorScheme.secondary),
+                    columns = GridCells.Adaptive(196.dp)
+                ) {
+                    items(artistState.artists) { artistWithMusics ->
+                        BigPreviewComposable(
+                            image = artistWithMusics.artist.artistCover,
+                            title = artistWithMusics.artist.artistName,
+                            text = if (artistWithMusics.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else {
+                                stringResource(
+                                    id = R.string.multiple_musics,
+                                    artistWithMusics.musics.size
+                                )
+                            },
+                            onClick = {
+                                navigateToSelectedArtist(artistWithMusics.artist.artistId.toString())
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSelectedArtist(
+                                            artistWithMusics
+                                        )
+                                    )
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            imageSize = Constants.ImageSize.huge
+                        )
+                    }
                 }
             }
         }
