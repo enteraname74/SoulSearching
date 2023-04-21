@@ -20,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
@@ -166,10 +168,53 @@ fun MainPageScreen(
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         },
-                        sortByName = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.NAME)) },
-                        sortByMostListenedAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.NB_PLAYED)) },
-                        sortByDateAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetSortType(SortType.ADDED_DATE)) },
-                        setSortTypeAction = { allPlaylistsViewModel.onPlaylistEvent(PlaylistEvent.SetDirectionSort) }
+                        sortByName = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.NAME
+                            )
+                        },
+                        sortByMostListenedAction = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(SortType.NB_PLAYED)
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
+                        },
+                        sortByDateAction = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortType(
+                                    SortType.ADDED_DATE
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
+                                newValue = SortType.ADDED_DATE
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (playlistState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
+                            }
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
+                        }
                     )
                 }
                 item {
@@ -192,10 +237,56 @@ fun MainPageScreen(
                                 )
                             }
                         },
-                        sortByName = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.NAME)) },
-                        sortByMostListenedAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.NB_PLAYED)) },
-                        sortByDateAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetSortType(SortType.ADDED_DATE)) },
-                        setSortTypeAction = { allAlbumsViewModel.onAlbumEvent(AlbumEvent.SetDirectionSort) }
+                        sortByName = {
+                            allAlbumsViewModel.onAlbumEvent(
+                                AlbumEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
+                                newValue = SortType.NAME
+                            )
+                        },
+                        sortByMostListenedAction = {
+                            allAlbumsViewModel.onAlbumEvent(
+                                AlbumEvent.SetSortType(
+                                    SortType.NB_PLAYED
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
+                        },
+                        sortByDateAction = {
+                            allAlbumsViewModel.onAlbumEvent(
+                                AlbumEvent.SetSortType(
+                                    SortType.ADDED_DATE
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
+                                newValue = SortType.NAME
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (albumState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
+                            }
+                            Log.d("NEW UPDATE", "NEW UPDATE")
+                            allAlbumsViewModel.onAlbumEvent(
+                                AlbumEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
+                        }
                     )
                 }
                 item {
@@ -218,22 +309,105 @@ fun MainPageScreen(
                                 )
                             }
                         },
-                        sortByName = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.NAME)) },
-                        sortByMostListenedAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.NB_PLAYED)) },
-                        sortByDateAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetSortType(SortType.ADDED_DATE)) },
-                        setSortTypeAction = { allArtistsViewModel.onArtistEvent(ArtistEvent.SetDirectionSort) }
+                        sortByName = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.NAME
+                            )
+                        },
+                        sortByMostListenedAction = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.NB_PLAYED
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
+                        },
+                        sortByDateAction = {
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortType(
+                                    SortType.ADDED_DATE
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                                newValue = SortType.ADDED_DATE
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
+                            }
+                            allArtistsViewModel.onArtistEvent(
+                                ArtistEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
+                        }
                     )
                 }
                 stickyHeader {
                     SubMenuComposable(
                         title = stringResource(id = R.string.musics),
                         sortByDateAction = {
-                            Log.d("SORT", "SORT")
                             allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE))
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
+                                newValue = SortType.ADDED_DATE
+                            )
                         },
-                        sortByMostListenedAction = { allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.NB_PLAYED)) },
-                        sortByName = { allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE)) },
-                        setSortTypeAction = { allMusicsViewModel.onMusicEvent(MusicEvent.SetDirectionSort) },
+                        sortByMostListenedAction = {
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.SetSortType(
+                                    SortType.NB_PLAYED
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
+                                newValue = SortType.NB_PLAYED
+                            )
+                        },
+                        sortByName = {
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.SetSortType(
+                                    SortType.NAME
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
+                                newValue = SortType.NAME
+                            )
+                        },
+                        setSortTypeAction = {
+                            val newDirection = if (musicState.sortDirection == SortDirection.ASC) {
+                                SortDirection.DESC
+                            } else {
+                                SortDirection.ASC
+                            }
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.SetSortDirection(
+                                    newDirection
+                                )
+                            )
+                            SharedPrefUtils.updateSort(
+                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
+                                newValue = newDirection
+                            )
+                        },
                         rightComposable = {
                             Icon(
                                 modifier = Modifier

@@ -38,6 +38,7 @@ class AllMusicsViewModel @Inject constructor(
                         SortType.NAME -> musicDao.getAllMusicsSortByNameAsc()
                         SortType.ADDED_DATE -> musicDao.getAllMusicsSortByAddedDateAsc()
                         SortType.NB_PLAYED -> musicDao.getAllMusicsSortByNbPlayedAsc()
+                        else -> musicDao.getAllMusicsSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
@@ -45,8 +46,10 @@ class AllMusicsViewModel @Inject constructor(
                         SortType.NAME -> musicDao.getAllMusicsSortByNameDesc()
                         SortType.ADDED_DATE -> musicDao.getAllMusicsSortByAddedDateDesc()
                         SortType.NB_PLAYED -> musicDao.getAllMusicsSortByNbPlayedDesc()
+                        else -> musicDao.getAllMusicsSortByNameDesc()
                     }
                 }
+                else -> musicDao.getAllMusicsSortByNameAsc()
             }
         }
     }.stateIn(

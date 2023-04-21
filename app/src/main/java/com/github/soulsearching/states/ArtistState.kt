@@ -12,6 +12,6 @@ data class ArtistState(
     val name : String = "",
     val isDeleteDialogShown: Boolean = false,
     val isBottomSheetShown: Boolean = false,
-    var sortType: SortType = SortType.NAME,
-    var sortDirection: SortDirection = SortDirection.ASC
+    var sortType: Int = SortType.NAME,
+    var sortDirection: Int = SortDirection.ASC
 )

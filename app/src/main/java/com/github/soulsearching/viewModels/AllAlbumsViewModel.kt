@@ -15,6 +15,7 @@ import com.github.soulsearching.states.AlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +29,7 @@ class AllAlbumsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _albums = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
             Log.d("CHANGE", "CHANGE")
@@ -37,6 +39,7 @@ class AllAlbumsViewModel @Inject constructor(
                         SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
                         SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateAsc()
                         SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedAsc()
+                        else -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
@@ -44,8 +47,10 @@ class AllAlbumsViewModel @Inject constructor(
                         SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameDesc()
                         SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateDesc()
                         SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedDesc()
+                        else -> albumDao.getAllAlbumsWithArtistSortByNameDesc()
                     }
                 }
+                else -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
             }
         }
     }.stateIn(
@@ -120,12 +125,8 @@ class AllAlbumsViewModel @Inject constructor(
             is AlbumEvent.SetSortType -> {
                 _sortType.value = event.type
             }
-            AlbumEvent.SetDirectionSort -> {
-                _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
-                    SortDirection.DESC
-                } else {
-                    SortDirection.ASC
-                }
+            is AlbumEvent.SetSortDirection -> {
+                _sortDirection.value = event.type
             }
             else -> {}
         }

@@ -15,6 +15,6 @@ data class MusicState(
     var artist: String = "",
     var album: String = "",
     var cover: Bitmap? = null,
-    var sortType: SortType = SortType.NAME,
-    var sortDirection: SortDirection = SortDirection.ASC
+    var sortType: Int = SortType.NAME,
+    var sortDirection: Int = SortDirection.ASC
 )

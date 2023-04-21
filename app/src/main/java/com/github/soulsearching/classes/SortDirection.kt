@@ -1,6 +1,6 @@
 package com.github.soulsearching.classes
 
-enum class SortDirection {
-    ASC,
-    DESC
+object SortDirection {
+    const val ASC = 0
+    const val DESC = 1
 }

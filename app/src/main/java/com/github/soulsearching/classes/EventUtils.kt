@@ -22,8 +22,8 @@ class EventUtils {
         fun onMusicEvent(
             event: MusicEvent,
             _state: MutableStateFlow<MusicState>,
-            _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.NAME),
-            _sortDirection: MutableStateFlow<SortDirection> = MutableStateFlow(SortDirection.ASC),
+            _sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
+            _sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
             state: StateFlow<MusicState>,
             musicDao: MusicDao,
             playlistDao: PlaylistDao,
@@ -257,12 +257,8 @@ class EventUtils {
                         )
                     }
                 }
-                MusicEvent.SetDirectionSort -> {
-                    _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
-                        SortDirection.DESC
-                    } else {
-                        SortDirection.ASC
-                    }
+                is MusicEvent.SetSortDirection -> {
+                    _sortDirection.value = event.type
                 }
                 is MusicEvent.SetSortType -> {
                     _sortType.value = event.type
@@ -274,8 +270,8 @@ class EventUtils {
         fun onPlaylistEvent(
             event: PlaylistEvent,
             _state: MutableStateFlow<PlaylistState>,
-            _sortType: MutableStateFlow<SortType> = MutableStateFlow(SortType.NAME),
-            _sortDirection: MutableStateFlow<SortDirection> = MutableStateFlow(SortDirection.ASC),
+            _sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
+            _sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
             state: StateFlow<PlaylistState>,
             playlistDao: PlaylistDao,
             musicPlaylistDao: MusicPlaylistDao
@@ -403,12 +399,8 @@ class EventUtils {
                         )
                     }
                 }
-                PlaylistEvent.SetDirectionSort -> {
-                    _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
-                        SortDirection.DESC
-                    } else {
-                        SortDirection.ASC
-                    }
+                is PlaylistEvent.SetSortDirection -> {
+                    _sortDirection.value = event.type
                 }
                 is PlaylistEvent.SetSortType -> {
                     _sortType.value = event.type

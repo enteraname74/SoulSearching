@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables.bottomSheets
 
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -16,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -37,10 +35,6 @@ fun TestBottomSheet(maxHeight: Float) {
             swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
         }
     }
-    Log.d("MAX HEIGHT", maxHeight.toString())
-    Log.d("CURRENT OFFSET", swipeableState.offset.value.roundToInt().toString())
-
-    Log.d("CURRENT STATE", swipeableState.currentValue.toString())
     Box {
         Box(
             modifier = Modifier
@@ -81,7 +75,6 @@ fun TestBottomSheet(maxHeight: Float) {
                     val maxWidth = with(LocalDensity.current) {
                         constraintsScope.maxWidth.toPx()
                     }
-                    Log.d("MAX WIDTH", maxWidth.roundToInt().dp.toString())
 
                     val imagePaddingStart =
                         if ((((maxWidth * 4) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp > Constants.Spacing.small) {
@@ -97,9 +90,6 @@ fun TestBottomSheet(maxHeight: Float) {
                             Constants.Spacing.small
                         }
 
-                    Log.d("PADDING START", imagePaddingStart.toString())
-                    Log.d("PADDING TOP", imagePaddingTop.toString())
-
                     Box(modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = imagePaddingStart, top = imagePaddingTop, end = imagePaddingStart)
@@ -108,7 +98,6 @@ fun TestBottomSheet(maxHeight: Float) {
                         AppImage(
                             bitmap = null, size = (
                                     if ((((maxWidth * 28) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp > 55.dp) {
-                                        Log.d("SIZE",(300 - (swipeableState.offset.value / 7).roundToInt()).dp.toString())
                                         (((maxWidth * 28) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp
                                     } else {
                                         55.dp

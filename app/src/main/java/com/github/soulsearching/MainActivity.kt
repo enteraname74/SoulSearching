@@ -1,5 +1,6 @@
 package com.github.soulsearching
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.TestBottomSheet
 import com.github.soulsearching.screens.*
@@ -44,6 +46,15 @@ class MainActivity : AppCompatActivity() {
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        SharedPrefUtils.sharedPreferences = getSharedPreferences(SharedPrefUtils.SHARED_PREF_KEY,Context.MODE_PRIVATE)
+        SharedPrefUtils.initializeSorts(
+            onMusicEvent = allMusicsViewModel::onMusicEvent,
+            onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+            onArtistEvent = allArtistsViewModel::onArtistEvent,
+            onAlbumEvent = allAlbumsViewModel::onAlbumEvent
+        )
+
         setContent {
             SoulSearchingTheme {
 

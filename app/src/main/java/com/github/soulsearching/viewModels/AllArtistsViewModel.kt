@@ -9,11 +9,11 @@ import com.github.soulsearching.database.dao.AlbumDao
 import com.github.soulsearching.database.dao.ArtistDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.events.ArtistEvent
-import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.ArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,6 +26,7 @@ class AllArtistsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _artists = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
             Log.d("CHANGE", "CHANGE")
@@ -35,6 +36,7 @@ class AllArtistsViewModel @Inject constructor(
                         SortType.NAME -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
                         SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateAsc()
                         SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedAsc()
+                        else -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
@@ -42,8 +44,10 @@ class AllArtistsViewModel @Inject constructor(
                         SortType.NAME -> artistDao.getAllArtistWithMusicsSortByNameDesc()
                         SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateDesc()
                         SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedDesc()
+                        else -> artistDao.getAllArtistWithMusicsSortByNameDesc()
                     }
                 }
+                else -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
             }
         }
     }.stateIn(
@@ -105,12 +109,8 @@ class AllArtistsViewModel @Inject constructor(
                     )
                 }
             }
-            ArtistEvent.SetDirectionSort -> {
-                _sortDirection.value = if (state.value.sortDirection == SortDirection.ASC) {
-                    SortDirection.DESC
-                } else {
-                    SortDirection.ASC
-                }
+            is ArtistEvent.SetSortDirection -> {
+                _sortDirection.value = event.type
             }
             is ArtistEvent.SetSortType -> {
                 _sortType.value = event.type

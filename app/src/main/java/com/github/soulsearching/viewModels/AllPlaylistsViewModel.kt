@@ -11,6 +11,7 @@ import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -21,6 +22,7 @@ class AllPlaylistsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _playlists = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
             Log.d("CHANGE", "CHANGE")
@@ -30,6 +32,7 @@ class AllPlaylistsViewModel @Inject constructor(
                         SortType.NAME -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
                         SortType.ADDED_DATE -> playlistDao.getAllPlaylistWithMusicsSortByAddedDateAsc()
                         SortType.NB_PLAYED -> playlistDao.getAllPlaylistWithMusicsSortByNbPlayedAsc()
+                        else -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
@@ -37,8 +40,10 @@ class AllPlaylistsViewModel @Inject constructor(
                         SortType.NAME -> playlistDao.getAllPlaylistWithMusicsSortByNameDesc()
                         SortType.ADDED_DATE -> playlistDao.getAllPlaylistWithMusicsSortByAddedDateDesc()
                         SortType.NB_PLAYED -> playlistDao.getAllPlaylistWithMusicsSortByNbPlayedDesc()
+                        else -> playlistDao.getAllPlaylistWithMusicsSortByNameDesc()
                     }
                 }
+                else -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
             }
         }
     }.stateIn(
@@ -73,7 +78,9 @@ class AllPlaylistsViewModel @Inject constructor(
             _state = _state,
             state = state,
             playlistDao = playlistDao,
-            musicPlaylistDao = musicPlaylistDao
+            musicPlaylistDao = musicPlaylistDao,
+            _sortType = _sortType,
+            _sortDirection = _sortDirection
         )
     }
 }
