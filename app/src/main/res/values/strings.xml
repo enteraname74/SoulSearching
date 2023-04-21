@@ -43,7 +43,7 @@
     <string name="delete_album_dialog_title">Are you sure to delete this album ?</string>
     <string name="delete_artist_dialog_title">Are you sure to delete this artist ?</string>
     <string name="delete_music_dialog_text">You can retrieve it in the "deleted musics" section of the application.</string>
-    <string name="create_playlist_dialog_title">Create a new playlist !</string>
+    <string name="create_playlist_dialog_title">Create a new playlist</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>

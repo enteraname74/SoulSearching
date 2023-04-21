@@ -33,7 +33,9 @@ fun AppTextField(
             selectionColors = TextSelectionColors(
                 handleColor = MaterialTheme.colorScheme.onPrimary,
                 backgroundColor = MaterialTheme.colorScheme.secondary
-            )
+            ),
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary
         ),
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }
