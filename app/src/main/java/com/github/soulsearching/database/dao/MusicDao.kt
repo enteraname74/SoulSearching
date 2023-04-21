@@ -17,7 +17,8 @@ interface MusicDao {
     @Query("DELETE FROM Music WHERE album = :album AND artist = :artist")
     suspend fun deleteMusicFromAlbum(album : String, artist : String)
 
-
+    @Query("SELECT * FROM Music WHERE path = :musicPath")
+    fun getMusicFromPath(musicPath : String) : Music?
     @Query("SELECT * FROM Music WHERE musicId = :musicId LIMIT 1")
     fun getMusicFromId(musicId : UUID): Music
 

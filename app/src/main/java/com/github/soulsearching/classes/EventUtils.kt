@@ -17,8 +17,6 @@ import java.util.*
 
 class EventUtils {
     companion object {
-        private var isAddingMusic = false
-
         fun onMusicEvent(
             event: MusicEvent,
             _state: MutableStateFlow<MusicState>,
@@ -53,76 +51,6 @@ class EventUtils {
                             musicArtistDao = musicArtistDao,
                             musicToRemove = state.value.selectedMusic
                         )
-                    }
-                }
-                MusicEvent.AddMusic -> {
-                    if (!isAddingMusic) {
-                        isAddingMusic = true
-                        val music = Music(
-                            musicId = UUID.randomUUID(),
-                            name = "Nom Musique",
-                            album = "Nom Album",
-                            artist = "Nom Artiste",
-                            duration = 1000L,
-                            path = ""
-                        )
-
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val correspondingArtist = artistDao.getArtistFromInfo(
-                                artistName = music.artist
-                            )
-                            val allAlbums = albumDao.getAllAlbumsWithArtistSimple()
-                            val correspondingAlbum = allAlbums.find {
-                                (it.album.albumName == music.album)
-                                        && (it.artist!!.artistName == music.artist)
-                            }
-                            var albumId = UUID.randomUUID()
-                            var artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
-                            if (correspondingAlbum == null) {
-                                albumDao.insertAlbum(
-                                    Album(
-                                        albumId = albumId,
-                                        albumName = music.album,
-                                        albumCover = music.albumCover,
-                                    )
-                                )
-                                artistDao.insertArtist(
-                                    Artist(
-                                        artistId = artistId,
-                                        artistName = music.artist,
-                                        artistCover = music.albumCover
-                                    )
-                                )
-                                albumArtistDao.insertAlbumIntoArtist(
-                                    AlbumArtist(
-                                        albumId = albumId,
-                                        artistId = artistId
-                                    )
-                                )
-
-                            } else {
-                                albumId = correspondingAlbum.album.albumId
-                                artistId = correspondingAlbum.artist!!.artistId
-                                // Si la musique n'a pas de couverture, on lui donne celle de son album :
-                                if (music.albumCover == null) {
-                                    music.albumCover = correspondingAlbum.album.albumCover
-                                }
-                            }
-                            musicDao.insertMusic(music)
-                            musicAlbumDao.insertMusicIntoAlbum(
-                                MusicAlbum(
-                                    musicId = music.musicId,
-                                    albumId = albumId
-                                )
-                            )
-                            musicArtistDao.insertMusicIntoArtist(
-                                MusicArtist(
-                                    musicId = music.musicId,
-                                    artistId = artistId
-                                )
-                            )
-                            isAddingMusic = false
-                        }
                     }
                 }
                 is MusicEvent.SetSelectedMusic -> {

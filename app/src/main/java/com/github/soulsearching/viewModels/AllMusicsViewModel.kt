@@ -7,11 +7,13 @@ import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.dao.*
+import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -77,6 +79,71 @@ class AllMusicsViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         MusicState()
     )
+
+    suspend fun addMusic(musicToAdd : Music){
+        // Si la musique a déjà été enregistrée, on ne fait rien :
+        val existingMusic = musicDao.getMusicFromPath(musicToAdd.path)
+        if (existingMusic != null) {
+            return
+        }
+
+        val correspondingArtist = artistDao.getArtistFromInfo(
+            artistName = musicToAdd.artist
+        )
+        // Si l'artiste existe, on regarde si on trouve un album correspondant :
+
+        val correspondingAlbum = if (correspondingArtist == null) {
+            null
+        } else {
+            albumDao.getCorrespondingAlbum(
+                albumName = musicToAdd.album,
+                artistId = correspondingArtist.artistId
+            )
+        }
+        val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()
+        val artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
+        if (correspondingAlbum == null) {
+            albumDao.insertAlbum(
+                Album(
+                    albumId = albumId,
+                    albumName = musicToAdd.album,
+                    albumCover = musicToAdd.albumCover,
+                )
+            )
+            artistDao.insertArtist(
+                Artist(
+                    artistId = artistId,
+                    artistName = musicToAdd.artist,
+                    artistCover = musicToAdd.albumCover
+                )
+            )
+            albumArtistDao.insertAlbumIntoArtist(
+                AlbumArtist(
+                    albumId = albumId,
+                    artistId = artistId
+                )
+            )
+
+        } else {
+            // Si la musique n'a pas de couverture, on lui donne celle de son album :
+            if (musicToAdd.albumCover == null) {
+                musicToAdd.albumCover = correspondingAlbum.albumCover
+            }
+        }
+        musicDao.insertMusic(musicToAdd)
+        musicAlbumDao.insertMusicIntoAlbum(
+            MusicAlbum(
+                musicId = musicToAdd.musicId,
+                albumId = albumId
+            )
+        )
+        musicArtistDao.insertMusicIntoArtist(
+            MusicArtist(
+                musicId = musicToAdd.musicId,
+                artistId = artistId
+            )
+        )
+    }
 
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(

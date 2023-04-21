@@ -23,6 +23,22 @@ class SharedPrefUtils {
             }
         }
 
+        fun setMusicsFetched(){
+            CoroutineScope(Dispatchers.IO).launch {
+                with(sharedPreferences.edit()) {
+                    putBoolean(HAS_MUSICS_BEEN_FETCHED_KEY, true)
+                    apply()
+                }
+            }
+        }
+        
+        fun hasMusicsBeenFetched() : Boolean {
+            return sharedPreferences.getBoolean(
+                HAS_MUSICS_BEEN_FETCHED_KEY,
+                false
+            )
+        }
+
         fun initializeSorts(
             onMusicEvent: (MusicEvent) -> Unit,
             onPlaylistEvent: (PlaylistEvent) -> Unit,
@@ -90,6 +106,8 @@ class SharedPrefUtils {
         }
 
         const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"
+        
+        const val HAS_MUSICS_BEEN_FETCHED_KEY = "MUSICS_FETCHED"
 
         const val SORT_MUSICS_TYPE_KEY = "SORT_MUSICS_TYPE"
         const val SORT_MUSICS_DIRECTION_KEY = "SORT_MUSICS_DIRECTION"

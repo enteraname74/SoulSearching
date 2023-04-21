@@ -8,6 +8,11 @@
     <string name="shortcuts">Raccourcis</string>
     <string name="more">Plus</string>
 
+    <!-- Fetching musics -->
+    <string name="searching_songs_from_your_device">Recherche de musiques sur votre appareil…</string>
+    <string name="saving_found_songs">Enregistrement des musiques trouvées…</string>
+    <string name="cannot_retrieve_musics">Impossible de récupérer des musiques !</string>
+
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Bouton pour le menu de navigation</string>
     <string name="shuffle_button_desc">Bouton pour jouer une liste de musique en aléatoire</string>
@@ -17,6 +22,7 @@
     <string name="search_button">Bouton de recherche</string>
     <string name="more_button">Bouton pour plus d\'options</string>
     <string name="create_playlist_button">Bouton pour créer une playlist</string>
+    <string name="app_logo">Logo de l\'application</string>
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Ajouter à une playlist</string>

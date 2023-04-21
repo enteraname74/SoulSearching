@@ -49,7 +49,7 @@ interface ArtistDao {
     @Query("SELECT * FROM Artist WHERE artistName = :artistName AND artistId != :artistId")
     fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : ArtistWithMusics?
 
-    @Query("SELECT * FROM Artist WHERE artistName = :artistName")
+    @Query("SELECT * FROM Artist WHERE artistName = :artistName LIMIT 1")
     fun getArtistFromInfo(artistName: String): Artist?
 
     @Transaction

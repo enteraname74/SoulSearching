@@ -44,7 +44,8 @@ fun MusicItemComposable(
             AppImage(bitmap = music.albumCover, size = 55.dp)
             Column(
                 modifier = Modifier
-                    .height(55.dp),
+                    .height(55.dp)
+                    .width(300.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(

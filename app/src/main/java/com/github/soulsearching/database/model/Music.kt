@@ -16,6 +16,7 @@ data class Music(
     var albumCover: Bitmap? = null,
     var duration: Long = 0L,
     var path: String = "",
+    var folder: String = "",
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0
 )
