@@ -54,7 +54,11 @@ class SelectedAlbumViewModel @Inject constructor(
 
         musicState = combine(_musicState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                musics = album?.musics as ArrayList<Music> ?: ArrayList()
+                musics = if (album?.musics?.isNotEmpty() == true) {
+                    album.musics as ArrayList<Music>
+                } else {
+                    ArrayList()
+                }
             )
         }.stateIn(
             viewModelScope,
@@ -69,7 +73,11 @@ class SelectedAlbumViewModel @Inject constructor(
 
         _musicState.update {
             it.copy(
-                musics = _selectedAlbumWithMusics.value?.musics as ArrayList<Music> ?: ArrayList()
+                musics = if (_selectedAlbumWithMusics.value?.musics?.isNotEmpty() == true) {
+                    _selectedAlbumWithMusics.value?.musics as ArrayList<Music>
+                } else {
+                    ArrayList()
+                }
             )
         }
     }

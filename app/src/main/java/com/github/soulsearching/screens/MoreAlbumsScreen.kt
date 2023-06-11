@@ -25,6 +25,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
 import kotlinx.coroutines.launch
@@ -35,7 +36,8 @@ fun MoreAlbumsScreen(
     allAlbumsViewModel: AllAlbumsViewModel,
     navigateToSelectedAlbum: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    coverList: ArrayList<ImageCover>
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -131,7 +133,7 @@ fun MoreAlbumsScreen(
                 ) {
                     items(albumState.albums) { albumWithArtist ->
                         BigPreviewComposable(
-                            image = /*albumWithArtist.album.albumCover*/ null,
+                            image = coverList.find { it.coverId == albumWithArtist.album.coverId }?.cover,
                             title = albumWithArtist.album.albumName,
                             text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
                             onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) },

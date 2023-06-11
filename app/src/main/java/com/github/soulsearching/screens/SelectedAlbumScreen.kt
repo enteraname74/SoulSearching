@@ -6,6 +6,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithMusics
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedAlbumViewModel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Composable
 fun SelectedAlbumScreen(
@@ -23,7 +25,8 @@ fun SelectedAlbumScreen(
     selectedAlbumId: String,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    navigateBack : () -> Unit
+    navigateBack : () -> Unit,
+    coverList: ArrayList<ImageCover>
 ) {
     var isAlbumFetched by rememberSaveable {
         mutableStateOf(false)
@@ -56,10 +59,11 @@ fun SelectedAlbumScreen(
         playlistState = playlistState,
         musicState = musicState,
         title = albumWithMusicsState.albumWithMusics.album.albumName,
-        image = /*albumWithMusicsState.albumWithMusics.album.albumCover*/ null,
+        image = coverList.find { it.coverId == albumWithMusicsState.albumWithMusics.album.coverId }?.cover,
         navigateToModifyPlaylist = {
             navigateToModifyAlbum(selectedAlbumId)
         },
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        coverList = coverList
     )
 }

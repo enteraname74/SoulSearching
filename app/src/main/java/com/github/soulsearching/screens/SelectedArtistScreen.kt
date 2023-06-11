@@ -3,7 +3,9 @@ package com.github.soulsearching.screens
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.ImageCoverState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedArtistViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +22,8 @@ fun SelectedArtistScreen(
     selectedArtistId : String,
     navigateToModifyArtist : (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    coverList: ArrayList<ImageCover>
 ) {
     var isArtistFetched by rememberSaveable {
         mutableStateOf(false)
@@ -53,10 +56,11 @@ fun SelectedArtistScreen(
         onMusicEvent = selectedArtistViewModel::onMusicEvent,
         musicState = musicState,
         title = artistWithMusicsState.artistWithMusics.artist.artistName,
-        image = /*artistWithMusicsState.artistWithMusics.artist.artistCover*/null,
+        image = coverList.find { it.coverId == artistWithMusicsState.artistWithMusics.artist.coverId }?.cover,
         navigateToModifyPlaylist = {
             navigateToModifyArtist(selectedArtistId)
         },
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        coverList = coverList
     )
 }

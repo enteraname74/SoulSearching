@@ -32,6 +32,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -43,11 +44,12 @@ fun PlaylistScreen(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    title : String,
-    image : Bitmap?,
-    navigateToModifyPlaylist : () -> Unit = {},
-    navigateToModifyMusic : (String) -> Unit,
-    navigateBack : () -> Unit
+    title: String,
+    image: Bitmap?,
+    navigateToModifyPlaylist: () -> Unit = {},
+    navigateToModifyMusic: (String) -> Unit,
+    navigateBack: () -> Unit,
+    coverList: ArrayList<ImageCover>
 ) {
     val configuration = LocalConfiguration.current
 
@@ -137,8 +139,8 @@ fun PlaylistScreen(
                         .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
                         .background(color = MaterialTheme.colorScheme.secondary)
                         .padding(Constants.Spacing.large),
-                    retrieveCoverMethod = {
-                        null
+                    retrieveCoverMethod = {uuid ->
+                        coverList.find { it.coverId == uuid }?.cover
                     }
                 )
             }
@@ -149,8 +151,8 @@ fun PlaylistScreen(
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun TopPlaylistInformation(
-    title : String,
-    image : Bitmap?,
+    title: String,
+    image: Bitmap?,
     modifier: Modifier = Modifier,
     alignment: Alignment,
     navigateBack: () -> Unit

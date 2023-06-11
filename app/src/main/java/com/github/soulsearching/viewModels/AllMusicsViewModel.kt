@@ -2,7 +2,6 @@ package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
@@ -170,16 +169,6 @@ class AllMusicsViewModel @Inject constructor(
             )
         )
     }
-
-    private val _itemList = mutableStateListOf<Music>()
-    val itemList: List<Music> = _itemList
-
-    fun setList() {
-        for (music in state.value.musics) {
-            _itemList.add(music)
-        }
-    }
-
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

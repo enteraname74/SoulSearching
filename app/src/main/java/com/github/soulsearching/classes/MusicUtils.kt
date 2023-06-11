@@ -4,7 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
+import android.os.Build
 import android.provider.MediaStore
+import android.util.Size
 import android.widget.Toast
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
@@ -58,9 +61,8 @@ class MusicUtils {
                                 if (byteArray == null) {
                                     null
                                 } else {
-                                    val options = BitmapFactory.Options()
-                                    options.inSampleSize = 2
-                                    BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, options)
+                                    val tempBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                                    ThumbnailUtils.extractThumbnail(tempBitmap, 400, 400)
                                 }
                             } catch (error: IOException) {
                                 null

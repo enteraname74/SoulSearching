@@ -430,9 +430,7 @@ fun MainPageScreen(
                         sortDirection = musicState.sortDirection
                     )
                 }
-                allMusicsViewModel.setList()
-                val list = allMusicsViewModel.itemList
-                items(items = list, key = { music -> music.musicId }) { music ->
+                items(items = musicState.musics, key = { music -> music.musicId }) { music ->
                     Row(Modifier.animateItemPlacement()) {
                         MusicItemComposable(
                             music = music,

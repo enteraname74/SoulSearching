@@ -28,8 +28,6 @@ fun MusicItemComposable(
     music: Music,
     onClick: (MusicEvent) -> Unit,
     onLongClick: () -> Unit,
-    retrieveCoverMethod: (UUID) -> Bitmap? = {null},
-    getCoverOfMusic: (Music) -> Unit = {},
     musicCover: Bitmap? = null
 ) {
     Row(

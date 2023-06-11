@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
-                val coverState by allImageCoversViewModel.state.collectAsState()
+                val coversState by allImageCoversViewModel.state.collectAsState()
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
                     mutableStateOf(false)
@@ -205,7 +205,8 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() }
+                                        navigateBack = { navController.popBackStack() },
+                                        coverList = coversState.covers
                                     )
                                 }
                                 composable(
@@ -227,7 +228,8 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() }
+                                        navigateBack = { navController.popBackStack() },
+                                        coverList = coversState.covers
                                     )
                                 }
                                 composable(
@@ -249,7 +251,8 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() }
+                                        navigateBack = { navController.popBackStack() },
+                                        coverList = coversState.covers
                                     )
                                 }
                                 composable(
@@ -286,7 +289,7 @@ class MainActivity : AppCompatActivity() {
                                         modifyAlbumViewModel = modifyAlbumViewModel,
                                         selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
                                         finishAction = { navController.popBackStack() },
-                                        coverState = coverState
+                                        coverState = coversState
                                     )
                                 }
                                 composable(
@@ -299,7 +302,7 @@ class MainActivity : AppCompatActivity() {
                                         modifyArtistViewModel = modifyArtistViewModel,
                                         selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
                                         finishAction = { navController.popBackStack() },
-                                        coverState = coverState
+                                        coverState = coversState
                                     )
                                 }
                                 composable(
@@ -309,7 +312,8 @@ class MainActivity : AppCompatActivity() {
                                         allPlaylistsViewModel = allPlaylistsViewModel,
                                         navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
                                         finishAction = { navController.popBackStack() },
-                                        navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") }
+                                        navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") },
+                                        coverList = coversState.covers
                                     )
                                 }
                                 composable(
@@ -319,7 +323,8 @@ class MainActivity : AppCompatActivity() {
                                         allAlbumsViewModel = allAlbumsViewModel,
                                         navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
                                         finishAction = { navController.popBackStack() },
-                                        navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") }
+                                        navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") },
+                                        coverList = coversState.covers
                                     )
                                 }
                                 composable(
@@ -329,7 +334,8 @@ class MainActivity : AppCompatActivity() {
                                         allArtistsViewModel = allArtistsViewModel,
                                         navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
                                         finishAction = { navController.popBackStack() },
-                                        navigateToModifyArtist = { navController.navigate("modifyArtist/$it") }
+                                        navigateToModifyArtist = { navController.navigate("modifyArtist/$it") },
+                                        coverList = coversState.covers
                                     )
                                 }
                             }

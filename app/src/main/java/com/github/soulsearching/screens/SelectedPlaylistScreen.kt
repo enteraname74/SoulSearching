@@ -3,6 +3,7 @@ package com.github.soulsearching.screens
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
@@ -16,7 +17,8 @@ fun SelectedPlaylistScreen(
     navigateToModifyPlaylist : (String) -> Unit,
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
-    navigateBack : () -> Unit
+    navigateBack : () -> Unit,
+    coverList: ArrayList<ImageCover>
 ){
     var isPlaylistFetched by rememberSaveable {
         mutableStateOf(false)
@@ -36,10 +38,11 @@ fun SelectedPlaylistScreen(
         onPlaylistEvent = onPlaylistEvent,
         musicState = musicState,
         title = if (selectedPlaylistState.playlistWithMusics != null) selectedPlaylistState.playlistWithMusics!!.playlist.name else "",
-        image = /*selectedPlaylistState.playlistWithMusics!!.playlist.playlistCover*/ null,
+        image = coverList.find { it.coverId == selectedPlaylistState.playlistWithMusics!!.playlist.coverId }?.cover,
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        coverList = coverList
     )
 }

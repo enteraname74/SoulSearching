@@ -23,6 +23,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import kotlinx.coroutines.launch
@@ -32,7 +33,8 @@ fun MorePlaylistsScreen(
     allPlaylistsViewModel: AllPlaylistsViewModel,
     navigateToSelectedPlaylist: (String) -> Unit,
     finishAction: () -> Unit,
-    navigateToModifyPlaylist: (String) -> Unit
+    navigateToModifyPlaylist: (String) -> Unit,
+    coverList: ArrayList<ImageCover>
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -127,7 +129,7 @@ fun MorePlaylistsScreen(
 
                     items(playlistState.playlists) { playlistWithMusics ->
                         BigPreviewComposable(
-                            image = /*playlistWithMusics.playlist.playlistCover*/ null,
+                            image = coverList.find { it.coverId == playlistWithMusics.playlist.coverId }?.cover,
                             title = playlistWithMusics.playlist.name,
                             text = if (playlistWithMusics.musics.size == 1) {
                                 stringResource(id = R.string.one_music)

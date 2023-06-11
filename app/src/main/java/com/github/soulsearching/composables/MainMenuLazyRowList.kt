@@ -79,50 +79,52 @@ fun MainMenuLazyListRow(
         ) {
             items(list) { element ->
                 val modifier = Modifier.animateItemPlacement()
-                when (element) {
-                    is PlaylistWithMusics -> {
-                        BigPreviewComposable(
-                            modifier = modifier,
-                            image = coverList.find { it.coverId == element.playlist.coverId }?.cover,
-                            title = element.playlist.name,
-                            text = if (element.musics.size == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else stringResource(
-                                id = R.string.multiple_musics, element.musics.size
-                            ),
-                            onClick = {
-                                navigateToPlaylist(element.playlist.playlistId.toString())
-                            },
-                            onLongClick = { playlistBottomSheetAction(element) }
-                        )
-                    }
-                    is AlbumWithArtist -> {
-                        BigPreviewComposable(
-                            modifier = modifier,
-                            image = coverList.find { it.coverId == element.album.coverId }?.cover,
-                            title = element.album.albumName,
-                            text = if (element.artist != null) element.artist.artistName else "",
-                            onClick = {
-                                navigateToAlbum(element.album.albumId.toString())
-                            },
-                            onLongClick = { albumBottomSheetAction(element) }
-                        )
-                    }
-                    is ArtistWithMusics -> {
-                        BigPreviewComposable(
-                            modifier = modifier,
-                            image = coverList.find { it.coverId == element.artist.coverId }?.cover,
-                            title = element.artist.artistName,
-                            text = if (element.musics.size == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else stringResource(
-                                id = R.string.multiple_musics, element.musics.size
-                            ),
-                            onClick = {
-                                navigateToArtist(element.artist.artistId.toString())
-                            },
-                            onLongClick = { artistBottomSheetAction(element) }
-                        )
+                Row(modifier) {
+                    when (element) {
+                        is PlaylistWithMusics -> {
+                            BigPreviewComposable(
+                                modifier = modifier,
+                                image = coverList.find { it.coverId == element.playlist.coverId }?.cover,
+                                title = element.playlist.name,
+                                text = if (element.musics.size == 1) {
+                                    stringResource(id = R.string.one_music)
+                                } else stringResource(
+                                    id = R.string.multiple_musics, element.musics.size
+                                ),
+                                onClick = {
+                                    navigateToPlaylist(element.playlist.playlistId.toString())
+                                },
+                                onLongClick = { playlistBottomSheetAction(element) }
+                            )
+                        }
+                        is AlbumWithArtist -> {
+                            BigPreviewComposable(
+                                modifier = modifier,
+                                image = coverList.find { it.coverId == element.album.coverId }?.cover,
+                                title = element.album.albumName,
+                                text = if (element.artist != null) element.artist.artistName else "",
+                                onClick = {
+                                    navigateToAlbum(element.album.albumId.toString())
+                                },
+                                onLongClick = { albumBottomSheetAction(element) }
+                            )
+                        }
+                        is ArtistWithMusics -> {
+                            BigPreviewComposable(
+                                modifier = modifier,
+                                image = coverList.find { it.coverId == element.artist.coverId }?.cover,
+                                title = element.artist.artistName,
+                                text = if (element.musics.size == 1) {
+                                    stringResource(id = R.string.one_music)
+                                } else stringResource(
+                                    id = R.string.multiple_musics, element.musics.size
+                                ),
+                                onClick = {
+                                    navigateToArtist(element.artist.artistId.toString())
+                                },
+                                onLongClick = { artistBottomSheetAction(element) }
+                            )
+                        }
                     }
                 }
             }

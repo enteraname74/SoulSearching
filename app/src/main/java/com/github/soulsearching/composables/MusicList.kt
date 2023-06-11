@@ -22,7 +22,7 @@ fun MusicList(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier,
-    retrieveCoverMethod : (UUID) -> Bitmap?
+    retrieveCoverMethod : (UUID?) -> Bitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -47,7 +47,7 @@ fun MusicList(
                         onMusicEvent(MusicEvent.BottomSheet(isShown = true))
                     }
                 },
-                retrieveCoverMethod = retrieveCoverMethod
+                musicCover = retrieveCoverMethod(music.coverId)
             )
         }
     }
