@@ -47,7 +47,6 @@ class AllImageCoversViewModel @Inject constructor(
             && playlistDao.getNumberOfPlaylistsWithCoverId(cover.coverId) == 0
             && artistDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
         ) {
-            Log.d("GONNA DELETE LEGACY COVER", "")
             imageCoverDao.deleteFromCoverId(cover.coverId)
         }
     }

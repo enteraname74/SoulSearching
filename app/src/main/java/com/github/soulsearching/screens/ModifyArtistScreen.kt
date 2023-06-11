@@ -46,7 +46,6 @@ fun ModifyArtistScreen(
     modifyArtistViewModel: ModifyArtistViewModel,
     selectedArtistId: String,
     finishAction: () -> Unit,
-    coverState: ImageCoverState
 ) {
     val configuration = LocalConfiguration.current
     val focusManager = LocalFocusManager.current
@@ -123,7 +122,7 @@ fun ModifyArtistScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = coverState.covers.find { it.coverId == artistState.artistWithMusics.artist.coverId }?.cover,
+                                bitmap = artistState.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -172,7 +171,7 @@ fun ModifyArtistScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = coverState.covers.find { it.coverId == artistState.artistWithMusics.artist.coverId }?.cover,
+                                bitmap = artistState.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )

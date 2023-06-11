@@ -140,14 +140,6 @@ class ModifyAlbumViewModel @Inject constructor(
                         albumId = state.value.albumWithMusics.album.albumId
                     )
                     for (music in musicsFromAlbum) {
-                        // On vérifie si on peut supprimer les anciennes couvertures des musiques :
-                        if (music.coverId != null) {
-                            Utils.checkAndDeleteCovers(
-                                imageCoverDao = imageCoverDao,
-                                legacyCoverId = music.coverId!!
-                            )
-                        }
-
                         // On modifie les infos de chaque musique
                         musicDao.insertMusic(
                             music.copy(
@@ -166,7 +158,7 @@ class ModifyAlbumViewModel @Inject constructor(
                     // On modifie notre album :
                     albumDao.insertAlbum(
                         state.value.albumWithMusics.album.copy(
-                            albumName = state.value.albumWithMusics.album.albumName,
+                            albumName = state.value.albumWithMusics.album.albumName.trim(),
                             coverId = coverId
                         )
                     )
@@ -176,7 +168,6 @@ class ModifyAlbumViewModel @Inject constructor(
                         artistToCheck = initialArtist,
                         musicArtistDao = musicArtistDao,
                         artistDao = artistDao,
-                        imageCoverDao = imageCoverDao
                     )
                 }
             }

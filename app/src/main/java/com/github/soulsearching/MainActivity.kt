@@ -288,8 +288,7 @@ class MainActivity : AppCompatActivity() {
                                     ModifyAlbumScreen(
                                         modifyAlbumViewModel = modifyAlbumViewModel,
                                         selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
-                                        finishAction = { navController.popBackStack() },
-                                        coverState = coversState
+                                        finishAction = { navController.popBackStack() }
                                     )
                                 }
                                 composable(
@@ -301,8 +300,7 @@ class MainActivity : AppCompatActivity() {
                                     ModifyArtistScreen(
                                         modifyArtistViewModel = modifyArtistViewModel,
                                         selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
-                                        finishAction = { navController.popBackStack() },
-                                        coverState = coversState
+                                        finishAction = { navController.popBackStack() }
                                     )
                                 }
                                 composable(

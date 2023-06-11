@@ -50,8 +50,7 @@ class EventUtils {
                             albumArtistDao = albumArtistDao,
                             musicAlbumDao = musicAlbumDao,
                             musicArtistDao = musicArtistDao,
-                            musicToRemove = state.value.selectedMusic,
-                            imageCoverDao = imageCoverDao
+                            musicToRemove = state.value.selectedMusic
                         )
                     }
                 }
@@ -169,8 +168,7 @@ class EventUtils {
                             Utils.checkAndDeleteArtist(
                                 artistToCheck = legacyArtist!!,
                                 artistDao = artistDao,
-                                musicArtistDao = musicArtistDao,
-                                imageCoverDao = imageCoverDao
+                                musicArtistDao = musicArtistDao
                             )
                         } else if (state.value.selectedMusic.album != state.value.album) {
                             val artist = Utils.getCorrespondingArtist(

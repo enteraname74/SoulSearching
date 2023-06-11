@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +27,8 @@ class ModifyArtistViewModel @Inject constructor(
     private val musicArtistDao: MusicArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val albumArtistDao: AlbumArtistDao,
-    private val albumDao: AlbumDao
+    private val albumDao: AlbumDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SelectedArtistState())
@@ -39,10 +42,27 @@ class ModifyArtistViewModel @Inject constructor(
         when (event) {
             ArtistEvent.UpdateArtist -> {
                 CoroutineScope(Dispatchers.IO).launch {
+
+                    val coverId = if (state.value.hasCoverBeenChanged) {
+                        val id = UUID.randomUUID()
+                        imageCoverDao.insertImageCover(
+                            ImageCover(
+                                coverId = id,
+                                cover = state.value.cover
+                            )
+                        )
+                        id
+                    } else {
+                        state.value.artistWithMusics.artist.coverId
+                    }
+
                     artistDao.insertArtist(
                         Artist(
                             artistId = state.value.artistWithMusics.artist.artistId,
-                            artistName = state.value.artistWithMusics.artist.artistName.trim()
+                            artistName = state.value.artistWithMusics.artist.artistName.trim(),
+                            coverId = coverId,
+                            addedDate = state.value.artistWithMusics.artist.addedDate,
+                            nbPlayed = state.value.artistWithMusics.artist.nbPlayed
                         )
                     )
 
@@ -62,8 +82,6 @@ class ModifyArtistViewModel @Inject constructor(
                      */
                     val albumsOrderedByAppearance =
                         legacyArtistOfAlbums.groupingBy { it.album.albumName }.eachCount()
-                    Log.d("APPEARANCE", albumsOrderedByAppearance.keys.toString())
-                    Log.d("APPEARANCE", albumsOrderedByAppearance.toString())
 
                     for (entry in albumsOrderedByAppearance.entries) {
                         val albumWithMusicToUpdate = legacyArtistOfAlbums.find {
@@ -133,10 +151,17 @@ class ModifyArtistViewModel @Inject constructor(
             }
             is ArtistEvent.ArtistFromId -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val artist = artistDao.getArtistWithMusicsSimple(event.artistId)
+                    val artistWithMusics = artistDao.getArtistWithMusicsSimple(event.artistId)
+                    val cover = if (artistWithMusics.artist.coverId != null) {
+                        imageCoverDao.getCoverOfElement(artistWithMusics.artist.coverId!!)?.cover
+                    } else {
+                        null
+                    }
                     _state.update {
                         it.copy(
-                            artistWithMusics = artist
+                            artistWithMusics = artistWithMusics,
+                            cover = cover,
+                            hasCoverBeenChanged = false
                         )
                     }
                 }
