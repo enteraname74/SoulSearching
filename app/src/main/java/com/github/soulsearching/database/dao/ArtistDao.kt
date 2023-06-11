@@ -59,4 +59,7 @@ interface ArtistDao {
     @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
     fun getArtistWithMusicsSimple(artistId: UUID): ArtistWithMusics
+
+    @Query("UPDATE Artist SET coverId = :newCoverId WHERE artistId = :artistId")
+    fun updateArtistCover(newCoverId : UUID, artistId : UUID)
 }

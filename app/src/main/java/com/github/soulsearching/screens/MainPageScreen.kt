@@ -26,11 +26,14 @@ import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomShee
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
+import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Suppress("UNCHECKED_CAST")
@@ -125,7 +128,18 @@ fun MainPageScreen(
                             sortDirection = 0
                         )
                         TestButtons(
-                            onMusicEvent = allMusicsViewModel::onMusicEvent
+                            addMusic = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    allMusicsViewModel.addMusic(
+                                        musicToAdd = Music(
+                                            name = "TEST",
+                                            artist = "TEST",
+                                            album = "TEST"
+                                        ),
+                                        musicCover = null
+                                    )
+                                }
+                            }
                         )
                     }
                 }
@@ -269,7 +283,7 @@ fun MainPageScreen(
                             )
                             SharedPrefUtils.updateSort(
                                 keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                newValue = SortType.ADDED_DATE
                             )
                         },
                         setSortTypeAction = {

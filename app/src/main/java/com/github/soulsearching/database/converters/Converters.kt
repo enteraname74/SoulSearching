@@ -20,9 +20,9 @@ class Converters {
     }
 
     @TypeConverter
-    fun stringToBitmap(string: String): Bitmap? {
+    fun stringToBitmap(string: String?): Bitmap? {
 
-        if (string == "") return null
+        if (string == "" || string == null) return null
 
         val imageBytes = Base64.decode(string,0)
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)

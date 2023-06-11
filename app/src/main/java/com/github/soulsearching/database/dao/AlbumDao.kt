@@ -75,4 +75,7 @@ interface AlbumDao {
         "SELECT Album.* FROM Album INNER JOIN AlbumArtist ON Album.albumId = AlbumArtist.albumId AND Album.albumName = :albumName AND AlbumArtist.artistId = :artistId AND Album.albumId != :albumId"
     )
     fun getPossibleDuplicateAlbum(albumId: UUID, albumName: String, artistId: UUID): Album?
+
+    @Query("UPDATE Album SET coverId = :newCoverId WHERE albumId = :albumId")
+    fun updateAlbumCover(newCoverId : UUID, albumId : UUID)
 }

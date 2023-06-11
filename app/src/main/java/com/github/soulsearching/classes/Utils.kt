@@ -133,7 +133,6 @@ class Utils {
             albumArtistDao: AlbumArtistDao,
             legacyMusic: Music,
             currentAlbum: String,
-            currentCover: Bitmap?,
         ) {
             // On récupère l'ancien album :
             val legacyAlbum = getCorrespondingAlbum(

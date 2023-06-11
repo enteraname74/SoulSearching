@@ -40,13 +40,19 @@ class ModifyMusicViewModel @Inject constructor(
     fun getMusicFromId(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             val music = musicDao.getMusicFromId(musicId)
+            val cover = if (music.coverId != null) {
+                imageCoverDao.getCoverOfElement(music.coverId!!)
+            } else {
+                null
+            }
             _state.update {
                 it.copy(
                     selectedMusic = music,
                     name = music.name,
                     album = music.album,
                     artist = music.artist,
-                    hasCoverBeenChanged = false
+                    hasCoverBeenChanged = false,
+                    cover = cover?.cover
                 )
             }
         }

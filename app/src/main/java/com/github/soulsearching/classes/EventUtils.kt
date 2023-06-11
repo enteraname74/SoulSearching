@@ -164,8 +164,8 @@ class EventUtils {
                                 albumArtistDao = albumArtistDao,
                                 legacyMusic = state.value.selectedMusic,
                                 currentAlbum = state.value.album.trim(),
-                                currentCover = state.value.cover
                             )
+
                             Utils.checkAndDeleteArtist(
                                 artistToCheck = legacyArtist!!,
                                 artistDao = artistDao,
@@ -185,9 +185,27 @@ class EventUtils {
                                 albumArtistDao = albumArtistDao,
                                 legacyMusic = state.value.selectedMusic,
                                 currentAlbum = state.value.album.trim(),
-                                currentCover = state.value.cover,
                                 artist = artist!!
                             )
+                        }
+                        if (state.value.hasCoverBeenChanged) {
+                            // On mets à jour la cover pour l'album et l'artiste :
+                            val artist = artistDao.getArtistFromInfo(
+                                state.value.artist.trim()
+                            )
+                            val album = albumDao.getCorrespondingAlbum(
+                                albumName = state.value.album.trim(),
+                                artistId = artist!!.artistId
+                            )
+                            // Si l'artiste n'a pas d'image, on lui donne la nouvelle cover
+                            if (artist.coverId == null) {
+                                artistDao.updateArtistCover(coverId!!, artist.artistId)
+                            }
+                            // Faison de même pour l'album :
+                            Log.d("ALBUM ?", album.toString())
+                            if (album!!.coverId == null) {
+                                albumDao.updateAlbumCover(coverId!!, album.albumId)
+                            }
                         }
 
                         musicDao.insertMusic(

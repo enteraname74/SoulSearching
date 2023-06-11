@@ -12,7 +12,7 @@ import com.github.soulsearching.events.MusicEvent
 
 @Composable
 fun TestButtons(
-    onMusicEvent: (MusicEvent) -> Unit
+    addMusic : () -> Unit
 ) {
     LazyRow(
         modifier = Modifier
@@ -21,7 +21,7 @@ fun TestButtons(
     ) {
         item {
             Button(onClick = {
-                onMusicEvent(MusicEvent.AddMusic)
+                addMusic()
             }) {
                 Text("Test ajout simple")
             }

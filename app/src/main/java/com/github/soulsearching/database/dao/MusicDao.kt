@@ -42,4 +42,7 @@ interface MusicDao {
 
     @Query("SELECT Music.* FROM Music INNER JOIN MusicAlbum WHERE Music.musicId = MusicAlbum.musicId AND MusicAlbum.albumId = :albumId")
     fun getMusicsFromAlbum(albumId : UUID) : List<Music>
+
+    @Query("SELECT COUNT(*) FROM Music WHERE coverId = :coverId")
+    fun getNumberOfMusicsWithCoverId(coverId : UUID) : Int
 }
