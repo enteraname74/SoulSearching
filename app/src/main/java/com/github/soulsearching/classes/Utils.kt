@@ -7,10 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumArtist
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.database.model.*
 import java.util.*
 
 class Utils {
@@ -39,6 +36,7 @@ class Utils {
             albumArtistDao: AlbumArtistDao,
             musicAlbumDao: MusicAlbumDao,
             musicArtistDao: MusicArtistDao,
+            imageCoverDao: ImageCoverDao,
             musicToRemove: Music
         ) {
             val artist = artistDao.getArtistFromInfo(
@@ -61,7 +59,8 @@ class Utils {
             checkAndDeleteArtist(
                 artistToCheck = artist!!,
                 musicArtistDao = musicArtistDao,
-                artistDao = artistDao
+                artistDao = artistDao,
+                imageCoverDao
             )
         }
 
@@ -76,9 +75,13 @@ class Utils {
 
         private suspend fun removeArtistFromApp(
             artistToRemove: Artist,
-            artistDao: ArtistDao
+            artistDao: ArtistDao,
+            imageCoverDao: ImageCoverDao
         ) {
             artistDao.deleteArtist(artist = artistToRemove)
+            if (artistToRemove.coverId != null) {
+                imageCoverDao.deleteFromCoverId(artistToRemove.coverId!!)
+            }
         }
 
         private suspend fun checkAndDeleteAlbum(
@@ -102,7 +105,8 @@ class Utils {
         suspend fun checkAndDeleteArtist(
             artistToCheck: Artist,
             musicArtistDao: MusicArtistDao,
-            artistDao: ArtistDao
+            artistDao: ArtistDao,
+            imageCoverDao: ImageCoverDao
         ) {
             if (musicArtistDao.getNumberOfMusicsFromArtist(
                     artistId = artistToCheck.artistId
@@ -110,9 +114,16 @@ class Utils {
             ) {
                 removeArtistFromApp(
                     artistToRemove = artistToCheck,
-                    artistDao = artistDao
+                    artistDao = artistDao,
+                    imageCoverDao = imageCoverDao
                 )
             }
+        }
+
+        suspend fun checkAndDeleteCovers(
+            imageCoverDao: ImageCoverDao,
+            legacyCoverId: UUID
+        ) {
         }
 
         suspend fun modifyMusicAlbum(
@@ -140,8 +151,7 @@ class Utils {
                 // C'est un nouvel album, il faut le créer :
                 println("Nouvel album !")
                 val album = Album(
-                    albumName = currentAlbum,
-                    albumCover = currentCover
+                    albumName = currentAlbum
                 )
                 newAlbum = album
 

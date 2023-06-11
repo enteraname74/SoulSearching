@@ -128,7 +128,7 @@ fun MoreArtistsScreen(
                 ) {
                     items(artistState.artists) { artistWithMusics ->
                         BigPreviewComposable(
-                            image = artistWithMusics.artist.artistCover,
+                            image = /*artistWithMusics.artist.artistCover*/ null,
                             title = artistWithMusics.artist.artistName,
                             text = if (artistWithMusics.musics.size == 1) {
                                 stringResource(id = R.string.one_music)

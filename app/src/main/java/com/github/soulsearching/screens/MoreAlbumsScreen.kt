@@ -131,7 +131,7 @@ fun MoreAlbumsScreen(
                 ) {
                     items(albumState.albums) { albumWithArtist ->
                         BigPreviewComposable(
-                            image = albumWithArtist.album.albumCover,
+                            image = /*albumWithArtist.album.albumCover*/ null,
                             title = albumWithArtist.album.albumName,
                             text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
                             onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) },

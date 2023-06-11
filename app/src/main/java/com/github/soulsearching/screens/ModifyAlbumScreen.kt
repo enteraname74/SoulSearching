@@ -36,18 +36,17 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.states.ImageCoverState
 import com.github.soulsearching.states.SelectedAlbumState
 import com.github.soulsearching.viewModels.ModifyAlbumViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
 fun ModifyAlbumScreen(
     modifyAlbumViewModel: ModifyAlbumViewModel,
     selectedAlbumId: String,
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    coverState: ImageCoverState
 ) {
 
     val configuration = LocalConfiguration.current
@@ -125,7 +124,7 @@ fun ModifyAlbumScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = albumState.albumWithMusics.album.albumCover,
+                                bitmap = coverState.covers.find { it.coverId == albumState.albumWithMusics.album.coverId }?.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -175,7 +174,7 @@ fun ModifyAlbumScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = albumState.albumWithMusics.album.albumCover,
+                                bitmap = coverState.covers.find { it.coverId == albumState.albumWithMusics.album.coverId }?.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )

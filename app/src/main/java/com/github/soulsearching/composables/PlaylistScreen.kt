@@ -94,6 +94,9 @@ fun PlaylistScreen(
                         .width(endWidth - (endWidth - centerPaddingEnd))
                         .background(color = MaterialTheme.colorScheme.secondary)
                         .padding(Constants.Spacing.large),
+                    retrieveCoverMethod = {
+                        null
+                    }
                 )
             }
             else -> {
@@ -133,7 +136,10 @@ fun PlaylistScreen(
                         .height(bottomHeight - (bottomHeight - centerPaddingBottom))
                         .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
                         .background(color = MaterialTheme.colorScheme.secondary)
-                        .padding(Constants.Spacing.large)
+                        .padding(Constants.Spacing.large),
+                    retrieveCoverMethod = {
+                        null
+                    }
                 )
             }
         }

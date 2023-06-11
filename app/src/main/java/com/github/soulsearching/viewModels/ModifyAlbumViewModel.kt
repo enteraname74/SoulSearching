@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Artist
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +26,8 @@ class ModifyAlbumViewModel @Inject constructor(
     private val artistDao: ArtistDao,
     private val musicArtistDao: MusicArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
-    private val albumArtistDao: AlbumArtistDao
+    private val albumArtistDao: AlbumArtistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
@@ -47,6 +50,20 @@ class ModifyAlbumViewModel @Inject constructor(
                     )
                     var currentArtist = initialArtist
 
+                    // Si on a changé l'image de l'album, il faut changer l'id de la couverture :
+                    val coverId = if (state.value.hasSetNewCover) {
+                        val newCoverId = UUID.randomUUID()
+                        imageCoverDao.insertImageCover(
+                            ImageCover(
+                                coverId = newCoverId,
+                                cover = state.value.albumCover
+                            )
+                        )
+                        newCoverId
+                    } else {
+                        state.value.albumWithMusics.album.coverId
+                    }
+
                     if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist!!.artistName) {
                         // On cherche le nouvel artiste correspondant :
                         var newArtist = artistDao.getArtistFromInfo(
@@ -56,7 +73,7 @@ class ModifyAlbumViewModel @Inject constructor(
                         if (newArtist == null) {
                             newArtist = Artist(
                                 artistName = state.value.albumWithMusics.artist!!.artistName.trim(),
-                                artistCover = state.value.albumWithMusics.album.albumCover
+                                coverId = coverId
                             )
                             artistDao.insertArtist(
                                 artist = newArtist
@@ -118,23 +135,24 @@ class ModifyAlbumViewModel @Inject constructor(
                         }
                     }
 
-                    // On modifie notre album :
-                    albumDao.insertAlbum(
-                        state.value.albumWithMusics.album.apply {
-                            this.albumName.trim()
-                        }
-                    )
-
                     // On met à jour les musiques de l'album :
                     val musicsFromAlbum = musicDao.getMusicsFromAlbum(
                         albumId = state.value.albumWithMusics.album.albumId
                     )
                     for (music in musicsFromAlbum) {
+                        // On vérifie si on peut supprimer les anciennes couvertures des musiques :
+                        if (music.coverId != null) {
+                            Utils.checkAndDeleteCovers(
+                                imageCoverDao = imageCoverDao,
+                                legacyCoverId = music.coverId!!
+                            )
+                        }
+
                         // On modifie les infos de chaque musique
                         musicDao.insertMusic(
                             music.copy(
                                 album = state.value.albumWithMusics.album.albumName.trim(),
-                                albumCover = state.value.albumWithMusics.album.albumCover,
+                                coverId = coverId,
                                 artist = state.value.albumWithMusics.artist!!.artistName.trim()
                             )
                         )
@@ -145,11 +163,20 @@ class ModifyAlbumViewModel @Inject constructor(
                         )
                     }
 
+                    // On modifie notre album :
+                    albumDao.insertAlbum(
+                        state.value.albumWithMusics.album.copy(
+                            albumName = state.value.albumWithMusics.album.albumName,
+                            coverId = coverId
+                        )
+                    )
+
                     // On vérifie si l'ancien artiste possède encore des musiques :
                     Utils.checkAndDeleteArtist(
                         artistToCheck = initialArtist,
                         musicArtistDao = musicArtistDao,
-                        artistDao = artistDao
+                        artistDao = artistDao,
+                        imageCoverDao = imageCoverDao
                     )
                 }
             }
@@ -177,11 +204,8 @@ class ModifyAlbumViewModel @Inject constructor(
             is AlbumEvent.SetCover -> {
                 _state.update {
                     it.copy(
-                        albumWithMusics = it.albumWithMusics.copy(
-                            album = it.albumWithMusics.album.copy(
-                                albumCover = event.cover
-                            )
-                        )
+                        albumCover = event.cover,
+                        hasSetNewCover = true
                     )
                 }
             }

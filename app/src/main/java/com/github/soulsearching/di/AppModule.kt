@@ -63,4 +63,9 @@ class AppModule {
     fun provideAlbumArtistDao(appDatabase: AppDatabase): AlbumArtistDao {
         return appDatabase.albumArtistDao
     }
+
+    @Provides
+    fun provideImageCoverDao(appDatabase: AppDatabase): ImageCoverDao {
+        return appDatabase.imageCoverDao
+    }
 }

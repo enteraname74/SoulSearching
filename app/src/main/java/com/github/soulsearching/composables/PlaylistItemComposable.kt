@@ -25,7 +25,7 @@ fun PlaylistItemComposable(
             .padding(Constants.Spacing.medium),
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
     ) {
-        AppImage(bitmap = playlist.playlistCover, size = 55.dp)
+        //AppImage(bitmap = playlist.playlistCover, size = 55.dp)
         Column(
             modifier = Modifier
                 .fillMaxHeight(),

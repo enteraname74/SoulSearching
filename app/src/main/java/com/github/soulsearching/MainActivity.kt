@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private val allPlaylistsViewModel: AllPlaylistsViewModel by viewModels()
     private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
     private val allArtistsViewModel: AllArtistsViewModel by viewModels()
+    private val allImageCoversViewModel: AllImageCoversViewModel by viewModels()
 
     // Selected page view models
     private val selectedPlaylistViewModel: SelectedPlaylistViewModel by viewModels()
@@ -70,8 +71,8 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             SoulSearchingTheme {
-
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
+                val coverState by allImageCoversViewModel.state.collectAsState()
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
                     mutableStateOf(false)
@@ -121,10 +122,10 @@ class MainActivity : AppCompatActivity() {
                                 SharedPrefUtils.setMusicsFetched()
                                 hasMusicsBeenFetched = true
                             },
-                            addingMusicAction = {
+                            addingMusicAction = { music, cover ->
                                 runBlocking {
                                     val job = CoroutineScope(Dispatchers.IO).launch {
-                                        allMusicsViewModel.addMusic(it)
+                                        allMusicsViewModel.addMusic(music, cover)
                                     }
                                     job.join()
                                 }
@@ -149,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                                         allPlaylistsViewModel = allPlaylistsViewModel,
                                         allAlbumsViewModel = allAlbumsViewModel,
                                         allArtistsViewModel = allArtistsViewModel,
+                                        allImageCoversViewModel = allImageCoversViewModel,
                                         navigateToPlaylist = {
                                             navController.navigate("selectedPlaylist/$it")
                                         },
@@ -283,7 +285,8 @@ class MainActivity : AppCompatActivity() {
                                     ModifyAlbumScreen(
                                         modifyAlbumViewModel = modifyAlbumViewModel,
                                         selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
-                                        finishAction = { navController.popBackStack() }
+                                        finishAction = { navController.popBackStack() },
+                                        coverState = coverState
                                     )
                                 }
                                 composable(
@@ -295,7 +298,8 @@ class MainActivity : AppCompatActivity() {
                                     ModifyArtistScreen(
                                         modifyArtistViewModel = modifyArtistViewModel,
                                         selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
-                                        finishAction = { navController.popBackStack() }
+                                        finishAction = { navController.popBackStack() },
+                                        coverState = coverState
                                     )
                                 }
                                 composable(

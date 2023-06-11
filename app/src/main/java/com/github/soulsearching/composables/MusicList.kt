@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Composable
 fun MusicList(
@@ -19,7 +21,8 @@ fun MusicList(
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    retrieveCoverMethod : (UUID) -> Bitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -43,7 +46,8 @@ fun MusicList(
                         onMusicEvent(MusicEvent.SetSelectedMusic(music))
                         onMusicEvent(MusicEvent.BottomSheet(isShown = true))
                     }
-                }
+                },
+                retrieveCoverMethod = retrieveCoverMethod
             )
         }
     }

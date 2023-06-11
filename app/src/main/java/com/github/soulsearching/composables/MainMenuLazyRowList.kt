@@ -16,11 +16,13 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.database.model.PlaylistWithMusics
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainMenuLazyListRow(
+    coverList: ArrayList<ImageCover>,
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
@@ -81,7 +83,7 @@ fun MainMenuLazyListRow(
                     is PlaylistWithMusics -> {
                         BigPreviewComposable(
                             modifier = modifier,
-                            image = element.playlist.playlistCover,
+                            image = coverList.find { it.coverId == element.playlist.coverId }?.cover,
                             title = element.playlist.name,
                             text = if (element.musics.size == 1) {
                                 stringResource(id = R.string.one_music)
@@ -97,7 +99,7 @@ fun MainMenuLazyListRow(
                     is AlbumWithArtist -> {
                         BigPreviewComposable(
                             modifier = modifier,
-                            image = element.album.albumCover,
+                            image = coverList.find { it.coverId == element.album.coverId }?.cover,
                             title = element.album.albumName,
                             text = if (element.artist != null) element.artist.artistName else "",
                             onClick = {
@@ -109,7 +111,7 @@ fun MainMenuLazyListRow(
                     is ArtistWithMusics -> {
                         BigPreviewComposable(
                             modifier = modifier,
-                            image = element.artist.artistCover,
+                            image = coverList.find { it.coverId == element.artist.coverId }?.cover,
                             title = element.artist.artistName,
                             text = if (element.musics.size == 1) {
                                 stringResource(id = R.string.one_music)

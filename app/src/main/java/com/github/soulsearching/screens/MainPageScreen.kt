@@ -11,10 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,10 +30,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.viewModels.AllAlbumsViewModel
-import com.github.soulsearching.viewModels.AllArtistsViewModel
-import com.github.soulsearching.viewModels.AllMusicsViewModel
-import com.github.soulsearching.viewModels.AllPlaylistsViewModel
+import com.github.soulsearching.viewModels.*
 import kotlinx.coroutines.launch
 
 @Suppress("UNCHECKED_CAST")
@@ -47,6 +41,7 @@ fun MainPageScreen(
     allPlaylistsViewModel: AllPlaylistsViewModel,
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
+    allImageCoversViewModel: AllImageCoversViewModel,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -63,6 +58,7 @@ fun MainPageScreen(
     val playlistState by allPlaylistsViewModel.state.collectAsState()
     val albumState by allAlbumsViewModel.state.collectAsState()
     val artistState by allArtistsViewModel.state.collectAsState()
+    val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -135,6 +131,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
+                        coverList = imageCovers.covers,
                         list = playlistState.playlists,
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
@@ -201,11 +198,12 @@ fun MainPageScreen(
                             )
                         },
                         setSortTypeAction = {
-                            val newDirection = if (playlistState.sortDirection == SortDirection.ASC) {
-                                SortDirection.DESC
-                            } else {
-                                SortDirection.ASC
-                            }
+                            val newDirection =
+                                if (playlistState.sortDirection == SortDirection.ASC) {
+                                    SortDirection.DESC
+                                } else {
+                                    SortDirection.ASC
+                                }
                             allPlaylistsViewModel.onPlaylistEvent(
                                 PlaylistEvent.SetSortDirection(
                                     newDirection
@@ -222,6 +220,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
+                        coverList = imageCovers.covers,
                         list = albumState.albums,
                         title = stringResource(id = R.string.albums),
                         navigateToMore = navigateToMoreAlbums,
@@ -296,6 +295,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
+                        coverList = imageCovers.covers,
                         list = artistState.artists,
                         title = stringResource(id = R.string.artists),
                         navigateToMore = navigateToMoreArtists,
@@ -430,7 +430,9 @@ fun MainPageScreen(
                         sortDirection = musicState.sortDirection
                     )
                 }
-                items(musicState.musics) { music ->
+                allMusicsViewModel.setList()
+                val list = allMusicsViewModel.itemList
+                items(items = list, key = { music -> music.musicId }) { music ->
                     Row(Modifier.animateItemPlacement()) {
                         MusicItemComposable(
                             music = music,
@@ -448,7 +450,10 @@ fun MainPageScreen(
                                         )
                                     )
                                 }
-                            }
+                            },
+                            musicCover = imageCovers.covers.find {
+                                it.coverId == music.coverId
+                            }?.cover
                         )
                     }
                 }

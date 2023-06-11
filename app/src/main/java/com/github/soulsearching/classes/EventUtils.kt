@@ -31,6 +31,7 @@ class EventUtils {
             musicAlbumDao: MusicAlbumDao,
             musicArtistDao: MusicArtistDao,
             albumArtistDao: AlbumArtistDao,
+            imageCoverDao: ImageCoverDao,
         ) {
             when (event) {
                 is MusicEvent.DeleteDialog -> {
@@ -49,7 +50,8 @@ class EventUtils {
                             albumArtistDao = albumArtistDao,
                             musicAlbumDao = musicAlbumDao,
                             musicArtistDao = musicArtistDao,
-                            musicToRemove = state.value.selectedMusic
+                            musicToRemove = state.value.selectedMusic,
+                            imageCoverDao = imageCoverDao
                         )
                     }
                 }
@@ -88,7 +90,8 @@ class EventUtils {
                 is MusicEvent.SetCover -> {
                     _state.update {
                         it.copy(
-                            cover = event.cover
+                            cover = event.cover,
+                            hasCoverBeenChanged = true
                         )
                     }
                 }
@@ -115,6 +118,18 @@ class EventUtils {
                 }
                 is MusicEvent.UpdateMusic -> {
                     CoroutineScope(Dispatchers.IO).launch {
+                        val coverId = if (state.value.hasCoverBeenChanged) {
+                            val id = UUID.randomUUID()
+                            imageCoverDao.insertImageCover(
+                                ImageCover(
+                                    coverId = id,
+                                    cover = state.value.cover
+                                )
+                            )
+                            id
+                        } else {
+                            state.value.selectedMusic.coverId
+                        }
                         if (state.value.selectedMusic.artist != state.value.artist.trim()) {
                             val legacyArtist = artistDao.getArtistFromInfo(
                                 artistName = state.value.selectedMusic.artist
@@ -125,9 +140,11 @@ class EventUtils {
                             if (newArtist == null) {
                                 // C'est un nouvel artist, il faut le créer :
                                 Log.d("Nouvel artiste", "nouvel artiste")
+                                val newArtistId = UUID.randomUUID()
                                 newArtist = Artist(
+                                    artistId = newArtistId,
                                     artistName = state.value.artist.trim(),
-                                    artistCover = state.value.cover
+                                    coverId = coverId
                                 )
                                 artistDao.insertArtist(
                                     newArtist
@@ -152,7 +169,8 @@ class EventUtils {
                             Utils.checkAndDeleteArtist(
                                 artistToCheck = legacyArtist!!,
                                 artistDao = artistDao,
-                                musicArtistDao = musicArtistDao
+                                musicArtistDao = musicArtistDao,
+                                imageCoverDao = imageCoverDao
                             )
                         } else if (state.value.selectedMusic.album != state.value.album) {
                             val artist = Utils.getCorrespondingArtist(
@@ -178,7 +196,7 @@ class EventUtils {
                                 name = state.value.name.trim(),
                                 album = state.value.album.trim(),
                                 artist = state.value.artist.trim(),
-                                albumCover = state.value.cover,
+                                coverId = coverId,
                                 path = state.value.selectedMusic.path,
                                 duration = state.value.selectedMusic.duration
                             )
@@ -295,8 +313,7 @@ class EventUtils {
                         playlistDao.insertPlaylist(
                             Playlist(
                                 playlistId = state.value.selectedPlaylist.playlistId,
-                                name = state.value.name.trim(),
-                                playlistCover = state.value.cover
+                                name = state.value.name.trim()
                             )
                         )
                     }
@@ -307,8 +324,7 @@ class EventUtils {
                         _state.update {
                             it.copy(
                                 selectedPlaylist = playlist,
-                                name = playlist.name,
-                                cover = playlist.playlistCover
+                                name = playlist.name
                             )
                         }
                     }

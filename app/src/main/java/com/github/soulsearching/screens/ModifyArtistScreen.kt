@@ -36,6 +36,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.states.ImageCoverState
 import com.github.soulsearching.states.SelectedArtistState
 import com.github.soulsearching.viewModels.ModifyArtistViewModel
 import java.util.*
@@ -44,7 +45,8 @@ import java.util.*
 fun ModifyArtistScreen(
     modifyArtistViewModel: ModifyArtistViewModel,
     selectedArtistId: String,
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    coverState: ImageCoverState
 ) {
     val configuration = LocalConfiguration.current
     val focusManager = LocalFocusManager.current
@@ -121,7 +123,7 @@ fun ModifyArtistScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = artistState.artistWithMusics.artist.artistCover,
+                                bitmap = coverState.covers.find { it.coverId == artistState.artistWithMusics.artist.coverId }?.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -170,7 +172,7 @@ fun ModifyArtistScreen(
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = artistState.artistWithMusics.artist.artistCover,
+                                bitmap = coverState.covers.find { it.coverId == artistState.artistWithMusics.artist.coverId }?.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )

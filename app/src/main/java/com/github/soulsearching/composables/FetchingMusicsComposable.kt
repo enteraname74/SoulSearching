@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FetchingMusicsComposable(
     finishAddingMusicsAction: () -> Unit,
-    addingMusicAction: (Music) -> Unit
+    addingMusicAction: (Music, Bitmap?) -> Unit
 ) {
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)

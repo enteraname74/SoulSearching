@@ -127,7 +127,7 @@ fun MorePlaylistsScreen(
 
                     items(playlistState.playlists) { playlistWithMusics ->
                         BigPreviewComposable(
-                            image = playlistWithMusics.playlist.playlistCover,
+                            image = /*playlistWithMusics.playlist.playlistCover*/ null,
                             title = playlistWithMusics.playlist.name,
                             text = if (playlistWithMusics.musics.size == 1) {
                                 stringResource(id = R.string.one_music)

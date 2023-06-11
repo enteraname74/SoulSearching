@@ -56,7 +56,7 @@ fun SelectedAlbumScreen(
         playlistState = playlistState,
         musicState = musicState,
         title = albumWithMusicsState.albumWithMusics.album.albumName,
-        image = albumWithMusicsState.albumWithMusics.album.albumCover,
+        image = /*albumWithMusicsState.albumWithMusics.album.albumCover*/ null,
         navigateToModifyPlaylist = {
             navigateToModifyAlbum(selectedAlbumId)
         },

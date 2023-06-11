@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.AlbumWithMusics
+import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
@@ -12,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class SelectedAlbumViewModel @Inject constructor(
@@ -22,7 +24,8 @@ class SelectedAlbumViewModel @Inject constructor(
     private val musicPlaylistDao: MusicPlaylistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao,
-    private val albumArtistDao: AlbumArtistDao
+    private val albumArtistDao: AlbumArtistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
     private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics?> = MutableStateFlow(AlbumWithMusics())
 
@@ -51,7 +54,7 @@ class SelectedAlbumViewModel @Inject constructor(
 
         musicState = combine(_musicState, _selectedAlbumWithMusics) { state, album ->
             state.copy(
-                musics = album?.musics ?: emptyList()
+                musics = album?.musics as ArrayList<Music> ?: ArrayList()
             )
         }.stateIn(
             viewModelScope,
@@ -66,7 +69,7 @@ class SelectedAlbumViewModel @Inject constructor(
 
         _musicState.update {
             it.copy(
-                musics = _selectedAlbumWithMusics.value?.musics ?: emptyList()
+                musics = _selectedAlbumWithMusics.value?.musics as ArrayList<Music> ?: ArrayList()
             )
         }
     }
@@ -89,7 +92,8 @@ class SelectedAlbumViewModel @Inject constructor(
             musicPlaylistDao = musicPlaylistDao,
             musicAlbumDao = musicAlbumDao,
             musicArtistDao = musicArtistDao,
-            albumArtistDao = albumArtistDao
+            albumArtistDao = albumArtistDao,
+            imageCoverDao = imageCoverDao
         )
     }
 }

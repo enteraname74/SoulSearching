@@ -10,7 +10,7 @@
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Searching songs from your device…</string>
     <string name="saving_found_songs">Saving found songs…</string>
-    <string name="cannot_retrieve_musics">Cannot retrieve musics !</string>
+    <string name="cannot_retrieve_musics">Cannot retrieve musics!</string>
 
     <!-- content description strings -->
     <string name="navigation_drawer_desc">Navigation drawer button</string>
@@ -44,10 +44,10 @@
     <string name="album_name">Album\'s name</string>
 
     <!-- Dialog strings -->
-    <string name="delete_music_dialog_title">Are you sure to delete this music ?</string>
-    <string name="delete_playlist_dialog_title">Are you sure to delete this playlist ?</string>
-    <string name="delete_album_dialog_title">Are you sure to delete this album ?</string>
-    <string name="delete_artist_dialog_title">Are you sure to delete this artist ?</string>
+    <string name="delete_music_dialog_title">Are you sure to delete this music?</string>
+    <string name="delete_playlist_dialog_title">Are you sure to delete this playlist?</string>
+    <string name="delete_album_dialog_title">Are you sure to delete this album?</string>
+    <string name="delete_artist_dialog_title">Are you sure to delete this artist?</string>
     <string name="delete_music_dialog_text">You can retrieve it in the "deleted musics" section of the application.</string>
     <string name="create_playlist_dialog_title">Create a new playlist</string>
     <string name="delete">Delete</string>

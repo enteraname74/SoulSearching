@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -9,23 +10,27 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.R
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicItemComposable(
     music: Music,
     onClick: (MusicEvent) -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    retrieveCoverMethod: (UUID) -> Bitmap? = {null},
+    getCoverOfMusic: (Music) -> Unit = {},
+    musicCover: Bitmap? = null
 ) {
     Row(
         modifier = Modifier
@@ -41,11 +46,11 @@ fun MusicItemComposable(
         Row(
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            AppImage(bitmap = music.albumCover, size = 55.dp)
+            AppImage(bitmap = musicCover, size = 55.dp)
             Column(
                 modifier = Modifier
                     .height(55.dp)
-                    .width(300.dp),
+                    .width(200.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(

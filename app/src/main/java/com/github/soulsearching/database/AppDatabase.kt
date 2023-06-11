@@ -17,9 +17,10 @@ import com.github.soulsearching.database.model.*
         MusicPlaylist::class,
         MusicAlbum::class,
         MusicArtist::class,
-        AlbumArtist::class
+        AlbumArtist::class,
+        ImageCover::class
     ],
-    version = 8
+    version = 9
 )
 
 @TypeConverters(Converters::class)
@@ -32,4 +33,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val musicAlbumDao: MusicAlbumDao
     abstract val musicArtistDao: MusicArtistDao
     abstract val albumArtistDao: AlbumArtistDao
+    abstract val imageCoverDao: ImageCoverDao
 }

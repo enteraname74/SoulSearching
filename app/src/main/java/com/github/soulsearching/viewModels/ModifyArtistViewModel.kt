@@ -42,8 +42,7 @@ class ModifyArtistViewModel @Inject constructor(
                     artistDao.insertArtist(
                         Artist(
                             artistId = state.value.artistWithMusics.artist.artistId,
-                            artistName = state.value.artistWithMusics.artist.artistName.trim(),
-                            artistCover = state.value.artistWithMusics.artist.artistCover,
+                            artistName = state.value.artistWithMusics.artist.artistName.trim()
                         )
                     )
 
@@ -156,11 +155,8 @@ class ModifyArtistViewModel @Inject constructor(
             is ArtistEvent.SetCover -> {
                 _state.update {
                     it.copy(
-                        artistWithMusics = it.artistWithMusics.copy(
-                            artist = it.artistWithMusics.artist.copy(
-                                artistCover = event.cover
-                            )
-                        )
+                        cover = event.cover,
+                        hasCoverBeenChanged = true
                     )
                 }
             }

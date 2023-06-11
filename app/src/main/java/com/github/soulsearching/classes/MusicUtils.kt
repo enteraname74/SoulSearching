@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
@@ -17,7 +16,7 @@ class MusicUtils {
         fun fetchMusics(
             context: Context,
             updateProgress : (Float) -> Unit,
-            addingMusicAction : (Music) -> Unit,
+            addingMusicAction : (Music, Bitmap?) -> Unit,
             finishAction : () -> Unit
         ) {
             val mediaMetadataRetriever = MediaMetadataRetriever()
@@ -40,7 +39,6 @@ class MusicUtils {
                 null,
                 null
             )
-            println("START")
             when (cursor?.count) {
                 null -> {
                     Toast.makeText(
@@ -52,7 +50,7 @@ class MusicUtils {
                 else -> {
                     var count = 0
                     while (cursor.moveToNext()) {
-                        /*
+
                         val albumCover: Bitmap? = try {
                             mediaMetadataRetriever.setDataSource(cursor.getString(4))
                              try {
@@ -71,23 +69,20 @@ class MusicUtils {
                             null
                         }
 
-                         */
                         val music = Music(
                             name = cursor.getString(0),
                             album = cursor.getString(2),
                             artist = cursor.getString(1),
-                            albumCover = null,
                             duration = cursor.getLong(3),
                             path = cursor.getString(4),
                             folder = File(cursor.getString(4)).parent ?: ""
                         )
-                        addingMusicAction(music)
+                        addingMusicAction(music, albumCover)
                         count++
                         updateProgress((count * 1F)/cursor.count)
                     }
                     cursor.close()
                     finishAction()
-                    println("END")
                 }
             }
         }

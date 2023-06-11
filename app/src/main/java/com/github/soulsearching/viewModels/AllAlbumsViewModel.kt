@@ -6,10 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.classes.Utils
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +22,8 @@ class AllAlbumsViewModel @Inject constructor(
     private val albumDao: AlbumDao,
     private val musicDao: MusicDao,
     private val artistDao: ArtistDao,
-    private val musicArtistDao: MusicArtistDao
+    private val musicArtistDao: MusicArtistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -93,7 +91,8 @@ class AllAlbumsViewModel @Inject constructor(
                     Utils.checkAndDeleteArtist(
                         artistToCheck = state.value.selectedAlbumWithArtist.artist!!,
                         musicArtistDao = musicArtistDao,
-                        artistDao = artistDao
+                        artistDao = artistDao,
+                        imageCoverDao = imageCoverDao
                     )
                 }
             }

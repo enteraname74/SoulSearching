@@ -26,7 +26,8 @@ class ModifyMusicViewModel @Inject constructor(
     private val musicPlaylistDao: MusicPlaylistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val albumArtistDao: AlbumArtistDao,
-    private val musicArtistDao: MusicArtistDao
+    private val musicArtistDao: MusicArtistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MusicState())
@@ -43,9 +44,9 @@ class ModifyMusicViewModel @Inject constructor(
                 it.copy(
                     selectedMusic = music,
                     name = music.name,
-                    cover = music.albumCover,
                     album = music.album,
-                    artist = music.artist
+                    artist = music.artist,
+                    hasCoverBeenChanged = false
                 )
             }
         }
@@ -63,7 +64,8 @@ class ModifyMusicViewModel @Inject constructor(
             musicPlaylistDao = musicPlaylistDao,
             musicAlbumDao = musicAlbumDao,
             musicArtistDao = musicArtistDao,
-            albumArtistDao = albumArtistDao
+            albumArtistDao = albumArtistDao,
+            imageCoverDao = imageCoverDao
         )
     }
 }

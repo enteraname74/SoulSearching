@@ -1,6 +1,8 @@
 package com.github.soulsearching.viewModels
 
+import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
@@ -25,7 +27,8 @@ class AllMusicsViewModel @Inject constructor(
     private val artistDao: ArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
     private val musicArtistDao: MusicArtistDao,
-    private val albumArtistDao: AlbumArtistDao
+    private val albumArtistDao: AlbumArtistDao,
+    private val imageCoverDao: ImageCoverDao,
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -57,7 +60,7 @@ class AllMusicsViewModel @Inject constructor(
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
-        emptyList()
+        ArrayList()
     )
 
     private val _state = MutableStateFlow(MusicState())
@@ -70,7 +73,7 @@ class AllMusicsViewModel @Inject constructor(
         _sortDirection
     ) { state, musics, sortType, sortDirection ->
         state.copy(
-            musics = musics,
+            musics = musics as ArrayList<Music>,
             sortType = sortType,
             sortDirection = sortDirection
         )
@@ -80,7 +83,7 @@ class AllMusicsViewModel @Inject constructor(
         MusicState()
     )
 
-    suspend fun addMusic(musicToAdd : Music){
+    suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicDao.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {
@@ -91,7 +94,6 @@ class AllMusicsViewModel @Inject constructor(
             artistName = musicToAdd.artist
         )
         // Si l'artiste existe, on regarde si on trouve un album correspondant :
-
         val correspondingAlbum = if (correspondingArtist == null) {
             null
         } else {
@@ -103,18 +105,29 @@ class AllMusicsViewModel @Inject constructor(
         val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()
         val artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
         if (correspondingAlbum == null) {
+            val coverId = UUID.randomUUID()
+            if (musicCover != null) {
+                musicToAdd.coverId = coverId
+                imageCoverDao.insertImageCover(
+                    ImageCover(
+                        coverId = coverId,
+                        cover = musicCover
+                    )
+                )
+            }
+
             albumDao.insertAlbum(
                 Album(
+                    coverId = if (musicCover != null) coverId else null,
                     albumId = albumId,
-                    albumName = musicToAdd.album,
-                    albumCover = musicToAdd.albumCover,
+                    albumName = musicToAdd.album
                 )
             )
             artistDao.insertArtist(
                 Artist(
+                    coverId = if (musicCover != null) coverId else null,
                     artistId = artistId,
-                    artistName = musicToAdd.artist,
-                    artistCover = musicToAdd.albumCover
+                    artistName = musicToAdd.artist
                 )
             )
             albumArtistDao.insertAlbumIntoArtist(
@@ -123,11 +136,24 @@ class AllMusicsViewModel @Inject constructor(
                     artistId = artistId
                 )
             )
-
         } else {
-            // Si la musique n'a pas de couverture, on lui donne celle de son album :
-            if (musicToAdd.albumCover == null) {
-                musicToAdd.albumCover = correspondingAlbum.albumCover
+            // On ajoute si possible la couverture de l'album de la musique :
+            val imageCover = if (correspondingAlbum.coverId != null) {
+                imageCoverDao.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
+            } else {
+                null
+            }
+            if (imageCover != null) {
+                musicToAdd.coverId = imageCover.coverId
+            } else if (musicCover != null) {
+                val coverId = UUID.randomUUID()
+                musicToAdd.coverId = coverId
+                imageCoverDao.insertImageCover(
+                    ImageCover(
+                        coverId = coverId,
+                        cover = musicCover
+                    )
+                )
             }
         }
         musicDao.insertMusic(musicToAdd)
@@ -145,6 +171,15 @@ class AllMusicsViewModel @Inject constructor(
         )
     }
 
+    private val _itemList = mutableStateListOf<Music>()
+    val itemList: List<Music> = _itemList
+
+    fun setList() {
+        for (music in state.value.musics) {
+            _itemList.add(music)
+        }
+    }
+
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,
@@ -159,7 +194,8 @@ class AllMusicsViewModel @Inject constructor(
             musicArtistDao = musicArtistDao,
             albumArtistDao = albumArtistDao,
             _sortDirection = _sortDirection,
-            _sortType = _sortType
+            _sortType = _sortType,
+            imageCoverDao = imageCoverDao
         )
     }
 }

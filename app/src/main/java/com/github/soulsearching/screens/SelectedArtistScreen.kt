@@ -53,7 +53,7 @@ fun SelectedArtistScreen(
         onMusicEvent = selectedArtistViewModel::onMusicEvent,
         musicState = musicState,
         title = artistWithMusicsState.artistWithMusics.artist.artistName,
-        image = artistWithMusicsState.artistWithMusics.artist.artistCover,
+        image = /*artistWithMusicsState.artistWithMusics.artist.artistCover*/null,
         navigateToModifyPlaylist = {
             navigateToModifyArtist(selectedArtistId)
         },
