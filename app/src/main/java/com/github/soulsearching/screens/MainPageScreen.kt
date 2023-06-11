@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -93,6 +94,24 @@ fun MainPageScreen(
 
     if (playlistState.isCreatePlaylistDialogShown) {
         CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent)
+    }
+
+    var cleanImagesLaunched by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+
+    if (imageCovers.covers.isNotEmpty() && !cleanImagesLaunched) {
+        LaunchedEffect(key1 = "Launch") {
+            Log.d("LAUNCHED EFFECT", "")
+
+            CoroutineScope(Dispatchers.IO).launch {
+                for (cover in imageCovers.covers) {
+                    allImageCoversViewModel.verifyIfAllImagesAreUsed(cover)
+                }
+                cleanImagesLaunched = true
+            }
+        }
     }
 
     Scaffold(

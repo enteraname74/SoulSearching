@@ -7,6 +7,7 @@ import java.util.UUID
 
 @Entity
 class ImageCover(
-    @PrimaryKey val coverId : UUID = UUID.randomUUID(),
+    @PrimaryKey(autoGenerate = true) val id : Long = 0L,
+    val coverId : UUID = UUID.randomUUID(),
     val cover : Bitmap? = null
 )

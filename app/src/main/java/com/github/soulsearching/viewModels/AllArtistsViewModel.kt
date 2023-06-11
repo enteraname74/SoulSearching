@@ -29,7 +29,6 @@ class AllArtistsViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _artists = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
-            Log.d("CHANGE", "CHANGE")
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {

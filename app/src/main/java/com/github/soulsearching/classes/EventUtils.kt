@@ -202,12 +202,11 @@ class EventUtils {
                                 artistDao.updateArtistCover(coverId!!, artist.artistId)
                             }
                             // Faison de même pour l'album :
-                            Log.d("ALBUM ?", album.toString())
                             if (album!!.coverId == null) {
                                 albumDao.updateAlbumCover(coverId!!, album.albumId)
                             }
                         }
-
+                        Log.d("UPDATE MUSIC","")
                         musicDao.insertMusic(
                             Music(
                                 musicId = state.value.selectedMusic.musicId,

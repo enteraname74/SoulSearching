@@ -55,4 +55,7 @@ interface PlaylistDao {
     @Transaction
     @Query("SELECT * FROM Playlist")
     suspend fun getAllPlaylistsWithMusicsSimple() : List<PlaylistWithMusics>
+
+    @Query("SELECT COUNT(*) FROM Playlist WHERE coverId = :coverId")
+    fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
 }

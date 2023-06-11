@@ -30,7 +30,6 @@ class AllAlbumsViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _albums = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
-            Log.d("CHANGE", "CHANGE")
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {

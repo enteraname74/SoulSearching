@@ -62,4 +62,7 @@ interface ArtistDao {
 
     @Query("UPDATE Artist SET coverId = :newCoverId WHERE artistId = :artistId")
     fun updateArtistCover(newCoverId : UUID, artistId : UUID)
+
+    @Query("SELECT COUNT(*) FROM Artist WHERE coverId = :coverId")
+    fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
 }
