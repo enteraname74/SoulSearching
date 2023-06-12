@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
@@ -52,6 +53,12 @@ fun PlaylistScreen(
     coverList: ArrayList<ImageCover>
 ) {
     val configuration = LocalConfiguration.current
+    var max: Dp
+    var start: Dp
+    var center: Dp
+    var end: Dp
+    var centerPadding: Dp
+    var musicListModifier: Modifier
 
     BoxWithConstraints(
         modifier = Modifier
@@ -60,11 +67,20 @@ fun PlaylistScreen(
     ) {
         when (configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                val maxWidth = this.maxWidth
-                val startWidth = maxWidth / 2
-                val centerWidth = 80.dp
-                val endWidth = maxWidth / 2
-                val centerPaddingEnd = endWidth - centerWidth / 2
+                max = this.maxWidth
+                start = max / 2
+                center = 80.dp
+                end = max / 2
+                centerPadding = end - center / 2
+                musicListModifier = Modifier
+                    .fillMaxHeight()
+                    .align(Alignment.TopEnd)
+                    .width(end - (end - centerPadding))
+                    .background(color = MaterialTheme.colorScheme.secondary)
+                    .padding(
+                        start = Constants.Spacing.large,
+                        end = Constants.Spacing.large
+                    )
 
                 TopPlaylistInformation(
                     title = title,
@@ -72,41 +88,36 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxHeight()
                         .align(Alignment.TopStart)
-                        .width(startWidth),
+                        .width(start),
                     alignment = Alignment.TopStart,
                     navigateBack = navigateBack
                 )
                 ColumnPlaylistPanel(
                     modifier = Modifier
-                        .padding(end = centerPaddingEnd)
+                        .padding(end = centerPadding)
                         .fillMaxHeight()
-                        .width(centerWidth)
+                        .width(center)
                         .align(Alignment.CenterEnd),
                     editAction = navigateToModifyPlaylist
                 )
-                MusicList(
-                    musicState = musicState,
-                    playlistState = playlistState,
-                    onMusicEvent = onMusicEvent,
-                    onPlaylistEvent = onPlaylistEvent,
-                    navigateToModifyMusic = navigateToModifyMusic,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .align(Alignment.TopEnd)
-                        .width(endWidth - (endWidth - centerPaddingEnd))
-                        .background(color = MaterialTheme.colorScheme.secondary)
-                        .padding(Constants.Spacing.large),
-                    retrieveCoverMethod = {
-                        null
-                    }
-                )
             }
             else -> {
-                val maxHeight = this.maxHeight
-                val topHeight = maxHeight / 3
-                val centerHeight = 80.dp
-                val bottomHeight = maxHeight * 2 / 3
-                val centerPaddingBottom = bottomHeight - centerHeight / 2
+                max = this.maxHeight
+                start = max / 3
+                center = 80.dp
+                end = max * 2 / 3
+                centerPadding = end - center / 2
+                musicListModifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomStart)
+                    .height(end - (end - centerPadding))
+                    .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
+                    .background(color = MaterialTheme.colorScheme.secondary)
+                    .padding(
+                        top = Constants.Spacing.large,
+                        start = Constants.Spacing.large,
+                        end = Constants.Spacing.large
+                    )
 
                 TopPlaylistInformation(
                     title = title,
@@ -114,37 +125,31 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopStart)
-                        .height(topHeight),
+                        .height(start),
                     alignment = Alignment.TopStart,
                     navigateBack = navigateBack
                 )
                 RowPlaylistPanel(
                     modifier = Modifier
-                        .padding(bottom = centerPaddingBottom)
+                        .padding(bottom = centerPadding)
                         .fillMaxWidth()
-                        .height(centerHeight)
+                        .height(center)
                         .align(Alignment.BottomCenter),
                     editAction = navigateToModifyPlaylist
                 )
-                MusicList(
-                    musicState = musicState,
-                    playlistState = playlistState,
-                    onMusicEvent = onMusicEvent,
-                    onPlaylistEvent = onPlaylistEvent,
-                    navigateToModifyMusic = navigateToModifyMusic,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomStart)
-                        .height(bottomHeight - (bottomHeight - centerPaddingBottom))
-                        .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
-                        .background(color = MaterialTheme.colorScheme.secondary)
-                        .padding(Constants.Spacing.large),
-                    retrieveCoverMethod = {uuid ->
-                        coverList.find { it.coverId == uuid }?.cover
-                    }
-                )
             }
         }
+        MusicList(
+            musicState = musicState,
+            playlistState = playlistState,
+            onMusicEvent = onMusicEvent,
+            onPlaylistEvent = onPlaylistEvent,
+            navigateToModifyMusic = navigateToModifyMusic,
+            modifier = musicListModifier,
+            retrieveCoverMethod = { uuid ->
+                coverList.find { it.coverId == uuid }?.cover
+            }
+        )
     }
 }
 
