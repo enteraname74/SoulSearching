@@ -1,11 +1,11 @@
 package com.github.soulsearching.screens
 
-import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
@@ -15,8 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.collections.ArrayList
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectedAlbumScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -26,7 +26,8 @@ fun SelectedAlbumScreen(
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     navigateBack : () -> Unit,
-    coverList: ArrayList<ImageCover>
+    coverList: ArrayList<ImageCover>,
+    swipeableState: SwipeableState<BottomSheetStates>
 ) {
     var isAlbumFetched by rememberSaveable {
         mutableStateOf(false)
@@ -64,6 +65,8 @@ fun SelectedAlbumScreen(
             navigateToModifyAlbum(selectedAlbumId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
-        coverList = coverList
+        coverList = coverList,
+        swipeableState = swipeableState,
+        playlistId = albumWithMusicsState.albumWithMusics.album.albumId
     )
 }

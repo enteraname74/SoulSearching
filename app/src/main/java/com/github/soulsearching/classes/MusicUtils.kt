@@ -7,6 +7,7 @@ import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import android.util.Size
 import android.widget.Toast
 import com.github.soulsearching.R
@@ -62,7 +63,7 @@ class MusicUtils {
                                     null
                                 } else {
                                     val tempBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                                    ThumbnailUtils.extractThumbnail(tempBitmap, 400, 400)
+                                    ThumbnailUtils.extractThumbnail(tempBitmap, 350, 350)
                                 }
                             } catch (error: IOException) {
                                 null
@@ -72,9 +73,9 @@ class MusicUtils {
                         }
 
                         val music = Music(
-                            name = cursor.getString(0),
-                            album = cursor.getString(2),
-                            artist = cursor.getString(1),
+                            name = cursor.getString(0).trim(),
+                            album = cursor.getString(2).trim(),
+                            artist = cursor.getString(1).trim(),
                             duration = cursor.getLong(3),
                             path = cursor.getString(4),
                             folder = File(cursor.getString(4)).parent ?: ""

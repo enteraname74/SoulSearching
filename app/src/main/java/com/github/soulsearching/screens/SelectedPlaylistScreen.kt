@@ -1,7 +1,10 @@
 package com.github.soulsearching.screens
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
@@ -9,6 +12,7 @@ import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectedPlaylistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -18,7 +22,8 @@ fun SelectedPlaylistScreen(
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
     navigateBack : () -> Unit,
-    coverList: ArrayList<ImageCover>
+    coverList: ArrayList<ImageCover>,
+    swipeableState: SwipeableState<BottomSheetStates>
 ){
     var isPlaylistFetched by rememberSaveable {
         mutableStateOf(false)
@@ -43,6 +48,8 @@ fun SelectedPlaylistScreen(
             navigateToModifyPlaylist(selectedPlaylistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
-        coverList = coverList
+        coverList = coverList,
+        swipeableState = swipeableState,
+        playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId
     )
 }

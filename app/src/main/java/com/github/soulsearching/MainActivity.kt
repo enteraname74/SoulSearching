@@ -11,6 +11,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,9 +25,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
-import com.github.soulsearching.composables.bottomSheets.TestBottomSheet
+import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     private val modifyAlbumViewModel: ModifyAlbumViewModel by viewModels()
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
-
+    @OptIn(ExperimentalMaterialApi::class)
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +77,9 @@ class MainActivity : AppCompatActivity() {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
+                val swipeableState = rememberSwipeableState(
+                    BottomSheetStates.MINIMISED
+                )
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
                     mutableStateOf(false)
@@ -183,7 +190,8 @@ class MainActivity : AppCompatActivity() {
                                         },
                                         navigateToModifyArtist = {
                                             navController.navigate("modifyArtist/$it")
-                                        }
+                                        },
+                                        swipeableState = swipeableState
                                     )
                                 }
                                 composable(
@@ -206,7 +214,8 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = coversState.covers
+                                        coverList = coversState.covers,
+                                        swipeableState = swipeableState
                                     )
                                 }
                                 composable(
@@ -229,7 +238,8 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = coversState.covers
+                                        coverList = coversState.covers,
+                                        swipeableState = swipeableState
                                     )
                                 }
                                 composable(
@@ -252,7 +262,8 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = coversState.covers
+                                        coverList = coversState.covers,
+                                        swipeableState = swipeableState
                                     )
                                 }
                                 composable(
@@ -337,7 +348,11 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                            TestBottomSheet(maxHeight = maxHeight)
+                            PlayerSwipeableView(
+                                maxHeight = maxHeight,
+                                swipeableState = swipeableState,
+                                coverList = coversState.covers
+                            )
                         }
                     }
                 }

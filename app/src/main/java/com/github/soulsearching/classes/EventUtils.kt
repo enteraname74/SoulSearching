@@ -224,6 +224,9 @@ class EventUtils {
                 is MusicEvent.SetSortType -> {
                     _sortType.value = event.type
                 }
+                is MusicEvent.SetPlayedMusic -> {
+                    PlayerUtils.playerViewModel.currentMusic = event.music
+                }
                 else -> {}
             }
         }

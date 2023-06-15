@@ -19,7 +19,7 @@ class Utils {
             return if (Build.VERSION.SDK_INT >= 29) {
                 contentResolver.loadThumbnail(
                     uri,
-                    Size(400, 400),
+                    Size(350, 350),
                     null
                 )
             } else {
@@ -27,7 +27,7 @@ class Utils {
                     MediaStore.Images.Media.getBitmap(
                         contentResolver,
                         uri
-                    ), 400, 400, false
+                    ), 350, 350, false
                 )
             }
         }

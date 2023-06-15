@@ -78,7 +78,11 @@ class SelectedPlaylistViewModel @Inject constructor(
 
         _musicState.update {
             it.copy(
-                musics = _selectedPlaylistMusics.value!!.musics as ArrayList<Music>
+                musics = if (_selectedPlaylistMusics.value!!.musics.isNotEmpty()) {
+                    _selectedPlaylistMusics.value!!.musics as ArrayList<Music>
+                }  else {
+                    ArrayList()
+                }
             )
         }
     }

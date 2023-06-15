@@ -26,7 +26,7 @@ import java.util.*
 @Composable
 fun MusicItemComposable(
     music: Music,
-    onClick: (MusicEvent) -> Unit,
+    onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
     musicCover: Bitmap? = null
 ) {
@@ -34,7 +34,7 @@ fun MusicItemComposable(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = {},
+                onClick = { onClick(music) },
                 onLongClick = onLongClick
             )
             .padding(Constants.Spacing.medium),

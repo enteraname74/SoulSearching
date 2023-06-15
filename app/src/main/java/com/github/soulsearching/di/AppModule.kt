@@ -68,4 +68,9 @@ class AppModule {
     fun provideImageCoverDao(appDatabase: AppDatabase): ImageCoverDao {
         return appDatabase.imageCoverDao
     }
+
+    @Provides
+    fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): CurrentPlaylistItemDao {
+        return appDatabase.currentPlaylistItemDao
+    }
 }

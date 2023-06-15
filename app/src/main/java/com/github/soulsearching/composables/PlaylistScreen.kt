@@ -10,6 +10,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
 import com.github.soulsearching.database.model.ImageCover
@@ -38,7 +41,10 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import java.util.*
+import kotlin.collections.ArrayList
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlaylistScreen(
     musicState: MusicState,
@@ -50,7 +56,9 @@ fun PlaylistScreen(
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
-    coverList: ArrayList<ImageCover>
+    coverList: ArrayList<ImageCover>,
+    swipeableState: SwipeableState<BottomSheetStates>,
+    playlistId: UUID?
 ) {
     val configuration = LocalConfiguration.current
     var max: Dp
@@ -148,7 +156,9 @@ fun PlaylistScreen(
             modifier = musicListModifier,
             retrieveCoverMethod = { uuid ->
                 coverList.find { it.coverId == uuid }?.cover
-            }
+            },
+            swipeableState = swipeableState,
+            playlistId = playlistId
         )
     }
 }

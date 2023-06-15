@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Shuffle
@@ -18,9 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SharedPrefUtils
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.*
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
@@ -38,7 +38,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MainPageScreen(
     allMusicsViewModel: AllMusicsViewModel,
@@ -56,7 +56,8 @@ fun MainPageScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateToModifyPlaylist: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
-    navigateToModifyArtist: (String) -> Unit
+    navigateToModifyArtist: (String) -> Unit,
+    swipeableState: SwipeableState<BottomSheetStates>
 ) {
     val musicState by allMusicsViewModel.state.collectAsState()
     val playlistState by allPlaylistsViewModel.state.collectAsState()
@@ -467,7 +468,16 @@ fun MainPageScreen(
                     Row(Modifier.animateItemPlacement()) {
                         MusicItemComposable(
                             music = music,
-                            onClick = allMusicsViewModel::onMusicEvent,
+                            onClick = {
+                                PlayerUtils.setCurrentPlaylistAndMusic(
+                                    swipeableState = swipeableState,
+                                    music = it,
+                                    playlist = musicState.musics,
+                                    isMainPlaylist = true,
+                                    coroutineScope = coroutineScope,
+                                    playlistId = null
+                                )
+                            },
                             onLongClick = {
                                 coroutineScope.launch {
                                     allMusicsViewModel.onMusicEvent(
