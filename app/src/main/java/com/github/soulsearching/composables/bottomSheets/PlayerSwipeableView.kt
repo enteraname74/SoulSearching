@@ -1,17 +1,16 @@
 package com.github.soulsearching.composables.bottomSheets
 
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,11 +31,14 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.composables.PlayButtonsComposable
+import com.github.soulsearching.composables.ExpandedPlayButtonsComposable
+import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
+@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlayerSwipeableView(
@@ -69,16 +73,23 @@ fun PlayerSwipeableView(
                     )
                 )
         ) {
+            val mainBoxClickableModifier =
+                if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                    Modifier.clickable {
+                        coroutineScope.launch {
+                            swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
+                        }
+                    }
+                } else {
+                    Modifier
+                }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = MaterialTheme.colorScheme.secondary)
-                    .clickable {
-                        if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
-                            coroutineScope.launch {
-                                swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
-                            }
-                        }
+                    .composed {
+                        mainBoxClickableModifier
                     },
             ) {
                 BoxWithConstraints(
@@ -92,8 +103,8 @@ fun PlayerSwipeableView(
                     }
 
                     val imagePaddingStart =
-                        if ((((maxWidth * 5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp > Constants.Spacing.small) {
-                            (((maxWidth * 5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp
+                        if ((((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp > Constants.Spacing.small) {
+                            (((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp
                         } else {
                             Constants.Spacing.small
                         }
@@ -106,20 +117,12 @@ fun PlayerSwipeableView(
                         }
 
                     val imageSize =
-                        if ((((maxWidth * 28) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp > 55.dp) {
-                            (((maxWidth * 28) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp
+                        if ((((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp > 55.dp) {
+                            (((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp
                         } else {
                             55.dp
                         }
 
-                    val musicTitlePaddingEnd = if ((swipeableState.offset.value / 16).roundToInt().dp > 0.dp) {
-                        (swipeableState.offset.value / 16).roundToInt().dp
-                    } else {
-                        0.dp
-                    }
-
-                    Log.d("OFFSET", swipeableState.offset.value.toString())
-                    Log.d("MAX HEIGHT", maxHeight.toString())
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -132,47 +135,113 @@ fun PlayerSwipeableView(
                         AppImage(
                             bitmap = coverList.find { it.coverId == PlayerUtils.playerViewModel.currentMusic?.coverId }?.cover,
                             size = imageSize,
-                            roundedPercent = (swipeableState.offset.value / 100).roundToInt().coerceIn(3,10)
+                            roundedPercent = (swipeableState.offset.value / 100).roundToInt()
+                                .coerceIn(3, 10)
                         )
                     }
 
+                    val alphaTransition =
+                        if ((1.0 / (abs(swipeableState.offset.value) / 100)).toFloat() > 0.1) {
+                            (1.0 / (abs(swipeableState.offset.value) / 100)).toFloat().coerceAtMost(1.0F)
+                        } else {
+                            0.0F
+                        }
+
+                    val backImageClickableModifier =
+                        if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+                            Modifier
+                        } else {
+                            Modifier.clickable {
+                                coroutineScope.launch {
+                                    swipeableState.animateTo(
+                                        BottomSheetStates.MINIMISED,
+                                        tween(300)
+                                    )
+                                }
+                            }
+                        }
+
+                    Image(
+                        imageVector = Icons.Rounded.KeyboardArrowDown,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .size(Constants.ImageSize.medium)
+                            .composed { backImageClickableModifier },
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
+                        alpha = alphaTransition
+                    )
+
                     Column(
                         modifier = Modifier
+                            .fillMaxSize()
+                            .alpha(alphaTransition),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                fontSize = 20.sp,
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .basicMarquee()
+                            )
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                fontSize = 17.sp,
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.width(250.dp),
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        ExpandedPlayButtonsComposable(modifier = Modifier.padding(bottom = 120.dp))
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .height(imageSize + Constants.Spacing.small)
                             .fillMaxWidth()
                             .padding(
-                                top = Constants.Spacing.medium,
-                                end = musicTitlePaddingEnd
-                            ),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                                start = imageSize + Constants.Spacing.large,
+                                end = Constants.Spacing.small
+                            )
+                            .alpha((swipeableState.offset.value / maxHeight).coerceIn(0.0F,1.0F)),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Log.d("RATIO", (200 - (swipeableState.offset.value / 50)).toString())
-                        Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = (20 - (swipeableState.offset.value / 100)).roundToInt()
-                                .coerceAtMost(20).coerceAtLeast(15).sp,
+                        Column(
                             modifier = Modifier
-                                .width((200 - (swipeableState.offset.value / 20)).roundToInt()
-                                    .coerceAtMost(200).coerceAtLeast(120).dp)
-                        )
-                        Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            fontSize = (17 - (swipeableState.offset.value / 100)).roundToInt()
-                                .coerceAtMost(17).coerceAtLeast(12).sp
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        PlayButtonsComposable()
+                                .fillMaxHeight()
+                                .width(150.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                maxLines = 1,
+                                textAlign = TextAlign.Start,
+                                fontSize = 15.sp,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                textAlign = TextAlign.Start,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        MinimisedPlayButtonsComposable()
                     }
                 }
             }

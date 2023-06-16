@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.IBinder
@@ -12,6 +11,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.KeyEvent
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -21,49 +22,45 @@ class PlayerService : Service() {
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("START COMMAND","")
+    override fun  onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("START COMMAND", "")
         player = ExoPlayer.Builder(this).build()
 
         player.addListener(
             object : Player.Listener {
                 override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    Log.d("Player Service", "MEDIA ITEM TRANSITION : REASON : $reason")
                     super.onMediaItemTransition(mediaItem, reason)
-                    // Update app ui
+                    when (reason) {
+                        Player.MEDIA_ITEM_TRANSITION_REASON_AUTO -> {
+                            PlayerUtils.playerViewModel.setNextMusic()
+                        }
+                        Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {}
+                        Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {}
+                        Player.MEDIA_ITEM_TRANSITION_REASON_SEEK -> {}
+                    }
+
+                }
+
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    super.onIsPlayingChanged(isPlaying)
+                    Log.d("PLAYER SERVICE", "IS PLAYING ? $isPlaying")
+                    PlayerUtils.playerViewModel.isPlaying = isPlaying
                 }
             }
         )
 
         setPlayerPlaylist()
 
-        audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
         audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(C.USAGE_MEDIA)
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
             .build()
 
-        onAudioFocusChange = AudioManager.OnAudioFocusChangeListener { focusChange ->
-            Log.d("focusChange", focusChange.toString())
-            when (focusChange) {
-                AudioManager.AUDIOFOCUS_GAIN -> {
-                    Log.d("PLAYBACK SERVICE", "GAIN FOCUS WHEN OTHER APP WAS PLAYING")
-                    player.seekTo(PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic), 0L)
-                    player.play()
-                    PlayerUtils.playerViewModel.isPlaying = true
-                }
-                AudioManager.AUDIOFOCUS_LOSS -> {
-                    player.pause()
-                    PlayerUtils.playerViewModel.isPlaying = false
-                }
-                else -> {
-                    player.pause()
-                    PlayerUtils.playerViewModel.isPlaying = false
-                }
-            }
-        }
+        player.setAudioAttributes(audioAttributes, true)
 
-        mediaSession = MediaSessionCompat(applicationContext, packageName+"mediaSessionPlayer")
+        mediaSession = MediaSessionCompat(applicationContext, packageName + "mediaSessionPlayer")
 
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
@@ -77,46 +74,14 @@ class PlayerService : Service() {
                 if (PlayerUtils.playerViewModel.currentMusic != null) {
                     val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
                     if (keyEvent.action == KeyEvent.ACTION_DOWN){
-                        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                            .setAudioAttributes(audioAttributes)
-                            .setAcceptsDelayedFocusGain(true)
-                            .setOnAudioFocusChangeListener(onAudioFocusChange)
-                            .build()
-
                         when(keyEvent.keyCode){
                             KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                                when (audioManager.requestAudioFocus(audioFocusRequest)) {
-                                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
-                                    }
-                                    else -> {}
-                                }
                             }
                             KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                                when (audioManager.requestAudioFocus(audioFocusRequest)) {
-                                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
-                                    }
-                                    else -> {}
-                                }
                             }
                             KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                                try {
-                                    when (audioManager.requestAudioFocus(audioFocusRequest)) {
-                                        AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
-                                        }
-                                    }
-                                } catch (error : Error){
-                                    Log.d("error","")
-                                }
                             }
                             KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                                try {
-                                    when (audioManager.requestAudioFocus(audioFocusRequest)) {
-                                        AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
-                                        }
-                                    }
-                                } catch (error : Error){
-                                    Log.d("error","")
-                                }
                             }
                         }
                     }
@@ -125,8 +90,17 @@ class PlayerService : Service() {
             }
         })
 
-        mediaSession.setPlaybackState(updateMediaSessionState(PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN))
+        mediaSession.setPlaybackState(
+            updateMediaSessionState(
+                PlaybackStateCompat.STATE_PLAYING,
+                PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
+            )
+        )
         mediaSession.isActive = true
+
+        seekToCurrentMusic()
+        playMusic()
+        PlayerUtils.playerViewModel.isPlaying = true
 
         return START_STICKY
     }
@@ -142,17 +116,17 @@ class PlayerService : Service() {
         stopMusic()
     }
 
-    private fun stopMusic(){
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private fun stopMusic() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(1)
     }
 
     companion object {
-        lateinit var onAudioFocusChange : AudioManager.OnAudioFocusChangeListener
-        lateinit var audioAttributes : AudioAttributes
-        lateinit var audioManager : AudioManager
-        lateinit var mediaSession : MediaSessionCompat
-        lateinit var player : ExoPlayer
+        lateinit var audioAttributes: AudioAttributes
+        lateinit var audioManager: AudioManager
+        lateinit var mediaSession: MediaSessionCompat
+        lateinit var player: ExoPlayer
 
         fun updateMediaSessionState(musicState: Int, musicPosition: Long): PlaybackStateCompat {
             return PlaybackStateCompat.Builder()
@@ -173,12 +147,38 @@ class PlayerService : Service() {
         }
 
         fun setPlayerPlaylist() {
+            Log.d("Player Service", "initialize playlist")
             player.addMediaItems(
                 PlayerUtils.playerViewModel.playlistInfos.map {
                     MediaItem.Builder().setUri(it.path).setMediaId(it.musicId.toString()).build()
                 }
             )
+            Log.d("Player Service", "end initialize playlist")
             player.prepare()
+            Log.d("Player Service", "end prepare")
+        }
+
+        fun pauseMusic() {
+            player.pause()
+        }
+
+        fun playMusic() {
+            player.play()
+        }
+
+        fun playNext() {
+            player.seekToNext()
+        }
+
+        fun playPrevious() {
+            player.seekToPrevious()
+        }
+
+        fun seekToCurrentMusic() {
+            player.seekTo(
+                PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic),
+                0L
+            )
         }
     }
 }

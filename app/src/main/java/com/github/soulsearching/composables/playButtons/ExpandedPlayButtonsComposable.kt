@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,36 +15,52 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.service.PlayerService
+
 
 @Composable
-fun PlayButtonsComposable() {
+fun ExpandedPlayButtonsComposable(
+    modifier: Modifier = Modifier
+) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
     ) {
         Image(
+            imageVector = Icons.Rounded.Shuffle,
+            contentDescription = "",
+            modifier = Modifier
+                .size(Constants.ImageSize.medium)
+                .clickable { },
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+        )
+        Image(
             imageVector = Icons.Rounded.SkipPrevious,
             contentDescription = "",
             modifier = Modifier
-                .size(70.dp)
-                .clickable { PlayerUtils.playerViewModel.setPreviousMusic() },
+                .size(Constants.ImageSize.large)
+                .clickable {
+                    PlayerUtils.playerViewModel.setPreviousMusic()
+                    PlayerService.playPrevious()
+                },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
         if (PlayerUtils.playerViewModel.isPlaying) {
             Image(
-                imageVector = Icons.Rounded.PlayArrow,
+                imageVector = Icons.Rounded.Pause,
                 contentDescription = "",
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(78.dp)
                     .clickable { PlayerUtils.playerViewModel.setPlayingState() },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         } else {
             Image(
-                imageVector = Icons.Rounded.Pause,
+                imageVector = Icons.Rounded.PlayArrow,
                 contentDescription = "",
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(78.dp)
                     .clickable { PlayerUtils.playerViewModel.setPlayingState() },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
@@ -56,8 +69,19 @@ fun PlayButtonsComposable() {
             imageVector = Icons.Rounded.SkipNext,
             contentDescription = "",
             modifier = Modifier
-                .size(70.dp)
-                .clickable { PlayerUtils.playerViewModel.setNextMusic() },
+                .size(Constants.ImageSize.large)
+                .clickable {
+                    PlayerUtils.playerViewModel.setNextMusic()
+                    PlayerService.playNext()
+                },
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+        )
+        Image(
+            imageVector = Icons.Rounded.FavoriteBorder,
+            contentDescription = "",
+            modifier = Modifier
+                .size(Constants.ImageSize.medium)
+                .clickable { },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
     }

@@ -1,9 +1,12 @@
 package com.github.soulsearching
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +34,7 @@ import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.screens.*
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private val modifyAlbumViewModel: ModifyAlbumViewModel by viewModels()
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
+    @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalMaterialApi::class)
     override
     fun onCreate(savedInstanceState: Bundle?) {
@@ -139,6 +144,16 @@ class MainActivity : AppCompatActivity() {
                             }
                         )
                     } else {
+
+                        if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Log.d(this@MainActivity.localClassName, "LAUNCHING SERVICE")
+                                val serviceIntent = Intent(this@MainActivity, PlayerService::class.java)
+                                startService(serviceIntent)
+                                PlayerUtils.playerViewModel.isServiceLaunched = true
+                            }
+                        }
+
                         BoxWithConstraints(
                             modifier = Modifier
                                 .fillMaxSize()

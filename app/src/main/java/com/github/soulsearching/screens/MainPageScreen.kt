@@ -469,7 +469,7 @@ fun MainPageScreen(
                         MusicItemComposable(
                             music = music,
                             onClick = {
-                                PlayerUtils.setCurrentPlaylistAndMusic(
+                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                     swipeableState = swipeableState,
                                     music = it,
                                     playlist = musicState.musics,
