@@ -30,6 +30,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.AppImage
+import com.github.soulsearching.composables.PlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -163,6 +164,15 @@ fun PlayerSwipeableView(
                             fontSize = (17 - (swipeableState.offset.value / 100)).roundToInt()
                                 .coerceAtMost(17).coerceAtLeast(12).sp
                         )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        PlayButtonsComposable()
                     }
                 }
             }

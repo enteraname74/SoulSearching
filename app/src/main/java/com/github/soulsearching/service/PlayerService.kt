@@ -14,8 +14,8 @@ import android.util.Log
 import android.view.KeyEvent
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.Player.MediaItemTransitionReason
 import androidx.media3.exoplayer.ExoPlayer
+import com.github.soulsearching.classes.PlayerUtils
 
 class PlayerService : Service() {
     override fun onBind(p0: Intent?): IBinder? {
@@ -35,6 +35,8 @@ class PlayerService : Service() {
             }
         )
 
+        setPlayerPlaylist()
+
         audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -46,43 +48,43 @@ class PlayerService : Service() {
             when (focusChange) {
                 AudioManager.AUDIOFOCUS_GAIN -> {
                     Log.d("PLAYBACK SERVICE", "GAIN FOCUS WHEN OTHER APP WAS PLAYING")
+                    player.seekTo(PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic), 0L)
+                    player.play()
+                    PlayerUtils.playerViewModel.isPlaying = true
                 }
                 AudioManager.AUDIOFOCUS_LOSS -> {
+                    player.pause()
+                    PlayerUtils.playerViewModel.isPlaying = false
                 }
                 else -> {
+                    player.pause()
+                    PlayerUtils.playerViewModel.isPlaying = false
                 }
             }
         }
-
-        //mediaSession = MediaSession(applicationContext, packageName+"mediaSessionPlayer")
-        //mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS)
 
         mediaSession = MediaSessionCompat(applicationContext, packageName+"mediaSessionPlayer")
 
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
-                /*
-                mediaPlayer.seekTo(pos.toInt())
+                player.seekTo(pos)
                 val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-                intentForNotification.putExtra("STOP", !mediaPlayer.isPlaying)
+                intentForNotification.putExtra("STOP", !player.isPlaying)
                 applicationContext.sendBroadcast(intentForNotification)
-                 */
             }
 
             override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
-                Log.d("PLAYBACK SERVICE", mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT).toString())
-                /*
-                if (MyMediaPlayer.currentIndex != -1) {
+                if (PlayerUtils.playerViewModel.currentMusic != null) {
                     val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
                     if (keyEvent.action == KeyEvent.ACTION_DOWN){
+                        val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                            .setAudioAttributes(audioAttributes)
+                            .setAcceptsDelayedFocusGain(true)
+                            .setOnAudioFocusChangeListener(onAudioFocusChange)
+                            .build()
+
                         when(keyEvent.keyCode){
                             KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                                val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                                    .setAudioAttributes(audioAttributes)
-                                    .setAcceptsDelayedFocusGain(true)
-                                    .setOnAudioFocusChangeListener(onAudioFocusChange)
-                                    .build()
-
                                 when (audioManager.requestAudioFocus(audioFocusRequest)) {
                                     AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                                     }
@@ -90,12 +92,6 @@ class PlayerService : Service() {
                                 }
                             }
                             KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                                val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                                    .setAudioAttributes(audioAttributes)
-                                    .setAcceptsDelayedFocusGain(true)
-                                    .setOnAudioFocusChangeListener(onAudioFocusChange)
-                                    .build()
-
                                 when (audioManager.requestAudioFocus(audioFocusRequest)) {
                                     AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                                     }
@@ -103,12 +99,6 @@ class PlayerService : Service() {
                                 }
                             }
                             KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                                val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                                    .setAudioAttributes(audioAttributes)
-                                    .setAcceptsDelayedFocusGain(true)
-                                    .setOnAudioFocusChangeListener(onAudioFocusChange)
-                                    .build()
-
                                 try {
                                     when (audioManager.requestAudioFocus(audioFocusRequest)) {
                                         AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
@@ -119,12 +109,6 @@ class PlayerService : Service() {
                                 }
                             }
                             KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                                val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                                    .setAudioAttributes(audioAttributes)
-                                    .setAcceptsDelayedFocusGain(true)
-                                    .setOnAudioFocusChangeListener(onAudioFocusChange)
-                                    .build()
-
                                 try {
                                     when (audioManager.requestAudioFocus(audioFocusRequest)) {
                                         AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
@@ -137,8 +121,6 @@ class PlayerService : Service() {
                         }
                     }
                 }
-
-                 */
                 return super.onMediaButtonEvent(mediaButtonIntent)
             }
         })
@@ -188,6 +170,15 @@ class PlayerService : Service() {
                     1.0F
                 )
                 .build()
+        }
+
+        fun setPlayerPlaylist() {
+            player.addMediaItems(
+                PlayerUtils.playerViewModel.playlistInfos.map {
+                    MediaItem.Builder().setUri(it.path).setMediaId(it.musicId.toString()).build()
+                }
+            )
+            player.prepare()
         }
     }
 }

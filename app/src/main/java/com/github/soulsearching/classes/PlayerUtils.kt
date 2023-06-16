@@ -25,11 +25,30 @@ class PlayerUtils {
             coroutineScope.launch {
                 swipeableState.animateTo(BottomSheetStates.EXPANDED)
             }
-            if (
-                playerViewModel.currentPlaylistId?.compareTo(playlistId) != 0) {
-                playerViewModel.currentMusic = music
+
+            if (!isMainPlaylist) {
+                if (playerViewModel.currentPlaylistId == null) {
+                    playerViewModel.playlistInfos = playlist
+                    playerViewModel.currentPlaylistId = playlistId
+                    playerViewModel.isMainPlaylist = false
+                } else if(playerViewModel.currentPlaylistId!!.compareTo(playlistId) != 0) {
+                    playerViewModel.playlistInfos = playlist
+                    playerViewModel.currentPlaylistId = playlistId
+                    playerViewModel.isMainPlaylist = false
+                }
+            } else if (!playerViewModel.isMainPlaylist){
+                playerViewModel.isMainPlaylist = true
                 playerViewModel.playlistInfos = playlist
                 playerViewModel.currentPlaylistId = playlistId
+            }
+
+            if (playerViewModel.currentMusic != null){
+                if (music.musicId.compareTo(playerViewModel.currentMusic!!.musicId) != 0) {
+                    playerViewModel.currentMusic = music
+
+                }
+            } else {
+                playerViewModel.currentMusic = music
             }
         }
     }
