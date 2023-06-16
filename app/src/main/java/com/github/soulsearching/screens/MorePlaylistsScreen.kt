@@ -1,5 +1,6 @@
 package com.github.soulsearching.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,6 +29,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.viewModels.AllPlaylistsViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MorePlaylistsScreen(
     allPlaylistsViewModel: AllPlaylistsViewModel,
@@ -120,13 +122,11 @@ fun MorePlaylistsScreen(
                     )
                 }
                 LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(color = MaterialTheme.colorScheme.secondary),
-                    columns = GridCells.Adaptive(196.dp)
+                    columns = GridCells.FixedSize(Constants.ImageSize.huge),
+                    contentPadding = PaddingValues(Constants.Spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-
                     items(playlistState.playlists) { playlistWithMusics ->
                         BigPreviewComposable(
                             image = coverList.find { it.coverId == playlistWithMusics.playlist.coverId }?.cover,

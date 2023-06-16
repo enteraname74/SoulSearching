@@ -63,7 +63,6 @@ fun MainPageScreen(
     val playlistState by allPlaylistsViewModel.state.collectAsState()
     val albumState by allAlbumsViewModel.state.collectAsState()
     val artistState by allArtistsViewModel.state.collectAsState()
-    val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -102,12 +101,12 @@ fun MainPageScreen(
     }
 
 
-    if (imageCovers.covers.isNotEmpty() && !cleanImagesLaunched) {
+    if (allImageCoversViewModel.imageCovers.isNotEmpty() && !cleanImagesLaunched) {
         LaunchedEffect(key1 = "Launch") {
             Log.d("LAUNCHED EFFECT", "")
 
             CoroutineScope(Dispatchers.IO).launch {
-                for (cover in imageCovers.covers) {
+                for (cover in allImageCoversViewModel.imageCovers) {
                     allImageCoversViewModel.verifyIfAllImagesAreUsed(cover)
                 }
                 cleanImagesLaunched = true
@@ -165,7 +164,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
-                        coverList = imageCovers.covers,
+                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                         list = playlistState.playlists,
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
@@ -254,7 +253,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
-                        coverList = imageCovers.covers,
+                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                         list = albumState.albums,
                         title = stringResource(id = R.string.albums),
                         navigateToMore = navigateToMoreAlbums,
@@ -329,7 +328,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
-                        coverList = imageCovers.covers,
+                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                         list = artistState.artists,
                         title = stringResource(id = R.string.artists),
                         navigateToMore = navigateToMoreArtists,
@@ -492,9 +491,7 @@ fun MainPageScreen(
                                     )
                                 }
                             },
-                            musicCover = imageCovers.covers.find {
-                                it.coverId == music.coverId
-                            }?.cover
+                            musicCover = allImageCoversViewModel.getImageCover(music.coverId)
                         )
                     }
                 }

@@ -1,5 +1,6 @@
 package com.github.soulsearching.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,6 +29,7 @@ import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewModels.AllArtistsViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MoreArtistsScreen(
     allArtistsViewModel: AllArtistsViewModel,
@@ -49,7 +51,7 @@ fun MoreArtistsScreen(
     Scaffold(
         topBar = {
             AppHeaderBar(
-                title = stringResource(id = R.string.albums),
+                title = stringResource(id = R.string.artists),
                 leftAction = finishAction
             )
         },
@@ -122,11 +124,10 @@ fun MoreArtistsScreen(
                     )
                 }
                 LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(color = MaterialTheme.colorScheme.secondary),
-                    columns = GridCells.Adaptive(196.dp)
+                    columns = GridCells.FixedSize(Constants.ImageSize.huge),
+                    contentPadding = PaddingValues(Constants.Spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     items(artistState.artists) { artistWithMusics ->
                         BigPreviewComposable(

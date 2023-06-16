@@ -2,6 +2,9 @@ package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
@@ -12,10 +15,14 @@ import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
@@ -63,7 +70,6 @@ class AllMusicsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(MusicState())
 
-    // On combine nos 2 flows en un seul.
     val state = combine(
         _state,
         _musics,
@@ -80,6 +86,8 @@ class AllMusicsViewModel @Inject constructor(
         SharingStarted.WhileSubscribed(5000),
         MusicState()
     )
+
+
 
     suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :

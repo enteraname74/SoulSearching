@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,11 +19,12 @@ import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.database.model.PlaylistWithMusics
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainMenuLazyListRow(
-    coverList: ArrayList<ImageCover>,
+    retrieveCoverMethod : (UUID) -> Bitmap?,
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
@@ -84,7 +86,7 @@ fun MainMenuLazyListRow(
                         is PlaylistWithMusics -> {
                             BigPreviewComposable(
                                 modifier = modifier,
-                                image = coverList.find { it.coverId == element.playlist.coverId }?.cover,
+                                image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.playlist.name,
                                 text = if (element.musics.size == 1) {
                                     stringResource(id = R.string.one_music)
@@ -100,7 +102,7 @@ fun MainMenuLazyListRow(
                         is AlbumWithArtist -> {
                             BigPreviewComposable(
                                 modifier = modifier,
-                                image = coverList.find { it.coverId == element.album.coverId }?.cover,
+                                image = element.album.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.album.albumName,
                                 text = if (element.artist != null) element.artist.artistName else "",
                                 onClick = {
@@ -112,7 +114,7 @@ fun MainMenuLazyListRow(
                         is ArtistWithMusics -> {
                             BigPreviewComposable(
                                 modifier = modifier,
-                                image = coverList.find { it.coverId == element.artist.coverId }?.cover,
+                                image = element.artist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.artist.artistName,
                                 text = if (element.musics.size == 1) {
                                     stringResource(id = R.string.one_music)
