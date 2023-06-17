@@ -148,13 +148,15 @@ class PlayerService : Service() {
 
         fun setPlayerPlaylist() {
             Log.d("Player Service", "initialize playlist")
-            player.addMediaItems(
+            player.setMediaItems(
                 PlayerUtils.playerViewModel.playlistInfos.map {
                     MediaItem.Builder().setUri(it.path).setMediaId(it.musicId.toString()).build()
-                }
+                },
+                true
             )
             Log.d("Player Service", "end initialize playlist")
             player.prepare()
+            setRepeatMode(Player.REPEAT_MODE_ALL)
             Log.d("Player Service", "end prepare")
         }
 
@@ -163,10 +165,12 @@ class PlayerService : Service() {
         }
 
         fun playMusic() {
+            Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.play()
         }
 
         fun playNext() {
+            Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.seekToNext()
         }
 
@@ -175,10 +179,15 @@ class PlayerService : Service() {
         }
 
         fun seekToCurrentMusic() {
+            Log.d("Player Service","Seek to : ${PlayerUtils.playerViewModel.currentMusic?.name}")
             player.seekTo(
                 PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic),
                 0L
             )
+        }
+
+        fun setRepeatMode(repeatMode : Int) {
+            player.repeatMode = repeatMode
         }
     }
 }

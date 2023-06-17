@@ -68,31 +68,42 @@ class PlayerViewModel : ViewModel() {
                 playlistInfos = playlist
                 currentPlaylistId = playlistId
                 this.isMainPlaylist = false
+                if (shouldServiceBeLaunched) {
+                    PlayerService.setPlayerPlaylist()
+                }
             } else if(currentPlaylistId!!.compareTo(playlistId) != 0) {
                 playlistInfos = playlist
                 currentPlaylistId = playlistId
                 this.isMainPlaylist = false
+                if (shouldServiceBeLaunched) {
+                    PlayerService.setPlayerPlaylist()
+                }
             }
         } else if (!this.isMainPlaylist){
             this.isMainPlaylist = true
             playlistInfos = playlist
             currentPlaylistId = playlistId
+            if (shouldServiceBeLaunched) {
+                PlayerService.setPlayerPlaylist()
+            }
         }
 
         if (currentMusic != null){
             if (music.musicId.compareTo(currentMusic!!.musicId) != 0) {
                 currentMusic = music
                 if (shouldServiceBeLaunched) {
-                    PlayerService.setPlayerPlaylist()
                     PlayerService.seekToCurrentMusic()
                     PlayerService.playMusic()
                 }
-
+            } else {
+                if (shouldServiceBeLaunched) {
+                    PlayerService.seekToCurrentMusic()
+                    PlayerService.playMusic()
+                }
             }
         } else {
             currentMusic = music
             if (shouldServiceBeLaunched) {
-                PlayerService.setPlayerPlaylist()
                 PlayerService.seekToCurrentMusic()
                 PlayerService.playMusic()
             }
