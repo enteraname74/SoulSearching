@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +35,9 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
+import com.github.soulsearching.service.PlayerService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -48,12 +52,21 @@ fun PlayerSwipeableView(
 ) {
 
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
         }
     }
+
+    if (swipeableState.currentValue == BottomSheetStates.COLLAPSED
+        && PlayerUtils.playerViewModel.isServiceLaunched
+        && !swipeableState.isAnimationRunning
+    ) {
+        PlayerService.stopMusic(context)
+    }
+
     Box {
         Box(
             modifier = Modifier

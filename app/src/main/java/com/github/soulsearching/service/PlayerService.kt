@@ -4,7 +4,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
@@ -113,13 +112,7 @@ class PlayerService : Service() {
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         Log.d("PLAYBACK SERVICE", "REMOVED")
-        stopMusic()
-    }
-
-    private fun stopMusic() {
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(1)
+        stopMusic(this)
     }
 
     companion object {
@@ -188,6 +181,14 @@ class PlayerService : Service() {
 
         fun setRepeatMode(repeatMode : Int) {
             player.repeatMode = repeatMode
+        }
+
+        fun stopMusic(context: Context) {
+            Log.d("Player Service", "Stop music !")
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(1)
+            player.pause()
         }
     }
 }

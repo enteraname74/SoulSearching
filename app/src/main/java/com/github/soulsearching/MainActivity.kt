@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
                 val swipeableState = rememberSwipeableState(
-                    BottomSheetStates.MINIMISED
+                    BottomSheetStates.COLLAPSED
                 )
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
