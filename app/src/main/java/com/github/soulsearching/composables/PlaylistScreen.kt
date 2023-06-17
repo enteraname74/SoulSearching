@@ -36,13 +36,11 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import java.util.*
-import kotlin.collections.ArrayList
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,7 +54,7 @@ fun PlaylistScreen(
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
-    coverList: ArrayList<ImageCover>,
+    retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?
 ) {
@@ -154,9 +152,7 @@ fun PlaylistScreen(
             onPlaylistEvent = onPlaylistEvent,
             navigateToModifyMusic = navigateToModifyMusic,
             modifier = musicListModifier,
-            retrieveCoverMethod = { uuid ->
-                coverList.find { it.coverId == uuid }?.cover
-            },
+            retrieveCoverMethod = { retrieveCoverMethod(it) },
             swipeableState = swipeableState,
             playlistId = playlistId
         )

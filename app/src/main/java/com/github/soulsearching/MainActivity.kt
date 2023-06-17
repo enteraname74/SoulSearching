@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = allImageCoversViewModel.imageCovers,
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                                         swipeableState = swipeableState
                                     )
                                 }
@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = allImageCoversViewModel.imageCovers,
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                                         swipeableState = swipeableState
                                     )
                                 }
@@ -276,7 +276,7 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        coverList = allImageCoversViewModel.imageCovers,
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
                                         swipeableState = swipeableState
                                     )
                                 }
@@ -336,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") },
-                                        coverList = allImageCoversViewModel.imageCovers
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
                                     )
                                 }
                                 composable(
@@ -347,7 +347,7 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") },
-                                        coverList = allImageCoversViewModel.imageCovers
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
                                     )
                                 }
                                 composable(
@@ -358,7 +358,7 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyArtist = { navController.navigate("modifyArtist/$it") },
-                                        coverList = allImageCoversViewModel.imageCovers
+                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
                                     )
                                 }
                             }

@@ -1,5 +1,6 @@
 package com.github.soulsearching.screens
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.SharedPrefUtils
@@ -25,10 +25,10 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -37,7 +37,7 @@ fun MoreAlbumsScreen(
     navigateToSelectedAlbum: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     finishAction: () -> Unit,
-    coverList: ArrayList<ImageCover>
+    retrieveCoverMethod: (UUID?) -> Bitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -133,7 +133,7 @@ fun MoreAlbumsScreen(
                 ) {
                     items(albumState.albums) { albumWithArtist ->
                         BigPreviewComposable(
-                            image = coverList.find { it.coverId == albumWithArtist.album.coverId }?.cover,
+                            image = retrieveCoverMethod(albumWithArtist.album.coverId),
                             title = albumWithArtist.album.albumName,
                             text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",
                             onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) },

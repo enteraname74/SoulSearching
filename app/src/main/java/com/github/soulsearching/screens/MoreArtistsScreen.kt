@@ -1,5 +1,6 @@
 package com.github.soulsearching.screens
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.SharedPrefUtils
@@ -24,10 +24,10 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewModels.AllArtistsViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -36,7 +36,7 @@ fun MoreArtistsScreen(
     navigateToSelectedArtist: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
     finishAction: () -> Unit,
-    coverList: ArrayList<ImageCover>
+    retrieveCoverMethod: (UUID?) -> Bitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -131,7 +131,7 @@ fun MoreArtistsScreen(
                 ) {
                     items(artistState.artists) { artistWithMusics ->
                         BigPreviewComposable(
-                            image = coverList.find { it.coverId == artistWithMusics.artist.coverId }?.cover,
+                            image = retrieveCoverMethod(artistWithMusics.artist.coverId),
                             title = artistWithMusics.artist.artistName,
                             text = if (artistWithMusics.musics.size == 1) {
                                 stringResource(id = R.string.one_music)

@@ -1,12 +1,12 @@
 package com.github.soulsearching.screens
 
+import android.graphics.Bitmap
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
@@ -22,7 +22,7 @@ fun SelectedPlaylistScreen(
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
     navigateBack : () -> Unit,
-    coverList: ArrayList<ImageCover>,
+    retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>
 ){
     var isPlaylistFetched by rememberSaveable {
@@ -43,12 +43,12 @@ fun SelectedPlaylistScreen(
         onPlaylistEvent = onPlaylistEvent,
         musicState = musicState,
         title = if (selectedPlaylistState.playlistWithMusics != null) selectedPlaylistState.playlistWithMusics!!.playlist.name else "",
-        image = coverList.find { it.coverId == selectedPlaylistState.playlistWithMusics!!.playlist.coverId }?.cover,
+        image = retrieveCoverMethod(selectedPlaylistState.playlistWithMusics?.playlist?.coverId),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
-        coverList = coverList,
+        retrieveCoverMethod = { retrieveCoverMethod(it) },
         swipeableState = swipeableState,
         playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId
     )
