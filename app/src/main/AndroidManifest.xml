@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
@@ -20,7 +21,36 @@
         <service
             android:name=".service.PlayerService"
             android:exported="true"
-            android:enabled="true"/>
+            android:enabled="true" />
+
+        <receiver
+            android:name=".service.notification.receivers.ChangeFavoriteStateNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".service.notification.receivers.DeletedNotificationIntentReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".service.notification.receivers.NextMusicNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".service.notification.receivers.PausePlayNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".service.notification.receivers.PreviousMusicNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name="androidx.media.session.MediaButtonReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

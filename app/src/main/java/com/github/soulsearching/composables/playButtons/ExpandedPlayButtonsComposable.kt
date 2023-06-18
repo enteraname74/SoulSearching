@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables
+package com.github.soulsearching.composables.playButtons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerUtils
@@ -22,6 +23,9 @@ import com.github.soulsearching.service.PlayerService
 fun ExpandedPlayButtonsComposable(
     modifier: Modifier = Modifier
 ) {
+
+    val context = LocalContext.current
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -42,7 +46,7 @@ fun ExpandedPlayButtonsComposable(
                 .size(Constants.ImageSize.large)
                 .clickable {
                     PlayerUtils.playerViewModel.setPreviousMusic()
-                    PlayerService.playPrevious()
+                    PlayerService.playPrevious(context)
                 },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
@@ -52,7 +56,7 @@ fun ExpandedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(78.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         } else {
@@ -61,7 +65,7 @@ fun ExpandedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(78.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         }
@@ -72,7 +76,7 @@ fun ExpandedPlayButtonsComposable(
                 .size(Constants.ImageSize.large)
                 .clickable {
                     PlayerUtils.playerViewModel.setNextMusic()
-                    PlayerService.playNext()
+                    PlayerService.playNext(context)
                 },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )

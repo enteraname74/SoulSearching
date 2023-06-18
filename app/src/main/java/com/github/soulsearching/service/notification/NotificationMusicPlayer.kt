@@ -4,6 +4,8 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
 class NotificationMusicPlayer: Application() {
 
@@ -15,7 +17,7 @@ class NotificationMusicPlayer: Application() {
     private fun createNotificationChannel(){
         val channel = NotificationChannel(
             MusicNotificationService.MUSIC_NOTIFICATION_CHANNEL_ID,
-            "PausePlay",
+            "SoulSearchingNotification",
             NotificationManager.IMPORTANCE_DEFAULT
         )
         channel.description = "Use for controlling the song that is currently playing"

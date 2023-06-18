@@ -1,21 +1,19 @@
 package com.github.soulsearching.viewModels
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
-class PlayerViewModel : ViewModel() {
+class PlayerViewModel() : ViewModel() {
     var currentMusic by mutableStateOf<Music?>(null)
     var playlistInfos by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylistId by mutableStateOf<UUID?>(null)
@@ -23,11 +21,14 @@ class PlayerViewModel : ViewModel() {
     var isPlaying by mutableStateOf(false)
     var shouldServiceBeLaunched by mutableStateOf(false)
     var isServiceLaunched by mutableStateOf(false)
+    var currentMusicCover by mutableStateOf<Bitmap?>(null)
+    lateinit var retrieveCoverMethod : (UUID?) -> Bitmap?
 
     fun setNextMusic() {
         val currentIndex =
             playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
         currentMusic = playlistInfos[(currentIndex + 1) % playlistInfos.size]
+        currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
     }
 
     fun setPreviousMusic() {
@@ -38,31 +39,27 @@ class PlayerViewModel : ViewModel() {
         } else {
             playlistInfos[currentIndex - 1]
         }
+        currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
     }
 
-    fun setPlayingState() {
-        if (isPlaying) {
-            PlayerService.pauseMusic()
-            isPlaying = false
+    fun setPlayingState(context : Context) {
+        isPlaying = if (isPlaying) {
+            PlayerService.pauseMusic(context)
+            false
         } else {
-            PlayerService.playMusic()
-            isPlaying = true
+            PlayerService.playMusic(context)
+            true
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
     fun setCurrentPlaylistAndMusic(
-        swipeableState: SwipeableState<BottomSheetStates>,
         music: Music,
+        bitmap: Bitmap?,
         playlist: ArrayList<Music>,
         playlistId: UUID?,
         isMainPlaylist: Boolean = false,
-        coroutineScope: CoroutineScope
+        context: Context
     ) {
-        coroutineScope.launch {
-            swipeableState.animateTo(BottomSheetStates.EXPANDED)
-        }
-
         if (!isMainPlaylist) {
             if (currentPlaylistId == null) {
                 playlistInfos = playlist
@@ -91,21 +88,23 @@ class PlayerViewModel : ViewModel() {
         if (currentMusic != null){
             if (music.musicId.compareTo(currentMusic!!.musicId) != 0) {
                 currentMusic = music
+                currentMusicCover = bitmap
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic()
-                    PlayerService.playMusic()
+                    PlayerService.seekToCurrentMusic(context)
+                    PlayerService.playMusic(context)
                 }
             } else {
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic()
-                    PlayerService.playMusic()
+                    PlayerService.seekToCurrentMusic(context)
+                    PlayerService.playMusic(context)
                 }
             }
         } else {
             currentMusic = music
+            currentMusicCover = bitmap
             if (shouldServiceBeLaunched) {
-                PlayerService.seekToCurrentMusic()
-                PlayerService.playMusic()
+                PlayerService.seekToCurrentMusic(context)
+                PlayerService.playMusic(context)
             }
         }
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -65,6 +66,7 @@ fun MainPageScreen(
     val artistState by allArtistsViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     MusicBottomSheetEvents(
         musicState = musicState,
@@ -467,15 +469,19 @@ fun MainPageScreen(
                     Row(Modifier.animateItemPlacement()) {
                         MusicItemComposable(
                             music = music,
-                            onClick = {
-                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                    swipeableState = swipeableState,
-                                    music = it,
-                                    playlist = musicState.musics,
-                                    isMainPlaylist = true,
-                                    coroutineScope = coroutineScope,
-                                    playlistId = null
-                                )
+                            onClick = {music ->
+                                coroutineScope.launch {
+                                    swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                }.invokeOnCompletion {
+                                    PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        playlist = musicState.musics,
+                                        isMainPlaylist = true,
+                                        playlistId = null,
+                                        context = context,
+                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId)
+                                    )
+                                }
                             },
                             onLongClick = {
                                 coroutineScope.launch {

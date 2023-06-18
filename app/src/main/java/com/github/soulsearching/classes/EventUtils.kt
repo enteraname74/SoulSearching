@@ -227,6 +227,8 @@ class EventUtils {
                 is MusicEvent.SetPlayedMusic -> {
                     PlayerUtils.playerViewModel.currentMusic = event.music
                 }
+                is MusicEvent.SetFavorite -> {
+                }
                 else -> {}
             }
         }

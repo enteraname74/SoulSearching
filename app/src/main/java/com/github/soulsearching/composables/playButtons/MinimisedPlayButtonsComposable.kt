@@ -15,14 +15,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 
 @Composable
-fun MinimisedPlayButtonsComposable(modifier: Modifier = Modifier
+fun MinimisedPlayButtonsComposable(
+    modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -35,7 +39,7 @@ fun MinimisedPlayButtonsComposable(modifier: Modifier = Modifier
                 .size(40.dp)
                 .clickable {
                     PlayerUtils.playerViewModel.setPreviousMusic()
-                    PlayerService.playPrevious()
+                    PlayerService.playPrevious(context)
                 },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
@@ -45,7 +49,7 @@ fun MinimisedPlayButtonsComposable(modifier: Modifier = Modifier
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         } else {
@@ -54,7 +58,7 @@ fun MinimisedPlayButtonsComposable(modifier: Modifier = Modifier
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         }
@@ -65,7 +69,7 @@ fun MinimisedPlayButtonsComposable(modifier: Modifier = Modifier
                 .size(40.dp)
                 .clickable {
                     PlayerUtils.playerViewModel.setNextMusic()
-                    PlayerService.playNext()
+                    PlayerService.playNext(context)
                 },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )

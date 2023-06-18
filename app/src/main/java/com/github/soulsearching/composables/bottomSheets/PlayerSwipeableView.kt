@@ -32,12 +32,10 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.composables.ExpandedPlayButtonsComposable
+import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.service.PlayerService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt

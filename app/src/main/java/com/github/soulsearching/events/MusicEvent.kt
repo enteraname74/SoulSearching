@@ -1,9 +1,9 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.MusicPlaylist
+import java.util.UUID
 
 sealed interface MusicEvent {
     object AddMusic : MusicEvent
@@ -22,4 +22,5 @@ sealed interface MusicEvent {
     data class SetAlbum(val album: String) : MusicEvent
     data class SetCover(val cover: Bitmap) : MusicEvent
     data class DeleteMusicFromPlaylist(val musicPlaylist: MusicPlaylist) : MusicEvent
+    data class SetFavorite(val musicId: UUID) : MusicEvent
 }

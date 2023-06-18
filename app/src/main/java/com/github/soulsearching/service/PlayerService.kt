@@ -16,8 +16,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.service.notification.MusicNotificationService
 
 class PlayerService : Service() {
+    private lateinit var notificationService : MusicNotificationService
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
@@ -97,9 +99,14 @@ class PlayerService : Service() {
         )
         mediaSession.isActive = true
 
-        seekToCurrentMusic()
-        playMusic()
+        seekToCurrentMusic(this)
+        playMusic(this)
         PlayerUtils.playerViewModel.isPlaying = true
+
+        notificationService = MusicNotificationService(applicationContext)
+        notificationService.showNotification()
+        val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+        this.sendBroadcast(intentForNotification)
 
         return START_STICKY
     }
@@ -153,30 +160,40 @@ class PlayerService : Service() {
             Log.d("Player Service", "end prepare")
         }
 
-        fun pauseMusic() {
+        fun pauseMusic(context: Context) {
             player.pause()
+            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+            context.sendBroadcast(intentForNotification)
         }
 
-        fun playMusic() {
+        fun playMusic(context: Context) {
             Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.play()
+            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+            context.sendBroadcast(intentForNotification)
         }
 
-        fun playNext() {
+        fun playNext(context: Context) {
             Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.seekToNext()
+            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+            context.sendBroadcast(intentForNotification)
         }
 
-        fun playPrevious() {
+        fun playPrevious(context: Context) {
             player.seekToPrevious()
+            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+            context.sendBroadcast(intentForNotification)
         }
 
-        fun seekToCurrentMusic() {
+        fun seekToCurrentMusic(context: Context) {
             Log.d("Player Service","Seek to : ${PlayerUtils.playerViewModel.currentMusic?.name}")
             player.seekTo(
                 PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic),
                 0L
             )
+            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
+            context.sendBroadcast(intentForNotification)
         }
 
         fun setRepeatMode(repeatMode : Int) {

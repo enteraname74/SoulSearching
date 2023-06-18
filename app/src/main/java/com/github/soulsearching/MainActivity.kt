@@ -1,6 +1,7 @@
 package com.github.soulsearching
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -33,6 +34,7 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
@@ -42,6 +44,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 @AndroidEntryPoint
@@ -63,6 +66,18 @@ class MainActivity : AppCompatActivity() {
     private val modifyAlbumViewModel: ModifyAlbumViewModel by viewModels()
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
+
+    // Receiver pour la notification
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            if (intent.extras?.getString("CHANGE_FAVORITE") != null) {
+                allMusicsViewModel.onMusicEvent(MusicEvent.SetFavorite(
+                    UUID.fromString(intent.extras?.getString("CHANGE_FAVORITE") as String)
+                ))
+            }
+        }
+
+    }
     @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalMaterialApi::class)
     override
@@ -77,6 +92,8 @@ class MainActivity : AppCompatActivity() {
             onArtistEvent = allArtistsViewModel::onArtistEvent,
             onAlbumEvent = allAlbumsViewModel::onAlbumEvent
         )
+
+        PlayerUtils.playerViewModel.retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
 
         setContent {
             SoulSearchingTheme {
