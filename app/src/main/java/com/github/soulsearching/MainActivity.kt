@@ -19,6 +19,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -105,15 +107,30 @@ class MainActivity : AppCompatActivity() {
                 var isReadPermissionGranted by rememberSaveable {
                     mutableStateOf(false)
                 }
+                var isPostNotificationGranted by remember {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        mutableStateOf(
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                android.Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        )
+                    } else mutableStateOf(true)
+                }
                 var hasMusicsBeenFetched by rememberSaveable {
                     mutableStateOf(SharedPrefUtils.hasMusicsBeenFetched())
                 }
 
                 // On regarde d'abord les permissions :
-                val permissionLauncher = rememberLauncherForActivityResult(
+                val readPermissionLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.RequestPermission()
                 ) { isGranted ->
                     isReadPermissionGranted = isGranted
+                }
+                val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestPermission()
+                ) { isGranted ->
+                    isPostNotificationGranted = isGranted
                 }
                 SideEffect {
                     if (Build.VERSION.SDK_INT >= 33) {
@@ -125,9 +142,10 @@ class MainActivity : AppCompatActivity() {
                                 isReadPermissionGranted = true
                             }
                             else -> {
-                                permissionLauncher.launch(android.Manifest.permission.READ_MEDIA_AUDIO)
+                                readPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_AUDIO)
                             }
                         }
+                        notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
                     } else {
                         when (PackageManager.PERMISSION_GRANTED) {
                             ContextCompat.checkSelfPermission(
@@ -137,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                                 isReadPermissionGranted = true
                             }
                             else -> {
-                                permissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                readPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                             }
                         }
                     }

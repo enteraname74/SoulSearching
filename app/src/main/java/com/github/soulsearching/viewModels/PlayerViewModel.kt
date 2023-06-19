@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("MutableCollectionMutableState")
 class PlayerViewModel() : ViewModel() {
@@ -111,5 +112,20 @@ class PlayerViewModel() : ViewModel() {
         if (!shouldServiceBeLaunched) {
             shouldServiceBeLaunched = true
         }
+    }
+
+    fun updateCurrentMusicFromUUID(musicId: UUID) {
+        currentMusic = playlistInfos.find {
+            it.musicId == musicId
+        }
+        currentMusicCover = retrieveCoverMethod(currentMusic?.coverId)
+    }
+
+    fun resetPlayerData() {
+        currentMusic = null
+        currentMusicCover = null
+        playlistInfos = ArrayList()
+        currentPlaylistId = null
+        isPlaying = false
     }
 }

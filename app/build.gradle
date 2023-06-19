@@ -100,5 +100,9 @@ dependencies {
     // Exoplayer :
     implementation "androidx.media3:media3-exoplayer:1.0.2"
     implementation "androidx.media3:media3-exoplayer-dash:1.0.2"
+    implementation "androidx.media3:media3-session:1.0.2"
+    implementation "androidx.media3:media3-ui:1.0.2"
+
     implementation "androidx.media:media:1.6.0"
+    //implementation "com.google.android.exoplayer:extension-mediasession:2.18.7"
 }

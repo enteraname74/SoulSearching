@@ -12,7 +12,9 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadata
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
+import androidx.media3.common.util.UnstableApi
 import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
@@ -37,6 +39,8 @@ class MusicNotificationService(private val context : Context) {
             }
         }
     }
+
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun showNotification(){
         createNotificationChannel()
 
@@ -110,11 +114,11 @@ class MusicNotificationService(private val context : Context) {
             .addAction(R.drawable.ic_skip_previous,"previous",previousMusicIntent)
             .addAction(pausePlayIcon,"pausePlay",pausePlayIntent)
             .addAction(R.drawable.ic_skip_next,"next",nextMusicIntent)
-            .addAction(pausePlayIcon, "favoriteState", changeFavoriteStateIntent)
+            .addAction(R.drawable.ic_baseline_favorite_border,"next",nextMusicIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                .setMediaSession(PlayerService.mediaSession.sessionToken)
                 .setShowActionsInCompactView(0, 1, 2)
+                .setMediaSession(PlayerService.session.sessionCompatToken)
             )
 
         notificationManager.notify(
@@ -123,7 +127,9 @@ class MusicNotificationService(private val context : Context) {
         )
     }
 
+    @OptIn(UnstableApi::class)
     private fun updateNotification() {
+
         val musicState = if (PlayerService.player.isPlaying) {
             PlaybackStateCompat.STATE_PLAYING
         } else {
@@ -195,7 +201,7 @@ class MusicNotificationService(private val context : Context) {
                     or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                     or PlaybackStateCompat.ACTION_PLAY_PAUSE
             )
-            .setState(musicState, PlayerService.player.currentMediaItemIndex.toLong(), 1.0F)
+            .setState(musicState, PlayerService.player.currentPosition, 1.0F)
             .build()
 
         PlayerService.mediaSession.setPlaybackState(state)
@@ -206,10 +212,11 @@ class MusicNotificationService(private val context : Context) {
             .addAction(pausePlayIcon,"pausePlay",pausePlayIntent)
             .addAction(R.drawable.ic_skip_next,"next",nextMusicIntent)
             .addAction(R.drawable.ic_pause, "favoriteState", changeFavoriteStateIntent)
+            .addAction(R.drawable.ic_baseline_favorite_border,"next",nextMusicIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                .setMediaSession(PlayerService.mediaSession.sessionToken)
                 .setShowActionsInCompactView(0, 1, 2)
+                .setMediaSession(PlayerService.session.sessionCompatToken)
             )
 
         notificationManager.notify(1, notificationMusicPlayer.build())

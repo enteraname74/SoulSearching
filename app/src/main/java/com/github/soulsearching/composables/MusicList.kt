@@ -56,8 +56,7 @@ fun MusicList(
                         PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                             music = music,
                             playlist = musicState.musics,
-                            isMainPlaylist = true,
-                            playlistId = null,
+                            playlistId = playlistId,
                             context = context,
                             bitmap = retrieveCoverMethod(music.coverId)
                         )
