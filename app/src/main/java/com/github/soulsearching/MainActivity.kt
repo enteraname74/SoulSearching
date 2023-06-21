@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
+                val coversState by allImageCoversViewModel.state.collectAsState()
                 val swipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
@@ -400,7 +401,7 @@ class MainActivity : AppCompatActivity() {
                             PlayerSwipeableView(
                                 maxHeight = maxHeight,
                                 swipeableState = swipeableState,
-                                coverList = allImageCoversViewModel.imageCovers
+                                coverList = coversState.covers
                             )
                         }
                     }

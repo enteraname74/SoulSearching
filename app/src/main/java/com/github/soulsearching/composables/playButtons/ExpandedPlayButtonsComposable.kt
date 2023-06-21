@@ -44,10 +44,7 @@ fun ExpandedPlayButtonsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(Constants.ImageSize.large)
-                .clickable {
-                    PlayerUtils.playerViewModel.setPreviousMusic()
-                    PlayerService.playPrevious(context)
-                },
+                .clickable { PlayerService.playPrevious() },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
         if (PlayerUtils.playerViewModel.isPlaying) {
@@ -56,7 +53,7 @@ fun ExpandedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(78.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         } else {
@@ -65,7 +62,7 @@ fun ExpandedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(78.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState(context) },
+                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         }
@@ -74,10 +71,7 @@ fun ExpandedPlayButtonsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(Constants.ImageSize.large)
-                .clickable {
-                    PlayerUtils.playerViewModel.setNextMusic()
-                    PlayerService.playNext(context)
-                },
+                .clickable { PlayerService.playNext() },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
         Image(

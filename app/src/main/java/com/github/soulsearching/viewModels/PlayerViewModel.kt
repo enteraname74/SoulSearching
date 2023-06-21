@@ -3,6 +3,8 @@ package com.github.soulsearching.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +25,7 @@ class PlayerViewModel() : ViewModel() {
     var shouldServiceBeLaunched by mutableStateOf(false)
     var isServiceLaunched by mutableStateOf(false)
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
+    lateinit var uri: Uri
     lateinit var retrieveCoverMethod : (UUID?) -> Bitmap?
 
     fun setNextMusic() {
@@ -43,12 +46,12 @@ class PlayerViewModel() : ViewModel() {
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
     }
 
-    fun setPlayingState(context : Context) {
+    fun setPlayingState() {
         isPlaying = if (isPlaying) {
-            PlayerService.pauseMusic(context)
+            PlayerService.pauseMusic()
             false
         } else {
-            PlayerService.playMusic(context)
+            PlayerService.playMusic()
             true
         }
     }
@@ -91,21 +94,21 @@ class PlayerViewModel() : ViewModel() {
                 currentMusic = music
                 currentMusicCover = bitmap
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic(context)
-                    PlayerService.playMusic(context)
+                    PlayerService.seekToCurrentMusic()
+                    PlayerService.playMusic()
                 }
             } else {
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic(context)
-                    PlayerService.playMusic(context)
+                    PlayerService.seekToCurrentMusic()
+                    PlayerService.playMusic()
                 }
             }
         } else {
             currentMusic = music
             currentMusicCover = bitmap
             if (shouldServiceBeLaunched) {
-                PlayerService.seekToCurrentMusic(context)
-                PlayerService.playMusic(context)
+                PlayerService.seekToCurrentMusic()
+                PlayerService.playMusic()
             }
         }
 
@@ -127,5 +130,25 @@ class PlayerViewModel() : ViewModel() {
         playlistInfos = ArrayList()
         currentPlaylistId = null
         isPlaying = false
+        isMainPlaylist = false
+    }
+
+    fun getNextMusic() : Music {
+        val currentIndex =
+            playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
+        Log.d("CURRENT INDEX BEFORE NEXT", currentIndex.toString())
+        return playlistInfos[(currentIndex + 1) % playlistInfos.size]
+    }
+
+    fun getPreviousMusic() : Music {
+        val currentIndex =
+            playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
+
+        Log.d("CURRENT INDEX BEFORE PREV", currentIndex.toString())
+        return if (currentIndex == 0) {
+            playlistInfos.last()
+        } else {
+            playlistInfos[currentIndex - 1]
+        }
     }
 }

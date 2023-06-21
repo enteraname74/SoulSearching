@@ -204,18 +204,16 @@ class EventUtils {
                                 albumDao.updateAlbumCover(coverId!!, album.albumId)
                             }
                         }
-                        Log.d("UPDATE MUSIC","")
+                        Log.d("UPDATE MUSIC", "")
                         musicDao.insertMusic(
-                            Music(
-                                musicId = state.value.selectedMusic.musicId,
+                            state.value.selectedMusic.copy(
                                 name = state.value.name.trim(),
                                 album = state.value.album.trim(),
                                 artist = state.value.artist.trim(),
-                                coverId = coverId,
-                                path = state.value.selectedMusic.path,
-                                duration = state.value.selectedMusic.duration
+                                coverId = coverId
                             )
                         )
+
                     }
                 }
                 is MusicEvent.SetSortDirection -> {

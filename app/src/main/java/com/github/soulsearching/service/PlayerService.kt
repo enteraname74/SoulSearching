@@ -4,23 +4,22 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.AudioManager
 import android.os.IBinder
-import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.view.KeyEvent
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
+import androidx.media3.common.*
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionResult
 import androidx.media3.ui.PlayerNotificationManager
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.notification.MusicNotificationService
+import java.io.ByteArrayOutputStream
 import java.util.*
+
 
 class PlayerService : Service() {
     private lateinit var playerNotificationManager: PlayerNotificationManager
@@ -41,8 +40,14 @@ class PlayerService : Service() {
                     when (reason) {
                         Player.MEDIA_ITEM_TRANSITION_REASON_AUTO -> {
                             PlayerUtils.playerViewModel.setNextMusic()
+                            addNextMusic()
+                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                                UUID.fromString(player.currentMediaItem!!.mediaId)
+                            )
                         }
-                        Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {}
+                        Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {
+                            player.play()
+                        }
                         Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {}
                         Player.MEDIA_ITEM_TRANSITION_REASON_SEEK -> {
                             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
@@ -50,7 +55,6 @@ class PlayerService : Service() {
                             )
                         }
                     }
-
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -70,58 +74,8 @@ class PlayerService : Service() {
 
         player.setAudioAttributes(audioAttributes, true)
 
-        mediaSession = MediaSessionCompat(applicationContext, packageName + "mediaSessionPlayer")
-        mediaSession.setCallback(object : MediaSessionCompat.Callback() {
-            override fun onSeekTo(pos: Long) {
-                player.seekTo(pos)
-                val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-                intentForNotification.putExtra("STOP", !player.isPlaying)
-                applicationContext.sendBroadcast(intentForNotification)
-            }
-
-            override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
-                if (PlayerUtils.playerViewModel.currentMusic != null) {
-                    val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
-                    if (keyEvent.action == KeyEvent.ACTION_DOWN){
-                        when(keyEvent.keyCode){
-                            KeyEvent.KEYCODE_MEDIA_PAUSE -> {
-                                PlayerUtils.playerViewModel.setPlayingState(applicationContext)
-                            }
-                            KeyEvent.KEYCODE_MEDIA_PLAY -> {
-                                PlayerUtils.playerViewModel.setPlayingState(applicationContext)
-                            }
-                            KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                                PlayerUtils.playerViewModel.setNextMusic()
-                                playNext(applicationContext)
-                            }
-                            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                                PlayerUtils.playerViewModel.setPreviousMusic()
-                                playPrevious(applicationContext)
-                            }
-                        }
-                    }
-                }
-                return super.onMediaButtonEvent(mediaButtonIntent)
-            }
-
-            override fun onSkipToPrevious() {
-                super.onSkipToPrevious()
-                playPrevious(applicationContext)
-            }
-        })
-
-        mediaSession.setPlaybackState(
-            updateMediaSessionState(
-                PlaybackStateCompat.STATE_PLAYING,
-                PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN
-            )
-        )
-        mediaSession.isActive = true
-
-        seekToCurrentMusic(this)
-        playMusic(this)
+        playMusic()
         PlayerUtils.playerViewModel.isPlaying = true
-
 
         playerNotificationManager = PlayerNotificationManager.Builder(
             this,
@@ -132,15 +86,45 @@ class PlayerService : Service() {
         playerNotificationManager.setPlayer(player)
         playerNotificationManager.setSmallIcon(R.drawable.ic_saxophone_svg)
 
-        session = MediaSession.Builder(applicationContext, player).build()
+        session = MediaSession.Builder(applicationContext, player).setCallback(
+            object : MediaSession.Callback {
+                override fun onPlayerCommandRequest(
+                    session: MediaSession,
+                    controller: MediaSession.ControllerInfo,
+                    playerCommand: Int
+                ): Int {
+                    Log.d("PLAYER SERVICE", "CATCH COMMAND :$playerCommand")
+                    return when(playerCommand) {
+                        Player.COMMAND_CHANGE_MEDIA_ITEMS -> {
+                            player.play()
+                            SessionResult.RESULT_ERROR_PERMISSION_DENIED
+                        }
+                        Player.COMMAND_SEEK_TO_PREVIOUS -> {
+                            addPreviousMusic()
+                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                                UUID.fromString(player.currentMediaItem!!.mediaId)
+                            )
+                            SessionResult.RESULT_SUCCESS
+                        }
+                        Player.COMMAND_SEEK_TO_NEXT -> {
+                            PlayerUtils.playerViewModel.setNextMusic()
+                            addNextMusic()
+                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                                UUID.fromString(player.currentMediaItem!!.mediaId)
+                            )
+                            SessionResult.RESULT_SUCCESS
+                        }
+                        Player.COMMAND_SEEK_FORWARD -> {
+                            Log.d("PLAYER SERVICE", "CATCH COMMAND : SEEK FORWARD")
+
+                        }
+                        else -> super.onPlayerCommandRequest(session, controller, playerCommand)
+                    }
+                }
+            }
+        ).build()
 
         playerNotificationManager.setMediaSessionToken(session.sessionCompatToken)
-
-
-//        notificationService = MusicNotificationService(applicationContext)
-//        notificationService.showNotification()
-//        val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//        this.sendBroadcast(intentForNotification)
 
         return START_STICKY
     }
@@ -159,79 +143,77 @@ class PlayerService : Service() {
     companion object {
         lateinit var audioAttributes: AudioAttributes
         lateinit var audioManager: AudioManager
-        lateinit var mediaSession: MediaSessionCompat
         lateinit var player: ExoPlayer
         lateinit var session: MediaSession
 
-        fun updateMediaSessionState(musicState: Int, musicPosition: Long): PlaybackStateCompat {
-            return PlaybackStateCompat.Builder()
-                .setActions(
-                    PlaybackStateCompat.ACTION_PLAY
-                            or PlaybackStateCompat.ACTION_SEEK_TO
-                            or PlaybackStateCompat.ACTION_PAUSE
-                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                            or PlaybackStateCompat.ACTION_PLAY_PAUSE
-                )
-                .setState(
-                    musicState,
-                    musicPosition,
-                    1.0F
-                )
-                .build()
-        }
-
         fun setPlayerPlaylist() {
-            Log.d("Player Service", "initialize playlist")
-            player.setMediaItems(
-                PlayerUtils.playerViewModel.playlistInfos.map {
-                    MediaItem.Builder()
-                        .setUri(it.path)
-                        .setMediaId(it.musicId.toString())
-                        .build()
-                },
-                true
-            )
-            Log.d("Player Service", "end initialize playlist")
+            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.currentMusic!!))
+            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.getNextMusic()))
             player.prepare()
             setRepeatMode(Player.REPEAT_MODE_ALL)
-            Log.d("Player Service", "end prepare")
         }
 
-        fun pauseMusic(context: Context) {
+        fun pauseMusic() {
             player.pause()
-//            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//            context.sendBroadcast(intentForNotification)
         }
 
-        fun playMusic(context: Context) {
+        fun addPreviousMusic() {
+            val previousMusic = PlayerUtils.playerViewModel.getPreviousMusic()
+
+            player.addMediaItem(0,
+                MediaItem.Builder()
+                    .setUri(previousMusic.path)
+                    .setMediaId(previousMusic.musicId.toString())
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setArtist(previousMusic.artist)
+                            .setTitle(previousMusic.name)
+                            .setArtworkData(
+                                PlayerUtils.playerViewModel.retrieveCoverMethod(previousMusic.coverId)?.let {bitmap ->
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    return@let stream.toByteArray()
+                                },
+                                MediaMetadata.PICTURE_TYPE_FRONT_COVER
+                            )
+                            .build()
+                    ).build()
+            )
+        }
+
+        fun addNextMusic() {
+            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.getNextMusic()))
+        }
+
+        fun playMusic() {
             Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.play()
-//            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//            context.sendBroadcast(intentForNotification)
         }
 
-        fun playNext(context: Context) {
+        fun playNext() {
             Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
+            PlayerUtils.playerViewModel.setNextMusic()
+            addNextMusic()
+            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                UUID.fromString(player.currentMediaItem!!.mediaId)
+            )
             player.seekToNext()
-//            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//            context.sendBroadcast(intentForNotification)
         }
 
-        fun playPrevious(context: Context) {
-            player.seekToPrevious()
-//            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//            context.sendBroadcast(intentForNotification)
+        fun playPrevious() {
+            addPreviousMusic()
+            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                UUID.fromString(player.currentMediaItem!!.mediaId)
+            )
+            player.seekTo(0,0)
         }
 
-        fun seekToCurrentMusic(context: Context) {
+        fun seekToCurrentMusic() {
             Log.d("Player Service","Seek to : ${PlayerUtils.playerViewModel.currentMusic?.name}")
             player.seekTo(
                 PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic),
                 0L
             )
-//            val intentForNotification = Intent("BROADCAST_NOTIFICATION")
-//            context.sendBroadcast(intentForNotification)
         }
 
         fun setRepeatMode(repeatMode : Int) {
@@ -245,6 +227,27 @@ class PlayerService : Service() {
             notificationManager.cancel(1)
             player.pause()
             PlayerUtils.playerViewModel.resetPlayerData()
+            player
+        }
+
+        private fun mediaItemBuilder(music: Music) : MediaItem {
+            return MediaItem.Builder()
+                .setUri(music.path)
+                .setMediaId(music.musicId.toString())
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setArtist(music.artist)
+                        .setTitle(music.name)
+                        .setArtworkData(
+                            PlayerUtils.playerViewModel.retrieveCoverMethod(music.coverId)?.let {bitmap ->
+                                val stream = ByteArrayOutputStream()
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                return@let stream.toByteArray()
+                            },
+                            MediaMetadata.PICTURE_TYPE_FRONT_COVER
+                        )
+                        .build()
+                ).build()
         }
     }
 }

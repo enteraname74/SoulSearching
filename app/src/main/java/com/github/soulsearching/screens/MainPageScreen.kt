@@ -64,6 +64,7 @@ fun MainPageScreen(
     val playlistState by allPlaylistsViewModel.state.collectAsState()
     val albumState by allAlbumsViewModel.state.collectAsState()
     val artistState by allArtistsViewModel.state.collectAsState()
+    val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -103,12 +104,12 @@ fun MainPageScreen(
     }
 
 
-    if (allImageCoversViewModel.imageCovers.isNotEmpty() && !cleanImagesLaunched) {
+    if (imageCovers.covers.isNotEmpty() && !cleanImagesLaunched) {
         LaunchedEffect(key1 = "Launch") {
             Log.d("LAUNCHED EFFECT", "")
 
             CoroutineScope(Dispatchers.IO).launch {
-                for (cover in allImageCoversViewModel.imageCovers) {
+                for (cover in imageCovers.covers) {
                     allImageCoversViewModel.verifyIfAllImagesAreUsed(cover)
                 }
                 cleanImagesLaunched = true

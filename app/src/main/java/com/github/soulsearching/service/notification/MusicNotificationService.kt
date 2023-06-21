@@ -7,10 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.MediaMetadata
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
@@ -147,64 +144,6 @@ class MusicNotificationService(private val context : Context) {
         } else {
             BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
         }
-
-        PlayerService.mediaSession.setMetadata(
-            MediaMetadataCompat.Builder()
-                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bitmap)
-                .putLong(
-                    MediaMetadataCompat.METADATA_KEY_DURATION,
-                    PlayerService.player.duration
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                    if (PlayerUtils.playerViewModel.currentMusic != null) {
-                        PlayerUtils.playerViewModel.currentMusic!!.name
-                    } else {
-                        ""
-                    }
-                )
-                .putLong(
-                    MediaMetadata.METADATA_KEY_TRACK_NUMBER,
-                    PlayerService.player.currentMediaItemIndex.toLong()
-                )
-                .putLong(
-                    MediaMetadata.METADATA_KEY_NUM_TRACKS,
-                    PlayerUtils.playerViewModel.playlistInfos.size.toLong()
-                )
-                // Pour les vieilles versions d'android
-                .putString(
-                    MediaMetadata.METADATA_KEY_TITLE,
-                    if (PlayerUtils.playerViewModel.currentMusic != null) {
-                        PlayerUtils.playerViewModel.currentMusic!!.name
-                    } else {
-                        ""
-                    }
-                )
-                .putString(
-                    MediaMetadata.METADATA_KEY_ARTIST,
-                    if (PlayerUtils.playerViewModel.currentMusic != null) {
-                        PlayerUtils.playerViewModel.currentMusic!!.artist
-                    } else {
-                        ""
-                    }
-                )
-                .putBitmap(MediaMetadata.METADATA_KEY_ART, bitmap)
-                .build()
-        )
-
-
-        val state = PlaybackStateCompat.Builder()
-            .setActions(PlaybackStateCompat.ACTION_PLAY
-                    or PlaybackStateCompat.ACTION_SEEK_TO
-                    or PlaybackStateCompat.ACTION_PAUSE
-                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
-            )
-            .setState(musicState, PlayerService.player.currentPosition, 1.0F)
-            .build()
-
-        PlayerService.mediaSession.setPlaybackState(state)
 
         notificationMusicPlayer
             .clearActions()

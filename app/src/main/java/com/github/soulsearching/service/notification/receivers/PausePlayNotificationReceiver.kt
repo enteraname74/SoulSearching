@@ -10,6 +10,6 @@ import com.github.soulsearching.service.PlayerService
 class PausePlayNotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         Log.d("PAUSE PLAY INTENT", "RECEIVE")
-        PlayerUtils.playerViewModel.setPlayingState(context)
+        PlayerUtils.playerViewModel.setPlayingState()
     }
 }
