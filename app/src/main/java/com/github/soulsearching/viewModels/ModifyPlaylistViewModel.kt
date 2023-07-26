@@ -3,7 +3,7 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.database.dao.ImageCoverDao
 import com.github.soulsearching.database.dao.MusicPlaylistDao
 import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.PlaylistEvent
@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ModifyPlaylistViewModel @Inject constructor(
     private val playlistDao : PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao
+    private val musicPlaylistDao: MusicPlaylistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PlaylistState())
@@ -33,7 +34,8 @@ class ModifyPlaylistViewModel @Inject constructor(
             _state = _state,
             state = state,
             playlistDao = playlistDao,
-            musicPlaylistDao = musicPlaylistDao
+            musicPlaylistDao = musicPlaylistDao,
+            imageCoverDao = imageCoverDao
         )
     }
 }

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.ArtistEvent
@@ -57,12 +56,9 @@ class ModifyArtistViewModel @Inject constructor(
                     }
 
                     artistDao.insertArtist(
-                        Artist(
-                            artistId = state.value.artistWithMusics.artist.artistId,
+                        state.value.artistWithMusics.artist.copy(
                             artistName = state.value.artistWithMusics.artist.artistName.trim(),
-                            coverId = coverId,
-                            addedDate = state.value.artistWithMusics.artist.addedDate,
-                            nbPlayed = state.value.artistWithMusics.artist.nbPlayed
+                            coverId = coverId
                         )
                     )
 

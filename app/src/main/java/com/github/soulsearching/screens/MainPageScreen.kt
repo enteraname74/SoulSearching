@@ -108,7 +108,7 @@ fun MainPageScreen(
 
             CoroutineScope(Dispatchers.IO).launch {
                 for (cover in imageCovers.covers) {
-                    allImageCoversViewModel.verifyIfAllImagesAreUsed(cover)
+                    allImageCoversViewModel.verifyIfImageIsUsed(cover)
                 }
                 cleanImagesLaunched = true
             }

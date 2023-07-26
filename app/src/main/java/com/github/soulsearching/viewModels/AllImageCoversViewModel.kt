@@ -1,27 +1,17 @@
 package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -65,13 +55,14 @@ class AllImageCoversViewModel @Inject constructor(
 //        }
 //    }
 
-    suspend fun verifyIfAllImagesAreUsed(cover : ImageCover) {
+    suspend fun verifyIfImageIsUsed(cover : ImageCover) {
         if (
             musicDao.getNumberOfMusicsWithCoverId(cover.coverId) == 0
             && albumDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
             && playlistDao.getNumberOfPlaylistsWithCoverId(cover.coverId) == 0
             && artistDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
         ) {
+            Log.d("VERIFY", "IMAGE NOT USED !")
             imageCoverDao.deleteFromCoverId(cover.coverId)
         }
     }

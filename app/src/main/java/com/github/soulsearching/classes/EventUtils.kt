@@ -238,7 +238,8 @@ class EventUtils {
             _sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
             state: StateFlow<PlaylistState>,
             playlistDao: PlaylistDao,
-            musicPlaylistDao: MusicPlaylistDao
+            musicPlaylistDao: MusicPlaylistDao,
+            imageCoverDao: ImageCoverDao
         ) {
             when (event) {
                 is PlaylistEvent.BottomSheet -> {
@@ -328,10 +329,22 @@ class EventUtils {
                 }
                 PlaylistEvent.UpdatePlaylist -> {
                     CoroutineScope(Dispatchers.IO).launch {
+                        val coverId = if (state.value.hasSetNewCover) {
+                            val id = UUID.randomUUID()
+                            imageCoverDao.insertImageCover(
+                                ImageCover(
+                                    coverId = id,
+                                    cover = state.value.cover
+                                )
+                            )
+                            id
+                        } else {
+                            state.value.selectedPlaylist.coverId
+                        }
                         playlistDao.insertPlaylist(
-                            Playlist(
-                                playlistId = state.value.selectedPlaylist.playlistId,
-                                name = state.value.name.trim()
+                            state.value.selectedPlaylist.copy(
+                                name = state.value.name.trim(),
+                                coverId = coverId
                             )
                         )
                     }
@@ -339,10 +352,17 @@ class EventUtils {
                 is PlaylistEvent.PlaylistFromId -> {
                     CoroutineScope(Dispatchers.IO).launch {
                         val playlist = playlistDao.getPlaylistFromId(event.playlistId)
+                        val cover = if (playlist.coverId != null) {
+                            imageCoverDao.getCoverOfElement(playlist.coverId!!)?.cover
+                        } else {
+                            null
+                        }
                         _state.update {
                             it.copy(
                                 selectedPlaylist = playlist,
-                                name = playlist.name
+                                name = playlist.name,
+                                cover = cover,
+                                hasSetNewCover = false
                             )
                         }
                     }
@@ -357,7 +377,8 @@ class EventUtils {
                 is PlaylistEvent.SetCover -> {
                     _state.update {
                         it.copy(
-                            cover = event.cover
+                            cover = event.cover,
+                            hasSetNewCover = true
                         )
                     }
                 }

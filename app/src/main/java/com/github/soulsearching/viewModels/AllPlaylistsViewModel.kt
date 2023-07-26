@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.database.dao.ImageCoverDao
 import com.github.soulsearching.database.dao.MusicPlaylistDao
 import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.PlaylistEvent
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AllPlaylistsViewModel @Inject constructor(
     private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao
+    private val musicPlaylistDao: MusicPlaylistDao,
+    private val imageCoverDao: ImageCoverDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -79,7 +81,8 @@ class AllPlaylistsViewModel @Inject constructor(
             playlistDao = playlistDao,
             musicPlaylistDao = musicPlaylistDao,
             _sortType = _sortType,
-            _sortDirection = _sortDirection
+            _sortDirection = _sortDirection,
+            imageCoverDao = imageCoverDao
         )
     }
 }
