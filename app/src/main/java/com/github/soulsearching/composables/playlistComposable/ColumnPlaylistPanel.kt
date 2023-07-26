@@ -20,7 +20,8 @@ import com.github.soulsearching.Constants
 @Composable
 fun ColumnPlaylistPanel(
     modifier: Modifier = Modifier,
-    editAction: () -> Unit
+    editAction: () -> Unit,
+    shuffleAction: () -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxHeight()
@@ -33,7 +34,8 @@ fun ColumnPlaylistPanel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ImagesButton(
-            editAction = editAction
+            editAction = editAction,
+            shuffleAction = shuffleAction
         )
     }
 }

@@ -1,7 +1,6 @@
 package com.github.soulsearching.viewModels
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -57,24 +56,41 @@ class PlayerViewModel : ViewModel() {
         }
     }
 
+    fun playShuffle(playlist: ArrayList<Music>) {
+        currentPlaylistId = null
+        isPlaying = false
+        isMainPlaylist = false
+
+        playlistInfos = playlist.map { it.copy() } as ArrayList<Music>
+        playlistInfos.shuffle()
+        currentMusic = playlistInfos[0]
+        currentMusicCover = retrieveCoverMethod(currentMusic?.musicId)
+        if (shouldServiceBeLaunched) {
+            PlayerService.setPlayerPlaylist()
+        }
+
+        if (!shouldServiceBeLaunched) {
+            shouldServiceBeLaunched = true
+        }
+    }
+
     fun setCurrentPlaylistAndMusic(
         music: Music,
         bitmap: Bitmap?,
         playlist: ArrayList<Music>,
         playlistId: UUID?,
-        isMainPlaylist: Boolean = false,
-        context: Context
+        isMainPlaylist: Boolean = false
     ) {
         if (!isMainPlaylist) {
             if (currentPlaylistId == null) {
-                playlistInfos = playlist
+                playlistInfos = playlist.map { it.copy() } as ArrayList<Music>
                 currentPlaylistId = playlistId
                 this.isMainPlaylist = false
                 if (shouldServiceBeLaunched) {
                     PlayerService.setPlayerPlaylist()
                 }
             } else if (currentPlaylistId!!.compareTo(playlistId) != 0) {
-                playlistInfos = playlist
+                playlistInfos = playlist.map { it.copy() } as ArrayList<Music>
                 currentPlaylistId = playlistId
                 this.isMainPlaylist = false
                 if (shouldServiceBeLaunched) {
@@ -83,7 +99,7 @@ class PlayerViewModel : ViewModel() {
             }
         } else if (!this.isMainPlaylist) {
             this.isMainPlaylist = true
-            playlistInfos = playlist
+            playlistInfos = playlist.map { it.copy() } as ArrayList<Music>
             currentPlaylistId = playlistId
             if (shouldServiceBeLaunched) {
                 PlayerService.setPlayerPlaylist()

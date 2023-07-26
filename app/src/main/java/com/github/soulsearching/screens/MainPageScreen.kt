@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -67,7 +66,6 @@ fun MainPageScreen(
     val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     MusicBottomSheetEvents(
         musicState = musicState,
@@ -456,7 +454,15 @@ fun MainPageScreen(
                                 modifier = Modifier
                                     .padding(start = Constants.Spacing.large)
                                     .size(Constants.ImageSize.medium)
-                                    .clickable {},
+                                    .clickable {
+                                        coroutineScope
+                                            .launch {
+                                                swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                            }
+                                            .invokeOnCompletion {
+                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+                                            }
+                                    },
                                 imageVector = Icons.Default.Shuffle,
                                 contentDescription = stringResource(id = R.string.shuffle_button_desc),
                                 tint = MaterialTheme.colorScheme.onPrimary
@@ -470,7 +476,7 @@ fun MainPageScreen(
                     Row(Modifier.animateItemPlacement()) {
                         MusicItemComposable(
                             music = music,
-                            onClick = {music ->
+                            onClick = { music ->
                                 coroutineScope.launch {
                                     swipeableState.animateTo(BottomSheetStates.EXPANDED)
                                 }.invokeOnCompletion {
@@ -479,7 +485,6 @@ fun MainPageScreen(
                                         playlist = musicState.musics,
                                         isMainPlaylist = true,
                                         playlistId = null,
-                                        context = context,
                                         bitmap = allImageCoversViewModel.getImageCover(music.coverId)
                                     )
                                 }

@@ -16,7 +16,8 @@ import com.github.soulsearching.Constants
 
 @Composable
 fun ImagesButton(
-    editAction: () -> Unit
+    editAction: () -> Unit,
+    shuffleAction: () -> Unit
 ) {
     Image(
         modifier = Modifier
@@ -36,7 +37,9 @@ fun ImagesButton(
         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
     )
     Image(
-        modifier = Modifier.size(Constants.ImageSize.medium),
+        modifier = Modifier
+            .size(Constants.ImageSize.medium)
+            .clickable { shuffleAction() },
         imageVector = Icons.Default.Shuffle,
         contentDescription = "",
         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)

@@ -20,7 +20,8 @@ import com.github.soulsearching.Constants
 @Composable
 fun RowPlaylistPanel(
     modifier: Modifier = Modifier,
-    editAction: () -> Unit
+    editAction: () -> Unit,
+    shuffleAction: () -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -33,7 +34,8 @@ fun RowPlaylistPanel(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         ImagesButton(
-            editAction = editAction
+            editAction = editAction,
+            shuffleAction = shuffleAction
         )
     }
 }

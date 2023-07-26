@@ -34,12 +34,14 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -59,6 +61,18 @@ fun PlaylistScreen(
     playlistId: UUID?
 ) {
     val configuration = LocalConfiguration.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val shuffleAction = {
+        coroutineScope
+            .launch {
+                swipeableState.animateTo(BottomSheetStates.EXPANDED)
+            }
+            .invokeOnCompletion {
+                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+            }
+    }
+
     var max: Dp
     var start: Dp
     var center: Dp
@@ -104,7 +118,10 @@ fun PlaylistScreen(
                         .fillMaxHeight()
                         .width(center)
                         .align(Alignment.CenterEnd),
-                    editAction = navigateToModifyPlaylist
+                    editAction = navigateToModifyPlaylist,
+                    shuffleAction = {
+                        shuffleAction()
+                    }
                 )
             }
             else -> {
@@ -141,7 +158,10 @@ fun PlaylistScreen(
                         .fillMaxWidth()
                         .height(center)
                         .align(Alignment.BottomCenter),
-                    editAction = navigateToModifyPlaylist
+                    editAction = navigateToModifyPlaylist,
+                    shuffleAction = {
+                        shuffleAction()
+                    }
                 )
             }
         }
