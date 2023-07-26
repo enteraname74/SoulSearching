@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
@@ -125,14 +122,41 @@ fun MoreAlbumsScreen(
                         sortDirection = albumState.sortDirection
                     )
                 }
+
                 LazyVerticalGrid(
                     columns = GridCells.FixedSize(Constants.ImageSize.huge),
                     contentPadding = PaddingValues(Constants.Spacing.small),
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    items(albumState.albums) { albumWithArtist ->
+                    item(key = "0") {
                         BigPreviewComposable(
+                            image = retrieveCoverMethod(albumState.albums[0].album.coverId),
+                            title = albumState.albums[0].album.albumName,
+                            text = if (albumState.albums[0].artist != null) albumState.albums[0].artist!!.artistName else "",
+                            onClick = { navigateToSelectedAlbum(albumState.albums[0].album.albumId.toString()) },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.SetSelectedAlbum(
+                                            albumState.albums[0]
+                                        )
+                                    )
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            imageSize = Constants.ImageSize.huge
+                        )
+                    }
+                    items(
+                        items = albumState.albums.subList(1, albumState.albums.size),
+                        key = { album -> album.album.albumId }) { albumWithArtist ->
+                        BigPreviewComposable(
+                            modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(albumWithArtist.album.coverId),
                             title = albumWithArtist.album.albumName,
                             text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",

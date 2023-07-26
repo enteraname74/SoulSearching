@@ -129,8 +129,43 @@ fun MoreArtistsScreen(
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    items(artistState.artists) { artistWithMusics ->
+                    item(key = "0") {
                         BigPreviewComposable(
+                            image = retrieveCoverMethod(artistState.artists[0].artist.coverId),
+                            title = artistState.artists[0].artist.artistName,
+                            text = if (artistState.artists[0].musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else {
+                                stringResource(
+                                    id = R.string.multiple_musics,
+                                    artistState.artists[0].musics.size
+                                )
+                            },
+                            onClick = {
+                                navigateToSelectedArtist(artistState.artists[0].artist.artistId.toString())
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSelectedArtist(
+                                            artistState.artists[0]
+                                        )
+                                    )
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            imageSize = Constants.ImageSize.huge
+                        )
+                    }
+                    items(
+                        items = artistState.artists.subList(1, artistState.artists.size),
+                        key = { artist -> artist.artist.artistId }) { artistWithMusics ->
+                        BigPreviewComposable(
+                            modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(artistWithMusics.artist.coverId),
                             title = artistWithMusics.artist.artistName,
                             text = if (artistWithMusics.musics.size == 1) {

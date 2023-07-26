@@ -102,11 +102,12 @@ fun MorePlaylistsScreen(
                             )
                         },
                         setSortTypeAction = {
-                            val newDirection = if (playlistState.sortDirection == SortDirection.ASC) {
-                                SortDirection.DESC
-                            } else {
-                                SortDirection.ASC
-                            }
+                            val newDirection =
+                                if (playlistState.sortDirection == SortDirection.ASC) {
+                                    SortDirection.DESC
+                                } else {
+                                    SortDirection.ASC
+                                }
                             allPlaylistsViewModel.onPlaylistEvent(
                                 PlaylistEvent.SetSortDirection(
                                     newDirection
@@ -127,8 +128,44 @@ fun MorePlaylistsScreen(
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    items(playlistState.playlists) { playlistWithMusics ->
+                    item(key = "0") {
                         BigPreviewComposable(
+                            image = retrieveCoverMethod(playlistState.playlists[0].playlist.coverId),
+                            title = playlistState.playlists[0].playlist.name,
+                            text = if (playlistState.playlists[0].musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else {
+                                stringResource(
+                                    id = R.string.multiple_musics,
+                                    playlistState.playlists[0].musics.size
+                                )
+                            },
+                            onClick = {
+                                navigateToSelectedPlaylist(playlistState.playlists[0].playlist.playlistId.toString())
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSelectedPlaylist(
+                                            playlistState.playlists[0]
+                                        )
+                                    )
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            imageSize = Constants.ImageSize.huge
+                        )
+                    }
+                    items(
+                        items = playlistState.playlists.subList(1, playlistState.playlists.size),
+                        key = { playlist -> playlist.playlist.playlistId }
+                    ) { playlistWithMusics ->
+                        BigPreviewComposable(
+                            modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(playlistWithMusics.playlist.coverId),
                             title = playlistWithMusics.playlist.name,
                             text = if (playlistWithMusics.musics.size == 1) {

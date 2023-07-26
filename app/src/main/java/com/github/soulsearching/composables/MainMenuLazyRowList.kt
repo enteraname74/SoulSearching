@@ -17,7 +17,6 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.ArtistWithMusics
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import java.util.*
 
@@ -79,13 +78,20 @@ fun MainMenuLazyListRow(
                 ),
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            items(list) { element ->
-                val modifier = Modifier.animateItemPlacement()
-                Row(modifier) {
+            items(
+                items = list, key = {
+                        element ->
+                    when(element) {
+                        is PlaylistWithMusics -> element.playlist.playlistId
+                        is AlbumWithArtist -> element.album.albumId
+                        is ArtistWithMusics -> element.artist.artistId
+                        else -> {}
+                    }
+                }) { element ->
+                Row(Modifier.animateItemPlacement()) {
                     when (element) {
                         is PlaylistWithMusics -> {
                             BigPreviewComposable(
-                                modifier = modifier,
                                 image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.playlist.name,
                                 text = if (element.musics.size == 1) {
@@ -101,7 +107,6 @@ fun MainMenuLazyListRow(
                         }
                         is AlbumWithArtist -> {
                             BigPreviewComposable(
-                                modifier = modifier,
                                 image = element.album.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.album.albumName,
                                 text = if (element.artist != null) element.artist.artistName else "",
@@ -113,7 +118,6 @@ fun MainMenuLazyListRow(
                         }
                         is ArtistWithMusics -> {
                             BigPreviewComposable(
-                                modifier = modifier,
                                 image = element.artist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.artist.artistName,
                                 text = if (element.musics.size == 1) {
