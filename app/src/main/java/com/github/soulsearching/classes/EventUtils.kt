@@ -1,6 +1,8 @@
 package com.github.soulsearching.classes
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.github.soulsearching.R
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent
@@ -387,6 +389,17 @@ class EventUtils {
                 }
                 is PlaylistEvent.SetSortType -> {
                     _sortType.value = event.type
+                }
+                is PlaylistEvent.AddFavoritePlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playlistDao.insertPlaylist(
+                            Playlist(
+                                playlistId = UUID.randomUUID(),
+                                name = event.name,
+                                isFavorite = true
+                            )
+                        )
+                    }
                 }
                 else -> {}
             }

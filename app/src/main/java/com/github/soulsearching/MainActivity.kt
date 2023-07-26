@@ -19,8 +19,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,6 +35,7 @@ import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
@@ -69,17 +68,6 @@ class MainActivity : AppCompatActivity() {
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
 
-    // Receiver pour la notification
-    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, p1: Intent?) {
-            if (intent.extras?.getString("CHANGE_FAVORITE") != null) {
-                allMusicsViewModel.onMusicEvent(MusicEvent.SetFavorite(
-                    UUID.fromString(intent.extras?.getString("CHANGE_FAVORITE") as String)
-                ))
-            }
-        }
-
-    }
     @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalMaterialApi::class)
     override
@@ -176,6 +164,13 @@ class MainActivity : AppCompatActivity() {
                                     }
                                     job.join()
                                 }
+                            },
+                            createFavoritePlaylistAction = {
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.AddFavoritePlaylist(
+                                        name = applicationContext.getString(R.string.favorite)
+                                    )
+                                )
                             }
                         )
                     } else {

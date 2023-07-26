@@ -6,6 +6,7 @@
     <string name="artists">Artists</string>
     <string name="shortcuts">Shortcuts</string>
     <string name="more">More</string>
+    <string name="favorite">Favorite</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Searching songs from your device…</string>

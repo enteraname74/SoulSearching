@@ -32,7 +32,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun FetchingMusicsComposable(
     finishAddingMusicsAction: () -> Unit,
-    addingMusicAction: (Music, Bitmap?) -> Unit
+    addingMusicAction: (Music, Bitmap?) -> Unit,
+    createFavoritePlaylistAction: () -> Unit
 ) {
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)
@@ -86,17 +87,15 @@ fun FetchingMusicsComposable(
         LaunchedEffect(key1 = "FetchingMusics") {
             CoroutineScope(Dispatchers.IO).launch {
                 isFetchingMusics = true
-                while (progress < 1F) {
-                    MusicUtils.fetchMusics(
-                        context = context,
-                        updateProgress = {
-                            progress = it
-                        },
-                        addingMusicAction = addingMusicAction,
-                        finishAction = finishAddingMusicsAction
-                    )
-                }
-
+                MusicUtils.fetchMusics(
+                    context = context,
+                    updateProgress = {
+                        progress = it
+                    },
+                    addingMusicAction = addingMusicAction,
+                    finishAction = finishAddingMusicsAction
+                )
+                createFavoritePlaylistAction()
             }
         }
     }

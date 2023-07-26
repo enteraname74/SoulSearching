@@ -7,6 +7,7 @@
     <string name="artists">Artistes</string>
     <string name="shortcuts">Raccourcis</string>
     <string name="more">Plus</string>
+    <string name="favorite">Favoris</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Recherche de musiques sur votre appareil…</string>
