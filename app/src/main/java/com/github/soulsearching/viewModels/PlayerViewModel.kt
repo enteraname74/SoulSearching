@@ -3,9 +3,7 @@ package com.github.soulsearching.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,10 +11,9 @@ import androidx.lifecycle.ViewModel
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import java.util.*
-import kotlin.collections.ArrayList
 
 @SuppressLint("MutableCollectionMutableState")
-class PlayerViewModel() : ViewModel() {
+class PlayerViewModel : ViewModel() {
     var currentMusic by mutableStateOf<Music?>(null)
     var playlistInfos by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylistId by mutableStateOf<UUID?>(null)
@@ -25,12 +22,13 @@ class PlayerViewModel() : ViewModel() {
     var shouldServiceBeLaunched by mutableStateOf(false)
     var isServiceLaunched by mutableStateOf(false)
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
-    lateinit var uri: Uri
-    lateinit var retrieveCoverMethod : (UUID?) -> Bitmap?
+    lateinit var retrieveCoverMethod: (UUID?) -> Bitmap?
 
     fun setNextMusic() {
         val currentIndex =
             playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
+        Log.d("Current index :",currentIndex.toString())
+        Log.d("Next index :", ((currentIndex + 1) % playlistInfos.size).toString())
         currentMusic = playlistInfos[(currentIndex + 1) % playlistInfos.size]
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
     }
@@ -38,9 +36,12 @@ class PlayerViewModel() : ViewModel() {
     fun setPreviousMusic() {
         val currentIndex =
             playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
+        Log.d("Current index :",currentIndex.toString())
         currentMusic = if (currentIndex == 0) {
+            Log.d("Prev index :", playlistInfos.last().toString())
             playlistInfos.last()
         } else {
+            Log.d("Prev index :", (currentIndex - 1).toString())
             playlistInfos[currentIndex - 1]
         }
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
@@ -72,7 +73,7 @@ class PlayerViewModel() : ViewModel() {
                 if (shouldServiceBeLaunched) {
                     PlayerService.setPlayerPlaylist()
                 }
-            } else if(currentPlaylistId!!.compareTo(playlistId) != 0) {
+            } else if (currentPlaylistId!!.compareTo(playlistId) != 0) {
                 playlistInfos = playlist
                 currentPlaylistId = playlistId
                 this.isMainPlaylist = false
@@ -80,7 +81,7 @@ class PlayerViewModel() : ViewModel() {
                     PlayerService.setPlayerPlaylist()
                 }
             }
-        } else if (!this.isMainPlaylist){
+        } else if (!this.isMainPlaylist) {
             this.isMainPlaylist = true
             playlistInfos = playlist
             currentPlaylistId = playlistId
@@ -89,17 +90,16 @@ class PlayerViewModel() : ViewModel() {
             }
         }
 
-        if (currentMusic != null){
+        if (currentMusic != null) {
             if (music.musicId.compareTo(currentMusic!!.musicId) != 0) {
                 currentMusic = music
                 currentMusicCover = bitmap
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic()
+                    PlayerService.setPlayerPlaylist()
                     PlayerService.playMusic()
                 }
             } else {
                 if (shouldServiceBeLaunched) {
-                    PlayerService.seekToCurrentMusic()
                     PlayerService.playMusic()
                 }
             }
@@ -131,23 +131,28 @@ class PlayerViewModel() : ViewModel() {
         currentPlaylistId = null
         isPlaying = false
         isMainPlaylist = false
+        isServiceLaunched = false
+        shouldServiceBeLaunched = false
     }
 
-    fun getNextMusic() : Music {
+    fun getNextMusic(): Music {
         val currentIndex =
             playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
         Log.d("CURRENT INDEX BEFORE NEXT", currentIndex.toString())
+        Log.d("CURRENT INDEX AFTER NEXT", ((currentIndex + 1) % playlistInfos.size).toString())
         return playlistInfos[(currentIndex + 1) % playlistInfos.size]
     }
 
-    fun getPreviousMusic() : Music {
+    fun getPreviousMusic(): Music {
         val currentIndex =
             playlistInfos.indexOf(playlistInfos.find { it.musicId == currentMusic!!.musicId })
 
         Log.d("CURRENT INDEX BEFORE PREV", currentIndex.toString())
         return if (currentIndex == 0) {
+            Log.d("CURRENT INDEX BEFORE PREV", playlistInfos.last().toString())
             playlistInfos.last()
         } else {
+            Log.d("CURRENT INDEX BEFORE PREV", (currentIndex-1).toString())
             playlistInfos[currentIndex - 1]
         }
     }

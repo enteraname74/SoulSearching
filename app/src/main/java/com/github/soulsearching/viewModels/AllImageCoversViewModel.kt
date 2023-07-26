@@ -50,9 +50,7 @@ class AllImageCoversViewModel @Inject constructor(
     )
 
     fun getImageCover(coverId : UUID?) : Bitmap? {
-        val cover = state.value.covers.find { it.coverId == coverId }?.cover
-        Log.d("FOUND ?", cover.toString())
-        return cover
+        return state.value.covers.find { it.coverId == coverId }?.cover
     }
 
 //    fun updateCovers(coverId : UUID) {

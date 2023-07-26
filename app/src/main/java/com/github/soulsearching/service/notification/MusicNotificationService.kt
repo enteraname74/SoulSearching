@@ -32,7 +32,7 @@ class MusicNotificationService(private val context : Context) {
             if (intent.extras?.getBoolean("STOP_RECEIVE") != null && intent.extras?.getBoolean("STOP_RECEIVE") as Boolean) {
                 context.unregisterReceiver(this)
             } else {
-                updateNotification()
+//                updateNotification()
             }
         }
     }

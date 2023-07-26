@@ -19,6 +19,7 @@ import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.notification.MusicNotificationService
 import java.io.ByteArrayOutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PlayerService : Service() {
@@ -39,22 +40,28 @@ class PlayerService : Service() {
                     super.onMediaItemTransition(mediaItem, reason)
                     when (reason) {
                         Player.MEDIA_ITEM_TRANSITION_REASON_AUTO -> {
-                            PlayerUtils.playerViewModel.setNextMusic()
-                            addNextMusic()
-                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
-                                UUID.fromString(player.currentMediaItem!!.mediaId)
-                            )
+//                            PlayerUtils.playerViewModel.setNextMusic()
+//                            addNextMusic()
+//                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+//                                UUID.fromString(player.currentMediaItem!!.mediaId)
+//                            )
+                            playNext()
                         }
-                        Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {
-                            player.play()
+                        Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {}
+                        Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {
+                            playNext()
                         }
-                        Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {}
                         Player.MEDIA_ITEM_TRANSITION_REASON_SEEK -> {
                             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
                                 UUID.fromString(player.currentMediaItem!!.mediaId)
                             )
                         }
                     }
+                }
+
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    super.onPlaybackStateChanged(playbackState)
+                    Log.d("PLAYBACK STATE CHANGED", playbackState.toString())
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -94,24 +101,18 @@ class PlayerService : Service() {
                     playerCommand: Int
                 ): Int {
                     Log.d("PLAYER SERVICE", "CATCH COMMAND :$playerCommand")
-                    return when(playerCommand) {
+                    return when (playerCommand) {
                         Player.COMMAND_CHANGE_MEDIA_ITEMS -> {
                             player.play()
                             SessionResult.RESULT_ERROR_PERMISSION_DENIED
                         }
                         Player.COMMAND_SEEK_TO_PREVIOUS -> {
-                            addPreviousMusic()
-                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
-                                UUID.fromString(player.currentMediaItem!!.mediaId)
-                            )
+                            playPrevious()
                             SessionResult.RESULT_SUCCESS
                         }
                         Player.COMMAND_SEEK_TO_NEXT -> {
-                            PlayerUtils.playerViewModel.setNextMusic()
-                            addNextMusic()
-                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
-                                UUID.fromString(player.currentMediaItem!!.mediaId)
-                            )
+                            playNext()
+                            player.seekTo(0,0L)
                             SessionResult.RESULT_SUCCESS
                         }
                         Player.COMMAND_SEEK_FORWARD -> {
@@ -140,15 +141,30 @@ class PlayerService : Service() {
         stopMusic(this)
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    override fun onDestroy() {
+        Log.d("DESTROY SERVICE", "DESTROY SERVICE")
+        super.onDestroy()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        val notificationManager =
+            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(1)
+    }
+
     companion object {
         lateinit var audioAttributes: AudioAttributes
         lateinit var audioManager: AudioManager
         lateinit var player: ExoPlayer
         lateinit var session: MediaSession
+        var playerList: ArrayList<UUID> = ArrayList()
 
         fun setPlayerPlaylist() {
-            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.currentMusic!!))
-            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.getNextMusic()))
+            player.stop()
+            player.clearMediaItems()
+            val currentMusic = PlayerUtils.playerViewModel.currentMusic!!
+            val nextMusic = PlayerUtils.playerViewModel.getNextMusic()
+            player.addMediaItem(mediaItemBuilder(currentMusic))
+            //player.addMediaItem(mediaItemBuilder(nextMusic))
             player.prepare()
             setRepeatMode(Player.REPEAT_MODE_ALL)
         }
@@ -157,80 +173,66 @@ class PlayerService : Service() {
             player.pause()
         }
 
-        fun addPreviousMusic() {
-            val previousMusic = PlayerUtils.playerViewModel.getPreviousMusic()
-
-            player.addMediaItem(0,
-                MediaItem.Builder()
-                    .setUri(previousMusic.path)
-                    .setMediaId(previousMusic.musicId.toString())
-                    .setMediaMetadata(
-                        MediaMetadata.Builder()
-                            .setArtist(previousMusic.artist)
-                            .setTitle(previousMusic.name)
-                            .setArtworkData(
-                                PlayerUtils.playerViewModel.retrieveCoverMethod(previousMusic.coverId)?.let {bitmap ->
-                                    val stream = ByteArrayOutputStream()
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                    return@let stream.toByteArray()
-                                },
-                                MediaMetadata.PICTURE_TYPE_FRONT_COVER
-                            )
-                            .build()
-                    ).build()
-            )
-        }
-
-        fun addNextMusic() {
-            player.addMediaItem(mediaItemBuilder(PlayerUtils.playerViewModel.getNextMusic()))
-        }
-
         fun playMusic() {
-            Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
             player.play()
         }
 
         fun playNext() {
-            Log.d("Player Service", "Play music : ${player.currentMediaItem?.mediaId}")
+//            Log.d("PLAYER INDEX :",player.currentMediaItemIndex.toString())
+//            Log.d("LAST LIST INDEX :",playerList.lastIndex.toString())
+//            if (player.currentMediaItemIndex == playerList.lastIndex || playerList.size == 0) {
+//                addNextMusic()
+//            }
             PlayerUtils.playerViewModel.setNextMusic()
-            addNextMusic()
+            player.stop()
+            setPlayerPlaylist()
+            player.play()
             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
                 UUID.fromString(player.currentMediaItem!!.mediaId)
             )
-            player.seekToNext()
         }
 
         fun playPrevious() {
-            addPreviousMusic()
+//            if (player.currentMediaItemIndex == 0) {
+//                player.addMediaItem(
+//                    player.currentMediaItemIndex,
+//                    mediaItemBuilder(PlayerUtils.playerViewModel.getPreviousMusic())
+//                )
+//            }
+            PlayerUtils.playerViewModel.setPreviousMusic()
+            player.stop()
+            setPlayerPlaylist()
+            player.play()
             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
                 UUID.fromString(player.currentMediaItem!!.mediaId)
             )
-            player.seekTo(0,0)
+//            player.seekTo(player.currentMediaItemIndex - 1, 0L)
         }
 
         fun seekToCurrentMusic() {
-            Log.d("Player Service","Seek to : ${PlayerUtils.playerViewModel.currentMusic?.name}")
+            Log.d("Player Service", "Seek to : ${PlayerUtils.playerViewModel.currentMusic?.name}")
             player.seekTo(
                 PlayerUtils.playerViewModel.playlistInfos.indexOf(PlayerUtils.playerViewModel.currentMusic),
                 0L
             )
         }
 
-        fun setRepeatMode(repeatMode : Int) {
+        private fun setRepeatMode(repeatMode: Int) {
             player.repeatMode = repeatMode
         }
 
         fun stopMusic(context: Context) {
             Log.d("Player Service", "Stop music !")
-            val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancel(1)
-            player.pause()
+            player.stop()
+            player.release()
+            session.release()
             PlayerUtils.playerViewModel.resetPlayerData()
-            player
+            playerList.clear()
+            val serviceIntent = Intent(context, PlayerService::class.java)
+            context.stopService(serviceIntent)
         }
 
-        private fun mediaItemBuilder(music: Music) : MediaItem {
+        private fun mediaItemBuilder(music: Music): MediaItem {
             return MediaItem.Builder()
                 .setUri(music.path)
                 .setMediaId(music.musicId.toString())
@@ -239,15 +241,22 @@ class PlayerService : Service() {
                         .setArtist(music.artist)
                         .setTitle(music.name)
                         .setArtworkData(
-                            PlayerUtils.playerViewModel.retrieveCoverMethod(music.coverId)?.let {bitmap ->
-                                val stream = ByteArrayOutputStream()
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                return@let stream.toByteArray()
-                            },
+                            PlayerUtils.playerViewModel.retrieveCoverMethod(music.coverId)
+                                ?.let { bitmap ->
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    return@let stream.toByteArray()
+                                },
                             MediaMetadata.PICTURE_TYPE_FRONT_COVER
                         )
                         .build()
                 ).build()
+        }
+
+        private fun showPlayerList() {
+            for (i in 0 until playerList.size) {
+                Log.d("ELEMENT", "$i : ${playerList[i]}")
+            }
         }
     }
 }
