@@ -173,10 +173,17 @@ class ModifyAlbumViewModel @Inject constructor(
             }
             is AlbumEvent.AlbumFromID -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val album = albumDao.getAlbumWithMusicsSimple(event.albumId)
+                    val albumWithMusics = albumDao.getAlbumWithMusicsSimple(event.albumId)
+                    val cover = if (albumWithMusics.album.coverId != null) {
+                        imageCoverDao.getCoverOfElement(albumWithMusics.album.coverId !!)?.cover
+                    } else {
+                        null
+                    }
                     _state.update {
                         it.copy(
-                            albumWithMusics = album
+                            albumWithMusics = albumWithMusics,
+                            albumCover = cover,
+                            hasSetNewCover = false
                         )
                     }
                 }

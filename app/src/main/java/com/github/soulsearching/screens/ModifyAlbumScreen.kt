@@ -168,7 +168,7 @@ fun ModifyAlbumScreen(
                         ) {
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
-                                text = stringResource(id = R.string.playlist_cover),
+                                text = stringResource(id = R.string.album_cover),
                                 color = MaterialTheme.colorScheme.onSecondary
                             )
                             AppImage(
