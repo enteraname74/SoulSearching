@@ -45,7 +45,13 @@ class PlayerService : Service() {
 //                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
 //                                UUID.fromString(player.currentMediaItem!!.mediaId)
 //                            )
-                            playNext()
+                            Log.d("TRANSITION AUTO", "TRANSITION AUTO")
+                            PlayerUtils.playerViewModel.setNextMusic()
+                            val nextMusic = PlayerUtils.playerViewModel.getNextMusic()
+                            player.addMediaItem(mediaItemBuilder(nextMusic))
+                            PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
+                                UUID.fromString(player.currentMediaItem!!.mediaId)
+                            )
                         }
                         Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {}
                         Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {
@@ -57,11 +63,6 @@ class PlayerService : Service() {
                             )
                         }
                     }
-                }
-
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    super.onPlaybackStateChanged(playbackState)
-                    Log.d("PLAYBACK STATE CHANGED", playbackState.toString())
                 }
 
                 override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -108,12 +109,11 @@ class PlayerService : Service() {
                         }
                         Player.COMMAND_SEEK_TO_PREVIOUS -> {
                             playPrevious()
-                            SessionResult.RESULT_SUCCESS
+                            SessionResult.RESULT_INFO_SKIPPED
                         }
                         Player.COMMAND_SEEK_TO_NEXT -> {
                             playNext()
-                            player.seekTo(0,0L)
-                            SessionResult.RESULT_SUCCESS
+                            SessionResult.RESULT_INFO_SKIPPED
                         }
                         Player.COMMAND_SEEK_FORWARD -> {
                             Log.d("PLAYER SERVICE", "CATCH COMMAND : SEEK FORWARD")
@@ -164,7 +164,7 @@ class PlayerService : Service() {
             val currentMusic = PlayerUtils.playerViewModel.currentMusic!!
             val nextMusic = PlayerUtils.playerViewModel.getNextMusic()
             player.addMediaItem(mediaItemBuilder(currentMusic))
-            //player.addMediaItem(mediaItemBuilder(nextMusic))
+            player.addMediaItem(mediaItemBuilder(nextMusic))
             player.prepare()
             setRepeatMode(Player.REPEAT_MODE_ALL)
         }
@@ -184,9 +184,8 @@ class PlayerService : Service() {
 //                addNextMusic()
 //            }
             PlayerUtils.playerViewModel.setNextMusic()
-            player.stop()
             setPlayerPlaylist()
-            player.play()
+            player.seekTo(0,0L)
             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
                 UUID.fromString(player.currentMediaItem!!.mediaId)
             )
@@ -200,7 +199,6 @@ class PlayerService : Service() {
 //                )
 //            }
             PlayerUtils.playerViewModel.setPreviousMusic()
-            player.stop()
             setPlayerPlaylist()
             player.play()
             PlayerUtils.playerViewModel.updateCurrentMusicFromUUID(
