@@ -2,6 +2,7 @@ package com.github.soulsearching.composables.bottomSheets
 
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -21,12 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
@@ -64,6 +67,27 @@ fun PlayerSwipeableView(
     ) {
         PlayerService.stopMusic(context)
     }
+
+    val orientation = LocalConfiguration.current.orientation
+
+    val alphaTransition = when(orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            if ((1.0 / (abs(swipeableState.offset.value) / 70)).toFloat() > 0.1) {
+                (1.0 / (abs(swipeableState.offset.value) / 70)).toFloat().coerceAtMost(1.0F)
+            } else {
+                0.0F
+            }
+        }
+        else -> {
+            if ((1.0 / (abs(swipeableState.offset.value) / 100)).toFloat() > 0.1) {
+                (1.0 / (abs(swipeableState.offset.value) / 100)).toFloat().coerceAtMost(1.0F)
+            } else {
+                0.0F
+            }
+        }
+    }
+
+
 
     Box {
         Box(
@@ -114,24 +138,40 @@ fun PlayerSwipeableView(
                     }
 
                     val imagePaddingStart =
-                        if ((((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp > Constants.Spacing.small) {
-                            (((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp
-                        } else {
-                            Constants.Spacing.small
+                        when (orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> max(
+                                (((maxWidth * 1.5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp,
+                                Constants.Spacing.small
+                            )
+                            else -> max(
+                                (((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp,
+                                Constants.Spacing.small
+                            )
                         }
 
                     val imagePaddingTop =
-                        if ((((maxHeight * 5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp > Constants.Spacing.small) {
-                            (((maxHeight * 5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp
-                        } else {
-                            Constants.Spacing.small
+                        when (orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> max(
+                                (((maxHeight * 7) / 100) - (swipeableState.offset.value / 5)).roundToInt().dp,
+                                Constants.Spacing.small
+                            )
+                            else -> max(
+                                (((maxHeight * 5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp,
+                                Constants.Spacing.small
+                            )
                         }
 
+
                     val imageSize =
-                        if ((((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp > 55.dp) {
-                            (((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp
-                        } else {
-                            55.dp
+                        when (orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> max(
+                                (((maxWidth * 10) / 100) - (swipeableState.offset.value / 2).roundToInt()).dp,
+                                55.dp
+                            )
+                            else -> max(
+                                (((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp,
+                                55.dp
+                            )
                         }
 
                     Box(
@@ -150,13 +190,6 @@ fun PlayerSwipeableView(
                                 .coerceIn(3, 10)
                         )
                     }
-
-                    val alphaTransition =
-                        if ((1.0 / (abs(swipeableState.offset.value) / 100)).toFloat() > 0.1) {
-                            (1.0 / (abs(swipeableState.offset.value) / 100)).toFloat().coerceAtMost(1.0F)
-                        } else {
-                            0.0F
-                        }
 
                     val backImageClickableModifier =
                         if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
@@ -214,7 +247,24 @@ fun PlayerSwipeableView(
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        ExpandedPlayButtonsComposable()
+                        when (orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    ExpandedPlayButtonsComposable(
+                                        widthFraction = 0.45f,
+                                        paddingBottom = 0.dp
+                                    )
+                                }
+                            }
+                            else -> {
+                                ExpandedPlayButtonsComposable()
+                            }
+                        }
                     }
 
                     Row(
@@ -225,7 +275,7 @@ fun PlayerSwipeableView(
                                 start = imageSize + Constants.Spacing.large,
                                 end = Constants.Spacing.small
                             )
-                            .alpha((swipeableState.offset.value / maxHeight).coerceIn(0.0F,1.0F)),
+                            .alpha((swipeableState.offset.value / maxHeight).coerceIn(0.0F, 1.0F)),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables.playButtons
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerMode
@@ -20,15 +23,21 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 
 
+@SuppressLint("UnnecessaryComposedModifier")
 @Composable
-fun ExpandedPlayButtonsComposable() {
+fun ExpandedPlayButtonsComposable(
+    modifier: Modifier = Modifier,
+    widthFraction: Float = 1f,
+    paddingBottom: Dp = 120.dp
+) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .composed { modifier }
+            .fillMaxWidth(widthFraction)
             .padding(
                 start = 28.dp,
                 end = 28.dp,
-                bottom = 120.dp
+                bottom = paddingBottom
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -82,7 +91,7 @@ fun ExpandedPlayButtonsComposable() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
-                    imageVector = when(PlayerUtils.playerViewModel.playerMode) {
+                    imageVector = when (PlayerUtils.playerViewModel.playerMode) {
                         PlayerMode.NORMAL -> Icons.Rounded.Sync
                         PlayerMode.SHUFFLE -> Icons.Rounded.Shuffle
                         PlayerMode.LOOP -> Icons.Rounded.Replay
