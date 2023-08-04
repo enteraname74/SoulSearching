@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.media.*
 import android.media.session.PlaybackState
+import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -52,11 +53,18 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    private val audioBecomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            pause()
+        }
+    }
+
     init {
         initializePlayer()
         initializeMediaSession()
         initializeBroadcastReceiver()
         notificationService.initializeNotification()
+        manageAudioBecomingNoisy()
     }
 
     override fun setMusic(music: Music) {
@@ -131,10 +139,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         mediaSession.release()
         context.unregisterReceiver(broadcastReceiver)
         notificationService.dismissNotification()
+        releaseAudioBecomingNoisyReceiver()
     }
 
     override fun getMusicLength(): Int {
-        return max(0,player.duration)
+        return max(0, player.duration)
     }
 
     override fun getMusicPosition(): Int {
@@ -299,6 +308,17 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 )
                 .build()
         )
+    }
+
+    private fun manageAudioBecomingNoisy() {
+        context.registerReceiver(
+            audioBecomingNoisyReceiver,
+            IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+        )
+    }
+
+    private fun releaseAudioBecomingNoisyReceiver() {
+        context.unregisterReceiver(audioBecomingNoisyReceiver)
     }
 
     companion object {
