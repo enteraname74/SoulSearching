@@ -138,7 +138,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun getMusicPosition(): Int {
-        return player.currentPosition
+        return try {
+            player.currentPosition
+        } catch (e: IllegalStateException) {
+            0
+        }
     }
 
     private fun initializePlayer() {
@@ -156,10 +160,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
             }
 
             override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {
-                Log.d(
-                    "MEDIA PLAYER",
-                    mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT).toString()
-                )
                 val keyEvent = mediaButtonIntent.extras?.get(Intent.EXTRA_KEY_EVENT) as KeyEvent
                 if (keyEvent.action == KeyEvent.ACTION_DOWN) {
                     when (keyEvent.keyCode) {

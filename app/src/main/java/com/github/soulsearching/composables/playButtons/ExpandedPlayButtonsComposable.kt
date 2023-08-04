@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.PlayerMode
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 
@@ -81,11 +82,15 @@ fun ExpandedPlayButtonsComposable() {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
-                    imageVector = Icons.Rounded.Shuffle,
+                    imageVector = when(PlayerUtils.playerViewModel.playerMode) {
+                        PlayerMode.NORMAL -> Icons.Rounded.Sync
+                        PlayerMode.SHUFFLE -> Icons.Rounded.Shuffle
+                        PlayerMode.LOOP -> Icons.Rounded.Replay
+                    },
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
-                        .clickable { },
+                        .clickable { PlayerUtils.playerViewModel.changePlayerMode() },
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
                 )
                 Image(
