@@ -9,6 +9,5 @@ import com.github.soulsearching.service.PlayerService
 class NextMusicNotificationReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         PlayerService.playNext()
-        PlayerUtils.playerViewModel.setNextMusic()
     }
 }

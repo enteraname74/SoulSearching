@@ -2,7 +2,6 @@ package com.github.soulsearching
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -35,7 +34,6 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
-import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
@@ -142,9 +140,11 @@ class MainActivity : AppCompatActivity() {
                                 context,
                                 android.Manifest.permission.READ_EXTERNAL_STORAGE
                             ) -> {
+                                Log.d("MAIN ACTIVITY", "ALREADY HAS READ PERMISSION")
                                 isReadPermissionGranted = true
                             }
                             else -> {
+                                Log.d("MAIN ACTIVITY", "ASK READ PERMISSION")
                                 readPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                             }
                         }
@@ -152,7 +152,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (isReadPermissionGranted) {
+                    Log.d("MAIN ACTIVITY", "READ PERMISSION GRANTED")
                     if (!hasMusicsBeenFetched) {
+                        Log.d("MAIN ACTIVITY", "FETCH MUSICS")
                         FetchingMusicsComposable(
                             finishAddingMusicsAction = {
                                 SharedPrefUtils.setMusicsFetched()

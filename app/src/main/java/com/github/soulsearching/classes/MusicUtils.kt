@@ -23,6 +23,7 @@ class MusicUtils {
             addingMusicAction : (Music, Bitmap?) -> Unit,
             finishAction : () -> Unit
         ) {
+            Log.d("FETCHING MUSIC","START")
             val mediaMetadataRetriever = MediaMetadataRetriever()
 
             val projection: Array<String> = arrayOf(
@@ -43,6 +44,7 @@ class MusicUtils {
                 null,
                 null
             )
+            Log.d("FETCHING MUSIC","CURSOR : ${cursor?.count}")
             when (cursor?.count) {
                 null -> {
                     Toast.makeText(
@@ -54,7 +56,7 @@ class MusicUtils {
                 else -> {
                     var count = 0
                     while (cursor.moveToNext()) {
-
+                        Log.d("FETCH MUSIC", "$count")
                         val albumCover: Bitmap? = try {
                             mediaMetadataRetriever.setDataSource(cursor.getString(4))
                              try {

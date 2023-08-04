@@ -214,7 +214,7 @@ fun PlayerSwipeableView(
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
-                        ExpandedPlayButtonsComposable(modifier = Modifier.padding(bottom = 120.dp))
+                        ExpandedPlayButtonsComposable()
                     }
 
                     Row(

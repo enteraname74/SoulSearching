@@ -4,7 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.github.soulsearching.service.notification.MusicNotificationService
+import com.github.soulsearching.service.notification.SoulSearchingNotificationService
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -16,7 +16,7 @@ class App : Application() {
 
     private fun createNotificationChannel(){
         val channel = NotificationChannel(
-            MusicNotificationService.MUSIC_NOTIFICATION_CHANNEL_ID,
+            SoulSearchingNotificationService.MUSIC_NOTIFICATION_CHANNEL_ID,
             "Soul Searching Music Notification",
             NotificationManager.IMPORTANCE_DEFAULT
         )
