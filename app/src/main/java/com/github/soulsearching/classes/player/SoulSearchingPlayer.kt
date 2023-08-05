@@ -11,6 +11,6 @@ interface SoulSearchingPlayer {
     fun isPlaying(): Boolean
     fun previous()
     fun dismiss()
-    fun getMusicLength(): Int
+    fun getMusicDuration(): Int
     fun getMusicPosition(): Int
 }

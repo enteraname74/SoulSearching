@@ -3,17 +3,17 @@ package com.github.soulsearching.composables.playButtons
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -23,12 +23,15 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun ExpandedPlayButtonsComposable(
     modifier: Modifier = Modifier,
     widthFraction: Float = 1f,
-    paddingBottom: Dp = 120.dp
+    paddingBottom: Dp = 120.dp,
+    mainColor: Color,
+    sliderInactiveBarColor: Color
 ) {
     Column(
         modifier = Modifier
@@ -42,6 +45,13 @@ fun ExpandedPlayButtonsComposable(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        val interactionSource = remember { MutableInteractionSource() }
+        val sliderColors = SliderDefaults.colors(
+            thumbColor = mainColor,
+            activeTrackColor = mainColor,
+            inactiveTrackColor = sliderInactiveBarColor
+        )
+
         Slider(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -50,11 +60,21 @@ fun ExpandedPlayButtonsComposable(
                 PlayerUtils.playerViewModel.currentMusicPosition = it.toInt()
                 PlayerService.seekToPosition(it.toInt())
             },
-            colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.onSecondary,
-                activeTrackColor = MaterialTheme.colorScheme.onSecondary,
-            ),
-            valueRange = 0f..PlayerService.getMusicDuration().toFloat()
+            colors = sliderColors,
+            valueRange = 0f..PlayerService.getMusicDuration().toFloat(),
+            interactionSource = interactionSource,
+            thumb = {
+                SliderDefaults.Thumb(
+                    interactionSource = interactionSource,
+                    modifier = Modifier
+                        .size(Constants.ImageSize.small)
+                        .padding(
+                            start = 4.dp,
+                            top = 4.dp
+                        ),
+                    colors = sliderColors
+                )
+            }
         )
 
         Column(
@@ -74,12 +94,12 @@ fun ExpandedPlayButtonsComposable(
             ) {
                 Text(
                     text = PlayerUtils.convertDuration(PlayerUtils.playerViewModel.currentMusicPosition),
-                    color = MaterialTheme.colorScheme.onSecondary,
+                    color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
                     text = PlayerUtils.convertDuration(PlayerService.getMusicDuration()),
-                    color = MaterialTheme.colorScheme.onSecondary,
+                    color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
             }
@@ -100,7 +120,7 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
                         .clickable { PlayerUtils.playerViewModel.changePlayerMode() },
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                    colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(
                     imageVector = Icons.Rounded.SkipPrevious,
@@ -108,7 +128,7 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
                         .clickable { PlayerService.playPrevious() },
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                    colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 if (PlayerUtils.playerViewModel.isPlaying) {
                     Image(
@@ -117,7 +137,7 @@ fun ExpandedPlayButtonsComposable(
                         modifier = Modifier
                             .size(78.dp)
                             .clickable { PlayerUtils.playerViewModel.setPlayingState() },
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                        colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 } else {
                     Image(
@@ -126,7 +146,7 @@ fun ExpandedPlayButtonsComposable(
                         modifier = Modifier
                             .size(78.dp)
                             .clickable { PlayerUtils.playerViewModel.setPlayingState() },
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                        colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 }
                 Image(
@@ -135,7 +155,7 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
                         .clickable { PlayerService.playNext() },
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                    colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(
                     imageVector = Icons.Rounded.FavoriteBorder,
@@ -143,7 +163,7 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
                         .clickable { },
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                    colorFilter = ColorFilter.tint(color = mainColor)
                 )
             }
         }

@@ -72,7 +72,7 @@ class PlayerService : Service() {
             return if (player == null) {
                 0
             } else {
-                player!!.getMusicLength()
+                player!!.getMusicDuration()
             }
         }
 

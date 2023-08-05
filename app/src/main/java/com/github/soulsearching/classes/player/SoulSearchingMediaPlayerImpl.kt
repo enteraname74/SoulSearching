@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.media.*
 import android.media.session.PlaybackState
-import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -16,13 +15,16 @@ import android.view.KeyEvent
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.SoulSearchingNotificationService
+import kotlinx.coroutines.*
 import java.lang.Integer.max
 
 class SoulSearchingMediaPlayerImpl(private val context: Context) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener,
+    MediaPlayer.OnErrorListener,
     AudioManager.OnAudioFocusChangeListener {
 
     private val player: MediaPlayer = MediaPlayer()
@@ -30,6 +32,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
     private val notificationService =
         SoulSearchingNotificationService(context, mediaSession.sessionToken)
+    private var currentDurationJob : Job? = null
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val audioAttributes = AudioAttributes.Builder()
@@ -123,18 +126,20 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun next() {
-        PlayerUtils.playerViewModel.setNextMusic()
+        PlayerUtils.playerViewModel.setNextMusic(context)
         setMusic(PlayerUtils.playerViewModel.currentMusic!!)
         launchMusic()
     }
 
     override fun previous() {
-        PlayerUtils.playerViewModel.setPreviousMusic()
+        PlayerUtils.playerViewModel.setPreviousMusic(context)
         setMusic(PlayerUtils.playerViewModel.currentMusic!!)
         launchMusic()
     }
 
     override fun dismiss() {
+        releaseDurationJob()
+
         player.release()
         mediaSession.release()
         context.unregisterReceiver(broadcastReceiver)
@@ -142,8 +147,12 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         releaseAudioBecomingNoisyReceiver()
     }
 
-    override fun getMusicLength(): Int {
-        return max(0, player.duration)
+    override fun getMusicDuration(): Int {
+        return try {
+            max(0, player.duration)
+        } catch (e: Error) {
+            0
+        }
     }
 
     override fun getMusicPosition(): Int {
@@ -159,6 +168,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
             setAudioAttributes(audioAttributes)
             setOnPreparedListener(this@SoulSearchingMediaPlayerImpl)
             setOnCompletionListener(this@SoulSearchingMediaPlayerImpl)
+            setOnErrorListener(this@SoulSearchingMediaPlayerImpl)
         }
     }
 
@@ -214,12 +224,24 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         next()
     }
 
+    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+        Log.d("MEDIA PLAYER", "ERROR CODE : $what, $extra")
+        when(what) {
+            MediaPlayer.MEDIA_ERROR_UNKNOWN -> next()
+        }
+        return true
+    }
+
     override fun onPrepared(mp: MediaPlayer?) {
         Log.d("MEDIA PLAYER", "PLAYER PREPARED")
         when (audioManager.requestAudioFocus(audioFocusRequest)) {
             AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                 player.start()
                 PlayerUtils.playerViewModel.isPlaying = true
+
+                releaseDurationJob()
+                launchDurationJob()
+
                 updateMediaSessionMetadata()
                 updateMediaSessionState()
                 notificationService.updateNotification()
@@ -235,6 +257,26 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
             AudioManager.AUDIOFOCUS_LOSS -> pause()
             else -> pause()
         }
+    }
+
+    private fun launchDurationJob() {
+        currentDurationJob = CoroutineScope(Dispatchers.IO).launch {
+            while(true){
+                withContext(Dispatchers.IO) {
+                    Thread.sleep(1000)
+                }
+                PlayerUtils.playerViewModel.currentMusicPosition = PlayerService.getCurrentMusicPosition()
+            }
+        }
+    }
+
+    private fun releaseDurationJob() {
+        if (currentDurationJob != null) {
+            currentDurationJob!!.cancel()
+            currentDurationJob = null
+            Log.d("MEDIA PLAYER", "JOB RELEASED")
+        }
+        Log.d("MEDIA PLAYER", "NO JOB RELEASED")
     }
 
     private fun updateMediaSessionMetadata() {

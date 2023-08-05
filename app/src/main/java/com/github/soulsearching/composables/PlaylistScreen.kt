@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +64,7 @@ fun PlaylistScreen(
 ) {
     val configuration = LocalConfiguration.current
     val coroutineScope = rememberCoroutineScope()
+    val context =  LocalContext.current
 
     val shuffleAction = {
         coroutineScope
@@ -70,7 +72,7 @@ fun PlaylistScreen(
                 swipeableState.animateTo(BottomSheetStates.EXPANDED)
             }
             .invokeOnCompletion {
-                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+                PlayerUtils.playerViewModel.playShuffle(musicState.musics, context)
             }
     }
 

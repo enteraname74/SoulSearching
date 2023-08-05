@@ -8,6 +8,7 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
@@ -34,6 +35,7 @@ fun MusicList(
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     MusicBottomSheetEvents(
         musicBottomSheetState = musicBottomSheetState,
@@ -58,7 +60,8 @@ fun MusicList(
                             music = music,
                             playlist = musicState.musics,
                             playlistId = playlistId,
-                            bitmap = retrieveCoverMethod(music.coverId)
+                            bitmap = retrieveCoverMethod(music.coverId),
+                            context = context
                         )
                     }
                 },

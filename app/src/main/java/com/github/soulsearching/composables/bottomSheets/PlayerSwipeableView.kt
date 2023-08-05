@@ -4,6 +4,7 @@ package com.github.soulsearching.composables.bottomSheets
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
@@ -16,12 +17,15 @@ import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -31,6 +35,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
@@ -39,6 +44,7 @@ import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsCompo
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.service.PlayerService
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -51,9 +57,78 @@ fun PlayerSwipeableView(
     swipeableState: SwipeableState<BottomSheetStates>,
     coverList: ArrayList<ImageCover>
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val backgroundColor: Color by animateColorAsState(
+        targetValue =
+        if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null ) {
+            MaterialTheme.colorScheme.secondary
+        } else {
+            Color(ColorUtils.blendARGB(PlayerUtils.playerViewModel.currentColorPalette!!.rgb, Color.Black.toArgb(), 0.5f))
+        }
+    )
+    val textColor: Color by animateColorAsState(
+        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null ) {
+            MaterialTheme.colorScheme.onSecondary
+        } else {
+            Color.White
+        }
+    )
+
+    val contentColor: Color by animateColorAsState(
+        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null ) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            Color(ColorUtils.blendARGB(PlayerUtils.playerViewModel.currentColorPalette!!.rgb, Color.Black.toArgb(), 0.2f))
+        }
+    )
+
+    val systemUiController = rememberSystemUiController()
+    val statusBarColor: Color by animateColorAsState(
+        targetValue =
+        if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+                MaterialTheme.colorScheme.secondary
+            } else {
+                Color(ColorUtils.blendARGB(PlayerUtils.playerViewModel.currentColorPalette!!.rgb, Color.Black.toArgb(), 0.5f))
+            }
+        }
+    )
+
+    val navigationBarColor: Color by animateColorAsState(
+        targetValue =
+        if (swipeableState.currentValue == BottomSheetStates.COLLAPSED) {
+            MaterialTheme.colorScheme.primary
+        } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+            MaterialTheme.colorScheme.secondary
+        } else {
+            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+                MaterialTheme.colorScheme.secondary
+            } else {
+                Color(ColorUtils.blendARGB(PlayerUtils.playerViewModel.currentColorPalette!!.rgb, Color.Black.toArgb(), 0.2f))
+            }
+        }
+    )
+
+    systemUiController.setStatusBarColor(
+        color = statusBarColor,
+        darkIcons = if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+            !isSystemInDarkTheme()
+        } else {
+            false
+        }
+    )
+
+    systemUiController.setNavigationBarColor(
+        color = navigationBarColor,
+        darkIcons = if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+            !isSystemInDarkTheme()
+        } else {
+            false
+        }
+    )
 
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
@@ -70,7 +145,7 @@ fun PlayerSwipeableView(
 
     val orientation = LocalConfiguration.current.orientation
 
-    val alphaTransition = when(orientation) {
+    val alphaTransition = when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             if ((1.0 / (abs(swipeableState.offset.value) / 70)).toFloat() > 0.1) {
                 (1.0 / (abs(swipeableState.offset.value) / 70)).toFloat().coerceAtMost(1.0F)
@@ -122,7 +197,7 @@ fun PlayerSwipeableView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.secondary)
+                    .background(color = backgroundColor)
                     .composed {
                         mainBoxClickableModifier
                     },
@@ -212,7 +287,7 @@ fun PlayerSwipeableView(
                             .align(Alignment.TopStart)
                             .size(Constants.ImageSize.medium)
                             .composed { backImageClickableModifier },
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
+                        colorFilter = ColorFilter.tint(textColor),
                         alpha = alphaTransition
                     )
 
@@ -229,7 +304,7 @@ fun PlayerSwipeableView(
                         ) {
                             Text(
                                 text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
-                                color = MaterialTheme.colorScheme.onSecondary,
+                                color = textColor,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
                                 fontSize = 20.sp,
@@ -239,7 +314,7 @@ fun PlayerSwipeableView(
                             )
                             Text(
                                 text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
-                                color = MaterialTheme.colorScheme.onSecondary,
+                                color = textColor,
                                 fontSize = 17.sp,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
@@ -257,12 +332,17 @@ fun PlayerSwipeableView(
                                 ) {
                                     ExpandedPlayButtonsComposable(
                                         widthFraction = 0.45f,
-                                        paddingBottom = 0.dp
+                                        paddingBottom = 0.dp,
+                                        mainColor = textColor,
+                                        sliderInactiveBarColor = contentColor
                                     )
                                 }
                             }
                             else -> {
-                                ExpandedPlayButtonsComposable()
+                                ExpandedPlayButtonsComposable(
+                                    mainColor = textColor,
+                                    sliderInactiveBarColor = contentColor
+                                )
                             }
                         }
                     }
@@ -287,7 +367,7 @@ fun PlayerSwipeableView(
                         ) {
                             Text(
                                 text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
-                                color = MaterialTheme.colorScheme.onSecondary,
+                                color = textColor,
                                 maxLines = 1,
                                 textAlign = TextAlign.Start,
                                 fontSize = 15.sp,
@@ -295,7 +375,7 @@ fun PlayerSwipeableView(
                             )
                             Text(
                                 text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
-                                color = MaterialTheme.colorScheme.onSecondary,
+                                color = textColor,
                                 fontSize = 12.sp,
                                 maxLines = 1,
                                 textAlign = TextAlign.Start,

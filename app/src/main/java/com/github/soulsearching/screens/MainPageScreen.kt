@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -67,6 +68,7 @@ fun MainPageScreen(
     val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     MusicBottomSheetEvents(
         musicState = musicState,
@@ -466,7 +468,7 @@ fun MainPageScreen(
                                                 swipeableState.animateTo(BottomSheetStates.EXPANDED)
                                             }
                                             .invokeOnCompletion {
-                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics, context)
                                             }
                                     },
                                 imageVector = Icons.Default.Shuffle,
@@ -491,7 +493,8 @@ fun MainPageScreen(
                                         playlist = musicState.musics,
                                         isMainPlaylist = true,
                                         playlistId = null,
-                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId)
+                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId),
+                                        context = context
                                     )
                                 }
                             },
