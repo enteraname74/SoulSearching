@@ -3,7 +3,6 @@ package com.github.soulsearching.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,9 +22,9 @@ class PlayerViewModel : ViewModel() {
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
-    var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
+    private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
-    var currentPlaylistId by mutableStateOf<UUID?>(null)
+    private var currentPlaylistId by mutableStateOf<UUID?>(null)
 
     private var isMainPlaylist by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
@@ -81,7 +80,7 @@ class PlayerViewModel : ViewModel() {
         playerMode = PlayerMode.SHUFFLE
 
         currentMusic = currentPlaylist[0]
-        currentMusicCover = retrieveCoverMethod(currentMusic?.musicId)
+        currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
         currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
 
         if (shouldServiceBeLaunched) {
@@ -149,20 +148,6 @@ class PlayerViewModel : ViewModel() {
         }
         if (!shouldServiceBeLaunched) {
             shouldServiceBeLaunched = true
-        }
-    }
-
-    fun updateCurrentMusicPosition() {
-        isCounting = false
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                isCounting = true
-                while(isCounting) {
-                    Thread.sleep(1000)
-                    currentMusicPosition = PlayerService.getCurrentMusicPosition()
-                }
-                Log.d("PLAYER VIEW MODEL", "END OF COUNT")
-            }
         }
     }
 

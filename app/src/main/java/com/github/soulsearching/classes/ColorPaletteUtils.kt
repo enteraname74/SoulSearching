@@ -9,11 +9,11 @@ class ColorPaletteUtils {
     companion object {
         fun getPaletteFromAlbumArt(albumArt: Bitmap?, context: Context): Palette.Swatch? {
             if (albumArt == null) {
+                Log.d("COLOR PALETTE UTILS", "NO BITMAP")
                 return null
             }
 
             val palette = Palette.from(albumArt).generate()
-            Log.d("COLOR UTILS", "SE")
             return if (palette.darkVibrantSwatch == null) {
                 palette.dominantSwatch
             } else {
