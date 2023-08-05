@@ -14,6 +14,7 @@ sealed interface MusicEvent {
     data class SetSortDirection(val type: Int) : MusicEvent
     data class SetSortType(val type: Int) : MusicEvent
     data class DeleteDialog(val isShown: Boolean) : MusicEvent
+    data class RemoveFromPlaylistDialog(val isShown: Boolean) : MusicEvent
     data class BottomSheet(val isShown: Boolean) : MusicEvent
     data class AddToPlaylistBottomSheet(val isShown: Boolean) : MusicEvent
     data class SetSelectedMusic(val music: Music) : MusicEvent

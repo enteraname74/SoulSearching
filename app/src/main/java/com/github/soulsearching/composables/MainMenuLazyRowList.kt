@@ -27,7 +27,7 @@ fun MainMenuLazyListRow(
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
-    navigateToPlaylist: (String) -> Unit = {},
+    navigateToPlaylist: (PlaylistWithMusics) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
     playlistBottomSheetAction: (PlaylistWithMusics) -> Unit = {},
@@ -100,7 +100,7 @@ fun MainMenuLazyListRow(
                                     id = R.string.multiple_musics, element.musics.size
                                 ),
                                 onClick = {
-                                    navigateToPlaylist(element.playlist.playlistId.toString())
+                                    navigateToPlaylist(element)
                                 },
                                 onLongClick = { playlistBottomSheetAction(element) }
                             )

@@ -13,8 +13,8 @@ interface MusicPlaylistDao {
     @Upsert
     suspend fun insertMusicIntoPlaylist(musicPlaylist : MusicPlaylist)
 
-    @Delete
-    suspend fun deleteMusicFromPlaylist(musicPlaylist : MusicPlaylist)
+    @Query("DELETE FROM MusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
+    suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID)
 
     @Query("DELETE FROM MusicPlaylist WHERE musicId = :musicId")
     suspend fun deleteMusicFromAllPlaylists(musicId : UUID)

@@ -37,6 +37,7 @@
     <string name="delete_artist">Supprimer cette artiste</string>
     <string name="modify_artist">Modifier cet artiste</string>
     <string name="play_next">Jouer ensuite</string>
+    <string name="remove_from_playlist">Retirer de la playlist</string>
 
     <!-- Modify music strings -->
     <string name="music_information">Informations de la musique</string>
@@ -48,11 +49,14 @@
     <!-- Dialog strings -->
     <string name="delete_music_dialog_title">Voulez-vous vraiment supprimer cette musique ?</string>
     <string name="delete_playlist_dialog_title">Voulez-vous vraiment supprimer cette playlist ?</string>
-    <string name="delete_album_dialog_title">Voulez-vous vraiment supprimer cet albume ?</string>
+    <string name="delete_album_dialog_title">Voulez-vous vraiment supprimer cet album ?</string>
     <string name="delete_artist_dialog_title">Voulez-vous vraiment supprimer cet artiste ?</string>
+    <string name="remove_music_from_playlist_title">Voulez-vous vraiment supprimer cette musique de cette playlist ?</string>
     <string name="delete_music_dialog_text">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
+    <string name="remove_music_from_playlist_text">Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l\'application.</string>
     <string name="create_playlist_dialog_title">Créer une nouvelle playlist</string>
     <string name="delete">Supprimer</string>
+    <string name="remove">Retirer</string>
     <string name="cancel">Annuler</string>
     <string name="create">Créer</string>
 

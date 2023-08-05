@@ -5,7 +5,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetMenu
+import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -18,7 +18,8 @@ fun MusicBottomSheet(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     musicModalSheetState: SheetState,
     musicState: MusicState,
-    navigateToModifyMusic : (String) -> Unit
+    navigateToModifyMusic : (String) -> Unit,
+    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -34,6 +35,7 @@ fun MusicBottomSheet(
         dragHandle = {}
     ) {
         MusicBottomSheetMenu(
+            musicBottomSheetState = musicBottomSheetState,
             modifyAction = {
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
@@ -70,6 +72,9 @@ fun MusicBottomSheet(
                         )
                     }
                 }
+            },
+            removeFromPlaylistAction = {
+                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = true))
             },
             playNextAction = {}
         )

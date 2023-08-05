@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.playlistComposable.ColumnPlaylistPanel
 import com.github.soulsearching.composables.playlistComposable.RowPlaylistPanel
@@ -166,6 +167,7 @@ fun PlaylistScreen(
             }
         }
         MusicList(
+            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
             musicState = musicState,
             playlistState = playlistState,
             onMusicEvent = onMusicEvent,

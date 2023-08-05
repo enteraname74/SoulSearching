@@ -36,6 +36,7 @@ import com.github.soulsearching.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -169,7 +170,12 @@ fun MainPageScreen(
                         list = playlistState.playlists,
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
-                        navigateToPlaylist = navigateToPlaylist,
+                        navigateToPlaylist = {
+                            allPlaylistsViewModel.onPlaylistEvent(
+                                PlaylistEvent.SetSelectedPlaylist(it)
+                            )
+                            navigateToPlaylist(it.playlist.playlistId.toString())
+                        },
                         playlistBottomSheetAction = {
                             coroutineScope.launch {
                                 allPlaylistsViewModel.onPlaylistEvent(

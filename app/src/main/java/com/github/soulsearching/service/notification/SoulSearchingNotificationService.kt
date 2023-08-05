@@ -1,6 +1,5 @@
 package com.github.soulsearching.service.notification
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -14,7 +13,6 @@ import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
-import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.receivers.ChangeFavoriteStateNotificationReceiver
 import com.github.soulsearching.service.notification.receivers.DeletedNotificationIntentReceiver
 
@@ -29,8 +27,10 @@ class SoulSearchingNotificationService(
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d("RECEIVE","RECEIVE")
             if (intent.extras?.getBoolean("STOP_RECEIVE") != null && intent.extras?.getBoolean("STOP_RECEIVE") as Boolean) {
                 context.unregisterReceiver(this)
+//                PlayerService.stopMusic(context)
             } else {
                 updateNotification()
             }
@@ -94,19 +94,6 @@ class SoulSearchingNotificationService(
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(CHANNEL_ID)
-    }
-
-    private fun createNotificationChannel(){
-        val channel = NotificationChannel(
-            MUSIC_NOTIFICATION_CHANNEL_ID,
-            "SoulSearchingNotification",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        channel.description = "Use for controlling the song that is currently playing"
-
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-
     }
 
     companion object {

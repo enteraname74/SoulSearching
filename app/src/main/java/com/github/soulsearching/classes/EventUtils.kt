@@ -1,10 +1,11 @@
 package com.github.soulsearching.classes
 
 import android.util.Log
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.R
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.*
+import com.github.soulsearching.database.model.Artist
+import com.github.soulsearching.database.model.ImageCover
+import com.github.soulsearching.database.model.MusicPlaylist
+import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -40,6 +41,13 @@ class EventUtils {
                     _state.update {
                         it.copy(
                             isDeleteDialogShown = event.isShown
+                        )
+                    }
+                }
+                is MusicEvent.RemoveFromPlaylistDialog -> {
+                    _state.update {
+                        it.copy(
+                            isRemoveFromPlaylistDialogShown = event.isShown
                         )
                     }
                 }
@@ -290,6 +298,17 @@ class EventUtils {
                                 multiplePlaylistSelected = ArrayList()
                             )
                         }
+                    }
+                }
+                is PlaylistEvent.RemoveMusicFromPlaylist -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Log.d("PLAYLIST EVENT", "REMOVE FROM PLAYLIST")
+                        Log.d("MUSIC ID : ", "${event.musicId}")
+                        Log.d("PLAYLIST ID : ", "${state.value.selectedPlaylist.playlistId}")
+                        musicPlaylistDao.deleteMusicFromPlaylist(
+                            musicId = event.musicId,
+                            playlistId = state.value.selectedPlaylist.playlistId
+                        )
                     }
                 }
                 is PlaylistEvent.DeletePlaylist -> {

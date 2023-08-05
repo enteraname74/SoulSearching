@@ -18,6 +18,7 @@ interface PlaylistEvent {
     data class SetName(val name: String) : PlaylistEvent
     data class PlaylistsSelection(val musicId: UUID) : PlaylistEvent
     data class AddMusicToPlaylists(val musicId: UUID) : PlaylistEvent
+    data class RemoveMusicFromPlaylist(val musicId: UUID) : PlaylistEvent
     data class BottomSheet(val isShown: Boolean) : PlaylistEvent
     data class DeleteDialog(val isShown: Boolean) : PlaylistEvent
     data class CreatePlaylistDialog(val isShown: Boolean) : PlaylistEvent

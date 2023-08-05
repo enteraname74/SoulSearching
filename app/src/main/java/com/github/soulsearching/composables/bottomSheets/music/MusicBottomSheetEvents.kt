@@ -5,7 +5,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.composables.dialogs.DeleteMusicDialog
+import androidx.compose.ui.res.stringResource
+import com.github.soulsearching.R
+import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.composables.dialogs.SoulSearchingDialog
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -19,7 +22,8 @@ fun MusicBottomSheetEvents(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
-    navigateToModifyMusic : (String) -> Unit
+    navigateToModifyMusic : (String) -> Unit,
+    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -40,9 +44,12 @@ fun MusicBottomSheetEvents(
     }
 
     if (musicState.isDeleteDialogShown) {
-        DeleteMusicDialog(
-            onMusicEvent = onMusicEvent,
+        SoulSearchingDialog(
+            title = stringResource(id = R.string.delete_music_dialog_title),
+            text = stringResource(id = R.string.delete_music_dialog_text),
             confirmAction = {
+                onMusicEvent(MusicEvent.DeleteMusic)
+                onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!musicModalSheetState.isVisible) {
@@ -53,12 +60,40 @@ fun MusicBottomSheetEvents(
                             )
                         }
                     }
+            },
+            dismissAction = {
+                onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
+            }
+        )
+    }
+
+    if (musicState.isRemoveFromPlaylistDialogShown) {
+        SoulSearchingDialog(
+            title = stringResource(id = R.string.remove_music_from_playlist_title),
+            text = stringResource(id = R.string.remove_music_from_playlist_text),
+            confirmAction = {
+                onPlaylistsEvent(PlaylistEvent.RemoveMusicFromPlaylist(musicId = musicState.selectedMusic.musicId))
+                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
+                coroutineScope.launch { musicModalSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!musicModalSheetState.isVisible) {
+                            onMusicEvent(
+                                MusicEvent.BottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        }
+                    }
+            },
+            dismissAction = {
+                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
             }
         )
     }
 
     if (musicState.isBottomSheetShown) {
         MusicBottomSheet(
+            musicBottomSheetState = musicBottomSheetState,
             onMusicEvent = onMusicEvent,
             onPlaylistEvent = onPlaylistsEvent,
             musicModalSheetState = musicModalSheetState,

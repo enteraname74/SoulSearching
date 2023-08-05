@@ -12,6 +12,7 @@ data class MusicState(
     val musicsWithCover: List<MusicWithCover> = emptyList(),
     val isBottomSheetShown: Boolean = false,
     val isDeleteDialogShown: Boolean = false,
+    val isRemoveFromPlaylistDialogShown: Boolean = false,
     val isAddToPlaylistDialogShown: Boolean = false,
     val selectedMusic: Music = Music(),
     var name: String = "",

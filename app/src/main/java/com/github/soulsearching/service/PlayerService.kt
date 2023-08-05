@@ -85,8 +85,10 @@ class PlayerService : Service() {
         }
 
         fun stopMusic(context: Context) {
-            player!!.dismiss()
-            player = null
+            if (player != null) {
+                player!!.dismiss()
+                player = null
+            }
             PlayerUtils.playerViewModel.resetPlayerData()
             val serviceIntent = Intent(context, PlayerService::class.java)
             context.stopService(serviceIntent)

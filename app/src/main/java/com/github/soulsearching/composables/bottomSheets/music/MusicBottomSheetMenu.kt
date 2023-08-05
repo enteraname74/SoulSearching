@@ -11,15 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.composables.bottomSheets.BottomSheetRow
 
 @Composable
 fun MusicBottomSheetMenu(
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
+    removeFromPlaylistAction: () -> Unit = {},
     addToShortcutsAction: () -> Unit = {},
     addToPlaylistAction: () -> Unit,
-    playNextAction : () -> Unit
+    playNextAction : () -> Unit,
+    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
 ) {
     Column(
         modifier = Modifier
@@ -46,6 +49,13 @@ fun MusicBottomSheetMenu(
             text = stringResource(id = R.string.play_next),
             onClick = playNextAction
         )
+        if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {
+            BottomSheetRow(
+                icon = Icons.Default.Delete,
+                text = stringResource(id = R.string.remove_from_playlist),
+                onClick = removeFromPlaylistAction
+            )
+        }
         BottomSheetRow(
             icon = Icons.Default.Delete,
             text = stringResource(id = R.string.delete_music),
