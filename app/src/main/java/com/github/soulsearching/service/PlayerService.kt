@@ -48,6 +48,14 @@ class PlayerService : Service() {
             }
         }
 
+        fun isPlayerPlaying() : Boolean {
+            return if (player != null) {
+                 player!!.isPlaying()
+            } else {
+                false
+            }
+        }
+
         fun pauseMusic() {
             player?.togglePlayPause()
         }

@@ -67,13 +67,8 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun setPlayingState() {
-        isPlaying = if (isPlaying) {
-            PlayerService.pauseMusic()
-            false
-        } else {
-            PlayerService.playMusic()
-            true
-        }
+        PlayerService.pauseMusic()
+        isPlaying = PlayerService.isPlayerPlaying()
     }
 
     fun playShuffle(playlist: ArrayList<Music>, context: Context) {
@@ -142,10 +137,6 @@ class PlayerViewModel : ViewModel() {
                 if (shouldServiceBeLaunched) {
                     PlayerService.setAndPlayCurrentMusic()
 
-                }
-            } else {
-                if (shouldServiceBeLaunched) {
-//                    PlayerService.playMusic()
                 }
             }
         } else {

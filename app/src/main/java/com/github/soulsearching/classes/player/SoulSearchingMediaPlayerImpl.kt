@@ -77,7 +77,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun isPlaying(): Boolean {
-        return player.isPlaying
+        return try {
+            player.isPlaying
+        } catch (e: IllegalStateException) {
+            false
+        }
     }
 
     override fun launchMusic() {
