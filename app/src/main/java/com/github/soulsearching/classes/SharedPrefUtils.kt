@@ -46,6 +46,7 @@ class SharedPrefUtils {
             val position = sharedPreferences.getInt(PLAYER_MUSIC_POSITION_KEY, 0)
 
             PlayerUtils.playerViewModel.setMusicFromIndex(index)
+            PlayerUtils.playerViewModel.currentMusicPosition = position
         }
 
         fun setPlayerSavedCurrentMusic() {
@@ -54,6 +55,12 @@ class SharedPrefUtils {
                     putInt(PLAYER_MUSIC_INDEX_KEY, PlayerUtils.playerViewModel.getIndexOfCurrentMusic())
                     apply()
                 }
+            }
+            setCurrentMusicPosition()
+        }
+
+        fun setCurrentMusicPosition() {
+            CoroutineScope(Dispatchers.IO).launch {
                 with(sharedPreferences.edit()) {
                     putInt(PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
                     apply()

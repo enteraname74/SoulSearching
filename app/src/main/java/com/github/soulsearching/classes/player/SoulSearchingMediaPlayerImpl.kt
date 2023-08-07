@@ -18,6 +18,7 @@ import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.SoulSearchingNotificationService
+import com.github.soulsearching.viewModels.PlayerViewModel
 import kotlinx.coroutines.*
 import java.lang.Integer.max
 
@@ -257,6 +258,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     override fun onPrepared(mp: MediaPlayer?) {
         Log.d("MEDIA PLAYER", "PLAYER PREPARED")
         if (isOnlyLoadingMusic) {
+            if (PlayerUtils.playerViewModel.currentMusicPosition <= player.duration) {
+                player.seekTo(PlayerUtils.playerViewModel.currentMusicPosition)
+                releaseDurationJob()
+                launchDurationJob()
+            }
             isOnlyLoadingMusic = false
         } else {
             when (audioManager.requestAudioFocus(audioFocusRequest)) {
