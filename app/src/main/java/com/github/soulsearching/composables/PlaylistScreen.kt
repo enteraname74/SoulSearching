@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +42,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -53,6 +53,7 @@ fun PlaylistScreen(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     title: String,
     image: Bitmap?,
     navigateToModifyPlaylist: () -> Unit = {},
@@ -64,7 +65,6 @@ fun PlaylistScreen(
 ) {
     val configuration = LocalConfiguration.current
     val coroutineScope = rememberCoroutineScope()
-    val context =  LocalContext.current
 
     val shuffleAction = {
         coroutineScope
@@ -72,7 +72,8 @@ fun PlaylistScreen(
                 swipeableState.animateTo(BottomSheetStates.EXPANDED)
             }
             .invokeOnCompletion {
-                PlayerUtils.playerViewModel.playShuffle(musicState.musics, context)
+                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+                playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
             }
     }
 
@@ -178,7 +179,8 @@ fun PlaylistScreen(
             modifier = musicListModifier,
             retrieveCoverMethod = { retrieveCoverMethod(it) },
             swipeableState = swipeableState,
-            playlistId = playlistId
+            playlistId = playlistId,
+            playerMusicListViewModel = playerMusicListViewModel
         )
     }
 }

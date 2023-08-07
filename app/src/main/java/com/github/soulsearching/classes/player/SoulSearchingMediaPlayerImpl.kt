@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.KeyEvent
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.SoulSearchingNotificationService
@@ -33,6 +34,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     private val notificationService =
         SoulSearchingNotificationService(context, mediaSession.sessionToken)
     private var currentDurationJob : Job? = null
+    private var isOnlyLoadingMusic: Boolean = false
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private val audioAttributes = AudioAttributes.Builder()
@@ -76,6 +78,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         player.setDataSource(music.path)
     }
 
+    override fun onlyLoadMusic() {
+        isOnlyLoadingMusic = true
+        launchMusic()
+    }
+
     override fun isPlaying(): Boolean {
         return try {
             player.isPlaying
@@ -85,7 +92,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun launchMusic() {
-        player.prepareAsync()
+        try {
+            player.prepareAsync()
+        } catch (_: IllegalStateException) {
+
+        }
     }
 
     private fun play() {
@@ -130,13 +141,13 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun next() {
-        PlayerUtils.playerViewModel.setNextMusic(context)
+        PlayerUtils.playerViewModel.setNextMusic()
         setMusic(PlayerUtils.playerViewModel.currentMusic!!)
         launchMusic()
     }
 
     override fun previous() {
-        PlayerUtils.playerViewModel.setPreviousMusic(context)
+        PlayerUtils.playerViewModel.setPreviousMusic()
         setMusic(PlayerUtils.playerViewModel.currentMusic!!)
         launchMusic()
     }
@@ -148,6 +159,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         mediaSession.release()
         context.unregisterReceiver(broadcastReceiver)
         notificationService.dismissNotification()
+        audioManager.abandonAudioFocusRequest(audioFocusRequest)
         releaseAudioBecomingNoisyReceiver()
     }
 
@@ -165,6 +177,12 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         } catch (e: IllegalStateException) {
             0
         }
+    }
+
+    override fun updateNotification() {
+        updateMediaSessionMetadata()
+        updateMediaSessionState()
+        notificationService.updateNotification()
     }
 
     private fun initializePlayer() {
@@ -238,19 +256,23 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
 
     override fun onPrepared(mp: MediaPlayer?) {
         Log.d("MEDIA PLAYER", "PLAYER PREPARED")
-        when (audioManager.requestAudioFocus(audioFocusRequest)) {
-            AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
-                player.start()
-                PlayerUtils.playerViewModel.isPlaying = true
+        if (isOnlyLoadingMusic) {
+            isOnlyLoadingMusic = false
+        } else {
+            when (audioManager.requestAudioFocus(audioFocusRequest)) {
+                AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
+                    player.start()
+                    PlayerUtils.playerViewModel.isPlaying = true
 
-                releaseDurationJob()
-                launchDurationJob()
+                    releaseDurationJob()
+                    launchDurationJob()
 
-                updateMediaSessionMetadata()
-                updateMediaSessionState()
-                notificationService.updateNotification()
+                    updateNotification()
+
+                    SharedPrefUtils.setPlayerSavedCurrentMusic()
+                }
+                else -> {}
             }
-            else -> {}
         }
     }
 

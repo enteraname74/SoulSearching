@@ -70,7 +70,7 @@ class AppModule {
     }
 
     @Provides
-    fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): CurrentPlaylistItemDao {
-        return appDatabase.currentPlaylistItemDao
+    fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): PlayerMusicDao {
+        return appDatabase.playerMusicDao
     }
 }

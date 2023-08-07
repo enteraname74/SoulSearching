@@ -6,6 +6,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.viewModels.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +38,27 @@ class SharedPrefUtils {
                 HAS_MUSICS_BEEN_FETCHED_KEY,
                 false
             )
+        }
+
+
+        fun getPlayerSavedCurrentMusic() {
+            val index = sharedPreferences.getInt(PLAYER_MUSIC_INDEX_KEY, -1)
+            val position = sharedPreferences.getInt(PLAYER_MUSIC_POSITION_KEY, 0)
+
+            PlayerUtils.playerViewModel.setMusicFromIndex(index)
+        }
+
+        fun setPlayerSavedCurrentMusic() {
+            CoroutineScope(Dispatchers.IO).launch {
+                with(sharedPreferences.edit()) {
+                    putInt(PLAYER_MUSIC_INDEX_KEY, PlayerUtils.playerViewModel.getIndexOfCurrentMusic())
+                    apply()
+                }
+                with(sharedPreferences.edit()) {
+                    putInt(PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
+                    apply()
+                }
+            }
         }
 
         fun initializeSorts(
@@ -120,5 +142,8 @@ class SharedPrefUtils {
 
         const val SORT_PLAYLISTS_TYPE_KEY = "SORT_PLAYLISTS_TYPE"
         const val SORT_PLAYLISTS_DIRECTION_KEY = "SORT_PLAYLISTS_DIRECTION"
+
+        private const val PLAYER_MUSIC_INDEX_KEY = "PLAYER_MUSIC_INDEX"
+        private const val PLAYER_MUSIC_POSITION_KEY = "PLAYER_MUSIC_POSITION"
     }
 }

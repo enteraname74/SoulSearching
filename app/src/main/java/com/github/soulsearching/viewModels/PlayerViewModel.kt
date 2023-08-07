@@ -1,8 +1,8 @@
 package com.github.soulsearching.viewModels
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerMode
+import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
+import java.lang.Integer.max
 import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
@@ -22,9 +24,9 @@ class PlayerViewModel : ViewModel() {
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
-    private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
+    var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
-    private var currentPlaylistId by mutableStateOf<UUID?>(null)
+    var currentPlaylistId by mutableStateOf<UUID?>(null)
 
     private var isMainPlaylist by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
@@ -40,20 +42,33 @@ class PlayerViewModel : ViewModel() {
     private var isChangingPlayMode = false
 
     fun getIndexOfCurrentMusic(): Int {
-        return currentPlaylist.indexOf(currentPlaylist.find { it.musicId == currentMusic!!.musicId })
+        return if (currentMusic == null) {
+            -1
+        } else {
+            currentPlaylist.indexOf(currentPlaylist.find { it.musicId == currentMusic!!.musicId })
+        }
     }
 
-    fun setNextMusic(context: Context) {
+    fun setPlayerInformationsFromSavedList(musicList: ArrayList<Music>) {
+        currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
+        initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
+
+        SharedPrefUtils.getPlayerSavedCurrentMusic()
+        currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
+        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
+    }
+
+    fun setNextMusic() {
         if (currentPlaylist.size != 0) {
             val currentIndex = getIndexOfCurrentMusic()
 
             currentMusic = currentPlaylist[(currentIndex + 1) % currentPlaylist.size]
             currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
-            currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
+            currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
         }
     }
 
-    fun setPreviousMusic(context: Context) {
+    fun setPreviousMusic() {
         val currentIndex = getIndexOfCurrentMusic()
 
         currentMusic = if (currentIndex == 0) {
@@ -62,15 +77,15 @@ class PlayerViewModel : ViewModel() {
             currentPlaylist[currentIndex - 1]
         }
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
-        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
+        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
 
     fun setPlayingState() {
-        PlayerService.pauseMusic()
+        PlayerService.togglePlayPause()
         isPlaying = PlayerService.isPlayerPlaying()
     }
 
-    fun playShuffle(playlist: ArrayList<Music>, context: Context) {
+    fun playShuffle(playlist: ArrayList<Music>) {
         currentPlaylistId = null
         isPlaying = false
         isMainPlaylist = false
@@ -81,7 +96,7 @@ class PlayerViewModel : ViewModel() {
 
         currentMusic = currentPlaylist[0]
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
-        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
+        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
 
         if (shouldServiceBeLaunched) {
             PlayerService.setAndPlayCurrentMusic()
@@ -97,8 +112,7 @@ class PlayerViewModel : ViewModel() {
         bitmap: Bitmap?,
         playlist: ArrayList<Music>,
         playlistId: UUID?,
-        isMainPlaylist: Boolean = false,
-        context: Context
+        isMainPlaylist: Boolean = false
     ) {
         if (!isMainPlaylist) {
             if (currentPlaylistId == null) {
@@ -132,7 +146,7 @@ class PlayerViewModel : ViewModel() {
             if (music.musicId.compareTo(currentMusic!!.musicId) != 0) {
                 currentMusic = music
                 currentMusicCover = bitmap
-                currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
+                currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
                 if (shouldServiceBeLaunched) {
                     PlayerService.setAndPlayCurrentMusic()
 
@@ -141,7 +155,7 @@ class PlayerViewModel : ViewModel() {
         } else {
             currentMusic = music
             currentMusicCover = bitmap
-            currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover, context)
+            currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
             if (shouldServiceBeLaunched) {
                 PlayerService.playMusic()
             }
@@ -170,6 +184,16 @@ class PlayerViewModel : ViewModel() {
                 }
             }
             isChangingPlayMode = false
+        }
+    }
+
+    fun setMusicFromIndex(index: Int) {
+        if (currentPlaylist.lastIndex != -1 ){
+            currentMusic = if (index <= currentPlaylist.lastIndex) {
+                currentPlaylist[max(0,index)]
+            } else {
+                currentPlaylist[0]
+            }
         }
     }
 

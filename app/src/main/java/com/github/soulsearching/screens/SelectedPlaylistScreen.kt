@@ -11,6 +11,7 @@ import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
 import java.util.*
 
@@ -20,6 +21,7 @@ fun SelectedPlaylistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyPlaylist : (String) -> Unit,
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
@@ -53,6 +55,7 @@ fun SelectedPlaylistScreen(
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         swipeableState = swipeableState,
-        playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId
+        playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
+        playerMusicListViewModel = playerMusicListViewModel
     )
 }

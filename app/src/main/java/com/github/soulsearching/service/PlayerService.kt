@@ -16,11 +16,20 @@ class PlayerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("START COMMAND", "")
-
         if (player == null) {
             player = SoulSearchingMediaPlayerImpl(applicationContext)
-            setAndPlayCurrentMusic()
+
+            val extras = intent?.extras
+            if (extras != null) {
+                if (extras.getBoolean(IS_FROM_SAVED_LIST)) {
+                    player!!.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
+                    player!!.onlyLoadMusic()
+                } else {
+                    setAndPlayCurrentMusic()
+                }
+            } else {
+                setAndPlayCurrentMusic()
+            }
         }
 
         return START_STICKY
@@ -39,7 +48,8 @@ class PlayerService : Service() {
     }
 
     companion object {
-        private var player : SoulSearchingPlayer? = null
+        const val IS_FROM_SAVED_LIST = "isFromSavedList"
+        private var player: SoulSearchingPlayer? = null
 
         fun setAndPlayCurrentMusic() {
             player?.let {
@@ -48,15 +58,15 @@ class PlayerService : Service() {
             }
         }
 
-        fun isPlayerPlaying() : Boolean {
+        fun isPlayerPlaying(): Boolean {
             return if (player != null) {
-                 player!!.isPlaying()
+                player!!.isPlaying()
             } else {
                 false
             }
         }
 
-        fun pauseMusic() {
+        fun togglePlayPause() {
             player?.togglePlayPause()
         }
 
@@ -100,6 +110,10 @@ class PlayerService : Service() {
             PlayerUtils.playerViewModel.resetPlayerData()
             val serviceIntent = Intent(context, PlayerService::class.java)
             context.stopService(serviceIntent)
+        }
+
+        fun updateNotification() {
+            player?.updateNotification()
         }
     }
 }

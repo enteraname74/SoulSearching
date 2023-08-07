@@ -7,7 +7,7 @@ import androidx.palette.graphics.Palette
 
 class ColorPaletteUtils {
     companion object {
-        fun getPaletteFromAlbumArt(albumArt: Bitmap?, context: Context): Palette.Swatch? {
+        fun getPaletteFromAlbumArt(albumArt: Bitmap?): Palette.Swatch? {
             if (albumArt == null) {
                 Log.d("COLOR PALETTE UTILS", "NO BITMAP")
                 return null

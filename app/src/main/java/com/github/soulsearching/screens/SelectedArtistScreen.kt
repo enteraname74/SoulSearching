@@ -9,6 +9,7 @@ import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.github.soulsearching.viewModels.SelectedArtistViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,7 @@ fun SelectedArtistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedArtistViewModel: SelectedArtistViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     selectedArtistId : String,
     navigateToModifyArtist : (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
@@ -67,6 +69,7 @@ fun SelectedArtistScreen(
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         swipeableState = swipeableState,
-        playlistId = artistWithMusicsState.artistWithMusics.artist.artistId
+        playlistId = artistWithMusicsState.artistWithMusics.artist.artistId,
+        playerMusicListViewModel = playerMusicListViewModel
     )
 }

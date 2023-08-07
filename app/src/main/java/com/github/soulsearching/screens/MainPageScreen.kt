@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -33,6 +32,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +48,7 @@ fun MainPageScreen(
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
     allImageCoversViewModel: AllImageCoversViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -68,8 +69,6 @@ fun MainPageScreen(
     val imageCovers by allImageCoversViewModel.state.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
     MusicBottomSheetEvents(
         musicState = musicState,
         playlistState = playlistState,
@@ -107,14 +106,25 @@ fun MainPageScreen(
 
     if (imageCovers.covers.isNotEmpty() && !cleanImagesLaunched) {
         LaunchedEffect(key1 = "Launch") {
-            Log.d("LAUNCHED EFFECT", "")
+            Log.d("LAUNCHED EFFECT MAIN", " WILL CLEAN IMAGES")
 
             CoroutineScope(Dispatchers.IO).launch {
                 for (cover in imageCovers.covers) {
                     allImageCoversViewModel.verifyIfImageIsUsed(cover)
                 }
-                cleanImagesLaunched = true
             }
+
+            if (PlayerUtils.playerViewModel.currentMusic != null) {
+                PlayerUtils.playerViewModel.currentMusicCover = PlayerUtils.playerViewModel.retrieveCoverMethod(
+                    PlayerUtils.playerViewModel.currentMusic!!.coverId
+                )
+                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    PlayerUtils.playerViewModel.currentMusicCover
+                )
+                PlayerService.updateNotification()
+            }
+            cleanImagesLaunched = true
+
         }
     }
 
@@ -468,7 +478,8 @@ fun MainPageScreen(
                                                 swipeableState.animateTo(BottomSheetStates.EXPANDED)
                                             }
                                             .invokeOnCompletion {
-                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics, context)
+                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
+                                                playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                                             }
                                     },
                                 imageVector = Icons.Default.Shuffle,
@@ -493,9 +504,9 @@ fun MainPageScreen(
                                         playlist = musicState.musics,
                                         isMainPlaylist = true,
                                         playlistId = null,
-                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId),
-                                        context = context
+                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId)
                                     )
+                                    playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                                 }
                             },
                             onLongClick = {

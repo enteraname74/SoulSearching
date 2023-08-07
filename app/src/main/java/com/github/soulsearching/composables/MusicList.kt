@@ -8,7 +8,6 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
@@ -17,6 +16,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -27,6 +27,7 @@ fun MusicList(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
@@ -35,7 +36,6 @@ fun MusicList(
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     MusicBottomSheetEvents(
         musicBottomSheetState = musicBottomSheetState,
@@ -60,9 +60,9 @@ fun MusicList(
                             music = music,
                             playlist = musicState.musics,
                             playlistId = playlistId,
-                            bitmap = retrieveCoverMethod(music.coverId),
-                            context = context
+                            bitmap = retrieveCoverMethod(music.coverId)
                         )
+                        playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                     }
                 },
                 onLongClick = {

@@ -13,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
@@ -37,6 +38,7 @@ import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,6 +69,9 @@ class MainActivity : AppCompatActivity() {
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
 
+    // PLayer view model :
+    private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
+
     @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalMaterialApi::class)
     override
@@ -88,9 +93,32 @@ class MainActivity : AppCompatActivity() {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
+
                 val swipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
+                val coroutineScope = rememberCoroutineScope()
+
+                var hasPlayerMusicBeenFetched by rememberSaveable {
+                    mutableStateOf(false)
+                }
+
+                if (!hasPlayerMusicBeenFetched) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val playerSavedMusics = playerMusicListViewModel.getPlayerMusicList()
+                        if (playerSavedMusics.isNotEmpty()) {
+                            Log.d("MAIN ACTIVITY", "PLAYER LIST SIZE : ${playerSavedMusics.size}")
+                            PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(playerSavedMusics)
+                            launchService(isFromSavedList = true)
+                            PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
+                            coroutineScope.launch{
+                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+                            }
+                        }
+                    }
+                    hasPlayerMusicBeenFetched = true
+                }
+
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
                     mutableStateOf(false)
@@ -179,12 +207,7 @@ class MainActivity : AppCompatActivity() {
                     } else {
 
                         if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {
-                            CoroutineScope(Dispatchers.Main).launch {
-                                Log.d(this@MainActivity.localClassName, "LAUNCHING SERVICE")
-                                val serviceIntent = Intent(this@MainActivity, PlayerService::class.java)
-                                startService(serviceIntent)
-                                PlayerUtils.playerViewModel.isServiceLaunched = true
-                            }
+                            launchService(isFromSavedList = false)
                         }
 
                         BoxWithConstraints(
@@ -206,6 +229,7 @@ class MainActivity : AppCompatActivity() {
                                         allAlbumsViewModel = allAlbumsViewModel,
                                         allArtistsViewModel = allArtistsViewModel,
                                         allImageCoversViewModel = allImageCoversViewModel,
+                                        playerMusicListViewModel = playerMusicListViewModel,
                                         navigateToPlaylist = {
                                             navController.navigate("selectedPlaylist/$it")
                                         },
@@ -263,7 +287,8 @@ class MainActivity : AppCompatActivity() {
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
                                         retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState
+                                        swipeableState = swipeableState,
+                                        playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
                                 composable(
@@ -287,7 +312,8 @@ class MainActivity : AppCompatActivity() {
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
                                         retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState
+                                        swipeableState = swipeableState,
+                                        playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
                                 composable(
@@ -311,7 +337,8 @@ class MainActivity : AppCompatActivity() {
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
                                         retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState
+                                        swipeableState = swipeableState,
+                                        playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
                                 composable(
@@ -399,12 +426,31 @@ class MainActivity : AppCompatActivity() {
                             PlayerSwipeableView(
                                 maxHeight = maxHeight,
                                 swipeableState = swipeableState,
-                                coverList = coversState.covers
+                                coverList = coversState.covers,
+                                musicState = MusicState(),
+                                playlistState = playlistState,
+                                onMusicEvent = allMusicsViewModel::onMusicEvent,
+                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                navigateToModifyMusic = {
+                                    navController.navigate("modifyMusic/$it")
+                                },
+                                musicListSwipeableState = swipeableState,
+                                playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
+                                playerMusicListViewModel = playerMusicListViewModel
                             )
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun launchService(isFromSavedList: Boolean) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val serviceIntent = Intent(this@MainActivity, PlayerService::class.java)
+            serviceIntent.putExtra(PlayerService.IS_FROM_SAVED_LIST, isFromSavedList)
+            startService(serviceIntent)
+            PlayerUtils.playerViewModel.isServiceLaunched = true
         }
     }
 
