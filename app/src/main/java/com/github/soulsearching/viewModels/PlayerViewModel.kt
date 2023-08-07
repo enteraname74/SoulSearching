@@ -63,6 +63,7 @@ class PlayerViewModel : ViewModel() {
             val currentIndex = getIndexOfCurrentMusic()
 
             currentMusic = currentPlaylist[(currentIndex + 1) % currentPlaylist.size]
+            currentMusicPosition = 0
             currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
             currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
         }
@@ -76,6 +77,7 @@ class PlayerViewModel : ViewModel() {
         } else {
             currentPlaylist[currentIndex - 1]
         }
+        currentMusicPosition = 0
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
         currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
