@@ -427,7 +427,9 @@ fun PlayerSwipeableView(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    MinimisedPlayButtonsComposable()
+                    MinimisedPlayButtonsComposable(
+                        playerViewSwipeableState = swipeableState
+                    )
                 }
             }
         }

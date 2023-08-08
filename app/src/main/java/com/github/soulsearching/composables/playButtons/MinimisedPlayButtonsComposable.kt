@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -15,18 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    playerViewSwipeableState: SwipeableState<BottomSheetStates>
 ) {
-    val context = LocalContext.current
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -37,7 +39,11 @@ fun MinimisedPlayButtonsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
-                .clickable { PlayerService.playPrevious() },
+                .clickable {
+                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                        PlayerService.playPrevious()
+                    }
+                },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
         if (PlayerUtils.playerViewModel.isPlaying) {
@@ -46,7 +52,11 @@ fun MinimisedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable {
+                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                            PlayerUtils.playerViewModel.setPlayingState()
+                        }
+                    },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         } else {
@@ -55,7 +65,11 @@ fun MinimisedPlayButtonsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                    .clickable {
+                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                            PlayerUtils.playerViewModel.setPlayingState()
+                        }
+                    },
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
             )
         }
@@ -64,7 +78,11 @@ fun MinimisedPlayButtonsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
-                .clickable { PlayerService.playNext() },
+                .clickable {
+                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                        PlayerService.playNext()
+                    }
+                },
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
         )
     }
