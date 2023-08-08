@@ -13,8 +13,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,20 +45,14 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
-import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-@SuppressLint("UnnecessaryComposedModifier")
+@SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlayerSwipeableView(
@@ -64,17 +60,8 @@ fun PlayerSwipeableView(
     swipeableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     coverList: ArrayList<ImageCover>,
-    musicState: MusicState,
-    playlistState: PlaylistState,
-    onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
-    playlistId: UUID?
 ) {
-    val playerListViewSwipeableState = androidx.compose.material.rememberSwipeableState(
-        BottomSheetStates.MINIMISED
-    )
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val backgroundColor: Color by animateColorAsState(
@@ -179,6 +166,9 @@ fun PlayerSwipeableView(
 
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
+            if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
+                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
+            }
             swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
         }
     }
@@ -236,7 +226,18 @@ fun PlayerSwipeableView(
                     }
                 }
             } else {
-                Modifier
+                if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                    Modifier.clickable {
+                        coroutineScope.launch {
+                            musicListSwipeableState.animateTo(
+                                BottomSheetStates.COLLAPSED,
+                                tween(300)
+                            )
+                        }
+                    }
+                } else {
+                    Modifier
+                }
             }
 
         Box(
@@ -317,24 +318,31 @@ fun PlayerSwipeableView(
                     } else {
                         Modifier.clickable {
                             coroutineScope.launch {
-                                swipeableState.animateTo(
-                                    BottomSheetStates.MINIMISED,
-                                    tween(300)
-                                )
+                                if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
+                                    musicListSwipeableState.animateTo(
+                                        BottomSheetStates.COLLAPSED,
+                                        tween(300)
+                                    )
+                                }
+                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
                             }
                         }
                     }
 
-                Image(
-                    imageVector = Icons.Rounded.KeyboardArrowDown,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .size(Constants.ImageSize.medium)
-                        .composed { backImageClickableModifier },
-                    colorFilter = ColorFilter.tint(textColor),
-                    alpha = alphaTransition
-                )
+                val showMusicListModifier =
+                    if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+                        Modifier
+                    } else {
+                        Modifier.clickable {
+                            coroutineScope.launch {
+                                if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED)
+                                } else {
+                                    musicListSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                }
+                            }
+                        }
+                    }
 
                 Column(
                     modifier = Modifier
@@ -343,30 +351,57 @@ fun PlayerSwipeableView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        modifier = Modifier.width((maxWidth / 4).dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
-                            color = textColor,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
+                        Image(
+                            imageVector = Icons.Rounded.KeyboardArrowDown,
+                            contentDescription = "",
                             modifier = Modifier
-                                .basicMarquee()
+                                .size(Constants.ImageSize.medium)
+                                .composed { backImageClickableModifier },
+                            colorFilter = ColorFilter.tint(textColor),
+                            alpha = alphaTransition
                         )
-                        Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
-                            color = textColor,
-                            fontSize = 15.sp,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.width(250.dp),
-                            overflow = TextOverflow.Ellipsis
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
+                                color = textColor,
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .basicMarquee()
+                            )
+                            Text(
+                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
+                                color = textColor,
+                                fontSize = 15.sp,
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.width(250.dp),
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        Image(
+                            imageVector = Icons.Rounded.QueueMusic,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(Constants.ImageSize.medium)
+                                .composed {
+                                    showMusicListModifier
+                                },
+                            colorFilter = ColorFilter.tint(textColor),
+                            alpha = alphaTransition
                         )
                     }
+
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> {
                             Column(
@@ -433,21 +468,5 @@ fun PlayerSwipeableView(
                 }
             }
         }
-
-        PlayerMusicListView(
-            maxHeight = maxHeight,
-            swipeableState = playerListViewSwipeableState,
-            coverList = coverList,
-            contentColor = contentColor,
-            textColor = textColor,
-            musicState = musicState,
-            playlistState = playlistState,
-            onMusicEvent = onMusicEvent,
-            onPlaylistEvent = onPlaylistEvent,
-            navigateToModifyMusic = navigateToModifyMusic,
-            musicListSwipeableState = musicListSwipeableState,
-            playlistId = playlistId,
-            playerMusicListViewModel = playerMusicListViewModel
-        )
     }
 }

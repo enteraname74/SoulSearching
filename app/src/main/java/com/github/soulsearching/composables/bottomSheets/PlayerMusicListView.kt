@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables.bottomSheets
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -18,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.MusicList
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.MusicEvent
@@ -50,26 +53,32 @@ fun PlayerMusicListView(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
-    playlistId: UUID?,
     playerMusicListViewModel: PlayerMusicListViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+    val height = when(LocalConfiguration.current.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> 0f
+        else -> (maxHeight / 4)
+    }
+
+    BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
         }
     }
 
     val mainBoxClickableModifier =
-        Modifier.clickable {
-            coroutineScope.launch {
-                when(swipeableState.currentValue) {
-                    BottomSheetStates.MINIMISED -> swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
-                    else -> swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+        if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+            Modifier.clickable {
+                coroutineScope.launch {
+                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
                 }
             }
+        } else {
+            Modifier
         }
+
 
     Box(
         modifier = Modifier
@@ -77,15 +86,15 @@ fun PlayerMusicListView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = swipeableState.offset.value.roundToInt()
+                    y = musicListSwipeableState.offset.value.roundToInt()
                 )
             }
             .swipeable(
-                state = swipeableState,
+                state = musicListSwipeableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
-                    0f to BottomSheetStates.EXPANDED,
-                    (maxHeight - 140f) to BottomSheetStates.MINIMISED
+                    height to BottomSheetStates.EXPANDED,
+                    maxHeight to BottomSheetStates.COLLAPSED,
                 )
             )
     ) {
@@ -103,7 +112,7 @@ fun PlayerMusicListView(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
+                    .height(40.dp)
                     .composed {
                         mainBoxClickableModifier
                     },
@@ -126,9 +135,10 @@ fun PlayerMusicListView(
                 retrieveCoverMethod = {uuid ->
                     coverList.find { it.coverId == uuid }?.cover
                 },
-                swipeableState = musicListSwipeableState,
-                playlistId = playlistId,
-                playerMusicListViewModel = playerMusicListViewModel
+                swipeableState = swipeableState,
+                playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
+                playerMusicListViewModel = playerMusicListViewModel,
+                isMainPlaylist = PlayerUtils.playerViewModel.isMainPlaylist
             )
         }
     }

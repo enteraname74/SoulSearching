@@ -22,4 +22,7 @@ interface PlayerMusicDao {
 
     @Query("SELECT * FROM PlayerMusic")
     suspend fun getAllPlayerMusics(): List<PlayerWithMusicItem>
+
+    @Query("SELECT * FROM PlayerMusic")
+    fun getAllPlayerMusicsFlow(): Flow<List<PlayerWithMusicItem>>
 }

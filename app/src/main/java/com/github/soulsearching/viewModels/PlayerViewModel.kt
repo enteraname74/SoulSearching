@@ -16,6 +16,7 @@ import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
 import java.lang.Integer.max
 import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("MutableCollectionMutableState")
 class PlayerViewModel : ViewModel() {
@@ -28,7 +29,7 @@ class PlayerViewModel : ViewModel() {
     var currentPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylistId by mutableStateOf<UUID?>(null)
 
-    private var isMainPlaylist by mutableStateOf(false)
+    var isMainPlaylist by mutableStateOf(false)
     var isPlaying by mutableStateOf(false)
 
     var shouldServiceBeLaunched by mutableStateOf(false)
@@ -151,7 +152,6 @@ class PlayerViewModel : ViewModel() {
                 currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
                 if (shouldServiceBeLaunched) {
                     PlayerService.setAndPlayCurrentMusic()
-
                 }
             }
         } else {

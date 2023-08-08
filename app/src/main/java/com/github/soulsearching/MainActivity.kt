@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.content.ContextCompat
@@ -34,11 +35,12 @@ import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.composables.*
+import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.service.notification.SoulSearchingNotificationService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,8 +95,12 @@ class MainActivity : AppCompatActivity() {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
+                val playerMusicState by playerMusicListViewModel.state.collectAsState()
 
                 val swipeableState = rememberSwipeableState(
+                    BottomSheetStates.COLLAPSED
+                )
+                val musicListSwipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
                 val coroutineScope = rememberCoroutineScope()
@@ -427,15 +433,24 @@ class MainActivity : AppCompatActivity() {
                                 maxHeight = maxHeight,
                                 swipeableState = swipeableState,
                                 coverList = coversState.covers,
-                                musicState = MusicState(),
+                                musicListSwipeableState = musicListSwipeableState,
+                                playerMusicListViewModel = playerMusicListViewModel
+                            )
+
+                            PlayerMusicListView(
+                                maxHeight = maxHeight,
+                                swipeableState = swipeableState,
+                                coverList = coversState.covers,
+                                contentColor = Color.White,
+                                textColor = Color.Black,
+                                musicState = playerMusicState,
                                 playlistState = playlistState,
-                                onMusicEvent = allMusicsViewModel::onMusicEvent,
+                                onMusicEvent = playerMusicListViewModel::onMusicEvent,
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = {
                                     navController.navigate("modifyMusic/$it")
                                 },
-                                musicListSwipeableState = swipeableState,
-                                playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
+                                musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel
                             )
                         }
@@ -459,6 +474,6 @@ class MainActivity : AppCompatActivity() {
         SharedPrefUtils.setCurrentMusicPosition()
         val notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(1)
+        notificationManager.cancel(SoulSearchingNotificationService.CHANNEL_ID)
     }
 }

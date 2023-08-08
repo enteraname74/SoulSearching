@@ -33,7 +33,8 @@ fun MusicList(
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
+    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    isMainPlaylist: Boolean = false
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -60,7 +61,8 @@ fun MusicList(
                             music = music,
                             playlist = musicState.musics,
                             playlistId = playlistId,
-                            bitmap = retrieveCoverMethod(music.coverId)
+                            bitmap = retrieveCoverMethod(music.coverId),
+                            isMainPlaylist = isMainPlaylist
                         )
                         playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                     }

@@ -18,7 +18,6 @@ import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.SoulSearchingNotificationService
-import com.github.soulsearching.viewModels.PlayerViewModel
 import kotlinx.coroutines.*
 import java.lang.Integer.max
 
