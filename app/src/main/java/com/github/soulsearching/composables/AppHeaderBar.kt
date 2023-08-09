@@ -1,14 +1,21 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.soulsearching.R
 import com.github.soulsearching.ui.theme.DynamicColor
 
@@ -20,39 +27,46 @@ fun AppHeaderBar(
     leftIcon : ImageVector = Icons.Rounded.ArrowBack,
     rightAction : () -> Unit = {},
     rightIcon : ImageVector? = null,
-    isTransparent: Boolean = false
+    backgroundColor: Color = DynamicColor.primary,
+    contentColor: Color = DynamicColor.onPrimary
 ) {
-    CenterAlignedTopAppBar(
-        title = {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(backgroundColor),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        IconButton(onClick = leftAction) {
+            Icon(
+                imageVector = leftIcon,
+                contentDescription = stringResource(id = R.string.back_button),
+                tint = contentColor
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Text(
                 text = title,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                fontSize = 18.sp,
+                color = contentColor,
+                overflow = TextOverflow.Ellipsis,
             )
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = if (isTransparent) Color.Companion.Transparent else DynamicColor.primary,
-            titleContentColor = DynamicColor.onPrimary,
-            navigationIconContentColor = DynamicColor.onPrimary,
-            actionIconContentColor = DynamicColor.onPrimary,
-        ),
-        navigationIcon = {
-            IconButton(onClick = leftAction) {
+        }
+
+        if (rightIcon != null) {
+            IconButton(onClick = rightAction) {
                 Icon(
-                    imageVector = leftIcon,
-                    contentDescription = stringResource(id = R.string.back_button),
+                    imageVector = rightIcon,
+                    contentDescription = stringResource(id = R.string.header_bar_right_button),
+                    tint = contentColor
                 )
             }
-        },
-        actions = {
-            if (rightIcon != null) {
-                IconButton(onClick = rightAction) {
-                    Icon(
-                        imageVector = rightIcon,
-                        contentDescription = stringResource(id = R.string.header_bar_right_button)
-                    )
-                }
-            }
+        } else {
+            Spacer(modifier = Modifier.size(48.dp))
         }
-    )
+    }
 }
