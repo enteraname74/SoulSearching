@@ -4,33 +4,35 @@ package com.github.soulsearching.composables
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.BottomSheetStates
@@ -42,11 +44,14 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 import java.util.*
+import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistScreen(
     musicState: MusicState,
@@ -64,6 +69,7 @@ fun PlaylistScreen(
     playlistId: UUID?
 ) {
     val configuration = LocalConfiguration.current
+    val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
 
     val shuffleAction = {
@@ -77,111 +83,122 @@ fun PlaylistScreen(
             }
     }
 
-    var max: Dp
-    var start: Dp
-    var center: Dp
-    var end: Dp
-    var centerPadding: Dp
-    var musicListModifier: Modifier
+    when (orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
-    ) {
-        when (configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                max = this.maxWidth
-                start = max / 2
-                center = 80.dp
-                end = max / 2
-                centerPadding = end - center / 2
-                musicListModifier = Modifier
-                    .fillMaxHeight()
-                    .align(Alignment.TopEnd)
-                    .width(end - (end - centerPadding))
-                    .background(color = MaterialTheme.colorScheme.secondary)
-                    .padding(
-                        start = Constants.Spacing.large,
-                        end = Constants.Spacing.large
-                    )
-
-                TopPlaylistInformation(
+        }
+        else -> {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .background(DynamicColor.primary)
+            ) {
+                PlaylistHeaderBar(
                     title = title,
-                    image = image,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .align(Alignment.TopStart)
-                        .width(start),
-                    alignment = Alignment.TopStart,
                     navigateBack = navigateBack
                 )
-                ColumnPlaylistPanel(
+                LazyColumn(
                     modifier = Modifier
-                        .padding(end = centerPadding)
-                        .fillMaxHeight()
-                        .width(center)
-                        .align(Alignment.CenterEnd),
-                    editAction = navigateToModifyPlaylist,
-                    shuffleAction = {
-                        shuffleAction()
+                        .fillMaxSize()
+                        .background(DynamicColor.primary)
+                ) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(Constants.Spacing.large),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AppImage(
+                                bitmap = image,
+                                size = Constants.ImageSize.huge,
+                                roundedPercent = 5
+                            )
+                        }
                     }
-                )
-            }
-            else -> {
-                max = this.maxHeight
-                start = max / 3
-                center = 80.dp
-                end = max * 2 / 3
-                centerPadding = end - center / 2
-                musicListModifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart)
-                    .height(end - (end - centerPadding))
-                    .clip(RoundedCornerShape(topStart = 30f, topEnd = 30f))
-                    .background(color = MaterialTheme.colorScheme.secondary)
-                    .padding(
-                        top = Constants.Spacing.large,
-                        start = Constants.Spacing.large,
-                        end = Constants.Spacing.large
-                    )
-
-                TopPlaylistInformation(
-                    title = title,
-                    image = image,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopStart)
-                        .height(start),
-                    alignment = Alignment.TopStart,
-                    navigateBack = navigateBack
-                )
-                RowPlaylistPanel(
-                    modifier = Modifier
-                        .padding(bottom = centerPadding)
-                        .fillMaxWidth()
-                        .height(center)
-                        .align(Alignment.BottomCenter),
-                    editAction = navigateToModifyPlaylist,
-                    shuffleAction = {
-                        shuffleAction()
+                    stickyHeader {
+                        RowPlaylistPanel(
+                            editAction = navigateToModifyPlaylist,
+                            shuffleAction = { shuffleAction() }
+                        )
                     }
-                )
+                    items(items = musicState.musics, key = { music -> music.musicId }) { music ->
+                        Row(Modifier.animateItemPlacement()) {
+                            MusicItemComposable(
+                                music = music,
+                                onClick = { music ->
+                                    coroutineScope.launch {
+                                        swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                    }.invokeOnCompletion {
+                                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                            music = music,
+                                            playlist = musicState.musics,
+                                            isMainPlaylist = true,
+                                            playlistId = null,
+                                            bitmap = retrieveCoverMethod(music.coverId)
+                                        )
+                                        playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
+                                    }
+                                },
+                                onLongClick = {
+                                    coroutineScope.launch {
+                                        onMusicEvent(
+                                            MusicEvent.SetSelectedMusic(
+                                                music
+                                            )
+                                        )
+                                        onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                musicCover = retrieveCoverMethod(music.coverId),
+                            )
+                        }
+                    }
+                }
             }
         }
-        MusicList(
-            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
-            musicState = musicState,
-            playlistState = playlistState,
-            onMusicEvent = onMusicEvent,
-            onPlaylistEvent = onPlaylistEvent,
-            navigateToModifyMusic = navigateToModifyMusic,
-            modifier = musicListModifier,
-            retrieveCoverMethod = { retrieveCoverMethod(it) },
-            swipeableState = swipeableState,
-            playlistId = playlistId,
-            playerMusicListViewModel = playerMusicListViewModel
-        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PlaylistHeaderBar(
+    title: String,
+    navigateBack: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(DynamicColor.primary),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        IconButton(onClick = navigateBack) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = stringResource(id = R.string.back_button),
+                tint = DynamicColor.onPrimary
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = title,
+                maxLines = 2,
+                fontSize = 18.sp,
+                color = DynamicColor.onPrimary,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.basicMarquee()
+            )
+        }
+
+        Spacer(modifier = Modifier.size(48.dp))
     }
 }
 

@@ -1,18 +1,20 @@
 package com.github.soulsearching.composables.playlistComposable
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.Shuffle
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistAdd
+import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import com.github.soulsearching.Constants
+import androidx.compose.ui.unit.dp
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun ImagesButton(
@@ -21,27 +23,44 @@ fun ImagesButton(
 ) {
     Image(
         modifier = Modifier
-            .padding(Constants.Spacing.medium)
-            .size(Constants.ImageSize.medium)
+            .size(48.dp)
+            .background(
+                color = DynamicColor.secondary,
+                shape = CircleShape
+            )
             .clickable {
                 editAction()
-            },
-        imageVector = Icons.Default.Edit,
+            }
+            .padding(10.dp),
+        imageVector = Icons.Rounded.Edit,
         contentDescription = "",
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
-    )
-    Image(
-        modifier = Modifier.size(Constants.ImageSize.medium),
-        imageVector = Icons.Default.PlaylistAdd,
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
     )
     Image(
         modifier = Modifier
-            .size(Constants.ImageSize.medium)
-            .clickable { shuffleAction() },
-        imageVector = Icons.Default.Shuffle,
+            .size(48.dp)
+            .background(
+                color = DynamicColor.secondary,
+                shape = CircleShape
+            )
+            .padding(10.dp),
+        imageVector = Icons.Rounded.PlaylistAdd,
         contentDescription = "",
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary)
+        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+    )
+    Image(
+        modifier = Modifier
+            .size(48.dp)
+            .background(
+                color = DynamicColor.secondary,
+                shape = CircleShape
+            )
+            .clickable {
+                shuffleAction()
+            }
+            .padding(10.dp),
+        imageVector = Icons.Rounded.Shuffle,
+        contentDescription = "",
+        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
     )
 }

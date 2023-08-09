@@ -2,8 +2,10 @@ package com.github.soulsearching.composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -15,9 +17,10 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun AppHeaderBar(
     title : String,
     leftAction : () -> Unit,
-    leftIcon : ImageVector = Icons.Default.ArrowBack,
+    leftIcon : ImageVector = Icons.Rounded.ArrowBack,
     rightAction : () -> Unit = {},
-    rightIcon : ImageVector? = null
+    rightIcon : ImageVector? = null,
+    isTransparent: Boolean = false
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -28,7 +31,7 @@ fun AppHeaderBar(
             )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = DynamicColor.primary,
+            containerColor = if (isTransparent) Color.Companion.Transparent else DynamicColor.primary,
             titleContentColor = DynamicColor.onPrimary,
             navigationIconContentColor = DynamicColor.onPrimary,
             actionIconContentColor = DynamicColor.onPrimary,
