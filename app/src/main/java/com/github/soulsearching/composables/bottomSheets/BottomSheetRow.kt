@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun BottomSheetRow(
@@ -32,11 +33,11 @@ fun BottomSheetRow(
             modifier = Modifier.size(Constants.ImageSize.medium),
             imageVector = icon,
             contentDescription = text,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+            colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
         )
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = DynamicColor.onSecondary
         )
     }
 }

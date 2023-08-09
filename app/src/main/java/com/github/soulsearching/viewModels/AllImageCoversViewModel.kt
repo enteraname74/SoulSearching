@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.*
 import javax.inject.Inject
 
@@ -39,8 +41,23 @@ class AllImageCoversViewModel @Inject constructor(
         ImageCoverState()
     )
 
-    fun getImageCover(coverId : UUID?) : Bitmap? {
+    fun getImageCover(coverId: UUID?): Bitmap? {
         return state.value.covers.find { it.coverId == coverId }?.cover
+    }
+
+
+    private var mutex = Mutex()
+    suspend fun getCover(coverId: UUID?): Bitmap? {
+
+        mutex.withLock {
+            return if (coverId != null) {
+                val res = imageCoverDao.getCoverOfElement(coverId = coverId)?.cover
+                res
+            } else {
+                null
+            }
+        }
+
     }
 
 //    fun updateCovers(coverId : UUID) {
@@ -55,7 +72,7 @@ class AllImageCoversViewModel @Inject constructor(
 //        }
 //    }
 
-    suspend fun verifyIfImageIsUsed(cover : ImageCover) {
+    suspend fun verifyIfImageIsUsed(cover: ImageCover) {
         if (
             musicDao.getNumberOfMusicsWithCoverId(cover.coverId) == 0
             && albumDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0

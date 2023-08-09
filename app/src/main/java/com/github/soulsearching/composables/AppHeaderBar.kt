@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.soulsearching.R
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,10 +28,10 @@ fun AppHeaderBar(
             )
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            containerColor = DynamicColor.primary,
+            titleContentColor = DynamicColor.onPrimary,
+            navigationIconContentColor = DynamicColor.onPrimary,
+            actionIconContentColor = DynamicColor.onPrimary,
         ),
         navigationIcon = {
             IconButton(onClick = leftAction) {

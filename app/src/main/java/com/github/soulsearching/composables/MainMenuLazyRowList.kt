@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.PlaylistWithMusics
+import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -60,7 +60,7 @@ fun MainMenuLazyListRow(
                     TextButton(onClick = navigateToMore) {
                         Text(
                             text = stringResource(id = R.string.more),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = DynamicColor.onPrimary
                         )
                     }
                 }

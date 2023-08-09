@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -37,6 +36,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.SelectedAlbumState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.ModifyAlbumViewModel
 import java.util.*
 
@@ -101,7 +101,7 @@ fun ModifyAlbumScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(DynamicColor.secondary)
                             .padding(padding)
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
@@ -119,7 +119,7 @@ fun ModifyAlbumScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.album_cover),
-                                color = MaterialTheme.colorScheme.onSecondary
+                                color = DynamicColor.onSecondary
                             )
                             AppImage(
                                 bitmap = albumState.albumCover,
@@ -131,7 +131,7 @@ fun ModifyAlbumScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .weight(2F)
-                                .background(color = MaterialTheme.colorScheme.primary)
+                                .background(color = DynamicColor.primary)
                                 .padding(Constants.Spacing.medium),
                             selectedAlbumState = albumState,
                             focusManager = focusManager,
@@ -150,7 +150,7 @@ fun ModifyAlbumScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(DynamicColor.secondary)
                             .padding(padding)
                             .padding(top = Constants.Spacing.medium)
                             .pointerInput(Unit) {
@@ -169,7 +169,7 @@ fun ModifyAlbumScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.album_cover),
-                                color = MaterialTheme.colorScheme.onSecondary
+                                color = DynamicColor.onSecondary
                             )
                             AppImage(
                                 bitmap = albumState.albumCover,
@@ -182,7 +182,7 @@ fun ModifyAlbumScreen(
                                 .fillMaxSize()
                                 .weight(1F)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
-                                .background(color = MaterialTheme.colorScheme.primary)
+                                .background(color = DynamicColor.primary)
                                 .padding(Constants.Spacing.medium),
                             selectedAlbumState = albumState,
                             focusManager = focusManager,

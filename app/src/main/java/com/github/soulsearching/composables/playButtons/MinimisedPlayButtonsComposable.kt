@@ -22,6 +22,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -44,7 +45,7 @@ fun MinimisedPlayButtonsComposable(
                         PlayerService.playPrevious()
                     }
                 },
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+            colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
         )
         if (PlayerUtils.playerViewModel.isPlaying) {
             Image(
@@ -57,7 +58,7 @@ fun MinimisedPlayButtonsComposable(
                             PlayerUtils.playerViewModel.setPlayingState()
                         }
                     },
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
             )
         } else {
             Image(
@@ -70,7 +71,7 @@ fun MinimisedPlayButtonsComposable(
                             PlayerUtils.playerViewModel.setPlayingState()
                         }
                     },
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+                colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
             )
         }
         Image(
@@ -83,7 +84,7 @@ fun MinimisedPlayButtonsComposable(
                         PlayerService.playNext()
                     }
                 },
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSecondary)
+            colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
         )
     }
 }

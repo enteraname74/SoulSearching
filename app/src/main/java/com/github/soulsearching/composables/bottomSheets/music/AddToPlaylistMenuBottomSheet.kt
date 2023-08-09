@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,6 +18,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlaylistSelectableComposable
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(
@@ -29,7 +29,7 @@ fun AddToPlaylistMenuBottomSheet(
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.primary)
+        .background(DynamicColor.secondary)
         .padding(Constants.Spacing.medium)
     ) {
         AppHeaderBar(

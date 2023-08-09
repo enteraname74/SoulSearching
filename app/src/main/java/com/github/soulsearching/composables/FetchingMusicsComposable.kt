@@ -25,6 +25,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicUtils
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.ui.theme.DynamicColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ fun FetchingMusicsComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.primary),
+                    .background(color = DynamicColor.primary),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -68,7 +69,7 @@ fun FetchingMusicsComposable(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.primary)
+                    .background(color = DynamicColor.primary)
                     .padding(top = Constants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
@@ -111,13 +112,13 @@ fun ProgressIndicatorComposable(
         Text(
             modifier = Modifier.padding(Constants.Spacing.medium),
             text = stringResource(id = R.string.searching_songs_from_your_device),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = DynamicColor.onPrimary,
             textAlign = TextAlign.Center
         )
         LinearProgressIndicator(
             progress = progress,
-            trackColor = MaterialTheme.colorScheme.secondary,
-            color = MaterialTheme.colorScheme.onSecondary
+            trackColor = DynamicColor.secondary,
+            color = DynamicColor.onSecondary
         )
     }
 
@@ -132,11 +133,11 @@ fun SoulSearchingLogo() {
             modifier = Modifier.size(Constants.ImageSize.veryLarge),
             painter = painterResource(id = R.drawable.ic_saxophone_svg),
             contentDescription = stringResource(id = R.string.app_logo),
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onPrimary)
+            colorFilter = ColorFilter.tint(color = DynamicColor.onPrimary)
         )
         Text(
             text = stringResource(id = R.string.app_name),
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = DynamicColor.onPrimary,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )

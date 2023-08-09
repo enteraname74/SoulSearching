@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
@@ -51,7 +52,7 @@ fun BigPreviewComposable(
         AppImage(bitmap = image, size = imageSize, roundedPercent = roundedPercent)
         Text(
             text = title,
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = DynamicColor.onSecondary,
             fontWeight = FontWeight.Bold,
             style = titleStyle,
             maxLines = 1,
@@ -59,7 +60,7 @@ fun BigPreviewComposable(
         )
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = DynamicColor.onSecondary,
             style = textStyle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

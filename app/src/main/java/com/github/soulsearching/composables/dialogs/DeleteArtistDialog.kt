@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.R
 import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun DeleteArtistDialog(
@@ -30,7 +31,7 @@ fun DeleteArtistDialog(
             }) {
                 Text(
                     text = stringResource(id = R.string.delete),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = DynamicColor.onPrimary
                 )
             }
         },
@@ -38,7 +39,7 @@ fun DeleteArtistDialog(
             TextButton(onClick = { onArtistEvent(ArtistEvent.DeleteDialog(isShown = false)) }) {
                 Text(
                     text = stringResource(id = R.string.cancel),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = DynamicColor.onPrimary
                 )
             }
         },
@@ -53,12 +54,12 @@ fun DeleteArtistDialog(
             Image(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(id = R.string.delete),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary)
+                colorFilter = ColorFilter.tint(DynamicColor.onPrimary)
             )
         },
-        containerColor = MaterialTheme.colorScheme.primary,
-        textContentColor = MaterialTheme.colorScheme.onPrimary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        iconContentColor = MaterialTheme.colorScheme.onPrimary
+        containerColor = DynamicColor.primary,
+        textContentColor = DynamicColor.onPrimary,
+        titleContentColor = DynamicColor.onPrimary,
+        iconContentColor = DynamicColor.onPrimary
     )
 }

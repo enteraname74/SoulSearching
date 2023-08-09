@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables.bottomSheets
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -19,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -33,6 +31,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -45,8 +44,6 @@ fun PlayerMusicListView(
     maxHeight: Float,
     swipeableState: SwipeableState<BottomSheetStates>,
     coverList: ArrayList<ImageCover>,
-    contentColor: Color,
-    textColor: Color,
     musicState: MusicState,
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
@@ -56,11 +53,6 @@ fun PlayerMusicListView(
     playerMusicListViewModel: PlayerMusicListViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
-
-    val height = when(LocalConfiguration.current.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> 0f
-        else -> (maxHeight / 4)
-    }
 
     BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
@@ -93,7 +85,7 @@ fun PlayerMusicListView(
                 state = musicListSwipeableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
-                    height to BottomSheetStates.EXPANDED,
+                    0f to BottomSheetStates.EXPANDED,
                     maxHeight to BottomSheetStates.COLLAPSED,
                 )
             )
@@ -102,7 +94,7 @@ fun PlayerMusicListView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = contentColor,
+                    color = DynamicColor.secondary,
                     shape = RoundedCornerShape(
                         topStartPercent = 8,
                         topEndPercent = 8
@@ -121,7 +113,7 @@ fun PlayerMusicListView(
             ) {
                 Text(
                     text = stringResource(id = R.string.played_list),
-                    color = textColor,
+                    color = DynamicColor.onSecondary,
                     fontSize = 15.sp
                 )
             }
@@ -131,7 +123,6 @@ fun PlayerMusicListView(
                 onMusicEvent = onMusicEvent,
                 onPlaylistEvent = onPlaylistEvent,
                 navigateToModifyMusic = navigateToModifyMusic,
-                modifier = Modifier,
                 retrieveCoverMethod = {uuid ->
                     coverList.find { it.coverId == uuid }?.cover
                 },

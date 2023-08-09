@@ -7,13 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DoubleArrow
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.bottomSheets.BottomSheetRow
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun AlbumBottomSheetMenu(
@@ -23,7 +23,7 @@ fun AlbumBottomSheetMenu(
 ) {
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = DynamicColor.secondary)
             .padding(Constants.Spacing.large)
     ) {
         BottomSheetRow(

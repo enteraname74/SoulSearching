@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,12 +39,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
@@ -64,24 +65,23 @@ fun PlayerSwipeableView(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
     val backgroundColor: Color by animateColorAsState(
         targetValue =
-        if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null) {
-            MaterialTheme.colorScheme.secondary
+        if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+            DynamicColor.secondary
+        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+            DynamicColor.primary
         } else {
-            Color(
-                ColorUtils.blendARGB(
-                    PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                    Color.Black.toArgb(),
-                    0.5f
-                )
-            )
+            ColorPaletteUtils.getPrimaryColor()
         },
         tween(300)
     )
     val textColor: Color by animateColorAsState(
-        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null) {
-            MaterialTheme.colorScheme.onSecondary
+        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+            DynamicColor.onSecondary
+        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+            DynamicColor.onPrimary
         } else {
             Color.White
         },
@@ -90,15 +90,9 @@ fun PlayerSwipeableView(
 
     val contentColor: Color by animateColorAsState(
         targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null) {
-            MaterialTheme.colorScheme.primary
+            DynamicColor.secondary
         } else {
-            Color(
-                ColorUtils.blendARGB(
-                    PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                    Color.Black.toArgb(),
-                    0.2f
-                )
-            )
+            ColorPaletteUtils.getSecondaryColor()
         },
         tween(300)
     )
@@ -107,19 +101,11 @@ fun PlayerSwipeableView(
     val statusBarColor: Color by animateColorAsState(
         targetValue =
         if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
-            MaterialTheme.colorScheme.primary
+            DynamicColor.primary
+        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+            DynamicColor.secondary
         } else {
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.secondary
-            } else {
-                Color(
-                    ColorUtils.blendARGB(
-                        PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                        Color.Black.toArgb(),
-                        0.5f
-                    )
-                )
-            }
+            ColorPaletteUtils.getPrimaryColor()
         },
         tween(300)
     )
@@ -127,21 +113,13 @@ fun PlayerSwipeableView(
     val navigationBarColor: Color by animateColorAsState(
         targetValue =
         if (swipeableState.currentValue == BottomSheetStates.COLLAPSED) {
-            MaterialTheme.colorScheme.primary
+            DynamicColor.primary
         } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
-            MaterialTheme.colorScheme.secondary
+            DynamicColor.secondary
+        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+            DynamicColor.primary
         } else {
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                Color(
-                    ColorUtils.blendARGB(
-                        PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                        Color.Black.toArgb(),
-                        0.2f
-                    )
-                )
-            }
+            ColorPaletteUtils.getSecondaryColor()
         },
         tween(300)
     )

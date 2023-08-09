@@ -2,6 +2,7 @@ package com.github.soulsearching.composables
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -12,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,18 +22,43 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.ui.theme.DynamicColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.reflect.KSuspendFunction1
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicItemComposable(
+fun MusicItemComposableTest(
     music: Music,
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
     musicCover: Bitmap? = null,
+    recoverMethod: KSuspendFunction1<UUID?, Bitmap?>
 ) {
+
+    var test by rememberSaveable {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    var isCoverFetched by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+    if (!isCoverFetched) {
+        Log.d("MUSIC ITEM", "WILL FETCH")
+        DisposableEffect(key1 = music.musicId) {
+            CoroutineScope(Dispatchers.IO).launch {
+                test = recoverMethod(music.coverId)
+                isCoverFetched = true
+            }
+            onDispose {  }
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -47,7 +74,7 @@ fun MusicItemComposable(
         Row(
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            AppImage(bitmap = musicCover, size = 55.dp)
+            AppImage(bitmap = test, size = 55.dp)
             Column(
                 modifier = Modifier
                     .height(55.dp)
@@ -56,14 +83,14 @@ fun MusicItemComposable(
             ) {
                 Text(
                     text = music.name,
-                    color = DynamicColor.onPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
-                    color = DynamicColor.onPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -75,7 +102,7 @@ fun MusicItemComposable(
             modifier = Modifier.clickable { onLongClick() },
             imageVector = Icons.Default.MoreVert,
             contentDescription = stringResource(id = R.string.more_button),
-            tint = DynamicColor.onPrimary
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }

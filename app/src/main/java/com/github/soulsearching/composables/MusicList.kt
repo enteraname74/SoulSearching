@@ -29,7 +29,7 @@ fun MusicList(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyMusic: (String) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?,

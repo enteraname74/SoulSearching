@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables.dialogs
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun CreatePlaylistDialog(
@@ -36,7 +36,7 @@ fun CreatePlaylistDialog(
             }) {
                 Text(
                     text = stringResource(id = R.string.create),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = DynamicColor.onPrimary
                 )
             }
         },
@@ -44,7 +44,7 @@ fun CreatePlaylistDialog(
             TextButton(onClick = { onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false)) }) {
                 Text(
                     text = stringResource(id = R.string.cancel),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = DynamicColor.onPrimary
                 )
             }
         },
@@ -52,7 +52,8 @@ fun CreatePlaylistDialog(
             Text(
                 text = stringResource(id = R.string.create_playlist_dialog_title),
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = DynamicColor.onPrimary
             )
         },
         text = {
@@ -63,9 +64,9 @@ fun CreatePlaylistDialog(
                 focusManager = focusManager
             )
         },
-        containerColor = MaterialTheme.colorScheme.primary,
-        textContentColor = MaterialTheme.colorScheme.onPrimary,
-        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        iconContentColor = MaterialTheme.colorScheme.onPrimary
+        containerColor = DynamicColor.primary,
+        textContentColor = DynamicColor.onPrimary,
+        titleContentColor = DynamicColor.onPrimary,
+        iconContentColor = DynamicColor.onPrimary
     )
 }

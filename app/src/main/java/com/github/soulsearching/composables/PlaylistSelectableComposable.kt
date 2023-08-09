@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun PlaylistSelectableComposable(
@@ -38,14 +39,14 @@ fun PlaylistSelectableComposable(
             ) {
                 Text(
                     text = playlist.name,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = DynamicColor.onPrimary,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = DynamicColor.onPrimary,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -58,7 +59,7 @@ fun PlaylistSelectableComposable(
                 onClick()
             },
             colors = CheckboxDefaults.colors(
-                checkmarkColor = MaterialTheme.colorScheme.onPrimary
+                checkmarkColor = DynamicColor.onPrimary
             )
         )
     }

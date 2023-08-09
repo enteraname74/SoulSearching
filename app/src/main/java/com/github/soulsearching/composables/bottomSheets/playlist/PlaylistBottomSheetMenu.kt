@@ -21,7 +21,7 @@ fun PlaylistBottomSheetMenu(
 ) {
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = MaterialTheme.colorScheme.secondary)
             .padding(Constants.Spacing.large)
     ) {
         BottomSheetRow(

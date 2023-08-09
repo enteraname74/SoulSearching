@@ -115,12 +115,6 @@ class Utils {
             }
         }
 
-        suspend fun checkAndDeleteCovers(
-            imageCoverDao: ImageCoverDao,
-            legacyCoverId: UUID
-        ) {
-        }
-
         suspend fun modifyMusicAlbum(
             artist: Artist,
             musicAlbumDao: MusicAlbumDao,

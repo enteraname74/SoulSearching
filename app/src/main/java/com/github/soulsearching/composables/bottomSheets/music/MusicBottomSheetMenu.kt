@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -13,6 +12,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.composables.bottomSheets.BottomSheetRow
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -26,7 +26,7 @@ fun MusicBottomSheetMenu(
 ) {
     Column(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = DynamicColor.secondary)
             .padding(Constants.Spacing.large)
     ) {
         BottomSheetRow(

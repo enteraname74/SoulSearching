@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.AllAlbumsViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -58,7 +58,7 @@ fun MoreAlbumsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = MaterialTheme.colorScheme.secondary)
+                    .background(color = DynamicColor.secondary)
             ) {
                 Row(
                     modifier = Modifier

@@ -18,11 +18,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.content.ContextCompat
@@ -41,6 +39,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.service.notification.SoulSearchingNotificationService
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -174,11 +173,9 @@ class MainActivity : AppCompatActivity() {
                                 context,
                                 android.Manifest.permission.READ_EXTERNAL_STORAGE
                             ) -> {
-                                Log.d("MAIN ACTIVITY", "ALREADY HAS READ PERMISSION")
                                 isReadPermissionGranted = true
                             }
                             else -> {
-                                Log.d("MAIN ACTIVITY", "ASK READ PERMISSION")
                                 readPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                             }
                         }
@@ -186,7 +183,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (isReadPermissionGranted) {
-                    Log.d("MAIN ACTIVITY", "READ PERMISSION GRANTED")
                     if (!hasMusicsBeenFetched) {
                         Log.d("MAIN ACTIVITY", "FETCH MUSICS")
                         FetchingMusicsComposable(
@@ -219,7 +215,7 @@ class MainActivity : AppCompatActivity() {
                         BoxWithConstraints(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(color = MaterialTheme.colorScheme.primary)
+                                .background(color = DynamicColor.primary)
                         ) {
                             val navController = rememberNavController()
                             val constraintsScope = this
@@ -441,8 +437,6 @@ class MainActivity : AppCompatActivity() {
                                 maxHeight = maxHeight,
                                 swipeableState = swipeableState,
                                 coverList = coversState.covers,
-                                contentColor = Color.White,
-                                textColor = Color.Black,
                                 musicState = playerMusicState,
                                 playlistState = playlistState,
                                 onMusicEvent = playerMusicListViewModel::onMusicEvent,

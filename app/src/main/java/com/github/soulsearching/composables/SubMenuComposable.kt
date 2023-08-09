@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
+import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun SubMenuComposable(
@@ -28,7 +29,7 @@ fun SubMenuComposable(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = DynamicColor.primary)
             .padding(
                 top = Constants.Spacing.medium,
                 start = Constants.Spacing.medium,
@@ -39,7 +40,7 @@ fun SubMenuComposable(
     ) {
         Text(
             text = title,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = DynamicColor.onPrimary,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
         )

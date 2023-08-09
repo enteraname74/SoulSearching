@@ -33,6 +33,7 @@ import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -134,7 +135,7 @@ fun MainPageScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(DynamicColor.primary)
                     .padding(paddingValues)
             ) {
                 item {
@@ -153,7 +154,7 @@ fun MainPageScreen(
                                 TextButton(onClick = {}) {
                                     Text(
                                         text = stringResource(id = R.string.more),
-                                        color = MaterialTheme.colorScheme.onPrimary
+                                        color = DynamicColor.onPrimary
                                     )
                                 }
                             },
@@ -215,7 +216,7 @@ fun MainPageScreen(
                                     .size(Constants.ImageSize.medium),
                                 imageVector = Icons.Default.Add,
                                 contentDescription = stringResource(id = R.string.create_playlist_button),
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = DynamicColor.onPrimary
                             )
                         },
                         sortByName = {
@@ -484,7 +485,7 @@ fun MainPageScreen(
                                     },
                                 imageVector = Icons.Default.Shuffle,
                                 contentDescription = stringResource(id = R.string.shuffle_button_desc),
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = DynamicColor.onPrimary
                             )
                         },
                         sortType = musicState.sortType,
@@ -523,7 +524,8 @@ fun MainPageScreen(
                                     )
                                 }
                             },
-                            musicCover = allImageCoversViewModel.getImageCover(music.coverId)
+                            musicCover = allImageCoversViewModel.getImageCover(music.coverId),
+//                            recoverMethod = allImageCoversViewModel::getCover
                         )
                     }
                 }

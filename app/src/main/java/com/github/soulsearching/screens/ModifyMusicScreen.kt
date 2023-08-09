@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -37,6 +36,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.ModifyMusicViewModel
 import java.util.*
 
@@ -97,7 +97,7 @@ fun ModifyMusicScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(DynamicColor.secondary)
                             .padding(padding)
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
@@ -115,7 +115,7 @@ fun ModifyMusicScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.album_cover),
-                                color = MaterialTheme.colorScheme.onSecondary
+                                color = DynamicColor.onSecondary
                             )
                             AppImage(
                                 bitmap = musicState.cover,
@@ -127,7 +127,7 @@ fun ModifyMusicScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .weight(2F)
-                                .background(color = MaterialTheme.colorScheme.primary)
+                                .background(color = DynamicColor.primary)
                                 .padding(Constants.Spacing.medium),
                             state = musicState,
                             focusManager = focusManager,
@@ -153,7 +153,7 @@ fun ModifyMusicScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(DynamicColor.secondary)
                             .padding(padding)
                             .padding(top = Constants.Spacing.medium)
                             .pointerInput(Unit) {
@@ -172,7 +172,7 @@ fun ModifyMusicScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.album_cover),
-                                color = MaterialTheme.colorScheme.onSecondary
+                                color = DynamicColor.onSecondary
                             )
                             AppImage(
                                 bitmap = musicState.cover,
@@ -185,7 +185,7 @@ fun ModifyMusicScreen(
                                 .fillMaxSize()
                                 .weight(1F)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
-                                .background(color = MaterialTheme.colorScheme.primary)
+                                .background(color = DynamicColor.primary)
                                 .padding(Constants.Spacing.medium),
                             state = musicState,
                             focusManager = focusManager,
