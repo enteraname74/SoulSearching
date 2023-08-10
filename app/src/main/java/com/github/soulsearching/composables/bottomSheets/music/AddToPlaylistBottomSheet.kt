@@ -34,7 +34,7 @@ fun AddToPlaylistBottomSheet(
                 )
             )
         },
-        sheetState = musicModalSheetState,
+        sheetState = addToPlaylistModalSheetState,
         dragHandle = {}
     ) {
         AddToPlaylistMenuBottomSheet(
