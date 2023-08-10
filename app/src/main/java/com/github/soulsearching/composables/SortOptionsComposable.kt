@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +51,7 @@ fun SortOptionsComposable(
                     .size(
                         if (sortType == SortType.ADDED_DATE) (imageSize + imageSize / 3) else imageSize
                     ),
-                imageVector = Icons.Default.Schedule,
+                imageVector = Icons.Rounded.Schedule,
                 contentDescription = stringResource(id = R.string.sort_by_date_added),
                 tint = if (sortType == SortType.ADDED_DATE) DynamicColor.outline else DynamicColor.onPrimary
             )
@@ -62,7 +62,7 @@ fun SortOptionsComposable(
                     .size(
                         if (sortType == SortType.NB_PLAYED) (imageSize + imageSize / 3) else imageSize
                     ),
-                imageVector = Icons.Default.Pin,
+                imageVector = Icons.Rounded.Pin,
                 contentDescription = stringResource(id = R.string.sort_by_most_listened),
                 tint = if (sortType == SortType.NB_PLAYED) DynamicColor.outline else DynamicColor.onPrimary
             )
@@ -73,7 +73,7 @@ fun SortOptionsComposable(
                     .size(
                         if (sortType == SortType.NAME) (imageSize + imageSize / 3) else imageSize
                     ),
-                imageVector = Icons.Default.SortByAlpha,
+                imageVector = Icons.Rounded.SortByAlpha,
                 contentDescription = stringResource(id = R.string.sort_by_name),
                 tint = if (sortType == SortType.NAME) DynamicColor.outline else DynamicColor.onPrimary
             )
@@ -85,7 +85,7 @@ fun SortOptionsComposable(
                 .size(
                     imageSize
                 ),
-            imageVector = if (sortDirection == SortDirection.ASC) Icons.Default.North else Icons.Default.South,
+            imageVector = if (sortDirection == SortDirection.ASC) Icons.Rounded.North else Icons.Rounded.South,
             contentDescription = stringResource(id = R.string.sort_by_asc_or_dsc),
             tint = DynamicColor.onPrimary
         )

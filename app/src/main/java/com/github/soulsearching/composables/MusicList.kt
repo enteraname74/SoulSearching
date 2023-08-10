@@ -1,6 +1,8 @@
 package com.github.soulsearching.composables
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -20,7 +22,7 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MusicList(
     musicState: MusicState,
@@ -44,37 +46,47 @@ fun MusicList(
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        playerMusicListViewModel = playerMusicListViewModel
     )
 
     LazyColumn(
         modifier = modifier
     ) {
-        items(musicState.musics, key = { music -> music.musicId }) { music ->
-            MusicItemComposable(
-                music = music,
-                onClick = {
-                    coroutineScope.launch {
-                        swipeableState.animateTo(BottomSheetStates.EXPANDED)
-                    }.invokeOnCompletion {
-                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                            music = music,
-                            playlist = musicState.musics,
-                            playlistId = playlistId,
-                            bitmap = retrieveCoverMethod(music.coverId),
-                            isMainPlaylist = isMainPlaylist
-                        )
-                        playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
-                    }
-                },
-                onLongClick = {
-                    coroutineScope.launch {
-                        onMusicEvent(MusicEvent.SetSelectedMusic(music))
-                        onMusicEvent(MusicEvent.BottomSheet(isShown = true))
-                    }
-                },
-                musicCover = retrieveCoverMethod(music.coverId)
-            )
+        items(items = musicState.musics, key = { music -> music.musicId }) { music ->
+            Row(Modifier.animateItemPlacement()) {
+                MusicItemComposable(
+                    music = music,
+                    onClick = {
+                        coroutineScope.launch {
+                            swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                        }.invokeOnCompletion {
+                            if (PlayerUtils.playerViewModel.isSamePlaylist(
+                                    isMainPlaylist = isMainPlaylist,
+                                    playlistId = playlistId
+                                )
+                            ) {
+                                playerMusicListViewModel.savePlayerMusicList(
+                                    musicState.musics
+                                )
+                            }
+                            PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                music = music,
+                                playlist = musicState.musics,
+                                playlistId = playlistId,
+                                isMainPlaylist = isMainPlaylist
+                            )
+                        }
+                    },
+                    onLongClick = {
+                        coroutineScope.launch {
+                            onMusicEvent(MusicEvent.SetSelectedMusic(music))
+                            onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+                        }
+                    },
+                    musicCover = retrieveCoverMethod(music.coverId)
+                )
+            }
         }
     }
 }

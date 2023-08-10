@@ -19,6 +19,7 @@ fun MusicBottomSheetMenu(
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
     removeFromPlaylistAction: () -> Unit = {},
+    removeFromPlayedListAction: () -> Unit = {},
     addToShortcutsAction: () -> Unit = {},
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
@@ -54,6 +55,13 @@ fun MusicBottomSheetMenu(
                 icon = Icons.Default.Delete,
                 text = stringResource(id = R.string.remove_from_playlist),
                 onClick = removeFromPlaylistAction
+            )
+        }
+        if (musicBottomSheetState == MusicBottomSheetState.PLAYER) {
+            BottomSheetRow(
+                icon = Icons.Default.Delete,
+                text = stringResource(id = R.string.remove_from_played_list),
+                onClick = removeFromPlayedListAction
             )
         }
         BottomSheetRow(

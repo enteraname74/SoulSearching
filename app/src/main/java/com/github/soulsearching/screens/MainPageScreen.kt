@@ -10,8 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -75,7 +75,8 @@ fun MainPageScreen(
         playlistState = playlistState,
         onMusicEvent = allMusicsViewModel::onMusicEvent,
         onPlaylistsEvent = allPlaylistsViewModel::onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        playerMusicListViewModel = playerMusicListViewModel
     )
 
     PlaylistBottomSheetEvents(
@@ -214,7 +215,7 @@ fun MainPageScreen(
                                         )
                                     }
                                     .size(Constants.ImageSize.medium),
-                                imageVector = Icons.Default.Add,
+                                imageVector = Icons.Rounded.Add,
                                 contentDescription = stringResource(id = R.string.create_playlist_button),
                                 tint = DynamicColor.onPrimary
                             )
@@ -483,7 +484,7 @@ fun MainPageScreen(
                                                 playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                                             }
                                     },
-                                imageVector = Icons.Default.Shuffle,
+                                imageVector = Icons.Rounded.Shuffle,
                                 contentDescription = stringResource(id = R.string.shuffle_button_desc),
                                 tint = DynamicColor.onPrimary
                             )
@@ -500,14 +501,15 @@ fun MainPageScreen(
                                 coroutineScope.launch {
                                     swipeableState.animateTo(BottomSheetStates.EXPANDED)
                                 }.invokeOnCompletion {
+                                    if (!PlayerUtils.playerViewModel.isMainPlaylist) {
+                                        playerMusicListViewModel.savePlayerMusicList(musicState.musics)
+                                    }
                                     PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                         music = music,
                                         playlist = musicState.musics,
                                         isMainPlaylist = true,
                                         playlistId = null,
-                                        bitmap = allImageCoversViewModel.getImageCover(music.coverId)
                                     )
-                                    playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                                 }
                             },
                             onLongClick = {

@@ -92,7 +92,7 @@ class EventUtils {
                 is MusicEvent.AddToPlaylistBottomSheet -> {
                     _state.update {
                         it.copy(
-                            isAddToPlaylistDialogShown = event.isShown
+                            isAddToPlaylistBottomSheetShown = event.isShown
                         )
                     }
                 }

@@ -1,6 +1,8 @@
 package com.github.soulsearching.classes
 
 import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -11,10 +13,26 @@ import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumArtist
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.service.PlayerService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class Utils {
     companion object {
+
+        fun launchService(
+            context: Context,
+            isFromSavedList: Boolean
+        ) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val serviceIntent = Intent(context, PlayerService::class.java)
+                serviceIntent.putExtra(PlayerService.IS_FROM_SAVED_LIST, isFromSavedList)
+                context.startService(serviceIntent)
+                PlayerUtils.playerViewModel.isServiceLaunched = true
+            }
+        }
         fun getBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap {
             return if (Build.VERSION.SDK_INT >= 29) {
                 contentResolver.loadThumbnail(

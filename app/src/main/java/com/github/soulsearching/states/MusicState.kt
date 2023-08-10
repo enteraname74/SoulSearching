@@ -13,7 +13,7 @@ data class MusicState(
     val isBottomSheetShown: Boolean = false,
     val isDeleteDialogShown: Boolean = false,
     val isRemoveFromPlaylistDialogShown: Boolean = false,
-    val isAddToPlaylistDialogShown: Boolean = false,
+    val isAddToPlaylistBottomSheetShown: Boolean = false,
     val selectedMusic: Music = Music(),
     var name: String = "",
     var artist: String = "",

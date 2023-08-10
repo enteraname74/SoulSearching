@@ -56,7 +56,8 @@ fun PlaylistScreen(
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic
+        navigateToModifyMusic = navigateToModifyMusic,
+        playerMusicListViewModel = playerMusicListViewModel
     )
 
     val shuffleAction = {
@@ -170,7 +171,6 @@ fun PlaylistScreen(
                                             music = music,
                                             playlist = musicState.musics,
                                             playlistId = playlistId,
-                                            bitmap = retrieveCoverMethod(music.coverId),
                                             isMainPlaylist = false
                                         )
                                         playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)

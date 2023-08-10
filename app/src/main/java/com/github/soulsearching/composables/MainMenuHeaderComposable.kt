@@ -3,8 +3,8 @@ package com.github.soulsearching.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,13 +23,18 @@ fun MainMenuHeaderComposable() {
         modifier = Modifier
             .fillMaxWidth()
             .background(DynamicColor.primary)
-            .padding(Constants.Spacing.medium),
+            .padding(
+                start = Constants.Spacing.medium,
+                end = Constants.Spacing.medium,
+                top = Constants.Spacing.small,
+                bottom = Constants.Spacing.small
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Menu,
+            imageVector = Icons.Rounded.Menu,
             contentDescription = stringResource(id = R.string.navigation_drawer_desc),
             tint = DynamicColor.onPrimary
         )
@@ -41,7 +46,7 @@ fun MainMenuHeaderComposable() {
         )
         Icon(
             modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = Icons.Default.Search,
+            imageVector = Icons.Rounded.Search,
             contentDescription = stringResource(id = R.string.shuffle_button_desc),
             tint = DynamicColor.onPrimary
         )

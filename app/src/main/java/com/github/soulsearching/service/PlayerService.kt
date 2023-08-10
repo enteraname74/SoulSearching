@@ -22,8 +22,7 @@ class PlayerService : Service() {
             val extras = intent?.extras
             if (extras != null) {
                 if (extras.getBoolean(IS_FROM_SAVED_LIST)) {
-                    player!!.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-                    player!!.onlyLoadMusic()
+                    onlyLoadMusic()
                 } else {
                     setAndPlayCurrentMusic()
                 }
@@ -58,6 +57,13 @@ class PlayerService : Service() {
             }
         }
 
+        fun onlyLoadMusic() {
+            player?.let {
+                it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
+                it.onlyLoadMusic()
+            }
+        }
+
         fun isPlayerPlaying(): Boolean {
             return if (player != null) {
                 player!!.isPlaying()
@@ -67,6 +73,7 @@ class PlayerService : Service() {
         }
 
         fun togglePlayPause() {
+            Log.d("PLAYER SERVICE", "TOGGLE PLAY PAUSE")
             player?.togglePlayPause()
         }
 

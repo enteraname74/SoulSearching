@@ -342,7 +342,12 @@ fun PlayerSwipeableView(
                             alpha = alphaTransition
                         )
                         Column(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(
+                                    start = Constants.Spacing.small,
+                                    end = Constants.Spacing.small
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(

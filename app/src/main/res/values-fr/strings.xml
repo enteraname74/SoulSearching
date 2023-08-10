@@ -38,6 +38,7 @@
     <string name="modify_artist">Modifier cet artiste</string>
     <string name="play_next">Jouer ensuite</string>
     <string name="remove_from_playlist">Retirer de la playlist</string>
+    <string name="remove_from_played_list">Retirer de la liste jouée</string>
     <string name="played_list">Liste jouée</string>
 
     <!-- Modify music strings -->

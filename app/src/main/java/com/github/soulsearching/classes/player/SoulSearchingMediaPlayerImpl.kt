@@ -110,7 +110,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 } catch (_: IllegalStateException) {
                 }
             }
-            else -> {}
+            else -> {
+                Log.d("PLAYER", "MISSING AUDIO MANAGER")
+            }
         }
     }
 
@@ -126,9 +128,13 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun togglePlayPause() {
+        Log.d("PLAYER", "TOGGLE")
+
         if (player.isPlaying) {
+            Log.d("PLAYER", "PAUSE")
             pause()
         } else {
+            Log.d("PLAYER", "PLAY")
             play()
         }
     }
@@ -142,14 +148,18 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
 
     override fun next() {
         PlayerUtils.playerViewModel.setNextMusic()
-        setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-        launchMusic()
+        PlayerUtils.playerViewModel.currentMusic?.let {
+            setMusic(it)
+            launchMusic()
+        }
     }
 
     override fun previous() {
         PlayerUtils.playerViewModel.setPreviousMusic()
-        setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-        launchMusic()
+        PlayerUtils.playerViewModel.currentMusic?.let {
+            setMusic(it)
+            launchMusic()
+        }
     }
 
     override fun dismiss() {
