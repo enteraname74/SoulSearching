@@ -60,15 +60,16 @@ fun MusicItemComposable(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AppImage(bitmap = musicCover, size = 55.dp)
             Column(
                 modifier = Modifier
                     .height(55.dp)
-                    .width(200.dp),
+                    .weight(1f),
                 verticalArrangement = Arrangement.Center
-            ) {
+                ) {
                 Text(
                     text = music.name,
                     color = DynamicColor.onPrimary,
@@ -87,12 +88,12 @@ fun MusicItemComposable(
                 )
 
             }
+            Icon(
+                modifier = Modifier.clickable { onLongClick() },
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(id = R.string.more_button),
+                tint = DynamicColor.onPrimary
+            )
         }
-        Icon(
-            modifier = Modifier.clickable { onLongClick() },
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = stringResource(id = R.string.more_button),
-            tint = DynamicColor.onPrimary
-        )
     }
 }
