@@ -24,23 +24,23 @@
             android:enabled="true" />
 
         <receiver
-            android:name=".service.notification.receivers.ChangeFavoriteStateNotificationReceiver"
+            android:name=".classes.notification.receivers.ChangeFavoriteStateNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".service.notification.receivers.DeletedNotificationIntentReceiver"
+            android:name=".classes.notification.receivers.DeletedNotificationIntentReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".service.notification.receivers.NextMusicNotificationReceiver"
+            android:name=".classes.notification.receivers.NextMusicNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".service.notification.receivers.PausePlayNotificationReceiver"
+            android:name=".classes.notification.receivers.PausePlayNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".service.notification.receivers.PreviousMusicNotificationReceiver"
+            android:name=".classes.notification.receivers.PreviousMusicNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
 <!--        <receiver-->

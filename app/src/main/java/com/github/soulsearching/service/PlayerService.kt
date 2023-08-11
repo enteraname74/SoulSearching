@@ -6,9 +6,9 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.classes.player.SoulSearchingPlayer
-import com.github.soulsearching.service.notification.SoulSearchingNotificationService
 
 
 class PlayerService : Service() {
@@ -31,7 +31,7 @@ class PlayerService : Service() {
                 setAndPlayCurrentMusic()
             }
 
-            startForeground(SoulSearchingNotificationService.CHANNEL_ID, player!!.getNotification())
+            startForeground(SoulSearchingNotification.CHANNEL_ID, player!!.getNotification())
         }
 
         return START_STICKY

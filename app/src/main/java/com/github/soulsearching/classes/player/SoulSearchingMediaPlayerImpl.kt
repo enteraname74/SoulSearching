@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.media.*
 import android.media.session.PlaybackState
+import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -16,9 +17,11 @@ import android.view.KeyEvent
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.service.notification.SoulSearchingNotificationService
+import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationAndroid13
+import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationBelowAndroid13
 import kotlinx.coroutines.*
 import java.lang.Integer.max
 
@@ -32,8 +35,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     private val player: MediaPlayer = MediaPlayer()
     private val mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
-    private val notificationService =
-        SoulSearchingNotificationService(context, mediaSession.sessionToken)
+    private val notificationService: SoulSearchingNotification = if (Build.VERSION.SDK_INT >= 33) {
+        SoulSearchingNotificationAndroid13(context, mediaSession.sessionToken)
+    } else {
+        SoulSearchingNotificationBelowAndroid13(context, mediaSession.sessionToken)
+    }
     private var currentDurationJob : Job? = null
     private var isOnlyLoadingMusic: Boolean = false
 
@@ -193,7 +199,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun getNotification(): Notification {
-        return this.notificationService.getNotification()
+        return this.notificationService.getPlayerNotification()
     }
 
     private fun initializePlayer() {

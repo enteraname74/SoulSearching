@@ -1,4 +1,4 @@
-package com.github.soulsearching.service.notification.receivers
+package com.github.soulsearching.classes.notification.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
