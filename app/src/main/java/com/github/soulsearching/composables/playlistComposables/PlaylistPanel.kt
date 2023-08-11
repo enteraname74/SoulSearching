@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.playlistComposable
+package com.github.soulsearching.composables.playlistComposables
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -14,30 +14,35 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun PlaylistPanel(
     editAction: () -> Unit,
     shuffleAction: () -> Unit,
+    searchAction: () -> Unit,
     isLandscapeMode: Boolean
 ) {
     if (isLandscapeMode) {
         Column(modifier = Modifier
             .fillMaxHeight()
+            .background(DynamicColor.primary)
             .padding(end = Constants.Spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             ImagesButton(
                 editAction = editAction,
-                shuffleAction = shuffleAction
+                shuffleAction = shuffleAction,
+                searchAction = searchAction
             )
         }
     } else {
         Row(modifier = Modifier
             .fillMaxWidth()
+            .background(DynamicColor.primary)
             .padding(bottom = Constants.Spacing.large),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             ImagesButton(
                 editAction = editAction,
-                shuffleAction = shuffleAction
+                shuffleAction = shuffleAction,
+                searchAction = searchAction
             )
         }
     }

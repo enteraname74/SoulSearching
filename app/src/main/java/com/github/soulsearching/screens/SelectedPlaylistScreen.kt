@@ -1,10 +1,8 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.material.Colors
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.classes.BottomSheetStates
@@ -54,7 +52,7 @@ fun SelectedPlaylistScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        swipeableState = swipeableState,
+        playerSwipeableState = swipeableState,
         playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
         playerMusicListViewModel = playerMusicListViewModel
     )

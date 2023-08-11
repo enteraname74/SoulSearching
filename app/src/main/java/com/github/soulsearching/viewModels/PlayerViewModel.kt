@@ -65,6 +65,8 @@ class PlayerViewModel : ViewModel() {
     fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
         if (isMainPlaylist == this.isMainPlaylist) {
             return true
+        } else if (isMainPlaylist != this.isMainPlaylist) {
+            return false
         } else if (playlistId == null && this.currentPlaylistId == null) {
             return true
         } else if (playlistId != null && this.currentPlaylistId != null) {

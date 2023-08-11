@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
@@ -18,7 +19,10 @@ import com.github.soulsearching.R
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
-fun MainMenuHeaderComposable() {
+fun MainMenuHeaderComposable(
+    navigationAction: () -> Unit,
+    searchAction: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,7 +37,11 @@ fun MainMenuHeaderComposable() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.size(Constants.ImageSize.medium),
+            modifier = Modifier
+                .size(Constants.ImageSize.medium)
+                .clickable {
+                    navigationAction()
+                },
             imageVector = Icons.Rounded.Menu,
             contentDescription = stringResource(id = R.string.navigation_drawer_desc),
             tint = DynamicColor.onPrimary
@@ -45,7 +53,11 @@ fun MainMenuHeaderComposable() {
             fontWeight = FontWeight.Bold
         )
         Icon(
-            modifier = Modifier.size(Constants.ImageSize.medium),
+            modifier = Modifier
+                .size(Constants.ImageSize.medium)
+                .clickable {
+                    searchAction()
+                },
             imageVector = Icons.Rounded.Search,
             contentDescription = stringResource(id = R.string.shuffle_button_desc),
             tint = DynamicColor.onPrimary

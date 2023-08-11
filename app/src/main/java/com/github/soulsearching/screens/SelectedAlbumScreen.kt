@@ -68,7 +68,7 @@ fun SelectedAlbumScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        swipeableState = swipeableState,
+        playerSwipeableState = swipeableState,
         playlistId = albumWithMusicsState.albumWithMusics.album.albumId,
         playerMusicListViewModel = playerMusicListViewModel
     )

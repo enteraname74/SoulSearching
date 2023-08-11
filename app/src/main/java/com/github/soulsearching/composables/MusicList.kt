@@ -61,7 +61,7 @@ fun MusicList(
                         coroutineScope.launch {
                             swipeableState.animateTo(BottomSheetStates.EXPANDED)
                         }.invokeOnCompletion {
-                            if (PlayerUtils.playerViewModel.isSamePlaylist(
+                            if (!PlayerUtils.playerViewModel.isSamePlaylist(
                                     isMainPlaylist = isMainPlaylist,
                                     playlistId = playlistId
                                 )

@@ -1,8 +1,8 @@
 package com.github.soulsearching.screens
 
 import android.util.Log
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -27,12 +28,15 @@ import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomShee
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
+import com.github.soulsearching.composables.searchComposables.SearchAll
+import com.github.soulsearching.composables.searchComposables.SearchView
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.states.*
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.*
 import kotlinx.coroutines.CoroutineScope
@@ -61,14 +65,14 @@ fun MainPageScreen(
     navigateToModifyPlaylist: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
-    swipeableState: SwipeableState<BottomSheetStates>
+    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    searchSwipeableState: SwipeableState<BottomSheetStates>,
+    musicState: MusicState,
+    playlistState: PlaylistState,
+    albumState: AlbumState,
+    artistState: ArtistState,
+    coverState: ImageCoverState
 ) {
-    val musicState by allMusicsViewModel.state.collectAsState()
-    val playlistState by allPlaylistsViewModel.state.collectAsState()
-    val albumState by allAlbumsViewModel.state.collectAsState()
-    val artistState by allArtistsViewModel.state.collectAsState()
-    val imageCovers by allImageCoversViewModel.state.collectAsState()
-
     val coroutineScope = rememberCoroutineScope()
     MusicBottomSheetEvents(
         musicState = musicState,
@@ -106,23 +110,25 @@ fun MainPageScreen(
     }
 
 
-    if (imageCovers.covers.isNotEmpty() && !cleanImagesLaunched) {
+    if (coverState.covers.isNotEmpty() && !cleanImagesLaunched) {
         LaunchedEffect(key1 = "Launch") {
             Log.d("LAUNCHED EFFECT MAIN", " WILL CLEAN IMAGES")
 
             CoroutineScope(Dispatchers.IO).launch {
-                for (cover in imageCovers.covers) {
+                for (cover in coverState.covers) {
                     allImageCoversViewModel.verifyIfImageIsUsed(cover)
                 }
             }
 
             if (PlayerUtils.playerViewModel.currentMusic != null) {
-                PlayerUtils.playerViewModel.currentMusicCover = PlayerUtils.playerViewModel.retrieveCoverMethod(
-                    PlayerUtils.playerViewModel.currentMusic!!.coverId
-                )
-                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                    PlayerUtils.playerViewModel.currentMusicCover
-                )
+                PlayerUtils.playerViewModel.currentMusicCover =
+                    PlayerUtils.playerViewModel.retrieveCoverMethod(
+                        PlayerUtils.playerViewModel.currentMusic!!.coverId
+                    )
+                PlayerUtils.playerViewModel.currentColorPalette =
+                    ColorPaletteUtils.getPaletteFromAlbumArt(
+                        PlayerUtils.playerViewModel.currentMusicCover
+                    )
                 PlayerService.updateNotification()
             }
             cleanImagesLaunched = true
@@ -130,14 +136,34 @@ fun MainPageScreen(
         }
     }
 
-    Scaffold(
-        topBar = { MainMenuHeaderComposable() },
-        content = { paddingValues ->
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        val constraintsScope = this
+        val maxHeight = with(LocalDensity.current) {
+            constraintsScope.maxHeight.toPx()
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            MainMenuHeaderComposable(
+                navigationAction = {},
+                searchAction = {
+                    coroutineScope.launch {
+                        searchSwipeableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(300)
+                        )
+                    }
+                }
+            )
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(DynamicColor.primary)
-                    .padding(paddingValues)
             ) {
                 item {
                     Column(
@@ -478,11 +504,13 @@ fun MainPageScreen(
                                     .clickable {
                                         coroutineScope
                                             .launch {
-                                                swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
                                             }
                                             .invokeOnCompletion {
                                                 PlayerUtils.playerViewModel.playShuffle(musicState.musics)
-                                                playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
+                                                playerMusicListViewModel.savePlayerMusicList(
+                                                    PlayerUtils.playerViewModel.currentPlaylist
+                                                )
                                             }
                                     },
                                 imageVector = Icons.Rounded.Shuffle,
@@ -500,9 +528,9 @@ fun MainPageScreen(
                             music = music,
                             onClick = { music ->
                                 coroutineScope.launch {
-                                    swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
                                 }.invokeOnCompletion {
-                                    if (!PlayerUtils.playerViewModel.isMainPlaylist) {
+                                    if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
                                         playerMusicListViewModel.savePlayerMusicList(musicState.musics)
                                     }
                                     PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
@@ -534,5 +562,31 @@ fun MainPageScreen(
                 }
             }
         }
-    )
+        SearchView(
+            swipeableState = searchSwipeableState,
+            maxHeight = maxHeight,
+            placeholder = stringResource(id = R.string.search_all),
+            playerSwipeableState = playerSwipeableState
+        ) { searchText, focusManager ->
+            SearchAll(
+                searchText = searchText,
+                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                musicState = musicState,
+                albumState = albumState,
+                artistState = artistState,
+                playlistState = playlistState,
+                onMusicEvent = allMusicsViewModel::onMusicEvent,
+                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                onArtistEvent = allArtistsViewModel::onArtistEvent,
+                onAlbumEvent = allAlbumsViewModel::onAlbumEvent,
+                navigateToPlaylist = navigateToPlaylist,
+                navigateToArtist = navigateToArtist,
+                navigateToAlbum = navigateToAlbum,
+                playerMusicListViewModel = playerMusicListViewModel,
+                playerSwipeableState = playerSwipeableState,
+                isMainPlaylist = false,
+                focusManager = focusManager
+            )
+        }
+    }
 }

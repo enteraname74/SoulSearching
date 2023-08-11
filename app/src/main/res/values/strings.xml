@@ -82,4 +82,8 @@
     <!-- Number of musics strings -->
     <string name="multiple_musics">%1$d musics</string>
     <string name="one_music">1 music</string>
+
+    <!-- Searh strings -->
+    <string name="search_all">Search a music, an artist, an album, a playlist…</string>
+    <string name="search_for_musics">Search a music</string>
 </resources>

@@ -68,7 +68,7 @@ fun SelectedArtistScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        swipeableState = swipeableState,
+        playerSwipeableState = swipeableState,
         playlistId = artistWithMusicsState.artistWithMusics.artist.artistId,
         playerMusicListViewModel = playerMusicListViewModel
     )

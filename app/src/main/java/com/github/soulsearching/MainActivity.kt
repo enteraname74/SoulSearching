@@ -24,6 +24,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -34,10 +35,11 @@ import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.Utils
-import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
+import com.github.soulsearching.composables.searchComposables.SearchAll
+import com.github.soulsearching.composables.searchComposables.SearchView
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
@@ -102,18 +104,25 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
 
-        PlayerUtils.playerViewModel.retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
+        PlayerUtils.playerViewModel.retrieveCoverMethod =
+            { allImageCoversViewModel.getImageCover(it) }
 
         setContent {
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
+                val albumState by allAlbumsViewModel.state.collectAsState()
+                val artistState by allArtistsViewModel.state.collectAsState()
+                val musicState by allMusicsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
                 val playerMusicState by playerMusicListViewModel.state.collectAsState()
 
-                val swipeableState = rememberSwipeableState(
+                val playerSwipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
                 val musicListSwipeableState = rememberSwipeableState(
+                    BottomSheetStates.COLLAPSED
+                )
+                val searchSwipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
                 val coroutineScope = rememberCoroutineScope()
@@ -127,14 +136,16 @@ class MainActivity : AppCompatActivity() {
                         val playerSavedMusics = playerMusicListViewModel.getPlayerMusicList()
                         if (playerSavedMusics.isNotEmpty()) {
                             Log.d("MAIN ACTIVITY", "PLAYER LIST SIZE : ${playerSavedMusics.size}")
-                            PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(playerSavedMusics)
+                            PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(
+                                playerSavedMusics
+                            )
                             Utils.launchService(
                                 context = this@MainActivity,
                                 isFromSavedList = true
                             )
                             PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
-                            coroutineScope.launch{
-                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+                            coroutineScope.launch {
+                                playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
                             }
                         }
                     }
@@ -285,7 +296,13 @@ class MainActivity : AppCompatActivity() {
                                         navigateToModifyArtist = {
                                             navController.navigate("modifyArtist/$it")
                                         },
-                                        swipeableState = swipeableState
+                                        playerSwipeableState = playerSwipeableState,
+                                        searchSwipeableState = searchSwipeableState,
+                                        albumState = albumState,
+                                        musicState = musicState,
+                                        artistState = artistState,
+                                        coverState = coversState,
+                                        playlistState = playlistState
                                     )
                                 }
                                 composable(
@@ -308,8 +325,12 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState,
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        },
+                                        swipeableState = playerSwipeableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -333,8 +354,12 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState,
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        },
+                                        swipeableState = playerSwipeableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -358,8 +383,12 @@ class MainActivity : AppCompatActivity() {
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                         navigateBack = { navController.popBackStack() },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
-                                        swipeableState = swipeableState,
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        },
+                                        swipeableState = playerSwipeableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -419,7 +448,11 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        }
                                     )
                                 }
                                 composable(
@@ -430,7 +463,11 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        }
                                     )
                                 }
                                 composable(
@@ -441,13 +478,17 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
                                         finishAction = { navController.popBackStack() },
                                         navigateToModifyArtist = { navController.navigate("modifyArtist/$it") },
-                                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
+                                        retrieveCoverMethod = {
+                                            allImageCoversViewModel.getImageCover(
+                                                it
+                                            )
+                                        }
                                     )
                                 }
                             }
                             PlayerSwipeableView(
                                 maxHeight = maxHeight,
-                                swipeableState = swipeableState,
+                                swipeableState = playerSwipeableState,
                                 coverList = coversState.covers,
                                 musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel
