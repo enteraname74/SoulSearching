@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,10 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.ui.theme.DynamicColor
 
+@SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun SubMenuComposable(
     title: String,
@@ -23,8 +26,9 @@ fun SubMenuComposable(
     setSortTypeAction: () -> Unit,
     rightComposable: @Composable (() -> Unit),
     createPlaylistComposable: @Composable (() -> Unit) = {},
-    sortType : Int,
-    sortDirection : Int
+    sortType: Int,
+    sortDirection: Int,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = Modifier
@@ -34,7 +38,10 @@ fun SubMenuComposable(
                 top = Constants.Spacing.medium,
                 start = Constants.Spacing.medium,
                 end = Constants.Spacing.medium
-            ),
+            )
+            .composed {
+                modifier
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

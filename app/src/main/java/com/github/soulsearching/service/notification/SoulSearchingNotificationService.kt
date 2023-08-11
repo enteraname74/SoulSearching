@@ -1,5 +1,6 @@
 package com.github.soulsearching.service.notification
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -21,7 +22,8 @@ class SoulSearchingNotificationService(
     private val mediaSessionToken: Token
     ) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    private val notificationMusicPlayer : NotificationCompat.Builder = NotificationCompat.Builder(context, MUSIC_NOTIFICATION_CHANNEL_ID)
+    private val notificationBuilder : NotificationCompat.Builder = NotificationCompat.Builder(context, MUSIC_NOTIFICATION_CHANNEL_ID)
+    private lateinit var notification : Notification
     private lateinit var deleteNotificationIntent : PendingIntent
     private lateinit var changeFavoriteStateIntent : PendingIntent
 
@@ -68,32 +70,41 @@ class SoulSearchingNotificationService(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        notificationMusicPlayer
+        notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)
             .setContentTitle(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.name else "")
             .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
+            .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1, 2)
+                .setMediaSession(mediaSessionToken)
+            )
+
+        notification = notificationBuilder.build()
     }
 
     fun updateNotification() {
-        notificationMusicPlayer
-            .clearActions()
-//            .addAction(R.drawable.ic_pause, "favoriteState", changeFavoriteStateIntent)
-//            .addAction(R.drawable.ic_baseline_favorite_border,"next",nextMusicIntent)
+        notificationBuilder
             .setDeleteIntent(deleteNotificationIntent)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                 .setShowActionsInCompactView(0, 1, 2)
                 .setMediaSession(mediaSessionToken)
             )
-        notificationManager.notify(CHANNEL_ID, notificationMusicPlayer.build())
+        notification = notificationBuilder.build()
+
+        notificationManager.notify(CHANNEL_ID, notification)
+    }
+
+    fun getNotification(): Notification {
+        return notification
     }
 
     fun dismissNotification() {
-        context.unregisterReceiver(broadcastReceiver)
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(CHANNEL_ID)
+        context.unregisterReceiver(broadcastReceiver)
     }
 
     companion object {

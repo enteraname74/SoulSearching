@@ -71,12 +71,9 @@ fun MainMenuLazyListRow(
         )
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = Constants.Spacing.medium,
-                    end = Constants.Spacing.medium
-                ),
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+            contentPadding = PaddingValues(start = Constants.Spacing.medium, end = Constants.Spacing.medium)
         ) {
             items(
                 items = list, key = {

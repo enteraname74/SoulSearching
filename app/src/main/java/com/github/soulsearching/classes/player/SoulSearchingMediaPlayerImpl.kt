@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes.player
 
+import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -128,13 +129,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun togglePlayPause() {
-        Log.d("PLAYER", "TOGGLE")
-
         if (player.isPlaying) {
-            Log.d("PLAYER", "PAUSE")
             pause()
         } else {
-            Log.d("PLAYER", "PLAY")
             play()
         }
     }
@@ -193,6 +190,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         updateMediaSessionMetadata()
         updateMediaSessionState()
         notificationService.updateNotification()
+    }
+
+    override fun getNotification(): Notification {
+        return this.notificationService.getNotification()
     }
 
     private fun initializePlayer() {
@@ -265,7 +266,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
-        Log.d("MEDIA PLAYER", "PLAYER PREPARED")
         if (isOnlyLoadingMusic) {
             if (PlayerUtils.playerViewModel.currentMusicPosition <= player.duration) {
                 player.seekTo(PlayerUtils.playerViewModel.currentMusicPosition)
@@ -307,6 +307,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                     Thread.sleep(1000)
                 }
                 PlayerUtils.playerViewModel.currentMusicPosition = PlayerService.getCurrentMusicPosition()
+                SharedPrefUtils.setCurrentMusicPosition()
             }
         }
     }
@@ -315,9 +316,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         if (currentDurationJob != null) {
             currentDurationJob!!.cancel()
             currentDurationJob = null
-            Log.d("MEDIA PLAYER", "JOB RELEASED")
         }
-        Log.d("MEDIA PLAYER", "NO JOB RELEASED")
     }
 
     private fun updateMediaSessionMetadata() {

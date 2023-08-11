@@ -1,9 +1,6 @@
 package com.github.soulsearching.composables
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -12,45 +9,27 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.ui.theme.DynamicColor
-import java.util.*
 
-@SuppressLint("CoroutineCreationDuringComposition", "UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicItemComposable(
+fun LightMusicItemComposable(
     music: Music,
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
-    musicCover: Bitmap? = null,
-    isCurrentPlayedMusic: Boolean = false
 ) {
-
-    val currentMusicModifier = if (isCurrentPlayedMusic) {
-        Modifier.background(
-            color = DynamicColor.primary
-        )
-    } else {
-        Modifier
-    }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .composed {
-                currentMusicModifier
-            }
             .combinedClickable(
                 onClick = { onClick(music) },
                 onLongClick = onLongClick
@@ -62,7 +41,6 @@ fun MusicItemComposable(
         Row(
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            AppImage(bitmap = musicCover, size = 55.dp)
             Column(
                 modifier = Modifier
                     .height(55.dp)
@@ -74,16 +52,14 @@ fun MusicItemComposable(
                     color = DynamicColor.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isCurrentPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
                     color = DynamicColor.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isCurrentPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                    overflow = TextOverflow.Ellipsis
                 )
 
             }

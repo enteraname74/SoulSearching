@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes.player
 
+import android.app.Notification
 import com.github.soulsearching.database.model.Music
 
 interface SoulSearchingPlayer {
@@ -15,4 +16,6 @@ interface SoulSearchingPlayer {
     fun getMusicDuration(): Int
     fun getMusicPosition(): Int
     fun updateNotification()
+
+    fun getNotification(): Notification
 }

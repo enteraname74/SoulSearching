@@ -1,8 +1,10 @@
 package com.github.soulsearching
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -32,12 +34,13 @@ import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
-import com.github.soulsearching.service.notification.SoulSearchingNotificationService
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewModels.*
@@ -72,6 +75,16 @@ class MainActivity : AppCompatActivity() {
     // PLayer view model :
     private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
 
+    private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d("MAIN ACTIVITY", "SERVICE DIED, WILL RESTART")
+            Utils.launchService(
+                context = context,
+                isFromSavedList = false
+            )
+        }
+    }
+
     @SuppressLint("CoroutineCreationDuringComposition")
     @OptIn(ExperimentalMaterialApi::class)
     override
@@ -86,6 +99,8 @@ class MainActivity : AppCompatActivity() {
             onArtistEvent = allArtistsViewModel::onArtistEvent,
             onAlbumEvent = allAlbumsViewModel::onAlbumEvent
         )
+
+        registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
 
         PlayerUtils.playerViewModel.retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) }
 
@@ -440,7 +455,6 @@ class MainActivity : AppCompatActivity() {
 
                             PlayerMusicListView(
                                 maxHeight = maxHeight,
-                                swipeableState = swipeableState,
                                 coverList = coversState.covers,
                                 musicState = playerMusicState,
                                 playlistState = playlistState,
@@ -457,13 +471,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        SharedPrefUtils.setCurrentMusicPosition()
-        val notificationManager =
-            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(SoulSearchingNotificationService.CHANNEL_ID)
     }
 }

@@ -126,7 +126,6 @@ fun PlaylistScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(DynamicColor.primary)
             ) {
                 AppHeaderBar(
                     title = title,
@@ -135,7 +134,6 @@ fun PlaylistScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(DynamicColor.primary)
                 ) {
                     item {
                         Row(

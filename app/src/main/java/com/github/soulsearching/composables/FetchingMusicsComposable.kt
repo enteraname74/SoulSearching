@@ -42,10 +42,10 @@ fun FetchingMusicsComposable(
     var progress by rememberSaveable {
         mutableStateOf(0F)
     }
-    val animatedProgress = animateFloatAsState(
+    val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
-    ).value
+    )
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current

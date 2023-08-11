@@ -21,15 +21,16 @@ import java.util.*
 
 class Utils {
     companion object {
+        const val BITMAP_SIZE = 300
 
         fun launchService(
             context: Context,
-            isFromSavedList: Boolean
+            isFromSavedList: Boolean,
         ) {
             CoroutineScope(Dispatchers.Main).launch {
                 val serviceIntent = Intent(context, PlayerService::class.java)
                 serviceIntent.putExtra(PlayerService.IS_FROM_SAVED_LIST, isFromSavedList)
-                context.startService(serviceIntent)
+                context.startForegroundService(serviceIntent)
                 PlayerUtils.playerViewModel.isServiceLaunched = true
             }
         }
@@ -37,7 +38,7 @@ class Utils {
             return if (Build.VERSION.SDK_INT >= 29) {
                 contentResolver.loadThumbnail(
                     uri,
-                    Size(350, 350),
+                    Size(BITMAP_SIZE, BITMAP_SIZE),
                     null
                 )
             } else {
@@ -45,7 +46,7 @@ class Utils {
                     MediaStore.Images.Media.getBitmap(
                         contentResolver,
                         uri
-                    ), 350, 350, false
+                    ), BITMAP_SIZE, BITMAP_SIZE, false
                 )
             }
         }

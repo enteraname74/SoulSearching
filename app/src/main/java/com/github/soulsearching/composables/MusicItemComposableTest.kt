@@ -53,10 +53,13 @@ fun MusicItemComposableTest(
         Log.d("MUSIC ITEM", "WILL FETCH")
         DisposableEffect(key1 = music.musicId) {
             CoroutineScope(Dispatchers.IO).launch {
-                test = recoverMethod(music.coverId)
+                val bitmap = recoverMethod(music.coverId)
+                test = bitmap
                 isCoverFetched = true
             }
-            onDispose {  }
+            onDispose {
+                test?.recycle()
+            }
         }
     }
 

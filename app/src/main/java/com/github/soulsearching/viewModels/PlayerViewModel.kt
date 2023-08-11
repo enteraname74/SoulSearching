@@ -54,6 +54,14 @@ class PlayerViewModel : ViewModel() {
         currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
 
+    fun isSameMusic(musicId: UUID): Boolean {
+        return if (currentMusic == null) {
+            true
+        } else {
+            currentMusic!!.musicId.compareTo(musicId) == 0
+        }
+    }
+
     fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
         if (isMainPlaylist == this.isMainPlaylist) {
             return true

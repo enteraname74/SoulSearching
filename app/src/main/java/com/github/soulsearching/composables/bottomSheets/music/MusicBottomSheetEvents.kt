@@ -43,27 +43,11 @@ fun MusicBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    if (addToPlaylistModalSheetState.isVisible) {
-        Log.d("MUSIC BOTTOM SHEET","VISIBLE")
-    } else {
-        Log.d("MUSIC BOTTOM SHEET","NOT VISIBLE")
-
-    }
-
-    if (musicModalSheetState.isVisible) {
-        Log.d("MUSIC BOTTOM SHEET","M VISIBLE")
-    } else {
-        Log.d("MUSIC BOTTOM SHEET","M NOT VISIBLE")
-
-    }
-
     BackHandler(addToPlaylistModalSheetState.isVisible) {
-        Log.d("MUSIC BOTTOM EVENTS", "BACK HANDLER PLAYLIST ADD")
         coroutineScope.launch { addToPlaylistModalSheetState.hide() }
     }
 
     BackHandler(musicModalSheetState.isVisible) {
-        Log.d("MUSIC BOTTOM EVENTS", "BACK HANDLER MUISC")
         coroutineScope.launch { musicModalSheetState.hide() }
     }
 

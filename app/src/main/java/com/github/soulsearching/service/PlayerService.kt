@@ -8,6 +8,7 @@ import android.util.Log
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.classes.player.SoulSearchingPlayer
+import com.github.soulsearching.service.notification.SoulSearchingNotificationService
 
 
 class PlayerService : Service() {
@@ -29,6 +30,8 @@ class PlayerService : Service() {
             } else {
                 setAndPlayCurrentMusic()
             }
+
+            startForeground(SoulSearchingNotificationService.CHANNEL_ID, player!!.getNotification())
         }
 
         return START_STICKY
@@ -36,12 +39,10 @@ class PlayerService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        Log.d("PLAYBACK SERVICE", "REMOVED")
         stopMusic(this)
     }
 
     override fun onDestroy() {
-        Log.d("DESTROY SERVICE", "DESTROY SERVICE")
         super.onDestroy()
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
@@ -110,6 +111,7 @@ class PlayerService : Service() {
         }
 
         fun stopMusic(context: Context) {
+            Log.d("PLAYER SERVICE", "STOP MUSIC CALL")
             if (player != null) {
                 player!!.dismiss()
                 player = null
@@ -122,5 +124,7 @@ class PlayerService : Service() {
         fun updateNotification() {
             player?.updateNotification()
         }
+
+        const val RESTART_SERVICE = "RESTART_SERVICE"
     }
 }

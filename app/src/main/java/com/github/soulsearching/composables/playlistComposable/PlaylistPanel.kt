@@ -19,7 +19,6 @@ fun PlaylistPanel(
     if (isLandscapeMode) {
         Column(modifier = Modifier
             .fillMaxHeight()
-            .background(DynamicColor.primary)
             .padding(end = Constants.Spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
@@ -32,7 +31,6 @@ fun PlaylistPanel(
     } else {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .background(DynamicColor.primary)
             .padding(bottom = Constants.Spacing.large),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly

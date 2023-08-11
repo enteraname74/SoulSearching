@@ -423,6 +423,7 @@ fun MainPageScreen(
                 }
                 stickyHeader {
                     SubMenuComposable(
+                        modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                         title = stringResource(id = R.string.musics),
                         sortByDateAction = {
                             allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE))

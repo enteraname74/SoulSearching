@@ -56,7 +56,6 @@ class MusicUtils {
                 else -> {
                     var count = 0
                     while (cursor.moveToNext()) {
-                        Log.d("FETCH MUSIC", "$count")
                         val albumCover: Bitmap? = try {
                             mediaMetadataRetriever.setDataSource(cursor.getString(4))
                              try {
@@ -64,8 +63,11 @@ class MusicUtils {
                                 if (byteArray == null) {
                                     null
                                 } else {
-                                    val tempBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                                    ThumbnailUtils.extractThumbnail(tempBitmap, 350, 350)
+                                    val options = BitmapFactory.Options()
+                                    options.inSampleSize = 2
+                                    val tempBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, options)
+                                    ThumbnailUtils.extractThumbnail(tempBitmap, Utils.BITMAP_SIZE, Utils.BITMAP_SIZE)
+//                                    BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, options)
                                 }
                             } catch (error: IOException) {
                                 null
@@ -83,6 +85,7 @@ class MusicUtils {
                             folder = File(cursor.getString(4)).parent ?: ""
                         )
                         addingMusicAction(music, albumCover)
+                        albumCover?.recycle()
                         count++
                         updateProgress((count * 1F)/cursor.count)
                     }
