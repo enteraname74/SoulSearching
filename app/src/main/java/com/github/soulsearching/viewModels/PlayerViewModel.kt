@@ -205,6 +205,11 @@ class PlayerViewModel : ViewModel() {
         playlistId: UUID?,
         isMainPlaylist: Boolean = false
     ) {
+        // If it's the same music of the same playlist, does nothing
+        if (isSameMusic(music.musicId) && isSamePlaylist(isMainPlaylist, playlistId)) {
+            return
+        }
+        
         if (!isMainPlaylist) {
             if (currentPlaylistId == null) {
                 currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
