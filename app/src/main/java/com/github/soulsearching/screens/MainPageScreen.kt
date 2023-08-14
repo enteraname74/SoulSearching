@@ -425,23 +425,23 @@ fun MainPageScreen(
                     SubMenuComposable(
                         title = stringResource(id = R.string.musics),
                         sortByDateAction = {
-                            allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE))
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                            allMusicsViewModel.onMusicEvent(
+                                MusicEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
                         sortByMostListenedAction = {
                             allMusicsViewModel.onMusicEvent(
                                 MusicEvent.SetSortType(SortType.NB_PLAYED)
                             )
+
                         },
                         sortByName = {
                             allMusicsViewModel.onMusicEvent(
                                 MusicEvent.SetSortType(SortType.NAME)
                             )
+
                         },
-                        setSortTypeAction = {
+                        setSortDirectionAction = {
                             val newDirection = if (musicState.sortDirection == SortDirection.ASC) {
                                 SortDirection.DESC
                             } else {

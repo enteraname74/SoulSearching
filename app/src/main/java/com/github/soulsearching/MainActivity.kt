@@ -37,6 +37,7 @@ import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
@@ -102,8 +103,9 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
 
-        PlayerUtils.playerViewModel.retrieveCoverMethod =
-            { allImageCoversViewModel.getImageCover(it) }
+        PlayerUtils.playerViewModel.retrieveCoverMethod = allImageCoversViewModel::getImageCover
+        PlayerUtils.playerViewModel.updateNbPlayed =
+            { allMusicsViewModel.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
 
         setContent {
             SoulSearchingTheme {

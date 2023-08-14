@@ -1,7 +1,6 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -82,7 +81,7 @@ fun MoreAlbumsScreen(
                                 AlbumEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirection = {
                             val newDirection = if (albumState.sortDirection == SortDirection.ASC) {
                                 SortDirection.DESC
                             } else {

@@ -54,6 +54,7 @@ fun SelectedPlaylistScreen(
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerSwipeableState = swipeableState,
         playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        updateNbPlayedAction = { selectedPlaylistViewModel.onPlaylistEvent(PlaylistEvent.AddNbPlayed(it)) }
     )
 }

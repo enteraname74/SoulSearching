@@ -50,7 +50,8 @@ fun PlaylistScreen(
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     playerSwipeableState: SwipeableState<BottomSheetStates>,
-    playlistId: UUID?
+    playlistId: UUID?,
+    updateNbPlayedAction: (UUID) -> Unit
 ) {
     val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
@@ -145,7 +146,8 @@ fun PlaylistScreen(
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f),
-                        playerSwipeableState = playerSwipeableState
+                        playerSwipeableState = playerSwipeableState,
+                        updateNbPlayedAction = updateNbPlayedAction
                     )
                 }
             }
@@ -194,6 +196,10 @@ fun PlaylistScreen(
                                     coroutineScope.launch {
                                         playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
                                     }.invokeOnCompletion {
+                                        playlistId?.let {
+                                            updateNbPlayedAction(it)
+                                        }
+
                                         if (!PlayerUtils.playerViewModel.isSamePlaylist(
                                                 false,
                                                 playlistId

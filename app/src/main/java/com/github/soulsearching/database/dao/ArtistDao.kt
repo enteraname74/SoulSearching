@@ -72,4 +72,10 @@ interface ArtistDao {
 
     @Query("UPDATE Artist SET isInQuickAccess = :newQuickAccessState WHERE artistId = :artistId")
     fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
+
+    @Query("SELECT nbPlayed FROM Artist WHERE artistId = :artistId")
+    fun getNbPlayedOfArtist(artistId: UUID): Int
+
+    @Query("UPDATE Artist SET nbPlayed = :newNbPlayed WHERE artistId = :artistId")
+    fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
 }

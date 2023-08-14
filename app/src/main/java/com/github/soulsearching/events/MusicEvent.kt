@@ -23,7 +23,7 @@ sealed interface MusicEvent {
     data class SetAlbum(val album: String) : MusicEvent
     data class SetCover(val cover: Bitmap) : MusicEvent
     data class DeleteMusicFromPlaylist(val musicPlaylist: MusicPlaylist) : MusicEvent
-
     data class SetFavorite(val musicId: UUID) : MusicEvent
+    data class AddNbPlayed(val musicId: UUID): MusicEvent
 
 }

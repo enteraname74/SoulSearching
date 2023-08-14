@@ -23,7 +23,7 @@ interface MusicDao {
     fun getMusicFromId(musicId : UUID): Music
 
     @Query("SELECT * FROM Music INNER JOIN MusicPlaylist ON Music.musicId = MusicPlaylist.musicId INNER JOIN Playlist ON Playlist.playlistId = MusicPlaylist.playlistId WHERE Playlist.isFavorite = TRUE AND Music.musicId = :musicId")
-    fun getMusicFromFavoritePlaylist(musicId: UUID): Music?
+    suspend fun getMusicFromFavoritePlaylist(musicId: UUID): Music?
 
     @Query("SELECT * FROM Music ORDER BY name ASC")
     fun getAllMusicsSortByNameAsc(): Flow<List<Music>>
@@ -55,4 +55,10 @@ interface MusicDao {
 
     @Query("UPDATE Music SET isInQuickAccess = :newQuickAccessState WHERE musicId = :musicId")
     fun updateQuickAccessState(newQuickAccessState: Boolean, musicId: UUID)
+
+    @Query("SELECT nbPlayed FROM Music WHERE musicId = :musicId")
+    fun getNbPlayedOfMusic(musicId: UUID): Int
+
+    @Query("UPDATE Music SET nbPlayed = :newNbPlayed WHERE musicId = :musicId")
+    fun updateNbPlayed(newNbPlayed: Int, musicId: UUID)
 }

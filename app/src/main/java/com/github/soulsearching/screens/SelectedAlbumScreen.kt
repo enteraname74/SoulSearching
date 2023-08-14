@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
@@ -70,6 +71,7 @@ fun SelectedAlbumScreen(
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerSwipeableState = swipeableState,
         playlistId = albumWithMusicsState.albumWithMusics.album.albumId,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        updateNbPlayedAction = { selectedAlbumViewModel.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) }
     )
 }

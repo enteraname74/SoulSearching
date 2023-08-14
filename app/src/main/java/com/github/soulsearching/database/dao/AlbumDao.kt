@@ -88,4 +88,10 @@ interface AlbumDao {
 
     @Query("SELECT COUNT(*) FROM Album WHERE coverId = :coverId")
     fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+
+    @Query("SELECT nbPlayed FROM Album WHERE albumId = :albumId")
+    fun getNbPlayedOfAlbum(albumId: UUID): Int
+
+    @Query("UPDATE Album SET nbPlayed = :newNbPlayed WHERE albumId = :albumId")
+    fun updateNbPlayed(newNbPlayed: Int, albumId: UUID)
 }

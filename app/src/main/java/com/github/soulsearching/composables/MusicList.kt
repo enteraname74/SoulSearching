@@ -35,7 +35,8 @@ fun MusicList(
     playlistId: UUID?,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isMainPlaylist: Boolean = false,
-    playerSwipeableState: SwipeableState<BottomSheetStates>
+    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    updateNbPlayedAction: (UUID) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -62,6 +63,10 @@ fun MusicList(
                     coroutineScope.launch {
                         swipeableState.animateTo(BottomSheetStates.EXPANDED)
                     }.invokeOnCompletion {
+                        playlistId?.let {
+                            updateNbPlayedAction(it)
+                        }
+
                         if (!PlayerUtils.playerViewModel.isSamePlaylist(
                                 isMainPlaylist = isMainPlaylist,
                                 playlistId = playlistId

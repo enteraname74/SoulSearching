@@ -84,7 +84,7 @@ fun MoreArtistsScreen(
                                 ArtistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirection = {
                             val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
                                 SortDirection.DESC
                             } else {

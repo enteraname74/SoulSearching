@@ -18,4 +18,6 @@ interface AlbumEvent {
     data class SetCover(val cover: Bitmap) : AlbumEvent
     data class BottomSheet(val isShown: Boolean) : AlbumEvent
     data class DeleteDialog(val isShown: Boolean) : AlbumEvent
+    data class AddNbPlayed(val albumId: UUID): AlbumEvent
+
 }

@@ -6,11 +6,15 @@ import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -86,6 +90,19 @@ class SelectedAlbumViewModel @Inject constructor(
         return albumDao.getAlbumFromId(
             albumId
         ) == null
+    }
+
+    fun onAlbumEvent(event: AlbumEvent) {
+        when(event) {
+            is AlbumEvent.AddNbPlayed -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    albumDao.updateNbPlayed(
+                        newNbPlayed = albumDao.getNbPlayedOfAlbum(event.albumId) + 1,
+                        albumId = event.albumId
+                    )
+                }
+            }
+        }
     }
 
     fun onMusicEvent(event: MusicEvent) {

@@ -28,7 +28,7 @@ fun SortOptionsComposable(
     sortByDateAction: () -> Unit,
     sortByMostListenedAction: () -> Unit,
     sortByName: () -> Unit,
-    setSortTypeAction: () -> Unit,
+    setSortDirection: () -> Unit,
     sortType: Int,
     sortDirection: Int
 ) {
@@ -80,7 +80,7 @@ fun SortOptionsComposable(
         }
         Icon(
             modifier = Modifier
-                .clickable { setSortTypeAction() }
+                .clickable { setSortDirection() }
                 .padding(Constants.Spacing.small)
                 .size(
                     imageSize

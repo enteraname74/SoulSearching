@@ -222,15 +222,21 @@ object EventUtils {
                     )
                 }
             }
-            is MusicEvent.SetSortDirection -> {
-                _sortDirection.value = event.type
+            is MusicEvent.SetSortType -> {
+                _sortType.value = event.type
+                _state.update {
+                    it.copy(
+                        sortType = event.type
+                    )
+                }
                 SharedPrefUtils.updateSort(
                     keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
                     newValue = event.type
                 )
             }
-            is MusicEvent.SetSortType -> {
-                _sortType.value = event.type
+            is MusicEvent.SetSortDirection -> {
+                _sortDirection.value = event.type
+
                 SharedPrefUtils.updateSort(
                     keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
                     newValue = event.type
@@ -263,6 +269,15 @@ object EventUtils {
                     musicDao.updateQuickAccessState(
                         musicId = state.value.selectedMusic.musicId,
                         newQuickAccessState = !state.value.selectedMusic.isInQuickAccess
+                    )
+                }
+            }
+            is MusicEvent.AddNbPlayed -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val currentNbPlayed = musicDao.getNbPlayedOfMusic(event.musicId)
+                    musicDao.updateNbPlayed(
+                        newNbPlayed = currentNbPlayed + 1,
+                        musicId = event.musicId
                     )
                 }
             }
@@ -462,6 +477,14 @@ object EventUtils {
                     playlistDao.updateQuickAccessState(
                         newQuickAccessState = !state.value.selectedPlaylist.isInQuickAccess,
                         playlistId = state.value.selectedPlaylist.playlistId
+                    )
+                }
+            }
+            is PlaylistEvent.AddNbPlayed -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    playlistDao.updateNbPlayed(
+                        newNbPlayed = playlistDao.getNbPlayedOfPlaylist(event.playlistId) + 1,
+                        playlistId = event.playlistId
                     )
                 }
             }

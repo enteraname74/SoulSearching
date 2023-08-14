@@ -79,8 +79,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun setMusic(music: Music) {
-        Log.d("PLAYER", "START SET MUSIC")
-
         player.stop()
         player.reset()
         player.setDataSource(music.path)
@@ -284,6 +282,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
             when (audioManager.requestAudioFocus(audioFocusRequest)) {
                 AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                     player.start()
+                    PlayerUtils.playerViewModel.currentMusic?.let {
+                        PlayerUtils.playerViewModel.updateNbPlayed(it.musicId)
+                    }
                     PlayerUtils.playerViewModel.isPlaying = true
 
                     releaseDurationJob()

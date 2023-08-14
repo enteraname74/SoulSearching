@@ -34,6 +34,7 @@ class PlayerViewModel : ViewModel() {
     var playerMode by mutableStateOf(PlayerMode.NORMAL)
 
     lateinit var retrieveCoverMethod: (UUID?) -> Bitmap?
+    lateinit var updateNbPlayed: (UUID) -> Unit
 
     private var isCounting = false
     private var isChangingPlayMode = false

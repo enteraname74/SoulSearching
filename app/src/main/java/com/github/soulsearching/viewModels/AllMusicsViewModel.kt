@@ -1,10 +1,6 @@
 package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
@@ -15,14 +11,10 @@ import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
@@ -36,7 +28,7 @@ class AllMusicsViewModel @Inject constructor(
     private val albumArtistDao: AlbumArtistDao,
     private val imageCoverDao: ImageCoverDao,
 ) : ViewModel() {
-    private val _sortType = MutableStateFlow(SortType.NAME)
+    private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -1,21 +1,22 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class SelectedArtistViewModel @Inject constructor(
@@ -108,9 +109,17 @@ class SelectedArtistViewModel @Inject constructor(
         )
     }
 
-    fun onArtistEvent(event : AlbumEvent) {
-        Log.d("EVENT", event.toString())
+    fun onArtistEvent(event : ArtistEvent) {
         when(event) {
+            is ArtistEvent.AddNbPlayed -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    artistDao.updateNbPlayed(
+                        newNbPlayed = artistDao.getNbPlayedOfArtist(event.artistId) + 1,
+                        artistId = event.artistId
+                    )
+                }
+            }
+            else -> {}
         }
     }
 }

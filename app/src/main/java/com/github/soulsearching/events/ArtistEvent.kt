@@ -17,4 +17,6 @@ interface ArtistEvent {
     data class SetCover(val cover : Bitmap) : ArtistEvent
     data class BottomSheet(val isShown: Boolean) : ArtistEvent
     data class DeleteDialog(val isShown: Boolean) : ArtistEvent
+    data class AddNbPlayed(val artistId: UUID): ArtistEvent
+
 }

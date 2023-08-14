@@ -20,9 +20,11 @@ interface PlayerMusicDao {
     @Upsert
     suspend fun insertAllPlayerMusics(playlist: List<PlayerMusic>)
 
+    @Transaction
     @Query("SELECT * FROM PlayerMusic")
     suspend fun getAllPlayerMusics(): List<PlayerWithMusicItem>
 
+    @Transaction
     @Query("SELECT * FROM PlayerMusic")
     fun getAllPlayerMusicsFlow(): Flow<List<PlayerWithMusicItem>>
 }

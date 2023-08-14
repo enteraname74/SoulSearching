@@ -65,4 +65,10 @@ interface PlaylistDao {
 
     @Query("UPDATE Playlist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
     fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
+
+    @Query("SELECT nbPlayed FROM Playlist WHERE playlistId = :playlistId")
+    fun getNbPlayedOfPlaylist(playlistId: UUID): Int
+
+    @Query("UPDATE Playlist SET nbPlayed = :newNbPlayed WHERE playlistId = :playlistId")
+    fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID)
 }

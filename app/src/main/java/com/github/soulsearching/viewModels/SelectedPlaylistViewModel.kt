@@ -7,10 +7,14 @@ import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedPlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -84,6 +88,20 @@ class SelectedPlaylistViewModel @Inject constructor(
                     ArrayList()
                 }
             )
+        }
+    }
+
+    fun onPlaylistEvent(event: PlaylistEvent) {
+        when(event) {
+            is PlaylistEvent.AddNbPlayed -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    playlistDao.updateNbPlayed(
+                        newNbPlayed = playlistDao.getNbPlayedOfPlaylist(event.playlistId) + 1,
+                        playlistId = event.playlistId
+                    )
+                }
+            }
+            else -> {}
         }
     }
 

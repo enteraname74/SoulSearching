@@ -23,7 +23,7 @@ fun SubMenuComposable(
     sortByDateAction: () -> Unit,
     sortByMostListenedAction: () -> Unit,
     sortByName: () -> Unit,
-    setSortTypeAction: () -> Unit,
+    setSortDirectionAction: () -> Unit,
     rightComposable: @Composable (() -> Unit),
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortType: Int,
@@ -63,7 +63,7 @@ fun SubMenuComposable(
                     sortByDateAction = sortByDateAction,
                     sortByMostListenedAction = sortByMostListenedAction,
                     sortByName = sortByName,
-                    setSortTypeAction = setSortTypeAction,
+                    setSortDirection = setSortDirectionAction,
                     sortDirection = sortDirection,
                     sortType = sortType
                 )

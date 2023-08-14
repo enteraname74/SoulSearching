@@ -84,7 +84,7 @@ fun MorePlaylistsScreen(
                                 PlaylistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirection = {
                             val newDirection =
                                 if (playlistState.sortDirection == SortDirection.ASC) {
                                     SortDirection.DESC

@@ -23,4 +23,6 @@ interface PlaylistEvent {
     data class BottomSheet(val isShown: Boolean) : PlaylistEvent
     data class DeleteDialog(val isShown: Boolean) : PlaylistEvent
     data class CreatePlaylistDialog(val isShown: Boolean) : PlaylistEvent
+    data class AddNbPlayed(val playlistId: UUID): PlaylistEvent
+
 }

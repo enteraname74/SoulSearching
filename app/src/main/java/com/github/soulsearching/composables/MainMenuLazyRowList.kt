@@ -56,7 +56,7 @@ fun MainMenuLazyListRow(
             sortByDateAction = sortByDateAction,
             sortByMostListenedAction = sortByMostListenedAction,
             sortByName = sortByName,
-            setSortTypeAction = setSortDirectionAction,
+            setSortDirectionAction = setSortDirectionAction,
             rightComposable = {
                 if (isUsingMoreButton) {
                     Row(

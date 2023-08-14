@@ -135,7 +135,7 @@ class SharedPrefUtils {
 
         const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"
         
-        const val HAS_MUSICS_BEEN_FETCHED_KEY = "MUSICS_FETCHED"
+        private const val HAS_MUSICS_BEEN_FETCHED_KEY = "MUSICS_FETCHED"
 
         const val SORT_MUSICS_TYPE_KEY = "SORT_MUSICS_TYPE"
         const val SORT_MUSICS_DIRECTION_KEY = "SORT_MUSICS_DIRECTION"
