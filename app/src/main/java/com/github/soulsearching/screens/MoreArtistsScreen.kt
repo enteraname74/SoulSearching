@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
@@ -72,35 +71,17 @@ fun MoreArtistsScreen(
                         imageSize = Constants.Spacing.large,
                         sortByName = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                ArtistEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.NB_PLAYED
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
+                                ArtistEvent.SetSortType(SortType.NB_PLAYED)
                             )
                         },
                         sortByDateAction = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                                ArtistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
                         setSortTypeAction = {
@@ -110,13 +91,7 @@ fun MoreArtistsScreen(
                                 SortDirection.ASC
                             }
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
-                                newValue = newDirection
+                                ArtistEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = artistState.sortType,
@@ -129,41 +104,9 @@ fun MoreArtistsScreen(
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    item(key = "0") {
-                        BigPreviewComposable(
-                            image = retrieveCoverMethod(artistState.artists[0].artist.coverId),
-                            title = artistState.artists[0].artist.artistName,
-                            text = if (artistState.artists[0].musics.size == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else {
-                                stringResource(
-                                    id = R.string.multiple_musics,
-                                    artistState.artists[0].musics.size
-                                )
-                            },
-                            onClick = {
-                                navigateToSelectedArtist(artistState.artists[0].artist.artistId.toString())
-                            },
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    allArtistsViewModel.onArtistEvent(
-                                        ArtistEvent.SetSelectedArtist(
-                                            artistState.artists[0]
-                                        )
-                                    )
-                                    allArtistsViewModel.onArtistEvent(
-                                        ArtistEvent.BottomSheet(
-                                            isShown = true
-                                        )
-                                    )
-                                }
-                            },
-                            imageSize = Constants.ImageSize.huge
-                        )
-                    }
                     items(
-                        items = artistState.artists.subList(1, artistState.artists.size),
-                        key = { artist -> artist.artist.artistId }) { artistWithMusics ->
+                        items = artistState.artists,
+                    ) { artistWithMusics ->
                         BigPreviewComposable(
                             modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(artistWithMusics.artist.coverId),

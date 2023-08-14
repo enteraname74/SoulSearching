@@ -12,10 +12,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistBottomSheet(
-    artistState : ArtistState,
-    onArtistEvent : (ArtistEvent) -> Unit,
+    artistState: ArtistState,
+    onArtistEvent: (ArtistEvent) -> Unit,
     artistModalSheetState: SheetState,
-    navigateToModifyArtist : (String) -> Unit
+    navigateToModifyArtist: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -47,7 +47,20 @@ fun ArtistBottomSheet(
             deleteAction = {
                 onArtistEvent(ArtistEvent.DeleteDialog(isShown = true))
             },
-            addToShortcutsAction = {}
+            quickAccessAction = {
+                onArtistEvent(ArtistEvent.UpdateQuickAccessState)
+                coroutineScope.launch { artistModalSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!artistModalSheetState.isVisible) {
+                            onArtistEvent(
+                                ArtistEvent.BottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        }
+                    }
+            },
+            isInQuickAccess = artistState.selectedArtistWithMusics.artist.isInQuickAccess
         )
     }
 }

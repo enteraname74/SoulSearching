@@ -66,7 +66,8 @@ fun PlaylistScreen(
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        playerSwipeableState = playerSwipeableState
     )
 
     val shuffleAction = {
@@ -143,7 +144,8 @@ fun PlaylistScreen(
                         playerMusicListViewModel = playerMusicListViewModel,
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(1f)
+                            .weight(1f),
+                        playerSwipeableState = playerSwipeableState
                     )
                 }
             }

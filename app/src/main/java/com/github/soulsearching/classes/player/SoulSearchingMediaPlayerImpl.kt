@@ -18,12 +18,11 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationAndroid13
 import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationBelowAndroid13
+import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
-import java.lang.Integer.max
 
 class SoulSearchingMediaPlayerImpl(private val context: Context) :
     SoulSearchingPlayer,
@@ -80,6 +79,8 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun setMusic(music: Music) {
+        Log.d("PLAYER", "START SET MUSIC")
+
         player.stop()
         player.reset()
         player.setDataSource(music.path)
@@ -176,14 +177,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         releaseAudioBecomingNoisyReceiver()
     }
 
-    override fun getMusicDuration(): Int {
-        return try {
-            max(0, player.duration)
-        } catch (e: Error) {
-            0
-        }
-    }
-
     override fun getMusicPosition(): Int {
         return try {
             player.currentPosition
@@ -266,7 +259,15 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
         Log.d("MEDIA PLAYER", "ERROR CODE : $what, $extra")
         when(what) {
-            MediaPlayer.MEDIA_ERROR_UNKNOWN -> next()
+            MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
+                PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
+                    musicId = PlayerUtils.playerViewModel.currentMusic!!.musicId,
+                    context = context
+                )
+                if (PlayerUtils.playerViewModel.currentPlaylist.isNotEmpty()) {
+                    next()
+                }
+            }
         }
         return true
     }
@@ -313,7 +314,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                     Thread.sleep(1000)
                 }
                 PlayerUtils.playerViewModel.currentMusicPosition = PlayerService.getCurrentMusicPosition()
-                SharedPrefUtils.setCurrentMusicPosition()
+                if (player.isPlaying) {
+                    SharedPrefUtils.setCurrentMusicPosition()
+                }
             }
         }
     }

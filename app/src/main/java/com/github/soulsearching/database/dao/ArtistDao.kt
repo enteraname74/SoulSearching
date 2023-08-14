@@ -57,6 +57,10 @@ interface ArtistDao {
     fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics>
 
     @Transaction
+    @Query("SELECT * FROM Artist WHERE isInQuickAccess = TRUE")
+    fun getAllArtistsFromQuickAccess(): Flow<List<ArtistWithMusics>>
+
+    @Transaction
     @Query("SELECT * FROM Artist WHERE artistId = :artistId")
     fun getArtistWithMusicsSimple(artistId: UUID): ArtistWithMusics
 
@@ -65,4 +69,7 @@ interface ArtistDao {
 
     @Query("SELECT COUNT(*) FROM Artist WHERE coverId = :coverId")
     fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+
+    @Query("UPDATE Artist SET isInQuickAccess = :newQuickAccessState WHERE artistId = :artistId")
+    fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
 }

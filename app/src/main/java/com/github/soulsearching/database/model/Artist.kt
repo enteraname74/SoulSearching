@@ -12,5 +12,7 @@ data class Artist(
     var artistName: String = "",
     var coverId: UUID? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0
+    var nbPlayed: Int = 0,
+    var isInQuickAccess: Boolean = false
+
 )

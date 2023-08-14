@@ -1,12 +1,10 @@
 package com.github.soulsearching.classes
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.viewModels.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,6 +62,7 @@ class SharedPrefUtils {
                 with(sharedPreferences.edit()) {
                     putInt(PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
                     apply()
+
                 }
             }
         }

@@ -6,6 +6,7 @@ import java.util.*
 
 interface AlbumEvent {
     object UpdateAlbum : AlbumEvent
+    object UpdateQuickAccessState: AlbumEvent
     data class AlbumFromID(val albumId: UUID) : AlbumEvent
     object DeleteAlbum : AlbumEvent
     data class SetSortDirection(val type: Int) : AlbumEvent

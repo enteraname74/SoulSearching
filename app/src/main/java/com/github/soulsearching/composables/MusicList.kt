@@ -1,8 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,7 +20,7 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MusicList(
     musicState: MusicState,
@@ -36,7 +34,8 @@ fun MusicList(
     swipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    isMainPlaylist: Boolean = false
+    isMainPlaylist: Boolean = false,
+    playerSwipeableState: SwipeableState<BottomSheetStates>
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -47,46 +46,48 @@ fun MusicList(
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        playerSwipeableState = playerSwipeableState
     )
 
     LazyColumn(
         modifier = modifier
     ) {
-        items(items = musicState.musics, key = { music -> music.musicId }) { music ->
-            Row(Modifier.animateItemPlacement()) {
-                MusicItemComposable(
-                    music = music,
-                    onClick = {
-                        coroutineScope.launch {
-                            swipeableState.animateTo(BottomSheetStates.EXPANDED)
-                        }.invokeOnCompletion {
-                            if (!PlayerUtils.playerViewModel.isSamePlaylist(
-                                    isMainPlaylist = isMainPlaylist,
-                                    playlistId = playlistId
-                                )
-                            ) {
-                                playerMusicListViewModel.savePlayerMusicList(
-                                    musicState.musics
-                                )
-                            }
-                            PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                music = music,
-                                playlist = musicState.musics,
-                                playlistId = playlistId,
-                                isMainPlaylist = isMainPlaylist
+        items(
+            items = musicState.musics
+        ) { music ->
+            MusicItemComposable(
+                music = music,
+                onClick = {
+                    coroutineScope.launch {
+                        swipeableState.animateTo(BottomSheetStates.EXPANDED)
+                    }.invokeOnCompletion {
+                        if (!PlayerUtils.playerViewModel.isSamePlaylist(
+                                isMainPlaylist = isMainPlaylist,
+                                playlistId = playlistId
+                            )
+                        ) {
+                            playerMusicListViewModel.savePlayerMusicList(
+                                musicState.musics
                             )
                         }
-                    },
-                    onLongClick = {
-                        coroutineScope.launch {
-                            onMusicEvent(MusicEvent.SetSelectedMusic(music))
-                            onMusicEvent(MusicEvent.BottomSheet(isShown = true))
-                        }
-                    },
-                    musicCover = retrieveCoverMethod(music.coverId)
-                )
-            }
+                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                            music = music,
+                            playlist = musicState.musics,
+                            playlistId = playlistId,
+                            isMainPlaylist = isMainPlaylist
+                        )
+                    }
+                },
+                onLongClick = {
+                    coroutineScope.launch {
+                        onMusicEvent(MusicEvent.SetSelectedMusic(music))
+                        onMusicEvent(MusicEvent.BottomSheet(isShown = true))
+                    }
+                },
+                musicCover = retrieveCoverMethod(music.coverId)
+            )
+
         }
     }
 }

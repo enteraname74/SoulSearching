@@ -4,7 +4,7 @@
     <string name="playlists">Playlists</string>
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
-    <string name="shortcuts">Shortcuts</string>
+    <string name="quick_access">Quick Access</string>
     <string name="more">More</string>
     <string name="favorite">Favorite</string>
 
@@ -26,7 +26,8 @@
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Add to a playlist</string>
-    <string name="add_to_shortcuts">Add to shortcuts</string>
+    <string name="add_to_quick_access">Add to quick access</string>
+    <string name="remove_from_quick_access">Remove from quick access</string>
     <string name="delete_music">Delete this music</string>
     <string name="modify_music">Modify this music</string>
     <string name="delete_playlist">Delete this playlist</string>

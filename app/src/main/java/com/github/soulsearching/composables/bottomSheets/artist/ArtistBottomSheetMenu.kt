@@ -19,7 +19,8 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun ArtistBottomSheetMenu(
     modifyAction: () -> Unit,
     deleteAction: () -> Unit,
-    addToShortcutsAction: () -> Unit
+    quickAccessAction: () -> Unit,
+    isInQuickAccess: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -28,8 +29,12 @@ fun ArtistBottomSheetMenu(
     ) {
         BottomSheetRow(
             icon = Icons.Default.DoubleArrow,
-            text = stringResource(id = R.string.add_to_shortcuts),
-            onClick = addToShortcutsAction
+            text = if (isInQuickAccess) {
+                stringResource(id = R.string.remove_from_quick_access)
+            } else {
+                stringResource(id = R.string.add_to_quick_access)
+            },
+            onClick = quickAccessAction
         )
         BottomSheetRow(
             icon = Icons.Default.Edit,

@@ -42,6 +42,10 @@ interface PlaylistDao {
     @Query("SELECT * FROM Playlist ORDER BY nbPlayed DESC")
     fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<PlaylistWithMusics>>
 
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE isInQuickAccess = TRUE")
+    fun getAllPlaylistsFromQuickAccess(): Flow<List<PlaylistWithMusics>>
+
     @Query("SELECT playlistId FROM Playlist ORDER BY name ASC LIMIT 1")
     fun getFirstPlaylistId(): UUID
 
@@ -58,4 +62,7 @@ interface PlaylistDao {
 
     @Query("SELECT COUNT(*) FROM Playlist WHERE coverId = :coverId")
     fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
+
+    @Query("UPDATE Playlist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
+    fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
 }

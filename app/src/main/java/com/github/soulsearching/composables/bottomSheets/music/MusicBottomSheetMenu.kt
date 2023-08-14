@@ -20,10 +20,11 @@ fun MusicBottomSheetMenu(
     removeAction: () -> Unit,
     removeFromPlaylistAction: () -> Unit = {},
     removeFromPlayedListAction: () -> Unit = {},
-    addToShortcutsAction: () -> Unit = {},
+    quickAccessAction: () -> Unit,
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
+    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    isInQuickAccess: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -32,8 +33,12 @@ fun MusicBottomSheetMenu(
     ) {
         BottomSheetRow(
             icon = Icons.Default.DoubleArrow,
-            text = stringResource(id = R.string.add_to_shortcuts),
-            onClick = addToShortcutsAction
+            text = if (isInQuickAccess) {
+                stringResource(id = R.string.remove_from_quick_access)
+            } else {
+                stringResource(id = R.string.add_to_quick_access)
+            },
+            onClick = quickAccessAction
         )
         BottomSheetRow(
             icon = Icons.Default.PlaylistAdd,

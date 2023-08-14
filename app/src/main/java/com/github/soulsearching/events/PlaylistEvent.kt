@@ -7,6 +7,7 @@ import java.util.*
 interface PlaylistEvent {
     object UpdatePlaylist : PlaylistEvent
     object DeletePlaylist : PlaylistEvent
+    object UpdateQuickAccessState: PlaylistEvent
     data class SetSortDirection(val type: Int) : PlaylistEvent
     data class SetSortType(val type: Int) : PlaylistEvent
     data class AddPlaylist(val name : String) : PlaylistEvent

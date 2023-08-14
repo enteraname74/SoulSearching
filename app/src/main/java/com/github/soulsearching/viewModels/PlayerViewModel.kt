@@ -3,6 +3,7 @@ package com.github.soulsearching.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
@@ -55,6 +56,7 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun isSameMusic(musicId: UUID): Boolean {
+        Log.d("VM", "SAME MUSIC")
         return if (currentMusic == null) {
             false
         } else {
@@ -75,7 +77,7 @@ class PlayerViewModel : ViewModel() {
         return false
     }
 
-    private fun setNewCurrentMusicInformation(music : Music?) {
+    private fun setNewCurrentMusicInformation(music: Music?) {
         currentMusic = music
         currentMusicPosition = 0
         currentMusicCover = retrieveCoverMethod(currentMusic?.coverId)
@@ -135,6 +137,7 @@ class PlayerViewModel : ViewModel() {
                 if (it.musicId.compareTo(musicId) == 0) {
                     // We make place ourself in the previous music :
                     currentMusic = currentPlaylist[(currentIndex) % currentPlaylist.size]
+
                     PlayerService.setAndPlayCurrentMusic()
                 }
             }
@@ -205,58 +208,33 @@ class PlayerViewModel : ViewModel() {
         music: Music,
         playlist: ArrayList<Music>,
         playlistId: UUID?,
-        isMainPlaylist: Boolean = false
+        isMainPlaylist: Boolean = false,
+        isForcingNewPlaylist: Boolean = false
     ) {
         // If it's the same music of the same playlist, does nothing
-            if (isSameMusic(music.musicId) && isSamePlaylist(isMainPlaylist, playlistId)) {
-                return
-            }
+        if (isSameMusic(music.musicId) && isSamePlaylist(isMainPlaylist, playlistId) && !isForcingNewPlaylist) {
+            return
+        }
 
-        if (!isMainPlaylist) {
-            if (currentPlaylistId == null) {
-                currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-                initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-                currentPlaylistId = playlistId
-                this.isMainPlaylist = false
-                if (shouldServiceBeLaunched) {
-                    PlayerService.setAndPlayCurrentMusic()
-                }
-            } else if (currentPlaylistId!!.compareTo(playlistId) != 0) {
-                currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-                initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-                currentPlaylistId = playlistId
-                this.isMainPlaylist = false
-                if (shouldServiceBeLaunched) {
-                    PlayerService.setAndPlayCurrentMusic()
-                }
-            }
-        } else if (!this.isMainPlaylist) {
-            this.isMainPlaylist = true
+        if (!isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist) {
             currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             currentPlaylistId = playlistId
+            this.isMainPlaylist = isMainPlaylist
             if (shouldServiceBeLaunched) {
                 PlayerService.setAndPlayCurrentMusic()
             }
         }
 
-        if (currentMusic != null) {
-            if (music.musicId.compareTo(currentMusic!!.musicId) != 0) {
-                setNewCurrentMusicInformation(music)
-
-                if (shouldServiceBeLaunched) {
-                    PlayerService.setAndPlayCurrentMusic()
-                    SharedPrefUtils.setPlayerSavedCurrentMusic()
-                }
-            }
-        } else {
+        if (!isSameMusic(music.musicId)) {
             setNewCurrentMusicInformation(music)
 
             if (shouldServiceBeLaunched) {
-                PlayerService.playMusic()
+                PlayerService.setAndPlayCurrentMusic()
                 SharedPrefUtils.setPlayerSavedCurrentMusic()
             }
         }
+
         if (!shouldServiceBeLaunched) {
             shouldServiceBeLaunched = true
         }

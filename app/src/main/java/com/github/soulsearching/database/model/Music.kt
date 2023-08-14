@@ -18,5 +18,6 @@ data class Music(
     var path: String = "",
     var folder: String = "",
     var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0
+    var nbPlayed: Int = 0,
+    var isInQuickAccess: Boolean = false
 )

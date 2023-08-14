@@ -13,5 +13,6 @@ data class Playlist(
     var coverId: UUID? = null,
     val isFavorite: Boolean = false,
     var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0
+    var nbPlayed: Int = 0,
+    var isInQuickAccess: Boolean = false
 )

@@ -40,9 +40,16 @@ interface MusicDao {
     @Query("SELECT * FROM Music ORDER BY nbPlayed DESC")
     fun getAllMusicsSortByNbPlayedDesc(): Flow<List<Music>>
 
+    @Transaction
+    @Query("SELECT * FROM Music WHERE isInQuickAccess = TRUE")
+    fun getAllMusicsFromQuickAccess(): Flow<List<Music>>
+
     @Query("SELECT Music.* FROM Music INNER JOIN MusicAlbum WHERE Music.musicId = MusicAlbum.musicId AND MusicAlbum.albumId = :albumId")
     fun getMusicsFromAlbum(albumId : UUID) : List<Music>
 
     @Query("SELECT COUNT(*) FROM Music WHERE coverId = :coverId")
     fun getNumberOfMusicsWithCoverId(coverId : UUID) : Int
+
+    @Query("UPDATE Music SET isInQuickAccess = :newQuickAccessState WHERE musicId = :musicId")
+    fun updateQuickAccessState(newQuickAccessState: Boolean, musicId: UUID)
 }

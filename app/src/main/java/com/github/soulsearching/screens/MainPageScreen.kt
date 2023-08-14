@@ -18,7 +18,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.*
@@ -30,7 +29,6 @@ import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottom
 import com.github.soulsearching.composables.dialogs.CreatePlaylistDialog
 import com.github.soulsearching.composables.searchComposables.SearchAll
 import com.github.soulsearching.composables.searchComposables.SearchView
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -71,7 +69,8 @@ fun MainPageScreen(
     playlistState: PlaylistState,
     albumState: AlbumState,
     artistState: ArtistState,
-    coverState: ImageCoverState
+    coverState: ImageCoverState,
+    quickAccessState: QuickAccessState
 ) {
     val coroutineScope = rememberCoroutineScope()
     MusicBottomSheetEvents(
@@ -80,7 +79,8 @@ fun MainPageScreen(
         onMusicEvent = allMusicsViewModel::onMusicEvent,
         onPlaylistsEvent = allPlaylistsViewModel::onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        playerSwipeableState = playerSwipeableState
     )
 
     PlaylistBottomSheetEvents(
@@ -132,7 +132,6 @@ fun MainPageScreen(
                 PlayerService.updateNotification()
             }
             cleanImagesLaunched = true
-
         }
     }
 
@@ -166,54 +165,100 @@ fun MainPageScreen(
                     .fillMaxSize()
             ) {
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp)
-                    ) {
-                        SubMenuComposable(
-                            title = stringResource(id = R.string.shortcuts),
-                            sortByDateAction = {},
-                            sortByMostListenedAction = {},
-                            sortByName = {},
-                            setSortTypeAction = {},
-                            rightComposable = {
-                                TextButton(onClick = {}) {
-                                    Text(
-                                        text = stringResource(id = R.string.more),
-                                        color = DynamicColor.onPrimary
+                    MainMenuLazyListRow(
+                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                        list = quickAccessState.allQuickAccess,
+                        title = stringResource(id = R.string.quick_access),
+                        navigateToMore = navigateToMoreShortcuts,
+                        isUsingSort = false,
+                        isUsingMoreButton = false,
+                        navigateToArtist = navigateToArtist,
+                        artistBottomSheetAction = {
+                            coroutineScope.launch {
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.SetSelectedArtist(
+                                        it
                                     )
-                                }
-                            },
-                            sortType = 0,
-                            sortDirection = 0
-                        )
-                        TestButtons(
-                            addMusic = {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    allMusicsViewModel.addMusic(
-                                        musicToAdd = Music(
-                                            name = "TEST",
-                                            artist = "TEST",
-                                            album = "TEST"
-                                        ),
-                                        musicCover = null
+                                )
+                                allArtistsViewModel.onArtistEvent(
+                                    ArtistEvent.BottomSheet(
+                                        isShown = true
                                     )
-                                }
+                                )
                             }
-                        )
-                    }
+                        },
+                        navigateToPlaylist = {
+                            navigateToPlaylist(it.playlist.playlistId.toString())
+                        },
+                        playlistBottomSheetAction = {
+                            coroutineScope.launch {
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.SetSelectedPlaylist(
+                                        it
+                                    )
+                                )
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        },
+                        navigateToAlbum = navigateToAlbum,
+                        albumBottomSheetAction = {
+                            coroutineScope.launch {
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.SetSelectedAlbum(
+                                        it
+                                    )
+                                )
+                                allAlbumsViewModel.onAlbumEvent(
+                                    AlbumEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        },
+                        playMusicAction = { music ->
+                            coroutineScope.launch {
+                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                            }.invokeOnCompletion {
+                                val musicListSingleton = arrayListOf(music)
+                                if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
+                                    playerMusicListViewModel.savePlayerMusicList(musicListSingleton)
+                                }
+                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    playlist = musicListSingleton,
+                                    isMainPlaylist = false,
+                                    playlistId = null,
+                                    isForcingNewPlaylist = true
+                                )
+                            }
+                        },
+                        musicBottomSheetAction = {
+                            coroutineScope.launch {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSelectedMusic(
+                                        it
+                                    )
+                                )
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.BottomSheet(
+                                        isShown = true
+                                    )
+                                )
+                            }
+                        }
+                    )
                 }
                 item {
                     MainMenuLazyListRow(
-                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
+                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                         list = playlistState.playlists,
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
                         navigateToPlaylist = {
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSelectedPlaylist(it)
-                            )
                             navigateToPlaylist(it.playlist.playlistId.toString())
                         },
                         playlistBottomSheetAction = {
@@ -248,36 +293,20 @@ fun MainPageScreen(
                         },
                         sortByName = {
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                PlaylistEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allPlaylistsViewModel.onPlaylistEvent(
                                 PlaylistEvent.SetSortType(SortType.NB_PLAYED)
                             )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
-                            )
                         },
                         sortByDateAction = {
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                                PlaylistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirectionAction = {
                             val newDirection =
                                 if (playlistState.sortDirection == SortDirection.ASC) {
                                     SortDirection.DESC
@@ -285,13 +314,7 @@ fun MainPageScreen(
                                     SortDirection.ASC
                                 }
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
-                                newValue = newDirection
+                                PlaylistEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = playlistState.sortType,
@@ -300,7 +323,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
-                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
+                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                         list = albumState.albums,
                         title = stringResource(id = R.string.albums),
                         navigateToMore = navigateToMoreAlbums,
@@ -321,52 +344,27 @@ fun MainPageScreen(
                         },
                         sortByName = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                AlbumEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.NB_PLAYED
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
+                                AlbumEvent.SetSortType(SortType.NB_PLAYED)
                             )
                         },
                         sortByDateAction = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                                AlbumEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirectionAction = {
                             val newDirection = if (albumState.sortDirection == SortDirection.ASC) {
                                 SortDirection.DESC
                             } else {
                                 SortDirection.ASC
                             }
-                            Log.d("NEW UPDATE", "NEW UPDATE")
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
-                                newValue = newDirection
+                                AlbumEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = albumState.sortType,
@@ -375,7 +373,7 @@ fun MainPageScreen(
                 }
                 item {
                     MainMenuLazyListRow(
-                        retrieveCoverMethod = { allImageCoversViewModel.getImageCover(it) },
+                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                         list = artistState.artists,
                         title = stringResource(id = R.string.artists),
                         navigateToMore = navigateToMoreArtists,
@@ -396,51 +394,27 @@ fun MainPageScreen(
                         },
                         sortByName = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                ArtistEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.NB_PLAYED
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
+                                ArtistEvent.SetSortType(SortType.NB_PLAYED)
                             )
                         },
                         sortByDateAction = {
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                                ArtistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
-                        setSortTypeAction = {
+                        setSortDirectionAction = {
                             val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
                                 SortDirection.DESC
                             } else {
                                 SortDirection.ASC
                             }
                             allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
-                                newValue = newDirection
+                                ArtistEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = artistState.sortType,
@@ -449,7 +423,6 @@ fun MainPageScreen(
                 }
                 stickyHeader {
                     SubMenuComposable(
-                        modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                         title = stringResource(id = R.string.musics),
                         sortByDateAction = {
                             allMusicsViewModel.onMusicEvent(MusicEvent.SetSortType(SortType.ADDED_DATE))
@@ -460,24 +433,12 @@ fun MainPageScreen(
                         },
                         sortByMostListenedAction = {
                             allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortType(
-                                    SortType.NB_PLAYED
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
+                                MusicEvent.SetSortType(SortType.NB_PLAYED)
                             )
                         },
                         sortByName = {
                             allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                MusicEvent.SetSortType(SortType.NAME)
                             )
                         },
                         setSortTypeAction = {
@@ -487,13 +448,7 @@ fun MainPageScreen(
                                 SortDirection.ASC
                             }
                             allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
-                                newValue = newDirection
+                                MusicEvent.SetSortDirection(newDirection)
                             )
                         },
                         rightComposable = {
@@ -522,43 +477,42 @@ fun MainPageScreen(
                         sortDirection = musicState.sortDirection
                     )
                 }
-                items(items = musicState.musics, key = { music -> music.musicId }) { music ->
-                    Row(Modifier.animateItemPlacement()) {
-                        MusicItemComposable(
-                            music = music,
-                            onClick = { music ->
-                                coroutineScope.launch {
-                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                                }.invokeOnCompletion {
-                                    if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
-                                        playerMusicListViewModel.savePlayerMusicList(musicState.musics)
-                                    }
-                                    PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                        music = music,
-                                        playlist = musicState.musics,
-                                        isMainPlaylist = true,
-                                        playlistId = null,
-                                    )
+                items(items = musicState.musics) { elt ->
+                    MusicItemComposable(
+                        music = elt,
+                        onClick = { music ->
+                            coroutineScope.launch {
+                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                            }.invokeOnCompletion {
+                                if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
+                                    playerMusicListViewModel.savePlayerMusicList(musicState.musics)
                                 }
-                            },
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    allMusicsViewModel.onMusicEvent(
-                                        MusicEvent.SetSelectedMusic(
-                                            music
-                                        )
+                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    playlist = musicState.musics,
+                                    isMainPlaylist = true,
+                                    playlistId = null,
+                                )
+                            }
+                        },
+                        onLongClick = {
+                            coroutineScope.launch {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSelectedMusic(
+                                        elt
                                     )
-                                    allMusicsViewModel.onMusicEvent(
-                                        MusicEvent.BottomSheet(
-                                            isShown = true
-                                        )
+                                )
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.BottomSheet(
+                                        isShown = true
                                     )
-                                }
-                            },
-                            musicCover = allImageCoversViewModel.getImageCover(music.coverId),
+                                )
+                            }
+                        },
+                        musicCover = allImageCoversViewModel.getImageCover(elt.coverId),
 //                            recoverMethod = allImageCoversViewModel::getCover
-                        )
-                    }
+                    )
+
                 }
             }
         }

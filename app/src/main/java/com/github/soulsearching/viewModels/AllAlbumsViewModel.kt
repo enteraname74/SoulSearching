@@ -2,6 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.classes.Utils
@@ -21,8 +22,7 @@ class AllAlbumsViewModel @Inject constructor(
     private val albumDao: AlbumDao,
     private val musicDao: MusicDao,
     private val artistDao: ArtistDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val imageCoverDao: ImageCoverDao
+    private val musicArtistDao: MusicArtistDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -120,9 +120,25 @@ class AllAlbumsViewModel @Inject constructor(
             }
             is AlbumEvent.SetSortType -> {
                 _sortType.value = event.type
+                SharedPrefUtils.updateSort(
+                    keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
+                    newValue = event.type
+                )
             }
             is AlbumEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
+                SharedPrefUtils.updateSort(
+                    keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
+                    newValue = event.type
+                )
+            }
+            is AlbumEvent.UpdateQuickAccessState -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    albumDao.updateQuickAccessState(
+                        newQuickAccessState = !state.value.selectedAlbumWithArtist.album.isInQuickAccess,
+                        albumId = state.value.selectedAlbumWithArtist.album.albumId
+                    )
+                }
             }
             else -> {}
         }

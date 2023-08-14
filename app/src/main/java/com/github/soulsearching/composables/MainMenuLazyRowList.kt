@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -14,32 +13,38 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SortDirection
+import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.PlaylistWithMusics
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainMenuLazyListRow(
-    retrieveCoverMethod : (UUID) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> Bitmap?,
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
     navigateToPlaylist: (PlaylistWithMusics) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
+    playMusicAction: (Music) -> Unit = {},
+    musicBottomSheetAction: (Music) -> Unit = {},
     playlistBottomSheetAction: (PlaylistWithMusics) -> Unit = {},
     albumBottomSheetAction: (AlbumWithArtist) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
     createPlaylistComposable: @Composable (() -> Unit) = {},
-    sortByName : () -> Unit,
-    sortByDateAction : () -> Unit,
-    sortByMostListenedAction : () -> Unit,
-    setSortTypeAction : () -> Unit,
-    sortType : Int,
-    sortDirection : Int
+    sortByName: () -> Unit = {},
+    sortByDateAction: () -> Unit = {},
+    sortByMostListenedAction: () -> Unit = {},
+    setSortDirectionAction: () -> Unit = {},
+    sortType: Int = SortType.NAME,
+    sortDirection: Int = SortDirection.DESC,
+    isUsingSort: Boolean = true,
+    isUsingMoreButton: Boolean = true
 ) {
     Column(
         modifier = Modifier
@@ -51,83 +56,89 @@ fun MainMenuLazyListRow(
             sortByDateAction = sortByDateAction,
             sortByMostListenedAction = sortByMostListenedAction,
             sortByName = sortByName,
-            setSortTypeAction = setSortTypeAction,
+            setSortTypeAction = setSortDirectionAction,
             rightComposable = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextButton(onClick = navigateToMore) {
-                        Text(
-                            text = stringResource(id = R.string.more),
-                            color = DynamicColor.onPrimary
-                        )
+                if (isUsingMoreButton) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextButton(onClick = navigateToMore) {
+                            Text(
+                                text = stringResource(id = R.string.more),
+                                color = DynamicColor.onPrimary
+                            )
+                        }
                     }
                 }
             },
             sortType = sortType,
             sortDirection = sortDirection,
-            createPlaylistComposable = createPlaylistComposable
+            createPlaylistComposable = createPlaylistComposable,
+            isUsingSort = isUsingSort
         )
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-            contentPadding = PaddingValues(start = Constants.Spacing.medium, end = Constants.Spacing.medium)
+            contentPadding = PaddingValues(
+                start = Constants.Spacing.medium,
+                end = Constants.Spacing.medium
+            )
         ) {
             items(
-                items = list, key = {
-                        element ->
-                    when(element) {
-                        is PlaylistWithMusics -> element.playlist.playlistId
-                        is AlbumWithArtist -> element.album.albumId
-                        is ArtistWithMusics -> element.artist.artistId
-                        else -> {}
+                items = list
+            ) { element ->
+                when (element) {
+                    is PlaylistWithMusics -> {
+                        BigPreviewComposable(
+                            image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
+                            title = element.playlist.name,
+                            text = if (element.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else stringResource(
+                                id = R.string.multiple_musics, element.musics.size
+                            ),
+                            onClick = {
+                                navigateToPlaylist(element)
+                            },
+                            onLongClick = { playlistBottomSheetAction(element) }
+                        )
                     }
-                }) { element ->
-                Row(Modifier.animateItemPlacement()) {
-                    when (element) {
-                        is PlaylistWithMusics -> {
-                            BigPreviewComposable(
-                                image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
-                                title = element.playlist.name,
-                                text = if (element.musics.size == 1) {
-                                    stringResource(id = R.string.one_music)
-                                } else stringResource(
-                                    id = R.string.multiple_musics, element.musics.size
-                                ),
-                                onClick = {
-                                    navigateToPlaylist(element)
-                                },
-                                onLongClick = { playlistBottomSheetAction(element) }
-                            )
-                        }
-                        is AlbumWithArtist -> {
-                            BigPreviewComposable(
-                                image = element.album.coverId?.let { retrieveCoverMethod(it) },
-                                title = element.album.albumName,
-                                text = if (element.artist != null) element.artist.artistName else "",
-                                onClick = {
-                                    navigateToAlbum(element.album.albumId.toString())
-                                },
-                                onLongClick = { albumBottomSheetAction(element) }
-                            )
-                        }
-                        is ArtistWithMusics -> {
-                            BigPreviewComposable(
-                                image = element.artist.coverId?.let { retrieveCoverMethod(it) },
-                                title = element.artist.artistName,
-                                text = if (element.musics.size == 1) {
-                                    stringResource(id = R.string.one_music)
-                                } else stringResource(
-                                    id = R.string.multiple_musics, element.musics.size
-                                ),
-                                onClick = {
-                                    navigateToArtist(element.artist.artistId.toString())
-                                },
-                                onLongClick = { artistBottomSheetAction(element) }
-                            )
-                        }
+                    is AlbumWithArtist -> {
+                        BigPreviewComposable(
+                            image = element.album.coverId?.let { retrieveCoverMethod(it) },
+                            title = element.album.albumName,
+                            text = if (element.artist != null) element.artist.artistName else "",
+                            onClick = {
+                                navigateToAlbum(element.album.albumId.toString())
+                            },
+                            onLongClick = { albumBottomSheetAction(element) }
+                        )
+                    }
+                    is ArtistWithMusics -> {
+                        BigPreviewComposable(
+                            image = element.artist.coverId?.let { retrieveCoverMethod(it) },
+                            title = element.artist.artistName,
+                            text = if (element.musics.size == 1) {
+                                stringResource(id = R.string.one_music)
+                            } else stringResource(
+                                id = R.string.multiple_musics, element.musics.size
+                            ),
+                            onClick = {
+                                navigateToArtist(element.artist.artistId.toString())
+                            },
+                            onLongClick = { artistBottomSheetAction(element) }
+                        )
+                    }
+                    is Music -> {
+                        BigPreviewComposable(
+                            image = retrieveCoverMethod(element.coverId),
+                            title = element.name,
+                            text = element.artist,
+                            onClick = { playMusicAction(element) },
+                            onLongClick = { musicBottomSheetAction(element) }
+                        )
                     }
                 }
             }

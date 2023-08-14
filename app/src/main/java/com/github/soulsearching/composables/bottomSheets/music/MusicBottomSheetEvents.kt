@@ -1,7 +1,8 @@
 package com.github.soulsearching.composables.bottomSheets.music
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.dialogs.SoulSearchingDialog
@@ -21,7 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun MusicBottomSheetEvents(
     musicState: MusicState,
@@ -30,7 +32,8 @@ fun MusicBottomSheetEvents(
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic : (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerMusicListViewModel: PlayerMusicListViewModel
+    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerSwipeableState: SwipeableState<BottomSheetStates>
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -127,7 +130,8 @@ fun MusicBottomSheetEvents(
             musicModalSheetState = musicModalSheetState,
             musicState = musicState,
             navigateToModifyMusic = navigateToModifyMusic,
-            playerMusicListViewModel = playerMusicListViewModel
+            playerMusicListViewModel = playerMusicListViewModel,
+            playerSwipeableState = playerSwipeableState
         )
     }
 

@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
@@ -70,35 +69,17 @@ fun MoreAlbumsScreen(
                         imageSize = Constants.Spacing.large,
                         sortByName = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                AlbumEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.NB_PLAYED
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
+                                AlbumEvent.SetSortType(SortType.NB_PLAYED)
                             )
                         },
                         sortByDateAction = {
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                AlbumEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
                         setSortTypeAction = {
@@ -107,15 +88,8 @@ fun MoreAlbumsScreen(
                             } else {
                                 SortDirection.ASC
                             }
-                            Log.d("NEW UPDATE", "NEW UPDATE")
                             allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
-                                newValue = newDirection
+                                AlbumEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = albumState.sortType,
@@ -129,34 +103,10 @@ fun MoreAlbumsScreen(
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    item(key = "0") {
-                        BigPreviewComposable(
-                            image = retrieveCoverMethod(albumState.albums[0].album.coverId),
-                            title = albumState.albums[0].album.albumName,
-                            text = if (albumState.albums[0].artist != null) albumState.albums[0].artist!!.artistName else "",
-                            onClick = { navigateToSelectedAlbum(albumState.albums[0].album.albumId.toString()) },
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    allAlbumsViewModel.onAlbumEvent(
-                                        AlbumEvent.SetSelectedAlbum(
-                                            albumState.albums[0]
-                                        )
-                                    )
-                                    allAlbumsViewModel.onAlbumEvent(
-                                        AlbumEvent.BottomSheet(
-                                            isShown = true
-                                        )
-                                    )
-                                }
-                            },
-                            imageSize = Constants.ImageSize.huge
-                        )
-                    }
                     items(
-                        items = albumState.albums.subList(1, albumState.albums.size),
-                        key = { album -> album.album.albumId }) { albumWithArtist ->
+                        items = albumState.albums
+                    ) { albumWithArtist ->
                         BigPreviewComposable(
-                            modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(albumWithArtist.album.coverId),
                             title = albumWithArtist.album.albumName,
                             text = if (albumWithArtist.artist != null) albumWithArtist.artist.artistName else "",

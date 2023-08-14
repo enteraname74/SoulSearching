@@ -4,6 +4,7 @@ import androidx.room.*
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.AlbumWithMusics
+import com.github.soulsearching.database.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -21,7 +22,6 @@ interface AlbumDao {
 
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
     fun getAllAlbumsSortByNameAsc(): Flow<List<Album>>
-
 
     @Query("SELECT * FROM Album WHERE albumId = :albumId")
     fun getAlbumFromId(albumId: UUID): Album?
@@ -66,6 +66,10 @@ interface AlbumDao {
     @Query("SELECT * FROM Album")
     fun getAllAlbumsWithMusicsSimple(): List<AlbumWithMusics>
 
+    @Transaction
+    @Query("SELECT * FROM Album WHERE isInQuickAccess = TRUE")
+    fun getAllAlbumsFromQuickAccess(): Flow<List<AlbumWithArtist>>
+
     @Query(
         "SELECT Album.* FROM Album INNER JOIN AlbumArtist ON Album.albumId = AlbumArtist.albumId AND Album.albumName = :albumName AND AlbumArtist.artistId = :artistId"
     )
@@ -78,6 +82,9 @@ interface AlbumDao {
 
     @Query("UPDATE Album SET coverId = :newCoverId WHERE albumId = :albumId")
     fun updateAlbumCover(newCoverId : UUID, albumId : UUID)
+
+    @Query("UPDATE Album SET isInQuickAccess = :newQuickAccessState WHERE albumId = :albumId")
+    fun updateQuickAccessState(newQuickAccessState: Boolean, albumId: UUID)
 
     @Query("SELECT COUNT(*) FROM Album WHERE coverId = :coverId")
     fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int

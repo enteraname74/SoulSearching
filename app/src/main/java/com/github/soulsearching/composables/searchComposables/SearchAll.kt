@@ -189,8 +189,9 @@ fun SearchAll(
                             PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                 music = music,
                                 playlist = foundedMusics as ArrayList<Music>,
-                                playlistId = UUID.randomUUID(),
-                                isMainPlaylist = isMainPlaylist
+                                playlistId = null,
+                                isMainPlaylist = isMainPlaylist,
+                                isForcingNewPlaylist = true
                             )
                             playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
                         }

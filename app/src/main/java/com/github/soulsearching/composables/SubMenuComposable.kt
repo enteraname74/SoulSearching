@@ -2,10 +2,8 @@ package com.github.soulsearching.composables
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,12 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun SubMenuComposable(
+    modifier: Modifier = Modifier,
     title: String,
     sortByDateAction: () -> Unit,
     sortByMostListenedAction: () -> Unit,
@@ -28,12 +28,14 @@ fun SubMenuComposable(
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortType: Int,
     sortDirection: Int,
-    modifier: Modifier = Modifier
+    isUsingSort: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(54.dp)
             .background(color = DynamicColor.primary)
+            .clickable { }
             .padding(
                 top = Constants.Spacing.medium,
                 start = Constants.Spacing.medium,
@@ -56,14 +58,16 @@ fun SubMenuComposable(
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             createPlaylistComposable()
-            SortOptionsComposable(
-                sortByDateAction = sortByDateAction,
-                sortByMostListenedAction = sortByMostListenedAction,
-                sortByName = sortByName,
-                setSortTypeAction = setSortTypeAction,
-                sortDirection = sortDirection,
-                sortType = sortType
-            )
+            if (isUsingSort) {
+                SortOptionsComposable(
+                    sortByDateAction = sortByDateAction,
+                    sortByMostListenedAction = sortByMostListenedAction,
+                    sortByName = sortByName,
+                    setSortTypeAction = setSortTypeAction,
+                    sortDirection = sortDirection,
+                    sortType = sortType
+                )
+            }
             rightComposable()
         }
     }

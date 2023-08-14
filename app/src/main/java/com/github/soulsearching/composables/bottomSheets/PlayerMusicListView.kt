@@ -3,7 +3,6 @@ package com.github.soulsearching.composables.bottomSheets
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,7 +45,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerMusicListView(
     maxHeight: Float,
@@ -57,6 +56,7 @@ fun PlayerMusicListView(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -86,7 +86,8 @@ fun PlayerMusicListView(
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel
+        playerMusicListViewModel = playerMusicListViewModel,
+        playerSwipeableState = playerSwipeableState
     )
 
     Box(
@@ -159,43 +160,40 @@ fun PlayerMusicListView(
             ) {
                 items(
                     items = PlayerUtils.playerViewModel.currentPlaylist,
-                    key = { music -> music.musicId }) { music ->
-                    Row(Modifier.animateItemPlacement()) {
-                        MusicItemComposable(
-                            music = music,
-                            onClick = { music ->
-                                coroutineScope.launch {
-                                    musicListSwipeableState.animateTo(
-                                        BottomSheetStates.COLLAPSED,
-                                        tween(300)
+                ) { elt ->
+                    MusicItemComposable(
+                        music = elt,
+                        onClick = { music ->
+                            coroutineScope.launch {
+                                musicListSwipeableState.animateTo(
+                                    BottomSheetStates.COLLAPSED,
+                                    tween(300)
+                                )
+                            }.invokeOnCompletion {
+                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    playlist = musicState.musics,
+                                    playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
+                                    isMainPlaylist = PlayerUtils.playerViewModel.isMainPlaylist
+                                )
+                            }
+                        },
+                        onLongClick = {
+                            coroutineScope.launch {
+                                onMusicEvent(
+                                    MusicEvent.SetSelectedMusic(
+                                        elt
                                     )
-                                }.invokeOnCompletion {
-                                    PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                        music = music,
-                                        playlist = musicState.musics,
-                                        playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
-                                        isMainPlaylist = PlayerUtils.playerViewModel.isMainPlaylist
+                                )
+                                onMusicEvent(
+                                    MusicEvent.BottomSheet(
+                                        isShown = true
                                     )
-                                }
-                            },
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    onMusicEvent(
-                                        MusicEvent.SetSelectedMusic(
-                                            music
-                                        )
-                                    )
-                                    onMusicEvent(
-                                        MusicEvent.BottomSheet(
-                                            isShown = true
-                                        )
-                                    )
-                                }
-                            },
-                            musicCover = coverList.find { it.coverId == music.coverId }?.cover,
-                            isCurrentPlayedMusic = PlayerUtils.playerViewModel.isSameMusic(music.musicId)
-                        )
-                    }
+                                )
+                            }
+                        },
+                        musicCover = coverList.find { it.coverId == elt.coverId }?.cover
+                    )
                 }
             }
         }

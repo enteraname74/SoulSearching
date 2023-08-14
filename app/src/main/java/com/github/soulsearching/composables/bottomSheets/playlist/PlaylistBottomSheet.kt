@@ -5,7 +5,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.composables.bottomSheets.PlaylistBottomSheetMenu
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.launch
@@ -13,10 +12,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistBottomSheet(
-    playlistState : PlaylistState,
-    onPlaylistEvent : (PlaylistEvent) -> Unit,
+    playlistState: PlaylistState,
+    onPlaylistEvent: (PlaylistEvent) -> Unit,
     playlistModalSheetState: SheetState,
-    navigateToModifyPlaylist : (String) -> Unit
+    navigateToModifyPlaylist: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -49,7 +48,20 @@ fun PlaylistBottomSheet(
             deleteAction = {
                 onPlaylistEvent(PlaylistEvent.DeleteDialog(isShown = true))
             },
-            addToShortcutsAction = {}
+            quickAccessAction = {
+                onPlaylistEvent(PlaylistEvent.UpdateQuickAccessState)
+                coroutineScope.launch { playlistModalSheetState.hide() }
+                    .invokeOnCompletion {
+                        if (!playlistModalSheetState.isVisible) {
+                            onPlaylistEvent(
+                                PlaylistEvent.BottomSheet(
+                                    isShown = false
+                                )
+                            )
+                        }
+                    }
+            },
+            isInQuickAccess = playlistState.selectedPlaylist.isInQuickAccess
         )
     }
 }

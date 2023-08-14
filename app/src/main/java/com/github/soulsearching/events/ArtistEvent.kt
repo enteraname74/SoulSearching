@@ -7,6 +7,7 @@ import java.util.*
 interface ArtistEvent {
     object UpdateArtist : ArtistEvent
     object DeleteArtist: ArtistEvent
+    object UpdateQuickAccessState: ArtistEvent
     data class SetSortDirection(val type: Int) : ArtistEvent
     data class SetSortType(val type: Int) : ArtistEvent
     data class ArtistFromId(val artistId : UUID) : ArtistEvent

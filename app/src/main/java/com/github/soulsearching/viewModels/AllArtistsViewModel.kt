@@ -1,8 +1,8 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.dao.AlbumDao
@@ -110,9 +110,25 @@ class AllArtistsViewModel @Inject constructor(
             }
             is ArtistEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
+                SharedPrefUtils.updateSort(
+                    keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
+                    newValue = event.type
+                )
             }
             is ArtistEvent.SetSortType -> {
                 _sortType.value = event.type
+                SharedPrefUtils.updateSort(
+                    keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
+                    newValue = event.type
+                )
+            }
+            is ArtistEvent.UpdateQuickAccessState -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    artistDao.updateQuickAccessState(
+                        newQuickAccessState = !state.value.selectedArtistWithMusics.artist.isInQuickAccess,
+                        artistId = state.value.selectedArtistWithMusics.artist.artistId
+                    )
+                }
             }
             else -> {}
         }

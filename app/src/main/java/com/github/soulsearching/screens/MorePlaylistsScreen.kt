@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
@@ -72,33 +71,17 @@ fun MorePlaylistsScreen(
                         imageSize = Constants.Spacing.large,
                         sortByName = {
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(
-                                    SortType.NAME
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.NAME
+                                PlaylistEvent.SetSortType(SortType.NAME)
                             )
                         },
                         sortByMostListenedAction = {
                             allPlaylistsViewModel.onPlaylistEvent(
                                 PlaylistEvent.SetSortType(SortType.NB_PLAYED)
                             )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.NB_PLAYED
-                            )
                         },
                         sortByDateAction = {
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(
-                                    SortType.ADDED_DATE
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-                                newValue = SortType.ADDED_DATE
+                                PlaylistEvent.SetSortType(SortType.ADDED_DATE)
                             )
                         },
                         setSortTypeAction = {
@@ -109,13 +92,7 @@ fun MorePlaylistsScreen(
                                     SortDirection.ASC
                                 }
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortDirection(
-                                    newDirection
-                                )
-                            )
-                            SharedPrefUtils.updateSort(
-                                keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
-                                newValue = newDirection
+                                PlaylistEvent.SetSortDirection(newDirection)
                             )
                         },
                         sortType = playlistState.sortType,
@@ -128,41 +105,8 @@ fun MorePlaylistsScreen(
                     verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    item(key = "0") {
-                        BigPreviewComposable(
-                            image = retrieveCoverMethod(playlistState.playlists[0].playlist.coverId),
-                            title = playlistState.playlists[0].playlist.name,
-                            text = if (playlistState.playlists[0].musics.size == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else {
-                                stringResource(
-                                    id = R.string.multiple_musics,
-                                    playlistState.playlists[0].musics.size
-                                )
-                            },
-                            onClick = {
-                                navigateToSelectedPlaylist(playlistState.playlists[0].playlist.playlistId.toString())
-                            },
-                            onLongClick = {
-                                coroutineScope.launch {
-                                    allPlaylistsViewModel.onPlaylistEvent(
-                                        PlaylistEvent.SetSelectedPlaylist(
-                                            playlistState.playlists[0]
-                                        )
-                                    )
-                                    allPlaylistsViewModel.onPlaylistEvent(
-                                        PlaylistEvent.BottomSheet(
-                                            isShown = true
-                                        )
-                                    )
-                                }
-                            },
-                            imageSize = Constants.ImageSize.huge
-                        )
-                    }
                     items(
-                        items = playlistState.playlists.subList(1, playlistState.playlists.size),
-                        key = { playlist -> playlist.playlist.playlistId }
+                        items = playlistState.playlists.subList(1, playlistState.playlists.size)
                     ) { playlistWithMusics ->
                         BigPreviewComposable(
                             modifier = Modifier.animateItemPlacement(),

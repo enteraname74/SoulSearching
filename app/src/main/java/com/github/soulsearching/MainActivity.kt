@@ -24,7 +24,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,8 +37,6 @@ import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
-import com.github.soulsearching.composables.searchComposables.SearchAll
-import com.github.soulsearching.composables.searchComposables.SearchView
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
 import com.github.soulsearching.service.PlayerService
@@ -62,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
     private val allArtistsViewModel: AllArtistsViewModel by viewModels()
     private val allImageCoversViewModel: AllImageCoversViewModel by viewModels()
+    private val allQuickAccessViewModel: AllQuickAccessViewModel by viewModels()
 
     // Selected page view models
     private val selectedPlaylistViewModel: SelectedPlaylistViewModel by viewModels()
@@ -115,6 +113,7 @@ class MainActivity : AppCompatActivity() {
                 val musicState by allMusicsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
                 val playerMusicState by playerMusicListViewModel.state.collectAsState()
+                val quickAccessState by allQuickAccessViewModel.state.collectAsState()
 
                 val playerSwipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
@@ -302,7 +301,8 @@ class MainActivity : AppCompatActivity() {
                                         musicState = musicState,
                                         artistState = artistState,
                                         coverState = coversState,
-                                        playlistState = playlistState
+                                        playlistState = playlistState,
+                                        quickAccessState = quickAccessState
                                     )
                                 }
                                 composable(
@@ -505,7 +505,8 @@ class MainActivity : AppCompatActivity() {
                                     navController.navigate("modifyMusic/$it")
                                 },
                                 musicListSwipeableState = musicListSwipeableState,
-                                playerMusicListViewModel = playerMusicListViewModel
+                                playerMusicListViewModel = playerMusicListViewModel,
+                                playerSwipeableState = playerSwipeableState
                             )
                         }
                     }

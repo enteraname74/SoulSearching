@@ -9,6 +9,9 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.classes.player.SoulSearchingPlayer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class PlayerService : Service() {
@@ -50,18 +53,32 @@ class PlayerService : Service() {
     companion object {
         const val IS_FROM_SAVED_LIST = "isFromSavedList"
         private var player: SoulSearchingPlayer? = null
+        private var isDoingOperations: Boolean = false
+
 
         fun setAndPlayCurrentMusic() {
-            player?.let {
-                it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-                it.launchMusic()
+            if (!isDoingOperations) {
+                isDoingOperations = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    player?.let {
+                        it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
+                        it.launchMusic()
+                    }
+                    isDoingOperations = false
+                }
             }
         }
 
         fun onlyLoadMusic() {
-            player?.let {
-                it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-                it.onlyLoadMusic()
+            if (!isDoingOperations) {
+                isDoingOperations = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    player?.let {
+                        it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
+                        it.onlyLoadMusic()
+                    }
+                    isDoingOperations = false
+                }
             }
         }
 
@@ -74,20 +91,27 @@ class PlayerService : Service() {
         }
 
         fun togglePlayPause() {
-            Log.d("PLAYER SERVICE", "TOGGLE PLAY PAUSE")
-            player?.togglePlayPause()
-        }
-
-        fun playMusic() {
             player?.togglePlayPause()
         }
 
         fun playNext() {
-            player?.next()
+            if (!isDoingOperations) {
+                isDoingOperations = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    player?.next()
+                    isDoingOperations = false
+                }
+            }
         }
 
         fun playPrevious() {
-            player?.previous()
+            if (!isDoingOperations) {
+                isDoingOperations = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    player?.previous()
+                    isDoingOperations = false
+                }
+            }
         }
 
         fun seekToPosition(position: Int) {
@@ -95,10 +119,10 @@ class PlayerService : Service() {
         }
 
         fun getMusicDuration(): Int {
-            return if (player == null) {
+            return if (PlayerUtils.playerViewModel.currentMusic == null) {
                 0
             } else {
-                player!!.getMusicDuration()
+                PlayerUtils.playerViewModel.currentMusic!!.duration.toInt()
             }
         }
 
@@ -122,7 +146,9 @@ class PlayerService : Service() {
         }
 
         fun updateNotification() {
-            player?.updateNotification()
+            CoroutineScope(Dispatchers.IO).launch {
+                player?.updateNotification()
+            }
         }
 
         const val RESTART_SERVICE = "RESTART_SERVICE"
