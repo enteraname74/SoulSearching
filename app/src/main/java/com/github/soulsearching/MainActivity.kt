@@ -489,9 +489,11 @@ class MainActivity : AppCompatActivity() {
                             PlayerSwipeableView(
                                 maxHeight = maxHeight,
                                 swipeableState = playerSwipeableState,
-                                coverList = coversState.covers,
+                                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                                 musicListSwipeableState = musicListSwipeableState,
-                                playerMusicListViewModel = playerMusicListViewModel
+                                playerMusicListViewModel = playerMusicListViewModel,
+                                onMusicEvent = allMusicsViewModel::onMusicEvent,
+                                isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite
                             )
 
                             PlayerMusicListView(

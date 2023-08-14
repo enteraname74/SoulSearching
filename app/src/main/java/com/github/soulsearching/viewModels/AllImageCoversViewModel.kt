@@ -4,8 +4,10 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ImageCover
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,9 +34,10 @@ class AllImageCoversViewModel @Inject constructor(
         _state,
         _covers
     ) { state, covers ->
-        state.copy(
+        return@combine state.copy(
             covers = covers as ArrayList<ImageCover>
         )
+
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),

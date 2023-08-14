@@ -186,44 +186,47 @@ fun PlaylistScreen(
                             )
                         }
                         items(
-                            items = musicState.musics,
-                            key = { music -> music.musicId }) { music ->
-                            Row(Modifier.animateItemPlacement()) {
-                                MusicItemComposable(
-                                    music = music,
-                                    onClick = { music ->
-                                        coroutineScope.launch {
-                                            playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                                        }.invokeOnCompletion {
-                                            if (!PlayerUtils.playerViewModel.isSamePlaylist(false, playlistId)) {
-                                                playerMusicListViewModel.savePlayerMusicList(musicState.musics)
-                                            }
-                                            PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                                music = music,
-                                                playlist = musicState.musics,
-                                                playlistId = playlistId,
-                                                isMainPlaylist = false
+                            items = musicState.musics
+                        ) { elt ->
+                            MusicItemComposable(
+                                music = elt,
+                                onClick = { music ->
+                                    coroutineScope.launch {
+                                        playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                    }.invokeOnCompletion {
+                                        if (!PlayerUtils.playerViewModel.isSamePlaylist(
+                                                false,
+                                                playlistId
                                             )
+                                        ) {
+                                            playerMusicListViewModel.savePlayerMusicList(musicState.musics)
                                         }
-                                    },
-                                    onLongClick = {
-                                        coroutineScope.launch {
-                                            onMusicEvent(
-                                                MusicEvent.SetSelectedMusic(
-                                                    music
-                                                )
+                                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                            music = music,
+                                            playlist = musicState.musics,
+                                            playlistId = playlistId,
+                                            isMainPlaylist = false
+                                        )
+                                    }
+                                },
+                                onLongClick = {
+                                    coroutineScope.launch {
+                                        onMusicEvent(
+                                            MusicEvent.SetSelectedMusic(
+                                                elt
                                             )
-                                            onMusicEvent(
-                                                MusicEvent.BottomSheet(
-                                                    isShown = true
-                                                )
+                                        )
+                                        onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = true
                                             )
-                                        }
-                                    },
-                                    musicCover = retrieveCoverMethod(music.coverId),
-                                )
-                            }
+                                        )
+                                    }
+                                },
+                                musicCover = retrieveCoverMethod(elt.coverId),
+                            )
                         }
+                        item { MusicListSpacer() }
                     }
                 }
             }

@@ -88,7 +88,6 @@ class AllMusicsViewModel @Inject constructor(
     )
 
 
-
     suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicDao.getMusicFromPath(musicToAdd.path)
@@ -176,6 +175,11 @@ class AllMusicsViewModel @Inject constructor(
             )
         )
     }
+
+    suspend fun isMusicInFavorite(musicId: UUID): Boolean {
+        return musicDao.getMusicFromFavoritePlaylist(musicId = musicId) != null
+    }
+
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

@@ -87,7 +87,9 @@ fun MusicList(
                 },
                 musicCover = retrieveCoverMethod(music.coverId)
             )
-
+        }
+        item {
+            MusicListSpacer()
         }
     }
 }

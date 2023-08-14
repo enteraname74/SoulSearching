@@ -9,7 +9,6 @@ sealed interface MusicEvent {
     object AddMusic : MusicEvent
     object UpdateMusic : MusicEvent
     object DeleteMusic : MusicEvent
-    object AddToPlaylist : MusicEvent
     object UpdateQuickAccessState: MusicEvent
     data class SetPlayedMusic(val music: Music) : MusicEvent
     data class SetSortDirection(val type: Int) : MusicEvent
@@ -24,5 +23,7 @@ sealed interface MusicEvent {
     data class SetAlbum(val album: String) : MusicEvent
     data class SetCover(val cover: Bitmap) : MusicEvent
     data class DeleteMusicFromPlaylist(val musicPlaylist: MusicPlaylist) : MusicEvent
+
     data class SetFavorite(val musicId: UUID) : MusicEvent
+
 }

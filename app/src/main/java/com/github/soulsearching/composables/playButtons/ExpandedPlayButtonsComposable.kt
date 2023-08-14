@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerMode
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 
 
@@ -31,7 +32,9 @@ fun ExpandedPlayButtonsComposable(
     widthFraction: Float = 1f,
     paddingBottom: Dp = 120.dp,
     mainColor: Color,
-    sliderInactiveBarColor: Color
+    sliderInactiveBarColor: Color,
+    onMusicEvent: (MusicEvent) -> Unit,
+    isMusicInFavorite: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -158,11 +161,23 @@ fun ExpandedPlayButtonsComposable(
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(
-                    imageVector = Icons.Rounded.FavoriteBorder,
+                    imageVector = if (isMusicInFavorite) {
+                        Icons.Rounded.Favorite
+                    } else {
+                        Icons.Rounded.FavoriteBorder
+                    },
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
-                        .clickable { },
+                        .clickable {
+                            PlayerUtils.playerViewModel.currentMusic?.let {
+                                onMusicEvent(
+                                    MusicEvent.SetFavorite(
+                                        musicId = it.musicId
+                                    )
+                                )
+                            }
+                        },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
             }

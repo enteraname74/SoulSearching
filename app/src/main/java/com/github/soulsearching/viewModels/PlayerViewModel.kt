@@ -65,19 +65,36 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
-        if (isMainPlaylist == this.isMainPlaylist) {
-            return true
-        } else if (isMainPlaylist != this.isMainPlaylist) {
-            return false
-        } else if (playlistId == null && this.currentPlaylistId == null) {
-            return true
+        if (playlistId == null && this.currentPlaylistId == null) {
+            return isMainPlaylist == this.isMainPlaylist
         } else if (playlistId != null && this.currentPlaylistId != null) {
-            return (playlistId.compareTo(currentPlaylistId) == 0)
+            return (playlistId.compareTo(currentPlaylistId) == 0) && (isMainPlaylist == this.isMainPlaylist)
         }
         return false
     }
 
-    private fun setNewCurrentMusicInformation(music: Music?) {
+    fun updateMusic(music: Music) {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentMusic?.let {
+                if (it.musicId == music.musicId) {
+                   setNewCurrentMusicInformation(music)
+                    PlayerService.updateNotification()
+                }
+            }
+
+            val indexCurrent = currentPlaylist.indexOfFirst { it.musicId == music.musicId }
+            if (indexCurrent != -1) {
+                currentPlaylist[indexCurrent] = music
+            }
+
+            val indexInitial = initialPlaylist.indexOfFirst { it.musicId == music.musicId }
+            if (indexInitial != -1) {
+                initialPlaylist[indexInitial] = music
+            }
+        }
+    }
+
+    fun setNewCurrentMusicInformation(music: Music?) {
         currentMusic = music
         currentMusicPosition = 0
         currentMusicCover = retrieveCoverMethod(currentMusic?.coverId)
@@ -216,6 +233,7 @@ class PlayerViewModel : ViewModel() {
             return
         }
 
+        Log.d("VM", isSamePlaylist(isMainPlaylist, playlistId).toString())
         if (!isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist) {
             currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>

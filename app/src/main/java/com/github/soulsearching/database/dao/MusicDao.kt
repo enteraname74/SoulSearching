@@ -22,6 +22,9 @@ interface MusicDao {
     @Query("SELECT * FROM Music WHERE musicId = :musicId LIMIT 1")
     fun getMusicFromId(musicId : UUID): Music
 
+    @Query("SELECT * FROM Music INNER JOIN MusicPlaylist ON Music.musicId = MusicPlaylist.musicId INNER JOIN Playlist ON Playlist.playlistId = MusicPlaylist.playlistId WHERE Playlist.isFavorite = TRUE AND Music.musicId = :musicId")
+    fun getMusicFromFavoritePlaylist(musicId: UUID): Music?
+
     @Query("SELECT * FROM Music ORDER BY name ASC")
     fun getAllMusicsSortByNameAsc(): Flow<List<Music>>
 

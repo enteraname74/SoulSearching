@@ -70,17 +70,6 @@ object EventUtils {
                     )
                 }
             }
-            MusicEvent.AddToPlaylist -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val firstPlaylistId = playlistDao.getFirstPlaylistId()
-                    musicPlaylistDao.insertMusicIntoPlaylist(
-                        MusicPlaylist(
-                            musicId = state.value.selectedMusic.musicId,
-                            playlistId = firstPlaylistId
-                        )
-                    )
-                }
-            }
             is MusicEvent.BottomSheet -> {
                 _state.update {
                     it.copy(
@@ -223,6 +212,14 @@ object EventUtils {
                         )
                     )
 
+                    PlayerUtils.playerViewModel.updateMusic(
+                        state.value.selectedMusic.copy(
+                            name = state.value.name.trim(),
+                            album = state.value.album.trim(),
+                            artist = state.value.artist.trim(),
+                            coverId = coverId
+                        )
+                    )
                 }
             }
             is MusicEvent.SetSortDirection -> {
@@ -243,6 +240,23 @@ object EventUtils {
                 PlayerUtils.playerViewModel.currentMusic = event.music
             }
             is MusicEvent.SetFavorite -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val isInFavorite = musicDao.getMusicFromFavoritePlaylist(event.musicId) != null
+                    val playlistId = playlistDao.getFavoritePlaylist().playlistId
+                    if (isInFavorite) {
+                        musicPlaylistDao.deleteMusicFromPlaylist(
+                            musicId = event.musicId,
+                            playlistId = playlistId
+                        )
+                    } else {
+                        musicPlaylistDao.insertMusicIntoPlaylist(
+                            MusicPlaylist(
+                                musicId = event.musicId,
+                                playlistId = playlistId
+                            )
+                        )
+                    }
+                }
             }
             is MusicEvent.UpdateQuickAccessState -> {
                 CoroutineScope(Dispatchers.IO).launch {

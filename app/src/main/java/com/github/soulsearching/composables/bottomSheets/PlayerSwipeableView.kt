@@ -3,6 +3,7 @@ package com.github.soulsearching.composables.bottomSheets
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -16,9 +17,8 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -42,27 +42,44 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
-import com.github.soulsearching.database.model.ImageCover
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlin.reflect.KSuspendFunction1
 
-@SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
+@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlayerSwipeableView(
     maxHeight: Float,
     swipeableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    coverList: ArrayList<ImageCover>,
+    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    onMusicEvent: (MusicEvent) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
+    isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    var isMusicInFavorite by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+        PlayerUtils.playerViewModel.currentMusic?.let {
+            CoroutineScope(Dispatchers.IO).launch {
+                isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
+            }
+        }
+    }
 
     val backgroundColor: Color by animateColorAsState(
         targetValue =
@@ -281,7 +298,7 @@ fun PlayerSwipeableView(
                         )
                 ) {
                     AppImage(
-                        bitmap = coverList.find { it.coverId == PlayerUtils.playerViewModel.currentMusic?.coverId }?.cover,
+                        bitmap = retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
                         size = imageSize,
                         roundedPercent = (swipeableState.offset.value / 100).roundToInt()
                             .coerceIn(3, 10)
@@ -395,14 +412,18 @@ fun PlayerSwipeableView(
                                     widthFraction = 0.45f,
                                     paddingBottom = 0.dp,
                                     mainColor = textColor,
-                                    sliderInactiveBarColor = contentColor
+                                    sliderInactiveBarColor = contentColor,
+                                    onMusicEvent = onMusicEvent,
+                                    isMusicInFavorite = isMusicInFavorite
                                 )
                             }
                         }
                         else -> {
                             ExpandedPlayButtonsComposable(
                                 mainColor = textColor,
-                                sliderInactiveBarColor = contentColor
+                                sliderInactiveBarColor = contentColor,
+                                onMusicEvent = onMusicEvent,
+                                isMusicInFavorite = isMusicInFavorite
                             )
                         }
                     }
