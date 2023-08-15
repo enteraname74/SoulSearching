@@ -176,7 +176,7 @@ fun MainPageScreen(
                         artistBottomSheetAction = {
                             coroutineScope.launch {
                                 allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.SetSelectedArtist(
+                                    ArtistEvent.SetSelectedArtistWithMusics(
                                         it
                                     )
                                 )
@@ -188,7 +188,7 @@ fun MainPageScreen(
                             }
                         },
                         navigateToPlaylist = {
-                            navigateToPlaylist(it.playlist.playlistId.toString())
+                            navigateToPlaylist(it)
                         },
                         playlistBottomSheetAction = {
                             coroutineScope.launch {
@@ -259,7 +259,7 @@ fun MainPageScreen(
                         title = stringResource(id = R.string.playlists),
                         navigateToMore = navigateToMorePlaylist,
                         navigateToPlaylist = {
-                            navigateToPlaylist(it.playlist.playlistId.toString())
+                            navigateToPlaylist(it)
                         },
                         playlistBottomSheetAction = {
                             coroutineScope.launch {
@@ -381,7 +381,7 @@ fun MainPageScreen(
                         artistBottomSheetAction = {
                             coroutineScope.launch {
                                 allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.SetSelectedArtist(
+                                    ArtistEvent.SetSelectedArtistWithMusics(
                                         it
                                     )
                                 )

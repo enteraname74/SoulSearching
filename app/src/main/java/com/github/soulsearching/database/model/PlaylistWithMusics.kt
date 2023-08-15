@@ -12,4 +12,11 @@ data class PlaylistWithMusics(
         associateBy = Junction(MusicPlaylist::class)
     )
     val musics : List<Music> = emptyList()
-)
+) {
+    fun toPlaylistWithMusicsNumber(): PlaylistWithMusicsNumber {
+        return PlaylistWithMusicsNumber(
+            playlist = playlist,
+            musicsNumber = musics.size
+        )
+    }
+}

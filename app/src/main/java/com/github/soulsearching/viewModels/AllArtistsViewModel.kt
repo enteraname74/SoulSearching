@@ -73,24 +73,24 @@ class AllArtistsViewModel @Inject constructor(
             ArtistEvent.DeleteArtist -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     // On supprime d'abord les musiques de l'artiste :
-                    for (music in state.value.selectedArtistWithMusics.musics){
+                    for (music in state.value.selectedArtist.musics){
                         musicDao.deleteMusic(music)
                     }
                     // On supprime ensuite tous les albums de l'artiste :
                     val albumsToDelete = albumDao.getAllAlbumsFromArtist(
-                        artistId = state.value.selectedArtistWithMusics.artist.artistId
+                        artistId = state.value.selectedArtist.artist.artistId
                     )
                     for (album in albumsToDelete) {
                         albumDao.deleteAlbum(album)
                     }
                     // On supprime enfin l'artiste :
-                    artistDao.deleteArtist(state.value.selectedArtistWithMusics.artist)
+                    artistDao.deleteArtist(state.value.selectedArtist.artist)
                 }
             }
-            is ArtistEvent.SetSelectedArtist -> {
+            is ArtistEvent.SetSelectedArtistWithMusics -> {
                 _state.update {
                     it.copy(
-                        selectedArtistWithMusics = event.artistWithMusics
+                        selectedArtist = event.artistWithMusics
                     )
                 }
             }
@@ -125,8 +125,8 @@ class AllArtistsViewModel @Inject constructor(
             is ArtistEvent.UpdateQuickAccessState -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     artistDao.updateQuickAccessState(
-                        newQuickAccessState = !state.value.selectedArtistWithMusics.artist.isInQuickAccess,
-                        artistId = state.value.selectedArtistWithMusics.artist.artistId
+                        newQuickAccessState = !state.value.selectedArtist.artist.isInQuickAccess,
+                        artistId = state.value.selectedArtist.artist.artistId
                     )
                 }
             }

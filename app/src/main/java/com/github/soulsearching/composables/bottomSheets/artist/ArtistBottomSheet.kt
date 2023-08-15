@@ -40,7 +40,7 @@ fun ArtistBottomSheet(
                                     isShown = false
                                 )
                             )
-                            navigateToModifyArtist(artistState.selectedArtistWithMusics.artist.artistId.toString())
+                            navigateToModifyArtist(artistState.selectedArtist.artist.artistId.toString())
                         }
                     }
             },
@@ -60,7 +60,7 @@ fun ArtistBottomSheet(
                         }
                     }
             },
-            isInQuickAccess = artistState.selectedArtistWithMusics.artist.isInQuickAccess
+            isInQuickAccess = artistState.selectedArtist.artist.isInQuickAccess
         )
     }
 }

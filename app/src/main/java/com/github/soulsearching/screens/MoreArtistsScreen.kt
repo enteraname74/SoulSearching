@@ -125,7 +125,7 @@ fun MoreArtistsScreen(
                             onLongClick = {
                                 coroutineScope.launch {
                                     allArtistsViewModel.onArtistEvent(
-                                        ArtistEvent.SetSelectedArtist(
+                                        ArtistEvent.SetSelectedArtistWithMusics(
                                             artistWithMusics
                                         )
                                     )

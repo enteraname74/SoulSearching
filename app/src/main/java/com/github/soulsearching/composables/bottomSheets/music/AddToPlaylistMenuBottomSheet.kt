@@ -44,7 +44,7 @@ fun AddToPlaylistMenuBottomSheet(
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
         ) {
-            items(playlistState.playlistsWithoutMusicId) { playlistWithMusics ->
+            items(playlistState.playlistsWithMusics) { playlistWithMusics ->
                 if (playlistWithMusics.playlist.playlistId in playlistState.multiplePlaylistSelected) {
                     PlaylistSelectableComposable(
                         playlist = playlistWithMusics.playlist,

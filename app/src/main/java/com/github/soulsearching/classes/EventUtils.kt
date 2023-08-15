@@ -363,7 +363,7 @@ object EventUtils {
             is PlaylistEvent.SetSelectedPlaylist -> {
                 _state.update {
                     it.copy(
-                        selectedPlaylist = event.playlistWithMusics.playlist
+                        selectedPlaylist = event.playlist
                     )
                 }
             }
@@ -387,7 +387,7 @@ object EventUtils {
                     _state.update {
                         it.copy(
                             multiplePlaylistSelected = ArrayList(),
-                            playlistsWithoutMusicId = playlists
+                            playlistsWithMusics = playlists
                         )
                     }
                 }

@@ -4,11 +4,14 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.text.TextStyle
@@ -31,7 +34,8 @@ fun BigPreviewComposable(
     imageSize : Dp = Constants.ImageSize.veryLarge,
     titleStyle : TextStyle = MaterialTheme.typography.labelLarge,
     textStyle : TextStyle = MaterialTheme.typography.labelSmall,
-    roundedPercent : Int = 4
+    roundedPercent : Int = 4,
+    isFavoritePlaylist: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -50,20 +54,37 @@ fun BigPreviewComposable(
 
     ) {
         AppImage(bitmap = image, size = imageSize, roundedPercent = roundedPercent)
-        Text(
-            text = title,
-            color = DynamicColor.onSecondary,
-            fontWeight = FontWeight.Bold,
-            style = titleStyle,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = text,
-            color = DynamicColor.onSecondary,
-            style = textStyle,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
+        ) {
+            if (isFavoritePlaylist) {
+                Icon(
+                    imageVector = Icons.Rounded.Favorite,
+                    contentDescription = "",
+                    tint = DynamicColor.onPrimary
+                )
+            }
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    color = DynamicColor.onSecondary,
+                    fontWeight = FontWeight.Bold,
+                    style = titleStyle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = text,
+                    color = DynamicColor.onSecondary,
+                    style = textStyle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
     }
 }

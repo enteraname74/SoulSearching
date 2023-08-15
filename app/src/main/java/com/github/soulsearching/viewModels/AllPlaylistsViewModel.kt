@@ -63,7 +63,7 @@ class AllPlaylistsViewModel @Inject constructor(
         _sortType
     ) { state, playlists, sortDirection, sortType ->
         state.copy(
-            playlists = playlists,
+            playlists = playlists.map { it.toPlaylistWithMusicsNumber() },
             sortDirection = sortDirection,
             sortType = sortType
         )

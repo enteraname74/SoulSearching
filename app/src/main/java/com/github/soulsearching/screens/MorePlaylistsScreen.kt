@@ -106,18 +106,18 @@ fun MorePlaylistsScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     items(
-                        items = playlistState.playlists.subList(1, playlistState.playlists.size)
+                        items = playlistState.playlists
                     ) { playlistWithMusics ->
                         BigPreviewComposable(
                             modifier = Modifier.animateItemPlacement(),
                             image = retrieveCoverMethod(playlistWithMusics.playlist.coverId),
                             title = playlistWithMusics.playlist.name,
-                            text = if (playlistWithMusics.musics.size == 1) {
+                            text = if (playlistWithMusics.musicsNumber == 1) {
                                 stringResource(id = R.string.one_music)
                             } else {
                                 stringResource(
                                     id = R.string.multiple_musics,
-                                    playlistWithMusics.musics.size
+                                    playlistWithMusics.musicsNumber
                                 )
                             },
                             onClick = {
@@ -127,7 +127,7 @@ fun MorePlaylistsScreen(
                                 coroutineScope.launch {
                                     allPlaylistsViewModel.onPlaylistEvent(
                                         PlaylistEvent.SetSelectedPlaylist(
-                                            playlistWithMusics
+                                            playlistWithMusics.playlist
                                         )
                                     )
                                     allPlaylistsViewModel.onPlaylistEvent(

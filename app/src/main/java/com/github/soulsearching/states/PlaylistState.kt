@@ -5,13 +5,14 @@ import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.database.model.PlaylistWithMusics
+import com.github.soulsearching.database.model.PlaylistWithMusicsNumber
 import java.util.*
 import kotlin.collections.ArrayList
 
 data class PlaylistState(
-    val playlists: List<PlaylistWithMusics> = emptyList(),
+    val playlists: List<PlaylistWithMusicsNumber> = emptyList(),
     val selectedPlaylist: Playlist = Playlist(),
-    val playlistsWithoutMusicId: List<PlaylistWithMusics> = emptyList(),
+    val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
     val multiplePlaylistSelected: ArrayList<UUID> = ArrayList(),
     val cover: Bitmap? = null,
     val name: String = "",

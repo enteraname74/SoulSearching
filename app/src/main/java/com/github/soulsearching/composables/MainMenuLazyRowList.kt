@@ -15,10 +15,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
-import com.github.soulsearching.database.model.AlbumWithArtist
-import com.github.soulsearching.database.model.ArtistWithMusics
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.PlaylistWithMusics
+import com.github.soulsearching.database.model.*
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
@@ -28,12 +25,12 @@ fun MainMenuLazyListRow(
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
-    navigateToPlaylist: (PlaylistWithMusics) -> Unit = {},
+    navigateToPlaylist: (String) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
     playMusicAction: (Music) -> Unit = {},
     musicBottomSheetAction: (Music) -> Unit = {},
-    playlistBottomSheetAction: (PlaylistWithMusics) -> Unit = {},
+    playlistBottomSheetAction: (Playlist) -> Unit = {},
     albumBottomSheetAction: (AlbumWithArtist) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
     createPlaylistComposable: @Composable (() -> Unit) = {},
@@ -90,19 +87,20 @@ fun MainMenuLazyListRow(
                 items = list
             ) { element ->
                 when (element) {
-                    is PlaylistWithMusics -> {
+                    is PlaylistWithMusicsNumber -> {
                         BigPreviewComposable(
                             image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
                             title = element.playlist.name,
-                            text = if (element.musics.size == 1) {
+                            text = if (element.musicsNumber == 1) {
                                 stringResource(id = R.string.one_music)
                             } else stringResource(
-                                id = R.string.multiple_musics, element.musics.size
+                                id = R.string.multiple_musics, element.musicsNumber
                             ),
                             onClick = {
-                                navigateToPlaylist(element)
+                                navigateToPlaylist(element.playlist.playlistId.toString())
                             },
-                            onLongClick = { playlistBottomSheetAction(element) }
+                            onLongClick = { playlistBottomSheetAction(element.playlist) },
+                            isFavoritePlaylist = element.playlist.isFavorite
                         )
                     }
                     is AlbumWithArtist -> {

@@ -62,10 +62,10 @@ fun SearchAll(
             items(foundedPlaylists) { playlist ->
                 LinearPreviewComposable(
                     title = playlist.playlist.name,
-                    text = if (playlist.musics.size == 1) {
+                    text = if (playlist.musicsNumber == 1) {
                         stringResource(id = R.string.one_music)
                     } else stringResource(
-                        id = R.string.multiple_musics, playlist.musics.size
+                        id = R.string.multiple_musics, playlist.musicsNumber
                     ),
                     onClick = {
                         focusManager.clearFocus()
@@ -75,7 +75,7 @@ fun SearchAll(
                         coroutineScope.launch {
                             onPlaylistEvent(
                                 PlaylistEvent.SetSelectedPlaylist(
-                                    playlist
+                                    playlist.playlist
                                 )
                             )
                             onPlaylistEvent(
@@ -112,7 +112,7 @@ fun SearchAll(
                     onLongClick = {
                         coroutineScope.launch {
                             onArtistEvent(
-                                ArtistEvent.SetSelectedArtist(
+                                ArtistEvent.SetSelectedArtistWithMusics(
                                     artist
                                 )
                             )
