@@ -76,7 +76,7 @@ object DynamicColor {
         get() = animateColorAsState(
             targetValue =
             if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.onPrimary
+                MaterialTheme.colorScheme.outline
             } else {
                 Color.LightGray
             },

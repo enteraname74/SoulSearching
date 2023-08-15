@@ -1,6 +1,5 @@
 package com.github.soulsearching.screens
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -33,12 +31,9 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.*
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -63,13 +58,13 @@ fun MainPageScreen(
     navigateToModifyPlaylist: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
+    navigateToSettings: () -> Unit,
     playerSwipeableState: SwipeableState<BottomSheetStates>,
     searchSwipeableState: SwipeableState<BottomSheetStates>,
     musicState: MusicState,
     playlistState: PlaylistState,
     albumState: AlbumState,
     artistState: ArtistState,
-    coverState: ImageCoverState,
     quickAccessState: QuickAccessState
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -105,35 +100,6 @@ fun MainPageScreen(
         CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent)
     }
 
-    var cleanImagesLaunched by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-
-    if (coverState.covers.isNotEmpty() && !cleanImagesLaunched) {
-        LaunchedEffect(key1 = "Launch") {
-            Log.d("LAUNCHED EFFECT MAIN", " WILL CLEAN IMAGES")
-
-            CoroutineScope(Dispatchers.IO).launch {
-                for (cover in coverState.covers) {
-                    allImageCoversViewModel.verifyIfImageIsUsed(cover)
-                }
-            }
-
-            if (PlayerUtils.playerViewModel.currentMusic != null) {
-                PlayerUtils.playerViewModel.currentMusicCover =
-                    PlayerUtils.playerViewModel.retrieveCoverMethod(
-                        PlayerUtils.playerViewModel.currentMusic!!.coverId
-                    )
-                PlayerUtils.playerViewModel.currentColorPalette =
-                    ColorPaletteUtils.getPaletteFromAlbumArt(
-                        PlayerUtils.playerViewModel.currentMusicCover
-                    )
-                PlayerService.updateNotification()
-            }
-            cleanImagesLaunched = true
-        }
-    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -149,7 +115,7 @@ fun MainPageScreen(
                 .fillMaxSize()
         ) {
             MainMenuHeaderComposable(
-                navigationAction = {},
+                settingsAction = navigateToSettings,
                 searchAction = {
                     coroutineScope.launch {
                         searchSwipeableState.animateTo(
@@ -424,6 +390,7 @@ fun MainPageScreen(
                 stickyHeader {
                     SubMenuComposable(
                         title = stringResource(id = R.string.musics),
+                        backgroundColor = DynamicColor.primary,
                         sortByDateAction = {
                             allMusicsViewModel.onMusicEvent(
                                 MusicEvent.SetSortType(SortType.ADDED_DATE)

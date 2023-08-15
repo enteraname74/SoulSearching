@@ -87,7 +87,16 @@
     <string name="multiple_musics">%1$d musics</string>
     <string name="one_music">1 music</string>
 
-    <!-- Searh strings -->
+    <!-- Search strings -->
     <string name="search_all">Search a music, an artist, an album, a playlist…</string>
     <string name="search_for_musics">Search a music</string>
+
+    <!-- Settings strings -->
+    <string name="settings">Settings</string>
+    <string name="manage_musics_title">Manage musics</string>
+    <string name="manage_musics_text">Add new musics, manage deleted ones and folder used</string>
+    <string name="color_theme_title">Color theme</string>
+    <string name="color_theme_text">Dynamic theme, style used</string>
+    <string name="personalisation_title">Personalisation</string>
+    <string name="personalisation_text">Manage main page view</string>
 </resources>

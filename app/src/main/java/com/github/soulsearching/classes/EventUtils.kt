@@ -8,6 +8,7 @@ import com.github.soulsearching.database.model.MusicPlaylist
 import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.CoroutineScope
@@ -202,24 +203,28 @@ object EventUtils {
                             albumDao.updateAlbumCover(coverId!!, album.albumId)
                         }
                     }
-                    Log.d("UPDATE MUSIC", "")
-                    musicDao.insertMusic(
-                        state.value.selectedMusic.copy(
-                            name = state.value.name.trim(),
-                            album = state.value.album.trim(),
-                            artist = state.value.artist.trim(),
-                            coverId = coverId
-                        )
+                    val newMusic = state.value.selectedMusic.copy(
+                        name = state.value.name.trim(),
+                        album = state.value.album.trim(),
+                        artist = state.value.artist.trim(),
+                        coverId = coverId
                     )
+                    musicDao.insertMusic(newMusic)
 
-                    PlayerUtils.playerViewModel.updateMusic(
-                        state.value.selectedMusic.copy(
-                            name = state.value.name.trim(),
-                            album = state.value.album.trim(),
-                            artist = state.value.artist.trim(),
-                            coverId = coverId
-                        )
-                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        PlayerUtils.playerViewModel.updateMusic(newMusic)
+
+                        PlayerUtils.playerViewModel.currentMusic?.let {
+                            if (it.musicId.compareTo(newMusic.musicId) == 0) {
+                                PlayerUtils.playerViewModel.currentMusicCover = state.value.cover
+                                PlayerUtils.playerViewModel.currentColorPalette =
+                                    ColorPaletteUtils.getPaletteFromAlbumArt(
+                                        PlayerUtils.playerViewModel.currentMusicCover
+                                    )
+                                PlayerService.updateNotification()
+                            }
+                        }
+                    }
                 }
             }
             is MusicEvent.SetSortType -> {

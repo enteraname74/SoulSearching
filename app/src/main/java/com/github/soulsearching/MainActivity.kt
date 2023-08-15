@@ -30,10 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SharedPrefUtils
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.*
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
@@ -171,6 +168,10 @@ class MainActivity : AppCompatActivity() {
                     mutableStateOf(SharedPrefUtils.hasMusicsBeenFetched())
                 }
 
+                var cleanImagesLaunched by rememberSaveable {
+                    mutableStateOf(false)
+                }
+
                 // On regarde d'abord les permissions :
                 val readPermissionLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.RequestPermission()
@@ -236,6 +237,32 @@ class MainActivity : AppCompatActivity() {
                             }
                         )
                     } else {
+                        if (coversState.covers.isNotEmpty() && !cleanImagesLaunched) {
+                            LaunchedEffect(key1 = "Launch") {
+                                Log.d("LAUNCHED EFFECT MAIN", " WILL CLEAN IMAGES")
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    for (cover in coversState.covers) {
+                                        allImageCoversViewModel.verifyIfImageIsUsed(cover)
+                                    }
+                                }
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    if (PlayerUtils.playerViewModel.currentMusic != null) {
+                                        PlayerUtils.playerViewModel.currentMusicCover =
+                                            PlayerUtils.playerViewModel.retrieveCoverMethod(
+                                                PlayerUtils.playerViewModel.currentMusic!!.coverId
+                                            )
+                                        PlayerUtils.playerViewModel.currentColorPalette =
+                                            ColorPaletteUtils.getPaletteFromAlbumArt(
+                                                PlayerUtils.playerViewModel.currentMusicCover
+                                            )
+                                        PlayerService.updateNotification()
+                                    }
+                                }
+                                cleanImagesLaunched = true
+                            }
+                        }
 
                         if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {
                             Utils.launchService(
@@ -273,17 +300,17 @@ class MainActivity : AppCompatActivity() {
                                         navigateToArtist = {
                                             navController.navigate("selectedArtist/$it")
                                         },
-                                        navigateToMoreAlbums = {
-                                            navController.navigate("moreAlbums")
+                                        navigateToMorePlaylist = {
+                                            navController.navigate("morePlaylists")
                                         },
                                         navigateToMoreArtists = {
                                             navController.navigate("moreArtists")
                                         },
-                                        navigateToMorePlaylist = {
-                                            navController.navigate("morePlaylists")
-                                        },
                                         navigateToMoreShortcuts = {
                                             navController.navigate("moreShortcuts")
+                                        },
+                                        navigateToMoreAlbums = {
+                                            navController.navigate("moreAlbums")
                                         },
                                         navigateToModifyMusic = {
                                             navController.navigate("modifyMusic/$it")
@@ -297,13 +324,15 @@ class MainActivity : AppCompatActivity() {
                                         navigateToModifyArtist = {
                                             navController.navigate("modifyArtist/$it")
                                         },
+                                        navigateToSettings = {
+                                          navController.navigate("settings")
+                                        },
                                         playerSwipeableState = playerSwipeableState,
                                         searchSwipeableState = searchSwipeableState,
-                                        albumState = albumState,
                                         musicState = musicState,
-                                        artistState = artistState,
-                                        coverState = coversState,
                                         playlistState = playlistState,
+                                        albumState = albumState,
+                                        artistState = artistState,
                                         quickAccessState = quickAccessState
                                     )
                                 }
@@ -485,6 +514,13 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         }
+                                    )
+                                }
+                                composable(
+                                    "settings"
+                                ) {
+                                    SettingsScreen(
+                                        finishAction = { navController.popBackStack() }
                                     )
                                 }
                             }

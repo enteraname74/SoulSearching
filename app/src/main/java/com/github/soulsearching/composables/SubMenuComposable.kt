@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -28,13 +29,14 @@ fun SubMenuComposable(
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortType: Int,
     sortDirection: Int,
-    isUsingSort: Boolean = true
+    isUsingSort: Boolean = true,
+    backgroundColor: Color = Color.Transparent
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(54.dp)
-            .background(color = DynamicColor.primary)
+            .background(color = backgroundColor)
             .clickable { }
             .padding(
                 top = Constants.Spacing.medium,

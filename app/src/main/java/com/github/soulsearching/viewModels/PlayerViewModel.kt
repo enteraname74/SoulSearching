@@ -75,27 +75,24 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun updateMusic(music: Music) {
-        CoroutineScope(Dispatchers.IO).launch {
-            currentMusic?.let {
-                if (it.musicId == music.musicId) {
-                   setNewCurrentMusicInformation(music)
-                    PlayerService.updateNotification()
-                }
+        currentMusic?.let {
+            if (it.musicId.compareTo(music.musicId) == 0) {
+                currentMusic = music
             }
+        }
 
-            val indexCurrent = currentPlaylist.indexOfFirst { it.musicId == music.musicId }
-            if (indexCurrent != -1) {
-                currentPlaylist[indexCurrent] = music
-            }
+        val indexCurrent = currentPlaylist.indexOfFirst { it.musicId == music.musicId }
+        if (indexCurrent != -1) {
+            currentPlaylist[indexCurrent] = music
+        }
 
-            val indexInitial = initialPlaylist.indexOfFirst { it.musicId == music.musicId }
-            if (indexInitial != -1) {
-                initialPlaylist[indexInitial] = music
-            }
+        val indexInitial = initialPlaylist.indexOfFirst { it.musicId == music.musicId }
+        if (indexInitial != -1) {
+            initialPlaylist[indexInitial] = music
         }
     }
 
-    fun setNewCurrentMusicInformation(music: Music?) {
+    private fun setNewCurrentMusicInformation(music: Music?) {
         currentMusic = music
         currentMusicPosition = 0
         currentMusicCover = retrieveCoverMethod(currentMusic?.coverId)
@@ -230,7 +227,11 @@ class PlayerViewModel : ViewModel() {
         isForcingNewPlaylist: Boolean = false
     ) {
         // If it's the same music of the same playlist, does nothing
-        if (isSameMusic(music.musicId) && isSamePlaylist(isMainPlaylist, playlistId) && !isForcingNewPlaylist) {
+        if (isSameMusic(music.musicId) && isSamePlaylist(
+                isMainPlaylist,
+                playlistId
+            ) && !isForcingNewPlaylist
+        ) {
             return
         }
 

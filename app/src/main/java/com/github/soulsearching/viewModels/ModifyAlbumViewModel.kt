@@ -2,11 +2,14 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.classes.ColorPaletteUtils
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -141,18 +144,29 @@ class ModifyAlbumViewModel @Inject constructor(
                     )
                     for (music in musicsFromAlbum) {
                         // On modifie les infos de chaque musique
-                        musicDao.insertMusic(
-                            music.copy(
-                                album = state.value.albumWithMusics.album.albumName.trim(),
-                                coverId = coverId,
-                                artist = state.value.albumWithMusics.artist!!.artistName.trim()
-                            )
+                        val newMusic = music.copy(
+                            album = state.value.albumWithMusics.album.albumName.trim(),
+                            coverId = coverId,
+                            artist = state.value.albumWithMusics.artist!!.artistName.trim()
                         )
+                        musicDao.insertMusic(newMusic)
                         // Ainsi que leur liens :
                         musicArtistDao.updateArtistOfMusic(
                             musicId = music.musicId,
                             newArtistId = currentArtist!!.artistId
                         )
+
+                        PlayerUtils.playerViewModel.updateMusic(newMusic)
+
+                        PlayerUtils.playerViewModel.currentMusic?.let {
+                            if (it.musicId.compareTo(music.musicId) == 0) {
+                                PlayerUtils.playerViewModel.currentMusicCover = state.value.albumCover
+                                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                                    PlayerUtils.playerViewModel.currentMusicCover
+                                )
+                                PlayerService.updateNotification()
+                            }
+                        }
                     }
 
                     // On modifie notre album :

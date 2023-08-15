@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,7 +21,7 @@ import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun MainMenuHeaderComposable(
-    navigationAction: () -> Unit,
+    settingsAction: () -> Unit,
     searchAction: () -> Unit
 ) {
     Row(
@@ -40,9 +41,9 @@ fun MainMenuHeaderComposable(
             modifier = Modifier
                 .size(Constants.ImageSize.medium)
                 .clickable {
-                    navigationAction()
+                    settingsAction()
                 },
-            imageVector = Icons.Rounded.Menu,
+            imageVector = Icons.Rounded.Settings,
             contentDescription = stringResource(id = R.string.navigation_drawer_desc),
             tint = DynamicColor.onPrimary
         )

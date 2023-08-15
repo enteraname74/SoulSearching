@@ -73,10 +73,13 @@ class PlayerService : Service() {
             if (!isDoingOperations) {
                 isDoingOperations = true
                 CoroutineScope(Dispatchers.IO).launch {
-                    player?.let {
-                        it.setMusic(PlayerUtils.playerViewModel.currentMusic!!)
-                        it.onlyLoadMusic()
+                    PlayerUtils.playerViewModel.currentMusic?.let {music ->
+                        player?.let {
+                            it.setMusic(music)
+                            it.onlyLoadMusic()
+                        }
                     }
+
                     isDoingOperations = false
                 }
             }
