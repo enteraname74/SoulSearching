@@ -69,4 +69,16 @@ object DynamicColor {
             },
             tween(100)
         ).value
+
+    val subText: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+                MaterialTheme.colorScheme.onPrimary
+            } else {
+                Color.LightGray
+            },
+            tween(100)
+        ).value
 }

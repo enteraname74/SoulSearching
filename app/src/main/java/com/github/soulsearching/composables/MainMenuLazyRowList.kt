@@ -74,72 +74,76 @@ fun MainMenuLazyListRow(
             createPlaylistComposable = createPlaylistComposable,
             isUsingSort = isUsingSort
         )
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-            contentPadding = PaddingValues(
-                start = Constants.Spacing.medium,
-                end = Constants.Spacing.medium
-            )
-        ) {
-            items(
-                items = list
-            ) { element ->
-                when (element) {
-                    is PlaylistWithMusicsNumber -> {
-                        BigPreviewComposable(
-                            image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
-                            title = element.playlist.name,
-                            text = if (element.musicsNumber == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else stringResource(
-                                id = R.string.multiple_musics, element.musicsNumber
-                            ),
-                            onClick = {
-                                navigateToPlaylist(element.playlist.playlistId.toString())
-                            },
-                            onLongClick = { playlistBottomSheetAction(element.playlist) },
-                            isFavoritePlaylist = element.playlist.isFavorite
-                        )
-                    }
-                    is AlbumWithArtist -> {
-                        BigPreviewComposable(
-                            image = element.album.coverId?.let { retrieveCoverMethod(it) },
-                            title = element.album.albumName,
-                            text = if (element.artist != null) element.artist.artistName else "",
-                            onClick = {
-                                navigateToAlbum(element.album.albumId.toString())
-                            },
-                            onLongClick = { albumBottomSheetAction(element) }
-                        )
-                    }
-                    is ArtistWithMusics -> {
-                        BigPreviewComposable(
-                            image = element.artist.coverId?.let { retrieveCoverMethod(it) },
-                            title = element.artist.artistName,
-                            text = if (element.musics.size == 1) {
-                                stringResource(id = R.string.one_music)
-                            } else stringResource(
-                                id = R.string.multiple_musics, element.musics.size
-                            ),
-                            onClick = {
-                                navigateToArtist(element.artist.artistId.toString())
-                            },
-                            onLongClick = { artistBottomSheetAction(element) }
-                        )
-                    }
-                    is Music -> {
-                        BigPreviewComposable(
-                            image = retrieveCoverMethod(element.coverId),
-                            title = element.name,
-                            text = element.artist,
-                            onClick = { playMusicAction(element) },
-                            onLongClick = { musicBottomSheetAction(element) }
-                        )
+        if (list.isNotEmpty()) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                contentPadding = PaddingValues(
+                    start = Constants.Spacing.medium,
+                    end = Constants.Spacing.medium
+                )
+            ) {
+                items(
+                    items = list
+                ) { element ->
+                    when (element) {
+                        is PlaylistWithMusicsNumber -> {
+                            BigPreviewComposable(
+                                image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
+                                title = element.playlist.name,
+                                text = if (element.musicsNumber == 1) {
+                                    stringResource(id = R.string.one_music)
+                                } else stringResource(
+                                    id = R.string.multiple_musics, element.musicsNumber
+                                ),
+                                onClick = {
+                                    navigateToPlaylist(element.playlist.playlistId.toString())
+                                },
+                                onLongClick = { playlistBottomSheetAction(element.playlist) },
+                                isFavoritePlaylist = element.playlist.isFavorite
+                            )
+                        }
+                        is AlbumWithArtist -> {
+                            BigPreviewComposable(
+                                image = element.album.coverId?.let { retrieveCoverMethod(it) },
+                                title = element.album.albumName,
+                                text = if (element.artist != null) element.artist.artistName else "",
+                                onClick = {
+                                    navigateToAlbum(element.album.albumId.toString())
+                                },
+                                onLongClick = { albumBottomSheetAction(element) }
+                            )
+                        }
+                        is ArtistWithMusics -> {
+                            BigPreviewComposable(
+                                image = element.artist.coverId?.let { retrieveCoverMethod(it) },
+                                title = element.artist.artistName,
+                                text = if (element.musics.size == 1) {
+                                    stringResource(id = R.string.one_music)
+                                } else stringResource(
+                                    id = R.string.multiple_musics, element.musics.size
+                                ),
+                                onClick = {
+                                    navigateToArtist(element.artist.artistId.toString())
+                                },
+                                onLongClick = { artistBottomSheetAction(element) }
+                            )
+                        }
+                        is Music -> {
+                            BigPreviewComposable(
+                                image = retrieveCoverMethod(element.coverId),
+                                title = element.name,
+                                text = element.artist,
+                                onClick = { playMusicAction(element) },
+                                onLongClick = { musicBottomSheetAction(element) }
+                            )
+                        }
                     }
                 }
             }
+        } else {
+            NoElementView()
         }
     }
 }

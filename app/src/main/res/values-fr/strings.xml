@@ -8,6 +8,7 @@
     <string name="quick_access">Accès rapide</string>
     <string name="more">Plus</string>
     <string name="favorite">Favoris</string>
+    <string name="no_elements">Aucun élément</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Recherche de musiques sur votre appareil…</string>

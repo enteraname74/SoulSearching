@@ -40,7 +40,7 @@ class AllQuickAccessViewModel @Inject constructor(
         _artists
     ) { state, musics, playlists, albums, artists ->
         state.copy(
-            allQuickAccess = musics + playlists + albums + artists
+            allQuickAccess = musics + playlists.map { it.toPlaylistWithMusicsNumber() } + albums + artists
         )
     }.stateIn(
         viewModelScope,

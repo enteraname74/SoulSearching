@@ -7,6 +7,7 @@
     <string name="quick_access">Quick Access</string>
     <string name="more">More</string>
     <string name="favorite">Favorite</string>
+    <string name="no_elements">No elements</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Searching songs from your device…</string>
