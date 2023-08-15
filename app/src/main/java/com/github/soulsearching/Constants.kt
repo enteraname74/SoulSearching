@@ -18,4 +18,9 @@ object Constants {
         val veryLarge: Dp = 128.dp
         val huge: Dp = 160.dp
     }
+
+    object AnimationTime {
+        val short: Int = 100
+        val normal: Int = 300
+    }
 }

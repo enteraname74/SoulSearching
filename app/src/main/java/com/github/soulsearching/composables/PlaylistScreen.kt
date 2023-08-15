@@ -74,7 +74,7 @@ fun PlaylistScreen(
     val shuffleAction = {
         coroutineScope
             .launch {
-                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
+                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationTime.normal))
             }
             .invokeOnCompletion {
                 PlayerUtils.playerViewModel.playShuffle(musicState.musics)
@@ -85,7 +85,7 @@ fun PlaylistScreen(
     val searchAction = {
         coroutineScope
             .launch {
-                searchSwipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
+                searchSwipeableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationTime.normal))
             }
     }
 

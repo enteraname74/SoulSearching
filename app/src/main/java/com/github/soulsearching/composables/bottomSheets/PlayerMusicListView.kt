@@ -64,7 +64,7 @@ fun PlayerMusicListView(
 
     BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
+            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
         }
     }
 
@@ -72,7 +72,7 @@ fun PlayerMusicListView(
         if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
+                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
                 }
             }
         } else {
@@ -85,7 +85,17 @@ fun PlayerMusicListView(
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic,
+        navigateToModifyMusic = { path ->
+            coroutineScope.launch {
+                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+            }.invokeOnCompletion {
+                coroutineScope.launch {
+                    playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
+                }.invokeOnCompletion {
+                    navigateToModifyMusic(path)
+                }
+            }
+        },
         playerMusicListViewModel = playerMusicListViewModel,
         playerSwipeableState = playerSwipeableState
     )
@@ -167,7 +177,7 @@ fun PlayerMusicListView(
                             coroutineScope.launch {
                                 musicListSwipeableState.animateTo(
                                     BottomSheetStates.COLLAPSED,
-                                    tween(300)
+                                    tween(Constants.AnimationTime.normal)
                                 )
                             }.invokeOnCompletion {
                                 PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(

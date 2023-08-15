@@ -209,7 +209,8 @@ fun SearchAll(
                                 )
                             )
                         }
-                    }
+                    },
+                    musicCover = retrieveCoverMethod(music.coverId)
                 )
             }
         }

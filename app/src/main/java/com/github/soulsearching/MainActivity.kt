@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                             )
                             PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
                             coroutineScope.launch {
-                                playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+                                playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
                             }
                         }
                     }

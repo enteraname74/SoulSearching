@@ -90,7 +90,7 @@ fun PlayerSwipeableView(
         } else {
             ColorPaletteUtils.getPrimaryColor()
         },
-        tween(300)
+        tween(Constants.AnimationTime.normal)
     )
     val textColor: Color by animateColorAsState(
         targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
@@ -100,7 +100,7 @@ fun PlayerSwipeableView(
         } else {
             Color.White
         },
-        tween(300)
+        tween(Constants.AnimationTime.normal)
     )
 
     val contentColor: Color by animateColorAsState(
@@ -109,7 +109,7 @@ fun PlayerSwipeableView(
         } else {
             ColorPaletteUtils.getSecondaryColor()
         },
-        tween(300)
+        tween(Constants.AnimationTime.normal)
     )
 
     val systemUiController = rememberSystemUiController()
@@ -118,11 +118,11 @@ fun PlayerSwipeableView(
         if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
             DynamicColor.primary
         } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-            DynamicColor.secondary
+            DynamicColor.primary
         } else {
             ColorPaletteUtils.getPrimaryColor()
         },
-        tween(300)
+        tween(Constants.AnimationTime.normal)
     )
 
     val navigationBarColor: Color by animateColorAsState(
@@ -132,16 +132,16 @@ fun PlayerSwipeableView(
         } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
             DynamicColor.secondary
         } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-            DynamicColor.primary
+            DynamicColor.secondary
         } else {
             ColorPaletteUtils.getSecondaryColor()
         },
-        tween(300)
+        tween(Constants.AnimationTime.normal)
     )
 
     systemUiController.setStatusBarColor(
         color = statusBarColor,
-        darkIcons = if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null) {
             !isSystemInDarkTheme()
         } else {
             false
@@ -150,7 +150,7 @@ fun PlayerSwipeableView(
 
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,
-        darkIcons = if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null) {
             !isSystemInDarkTheme()
         } else {
             false
@@ -160,9 +160,9 @@ fun PlayerSwipeableView(
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
-                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
+                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
             }
-            swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+            swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
         }
     }
 
@@ -215,7 +215,7 @@ fun PlayerSwipeableView(
             if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
                 Modifier.clickable {
                     coroutineScope.launch {
-                        swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(300))
+                        swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationTime.normal))
                     }
                 }
             } else {
@@ -224,7 +224,7 @@ fun PlayerSwipeableView(
                         coroutineScope.launch {
                             musicListSwipeableState.animateTo(
                                 BottomSheetStates.COLLAPSED,
-                                tween(300)
+                                tween(Constants.AnimationTime.normal)
                             )
                         }
                     }
@@ -314,10 +314,10 @@ fun PlayerSwipeableView(
                                 if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
                                     musicListSwipeableState.animateTo(
                                         BottomSheetStates.COLLAPSED,
-                                        tween(300)
+                                        tween(Constants.AnimationTime.normal)
                                     )
                                 }
-                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
                             }
                         }
                     }

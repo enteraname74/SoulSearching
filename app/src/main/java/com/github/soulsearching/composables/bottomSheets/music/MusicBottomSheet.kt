@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables.bottomSheets.music
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
@@ -10,6 +9,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
@@ -131,7 +131,9 @@ fun MusicBottomSheet(
                     }
                     coroutineScope.launch {
                         if (playerSwipeableState.currentValue == BottomSheetStates.COLLAPSED) {
-                            playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(300))
+                            playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(
+                                Constants.AnimationTime.normal)
+                            )
                         }
                     }.invokeOnCompletion {
                         PlayerUtils.playerViewModel.addMusicToPlayNext(

@@ -39,7 +39,7 @@ fun SearchView(
                 && playerSwipeableState.currentValue != BottomSheetStates.EXPANDED
     ) {
         coroutineScope.launch {
-            swipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(300))
+            swipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
         }
     }
 

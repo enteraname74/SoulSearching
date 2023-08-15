@@ -154,7 +154,7 @@ fun MainPageScreen(
                     coroutineScope.launch {
                         searchSwipeableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(300)
+                            tween(Constants.AnimationTime.normal)
                         )
                     }
                 }

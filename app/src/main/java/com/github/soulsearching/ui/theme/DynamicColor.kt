@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 
@@ -18,7 +19,7 @@ object DynamicColor {
             } else {
                 ColorPaletteUtils.getPrimaryColor()
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 
     val onPrimary: Color
@@ -30,7 +31,7 @@ object DynamicColor {
             } else {
                 Color.White
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 
     val outline: Color
@@ -42,7 +43,7 @@ object DynamicColor {
             } else {
                 Color.LightGray
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 
 
@@ -55,7 +56,7 @@ object DynamicColor {
             } else {
                 ColorPaletteUtils.getSecondaryColor()
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 
     val onSecondary: Color
@@ -67,7 +68,7 @@ object DynamicColor {
             } else {
                 Color.White
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 
     val subText: Color
@@ -79,6 +80,6 @@ object DynamicColor {
             } else {
                 Color.LightGray
             },
-            tween(100)
+            tween(Constants.AnimationTime.normal)
         ).value
 }
