@@ -153,7 +153,7 @@ class PlayerViewModel : ViewModel() {
             // If same music than the one played, play next song :
             currentMusic?.let {
                 if (it.musicId.compareTo(musicId) == 0) {
-                    // We make place ourself in the previous music :
+                    // We place ourself in the previous music :
                     currentMusic = currentPlaylist[(currentIndex) % currentPlaylist.size]
 
                     PlayerService.setAndPlayCurrentMusic()

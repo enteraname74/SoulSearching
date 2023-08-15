@@ -251,7 +251,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
-        next()
+        CoroutineScope(Dispatchers.IO).launch {
+            next()
+        }
     }
 
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
@@ -262,9 +264,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                     musicId = PlayerUtils.playerViewModel.currentMusic!!.musicId,
                     context = context
                 )
-                if (PlayerUtils.playerViewModel.currentPlaylist.isNotEmpty()) {
-                    next()
-                }
             }
         }
         return true

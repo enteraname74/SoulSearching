@@ -72,7 +72,9 @@ fun AppSearchBar(
                 backgroundColor = DynamicColor.secondary
             ),
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedLabelColor = DynamicColor.onSecondary
+            unfocusedLabelColor = DynamicColor.onSecondary,
+            focusedPlaceholderColor = DynamicColor.onSecondary,
+            unfocusedPlaceholderColor = DynamicColor.onSecondary
         ),
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }

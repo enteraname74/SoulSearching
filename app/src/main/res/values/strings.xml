@@ -8,6 +8,8 @@
     <string name="more">More</string>
     <string name="favorite">Favorite</string>
     <string name="no_elements">No elements</string>
+    <string name="deleted_musics">%1$d musics were deleted because they don\'t exist anymore on the device</string>
+    <string name="deleted_music">1 music was deleted because it don\'t exist anymore on the device</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Searching songs from your device…</string>

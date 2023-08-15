@@ -9,6 +9,8 @@
     <string name="more">Plus</string>
     <string name="favorite">Favoris</string>
     <string name="no_elements">Aucun élément</string>
+    <string name="deleted_musics">%1$d musiques ont été supprimées car elles n\'existent plus sur l\'appareil</string>
+    <string name="deleted_music">1 musique a été supprimée car elle n\'existe plus sur l\'appareil</string>
 
     <!-- Fetching musics -->
     <string name="searching_songs_from_your_device">Recherche de musiques sur votre appareil…</string>

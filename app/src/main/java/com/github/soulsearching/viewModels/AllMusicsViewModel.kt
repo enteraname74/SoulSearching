@@ -1,9 +1,14 @@
 package com.github.soulsearching.viewModels
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.soulsearching.R
 import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SortDirection
 import com.github.soulsearching.classes.SortType
 import com.github.soulsearching.database.dao.*
@@ -11,8 +16,9 @@ import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -30,6 +36,7 @@ class AllMusicsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private var isDoingOperations = false
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->
@@ -170,6 +177,35 @@ class AllMusicsViewModel @Inject constructor(
 
     suspend fun isMusicInFavorite(musicId: UUID): Boolean {
         return musicDao.getMusicFromFavoritePlaylist(musicId = musicId) != null
+    }
+
+    fun checkAndDeleteMusicIfNotExist(context: Context) {
+        if (!isDoingOperations) {
+            isDoingOperations = true
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.d("ALL MUSICS VM", "LAUNCH CHECK")
+                var deleteCount = 0
+                for (music in state.value.musics) {
+                    if (!File(music.path).exists()) {
+                        Log.d("ALL MUSICS VM", "${music.name} don't exist anymore")
+                        PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(music.musicId, context)
+                        musicDao.deleteMusic(music)
+                        deleteCount += 1
+                    }
+                }
+
+                if (deleteCount == 1) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, context.getString(R.string.deleted_music),Toast.LENGTH_SHORT).show()
+                    }
+                } else if (deleteCount > 1) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, context.getString(R.string.deleted_musics, deleteCount),Toast.LENGTH_SHORT).show()
+                    }
+                }
+                isDoingOperations = false
+            }
+        }
     }
 
     fun onMusicEvent(event: MusicEvent) {
