@@ -33,7 +33,7 @@ fun PersonalizedColorThemeCard(
         ) {
             SettingsSwitchElement(
                 title = stringResource(id = R.string.dynamic_player_view),
-                toggleAction = SettingsUtils.settingsViewModel::toggleDynamicPlayer,
+                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicPlayer() },
                 isChecked = SettingsUtils.settingsViewModel.isDynamicPlayerThemeSelected,
                 padding = 0.dp,
                 titleFontSize = 16.sp
