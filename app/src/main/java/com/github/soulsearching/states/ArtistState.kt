@@ -1,8 +1,8 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.model.ArtistWithMusics
 
 data class ArtistState(

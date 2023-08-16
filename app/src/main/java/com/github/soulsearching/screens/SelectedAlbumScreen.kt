@@ -5,7 +5,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.PlaylistEvent

@@ -10,8 +10,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.dialogs.SoulSearchingDialog
 import com.github.soulsearching.events.MusicEvent

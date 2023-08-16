@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*

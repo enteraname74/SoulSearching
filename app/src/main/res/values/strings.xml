@@ -99,4 +99,14 @@
     <string name="color_theme_text">Dynamic theme, style used</string>
     <string name="personalisation_title">Personalisation</string>
     <string name="personalisation_text">Manage main page view</string>
+
+    <!-- Color theme strings -->
+    <string name="dynamic_theme_title">Dynamic theme</string>
+    <string name="dynamic_theme_text">Global color theme based on the current played song\'s album cover</string>
+    <string name="system_theme_title">System theme</string>
+    <string name="system_theme_text">Global color theme based on your system color mode</string>
+    <string name="personalized_theme_title">Personalized theme</string>
+    <string name="personalized_theme_text">Define precisely your color theme</string>
+    <string name="dynamic_player_view">Use dynamic theme for player view</string>
+    <string name="dynamic_other_view">Use dynamic theme for other view</string>
 </resources>

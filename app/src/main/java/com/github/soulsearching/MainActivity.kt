@@ -31,12 +31,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
+import com.github.soulsearching.screens.settings.SettingsColorThemeScreen
+import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
+import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
+import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
@@ -97,6 +102,7 @@ class MainActivity : AppCompatActivity() {
             onArtistEvent = allArtistsViewModel::onArtistEvent,
             onAlbumEvent = allAlbumsViewModel::onAlbumEvent
         )
+        SharedPrefUtils.initializeSettings()
 
         registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
 
@@ -520,6 +526,36 @@ class MainActivity : AppCompatActivity() {
                                     "settings"
                                 ) {
                                     SettingsScreen(
+                                        finishAction = { navController.popBackStack() },
+                                        navigateToColorTheme = {
+                                            navController.navigate("colorTheme")
+                                        },
+                                        navigateToManageMusics = {
+                                            navController.navigate("manageMusics")
+                                        },
+                                        navigateToPersonalisation = {
+                                            navController.navigate("personalisation")
+                                        }
+                                    )
+                                }
+                                composable(
+                                    "personalisation"
+                                ) {
+                                    SettingsPersonalisationScreen(
+                                        finishAction = { navController.popBackStack() }
+                                    )
+                                }
+                                composable(
+                                    "manageMusics"
+                                ) {
+                                    SettingsManageMusicsScreen(
+                                        finishAction = { navController.popBackStack() }
+                                    )
+                                }
+                                composable(
+                                    "colorTheme"
+                                ) {
+                                    SettingsColorThemeScreen(
                                         finishAction = { navController.popBackStack() }
                                     )
                                 }

@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.enumsAndTypes
 
 object SortDirection {
     const val ASC = 0

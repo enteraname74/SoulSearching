@@ -1,6 +1,9 @@
 package com.github.soulsearching.classes
 
 import android.content.SharedPreferences
+import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -13,10 +16,19 @@ class SharedPrefUtils {
     companion object {
         lateinit var sharedPreferences : SharedPreferences
 
-        fun updateSort(keyToUpdate: String, newValue: Int) {
+        fun updateIntValue(keyToUpdate: String, newValue: Int) {
             CoroutineScope(Dispatchers.IO).launch {
                 with(sharedPreferences.edit()) {
                     putInt(keyToUpdate, newValue)
+                    apply()
+                }
+            }
+        }
+
+        fun updateBooleanValue(keyToUpdate: String, newValue: Boolean) {
+            CoroutineScope(Dispatchers.IO).launch {
+                with(sharedPreferences.edit()) {
+                    putBoolean(keyToUpdate, newValue)
                     apply()
                 }
             }
@@ -63,6 +75,19 @@ class SharedPrefUtils {
                     putInt(PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
                     apply()
 
+                }
+            }
+        }
+
+        fun initializeSettings() {
+            CoroutineScope(Dispatchers.IO).launch {
+                SettingsUtils.settingsViewModel.apply {
+                    colorTheme = sharedPreferences.getInt(
+                        COLOR_THEME_KEY, ColorThemeType.SYSTEM
+                    )
+                    isDynamicPlayerThemeSelected = sharedPreferences.getBoolean(
+                        DYNAMIC_PLAYER_THEME, false
+                    )
                 }
             }
         }
@@ -151,5 +176,8 @@ class SharedPrefUtils {
 
         private const val PLAYER_MUSIC_INDEX_KEY = "PLAYER_MUSIC_INDEX"
         private const val PLAYER_MUSIC_POSITION_KEY = "PLAYER_MUSIC_POSITION"
+
+        const val COLOR_THEME_KEY = "COLOR_THEME"
+        const val DYNAMIC_PLAYER_THEME = "DYNAMIC_PLAYER_THEME"
     }
 }

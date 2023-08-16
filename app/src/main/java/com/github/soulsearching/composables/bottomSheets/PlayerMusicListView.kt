@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents

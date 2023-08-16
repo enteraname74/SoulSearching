@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.enumsAndTypes
 
 object SortType {
     const val NAME = 0

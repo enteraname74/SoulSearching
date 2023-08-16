@@ -22,7 +22,7 @@ object ColorPaletteUtils {
         }
     }
 
-    fun getPrimaryColor(): Color {
+    fun getDynamicPrimaryColor(): Color {
         return Color(
             ColorUtils.blendARGB(
                 PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
@@ -32,7 +32,7 @@ object ColorPaletteUtils {
         )
     }
 
-    fun getSecondaryColor(): Color {
+    fun getDynamicSecondaryColor(): Color {
         return Color(
             ColorUtils.blendARGB(
                 PlayerUtils.playerViewModel.currentColorPalette!!.rgb,

@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -131,7 +131,8 @@ fun MusicBottomSheet(
                     }
                     coroutineScope.launch {
                         if (playerSwipeableState.currentValue == BottomSheetStates.COLLAPSED) {
-                            playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(
+                            playerSwipeableState.animateTo(
+                                BottomSheetStates.MINIMISED, tween(
                                 Constants.AnimationTime.normal)
                             )
                         }

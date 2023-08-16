@@ -1,12 +1,11 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.classes.SharedPrefUtils
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.PlayerMusic

@@ -36,9 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.BottomSheetStates
 import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
@@ -85,29 +87,39 @@ fun PlayerSwipeableView(
         targetValue =
         if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
             DynamicColor.secondary
-        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-            DynamicColor.primary
+        } else if (
+            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+            && PlayerUtils.playerViewModel.currentColorPalette != null
+        ) {
+            ColorPaletteUtils.getDynamicPrimaryColor()
         } else {
-            ColorPaletteUtils.getPrimaryColor()
+            DynamicColor.primary
         },
         tween(Constants.AnimationTime.normal)
     )
     val textColor: Color by animateColorAsState(
-        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+        targetValue =
+        if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
             DynamicColor.onSecondary
-        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-            DynamicColor.onPrimary
-        } else {
+        } else if (
+            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+            && PlayerUtils.playerViewModel.currentColorPalette != null
+        ) {
             Color.White
+        } else {
+            DynamicColor.onPrimary
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val contentColor: Color by animateColorAsState(
-        targetValue = if (swipeableState.currentValue == BottomSheetStates.MINIMISED || PlayerUtils.playerViewModel.currentColorPalette == null) {
-            DynamicColor.secondary
+        targetValue = if (swipeableState.currentValue != BottomSheetStates.MINIMISED
+            && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+            && PlayerUtils.playerViewModel.currentColorPalette != null
+        ) {
+            ColorPaletteUtils.getDynamicSecondaryColor()
         } else {
-            ColorPaletteUtils.getSecondaryColor()
+            DynamicColor.secondary
         },
         tween(Constants.AnimationTime.normal)
     )
@@ -115,12 +127,14 @@ fun PlayerSwipeableView(
     val systemUiController = rememberSystemUiController()
     val statusBarColor: Color by animateColorAsState(
         targetValue =
-        if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
-            DynamicColor.primary
-        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+        if (
+            swipeableState.currentValue != BottomSheetStates.EXPANDED
+            || PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
             DynamicColor.primary
         } else {
-            ColorPaletteUtils.getPrimaryColor()
+            ColorPaletteUtils.getDynamicPrimaryColor()
         },
         tween(Constants.AnimationTime.normal)
     )
@@ -129,19 +143,22 @@ fun PlayerSwipeableView(
         targetValue =
         if (swipeableState.currentValue == BottomSheetStates.COLLAPSED) {
             DynamicColor.primary
-        } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
-            DynamicColor.secondary
-        } else if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+        } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED
+            || PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
             DynamicColor.secondary
         } else {
-            ColorPaletteUtils.getSecondaryColor()
+            ColorPaletteUtils.getDynamicSecondaryColor()
         },
         tween(Constants.AnimationTime.normal)
     )
 
     systemUiController.setStatusBarColor(
         color = statusBarColor,
-        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
             !isSystemInDarkTheme()
         } else {
             false
@@ -150,7 +167,9 @@ fun PlayerSwipeableView(
 
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,
-        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null) {
+        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
             !isSystemInDarkTheme()
         } else {
             false
@@ -160,9 +179,15 @@ fun PlayerSwipeableView(
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
-                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+                musicListSwipeableState.animateTo(
+                    BottomSheetStates.COLLAPSED,
+                    tween(Constants.AnimationTime.normal)
+                )
             }
-            swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
+            swipeableState.animateTo(
+                BottomSheetStates.MINIMISED,
+                tween(Constants.AnimationTime.normal)
+            )
         }
     }
 
@@ -215,7 +240,10 @@ fun PlayerSwipeableView(
             if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
                 Modifier.clickable {
                     coroutineScope.launch {
-                        swipeableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationTime.normal))
+                        swipeableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(Constants.AnimationTime.normal)
+                        )
                     }
                 }
             } else {
@@ -317,7 +345,10 @@ fun PlayerSwipeableView(
                                         tween(Constants.AnimationTime.normal)
                                     )
                                 }
-                                swipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
+                                swipeableState.animateTo(
+                                    BottomSheetStates.MINIMISED,
+                                    tween(Constants.AnimationTime.normal)
+                                )
                             }
                         }
                     }

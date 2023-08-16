@@ -20,8 +20,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playlistComposables.PlaylistPanel
@@ -232,7 +232,7 @@ fun PlaylistScreen(
                                 musicCover = retrieveCoverMethod(elt.coverId),
                             )
                         }
-                        item { MusicListSpacer() }
+                        item { PlayerSpacer() }
                     }
                 }
             }

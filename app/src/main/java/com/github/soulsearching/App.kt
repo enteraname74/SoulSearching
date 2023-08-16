@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import dagger.hilt.android.HiltAndroidApp
 

@@ -11,7 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable

@@ -1,6 +1,8 @@
 package com.github.soulsearching.classes
 
 import android.util.Log
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ImageCover
@@ -234,7 +236,7 @@ object EventUtils {
                         sortType = event.type
                     )
                 }
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
                     newValue = event.type
                 )
@@ -242,7 +244,7 @@ object EventUtils {
             is MusicEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
 
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
                     newValue = event.type
                 )
@@ -454,14 +456,14 @@ object EventUtils {
             }
             is PlaylistEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
                     newValue = event.type
                 )
             }
             is PlaylistEvent.SetSortType -> {
                 _sortType.value = event.type
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
                     newValue = event.type
                 )

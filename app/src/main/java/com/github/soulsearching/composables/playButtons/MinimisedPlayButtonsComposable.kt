@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor

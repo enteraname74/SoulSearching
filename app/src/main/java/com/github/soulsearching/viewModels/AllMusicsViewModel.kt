@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.EventUtils
 import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.*
 import com.github.soulsearching.events.MusicEvent

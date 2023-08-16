@@ -17,7 +17,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.ui.theme.DynamicColor
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

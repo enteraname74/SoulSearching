@@ -19,6 +19,9 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents

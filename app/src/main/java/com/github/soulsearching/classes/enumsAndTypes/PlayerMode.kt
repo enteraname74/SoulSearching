@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.enumsAndTypes
 
 enum class PlayerMode {
     NORMAL,

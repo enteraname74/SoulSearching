@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable

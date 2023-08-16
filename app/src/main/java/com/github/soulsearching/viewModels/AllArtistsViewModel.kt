@@ -3,8 +3,8 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.SharedPrefUtils
-import com.github.soulsearching.classes.SortDirection
-import com.github.soulsearching.classes.SortType
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.AlbumDao
 import com.github.soulsearching.database.dao.ArtistDao
 import com.github.soulsearching.database.dao.MusicDao
@@ -110,14 +110,14 @@ class AllArtistsViewModel @Inject constructor(
             }
             is ArtistEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
                     newValue = event.type
                 )
             }
             is ArtistEvent.SetSortType -> {
                 _sortType.value = event.type
-                SharedPrefUtils.updateSort(
+                SharedPrefUtils.updateIntValue(
                     keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
                     newValue = event.type
                 )

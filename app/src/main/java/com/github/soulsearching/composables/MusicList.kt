@@ -8,8 +8,8 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.classes.BottomSheetStates
-import com.github.soulsearching.classes.MusicBottomSheetState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent
@@ -94,7 +94,7 @@ fun MusicList(
             )
         }
         item {
-            MusicListSpacer()
+            PlayerSpacer()
         }
     }
 }

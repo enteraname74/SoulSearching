@@ -100,4 +100,14 @@
     <string name="color_theme_text">Thème dynamique, style utilisé</string>
     <string name="personalisation_title">Personalisation</string>
     <string name="personalisation_text">Gérer la vue de la page principale</string>
+
+    <!-- Color theme strings -->
+    <string name="dynamic_theme_title">Thème dynamique</string>
+    <string name="dynamic_theme_text">Thème de couleur global basé sur la pochette d\'album de la musique jouée courante</string>
+    <string name="system_theme_title">Thème du système</string>
+    <string name="system_theme_text">Thème de couleur global basé sur le mode de couleur de votre système</string>
+    <string name="personalized_theme_title">Thème personalisé</string>
+    <string name="personalized_theme_text">Définissez précisémment votre thème de couleur</string>
+    <string name="dynamic_player_view">Utiliser le thème dynamique pour la vue du player</string>
+    <string name="dynamic_other_view">Utiliser le thème dynamique pour les autres vues</string>
 </resources>

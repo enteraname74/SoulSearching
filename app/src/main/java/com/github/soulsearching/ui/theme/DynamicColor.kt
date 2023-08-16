@@ -8,16 +8,21 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 
 object DynamicColor {
     val primary: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.primary
+            if (
+                SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+            ) {
+                ColorPaletteUtils.getDynamicPrimaryColor()
             } else {
-                ColorPaletteUtils.getPrimaryColor()
+                MaterialTheme.colorScheme.primary
             },
             tween(Constants.AnimationTime.normal)
         ).value
@@ -26,10 +31,13 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.onPrimary
-            } else {
+            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+
+            ) {
                 Color.White
+            } else {
+                MaterialTheme.colorScheme.onPrimary
             },
             tween(Constants.AnimationTime.normal)
         ).value
@@ -38,10 +46,12 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.onPrimary
-            } else {
+            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+            ) {
                 Color.LightGray
+            } else {
+                MaterialTheme.colorScheme.onPrimary
             },
             tween(Constants.AnimationTime.normal)
         ).value
@@ -51,10 +61,12 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.secondary
+            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+            ) {
+                ColorPaletteUtils.getDynamicSecondaryColor()
             } else {
-                ColorPaletteUtils.getSecondaryColor()
+                MaterialTheme.colorScheme.secondary
             },
             tween(Constants.AnimationTime.normal)
         ).value
@@ -63,10 +75,13 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.onPrimary
-            } else {
+            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+
+            ) {
                 Color.White
+            } else {
+                MaterialTheme.colorScheme.onSecondary
             },
             tween(Constants.AnimationTime.normal)
         ).value
@@ -75,10 +90,12 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (PlayerUtils.playerViewModel.currentColorPalette == null) {
-                MaterialTheme.colorScheme.outline
-            } else {
+            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                && PlayerUtils.playerViewModel.currentColorPalette != null
+            ) {
                 Color.LightGray
+            } else {
+                MaterialTheme.colorScheme.outline
             },
             tween(Constants.AnimationTime.normal)
         ).value
