@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @SuppressLint("UnnecessaryComposedModifier")
@@ -15,12 +17,16 @@ fun PlaylistPanel(
     editAction: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    isLandscapeMode: Boolean
+    isLandscapeMode: Boolean,
+    playlistType: PlaylistType,
+    primaryColor: Color = DynamicColor.primary,
+    secondaryColor: Color = DynamicColor.secondary,
+    tint: Color = DynamicColor.onSecondary
 ) {
     if (isLandscapeMode) {
         Column(modifier = Modifier
             .fillMaxHeight()
-            .background(DynamicColor.primary)
+            .background(primaryColor)
             .padding(end = Constants.Spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
@@ -28,13 +34,16 @@ fun PlaylistPanel(
             ImagesButton(
                 editAction = editAction,
                 shuffleAction = shuffleAction,
-                searchAction = searchAction
+                searchAction = searchAction,
+                playlistType = playlistType,
+                tint = tint,
+                primaryColor = secondaryColor
             )
         }
     } else {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .background(DynamicColor.primary)
+            .background(primaryColor)
             .padding(bottom = Constants.Spacing.large),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -42,7 +51,10 @@ fun PlaylistPanel(
             ImagesButton(
                 editAction = editAction,
                 shuffleAction = shuffleAction,
-                searchAction = searchAction
+                searchAction = searchAction,
+                playlistType = playlistType,
+                tint = tint,
+                primaryColor = secondaryColor
             )
         }
     }

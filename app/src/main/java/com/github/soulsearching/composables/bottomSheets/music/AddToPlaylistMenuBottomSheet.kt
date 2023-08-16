@@ -26,11 +26,13 @@ fun AddToPlaylistMenuBottomSheet(
     playlistState: PlaylistState,
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     cancelAction : () -> Unit,
-    validationAction : () -> Unit
+    validationAction : () -> Unit,
+    primaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(DynamicColor.secondary)
+        .background(primaryColor)
         .padding(Constants.Spacing.medium)
     ) {
         AppHeaderBar(
@@ -39,7 +41,7 @@ fun AddToPlaylistMenuBottomSheet(
             rightAction = validationAction,
             rightIcon = Icons.Default.Done,
             backgroundColor = Color.Transparent,
-            contentColor = DynamicColor.onSecondary
+            contentColor = textColor
         )
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +51,8 @@ fun AddToPlaylistMenuBottomSheet(
                     PlaylistSelectableComposable(
                         playlist = playlistWithMusics.playlist,
                         onClick = { onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlistWithMusics.playlist.playlistId)) },
-                        isSelected = true
+                        isSelected = true,
+                        textColor = textColor
                     )
                 } else {
                     PlaylistSelectableComposable(
@@ -57,7 +60,8 @@ fun AddToPlaylistMenuBottomSheet(
                         onClick = {
                             onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlistWithMusics.playlist.playlistId))
                         },
-                        isSelected = false
+                        isSelected = false,
+                        textColor = textColor
                     )
                 }
             }

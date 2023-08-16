@@ -13,21 +13,26 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun ImagesButton(
     editAction: () -> Unit,
     shuffleAction: () -> Unit,
-    searchAction: () -> Unit
+    searchAction: () -> Unit,
+    playlistType: PlaylistType,
+    primaryColor: Color = DynamicColor.secondary,
+    tint: Color = DynamicColor.onSecondary
 ) {
     Image(
         modifier = Modifier
             .size(48.dp)
             .background(
-                color = DynamicColor.secondary,
+                color = primaryColor,
                 shape = CircleShape
             )
             .clickable {
@@ -36,25 +41,27 @@ fun ImagesButton(
             .padding(10.dp),
         imageVector = Icons.Rounded.Edit,
         contentDescription = "",
-        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+        colorFilter = ColorFilter.tint(tint)
     )
+    if (playlistType == PlaylistType.PLAYLIST) {
+        Image(
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color = primaryColor,
+                    shape = CircleShape
+                )
+                .padding(10.dp),
+            imageVector = Icons.Rounded.PlaylistAdd,
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(tint)
+        )
+    }
     Image(
         modifier = Modifier
             .size(48.dp)
             .background(
-                color = DynamicColor.secondary,
-                shape = CircleShape
-            )
-            .padding(10.dp),
-        imageVector = Icons.Rounded.PlaylistAdd,
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
-    )
-    Image(
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = DynamicColor.secondary,
+                color = primaryColor,
                 shape = CircleShape
             )
             .clickable {
@@ -63,13 +70,13 @@ fun ImagesButton(
             .padding(10.dp),
         imageVector = Icons.Rounded.Shuffle,
         contentDescription = "",
-        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+        colorFilter = ColorFilter.tint(tint)
     )
     Image(
         modifier = Modifier
             .size(48.dp)
             .background(
-                color = DynamicColor.secondary,
+                color = primaryColor,
                 shape = CircleShape
             )
             .clickable {
@@ -78,6 +85,6 @@ fun ImagesButton(
             .padding(10.dp),
         imageVector = Icons.Rounded.Search,
         contentDescription = "",
-        colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+        colorFilter = ColorFilter.tint(tint)
     )
 }

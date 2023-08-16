@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -24,7 +25,8 @@ fun AppImage(
     bitmap : Bitmap?,
     size : Dp,
     modifier: Modifier = Modifier,
-    roundedPercent : Int = 10
+    roundedPercent : Int = 10,
+    tint: Color = DynamicColor.onSecondary
 ) {
     val modifierBase = Modifier
         .size(size)
@@ -46,7 +48,7 @@ fun AppImage(
             painter = painterResource(id = R.drawable.ic_saxophone_svg),
             contentDescription = stringResource(id = R.string.image),
             contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+            colorFilter = ColorFilter.tint(tint)
         )
     }
 

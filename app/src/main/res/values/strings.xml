@@ -108,6 +108,7 @@
     <string name="personalized_theme_title">Personalized theme</string>
     <string name="personalized_theme_text">Define precisely your color theme</string>
     <string name="dynamic_player_view">Use dynamic theme for player view</string>
+    <string name="dynamic_playlist_view">Use dynamic theme for playlist, album and artist view</string>
     <string name="dynamic_other_view">Use dynamic theme for other view</string>
 
     <!-- Personalization strings -->

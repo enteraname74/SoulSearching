@@ -9,14 +9,17 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -31,7 +34,9 @@ fun SearchMusics(
     playerMusicListViewModel: PlayerMusicListViewModel,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    retrieveCoverMethod: (UUID?) -> Bitmap?
+    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    primaryColor: Color = DynamicColor.primary,
+    textColor: Color = DynamicColor.onPrimary
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -45,10 +50,16 @@ fun SearchMusics(
 
         if (foundedMusics.isNotEmpty()) {
             stickyHeader {
-                SearchType(title = stringResource(id = R.string.musics))
+                SearchType(
+                    title = stringResource(id = R.string.musics),
+                    primaryColor = primaryColor,
+                    textColor = textColor
+                )
             }
             items(foundedMusics) {
                 MusicItemComposable(
+                    primaryColor = primaryColor,
+                    textColor = textColor,
                     music = it,
                     onClick = { music ->
                         coroutineScope.launch {
@@ -82,6 +93,9 @@ fun SearchMusics(
                     musicCover = retrieveCoverMethod(it.coverId)
                 )
             }
+        }
+        item {
+            PlayerSpacer()
         }
     }
 }

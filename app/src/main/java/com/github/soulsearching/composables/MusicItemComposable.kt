@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,13 +35,13 @@ fun MusicItemComposable(
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
     musicCover: Bitmap? = null,
-    isCurrentPlayedMusic: Boolean = false
+    isCurrentPlayedMusic: Boolean = false,
+    primaryColor: Color = DynamicColor.primary,
+    textColor: Color = DynamicColor.onPrimary
 ) {
 
     val currentMusicModifier = if (isCurrentPlayedMusic) {
-        Modifier.background(
-            color = DynamicColor.primary
-        )
+        Modifier.background(color = primaryColor)
     } else {
         Modifier
     }
@@ -63,7 +64,11 @@ fun MusicItemComposable(
             horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AppImage(bitmap = musicCover, size = 55.dp)
+            AppImage(
+                bitmap = musicCover,
+                size = 55.dp,
+                tint = textColor
+            )
             Column(
                 modifier = Modifier
                     .height(55.dp)
@@ -72,7 +77,7 @@ fun MusicItemComposable(
                 ) {
                 Text(
                     text = music.name,
-                    color = DynamicColor.onPrimary,
+                    color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -80,7 +85,7 @@ fun MusicItemComposable(
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
-                    color = DynamicColor.onPrimary,
+                    color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -92,7 +97,7 @@ fun MusicItemComposable(
                 modifier = Modifier.clickable { onLongClick() },
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = stringResource(id = R.string.more_button),
-                tint = DynamicColor.onPrimary
+                tint = textColor
             )
         }
     }

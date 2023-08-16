@@ -24,7 +24,9 @@ fun AppSearchBar(
     searchText: String,
     placeholder: String,
     updateTextMethod: (String) -> Unit,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    primaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     TextField(
         modifier = Modifier
@@ -43,7 +45,7 @@ fun AppSearchBar(
                 Icon(
                     imageVector = Icons.Rounded.Cancel,
                     contentDescription = "",
-                    tint = DynamicColor.onSecondary,
+                    tint = textColor,
                     modifier = Modifier
                         .clickable {
                             updateTextMethod("")
@@ -53,28 +55,28 @@ fun AppSearchBar(
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = "",
-                    tint = DynamicColor.onSecondary,
+                    tint = textColor,
                 )
             }
         },
         singleLine = true,
         shape = RoundedCornerShape(percent = 50),
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = DynamicColor.secondary,
-            focusedTextColor = DynamicColor.onSecondary,
-            cursorColor = DynamicColor.onSecondary,
+            unfocusedContainerColor = primaryColor,
+            focusedTextColor = textColor,
+            cursorColor = textColor,
             focusedIndicatorColor = Color.Transparent,
-            focusedLabelColor = DynamicColor.onSecondary,
-            unfocusedTextColor = DynamicColor.onSecondary,
-            focusedContainerColor = DynamicColor.secondary,
+            focusedLabelColor = textColor,
+            unfocusedTextColor = textColor,
+            focusedContainerColor = primaryColor,
             selectionColors = TextSelectionColors(
-                handleColor = DynamicColor.onSecondary,
-                backgroundColor = DynamicColor.secondary
+                handleColor = textColor,
+                backgroundColor = primaryColor
             ),
             unfocusedIndicatorColor = Color.Transparent,
-            unfocusedLabelColor = DynamicColor.onSecondary,
-            focusedPlaceholderColor = DynamicColor.onSecondary,
-            unfocusedPlaceholderColor = DynamicColor.onSecondary
+            unfocusedLabelColor = textColor,
+            focusedPlaceholderColor = textColor,
+            unfocusedPlaceholderColor = textColor
         ),
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }

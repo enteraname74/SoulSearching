@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
@@ -14,12 +15,14 @@ import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun SearchType(
-    title: String
+    title: String,
+    primaryColor: Color = DynamicColor.primary,
+    textColor: Color = DynamicColor.onPrimary
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(DynamicColor.primary)
+            .background(primaryColor)
             .padding(
                 top = Constants.Spacing.medium,
                 bottom = Constants.Spacing.medium
@@ -27,7 +30,7 @@ fun SearchType(
     ) {
         Text(
             text = title,
-            color = DynamicColor.onPrimary,
+            color = textColor,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )

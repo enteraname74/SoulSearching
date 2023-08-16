@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
@@ -29,8 +30,12 @@ fun SearchView(
     playerSwipeableState: SwipeableState<BottomSheetStates>,
     maxHeight: Float,
     placeholder: String,
+    primaryColor: Color = DynamicColor.primary,
+    secondaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary,
     searchResult: @Composable ((String, FocusManager) -> Unit)
-) {
+
+    ) {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
@@ -71,7 +76,7 @@ fun SearchView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(DynamicColor.primary)
+                .background(primaryColor)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
@@ -86,7 +91,9 @@ fun SearchView(
                 updateTextMethod = {
                     searchText = it
                 },
-                focusManager = focusManager
+                focusManager = focusManager,
+                primaryColor = secondaryColor,
+                textColor = textColor
             )
 
             if (searchText.isNotBlank()) {

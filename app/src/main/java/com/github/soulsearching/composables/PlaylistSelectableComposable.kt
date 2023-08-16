@@ -22,7 +22,8 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun PlaylistSelectableComposable(
     playlist: Playlist,
     onClick: () -> Unit,
-    isSelected: Boolean
+    isSelected: Boolean,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     Row(
         modifier = Modifier
@@ -36,7 +37,7 @@ fun PlaylistSelectableComposable(
     ) {
         Text(
             text = playlist.name,
-            color = DynamicColor.onSecondary,
+            color = textColor,
             style = MaterialTheme.typography.bodyLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

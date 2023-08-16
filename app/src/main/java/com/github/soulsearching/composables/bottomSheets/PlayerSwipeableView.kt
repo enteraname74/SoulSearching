@@ -40,7 +40,6 @@ import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
@@ -154,27 +153,23 @@ fun PlayerSwipeableView(
         tween(Constants.AnimationTime.normal)
     )
 
+    val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null
+        || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+    ) {
+        !isSystemInDarkTheme()
+    } else {
+        false
+    }
     systemUiController.setStatusBarColor(
         color = statusBarColor,
-        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            !isSystemInDarkTheme()
-        } else {
-            false
-        }
+        darkIcons = backHandlerIconsColor
     )
 
     systemUiController.setNavigationBarColor(
         color = navigationBarColor,
-        darkIcons = if (PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            !isSystemInDarkTheme()
-        } else {
-            false
-        }
+        darkIcons = backHandlerIconsColor
     )
+
 
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {

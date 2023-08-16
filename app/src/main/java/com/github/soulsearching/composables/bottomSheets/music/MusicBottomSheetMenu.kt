@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
@@ -25,11 +26,13 @@ fun MusicBottomSheetMenu(
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    isInQuickAccess: Boolean
+    isInQuickAccess: Boolean,
+    primaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     Column(
         modifier = Modifier
-            .background(color = DynamicColor.secondary)
+            .background(color = primaryColor)
             .padding(Constants.Spacing.large)
     ) {
         if (SettingsUtils.settingsViewModel.isQuickAccessShown) {
@@ -40,42 +43,49 @@ fun MusicBottomSheetMenu(
                 } else {
                     stringResource(id = R.string.add_to_quick_access)
                 },
-                onClick = quickAccessAction
+                onClick = quickAccessAction,
+                textColor = textColor
             )
         }
         BottomSheetRow(
             icon = Icons.Default.PlaylistAdd,
             text = stringResource(id = R.string.add_to_playlist),
-            onClick = addToPlaylistAction
+            onClick = addToPlaylistAction,
+            textColor = textColor
         )
         BottomSheetRow(
             icon = Icons.Default.Edit,
             text = stringResource(id = R.string.modify_music),
-            onClick = modifyAction
+            onClick = modifyAction,
+            textColor = textColor
         )
         BottomSheetRow(
             icon = Icons.Default.PlaylistPlay,
             text = stringResource(id = R.string.play_next),
-            onClick = playNextAction
+            onClick = playNextAction,
+            textColor = textColor
         )
         if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {
             BottomSheetRow(
                 icon = Icons.Default.Delete,
                 text = stringResource(id = R.string.remove_from_playlist),
-                onClick = removeFromPlaylistAction
+                onClick = removeFromPlaylistAction,
+                textColor = textColor
             )
         }
         if (musicBottomSheetState == MusicBottomSheetState.PLAYER) {
             BottomSheetRow(
                 icon = Icons.Default.Delete,
                 text = stringResource(id = R.string.remove_from_played_list),
-                onClick = removeFromPlayedListAction
+                onClick = removeFromPlayedListAction,
+                textColor = textColor
             )
         }
         BottomSheetRow(
             icon = Icons.Default.Delete,
             text = stringResource(id = R.string.delete_music),
-            onClick = removeAction
+            onClick = removeAction,
+            textColor = textColor
         )
     }
 }

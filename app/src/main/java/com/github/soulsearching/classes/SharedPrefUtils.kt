@@ -88,6 +88,9 @@ class SharedPrefUtils {
                     isDynamicPlayerThemeSelected = sharedPreferences.getBoolean(
                         DYNAMIC_PLAYER_THEME, false
                     )
+                    isDynamicPlaylistThemeSelected = sharedPreferences.getBoolean(
+                        DYNAMIC_PLAYLIST_THEME, false
+                    )
                     isQuickAccessShown = sharedPreferences.getBoolean(
                         IS_QUICK_ACCESS_SHOWN, true
                     )
@@ -191,6 +194,7 @@ class SharedPrefUtils {
 
         const val COLOR_THEME_KEY = "COLOR_THEME"
         const val DYNAMIC_PLAYER_THEME = "DYNAMIC_PLAYER_THEME"
+        const val DYNAMIC_PLAYLIST_THEME = "DYNAMIC_PLAYLIST_THEME"
 
         const val IS_QUICK_ACCESS_SHOWN = "IS_QUICK_ACCESS_SHOWN"
         const val IS_PLAYLISTS_SHOWN = "IS_PLAYLISTS_SHOWN"

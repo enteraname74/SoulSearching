@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
@@ -18,6 +19,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +35,11 @@ fun MusicBottomSheetEvents(
     navigateToModifyMusic : (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: SwipeableState<BottomSheetStates>
+    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    primaryColor: Color = DynamicColor.primary,
+    secondaryColor: Color = DynamicColor.secondary,
+    onPrimaryColor: Color = DynamicColor.onPrimary,
+    onSecondaryColor: Color = DynamicColor.onSecondary
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -83,7 +89,9 @@ fun MusicBottomSheetEvents(
             },
             dismissAction = {
                 onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
-            }
+            },
+            primaryColor = primaryColor,
+            textColor = onPrimaryColor
         )
     }
 
@@ -118,7 +126,9 @@ fun MusicBottomSheetEvents(
             },
             dismissAction = {
                 onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
-            }
+            },
+            primaryColor = primaryColor,
+            textColor = onPrimaryColor
         )
     }
 
@@ -131,7 +141,9 @@ fun MusicBottomSheetEvents(
             musicState = musicState,
             navigateToModifyMusic = navigateToModifyMusic,
             playerMusicListViewModel = playerMusicListViewModel,
-            playerSwipeableState = playerSwipeableState
+            playerSwipeableState = playerSwipeableState,
+            primaryColor = secondaryColor,
+            textColor = onSecondaryColor
         )
     }
 
@@ -140,9 +152,10 @@ fun MusicBottomSheetEvents(
             selectedMusicId = musicState.selectedMusic.musicId,
             onMusicEvent = onMusicEvent,
             onPlaylistsEvent = onPlaylistsEvent,
-            musicModalSheetState = musicModalSheetState,
             addToPlaylistModalSheetState = addToPlaylistModalSheetState,
-            playlistState = playlistState
+            playlistState = playlistState,
+            primaryColor = secondaryColor,
+            textColor = onSecondaryColor
         )
     }
 }

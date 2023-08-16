@@ -15,6 +15,7 @@ import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
@@ -218,6 +219,9 @@ fun SearchAll(
                     musicCover = retrieveCoverMethod(music.coverId)
                 )
             }
+        }
+        item {
+            PlayerSpacer()
         }
     }
 }

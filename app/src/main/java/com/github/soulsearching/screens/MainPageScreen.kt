@@ -521,7 +521,9 @@ fun MainPageScreen(
                             musicCover = allImageCoversViewModel.getImageCover(elt.coverId),
 //                            recoverMethod = allImageCoversViewModel::getCover
                         )
-
+                    }
+                    item {
+                        PlayerSpacer()
                     }
                 }
             }

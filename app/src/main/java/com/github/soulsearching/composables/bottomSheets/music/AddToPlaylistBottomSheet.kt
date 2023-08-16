@@ -7,9 +7,11 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.ui.theme.DynamicColor
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -19,9 +21,10 @@ fun AddToPlaylistBottomSheet(
     selectedMusicId: UUID,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
-    musicModalSheetState : SheetState,
-    addToPlaylistModalSheetState : SheetState,
-    playlistState : PlaylistState,
+    addToPlaylistModalSheetState: SheetState,
+    playlistState: PlaylistState,
+    primaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -38,6 +41,8 @@ fun AddToPlaylistBottomSheet(
         dragHandle = {}
     ) {
         AddToPlaylistMenuBottomSheet(
+            primaryColor = primaryColor,
+            textColor = textColor,
             playlistState = playlistState,
             onPlaylistEvent = onPlaylistsEvent,
             cancelAction = {

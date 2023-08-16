@@ -11,6 +11,7 @@ import com.github.soulsearching.classes.enumsAndTypes.ElementEnum
 class SettingsViewModel: ViewModel() {
     var colorTheme by mutableStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
+    var isDynamicPlaylistThemeSelected by mutableStateOf(false)
 
     var isQuickAccessShown by mutableStateOf(true)
     var isPlaylistsShown by mutableStateOf(true)
@@ -31,11 +32,23 @@ class SettingsViewModel: ViewModel() {
         return (colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlayerThemeSelected) || colorTheme == ColorThemeType.DYNAMIC
     }
 
-    fun toggleDynamicPlayer() {
+    fun isPersonalizedDynamicPlaylistThemeOn(): Boolean {
+        return colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlaylistThemeSelected
+    }
+
+    fun toggleDynamicPlayerTheme() {
         isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
         SharedPrefUtils.updateBooleanValue(
             keyToUpdate = SharedPrefUtils.DYNAMIC_PLAYER_THEME,
             newValue = isDynamicPlayerThemeSelected
+        )
+    }
+
+    fun toggleDynamicPlaylistTheme() {
+        isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
+        SharedPrefUtils.updateBooleanValue(
+            keyToUpdate = SharedPrefUtils.DYNAMIC_PLAYLIST_THEME,
+            newValue = isDynamicPlaylistThemeSelected
         )
     }
 

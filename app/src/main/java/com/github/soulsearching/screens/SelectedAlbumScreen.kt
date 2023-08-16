@@ -6,6 +6,7 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -72,6 +73,7 @@ fun SelectedAlbumScreen(
         playerSwipeableState = swipeableState,
         playlistId = albumWithMusicsState.albumWithMusics.album.albumId,
         playerMusicListViewModel = playerMusicListViewModel,
-        updateNbPlayedAction = { selectedAlbumViewModel.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) }
+        updateNbPlayedAction = { selectedAlbumViewModel.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) },
+        playlistType = PlaylistType.ALBUM
     )
 }

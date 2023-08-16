@@ -73,7 +73,6 @@ object MusicUtils {
                                     Utils.BITMAP_SIZE,
                                     Utils.BITMAP_SIZE
                                 )
-//                                    BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, options)
                             }
                         } catch (error: IOException) {
                             null

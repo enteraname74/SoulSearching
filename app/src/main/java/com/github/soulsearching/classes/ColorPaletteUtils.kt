@@ -2,6 +2,7 @@ package com.github.soulsearching.classes
 
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.annotation.ColorInt
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
@@ -10,7 +11,6 @@ import androidx.palette.graphics.Palette
 object ColorPaletteUtils {
     fun getPaletteFromAlbumArt(albumArt: Bitmap?): Palette.Swatch? {
         if (albumArt == null) {
-            Log.d("COLOR PALETTE UTILS", "NO BITMAP")
             return null
         }
 
@@ -22,44 +22,27 @@ object ColorPaletteUtils {
         }
     }
 
-    fun getDynamicPrimaryColor(): Color {
+    fun getDynamicPrimaryColor(
+        baseColor: Int = PlayerUtils.playerViewModel.currentColorPalette!!.rgb
+    ): Color {
         return Color(
             ColorUtils.blendARGB(
-                PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
+                baseColor,
                 Color.Black.toArgb(),
                 0.5f
             )
         )
     }
 
-    fun getDynamicSecondaryColor(): Color {
+    fun getDynamicSecondaryColor(
+        baseColor: Int = PlayerUtils.playerViewModel.currentColorPalette!!.rgb
+    ): Color {
         return Color(
             ColorUtils.blendARGB(
-                PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
+                baseColor,
                 Color.Black.toArgb(),
                 0.2f
             )
         )
     }
-
-    fun getTextColor(): Color {
-        return Color(
-            ColorUtils.blendARGB(
-                Color.White.toArgb(),
-                PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                0.1f
-            )
-        )
-    }
-
-    fun getOutlineTextColor(): Color {
-        return Color(
-            ColorUtils.blendARGB(
-                Color.White.toArgb(),
-                PlayerUtils.playerViewModel.currentColorPalette!!.rgb,
-                0.3f
-            )
-        )
-    }
-
 }

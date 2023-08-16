@@ -8,6 +8,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
@@ -16,6 +17,7 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +33,9 @@ fun MusicBottomSheet(
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: SwipeableState<BottomSheetStates>
+    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    primaryColor: Color = DynamicColor.secondary,
+    textColor: Color = DynamicColor.onSecondary
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -48,6 +52,8 @@ fun MusicBottomSheet(
         dragHandle = {}
     ) {
         MusicBottomSheetMenu(
+            primaryColor = primaryColor,
+            textColor = textColor,
             musicBottomSheetState = musicBottomSheetState,
             modifyAction = {
                 coroutineScope.launch { musicModalSheetState.hide() }

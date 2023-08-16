@@ -33,7 +33,6 @@ object DynamicColor {
             targetValue =
             if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
                 && PlayerUtils.playerViewModel.currentColorPalette != null
-
             ) {
                 Color.White
             } else {
@@ -77,7 +76,6 @@ object DynamicColor {
             targetValue =
             if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
                 && PlayerUtils.playerViewModel.currentColorPalette != null
-
             ) {
                 Color.White
             } else {
