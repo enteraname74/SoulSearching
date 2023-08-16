@@ -25,7 +25,7 @@ fun SettingsSwitchElement(
     titleFontSize: TextUnit = 18.sp,
     toggleAction: () -> Unit,
     isChecked: Boolean,
-    padding: Dp = Constants.Spacing.veryLarge,
+    padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge),
 ) {
     Row(
         modifier = Modifier

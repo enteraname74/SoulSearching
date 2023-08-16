@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.SettingsElement
 import com.github.soulsearching.ui.theme.DynamicColor
 
@@ -40,18 +41,25 @@ fun SettingsScreen(
                     icon = Icons.Rounded.MusicNote,
                     clickAction = navigateToManageMusics
                 )
+            }
+            item {
                 SettingsElement(
                     title = stringResource(id = R.string.color_theme_title),
                     text = stringResource(id = R.string.color_theme_text),
                     icon = Icons.Rounded.Palette,
                     clickAction = navigateToColorTheme
                 )
+            }
+            item {
                 SettingsElement(
-                    title = stringResource(id = R.string.personalisation_title),
-                    text = stringResource(id = R.string.personalisation_text),
+                    title = stringResource(id = R.string.personalization_title),
+                    text = stringResource(id = R.string.personalization_text),
                     icon = Icons.Rounded.Edit,
                     clickAction = navigateToPersonalisation
                 )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }

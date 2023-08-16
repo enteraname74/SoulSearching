@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
@@ -112,6 +113,7 @@ fun MainPageScreen(
         val maxHeight = with(LocalDensity.current) {
             constraintsScope.maxHeight.toPx()
         }
+        val listState = rememberLazyListState()
 
         Column(
             modifier = Modifier
@@ -129,360 +131,398 @@ fun MainPageScreen(
                 }
             )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
+            Row(
+                modifier = Modifier.fillMaxSize()
             ) {
-                item {
-                    MainMenuLazyListRow(
-                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                        list = quickAccessState.allQuickAccess,
-                        title = stringResource(id = R.string.quick_access),
-                        navigateToMore = navigateToMoreShortcuts,
-                        isUsingSort = false,
-                        isUsingMoreButton = false,
-                        navigateToArtist = navigateToArtist,
-                        artistBottomSheetAction = {
-                            coroutineScope.launch {
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.SetSelectedArtistWithMusics(
-                                        it
-                                    )
-                                )
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        navigateToPlaylist = {
-                            navigateToPlaylist(it)
-                        },
-                        playlistBottomSheetAction = {
-                            coroutineScope.launch {
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.SetSelectedPlaylist(
-                                        it
-                                    )
-                                )
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        navigateToAlbum = navigateToAlbum,
-                        albumBottomSheetAction = {
-                            coroutineScope.launch {
-                                allAlbumsViewModel.onAlbumEvent(
-                                    AlbumEvent.SetSelectedAlbum(
-                                        it
-                                    )
-                                )
-                                allAlbumsViewModel.onAlbumEvent(
-                                    AlbumEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        playMusicAction = { music ->
-                            coroutineScope.launch {
-                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                            }.invokeOnCompletion {
-                                val musicListSingleton = arrayListOf(music)
-                                if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
-                                    playerMusicListViewModel.savePlayerMusicList(musicListSingleton)
-                                }
-                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    playlist = musicListSingleton,
-                                    isMainPlaylist = false,
-                                    playlistId = null,
-                                    isForcingNewPlaylist = true
-                                )
-                            }
-                        },
-                        musicBottomSheetAction = {
-                            coroutineScope.launch {
-                                allMusicsViewModel.onMusicEvent(
-                                    MusicEvent.SetSelectedMusic(
-                                        it
-                                    )
-                                )
-                                allMusicsViewModel.onMusicEvent(
-                                    MusicEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        }
+
+                if (SettingsUtils.settingsViewModel.isVerticalBarShown) {
+                    MainPageVerticalShortcut(
+                        mainListState = listState
                     )
                 }
-                item {
-                    MainMenuLazyListRow(
-                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                        list = playlistState.playlists,
-                        title = stringResource(id = R.string.playlists),
-                        navigateToMore = navigateToMorePlaylist,
-                        navigateToPlaylist = {
-                            navigateToPlaylist(it)
-                        },
-                        playlistBottomSheetAction = {
-                            coroutineScope.launch {
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.SetSelectedPlaylist(
-                                        it
-                                    )
-                                )
-                                allPlaylistsViewModel.onPlaylistEvent(
-                                    PlaylistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        createPlaylistComposable = {
-                            Icon(
-                                modifier = Modifier
-                                    .clickable {
-                                        allPlaylistsViewModel.onPlaylistEvent(
-                                            PlaylistEvent.CreatePlaylistDialog(
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    state = listState
+                ) {
+                    if (SettingsUtils.settingsViewModel.isQuickAccessShown) {
+                        item {
+                            MainMenuLazyListRow(
+                                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                                list = quickAccessState.allQuickAccess,
+                                title = stringResource(id = R.string.quick_access),
+                                navigateToMore = navigateToMoreShortcuts,
+                                isUsingSort = false,
+                                isUsingMoreButton = false,
+                                navigateToArtist = navigateToArtist,
+                                artistBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allArtistsViewModel.onArtistEvent(
+                                            ArtistEvent.SetSelectedArtistWithMusics(
+                                                it
+                                            )
+                                        )
+                                        allArtistsViewModel.onArtistEvent(
+                                            ArtistEvent.BottomSheet(
                                                 isShown = true
                                             )
                                         )
                                     }
-                                    .size(Constants.ImageSize.medium),
-                                imageVector = Icons.Rounded.Add,
-                                contentDescription = stringResource(id = R.string.create_playlist_button),
-                                tint = DynamicColor.onPrimary
-                            )
-                        },
-                        sortByName = {
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(SortType.NAME)
-                            )
-                        },
-                        sortByMostListenedAction = {
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(SortType.NB_PLAYED)
-                            )
-                        },
-                        sortByDateAction = {
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortType(SortType.ADDED_DATE)
-                            )
-                        },
-                        setSortDirectionAction = {
-                            val newDirection =
-                                if (playlistState.sortDirection == SortDirection.ASC) {
-                                    SortDirection.DESC
-                                } else {
-                                    SortDirection.ASC
+                                },
+                                navigateToPlaylist = {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSelectedPlaylist(
+                                            it
+                                        )
+                                    )
+                                    navigateToPlaylist(it.playlistId.toString())
+                                },
+                                playlistBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allPlaylistsViewModel.onPlaylistEvent(
+                                            PlaylistEvent.SetSelectedPlaylist(
+                                                it
+                                            )
+                                        )
+                                        allPlaylistsViewModel.onPlaylistEvent(
+                                            PlaylistEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                navigateToAlbum = navigateToAlbum,
+                                albumBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allAlbumsViewModel.onAlbumEvent(
+                                            AlbumEvent.SetSelectedAlbum(
+                                                it
+                                            )
+                                        )
+                                        allAlbumsViewModel.onAlbumEvent(
+                                            AlbumEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                playMusicAction = { music ->
+                                    coroutineScope.launch {
+                                        playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                    }.invokeOnCompletion {
+                                        val musicListSingleton = arrayListOf(music)
+                                        if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
+                                            playerMusicListViewModel.savePlayerMusicList(
+                                                musicListSingleton
+                                            )
+                                        }
+                                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                            music = music,
+                                            playlist = musicListSingleton,
+                                            isMainPlaylist = false,
+                                            playlistId = null,
+                                            isForcingNewPlaylist = true
+                                        )
+                                    }
+                                },
+                                musicBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allMusicsViewModel.onMusicEvent(
+                                            MusicEvent.SetSelectedMusic(
+                                                it
+                                            )
+                                        )
+                                        allMusicsViewModel.onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
                                 }
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.SetSortDirection(newDirection)
                             )
-                        },
-                        sortType = playlistState.sortType,
-                        sortDirection = playlistState.sortDirection
-                    )
-                }
-                item {
-                    MainMenuLazyListRow(
-                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                        list = albumState.albums,
-                        title = stringResource(id = R.string.albums),
-                        navigateToMore = navigateToMoreAlbums,
-                        navigateToAlbum = navigateToAlbum,
-                        albumBottomSheetAction = {
-                            coroutineScope.launch {
-                                allAlbumsViewModel.onAlbumEvent(
-                                    AlbumEvent.SetSelectedAlbum(
-                                        it
+                        }
+                    }
+                    if (SettingsUtils.settingsViewModel.isPlaylistsShown) {
+                        item {
+                            MainMenuLazyListRow(
+                                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                                list = playlistState.playlists,
+                                title = stringResource(id = R.string.playlists),
+                                navigateToMore = navigateToMorePlaylist,
+                                navigateToPlaylist = {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSelectedPlaylist(
+                                            it
+                                        )
                                     )
-                                )
-                                allAlbumsViewModel.onAlbumEvent(
-                                    AlbumEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        sortByName = {
-                            allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(SortType.NAME)
-                            )
-                        },
-                        sortByMostListenedAction = {
-                            allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(SortType.NB_PLAYED)
-                            )
-                        },
-                        sortByDateAction = {
-                            allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortType(SortType.ADDED_DATE)
-                            )
-                        },
-                        setSortDirectionAction = {
-                            val newDirection = if (albumState.sortDirection == SortDirection.ASC) {
-                                SortDirection.DESC
-                            } else {
-                                SortDirection.ASC
-                            }
-                            allAlbumsViewModel.onAlbumEvent(
-                                AlbumEvent.SetSortDirection(newDirection)
-                            )
-                        },
-                        sortType = albumState.sortType,
-                        sortDirection = albumState.sortDirection
-                    )
-                }
-                item {
-                    MainMenuLazyListRow(
-                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                        list = artistState.artists,
-                        title = stringResource(id = R.string.artists),
-                        navigateToMore = navigateToMoreArtists,
-                        navigateToArtist = navigateToArtist,
-                        artistBottomSheetAction = {
-                            coroutineScope.launch {
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.SetSelectedArtistWithMusics(
-                                        it
-                                    )
-                                )
-                                allArtistsViewModel.onArtistEvent(
-                                    ArtistEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        sortByName = {
-                            allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(SortType.NAME)
-                            )
-                        },
-                        sortByMostListenedAction = {
-                            allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(SortType.NB_PLAYED)
-                            )
-                        },
-                        sortByDateAction = {
-                            allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortType(SortType.ADDED_DATE)
-                            )
-                        },
-                        setSortDirectionAction = {
-                            val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
-                                SortDirection.DESC
-                            } else {
-                                SortDirection.ASC
-                            }
-                            allArtistsViewModel.onArtistEvent(
-                                ArtistEvent.SetSortDirection(newDirection)
-                            )
-                        },
-                        sortType = artistState.sortType,
-                        sortDirection = artistState.sortDirection
-                    )
-                }
-                stickyHeader {
-                    SubMenuComposable(
-                        title = stringResource(id = R.string.musics),
-                        backgroundColor = DynamicColor.primary,
-                        sortByDateAction = {
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortType(SortType.ADDED_DATE)
-                            )
-                        },
-                        sortByMostListenedAction = {
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortType(SortType.NB_PLAYED)
-                            )
-
-                        },
-                        sortByName = {
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortType(SortType.NAME)
-                            )
-
-                        },
-                        setSortDirectionAction = {
-                            val newDirection = if (musicState.sortDirection == SortDirection.ASC) {
-                                SortDirection.DESC
-                            } else {
-                                SortDirection.ASC
-                            }
-                            allMusicsViewModel.onMusicEvent(
-                                MusicEvent.SetSortDirection(newDirection)
-                            )
-                        },
-                        rightComposable = {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(start = Constants.Spacing.large)
-                                    .size(Constants.ImageSize.medium)
-                                    .clickable {
-                                        coroutineScope
-                                            .launch {
-                                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                                            }
-                                            .invokeOnCompletion {
-                                                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
-                                                playerMusicListViewModel.savePlayerMusicList(
-                                                    PlayerUtils.playerViewModel.currentPlaylist
+                                    navigateToPlaylist(it.playlistId.toString())
+                                },
+                                playlistBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allPlaylistsViewModel.onPlaylistEvent(
+                                            PlaylistEvent.SetSelectedPlaylist(
+                                                it
+                                            )
+                                        )
+                                        allPlaylistsViewModel.onPlaylistEvent(
+                                            PlaylistEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                createPlaylistComposable = {
+                                    Icon(
+                                        modifier = Modifier
+                                            .clickable {
+                                                allPlaylistsViewModel.onPlaylistEvent(
+                                                    PlaylistEvent.CreatePlaylistDialog(
+                                                        isShown = true
+                                                    )
                                                 )
                                             }
-                                    },
-                                imageVector = Icons.Rounded.Shuffle,
-                                contentDescription = stringResource(id = R.string.shuffle_button_desc),
-                                tint = DynamicColor.onPrimary
+                                            .size(Constants.ImageSize.medium),
+                                        imageVector = Icons.Rounded.Add,
+                                        contentDescription = stringResource(id = R.string.create_playlist_button),
+                                        tint = DynamicColor.onPrimary
+                                    )
+                                },
+                                sortByName = {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSortType(SortType.NAME)
+                                    )
+                                },
+                                sortByMostListenedAction = {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSortType(SortType.NB_PLAYED)
+                                    )
+                                },
+                                sortByDateAction = {
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSortType(SortType.ADDED_DATE)
+                                    )
+                                },
+                                setSortDirectionAction = {
+                                    val newDirection =
+                                        if (playlistState.sortDirection == SortDirection.ASC) {
+                                            SortDirection.DESC
+                                        } else {
+                                            SortDirection.ASC
+                                        }
+                                    allPlaylistsViewModel.onPlaylistEvent(
+                                        PlaylistEvent.SetSortDirection(newDirection)
+                                    )
+                                },
+                                sortType = playlistState.sortType,
+                                sortDirection = playlistState.sortDirection
                             )
-                        },
-                        sortType = musicState.sortType,
-                        sortDirection = musicState.sortDirection
-                    )
-                }
-                items(items = musicState.musics) { elt ->
-                    MusicItemComposable(
-                        music = elt,
-                        onClick = { music ->
-                            coroutineScope.launch {
-                                playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                            }.invokeOnCompletion {
-                                if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
-                                    playerMusicListViewModel.savePlayerMusicList(musicState.musics)
-                                }
-                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    playlist = musicState.musics,
-                                    isMainPlaylist = true,
-                                    playlistId = null,
-                                )
-                            }
-                        },
-                        onLongClick = {
-                            coroutineScope.launch {
-                                allMusicsViewModel.onMusicEvent(
-                                    MusicEvent.SetSelectedMusic(
-                                        elt
-                                    )
-                                )
-                                allMusicsViewModel.onMusicEvent(
-                                    MusicEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
-                            }
-                        },
-                        musicCover = allImageCoversViewModel.getImageCover(elt.coverId),
-//                            recoverMethod = allImageCoversViewModel::getCover
-                    )
+                        }
+                    }
+                    if (SettingsUtils.settingsViewModel.isAlbumsShown) {
 
+                        item {
+                            MainMenuLazyListRow(
+                                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                                list = albumState.albums,
+                                title = stringResource(id = R.string.albums),
+                                navigateToMore = navigateToMoreAlbums,
+                                navigateToAlbum = navigateToAlbum,
+                                albumBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allAlbumsViewModel.onAlbumEvent(
+                                            AlbumEvent.SetSelectedAlbum(
+                                                it
+                                            )
+                                        )
+                                        allAlbumsViewModel.onAlbumEvent(
+                                            AlbumEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                sortByName = {
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.SetSortType(SortType.NAME)
+                                    )
+                                },
+                                sortByMostListenedAction = {
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.SetSortType(SortType.NB_PLAYED)
+                                    )
+                                },
+                                sortByDateAction = {
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.SetSortType(SortType.ADDED_DATE)
+                                    )
+                                },
+                                setSortDirectionAction = {
+                                    val newDirection =
+                                        if (albumState.sortDirection == SortDirection.ASC) {
+                                            SortDirection.DESC
+                                        } else {
+                                            SortDirection.ASC
+                                        }
+                                    allAlbumsViewModel.onAlbumEvent(
+                                        AlbumEvent.SetSortDirection(newDirection)
+                                    )
+                                },
+                                sortType = albumState.sortType,
+                                sortDirection = albumState.sortDirection
+                            )
+                        }
+                    }
+                    if (SettingsUtils.settingsViewModel.isArtistsShown) {
+
+                        item {
+                            MainMenuLazyListRow(
+                                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                                list = artistState.artists,
+                                title = stringResource(id = R.string.artists),
+                                navigateToMore = navigateToMoreArtists,
+                                navigateToArtist = navigateToArtist,
+                                artistBottomSheetAction = {
+                                    coroutineScope.launch {
+                                        allArtistsViewModel.onArtistEvent(
+                                            ArtistEvent.SetSelectedArtistWithMusics(
+                                                it
+                                            )
+                                        )
+                                        allArtistsViewModel.onArtistEvent(
+                                            ArtistEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
+                                    }
+                                },
+                                sortByName = {
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSortType(SortType.NAME)
+                                    )
+                                },
+                                sortByMostListenedAction = {
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSortType(SortType.NB_PLAYED)
+                                    )
+                                },
+                                sortByDateAction = {
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSortType(SortType.ADDED_DATE)
+                                    )
+                                },
+                                setSortDirectionAction = {
+                                    val newDirection =
+                                        if (artistState.sortDirection == SortDirection.ASC) {
+                                            SortDirection.DESC
+                                        } else {
+                                            SortDirection.ASC
+                                        }
+                                    allArtistsViewModel.onArtistEvent(
+                                        ArtistEvent.SetSortDirection(newDirection)
+                                    )
+                                },
+                                sortType = artistState.sortType,
+                                sortDirection = artistState.sortDirection
+                            )
+                        }
+                    }
+                    stickyHeader {
+                        SubMenuComposable(
+                            title = stringResource(id = R.string.musics),
+                            backgroundColor = DynamicColor.primary,
+                            sortByDateAction = {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSortType(SortType.ADDED_DATE)
+                                )
+                            },
+                            sortByMostListenedAction = {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSortType(SortType.NB_PLAYED)
+                                )
+
+                            },
+                            sortByName = {
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSortType(SortType.NAME)
+                                )
+
+                            },
+                            setSortDirectionAction = {
+                                val newDirection =
+                                    if (musicState.sortDirection == SortDirection.ASC) {
+                                        SortDirection.DESC
+                                    } else {
+                                        SortDirection.ASC
+                                    }
+                                allMusicsViewModel.onMusicEvent(
+                                    MusicEvent.SetSortDirection(newDirection)
+                                )
+                            },
+                            rightComposable = {
+                                Icon(
+                                    modifier = Modifier
+                                        .padding(start = Constants.Spacing.large)
+                                        .size(Constants.ImageSize.medium)
+                                        .clickable {
+                                            coroutineScope
+                                                .launch {
+                                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                                }
+                                                .invokeOnCompletion {
+                                                    PlayerUtils.playerViewModel.playShuffle(
+                                                        musicState.musics
+                                                    )
+                                                    playerMusicListViewModel.savePlayerMusicList(
+                                                        PlayerUtils.playerViewModel.currentPlaylist
+                                                    )
+                                                }
+                                        },
+                                    imageVector = Icons.Rounded.Shuffle,
+                                    contentDescription = stringResource(id = R.string.shuffle_button_desc),
+                                    tint = DynamicColor.onPrimary
+                                )
+                            },
+                            sortType = musicState.sortType,
+                            sortDirection = musicState.sortDirection
+                        )
+                    }
+                    items(items = musicState.musics) { elt ->
+                        MusicItemComposable(
+                            music = elt,
+                            onClick = { music ->
+                                coroutineScope.launch {
+                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                }.invokeOnCompletion {
+                                    if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
+                                        playerMusicListViewModel.savePlayerMusicList(musicState.musics)
+                                    }
+                                    PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        playlist = musicState.musics,
+                                        isMainPlaylist = true,
+                                        playlistId = null,
+                                    )
+                                }
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    allMusicsViewModel.onMusicEvent(
+                                        MusicEvent.SetSelectedMusic(
+                                            elt
+                                        )
+                                    )
+                                    allMusicsViewModel.onMusicEvent(
+                                        MusicEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            musicCover = allImageCoversViewModel.getImageCover(elt.coverId),
+//                            recoverMethod = allImageCoversViewModel::getCover
+                        )
+
+                    }
                 }
             }
         }

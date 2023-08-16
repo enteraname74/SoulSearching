@@ -69,6 +69,11 @@ fun SearchAll(
                     ),
                     onClick = {
                         focusManager.clearFocus()
+                        onPlaylistEvent(
+                            PlaylistEvent.SetSelectedPlaylist(
+                                playlist.playlist
+                            )
+                        )
                         navigateToPlaylist(playlist.playlist.playlistId.toString())
                     },
                     onLongClick = {

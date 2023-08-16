@@ -21,8 +21,8 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun SettingsElement(
     title: String,
     text: String,
-    icon: ImageVector,
-    clickAction: () -> Unit,
+    icon: ImageVector? = null,
+    clickAction: () -> Unit = {},
     padding: Dp = Constants.Spacing.veryLarge
 ) {
     Row(
@@ -35,12 +35,14 @@ fun SettingsElement(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
     ) {
-        Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
-            imageVector = icon,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(DynamicColor.onPrimary)
-        )
+        icon?.let {
+            Image(
+                modifier = Modifier.size(Constants.ImageSize.medium),
+                imageVector = it,
+                contentDescription = "",
+                colorFilter = ColorFilter.tint(DynamicColor.onPrimary)
+            )
+        }
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween

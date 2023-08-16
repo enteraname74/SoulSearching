@@ -16,6 +16,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.model.*
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
@@ -25,7 +26,7 @@ fun MainMenuLazyListRow(
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,
-    navigateToPlaylist: (String) -> Unit = {},
+    navigateToPlaylist: (Playlist) -> Unit = {},
     navigateToAlbum: (String) -> Unit = {},
     navigateToArtist: (String) -> Unit = {},
     playMusicAction: (Music) -> Unit = {},
@@ -98,7 +99,7 @@ fun MainMenuLazyListRow(
                                     id = R.string.multiple_musics, element.musicsNumber
                                 ),
                                 onClick = {
-                                    navigateToPlaylist(element.playlist.playlistId.toString())
+                                    navigateToPlaylist(element.playlist)
                                 },
                                 onLongClick = { playlistBottomSheetAction(element.playlist) },
                                 isFavoritePlaylist = element.playlist.isFavorite

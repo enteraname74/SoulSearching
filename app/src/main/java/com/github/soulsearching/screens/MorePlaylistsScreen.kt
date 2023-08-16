@@ -121,6 +121,11 @@ fun MorePlaylistsScreen(
                                 )
                             },
                             onClick = {
+                                allPlaylistsViewModel.onPlaylistEvent(
+                                    PlaylistEvent.SetSelectedPlaylist(
+                                        playlistWithMusics.playlist
+                                    )
+                                )
                                 navigateToSelectedPlaylist(playlistWithMusics.playlist.playlistId.toString())
                             },
                             onLongClick = {

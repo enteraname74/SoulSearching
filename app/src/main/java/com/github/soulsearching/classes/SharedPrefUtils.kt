@@ -88,6 +88,18 @@ class SharedPrefUtils {
                     isDynamicPlayerThemeSelected = sharedPreferences.getBoolean(
                         DYNAMIC_PLAYER_THEME, false
                     )
+                    isQuickAccessShown = sharedPreferences.getBoolean(
+                        IS_QUICK_ACCESS_SHOWN, true
+                    )
+                    isPlaylistsShown = sharedPreferences.getBoolean(
+                        IS_PLAYLISTS_SHOWN, true
+                    )
+                    isAlbumsShown = sharedPreferences.getBoolean(
+                        IS_ALBUMS_SHOWN, true
+                    )
+                    isArtistsShown = sharedPreferences.getBoolean(
+                        IS_ARTISTS_SHOWN, true
+                    )
                 }
             }
         }
@@ -179,5 +191,12 @@ class SharedPrefUtils {
 
         const val COLOR_THEME_KEY = "COLOR_THEME"
         const val DYNAMIC_PLAYER_THEME = "DYNAMIC_PLAYER_THEME"
+
+        const val IS_QUICK_ACCESS_SHOWN = "IS_QUICK_ACCESS_SHOWN"
+        const val IS_PLAYLISTS_SHOWN = "IS_PLAYLISTS_SHOWN"
+        const val IS_ALBUMS_SHOWN = "IS_ALBUMS_SHOWN"
+        const val IS_ARTISTS_SHOWN = "IS_ARTISTS_SHOWN"
+
+        const val IS_VERTICAL_BAR_SHOWN = "IS_VERTICAL_BAR_SHOWN"
     }
 }

@@ -96,9 +96,9 @@
     <string name="manage_musics_title">Manage musics</string>
     <string name="manage_musics_text">Add new musics, manage deleted ones and folder used</string>
     <string name="color_theme_title">Color theme</string>
-    <string name="color_theme_text">Dynamic theme, style used</string>
-    <string name="personalisation_title">Personalisation</string>
-    <string name="personalisation_text">Manage main page view</string>
+    <string name="color_theme_text">Dynamic theme, personalized theme</string>
+    <string name="personalization_title">Personalization</string>
+    <string name="personalization_text">Manage main page view</string>
 
     <!-- Color theme strings -->
     <string name="dynamic_theme_title">Dynamic theme</string>
@@ -109,4 +109,14 @@
     <string name="personalized_theme_text">Define precisely your color theme</string>
     <string name="dynamic_player_view">Use dynamic theme for player view</string>
     <string name="dynamic_other_view">Use dynamic theme for other view</string>
+
+    <!-- Personalization strings -->
+    <string name="main_page_title">Main page</string>
+    <string name="main_page_text">Manage main page view</string>
+    <string name="show_quick_access">Show quick access</string>
+    <string name="show_playlists">Show playlists</string>
+    <string name="show_albums">Show albums</string>
+    <string name="show_artists">Show artists</string>
+    <string name="show_vertical_access_bar_title">Show vertical access bar</string>
+    <string name="show_vertical_access_bar_text">Gives quick access to all elements on the main page</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -35,7 +36,7 @@ fun PersonalizedColorThemeCard(
                 title = stringResource(id = R.string.dynamic_player_view),
                 toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicPlayer() },
                 isChecked = SettingsUtils.settingsViewModel.isDynamicPlayerThemeSelected,
-                padding = 0.dp,
+                padding = PaddingValues(0.dp),
                 titleFontSize = 16.sp
             )
         }

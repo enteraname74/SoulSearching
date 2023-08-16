@@ -5,7 +5,7 @@
     <string name="playlists">Playlists</string>
     <string name="albums">Albums</string>
     <string name="artists">Artistes</string>
-    <string name="quick_access">Accès rapide</string>
+    <string name="quick_access">Accès rapides</string>
     <string name="more">Plus</string>
     <string name="favorite">Favoris</string>
     <string name="no_elements">Aucun élément</string>
@@ -30,8 +30,8 @@
 
     <!-- Bottom sheets strings -->
     <string name="add_to_playlist">Ajouter à une playlist</string>
-    <string name="add_to_quick_access">Ajouter à l\'accès rapide</string>
-    <string name="remove_from_quick_access">Retirer de l\'accès rapide</string>
+    <string name="add_to_quick_access">Ajouter aux accès rapides</string>
+    <string name="remove_from_quick_access">Retirer des accès rapides</string>
     <string name="delete_music">Supprimer cette musique</string>
     <string name="modify_music">Modifier cette musique</string>
     <string name="delete_playlist">Supprimer cette playlist</string>
@@ -93,21 +93,31 @@
     <string name="search_for_musics">Rechercher une musique</string>
 
     <!-- Settings strings -->
-    <string name="settings">Settings</string>
+    <string name="settings">Paramètres</string>
     <string name="manage_musics_title">Gérer les musiques</string>
     <string name="manage_musics_text">Ajouter de nouvelles musiques, gérer les musiques supprimées et les dossiers utilisés</string>
     <string name="color_theme_title">Thème de couleur</string>
-    <string name="color_theme_text">Thème dynamique, style utilisé</string>
-    <string name="personalisation_title">Personalisation</string>
-    <string name="personalisation_text">Gérer la vue de la page principale</string>
+    <string name="color_theme_text">Thème dynamique, personnalisé</string>
+    <string name="personalization_title">Personnalisation</string>
+    <string name="personalization_text">Gérer la vue de la page principale</string>
 
     <!-- Color theme strings -->
     <string name="dynamic_theme_title">Thème dynamique</string>
     <string name="dynamic_theme_text">Thème de couleur global basé sur la pochette d\'album de la musique jouée courante</string>
     <string name="system_theme_title">Thème du système</string>
     <string name="system_theme_text">Thème de couleur global basé sur le mode de couleur de votre système</string>
-    <string name="personalized_theme_title">Thème personalisé</string>
+    <string name="personalized_theme_title">Thème personnalisé</string>
     <string name="personalized_theme_text">Définissez précisémment votre thème de couleur</string>
     <string name="dynamic_player_view">Utiliser le thème dynamique pour la vue du player</string>
     <string name="dynamic_other_view">Utiliser le thème dynamique pour les autres vues</string>
+
+    <!-- Personalization strings -->
+    <string name="main_page_title">Page principale</string>
+    <string name="main_page_text">Gérer la vue de la page principale</string>
+    <string name="show_quick_access">Afficher les accès rapides</string>
+    <string name="show_playlists">Afficher les playlists</string>
+    <string name="show_albums">Afficher les albums</string>
+    <string name="show_artists">Afficher les artistes</string>
+    <string name="show_vertical_access_bar_title">Afficher la barre d\'accès verticale</string>
+    <string name="show_vertical_access_bar_text">Donne un accès rapide à tous les éléments de la page principale</string>
 </resources>
