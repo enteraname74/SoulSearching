@@ -58,7 +58,6 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun isSameMusic(musicId: UUID): Boolean {
-        Log.d("VM", "SAME MUSIC")
         return if (currentMusic == null) {
             false
         } else {
@@ -227,37 +226,38 @@ class PlayerViewModel : ViewModel() {
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
     ) {
-        // If it's the same music of the same playlist, does nothing
-        if (isSameMusic(music.musicId) && isSamePlaylist(
-                isMainPlaylist,
-                playlistId
-            ) && !isForcingNewPlaylist
-        ) {
-            return
-        }
-
-        Log.d("VM", isSamePlaylist(isMainPlaylist, playlistId).toString())
-        if (!isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist) {
-            currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-            initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-            currentPlaylistId = playlistId
-            this.isMainPlaylist = isMainPlaylist
-            if (shouldServiceBeLaunched) {
-                PlayerService.setAndPlayCurrentMusic()
+        CoroutineScope(Dispatchers.IO).launch {
+            // If it's the same music of the same playlist, does nothing
+            if (isSameMusic(music.musicId) && isSamePlaylist(
+                    isMainPlaylist,
+                    playlistId
+                ) && !isForcingNewPlaylist
+            ) {
+                return@launch
             }
-        }
 
-        if (!isSameMusic(music.musicId)) {
-            setNewCurrentMusicInformation(music)
-
-            if (shouldServiceBeLaunched) {
-                PlayerService.setAndPlayCurrentMusic()
-                SharedPrefUtils.setPlayerSavedCurrentMusic()
+            if (!isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist) {
+                currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
+                initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
+                currentPlaylistId = playlistId
+                this@PlayerViewModel.isMainPlaylist = isMainPlaylist
+                if (shouldServiceBeLaunched) {
+                    PlayerService.setAndPlayCurrentMusic()
+                }
             }
-        }
 
-        if (!shouldServiceBeLaunched) {
-            shouldServiceBeLaunched = true
+            if (!isSameMusic(music.musicId)) {
+                setNewCurrentMusicInformation(music)
+
+                if (shouldServiceBeLaunched) {
+                    PlayerService.setAndPlayCurrentMusic()
+                    SharedPrefUtils.setPlayerSavedCurrentMusic()
+                }
+            }
+
+            if (!shouldServiceBeLaunched) {
+                shouldServiceBeLaunched = true
+            }
         }
     }
 
