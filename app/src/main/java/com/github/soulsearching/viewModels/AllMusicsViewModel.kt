@@ -33,6 +33,7 @@ class AllMusicsViewModel @Inject constructor(
     private val musicArtistDao: MusicArtistDao,
     private val albumArtistDao: AlbumArtistDao,
     private val imageCoverDao: ImageCoverDao,
+    private val folderDao: FolderDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -161,6 +162,11 @@ class AllMusicsViewModel @Inject constructor(
             }
         }
         musicDao.insertMusic(musicToAdd)
+        folderDao.insertFolder(
+            Folder(
+                folderPath = musicToAdd.folder
+            )
+        )
         musicAlbumDao.insertMusicIntoAlbum(
             MusicAlbum(
                 musicId = musicToAdd.musicId,

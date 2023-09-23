@@ -38,10 +38,7 @@ import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
-import com.github.soulsearching.screens.settings.SettingsColorThemeScreen
-import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
-import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
-import com.github.soulsearching.screens.settings.SettingsScreen
+import com.github.soulsearching.screens.settings.*
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
@@ -75,8 +72,11 @@ class MainActivity : AppCompatActivity() {
     private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
 
-    // PLayer view model :
+    // Player view model :
     private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
+
+    // Folders view model:
+    private val allFoldersViewModel: AllFoldersViewModel by viewModels()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -548,7 +548,18 @@ class MainActivity : AppCompatActivity() {
                                     "manageMusics"
                                 ) {
                                     SettingsManageMusicsScreen(
-                                        finishAction = { navController.popBackStack() }
+                                        finishAction = { navController.popBackStack() },
+                                        navigateToFolders = {
+                                            navController.navigate("usedFolders")
+                                        }
+                                    )
+                                }
+                                composable(
+                                    "usedFolders"
+                                ) {
+                                    SettingsUsedFoldersScreen(
+                                        finishAction = { navController.popBackStack() },
+                                        allFoldersViewModel = allFoldersViewModel
                                     )
                                 }
                                 composable(

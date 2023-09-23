@@ -73,4 +73,9 @@ class AppModule {
     fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): PlayerMusicDao {
         return appDatabase.playerMusicDao
     }
+
+    @Provides
+    fun provideFolderDao(appDatabase: AppDatabase): FolderDao {
+        return appDatabase.folderDao
+    }
 }

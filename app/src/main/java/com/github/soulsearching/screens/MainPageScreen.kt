@@ -373,7 +373,6 @@ fun MainPageScreen(
                         }
                     }
                     if (SettingsUtils.settingsViewModel.isArtistsShown) {
-
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel::getImageCover,

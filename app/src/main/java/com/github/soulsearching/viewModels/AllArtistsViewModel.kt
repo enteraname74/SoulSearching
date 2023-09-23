@@ -58,7 +58,7 @@ class AllArtistsViewModel @Inject constructor(
     private val _state = MutableStateFlow(ArtistState())
     val state = combine(_artists, _state, _sortDirection, _sortType) { artists, state, sortDirection, sortType ->
         state.copy(
-            artists = artists,
+            artists = artists.filter { it.musics.any { music -> !music.isHidden } },
             sortDirection = sortDirection,
             sortType = sortType
         )

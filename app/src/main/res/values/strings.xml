@@ -94,7 +94,7 @@
     <!-- Settings strings -->
     <string name="settings">Settings</string>
     <string name="manage_musics_title">Manage musics</string>
-    <string name="manage_musics_text">Add new musics, manage deleted ones and folder used</string>
+    <string name="manage_musics_text">Add new musics, manage deleted ones and used folders</string>
     <string name="color_theme_title">Color theme</string>
     <string name="color_theme_text">Dynamic theme, personalized theme</string>
     <string name="personalization_title">Personalization</string>
@@ -120,4 +120,8 @@
     <string name="show_artists">Show artists</string>
     <string name="show_vertical_access_bar_title">Show vertical access bar</string>
     <string name="show_vertical_access_bar_text">Gives quick access to all elements on the main page</string>
+
+    <!-- Manage musics strings -->
+    <string name="used_folders_title">Used folders</string>
+    <string name="used_folders_text">Define the folders used in the application</string>
 </resources>

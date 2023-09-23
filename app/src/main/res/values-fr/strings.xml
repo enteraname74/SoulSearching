@@ -121,4 +121,8 @@
     <string name="show_artists">Afficher les artistes</string>
     <string name="show_vertical_access_bar_title">Afficher la barre d\'accès verticale</string>
     <string name="show_vertical_access_bar_text">Donne un accès rapide à tous les éléments de la page principale</string>
+
+    <!-- Manage musics strings -->
+    <string name="used_folders_title">Dossiers utilisés</string>
+    <string name="used_folders_text">Définissez les dossiers utilisés par l\'application</string>
 </resources>

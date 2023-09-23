@@ -20,6 +20,7 @@ import com.github.soulsearching.database.model.*
         AlbumArtist::class,
         ImageCover::class,
         PlayerMusic::class,
+        Folder::class
     ],
     version = 14
 )
@@ -36,4 +37,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val albumArtistDao: AlbumArtistDao
     abstract val imageCoverDao: ImageCoverDao
     abstract val playerMusicDao: PlayerMusicDao
+    abstract val folderDao: FolderDao
 }
