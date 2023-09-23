@@ -1,6 +1,5 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.classes.EventUtils
@@ -21,7 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,12 +66,9 @@ class PlayerMusicListViewModel @Inject constructor(
     }
 
     fun savePlayerMusicList(musicList : ArrayList<UUID>) {
-        Log.d("PLAYER MUSICS VM", "save player list, op ? ${job?.isActive}")
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
-            Log.d("PLAYER MUSICS VM", "saving list of ${musicList.size} elements")
             playerMusicDao.deleteAllPlayerMusic()
-            Log.d("PLAYER MUSICS VM", "finish deleting legacy musics")
             for (id in musicList) {
                 playerMusicDao.insertPlayerMusic(
                     PlayerMusic = PlayerMusic(
@@ -80,7 +76,6 @@ class PlayerMusicListViewModel @Inject constructor(
                     )
                 )
             }
-            Log.d("PLAYER MUSICS VM", "finish operation")
         }
     }
 

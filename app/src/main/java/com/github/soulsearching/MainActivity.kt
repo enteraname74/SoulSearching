@@ -138,7 +138,6 @@ class MainActivity : AppCompatActivity() {
                 if (!hasPlayerMusicBeenFetched) {
                     CoroutineScope(Dispatchers.IO).launch {
                         val playerSavedMusics = playerMusicListViewModel.getPlayerMusicList()
-                        Log.d("MAIN ACTIVITY", "Saved musics : ${playerSavedMusics.size}")
                         if (playerSavedMusics.isNotEmpty()) {
                             PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(
                                 playerSavedMusics

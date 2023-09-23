@@ -207,8 +207,7 @@ class PlayerViewModel : ViewModel() {
             isPlaying = false
             isMainPlaylist = false
 
-            currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-            currentPlaylist.shuffle()
+            shuffleCurrentList(playlist)
             playerMode = PlayerMode.NORMAL
             SharedPrefUtils.setPlayerMode()
             SharedPrefUtils.setPlayerSavedCurrentMusic()
@@ -271,14 +270,23 @@ class PlayerViewModel : ViewModel() {
         }
     }
 
+    private fun shuffleCurrentList(listToShuffle: ArrayList<Music>) {
+        val tmpList = listToShuffle.map { it.copy() } as ArrayList<Music>
+        tmpList.shuffle()
+        currentMusic?.let { music ->
+            tmpList.removeIf { it.musicId == music.musicId }
+            tmpList.add(0, music)
+        }
+        currentPlaylist = tmpList
+    }
+
     fun changePlayerMode() {
         if (!isChangingPlayMode) {
             isChangingPlayMode = true
             when (playerMode) {
                 PlayerMode.NORMAL -> {
                     // to shuffle mode :
-                    currentPlaylist = initialPlaylist.map { it.copy() } as ArrayList<Music>
-                    currentPlaylist.shuffle()
+                    shuffleCurrentList(currentPlaylist)
                     playerMode = PlayerMode.SHUFFLE
                 }
                 PlayerMode.SHUFFLE -> {
