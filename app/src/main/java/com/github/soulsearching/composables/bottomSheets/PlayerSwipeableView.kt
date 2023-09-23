@@ -94,7 +94,7 @@ fun PlayerSwipeableView(
         } else {
             DynamicColor.primary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.long)
     )
     val textColor: Color by animateColorAsState(
         targetValue =
@@ -108,7 +108,7 @@ fun PlayerSwipeableView(
         } else {
             DynamicColor.onPrimary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.long)
     )
 
     val contentColor: Color by animateColorAsState(
@@ -120,7 +120,7 @@ fun PlayerSwipeableView(
         } else {
             DynamicColor.secondary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.long)
     )
 
     val systemUiController = rememberSystemUiController()
@@ -135,7 +135,7 @@ fun PlayerSwipeableView(
         } else {
             ColorPaletteUtils.getDynamicPrimaryColor()
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.long)
     )
 
     val navigationBarColor: Color by animateColorAsState(
@@ -150,7 +150,7 @@ fun PlayerSwipeableView(
         } else {
             ColorPaletteUtils.getDynamicSecondaryColor()
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.long)
     )
 
     val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null
@@ -176,12 +176,12 @@ fun PlayerSwipeableView(
             if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListSwipeableState.animateTo(
                     BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationTime.normal)
+                    tween(Constants.AnimationTime.long)
                 )
             }
             swipeableState.animateTo(
                 BottomSheetStates.MINIMISED,
-                tween(Constants.AnimationTime.normal)
+                tween(Constants.AnimationTime.long)
             )
         }
     }
@@ -237,7 +237,7 @@ fun PlayerSwipeableView(
                     coroutineScope.launch {
                         swipeableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationTime.normal)
+                            tween(Constants.AnimationTime.long)
                         )
                     }
                 }
@@ -247,7 +247,7 @@ fun PlayerSwipeableView(
                         coroutineScope.launch {
                             musicListSwipeableState.animateTo(
                                 BottomSheetStates.COLLAPSED,
-                                tween(Constants.AnimationTime.normal)
+                                tween(Constants.AnimationTime.long)
                             )
                         }
                     }
@@ -337,12 +337,12 @@ fun PlayerSwipeableView(
                                 if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
                                     musicListSwipeableState.animateTo(
                                         BottomSheetStates.COLLAPSED,
-                                        tween(Constants.AnimationTime.normal)
+                                        tween(Constants.AnimationTime.long)
                                     )
                                 }
                                 swipeableState.animateTo(
                                     BottomSheetStates.MINIMISED,
-                                    tween(Constants.AnimationTime.normal)
+                                    tween(Constants.AnimationTime.long)
                                 )
                             }
                         }

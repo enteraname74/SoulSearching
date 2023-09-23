@@ -213,7 +213,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 if (keyEvent.action == KeyEvent.ACTION_DOWN) {
                     when (keyEvent.keyCode) {
                         KeyEvent.KEYCODE_MEDIA_PAUSE, KeyEvent.KEYCODE_MEDIA_PLAY -> togglePlayPause()
-                        KeyEvent.KEYCODE_MEDIA_NEXT -> next()
+                        KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                            next()
+                        }
                         KeyEvent.KEYCODE_MEDIA_PREVIOUS -> previous()
                     }
                 }
@@ -229,17 +231,6 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 super.onPause()
                 pause()
             }
-
-            override fun onSkipToNext() {
-                super.onSkipToNext()
-                next()
-            }
-
-            override fun onSkipToPrevious() {
-                super.onSkipToPrevious()
-                previous()
-            }
-
         })
         updateMediaSessionState()
 

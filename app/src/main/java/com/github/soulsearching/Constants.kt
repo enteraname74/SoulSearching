@@ -20,7 +20,7 @@ object Constants {
     }
 
     object AnimationTime {
-        val short: Int = 100
-        val normal: Int = 300
+        const val normal: Int = 100
+        const val long: Int = 300
     }
 }

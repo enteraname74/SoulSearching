@@ -2,6 +2,7 @@ package com.github.soulsearching.composables.bottomSheets
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,19 +20,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.database.model.ImageCover
@@ -79,6 +84,42 @@ fun PlayerMusicListView(
             Modifier
         }
 
+    val primaryColor: Color by animateColorAsState(
+        targetValue =
+        if (PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
+            DynamicColor.primary
+        } else {
+            ColorPaletteUtils.getDynamicPrimaryColor()
+        },
+        tween(Constants.AnimationTime.normal)
+    )
+
+    val secondaryColor: Color by animateColorAsState(
+        targetValue =
+        if (PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
+            DynamicColor.secondary
+        } else {
+            ColorPaletteUtils.getDynamicSecondaryColor()
+        },
+        tween(Constants.AnimationTime.normal)
+    )
+
+    val textColor: Color by animateColorAsState(
+        targetValue =
+        if (PlayerUtils.playerViewModel.currentColorPalette == null
+            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        ) {
+            DynamicColor.onSecondary
+        } else {
+            Color.White
+        },
+        tween(Constants.AnimationTime.normal)
+    )
+
     MusicBottomSheetEvents(
         musicBottomSheetState = MusicBottomSheetState.PLAYER,
         musicState = musicState,
@@ -97,7 +138,11 @@ fun PlayerMusicListView(
             }
         },
         playerMusicListViewModel = playerMusicListViewModel,
-        playerSwipeableState = playerSwipeableState
+        playerSwipeableState = playerSwipeableState,
+        primaryColor = primaryColor,
+        secondaryColor = secondaryColor,
+        onSecondaryColor = textColor,
+        onPrimaryColor = textColor
     )
 
     Box(
@@ -122,7 +167,7 @@ fun PlayerMusicListView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = DynamicColor.secondary,
+                    color = secondaryColor,
                     shape = RoundedCornerShape(
                         topStartPercent = 4,
                         topEndPercent = 4
@@ -142,7 +187,7 @@ fun PlayerMusicListView(
                 Spacer(modifier = Modifier.size(Constants.ImageSize.medium))
                 Text(
                     text = stringResource(id = R.string.played_list),
-                    color = DynamicColor.onSecondary,
+                    color = textColor,
                     fontSize = 15.sp
                 )
                 Image(
@@ -202,7 +247,9 @@ fun PlayerMusicListView(
                                 )
                             }
                         },
-                        musicCover = coverList.find { it.coverId == elt.coverId }?.cover
+                        musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
+                        primaryColor = secondaryColor,
+                        textColor = textColor
                     )
                 }
             }
