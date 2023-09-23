@@ -66,7 +66,7 @@ fun PlayerSwipeableView(
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
-    isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>
+    isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -440,7 +440,8 @@ fun PlayerSwipeableView(
                                     mainColor = textColor,
                                     sliderInactiveBarColor = contentColor,
                                     onMusicEvent = onMusicEvent,
-                                    isMusicInFavorite = isMusicInFavorite
+                                    isMusicInFavorite = isMusicInFavorite,
+                                    playerMusicListViewModel = playerMusicListViewModel
                                 )
                             }
                         }
@@ -449,7 +450,8 @@ fun PlayerSwipeableView(
                                 mainColor = textColor,
                                 sliderInactiveBarColor = contentColor,
                                 onMusicEvent = onMusicEvent,
-                                isMusicInFavorite = isMusicInFavorite
+                                isMusicInFavorite = isMusicInFavorite,
+                                playerMusicListViewModel = playerMusicListViewModel
                             )
                         }
                     }

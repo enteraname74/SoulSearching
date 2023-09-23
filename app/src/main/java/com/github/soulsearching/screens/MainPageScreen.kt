@@ -213,7 +213,7 @@ fun MainPageScreen(
                                         val musicListSingleton = arrayListOf(music)
                                         if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
                                             playerMusicListViewModel.savePlayerMusicList(
-                                                musicListSingleton
+                                                musicListSingleton.map { it.musicId } as ArrayList<UUID>
                                             )
                                         }
                                         PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
@@ -470,10 +470,8 @@ fun MainPageScreen(
                                                 }
                                                 .invokeOnCompletion {
                                                     PlayerUtils.playerViewModel.playShuffle(
-                                                        musicState.musics
-                                                    )
-                                                    playerMusicListViewModel.savePlayerMusicList(
-                                                        PlayerUtils.playerViewModel.currentPlaylist
+                                                        musicState.musics,
+                                                        playerMusicListViewModel::savePlayerMusicList
                                                     )
                                                 }
                                         },
@@ -494,7 +492,7 @@ fun MainPageScreen(
                                     playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
                                 }.invokeOnCompletion {
                                     if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
-                                        playerMusicListViewModel.savePlayerMusicList(musicState.musics)
+                                        playerMusicListViewModel.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
                                     }
                                     PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                         music = music,

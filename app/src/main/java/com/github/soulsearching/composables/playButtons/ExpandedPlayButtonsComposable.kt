@@ -22,6 +22,9 @@ import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +37,8 @@ fun ExpandedPlayButtonsComposable(
     mainColor: Color,
     sliderInactiveBarColor: Color,
     onMusicEvent: (MusicEvent) -> Unit,
-    isMusicInFavorite: Boolean
+    isMusicInFavorite: Boolean,
+    playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -122,7 +126,12 @@ fun ExpandedPlayButtonsComposable(
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
-                        .clickable { PlayerUtils.playerViewModel.changePlayerMode() },
+                        .clickable {
+                            PlayerUtils.playerViewModel.changePlayerMode()
+                            playerMusicListViewModel.savePlayerMusicList(
+                                PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                            )
+                        },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(

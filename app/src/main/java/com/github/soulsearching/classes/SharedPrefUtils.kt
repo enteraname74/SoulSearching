@@ -2,6 +2,7 @@ package com.github.soulsearching.classes
 
 import android.content.SharedPreferences
 import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
+import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.events.AlbumEvent
@@ -67,6 +68,20 @@ class SharedPrefUtils {
                 }
             }
             setCurrentMusicPosition()
+        }
+
+        fun getPlayerMode() {
+            val playerMode = PlayerMode.valueOf(sharedPreferences.getString(PLAYER_MODE_KEY, "NORMAL")!!)
+            PlayerUtils.playerViewModel.playerMode = playerMode
+        }
+
+        fun setPlayerMode() {
+            CoroutineScope(Dispatchers.IO).launch {
+                with(sharedPreferences.edit()) {
+                    putString(PLAYER_MODE_KEY, PlayerUtils.playerViewModel.playerMode.toString())
+                    apply()
+                }
+            }
         }
 
         fun setCurrentMusicPosition() {
@@ -191,6 +206,7 @@ class SharedPrefUtils {
 
         private const val PLAYER_MUSIC_INDEX_KEY = "PLAYER_MUSIC_INDEX"
         private const val PLAYER_MUSIC_POSITION_KEY = "PLAYER_MUSIC_POSITION"
+        private const val PLAYER_MODE_KEY = "PLAYER_MODE_KEY"
 
         const val COLOR_THEME_KEY = "COLOR_THEME"
         const val DYNAMIC_PLAYER_THEME = "DYNAMIC_PLAYER_THEME"

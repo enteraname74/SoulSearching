@@ -134,8 +134,7 @@ fun PlaylistScreen(
                 )
             }
             .invokeOnCompletion {
-                PlayerUtils.playerViewModel.playShuffle(musicState.musics)
-                playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist)
+                PlayerUtils.playerViewModel.playShuffle(musicState.musics, playerMusicListViewModel::savePlayerMusicList)
             }
     }
 
@@ -285,7 +284,7 @@ fun PlaylistScreen(
                                                 playlistId
                                             )
                                         ) {
-                                            playerMusicListViewModel.savePlayerMusicList(musicState.musics)
+                                            playerMusicListViewModel.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
                                         }
                                         PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                             music = music,

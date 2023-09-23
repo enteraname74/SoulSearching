@@ -3,7 +3,6 @@ package com.github.soulsearching.viewModels
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
@@ -14,6 +13,8 @@ import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
 import java.lang.Integer.max
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.reflect.KFunction1
 
 @SuppressLint("MutableCollectionMutableState")
 class PlayerViewModel : ViewModel() {
@@ -53,6 +54,7 @@ class PlayerViewModel : ViewModel() {
         initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
 
         SharedPrefUtils.getPlayerSavedCurrentMusic()
+        SharedPrefUtils.getPlayerMode()
         currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
         currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
@@ -199,23 +201,28 @@ class PlayerViewModel : ViewModel() {
         isPlaying = PlayerService.isPlayerPlaying()
     }
 
-    fun playShuffle(playlist: ArrayList<Music>) {
-        currentPlaylistId = null
-        isPlaying = false
-        isMainPlaylist = false
+    fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            currentPlaylistId = null
+            isPlaying = false
+            isMainPlaylist = false
 
-        currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-        currentPlaylist.shuffle()
-        playerMode = PlayerMode.SHUFFLE
+            currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
+            currentPlaylist.shuffle()
+            playerMode = PlayerMode.NORMAL
+            SharedPrefUtils.setPlayerMode()
+            SharedPrefUtils.setPlayerSavedCurrentMusic()
 
-        setNewCurrentMusicInformation(currentPlaylist[0])
+            setNewCurrentMusicInformation(currentPlaylist[0])
+            savePlayerListMethod(currentPlaylist.map { it.musicId } as ArrayList<UUID>)
 
-        if (shouldServiceBeLaunched) {
-            PlayerService.setAndPlayCurrentMusic()
-        }
+            if (shouldServiceBeLaunched) {
+                PlayerService.setAndPlayCurrentMusic()
+            }
 
-        if (!shouldServiceBeLaunched) {
-            shouldServiceBeLaunched = true
+            if (!shouldServiceBeLaunched) {
+                shouldServiceBeLaunched = true
+            }
         }
     }
 
@@ -227,6 +234,9 @@ class PlayerViewModel : ViewModel() {
         isForcingNewPlaylist: Boolean = false
     ) {
         CoroutineScope(Dispatchers.IO).launch {
+            // When selecting a music manually, we force the player mode to normal:
+            forcePlayerModeToNormal(playlist)
+
             // If it's the same music of the same playlist, does nothing
             if (isSameMusic(music.musicId) && isSamePlaylist(
                     isMainPlaylist,
@@ -275,14 +285,28 @@ class PlayerViewModel : ViewModel() {
                     // to loop mode :
                     currentPlaylist =
                         if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
+                    currentPlaylistId = null
                     playerMode = PlayerMode.LOOP
                 }
                 PlayerMode.LOOP -> {
                     // to normal mode :
                     currentPlaylist = initialPlaylist.map { it.copy() } as ArrayList<Music>
+                    currentPlaylistId = null
                     playerMode = PlayerMode.NORMAL
                 }
             }
+            SharedPrefUtils.setPlayerMode()
+            SharedPrefUtils.setPlayerSavedCurrentMusic()
+            isChangingPlayMode = false
+        }
+    }
+
+    private fun forcePlayerModeToNormal(musicList: ArrayList<Music>) {
+        if (!isChangingPlayMode) {
+            isChangingPlayMode = true
+            playerMode = PlayerMode.NORMAL
+            currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
+            SharedPrefUtils.setPlayerSavedCurrentMusic()
             isChangingPlayMode = false
         }
     }
