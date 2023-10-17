@@ -129,4 +129,5 @@
     <string name="add_musics_text">Ajouter des nouvelles musiques de votre téléphone dans l\'application</string>
     <string name="no_new_musics">Aucune nouvelle musique à ajouter !</string>
     <string name="saving_new_musics">Sauvegarde des nouvelles musiques…</string>
+    <string name="deleting_musics_from_unselected_folders">Suppression des musiques des dossiers désélectionnés…</string>
 </resources>

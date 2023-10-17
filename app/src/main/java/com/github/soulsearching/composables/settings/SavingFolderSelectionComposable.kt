@@ -15,7 +15,7 @@ import com.github.soulsearching.composables.SoulSearchingLogo
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
-fun SavingNewMusicsComposable() {
+fun SavingFolderSelectionComposable() {
     val configuration = LocalConfiguration.current
 
     when (configuration.orientation) {
@@ -29,7 +29,7 @@ fun SavingNewMusicsComposable() {
             ) {
                 SoulSearchingLogo()
                 Text(
-                    text = stringResource(id = R.string.saving_new_musics),
+                    text = stringResource(id = R.string.deleting_musics_from_unselected_folders),
                     color = DynamicColor.onPrimary
                 )
             }
@@ -46,7 +46,7 @@ fun SavingNewMusicsComposable() {
                 }
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     Text(
-                        text = stringResource(id = R.string.saving_new_musics),
+                        text = stringResource(id = R.string.deleting_musics_from_unselected_folders),
                         color = DynamicColor.onPrimary
                     )
                 }

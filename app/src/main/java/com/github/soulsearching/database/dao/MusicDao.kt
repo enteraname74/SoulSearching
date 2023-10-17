@@ -67,4 +67,7 @@ interface MusicDao {
 
     @Query("UPDATE Music SET isHidden = :newIsHidden WHERE folder = :folderName")
     fun updateMusicsHiddenState(folderName: String, newIsHidden: Boolean)
+
+    @Query("SELECT * FROM Music WHERE folder = :folderName")
+    suspend fun getMusicsFromFolder(folderName: String): List<Music>
 }

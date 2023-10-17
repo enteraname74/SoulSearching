@@ -1,26 +1,29 @@
 package com.github.soulsearching.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.database.dao.FolderDao
-import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.enumsAndTypes.FolderStateType
+import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Folder
+import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.states.FolderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AllFoldersViewModel @Inject constructor(
     private val folderDao: FolderDao,
-    private val musicDao: MusicDao
+    private val musicDao: MusicDao,
+    private val albumDao: AlbumDao,
+    private val artistDao: ArtistDao,
+    private val albumArtistDao: AlbumArtistDao,
+    private val musicAlbumDao: MusicAlbumDao,
+    private val musicArtistDao: MusicArtistDao,
 ) : ViewModel() {
     private val _folders = folderDao.getAllFolders().stateIn(
         viewModelScope,
@@ -35,7 +38,7 @@ class AllFoldersViewModel @Inject constructor(
         _folders,
     ) { state, folders ->
         state.copy(
-           folders = folders as ArrayList<Folder>
+            folders = folders as ArrayList<Folder>
         )
     }.stateIn(
         viewModelScope,
@@ -43,15 +46,68 @@ class AllFoldersViewModel @Inject constructor(
         FolderState()
     )
 
-    fun updateFolderState(folder: Folder) {
-        CoroutineScope(Dispatchers.IO).launch {
-            musicDao.updateMusicsHiddenState(folder.folderPath, folder.isSelected)
-            folderDao.insertFolder(
-                Folder(
-                    folderPath = folder.folderPath,
-                    isSelected = !folder.isSelected
-                )
-            )
+    fun onFolderEvent(event: FolderEvent) {
+        when (event) {
+            is FolderEvent.SetSelectedFolder -> {
+                _state.update {
+                    it.copy(
+                        folders = it.folders.map { folder ->
+                            if (folder.folderPath == event.folder.folderPath) {
+                                folder.copy(
+                                    isSelected = event.isSelected
+                                )
+                            } else {
+                                folder.copy()
+                            }
+                        } as ArrayList<Folder>
+                    )
+                }
+            }
+            is FolderEvent.SetState -> {
+                _state.update {
+                    it.copy(
+                        state = event.newState
+                    )
+                }
+            }
+            FolderEvent.SaveSelection -> {
+                CoroutineScope(Dispatchers.IO).launch {
+                    _state.update {
+                        it.copy(
+                            state = FolderStateType.SAVING_SELECTION
+                        )
+                    }
+                    _state.value.folders.forEach { folder ->
+
+                        folderDao.insertFolder(
+                            Folder(
+                                folderPath = folder.folderPath,
+                                isSelected = !folder.isSelected
+                            )
+                        )
+                        
+                        if (!folder.isSelected) {
+                            val musicsFromFolder = musicDao.getMusicsFromFolder(folder.folderPath)
+                            musicsFromFolder.forEach { music ->
+                                Utils.removeMusicFromApp(
+                                    musicDao = musicDao,
+                                    albumDao = albumDao,
+                                    artistDao = artistDao,
+                                    albumArtistDao = albumArtistDao,
+                                    musicAlbumDao = musicAlbumDao,
+                                    musicArtistDao = musicArtistDao,
+                                    musicToRemove = music
+                                )
+                            }
+                        }
+                    }
+                    _state.update {
+                        it.copy(
+                            state = FolderStateType.WAITING_FOR_USER_ACTION
+                        )
+                    }
+                }
+            }
         }
     }
 }

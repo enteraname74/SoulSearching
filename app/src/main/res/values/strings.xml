@@ -128,4 +128,5 @@
     <string name="add_musics_text">Add new musics from your device to the application</string>
     <string name="no_new_musics">No new musics to add!</string>
     <string name="saving_new_musics">Saving new musics…</string>
+    <string name="deleting_musics_from_unselected_folders">Deleting musics from unselected folders…</string>
 </resources>
