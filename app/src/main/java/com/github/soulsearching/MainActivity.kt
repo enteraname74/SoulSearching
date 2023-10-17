@@ -35,6 +35,7 @@ import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
+import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
@@ -75,8 +76,9 @@ class MainActivity : AppCompatActivity() {
     // Player view model :
     private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
 
-    // Folders view model:
+    // Settings view models:
     private val allFoldersViewModel: AllFoldersViewModel by viewModels()
+    private val addMusicsViewModel: AddMusicsViewModel by viewModels()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -148,7 +150,10 @@ class MainActivity : AppCompatActivity() {
                             )
                             PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
                             coroutineScope.launch {
-                                playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
+                                playerSwipeableState.animateTo(
+                                    BottomSheetStates.MINIMISED,
+                                    tween(Constants.AnimationTime.normal)
+                                )
                             }
                         }
                     }
@@ -330,7 +335,7 @@ class MainActivity : AppCompatActivity() {
                                             navController.navigate("modifyArtist/$it")
                                         },
                                         navigateToSettings = {
-                                          navController.navigate("settings")
+                                            navController.navigate("settings")
                                         },
                                         playerSwipeableState = playerSwipeableState,
                                         searchSwipeableState = searchSwipeableState,
@@ -551,6 +556,10 @@ class MainActivity : AppCompatActivity() {
                                         finishAction = { navController.popBackStack() },
                                         navigateToFolders = {
                                             navController.navigate("usedFolders")
+                                        },
+                                        navigateToAddMusics = {
+                                            addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.ResetState)
+                                            navController.navigate("addMusics")
                                         }
                                     )
                                 }
@@ -560,6 +569,14 @@ class MainActivity : AppCompatActivity() {
                                     SettingsUsedFoldersScreen(
                                         finishAction = { navController.popBackStack() },
                                         allFoldersViewModel = allFoldersViewModel
+                                    )
+                                }
+                                composable(
+                                    "addMusics"
+                                ) {
+                                    SettingsAddMusicsScreen(
+                                        addMusicsViewModel = addMusicsViewModel,
+                                        finishAction = { navController.popBackStack() }
                                     )
                                 }
                                 composable(

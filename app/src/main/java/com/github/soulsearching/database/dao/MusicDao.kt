@@ -25,6 +25,9 @@ interface MusicDao {
     @Query("SELECT * FROM Music INNER JOIN MusicPlaylist ON Music.musicId = MusicPlaylist.musicId INNER JOIN Playlist ON Playlist.playlistId = MusicPlaylist.playlistId WHERE Playlist.isFavorite = TRUE AND Music.musicId = :musicId")
     suspend fun getMusicFromFavoritePlaylist(musicId: UUID): Music?
 
+    @Query("SELECT path FROM Music")
+    suspend fun getAllMusicsPaths(): List<String>
+
     @Query("SELECT * FROM Music WHERE isHidden = FALSE ORDER BY name ASC")
     fun getAllMusicsSortByNameAsc(): Flow<List<Music>>
 

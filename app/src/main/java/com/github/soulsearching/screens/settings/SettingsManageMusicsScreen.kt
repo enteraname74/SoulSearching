@@ -18,7 +18,8 @@ import com.github.soulsearching.ui.theme.DynamicColor
 @Composable
 fun SettingsManageMusicsScreen(
     finishAction: () -> Unit,
-    navigateToFolders: () -> Unit
+    navigateToFolders: () -> Unit,
+    navigateToAddMusics: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -36,6 +37,14 @@ fun SettingsManageMusicsScreen(
                     text = stringResource(id = R.string.used_folders_text),
                     icon = Icons.Rounded.Folder,
                     clickAction = navigateToFolders
+                )
+            }
+            item {
+                SettingsElement(
+                    title = stringResource(id = R.string.add_musics_title),
+                    text = stringResource(id = R.string.add_musics_text),
+                    icon = Icons.Rounded.MusicNote,
+                    clickAction = navigateToAddMusics
                 )
             }
         }

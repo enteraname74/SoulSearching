@@ -124,4 +124,7 @@
     <!-- Manage musics strings -->
     <string name="used_folders_title">Used folders</string>
     <string name="used_folders_text">Define the folders used in the application</string>
+    <string name="add_musics_title">Add musics</string>
+    <string name="add_musics_text">Add new musics from your device to the application</string>
+    <string name="no_new_musics">No new musics to add!</string>
 </resources>

@@ -125,4 +125,7 @@
     <!-- Manage musics strings -->
     <string name="used_folders_title">Dossiers utilisés</string>
     <string name="used_folders_text">Définissez les dossiers utilisés par l\'application</string>
+    <string name="add_musics_title">Ajouter des musiques</string>
+    <string name="add_musics_text">Ajouter des nouvelles musiques de votre téléphone dans l\'application</string>
+    <string name="no_new_musics">Aucune nouvelle musique à ajouter !</string>
 </resources>
