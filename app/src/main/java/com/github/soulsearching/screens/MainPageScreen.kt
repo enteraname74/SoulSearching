@@ -463,16 +463,20 @@ fun MainPageScreen(
                                         .padding(start = Constants.Spacing.large)
                                         .size(Constants.ImageSize.medium)
                                         .clickable {
-                                            coroutineScope
-                                                .launch {
-                                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
-                                                }
-                                                .invokeOnCompletion {
-                                                    PlayerUtils.playerViewModel.playShuffle(
-                                                        musicState.musics,
-                                                        playerMusicListViewModel::savePlayerMusicList
-                                                    )
-                                                }
+                                            if (musicState.musics.isNotEmpty()) {
+                                                coroutineScope
+                                                    .launch {
+                                                        playerSwipeableState.animateTo(
+                                                            BottomSheetStates.EXPANDED
+                                                        )
+                                                    }
+                                                    .invokeOnCompletion {
+                                                        PlayerUtils.playerViewModel.playShuffle(
+                                                            musicState.musics,
+                                                            playerMusicListViewModel::savePlayerMusicList
+                                                        )
+                                                    }
+                                            }
                                         },
                                     imageVector = Icons.Rounded.Shuffle,
                                     contentDescription = stringResource(id = R.string.shuffle_button_desc),

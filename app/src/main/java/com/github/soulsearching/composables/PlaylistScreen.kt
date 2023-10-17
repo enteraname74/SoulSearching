@@ -3,6 +3,7 @@ package com.github.soulsearching.composables
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -60,7 +61,7 @@ fun PlaylistScreen(
     playerSwipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
-    playlistType: PlaylistType
+    playlistType: PlaylistType,
 ) {
     val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
@@ -110,32 +111,22 @@ fun PlaylistScreen(
         tween(Constants.AnimationTime.normal)
     )
 
-    MusicBottomSheetEvents(
-        musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
-        musicState = musicState,
-        playlistState = playlistState,
-        onMusicEvent = onMusicEvent,
-        onPlaylistsEvent = onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel,
-        playerSwipeableState = playerSwipeableState,
-        primaryColor = primaryColor,
-        secondaryColor = secondaryColor,
-        onPrimaryColor = textColor,
-        onSecondaryColor = textColor
-    )
-
     val shuffleAction = {
-        coroutineScope
-            .launch {
-                playerSwipeableState.animateTo(
-                    BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationTime.normal)
-                )
-            }
-            .invokeOnCompletion {
-                PlayerUtils.playerViewModel.playShuffle(musicState.musics, playerMusicListViewModel::savePlayerMusicList)
-            }
+        if (musicState.musics.isNotEmpty()) {
+            coroutineScope
+                .launch {
+                    playerSwipeableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(Constants.AnimationTime.normal)
+                    )
+                }
+                .invokeOnCompletion {
+                    PlayerUtils.playerViewModel.playShuffle(
+                        musicState.musics,
+                        playerMusicListViewModel::savePlayerMusicList
+                    )
+                }
+        }
     }
 
     val searchAction = {
@@ -146,6 +137,12 @@ fun PlaylistScreen(
                     tween(Constants.AnimationTime.normal)
                 )
             }
+    }
+
+    val musicBottomSheetState = when (playlistType) {
+        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
+        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
+        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
     }
 
     BoxWithConstraints(
@@ -199,8 +196,9 @@ fun PlaylistScreen(
                         secondaryColor = secondaryColor,
                         tint = textColor
                     )
+                    Log.d("PLAYLIST TYPE", playlistType.toString())
                     MusicList(
-                        musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
+                        musicBottomSheetState = musicBottomSheetState,
                         musicState = musicState,
                         playlistState = playlistState,
                         onMusicEvent = onMusicEvent,
@@ -223,6 +221,21 @@ fun PlaylistScreen(
                 }
             }
             else -> {
+                MusicBottomSheetEvents(
+                    musicBottomSheetState = musicBottomSheetState,
+                    musicState = musicState,
+                    playlistState = playlistState,
+                    onMusicEvent = onMusicEvent,
+                    onPlaylistsEvent = onPlaylistEvent,
+                    navigateToModifyMusic = navigateToModifyMusic,
+                    playerMusicListViewModel = playerMusicListViewModel,
+                    playerSwipeableState = playerSwipeableState,
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    onPrimaryColor = textColor,
+                    onSecondaryColor = textColor
+                )
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
