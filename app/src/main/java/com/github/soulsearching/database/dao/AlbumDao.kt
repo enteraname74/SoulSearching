@@ -4,7 +4,6 @@ import androidx.room.*
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumWithArtist
 import com.github.soulsearching.database.model.AlbumWithMusics
-import com.github.soulsearching.database.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -36,27 +35,27 @@ interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY albumName ASC")
-    fun getAllAlbumsWithArtistSortByNameAsc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByNameAsc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY albumName DESC")
-    fun getAllAlbumsWithArtistSortByNameDesc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByNameDesc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY addedDate ASC")
-    fun getAllAlbumsWithArtistSortByAddedDateAsc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByAddedDateAsc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY addedDate DESC")
-    fun getAllAlbumsWithArtistSortByAddedDateDesc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByAddedDateDesc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY nbPlayed ASC")
-    fun getAllAlbumsWithArtistSortByNbPlayedAsc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByNbPlayedAsc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album ORDER BY nbPlayed DESC")
-    fun getAllAlbumsWithArtistSortByNbPlayedDesc(): Flow<List<AlbumWithArtist>>
+    fun getAllAlbumsWithMusicsSortByNbPlayedDesc(): Flow<List<AlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM Album")

@@ -16,7 +16,7 @@ data class PlaylistWithMusics(
     fun toPlaylistWithMusicsNumber(): PlaylistWithMusicsNumber {
         return PlaylistWithMusicsNumber(
             playlist = playlist,
-            musicsNumber = musics.size
+            musicsNumber = musics.filter { !it.isHidden }.size
         )
     }
 }

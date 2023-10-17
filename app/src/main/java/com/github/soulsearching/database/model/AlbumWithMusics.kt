@@ -18,4 +18,9 @@ data class AlbumWithMusics(
         associateBy = Junction(AlbumArtist::class)
     )
     val artist: Artist? = Artist()
-)
+) {
+    fun toAlbumWithArtist() : AlbumWithArtist = AlbumWithArtist(
+        album = album,
+        artist = artist
+    )
+}

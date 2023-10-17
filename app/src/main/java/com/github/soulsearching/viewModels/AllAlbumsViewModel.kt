@@ -26,27 +26,28 @@ class AllAlbumsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _albums = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
-                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateAsc()
-                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedAsc()
-                        else -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
+                        SortType.NAME -> albumDao.getAllAlbumsWithMusicsSortByNameAsc()
+                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithMusicsSortByAddedDateAsc()
+                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithMusicsSortByNbPlayedAsc()
+                        else -> albumDao.getAllAlbumsWithMusicsSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
                     when (sortType) {
-                        SortType.NAME -> albumDao.getAllAlbumsWithArtistSortByNameDesc()
-                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithArtistSortByAddedDateDesc()
-                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithArtistSortByNbPlayedDesc()
-                        else -> albumDao.getAllAlbumsWithArtistSortByNameDesc()
+                        SortType.NAME -> albumDao.getAllAlbumsWithMusicsSortByNameDesc()
+                        SortType.ADDED_DATE -> albumDao.getAllAlbumsWithMusicsSortByAddedDateDesc()
+                        SortType.NB_PLAYED -> albumDao.getAllAlbumsWithMusicsSortByNbPlayedDesc()
+                        else -> albumDao.getAllAlbumsWithMusicsSortByNameDesc()
                     }
                 }
-                else -> albumDao.getAllAlbumsWithArtistSortByNameAsc()
+                else -> albumDao.getAllAlbumsWithMusicsSortByNameAsc()
             }
         }
     }.stateIn(
@@ -63,7 +64,8 @@ class AllAlbumsViewModel @Inject constructor(
         _sortType
     ) { albums, state, sortDirection, sortType ->
         state.copy(
-            albums = albums,
+            albums = albums.filter { it.musics.any { music -> !music.isHidden } }
+                .map { it.toAlbumWithArtist() },
             sortDirection = sortDirection,
             sortType = sortType
         )
