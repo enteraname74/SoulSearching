@@ -1,8 +1,11 @@
 package com.github.soulsearching.viewModels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.github.soulsearching.classes.MusicUtils
+import com.github.soulsearching.classes.SelectableMusicItem
+import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 import com.github.soulsearching.database.dao.FolderDao
 import com.github.soulsearching.database.dao.MusicDao
 import com.github.soulsearching.events.AddMusicsEvent
@@ -18,8 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddMusicsViewModel @Inject constructor(
-    private val folderDao: FolderDao,
-    private val musicDao: MusicDao
+    private val folderDao: FolderDao, private val musicDao: MusicDao
 ) : ViewModel() {
     private var _state = MutableStateFlow(AddMusicsState())
     val state = _state.asStateFlow()
@@ -28,21 +30,37 @@ class AddMusicsViewModel @Inject constructor(
         when (event) {
             AddMusicsEvent.ResetState -> {
                 _state.update {
-                    AddMusicsState()
+                    AddMusicsState(
+                        state = if (it.state != AddMusicsStateType.SAVING_MUSICS) AddMusicsStateType.FETCHING_MUSICS else it.state
+                    )
                 }
             }
             is AddMusicsEvent.AddFetchedMusics -> {
                 _state.update {
                     it.copy(
-                        fetchedMusics = event.musics
+                        fetchedMusics = event.musics,
+                        state = AddMusicsStateType.WAITING_FOR_USER_ACTION
                     )
                 }
             }
-            is AddMusicsEvent.SetFetchingState -> {
+            is AddMusicsEvent.SetState -> {
                 _state.update {
                     it.copy(
-                        isFetchingMusics = event.isFetching
+                        state = event.newState
                     )
+                }
+            }
+            is AddMusicsEvent.SetSelectedMusic -> {
+                _state.update { currentState ->
+                    currentState.copy(fetchedMusics = currentState.fetchedMusics.map {
+                        if (it.music.musicId == event.music.musicId) {
+                            it.copy(
+                                isSelected = event.isSelected
+                            )
+                        } else {
+                            it.copy()
+                        }
+                    } as ArrayList<SelectableMusicItem>)
                 }
             }
         }
@@ -57,13 +75,9 @@ class AddMusicsViewModel @Inject constructor(
             val allMusics = musicDao.getAllMusicsPaths()
 
             val newMusics = MusicUtils.fetchNewMusics(
-                context,
-                updateProgressBar,
-                allMusics,
-                hiddenFoldersPaths
+                context, updateProgressBar, allMusics, hiddenFoldersPaths
             )
             onAddMusicEvent(AddMusicsEvent.AddFetchedMusics(newMusics))
-            onAddMusicEvent(AddMusicsEvent.SetFetchingState(false))
         }
     }
 }

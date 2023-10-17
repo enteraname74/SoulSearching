@@ -1,8 +1,9 @@
 package com.github.soulsearching.states
 
-import com.github.soulsearching.database.model.MusicWithCover
+import com.github.soulsearching.classes.SelectableMusicItem
+import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 
 data class AddMusicsState(
-    val isFetchingMusics: Boolean = true,
-    val fetchedMusics: ArrayList<MusicWithCover> = ArrayList()
+    val state: AddMusicsStateType = AddMusicsStateType.FETCHING_MUSICS,
+    val fetchedMusics: ArrayList<SelectableMusicItem> = ArrayList()
 )

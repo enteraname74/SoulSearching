@@ -9,13 +9,9 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import com.github.soulsearching.R
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicWithCover
 import java.io.File
 import java.io.IOException
-import java.util.*
-import kotlin.collections.ArrayList
 
 object MusicUtils {
     fun fetchMusics(
@@ -105,13 +101,13 @@ object MusicUtils {
     }
 
 
-    suspend fun fetchNewMusics(
+    fun fetchNewMusics(
         context: Context,
         updateProgress: (Float) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ) : ArrayList<MusicWithCover> {
-        val newMusics = ArrayList<MusicWithCover>()
+    ) : ArrayList<SelectableMusicItem> {
+        val newMusics = ArrayList<SelectableMusicItem>()
         val mediaMetadataRetriever = MediaMetadataRetriever()
 
         val projection: Array<String> = arrayOf(
@@ -184,15 +180,12 @@ object MusicUtils {
                             folder = File(cursor.getString(4)).parent ?: ""
                         )
                         newMusics.add(
-                            MusicWithCover(
+                            SelectableMusicItem(
                                 music = music,
-                                cover = ImageCover(
-                                    coverId = UUID.randomUUID(),
-                                    cover = if (albumCover != null )Bitmap.createBitmap(albumCover) else null
-                                )
+                                cover = albumCover,
+                                isSelected = true
                             )
                         )
-                        albumCover?.recycle()
                     }
                     count++
                     updateProgress((count * 1F) / cursor.count)

@@ -576,7 +576,8 @@ class MainActivity : AppCompatActivity() {
                                 ) {
                                     SettingsAddMusicsScreen(
                                         addMusicsViewModel = addMusicsViewModel,
-                                        finishAction = { navController.popBackStack() }
+                                        finishAction = { navController.popBackStack() },
+                                        saveMusicFunction = allMusicsViewModel::addMusic
                                     )
                                 }
                                 composable(
