@@ -9,13 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.SoulSearchingLogo
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
-fun SavingNewMusicsComposable() {
+fun FolderStateComposable(
+    stateTitle: String
+) {
     val configuration = LocalConfiguration.current
 
     when (configuration.orientation) {
@@ -29,7 +32,7 @@ fun SavingNewMusicsComposable() {
             ) {
                 SoulSearchingLogo()
                 Text(
-                    text = stringResource(id = R.string.saving_new_musics),
+                    text = stateTitle,
                     color = DynamicColor.onPrimary
                 )
             }
@@ -46,7 +49,8 @@ fun SavingNewMusicsComposable() {
                 }
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     Text(
-                        text = stringResource(id = R.string.saving_new_musics),
+                        textAlign = TextAlign.Center,
+                        text = stateTitle,
                         color = DynamicColor.onPrimary
                     )
                 }

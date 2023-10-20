@@ -118,6 +118,9 @@ class SharedPrefUtils {
                     isArtistsShown = sharedPreferences.getBoolean(
                         IS_ARTISTS_SHOWN, true
                     )
+                    isVerticalBarShown = sharedPreferences.getBoolean(
+                        IS_VERTICAL_BAR_SHOWN, false
+                    )
                 }
             }
         }

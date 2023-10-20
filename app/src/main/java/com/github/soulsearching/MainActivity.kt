@@ -36,6 +36,7 @@ import com.github.soulsearching.composables.*
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
 import com.github.soulsearching.events.AddMusicsEvent
+import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.*
@@ -162,7 +163,21 @@ class MainActivity : AppCompatActivity() {
 
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
-                    mutableStateOf(false)
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        mutableStateOf(
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                android.Manifest.permission.READ_MEDIA_AUDIO
+                            ) == PackageManager.PERMISSION_GRANTED
+                        )
+                    } else {
+                        mutableStateOf(
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                android.Manifest.permission.READ_EXTERNAL_STORAGE
+                            ) == PackageManager.PERMISSION_GRANTED
+                        )
+                    }
                 }
                 var isPostNotificationGranted by remember {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -222,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                if (isReadPermissionGranted) {
+                if (isReadPermissionGranted && isPostNotificationGranted) {
                     if (!hasMusicsBeenFetched) {
                         Log.d("MAIN ACTIVITY", "FETCH MUSICS")
                         FetchingMusicsComposable(
@@ -555,6 +570,9 @@ class MainActivity : AppCompatActivity() {
                                     SettingsManageMusicsScreen(
                                         finishAction = { navController.popBackStack() },
                                         navigateToFolders = {
+                                            allFoldersViewModel.onFolderEvent(
+                                                FolderEvent.FetchFolders
+                                            )
                                             navController.navigate("usedFolders")
                                         },
                                         navigateToAddMusics = {
@@ -614,6 +632,8 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
                     }
+                } else {
+                    MissingPermissionsComposable()
                 }
             }
         }

@@ -3,19 +3,20 @@ package com.github.soulsearching.composables.settings
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.composables.ProgressIndicatorComposable
 import com.github.soulsearching.composables.SoulSearchingLogo
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
-fun SavingFolderSelectionComposable() {
+fun LoadingComposable(
+    progressIndicator: Float,
+    progressMessage: String
+) {
     val configuration = LocalConfiguration.current
 
     when (configuration.orientation) {
@@ -28,9 +29,9 @@ fun SavingFolderSelectionComposable() {
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 SoulSearchingLogo()
-                Text(
-                    text = stringResource(id = R.string.deleting_musics_from_unselected_folders),
-                    color = DynamicColor.onPrimary
+                ProgressIndicatorComposable(
+                    progress = progressIndicator,
+                    progressMessage = progressMessage
                 )
             }
         }
@@ -45,9 +46,9 @@ fun SavingFolderSelectionComposable() {
                     SoulSearchingLogo()
                 }
                 Box(modifier = Modifier.align(Alignment.Center)) {
-                    Text(
-                        text = stringResource(id = R.string.deleting_musics_from_unselected_folders),
-                        color = DynamicColor.onPrimary
+                    ProgressIndicatorComposable(
+                        progress = progressIndicator,
+                        progressMessage = progressMessage
                     )
                 }
             }

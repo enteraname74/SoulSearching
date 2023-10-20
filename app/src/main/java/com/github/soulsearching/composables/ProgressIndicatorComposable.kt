@@ -15,6 +15,7 @@ import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
 fun ProgressIndicatorComposable(
+    progressMessage: String,
     progress: Float
 ) {
     Column(
@@ -22,7 +23,7 @@ fun ProgressIndicatorComposable(
     ) {
         Text(
             modifier = Modifier.padding(Constants.Spacing.medium),
-            text = stringResource(id = R.string.searching_songs_from_your_device),
+            text = progressMessage,
             color = DynamicColor.onPrimary,
             textAlign = TextAlign.Center
         )

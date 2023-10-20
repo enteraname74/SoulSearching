@@ -23,8 +23,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
-import com.github.soulsearching.composables.settings.FetchingNewMusicsComposable
-import com.github.soulsearching.composables.settings.SavingNewMusicsComposable
+import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.ui.theme.DynamicColor
@@ -63,8 +62,11 @@ fun SettingsAddMusicsScreen(
         AppHeaderBar(
             title = stringResource(id = R.string.add_musics_title),
             leftAction = finishAction,
-            rightIcon = Icons.Rounded.Check,
+            rightIcon = if (addMusicsState.state == AddMusicsStateType.WAITING_FOR_USER_ACTION) Icons.Rounded.Check else null,
             rightAction = {
+                if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
+                    return@AppHeaderBar
+                }
                 addMusicsViewModel.onAddMusicEvent(
                     AddMusicsEvent.SetState(
                         newState = AddMusicsStateType.SAVING_MUSICS
@@ -81,7 +83,10 @@ fun SettingsAddMusicsScreen(
                     targetValue = progress,
                     animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
                 )
-                FetchingNewMusicsComposable(progressIndicator = animatedProgress)
+                LoadingComposable(
+                    progressIndicator = animatedProgress,
+                    progressMessage = stringResource(id = R.string.searching_songs_from_your_device)
+                )
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
                         isFetchingMusics = true
@@ -96,13 +101,26 @@ fun SettingsAddMusicsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    SavingNewMusicsComposable()
+                    var progress by rememberSaveable {
+                        mutableStateOf(0F)
+                    }
+                    val animatedProgress by animateFloatAsState(
+                        targetValue = progress,
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                    )
+                    LoadingComposable(
+                        progressIndicator = animatedProgress,
+                        progressMessage = stringResource(id = R.string.saving_new_musics)
+                    )
                     if (!isSavingMusics) {
                         LaunchedEffect(key1 = "SavingMusics") {
                             CoroutineScope(Dispatchers.IO).launch {
                                 isSavingMusics = true
+                                var count = 0
                                 addMusicsState.fetchedMusics.filter { it.isSelected }.forEach{
                                     saveMusicFunction(it.music, it.cover)
+                                    count ++
+                                    progress = (count * 1F) / addMusicsState.fetchedMusics.size
                                 }
                                 isSavingMusics = false
                                 addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.SetState(

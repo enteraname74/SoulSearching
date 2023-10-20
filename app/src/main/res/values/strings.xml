@@ -10,8 +10,25 @@
     <string name="no_elements">No elements</string>
     <string name="deleted_musics">%1$d musics were deleted because they don\'t exist anymore on the device</string>
     <string name="deleted_music">1 music was deleted because it don\'t exist anymore on the device</string>
+    <string name="missing_permissions">You must accept all permissions required by the application for it to work properly.</string>
 
-    <!-- Fetching musics -->
+    <!-- App features strings -->
+    <string name="complete_application_title">Complete music application</string>
+    <string name="complete_application_text">Listen to all your musics, albums, artists, playlists.</string>
+    <string name="quick_access_title">Keep what your love the most near you.</string>
+    <string name="quick_access_text">With the quick access, you can easily access your favorite album, our your preferred musics for example.</string>
+    <string name="modify_elements_title">Modify your music related elements</string>
+    <string name="modify_elements_text">You can modify information about an album, a music, an artist…</string>
+    <string name="dynamic_theme_feature_title">Dynamic theme</string>
+    <string name="dynamic_theme_feature_text">Soul Searching offers you the possibility of having a dynamic theme depending on the current played music.</string>
+    <string name="manage_folders_title">Manage used folders</string>
+    <string name="manage_folders_text">Manage what folders are used to fetch musics.</string>
+    <string name="add_new_musics_title">Add new musics</string>
+    <string name="add_new_musics_text">You can easily add new musics from your device.</string>
+    <string name="personalize_main_page_title">Define what you really want</string>
+    <string name="personalize_main_page_text">You don\'t want the quick access, or you wish to have a bar that helps you to reach parts of the main page? You can realize your wishes in the settings of the application.</string>
+
+    <!-- Fetching musics strings -->
     <string name="searching_songs_from_your_device">Searching songs from your device…</string>
     <string name="saving_found_songs">Saving found songs…</string>
     <string name="cannot_retrieve_musics">Cannot retrieve musics!</string>
@@ -129,4 +146,5 @@
     <string name="no_new_musics">No new musics to add!</string>
     <string name="saving_new_musics">Saving new musics…</string>
     <string name="deleting_musics_from_unselected_folders">Deleting musics from unselected folders…</string>
+    <string name="fetching_folders">Fetching folders</string>
 </resources>

@@ -149,6 +149,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun next() {
+        pause()
         PlayerUtils.playerViewModel.setNextMusic()
         PlayerUtils.playerViewModel.currentMusic?.let {
             setMusic(it)
@@ -157,6 +158,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     }
 
     override fun previous() {
+        pause()
         PlayerUtils.playerViewModel.setPreviousMusic()
         PlayerUtils.playerViewModel.currentMusic?.let {
             setMusic(it)

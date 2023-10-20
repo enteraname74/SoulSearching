@@ -6,7 +6,7 @@ Soul Searching is an offline music application for Android 8 and above.
 
 ## Functionalities:
 
-### General look:
+### I. General look:
 
 Soul Searching gives you multiple options regarding the color theme of the application.
 
@@ -20,7 +20,7 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="290">
 </div>
 
-### Music related functionnalities:
+### II. Music related functionnalities:
 
 - Listen all the songs on your device
 
@@ -54,13 +54,31 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="290">
 </div>
 
-### Settings:
+### III. Settings:
 
 <div align="center">
     <img title="" src="screenshots/settings_view.png" alt="" data-align="center" width="290">
 </div>
 
 Soul Searching provides multiple ways for customizing the application the way you want it to be.
+
+#### Music management:
+
+##### 1. Manage used folders:
+
+You can manage used folders by choosing those you want to use for the application.
+
+<div align="center">
+    <img title="" src="screenshots/folders_settings.png" alt="" data-align="center" width="290">
+</div>
+
+##### Add new songs:
+
+You can search new songs to add from your device.
+
+<div align="center">
+    <img title="" src="screenshots/add_new_songs_settings.png" alt="" data-align="center" width="290">
+</div>
 
 #### Color theme:
 
@@ -107,5 +125,3 @@ Examples of what you can achieve:
     <img title="" src="screenshots/perso_second_example.png" alt="" data-align="center" width="290">
     <img title="" src="screenshots/perso_third_example.png" alt="" data-align="center" width="290">
 </div>
-
-
