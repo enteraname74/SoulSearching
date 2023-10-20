@@ -25,7 +25,7 @@
     <string name="manage_folders_title">Gérez vos dossiers</string>
     <string name="manage_folders_text">Définissez quels dossiers sont utilisés par l\'application.</string>
     <string name="add_new_musics_title">Ajoutez de nouvelles musiques</string>
-    <string name="add_new_musics_text">Vous pouvez facilement ajouter de nouvelles musiques provenant de votre machine.</string>
+    <string name="add_new_musics_text">Vous pouvez facilement ajouter de nouvelles musiques provenant de votre appareil.</string>
     <string name="personalize_main_page_title">Définissez ce que vous voulez réellement</string>
     <string name="personalize_main_page_text">Vous ne voulez pas avoir les accès rapides ou vous voudriez avoir une barre vous aidant à accéder à des éléments du menu principal ? Vous pouvez réaliser vos envies dans les paramètres de l\'application.</string>
 

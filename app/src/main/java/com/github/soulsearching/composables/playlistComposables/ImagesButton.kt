@@ -43,20 +43,20 @@ fun ImagesButton(
         contentDescription = "",
         colorFilter = ColorFilter.tint(tint)
     )
-    if (playlistType == PlaylistType.PLAYLIST) {
-        Image(
-            modifier = Modifier
-                .size(48.dp)
-                .background(
-                    color = primaryColor,
-                    shape = CircleShape
-                )
-                .padding(10.dp),
-            imageVector = Icons.Rounded.PlaylistAdd,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(tint)
-        )
-    }
+//    if (playlistType == PlaylistType.PLAYLIST) {
+//        Image(
+//            modifier = Modifier
+//                .size(48.dp)
+//                .background(
+//                    color = primaryColor,
+//                    shape = CircleShape
+//                )
+//                .padding(10.dp),
+//            imageVector = Icons.Rounded.PlaylistAdd,
+//            contentDescription = "",
+//            colorFilter = ColorFilter.tint(tint)
+//        )
+//    }
     Image(
         modifier = Modifier
             .size(48.dp)

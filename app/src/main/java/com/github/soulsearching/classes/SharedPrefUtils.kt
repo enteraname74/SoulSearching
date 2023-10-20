@@ -98,7 +98,7 @@ class SharedPrefUtils {
             CoroutineScope(Dispatchers.IO).launch {
                 SettingsUtils.settingsViewModel.apply {
                     colorTheme = sharedPreferences.getInt(
-                        COLOR_THEME_KEY, ColorThemeType.SYSTEM
+                        COLOR_THEME_KEY, ColorThemeType.DYNAMIC
                     )
                     isDynamicPlayerThemeSelected = sharedPreferences.getBoolean(
                         DYNAMIC_PLAYER_THEME, false

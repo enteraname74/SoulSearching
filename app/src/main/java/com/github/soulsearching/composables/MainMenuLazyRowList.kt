@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
@@ -64,7 +65,9 @@ fun MainMenuLazyListRow(
                         TextButton(onClick = navigateToMore) {
                             Text(
                                 text = stringResource(id = R.string.more),
-                                color = DynamicColor.onPrimary
+                                color = DynamicColor.onPrimary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }

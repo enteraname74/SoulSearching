@@ -134,7 +134,7 @@ fun PlaylistScreen(
             .launch {
                 searchSwipeableState.animateTo(
                     BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationTime.normal)
+                    tween(Constants.AnimationTime.long)
                 )
             }
     }
