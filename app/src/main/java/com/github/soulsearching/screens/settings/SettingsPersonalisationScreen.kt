@@ -36,7 +36,7 @@ fun SettingsPersonalisationScreen(
                 SettingsElement(
                     title = stringResource(id = R.string.main_page_title),
                     text = stringResource(id = R.string.main_page_text),
-                    padding = Constants.Spacing.large
+                    padding = PaddingValues(Constants.Spacing.large)
                 )
             }
             item {

@@ -14,7 +14,7 @@ You can have a theme that depends on your system settings or the current music c
 
 <div align="center">
     <img title="" src="screenshots/main_dynamic_theme.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/dynamic_example_main.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/second_dynamic_example_main.png" alt="" data-align="center" width="290">
     <img title="" src="screenshots/dynamic_example_player.png" alt="" data-align="center" width="290">
     <img title="" src="screenshots/dynamic_example_playlist.png" alt="" data-align="center" width="290">
     <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="290">

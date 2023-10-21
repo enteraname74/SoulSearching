@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.runtime.Composable
@@ -22,7 +23,8 @@ fun SettingsScreen(
     finishAction: () -> Unit,
     navigateToManageMusics: () -> Unit,
     navigateToColorTheme: () -> Unit,
-    navigateToPersonalisation: () -> Unit
+    navigateToPersonalisation: () -> Unit,
+    navigateToAbout: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -56,6 +58,14 @@ fun SettingsScreen(
                     text = stringResource(id = R.string.personalization_text),
                     icon = Icons.Rounded.Edit,
                     clickAction = navigateToPersonalisation
+                )
+            }
+            item {
+                SettingsElement(
+                    title = stringResource(id = R.string.about_title),
+                    text = stringResource(id = R.string.about_text),
+                    icon = Icons.Rounded.Info,
+                    clickAction = navigateToAbout
                 )
             }
             item {

@@ -59,7 +59,7 @@ fun MoreArtistsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(color = DynamicColor.secondary)
+                    .background(color = DynamicColor.primary)
             ) {
                 Row(
                     modifier = Modifier

@@ -14,7 +14,7 @@ android {
         applicationId "com.github.soulsearching"
         minSdk 26
         targetSdk 33
-        versionCode 2
+        versionCode 3
         versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -25,13 +25,14 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "VERSION_NAME", "\"" + version_name + "-dev" + "\""
             manifestPlaceholders = [appName:"Soul Searching Dev"]
             versionNameSuffix ".dev"
             applicationIdSuffix ".dev"
-
         }
 
         release {
+            buildConfigField "String", "VERSION_NAME", "\"" + version_name + "\""
             manifestPlaceholders = [appName:"Soul Searching"]
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

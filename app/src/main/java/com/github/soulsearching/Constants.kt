@@ -9,6 +9,7 @@ object Constants {
         val medium: Dp = 8.dp
         val large: Dp = 16.dp
         val veryLarge: Dp = 24.dp
+        val extraLarge: Dp = 32.dp
     }
 
     object ImageSize {

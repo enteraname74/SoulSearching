@@ -12,6 +12,7 @@
     <string name="deleted_musics">%1$d musiques ont été supprimées car elles n\'existent plus sur l\'appareil</string>
     <string name="deleted_music">1 musique a été supprimée car elle n\'existe plus sur l\'appareil</string>
     <string name="missing_permissions">Vous devez accepter toutes les permissions de l\'application pour que cette dernière fonctionne correctement.</string>
+    <string name="version_name_action_text">Soul Searching - Average White Band - 1976</string>
 
     <!-- App features strings -->
     <string name="complete_application_title">Une application de musique complète</string>
@@ -117,6 +118,8 @@
     <string name="color_theme_text">Thème dynamique, personnalisé</string>
     <string name="personalization_title">Personnalisation</string>
     <string name="personalization_text">Gérer la vue de la page principale</string>
+    <string name="about_title">À propos de Soul Searching</string>
+    <string name="about_text">Développeurs, nom de la version de l\'application</string>
 
     <!-- Color theme strings -->
     <string name="dynamic_theme_title">Thème dynamique</string>
@@ -148,4 +151,12 @@
     <string name="saving_new_musics">Sauvegarde des nouvelles musiques…</string>
     <string name="deleting_musics_from_unselected_folders">Suppression des musiques des dossiers désélectionnés…</string>
     <string name="fetching_folders">Récupération des dossiers</string>
+
+    <!-- About Soul Searching strings -->
+    <string name="developers_title">Développeurs</string>
+    <string name="developers_text">Les développeurs derrière le projet Soul Searching</string>
+    <string name="version_name_title">Nom de la version de l\'application</string>
+
+    <!-- developers function strings -->
+    <string name="lead_developer">Développeur principal</string>
 </resources>
