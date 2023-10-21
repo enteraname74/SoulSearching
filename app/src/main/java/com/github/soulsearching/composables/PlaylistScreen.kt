@@ -4,7 +4,7 @@ package com.github.soulsearching.composables
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.animation.animateColorAsState
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,17 +15,18 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
@@ -70,46 +71,59 @@ fun PlaylistScreen(
         BottomSheetStates.COLLAPSED
     )
 
-    val palette = ColorPaletteUtils.getPaletteFromAlbumArt(image)
+    var hasPlaylistPaletteBeenFetched by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    val primaryColor: Color by animateColorAsState(
-        targetValue =
-        if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-            && palette != null
-        ) {
-            ColorPaletteUtils.getDynamicPrimaryColor(palette.rgb)
-        } else {
-            DynamicColor.primary
-        },
-        tween(Constants.AnimationTime.normal)
-    )
+    image?.let {
+        if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()) {
+            SettingsUtils.settingsViewModel.setPlaylistColorPalette(it)
+            hasPlaylistPaletteBeenFetched = true
+        }
+    }
 
-    val secondaryColor: Color by animateColorAsState(
-        targetValue =
-        if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-            && palette != null
-        ) {
-            ColorPaletteUtils.getDynamicSecondaryColor(palette.rgb)
-        } else {
-            DynamicColor.secondary
-        },
-        tween(Constants.AnimationTime.normal)
-    )
+    BackHandler(playerSwipeableState.currentValue != BottomSheetStates.EXPANDED) {
+        navigateBack()
+    }
 
-    val textColor: Color by animateColorAsState(
-        targetValue =
-        if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-            && palette != null
-        ) {
-            Color.White
-        } else {
-            DynamicColor.onPrimary
-        },
-        tween(Constants.AnimationTime.normal)
-    )
+//    val DynamicColor.primary: Color by animateColorAsState(
+//        targetValue =
+//        if (
+//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+//            && palette != null
+//        ) {
+//            ColorPaletteUtils.getDynamicDynamicColor.primary(palette.rgb)
+//        } else {
+//            DynamicColor.primary
+//        },
+//        tween(Constants.AnimationTime.normal)
+//    )
+//
+//    val secondaryColor: Color by animateColorAsState(
+//        targetValue =
+//        if (
+//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+//            && palette != null
+//        ) {
+//            ColorPaletteUtils.getDynamicSecondaryColor(palette.rgb)
+//        } else {
+//            DynamicColor.secondary
+//        },
+//        tween(Constants.AnimationTime.normal)
+//    )
+//
+//    val textColor: Color by animateColorAsState(
+//        targetValue =
+//        if (
+//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+//            && palette != null
+//        ) {
+//            Color.White
+//        } else {
+//            DynamicColor.onPrimary
+//        },
+//        tween(Constants.AnimationTime.normal)
+//    )
 
     val shuffleAction = {
         if (musicState.musics.isNotEmpty()) {
@@ -148,7 +162,7 @@ fun PlaylistScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(primaryColor)
+            .background(DynamicColor.primary)
     ) {
         val constraintsScope = this
         val maxHeight = with(LocalDensity.current) {
@@ -169,8 +183,6 @@ fun PlaylistScreen(
                         AppHeaderBar(
                             title = title,
                             leftAction = navigateBack,
-                            backgroundColor = primaryColor,
-                            contentColor = textColor
                         )
                         Row(
                             modifier = Modifier
@@ -192,11 +204,7 @@ fun PlaylistScreen(
                         searchAction = { searchAction() },
                         isLandscapeMode = true,
                         playlistType = playlistType,
-                        primaryColor = primaryColor,
-                        secondaryColor = secondaryColor,
-                        tint = textColor
                     )
-                    Log.d("PLAYLIST TYPE", playlistType.toString())
                     MusicList(
                         musicBottomSheetState = musicBottomSheetState,
                         musicState = musicState,
@@ -213,10 +221,6 @@ fun PlaylistScreen(
                             .weight(1f),
                         playerSwipeableState = playerSwipeableState,
                         updateNbPlayedAction = updateNbPlayedAction,
-                        primaryColor = primaryColor,
-                        secondaryColor = secondaryColor,
-                        onPrimaryColor = textColor,
-                        onSecondaryColor = textColor
                     )
                 }
             }
@@ -230,10 +234,6 @@ fun PlaylistScreen(
                     navigateToModifyMusic = navigateToModifyMusic,
                     playerMusicListViewModel = playerMusicListViewModel,
                     playerSwipeableState = playerSwipeableState,
-                    primaryColor = primaryColor,
-                    secondaryColor = secondaryColor,
-                    onPrimaryColor = textColor,
-                    onSecondaryColor = textColor
                 )
 
                 Column(
@@ -243,8 +243,6 @@ fun PlaylistScreen(
                     AppHeaderBar(
                         title = title,
                         leftAction = navigateBack,
-                        backgroundColor = primaryColor,
-                        contentColor = textColor
                     )
                     LazyColumn(
                         modifier = Modifier
@@ -272,17 +270,14 @@ fun PlaylistScreen(
                                 searchAction = { searchAction() },
                                 isLandscapeMode = false,
                                 playlistType = playlistType,
-                                primaryColor = primaryColor,
-                                secondaryColor = secondaryColor,
-                                tint = textColor
                             )
                         }
                         items(
                             items = musicState.musics
                         ) { elt ->
                             MusicItemComposable(
-                                primaryColor = primaryColor,
-                                textColor = textColor,
+                                primaryColor = DynamicColor.primary,
+                                textColor = DynamicColor.onPrimary,
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
@@ -335,9 +330,6 @@ fun PlaylistScreen(
             maxHeight = maxHeight,
             placeholder = stringResource(id = R.string.search_for_musics),
             playerSwipeableState = playerSwipeableState,
-            textColor = textColor,
-            primaryColor = primaryColor,
-            secondaryColor = secondaryColor
         ) { searchText, focusManager ->
             SearchMusics(
                 playerSwipeableState = playerSwipeableState,
@@ -348,8 +340,6 @@ fun PlaylistScreen(
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
-                primaryColor = primaryColor,
-                textColor = textColor
             )
         }
     }

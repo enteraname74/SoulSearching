@@ -36,6 +36,7 @@ fun SelectedArtistScreen(
     var isArtistFetched by rememberSaveable {
         mutableStateOf(false)
     }
+
     if (!isArtistFetched) {
         selectedArtistViewModel.setSelectedArtist(UUID.fromString(selectedArtistId))
         isArtistFetched = true

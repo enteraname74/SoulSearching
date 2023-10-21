@@ -1,9 +1,13 @@
 package com.github.soulsearching.viewModels
 
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.palette.graphics.Palette
+import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.classes.enumsAndTypes.ElementEnum
@@ -19,6 +23,8 @@ class SettingsViewModel: ViewModel() {
     var isArtistsShown by mutableStateOf(true)
 
     var isVerticalBarShown by mutableStateOf(false)
+
+    var playlistPalette by mutableStateOf<Palette.Swatch?>(null)
 
     fun updateColorTheme(newTheme: Int) {
         colorTheme = newTheme
@@ -108,5 +114,9 @@ class SettingsViewModel: ViewModel() {
         }
         list.add(ElementEnum.MUSICS)
         return list
+    }
+
+    fun setPlaylistColorPalette(playlistImage: Bitmap?) {
+        playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(playlistImage)
     }
 }

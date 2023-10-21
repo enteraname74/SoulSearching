@@ -53,7 +53,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Schedule,
                 contentDescription = stringResource(id = R.string.sort_by_date_added),
-                tint = if (sortType == SortType.ADDED_DATE) DynamicColor.outline else DynamicColor.onPrimary
+                tint = if (sortType == SortType.ADDED_DATE) DynamicColor.onPrimary else DynamicColor.subText
             )
             Icon(
                 modifier = Modifier
@@ -64,7 +64,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Pin,
                 contentDescription = stringResource(id = R.string.sort_by_most_listened),
-                tint = if (sortType == SortType.NB_PLAYED) DynamicColor.outline else DynamicColor.onPrimary
+                tint = if (sortType == SortType.NB_PLAYED) DynamicColor.onPrimary else DynamicColor.subText
             )
             Icon(
                 modifier = Modifier
@@ -75,7 +75,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.SortByAlpha,
                 contentDescription = stringResource(id = R.string.sort_by_name),
-                tint = if (sortType == SortType.NAME) DynamicColor.outline else DynamicColor.onPrimary
+                tint = if (sortType == SortType.NAME) DynamicColor.onPrimary else DynamicColor.subText
             )
         }
         Icon(
