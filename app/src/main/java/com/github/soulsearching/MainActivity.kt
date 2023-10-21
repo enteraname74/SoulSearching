@@ -627,6 +627,14 @@ class MainActivity : AppCompatActivity() {
                                     "about"
                                 ) {
                                     SettingsAboutScreen(
+                                        finishAction = { navController.popBackStack() },
+                                        navigateToDevelopers = { navController.navigate("developers") }
+                                    )
+                                }
+                                composable(
+                                    "developers"
+                                ) {
+                                    SettingsDevelopersScreen(
                                         finishAction = { navController.popBackStack() }
                                     )
                                 }
