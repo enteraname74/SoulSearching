@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
+import kotlin.math.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.ColorPaletteUtils
@@ -205,8 +206,8 @@ fun PlayerSwipeableView(
             }
         }
         else -> {
-            if ((1.0 / (abs(swipeableState.offset.value) / 100)).toFloat() > 0.1) {
-                (1.0 / (abs(swipeableState.offset.value) / 100)).toFloat().coerceAtMost(1.0F)
+            if ((1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat() > 0.1) {
+                (1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat().coerceAtMost(1.0F)
             } else {
                 0.0F
             }
@@ -218,7 +219,7 @@ fun PlayerSwipeableView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = swipeableState.offset.value.roundToInt()
+                    y = max(swipeableState.offset.value.roundToInt(), 0)
                 )
             }
             .swipeable(
@@ -277,11 +278,11 @@ fun PlayerSwipeableView(
                 val imagePaddingStart =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxWidth * 1.5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp,
+                            (((maxWidth * 1.5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
-                            (((maxWidth * 3.5) / 100) - (swipeableState.offset.value / 40)).roundToInt().dp,
+                            (((maxWidth * 3.5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 40)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                     }
@@ -289,11 +290,11 @@ fun PlayerSwipeableView(
                 val imagePaddingTop =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxHeight * 7) / 100) - (swipeableState.offset.value / 5)).roundToInt().dp,
+                            (((maxHeight * 7) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 5)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
-                            (((maxHeight * 5) / 100) - (swipeableState.offset.value / 15)).roundToInt().dp,
+                            (((maxHeight * 5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                     }
@@ -302,11 +303,11 @@ fun PlayerSwipeableView(
                 val imageSize =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxWidth * 10) / 100) - (swipeableState.offset.value / 2).roundToInt()).dp,
+                            (((maxWidth * 10) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 2)).dp,
                             55.dp
                         )
                         else -> max(
-                            (((maxWidth * 30) / 100) - (swipeableState.offset.value / 7).roundToInt()).dp,
+                            (((maxWidth * 30) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 7)).dp,
                             55.dp
                         )
                     }

@@ -380,7 +380,12 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() },
+                                        navigateBack = {
+                                            SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                                null
+                                            )
+                                            navController.popBackStack()
+                                        },
                                         retrieveCoverMethod = {
                                             allImageCoversViewModel.getImageCover(
                                                 it
@@ -409,7 +414,12 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() },
+                                        navigateBack = {
+                                            SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                                null
+                                            )
+                                            navController.popBackStack()
+                                        },
                                         retrieveCoverMethod = {
                                             allImageCoversViewModel.getImageCover(
                                                 it
@@ -438,7 +448,12 @@ class MainActivity : AppCompatActivity() {
                                         playlistState = playlistState,
                                         onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                         navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                        navigateBack = { navController.popBackStack() },
+                                        navigateBack = {
+                                            SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                                null
+                                            )
+                                            navController.popBackStack()
+                                        },
                                         retrieveCoverMethod = {
                                             allImageCoversViewModel.getImageCover(
                                                 it

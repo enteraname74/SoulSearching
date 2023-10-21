@@ -1,5 +1,6 @@
 package com.github.soulsearching.ui.theme
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,12 @@ object DynamicColor {
                 && PlayerUtils.playerViewModel.currentColorPalette != null
             ) {
                 ColorPaletteUtils.getDynamicPrimaryColor()
+            } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+                && SettingsUtils.settingsViewModel.playlistPalette != null
+            ) {
+                ColorPaletteUtils.getDynamicPrimaryColor(
+                    SettingsUtils.settingsViewModel.playlistPalette!!.rgb
+                )
             } else {
                 MaterialTheme.colorScheme.primary
             },
@@ -31,8 +38,15 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
+            if (
+                (
+                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        )
+                || (
+                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                        )
             ) {
                 Color.White
             } else {
@@ -50,6 +64,12 @@ object DynamicColor {
                 && PlayerUtils.playerViewModel.currentColorPalette != null
             ) {
                 ColorPaletteUtils.getDynamicSecondaryColor()
+            } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+                && SettingsUtils.settingsViewModel.playlistPalette != null
+            ) {
+                ColorPaletteUtils.getDynamicSecondaryColor(
+                    SettingsUtils.settingsViewModel.playlistPalette!!.rgb
+                )
             } else {
                 MaterialTheme.colorScheme.secondary
             },
@@ -60,8 +80,15 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
+            if (
+                (
+                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        )
+                || (
+                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                        )
             ) {
                 Color.White
             } else {
@@ -74,8 +101,15 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
+            if (
+                (
+                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        )
+                || (
+                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                        )
             ) {
                 Color.LightGray
             } else {
