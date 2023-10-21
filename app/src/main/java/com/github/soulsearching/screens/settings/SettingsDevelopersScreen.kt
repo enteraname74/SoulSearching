@@ -2,15 +2,12 @@ package com.github.soulsearching.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.Developer
 import com.github.soulsearching.composables.AppHeaderBar
