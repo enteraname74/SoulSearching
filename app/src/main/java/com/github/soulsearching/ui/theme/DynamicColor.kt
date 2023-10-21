@@ -41,20 +41,6 @@ object DynamicColor {
             tween(Constants.AnimationTime.normal)
         ).value
 
-    val outline: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
-            ) {
-                Color.LightGray
-            } else {
-                MaterialTheme.colorScheme.onPrimary
-            },
-            tween(Constants.AnimationTime.normal)
-        ).value
-
 
     val secondary: Color
         @Composable
