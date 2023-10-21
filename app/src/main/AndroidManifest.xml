@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -10,11 +16,44 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoulSearching"
+        android:largeHeap="true"
         tools:targetApi="31">
+        <service
+            android:name=".service.PlayerService"
+            android:exported="true"
+            android:enabled="true" />
+
+        <receiver
+            android:name=".classes.notification.receivers.ChangeFavoriteStateNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".classes.notification.receivers.DeletedNotificationIntentReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".classes.notification.receivers.NextMusicNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".classes.notification.receivers.PausePlayNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        <receiver
+            android:name=".classes.notification.receivers.PreviousMusicNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+<!--        <receiver-->
+<!--            android:name="androidx.media.session.MediaButtonReceiver"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MEDIA_BUTTON" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.SoulSearching">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
