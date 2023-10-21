@@ -25,13 +25,14 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "VERSION_NAME", "\"" + version_name + "-dev" + "\""
             manifestPlaceholders = [appName:"Soul Searching Dev"]
             versionNameSuffix ".dev"
             applicationIdSuffix ".dev"
-
         }
 
         release {
+            buildConfigField "String", "VERSION_NAME", "\"" + version_name + "\""
             manifestPlaceholders = [appName:"Soul Searching"]
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

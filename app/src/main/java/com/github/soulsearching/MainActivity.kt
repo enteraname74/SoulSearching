@@ -569,6 +569,9 @@ class MainActivity : AppCompatActivity() {
                                         },
                                         navigateToPersonalisation = {
                                             navController.navigate("personalisation")
+                                        },
+                                        navigateToAbout = {
+                                            navController.navigate("about")
                                         }
                                     )
                                 }
@@ -617,6 +620,13 @@ class MainActivity : AppCompatActivity() {
                                     "colorTheme"
                                 ) {
                                     SettingsColorThemeScreen(
+                                        finishAction = { navController.popBackStack() }
+                                    )
+                                }
+                                composable(
+                                    "about"
+                                ) {
+                                    SettingsAboutScreen(
                                         finishAction = { navController.popBackStack() }
                                     )
                                 }

@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.ui.theme.DynamicColor
@@ -23,7 +22,7 @@ fun SettingsElement(
     text: String,
     icon: ImageVector? = null,
     clickAction: () -> Unit = {},
-    padding: Dp = Constants.Spacing.veryLarge
+    padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge)
 ) {
     Row(
         modifier = Modifier

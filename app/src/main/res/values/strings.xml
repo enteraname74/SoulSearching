@@ -11,6 +11,7 @@
     <string name="deleted_musics">%1$d musics were deleted because they don\'t exist anymore on the device</string>
     <string name="deleted_music">1 music was deleted because it don\'t exist anymore on the device</string>
     <string name="missing_permissions">You must accept all permissions required by the application for it to work properly.</string>
+    <string name="version_name_action_text">Soul Searching - Average White Band - 1976</string>
 
     <!-- App features strings -->
     <string name="complete_application_title">Complete music application</string>
@@ -116,6 +117,8 @@
     <string name="color_theme_text">Dynamic theme, personalized theme</string>
     <string name="personalization_title">Personalization</string>
     <string name="personalization_text">Manage main page view</string>
+    <string name="about_title">About Soul Searching</string>
+    <string name="about_text">Developers, application\'s version name</string>
 
     <!-- Color theme strings -->
     <string name="dynamic_theme_title">Dynamic theme</string>
@@ -147,4 +150,12 @@
     <string name="saving_new_musics">Saving new musics…</string>
     <string name="deleting_musics_from_unselected_folders">Deleting musics from unselected folders…</string>
     <string name="fetching_folders">Fetching folders</string>
+
+    <!-- About Soul Searching strings -->
+    <string name="developers_title">Developers</string>
+    <string name="developers_text">The developers behind the Soul Searching project</string>
+    <string name="version_name_title">Application\'s version name</string>
+
+    <!-- developers function strings -->
+    <string name="lead_developer">Lead developer</string>
 </resources>
