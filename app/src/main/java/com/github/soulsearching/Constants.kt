@@ -9,7 +9,6 @@ object Constants {
         val medium: Dp = 8.dp
         val large: Dp = 16.dp
         val veryLarge: Dp = 24.dp
-        val extraLarge: Dp = 32.dp
     }
 
     object ImageSize {
@@ -21,7 +20,7 @@ object Constants {
     }
 
     object AnimationTime {
-        const val normal: Int = 100
-        const val long: Int = 300
+        const val short: Int = 100
+        const val normal: Int = 300
     }
 }

@@ -104,7 +104,7 @@ fun PlaylistScreen(
             .launch {
                 searchSwipeableState.animateTo(
                     BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationTime.long)
+                    tween(Constants.AnimationTime.normal)
                 )
             }
     }
@@ -243,7 +243,10 @@ fun PlaylistScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                        playerSwipeableState.animateTo(
+                                            BottomSheetStates.EXPANDED,
+                                            tween(Constants.AnimationTime.normal)
+                                        )
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)
