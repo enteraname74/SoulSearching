@@ -143,13 +143,16 @@ class AllMusicsViewModel @Inject constructor(
             )
         } else {
             // On ajoute si possible la couverture de l'album de la musique :
-            val imageCover = if (correspondingAlbum.coverId != null) {
+            val albumCover = if (correspondingAlbum.coverId != null) {
                 imageCoverDao.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
             } else {
                 null
             }
-            if (imageCover != null) {
-                musicToAdd.coverId = imageCover.coverId
+            val shouldPutAlbumCoverWithMusic = (albumCover != null) && (musicCover == null)
+            val shouldUpdateArtistCover = (correspondingArtist?.coverId == null) && ((albumCover != null) || (musicCover != null))
+
+            if (shouldPutAlbumCoverWithMusic) {
+                musicToAdd.coverId = albumCover?.coverId
             } else if (musicCover != null) {
                 val coverId = UUID.randomUUID()
                 musicToAdd.coverId = coverId
@@ -159,6 +162,25 @@ class AllMusicsViewModel @Inject constructor(
                         cover = musicCover
                     )
                 )
+                // Dans ce cas, l'album n'a pas d'image, on lui en ajoute une :
+                albumDao.updateAlbumCover(
+                    newCoverId = coverId,
+                    albumId = correspondingAlbum.albumId
+                )
+            }
+
+            if (shouldUpdateArtistCover) {
+                val newArtistCover: UUID? = if (shouldPutAlbumCoverWithMusic) {
+                    albumCover?.coverId
+                } else {
+                    musicToAdd.coverId
+                }
+                if (correspondingArtist != null && newArtistCover != null) {
+                    artistDao.updateArtistCover(
+                        newCoverId = newArtistCover,
+                        artistId = correspondingArtist.artistId
+                    )
+                }
             }
         }
         musicDao.insertMusic(musicToAdd)
