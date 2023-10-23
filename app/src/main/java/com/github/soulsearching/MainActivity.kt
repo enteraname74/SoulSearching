@@ -196,6 +196,9 @@ class MainActivity : AppCompatActivity() {
                 var cleanImagesLaunched by rememberSaveable {
                     mutableStateOf(false)
                 }
+                var cleanMusicsLaunched by rememberSaveable {
+                    mutableStateOf(false)
+                }
 
                 // On regarde d'abord les permissions :
                 val readPermissionLauncher = rememberLauncherForActivityResult(
@@ -287,6 +290,11 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 cleanImagesLaunched = true
                             }
+                        }
+
+                        if (musicState.musics.isNotEmpty() && !cleanMusicsLaunched) {
+                            allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
+                            cleanMusicsLaunched = true
                         }
 
                         if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {

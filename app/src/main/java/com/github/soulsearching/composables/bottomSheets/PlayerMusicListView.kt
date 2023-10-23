@@ -69,7 +69,7 @@ fun PlayerMusicListView(
 
     BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.long))
+            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
         }
     }
 
@@ -77,7 +77,7 @@ fun PlayerMusicListView(
         if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.long))
+                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
                 }
             }
         } else {
@@ -93,7 +93,7 @@ fun PlayerMusicListView(
         } else {
             ColorPaletteUtils.getDynamicPrimaryColor()
         },
-        tween(Constants.AnimationTime.long)
+        tween(Constants.AnimationTime.normal)
     )
 
     val secondaryColor: Color by animateColorAsState(
@@ -105,7 +105,7 @@ fun PlayerMusicListView(
         } else {
             ColorPaletteUtils.getDynamicSecondaryColor()
         },
-        tween(Constants.AnimationTime.long)
+        tween(Constants.AnimationTime.normal)
     )
 
     val textColor: Color by animateColorAsState(
@@ -117,7 +117,7 @@ fun PlayerMusicListView(
         } else {
             Color.White
         },
-        tween(Constants.AnimationTime.long)
+        tween(Constants.AnimationTime.normal)
     )
 
     MusicBottomSheetEvents(
@@ -128,10 +128,10 @@ fun PlayerMusicListView(
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = { path ->
             coroutineScope.launch {
-                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.long))
+                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
             }.invokeOnCompletion {
                 coroutineScope.launch {
-                    playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.long))
+                    playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
                 }
@@ -222,7 +222,7 @@ fun PlayerMusicListView(
                             coroutineScope.launch {
                                 musicListSwipeableState.animateTo(
                                     BottomSheetStates.COLLAPSED,
-                                    tween(Constants.AnimationTime.long)
+                                    tween(Constants.AnimationTime.normal)
                                 )
                             }.invokeOnCompletion {
                                 PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(

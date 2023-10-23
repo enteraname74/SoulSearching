@@ -22,6 +22,6 @@ interface FolderDao {
     @Query("SELECT * FROM Folder")
     fun getAllFoldersSimple(): List<Folder>
 
-    @Query("SELECT folderPath FROM Folder WHERE isSelected = FALSE")
+    @Query("SELECT folderPath FROM Folder WHERE isSelected = 0")
     suspend fun getAllHiddenFoldersPaths(): List<String>
 }

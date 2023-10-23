@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables.searchComposables
 
 import android.graphics.Bitmap
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.res.stringResource
+import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
@@ -190,7 +192,10 @@ fun SearchAll(
                     onClick = {
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                            playerSwipeableState.animateTo(
+                                BottomSheetStates.EXPANDED,
+                                tween(Constants.AnimationTime.normal)
+                            )
                         }.invokeOnCompletion {
                             PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                 music = music,

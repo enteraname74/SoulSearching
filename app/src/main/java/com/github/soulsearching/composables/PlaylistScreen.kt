@@ -3,7 +3,6 @@ package com.github.soulsearching.composables
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -14,12 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -86,45 +81,6 @@ fun PlaylistScreen(
         navigateBack()
     }
 
-//    val DynamicColor.primary: Color by animateColorAsState(
-//        targetValue =
-//        if (
-//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-//            && palette != null
-//        ) {
-//            ColorPaletteUtils.getDynamicDynamicColor.primary(palette.rgb)
-//        } else {
-//            DynamicColor.primary
-//        },
-//        tween(Constants.AnimationTime.normal)
-//    )
-//
-//    val secondaryColor: Color by animateColorAsState(
-//        targetValue =
-//        if (
-//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-//            && palette != null
-//        ) {
-//            ColorPaletteUtils.getDynamicSecondaryColor(palette.rgb)
-//        } else {
-//            DynamicColor.secondary
-//        },
-//        tween(Constants.AnimationTime.normal)
-//    )
-//
-//    val textColor: Color by animateColorAsState(
-//        targetValue =
-//        if (
-//            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-//            && palette != null
-//        ) {
-//            Color.White
-//        } else {
-//            DynamicColor.onPrimary
-//        },
-//        tween(Constants.AnimationTime.normal)
-//    )
-
     val shuffleAction = {
         if (musicState.musics.isNotEmpty()) {
             coroutineScope
@@ -148,7 +104,7 @@ fun PlaylistScreen(
             .launch {
                 searchSwipeableState.animateTo(
                     BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationTime.long)
+                    tween(Constants.AnimationTime.normal)
                 )
             }
     }
@@ -200,7 +156,10 @@ fun PlaylistScreen(
                     }
                     PlaylistPanel(
                         editAction = navigateToModifyPlaylist,
-                        shuffleAction = { shuffleAction() },
+                        shuffleAction = {
+                            playlistId?.let(updateNbPlayedAction)
+                            shuffleAction()
+                        },
                         searchAction = { searchAction() },
                         isLandscapeMode = true,
                         playlistType = playlistType,
@@ -266,7 +225,10 @@ fun PlaylistScreen(
                         stickyHeader {
                             PlaylistPanel(
                                 editAction = navigateToModifyPlaylist,
-                                shuffleAction = { shuffleAction() },
+                                shuffleAction = {
+                                    playlistId?.let(updateNbPlayedAction)
+                                    shuffleAction()
+                                },
                                 searchAction = { searchAction() },
                                 isLandscapeMode = false,
                                 playlistType = playlistType,
@@ -281,7 +243,10 @@ fun PlaylistScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                        playerSwipeableState.animateTo(
+                                            BottomSheetStates.EXPANDED,
+                                            tween(Constants.AnimationTime.normal)
+                                        )
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)

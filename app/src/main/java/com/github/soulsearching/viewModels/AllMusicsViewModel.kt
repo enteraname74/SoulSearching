@@ -2,7 +2,6 @@ package com.github.soulsearching.viewModels
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,7 +36,6 @@ class AllMusicsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
-    private var isDoingOperations = false
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->
@@ -143,13 +141,17 @@ class AllMusicsViewModel @Inject constructor(
             )
         } else {
             // On ajoute si possible la couverture de l'album de la musique :
-            val imageCover = if (correspondingAlbum.coverId != null) {
+            val albumCover = if (correspondingAlbum.coverId != null) {
                 imageCoverDao.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
             } else {
                 null
             }
-            if (imageCover != null) {
-                musicToAdd.coverId = imageCover.coverId
+            val shouldPutAlbumCoverWithMusic = (albumCover != null) && (musicCover == null)
+            val shouldUpdateArtistCover =
+                (correspondingArtist?.coverId == null) && ((albumCover != null) || (musicCover != null))
+
+            if (shouldPutAlbumCoverWithMusic) {
+                musicToAdd.coverId = albumCover?.coverId
             } else if (musicCover != null) {
                 val coverId = UUID.randomUUID()
                 musicToAdd.coverId = coverId
@@ -159,6 +161,25 @@ class AllMusicsViewModel @Inject constructor(
                         cover = musicCover
                     )
                 )
+                // Dans ce cas, l'album n'a pas d'image, on lui en ajoute une :
+                albumDao.updateAlbumCover(
+                    newCoverId = coverId,
+                    albumId = correspondingAlbum.albumId
+                )
+            }
+
+            if (shouldUpdateArtistCover) {
+                val newArtistCover: UUID? = if (shouldPutAlbumCoverWithMusic) {
+                    albumCover?.coverId
+                } else {
+                    musicToAdd.coverId
+                }
+                if (correspondingArtist != null && newArtistCover != null) {
+                    artistDao.updateArtistCover(
+                        newCoverId = newArtistCover,
+                        artistId = correspondingArtist.artistId
+                    )
+                }
             }
         }
         musicDao.insertMusic(musicToAdd)
@@ -186,30 +207,35 @@ class AllMusicsViewModel @Inject constructor(
     }
 
     fun checkAndDeleteMusicIfNotExist(context: Context) {
-        if (!isDoingOperations) {
-            isDoingOperations = true
-            CoroutineScope(Dispatchers.IO).launch {
-                Log.d("ALL MUSICS VM", "LAUNCH CHECK")
-                var deleteCount = 0
-                for (music in state.value.musics) {
-                    if (!File(music.path).exists()) {
-                        Log.d("ALL MUSICS VM", "${music.name} don't exist anymore")
-                        PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(music.musicId, context)
-                        musicDao.deleteMusic(music)
-                        deleteCount += 1
-                    }
+        CoroutineScope(Dispatchers.IO).launch {
+            var deleteCount = 0
+            for (music in state.value.musics) {
+                if (!File(music.path).exists()) {
+                    PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
+                        music.musicId,
+                        context
+                    )
+                    musicDao.deleteMusic(music)
+                    deleteCount += 1
                 }
+            }
 
-                if (deleteCount == 1) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, context.getString(R.string.deleted_music),Toast.LENGTH_SHORT).show()
-                    }
-                } else if (deleteCount > 1) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, context.getString(R.string.deleted_musics, deleteCount),Toast.LENGTH_SHORT).show()
-                    }
+            if (deleteCount == 1) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.deleted_music),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                isDoingOperations = false
+            } else if (deleteCount > 1) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.deleted_musics, deleteCount),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

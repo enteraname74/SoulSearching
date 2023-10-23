@@ -14,7 +14,7 @@ android {
         applicationId "com.github.soulsearching"
         minSdk 26
         targetSdk 33
-        versionCode 3
+        versionCode 4
         versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -27,7 +27,7 @@ android {
         debug {
             buildConfigField "String", "VERSION_NAME", "\"" + version_name + "-dev" + "\""
             manifestPlaceholders = [appName:"Soul Searching Dev"]
-            versionNameSuffix ".dev"
+            versionNameSuffix "-dev"
             applicationIdSuffix ".dev"
         }
 

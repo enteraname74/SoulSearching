@@ -57,7 +57,7 @@ interface ArtistDao {
     fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics>
 
     @Transaction
-    @Query("SELECT * FROM Artist WHERE isInQuickAccess = TRUE")
+    @Query("SELECT * FROM Artist WHERE isInQuickAccess = 1")
     fun getAllArtistsFromQuickAccess(): Flow<List<ArtistWithMusics>>
 
     @Transaction

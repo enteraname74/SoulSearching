@@ -125,7 +125,7 @@ fun MainPageScreen(
                     coroutineScope.launch {
                         searchSwipeableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationTime.long)
+                            tween(Constants.AnimationTime.normal)
                         )
                     }
                 }
@@ -208,7 +208,10 @@ fun MainPageScreen(
                                 },
                                 playMusicAction = { music ->
                                     coroutineScope.launch {
-                                        playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                        playerSwipeableState.animateTo(
+                                            BottomSheetStates.EXPANDED,
+                                            tween(Constants.AnimationTime.normal)
+                                        )
                                     }.invokeOnCompletion {
                                         val musicListSingleton = arrayListOf(music)
                                         if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
@@ -467,7 +470,8 @@ fun MainPageScreen(
                                                 coroutineScope
                                                     .launch {
                                                         playerSwipeableState.animateTo(
-                                                            BottomSheetStates.EXPANDED
+                                                            BottomSheetStates.EXPANDED,
+                                                            tween(Constants.AnimationTime.normal)
                                                         )
                                                     }
                                                     .invokeOnCompletion {
@@ -492,7 +496,10 @@ fun MainPageScreen(
                             music = elt,
                             onClick = { music ->
                                 coroutineScope.launch {
-                                    playerSwipeableState.animateTo(BottomSheetStates.EXPANDED)
+                                    playerSwipeableState.animateTo(
+                                        BottomSheetStates.EXPANDED,
+                                        tween(Constants.AnimationTime.normal)
+                                    )
                                 }.invokeOnCompletion {
                                     if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
                                         playerMusicListViewModel.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)

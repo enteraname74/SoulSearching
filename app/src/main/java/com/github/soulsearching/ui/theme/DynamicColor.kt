@@ -1,6 +1,5 @@
 package com.github.soulsearching.ui.theme
 
-import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +30,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.primary
             },
-            tween(Constants.AnimationTime.normal)
+            tween(Constants.AnimationTime.short)
         ).value
 
     val onPrimary: Color
@@ -52,7 +51,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onPrimary
             },
-            tween(Constants.AnimationTime.normal)
+            tween(Constants.AnimationTime.short)
         ).value
 
 
@@ -73,7 +72,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.secondary
             },
-            tween(Constants.AnimationTime.normal)
+            tween(Constants.AnimationTime.short)
         ).value
 
     val onSecondary: Color
@@ -94,7 +93,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onSecondary
             },
-            tween(Constants.AnimationTime.normal)
+            tween(Constants.AnimationTime.short)
         ).value
 
     val subText: Color
@@ -115,6 +114,6 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.outline
             },
-            tween(Constants.AnimationTime.normal)
+            tween(Constants.AnimationTime.short)
         ).value
 }
