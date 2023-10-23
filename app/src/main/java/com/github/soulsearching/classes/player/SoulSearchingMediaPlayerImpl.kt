@@ -23,6 +23,7 @@ import com.github.soulsearching.classes.notification.notificationImpl.SoulSearch
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
+import java.io.File
 
 class SoulSearchingMediaPlayerImpl(private val context: Context) :
     SoulSearchingPlayer,
@@ -81,7 +82,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     override fun setMusic(music: Music) {
         player.stop()
         player.reset()
-        player.setDataSource(music.path)
+        if (File(music.path).exists()) {
+            player.setDataSource(music.path)
+        }
     }
 
     override fun onlyLoadMusic() {
