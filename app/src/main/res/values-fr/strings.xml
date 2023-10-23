@@ -56,7 +56,7 @@
     <string name="modify_playlist">Modifier cette playlist</string>
     <string name="delete_album">Supprimer cet album</string>
     <string name="modify_album">Modifier cet album</string>
-    <string name="delete_artist">Supprimer cette artiste</string>
+    <string name="delete_artist">Supprimer cet artiste</string>
     <string name="modify_artist">Modifier cet artiste</string>
     <string name="play_next">Jouer ensuite</string>
     <string name="remove_from_playlist">Retirer de la playlist</string>
