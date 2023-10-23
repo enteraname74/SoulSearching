@@ -1,7 +1,6 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*

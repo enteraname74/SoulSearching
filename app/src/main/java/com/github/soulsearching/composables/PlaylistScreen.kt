@@ -3,7 +3,6 @@ package com.github.soulsearching.composables
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi

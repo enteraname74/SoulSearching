@@ -66,7 +66,7 @@ interface AlbumDao {
     fun getAllAlbumsWithMusicsSimple(): List<AlbumWithMusics>
 
     @Transaction
-    @Query("SELECT * FROM Album WHERE isInQuickAccess = TRUE")
+    @Query("SELECT * FROM Album WHERE isInQuickAccess = 1")
     fun getAllAlbumsFromQuickAccess(): Flow<List<AlbumWithArtist>>
 
     @Query(

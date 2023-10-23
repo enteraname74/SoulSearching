@@ -43,10 +43,10 @@ interface PlaylistDao {
     fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<PlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE isInQuickAccess = TRUE")
+    @Query("SELECT * FROM Playlist WHERE isInQuickAccess = 1")
     fun getAllPlaylistsFromQuickAccess(): Flow<List<PlaylistWithMusics>>
 
-    @Query("SELECT * FROM Playlist WHERE isFavorite = TRUE")
+    @Query("SELECT * FROM Playlist WHERE isFavorite = 1")
     fun getFavoritePlaylist(): Playlist
 
     @Query("SELECT * FROM Playlist WHERE playlistId = :playlistId")
