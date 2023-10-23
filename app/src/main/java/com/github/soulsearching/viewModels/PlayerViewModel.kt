@@ -247,27 +247,26 @@ class PlayerViewModel : ViewModel() {
                 return@launch
             }
 
-            if (!isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist) {
+            val shouldForcePlaylistOrNewPlaylist = !isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist
+            val notSameMusic = !isSameMusic(music.musicId)
+
+            if (shouldForcePlaylistOrNewPlaylist) {
                 currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
                 initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
                 currentPlaylistId = playlistId
                 this@PlayerViewModel.isMainPlaylist = isMainPlaylist
-                if (shouldServiceBeLaunched) {
-                    PlayerService.setAndPlayCurrentMusic()
-                }
+                SharedPrefUtils.setPlayerSavedCurrentMusic()
             }
 
-            if (!isSameMusic(music.musicId)) {
+            if (notSameMusic) {
                 setNewCurrentMusicInformation(music)
-
-                if (shouldServiceBeLaunched) {
-                    PlayerService.setAndPlayCurrentMusic()
-                    SharedPrefUtils.setPlayerSavedCurrentMusic()
-                }
             }
 
-            if (!shouldServiceBeLaunched) {
+            if (shouldServiceBeLaunched) {
+                PlayerService.setAndPlayCurrentMusic()
+            } else {
                 shouldServiceBeLaunched = true
+
             }
         }
     }
