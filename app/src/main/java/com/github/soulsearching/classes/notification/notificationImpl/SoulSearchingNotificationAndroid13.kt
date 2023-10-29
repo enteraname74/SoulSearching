@@ -31,26 +31,6 @@ class SoulSearchingNotificationAndroid13(
         }
     }
 
-    override fun initializeNotification() {
-        context.registerReceiver(
-            broadcastReceiver,
-            IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
-        )
-
-        notificationBuilder
-            .setSmallIcon(R.drawable.ic_saxophone_svg)
-            .setContentTitle(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.name else "")
-            .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
-            .setContentIntent(activityPendingIntent)
-            .setDeleteIntent(deleteNotificationIntent)
-            .setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSessionToken)
-            )
-
-        notification = notificationBuilder.build()
-    }
-
     override fun updateNotification() {
         notificationBuilder
             .setStyle(

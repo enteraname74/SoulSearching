@@ -6,11 +6,14 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.soulsearching.MainActivity
-import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationAndroid13
+import com.github.soulsearching.R
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.notification.receivers.DeletedNotificationIntentReceiver
+import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 
 abstract class SoulSearchingNotification(
     protected val context: Context,
@@ -26,7 +29,7 @@ abstract class SoulSearchingNotification(
 
     protected abstract val broadcastReceiver: BroadcastReceiver
 
-    protected val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
+    private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
         1,
         Intent(context, MainActivity::class.java).apply {
@@ -37,14 +40,34 @@ abstract class SoulSearchingNotification(
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    protected val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
+    private val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
         context,
         5,
         Intent(context, DeletedNotificationIntentReceiver::class.java),
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    abstract fun initializeNotification()
+    fun initializeNotification() {
+        context.registerReceiver(
+            broadcastReceiver,
+            IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
+        )
+
+        notificationBuilder
+            .setSmallIcon(R.drawable.ic_saxophone_svg)
+            .setContentTitle(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.name else "")
+            .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
+            .setContentIntent(activityPendingIntent)
+            .setDeleteIntent(deleteNotificationIntent)
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setMediaSession(mediaSessionToken)
+            ).apply {
+                priority = NotificationCompat.PRIORITY_LOW
+            }
+
+        notification = notificationBuilder.build()
+    }
 
     abstract fun updateNotification()
 
