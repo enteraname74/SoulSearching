@@ -3,13 +3,9 @@ package com.github.soulsearching.classes.notification.notificationImpl
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.support.v4.media.session.MediaSessionCompat.Token
 import android.util.Log
-import com.github.soulsearching.R
-import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
-import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 
 class SoulSearchingNotificationAndroid13(
     context: Context,

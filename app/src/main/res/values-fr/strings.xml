@@ -113,7 +113,7 @@
     <!-- Settings strings -->
     <string name="settings">Paramètres</string>
     <string name="manage_musics_title">Gérer les musiques</string>
-    <string name="manage_musics_text">Ajouter de nouvelles musiques, gérer les musiques supprimées et les dossiers utilisés</string>
+    <string name="manage_musics_text">Ajouter de nouvelles musiques et gérer les dossiers utilisés</string>
     <string name="color_theme_title">Thème de couleur</string>
     <string name="color_theme_text">Thème dynamique, personnalisé</string>
     <string name="personalization_title">Personnalisation</string>
