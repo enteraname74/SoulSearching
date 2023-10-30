@@ -59,6 +59,7 @@ abstract class SoulSearchingNotification(
             .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
+            .setSilent(true)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSessionToken)
