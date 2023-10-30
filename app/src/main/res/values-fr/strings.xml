@@ -13,6 +13,8 @@
     <string name="deleted_music">1 musique a été supprimée car elle n\'existe plus sur l\'appareil</string>
     <string name="missing_permissions">Vous devez accepter toutes les permissions de l\'application pour que cette dernière fonctionne correctement.</string>
     <string name="version_name_action_text">Soul Searching - Average White Band - 1976</string>
+    <string name="notification_name">Music notification</string>
+    <string name="notification_channel_description">Used for controlling the song that is currently playing</string>
 
     <!-- App features strings -->
     <string name="complete_application_title">Une application de musique complète</string>
@@ -113,7 +115,7 @@
     <!-- Settings strings -->
     <string name="settings">Paramètres</string>
     <string name="manage_musics_title">Gérer les musiques</string>
-    <string name="manage_musics_text">Ajouter de nouvelles musiques, gérer les musiques supprimées et les dossiers utilisés</string>
+    <string name="manage_musics_text">Ajouter de nouvelles musiques et gérer les dossiers utilisés</string>
     <string name="color_theme_title">Thème de couleur</string>
     <string name="color_theme_text">Thème dynamique, personnalisé</string>
     <string name="personalization_title">Personnalisation</string>

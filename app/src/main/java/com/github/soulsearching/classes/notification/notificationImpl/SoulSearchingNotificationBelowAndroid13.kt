@@ -4,16 +4,13 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.receivers.NextMusicNotificationReceiver
 import com.github.soulsearching.classes.notification.receivers.PausePlayNotificationReceiver
 import com.github.soulsearching.classes.notification.receivers.PreviousMusicNotificationReceiver
-import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.service.PlayerService
 
 class SoulSearchingNotificationBelowAndroid13(
@@ -55,26 +52,6 @@ class SoulSearchingNotificationBelowAndroid13(
                 updateNotification()
             }
         }
-    }
-
-    override fun initializeNotification() {
-        context.registerReceiver(
-            broadcastReceiver,
-            IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
-        )
-
-        notificationBuilder
-            .setSmallIcon(R.drawable.ic_saxophone_svg)
-            .setContentTitle(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.name else "")
-            .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
-            .setContentIntent(activityPendingIntent)
-            .setDeleteIntent(deleteNotificationIntent)
-            .setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSessionToken)
-            )
-
-        notification = notificationBuilder.build()
     }
 
     override fun updateNotification() {
