@@ -1,7 +1,5 @@
 # Soul Searching
 
-A rework of the native mobile application Sweet Music using Jetpack Compose. 
-
 Soul Searching is an offline music application for Android 8 and above.
 
 ## Functionalities:
@@ -72,7 +70,7 @@ You can manage used folders by choosing those you want to use for the applicatio
     <img title="" src="screenshots/folders_settings.png" alt="" data-align="center" width="290">
 </div>
 
-##### Add new songs:
+##### 2. Add new songs:
 
 You can search new songs to add from your device.
 
@@ -84,7 +82,7 @@ You can search new songs to add from your device.
 
 You can choose between three options:
 
-**1. Dynamic theme:**
+##### 1. Dynamic theme:
 
 The color palette used for the application is based on the current played music.
 
@@ -92,7 +90,7 @@ The color palette used for the application is based on the current played music.
     <img title="" src="screenshots/theme_settings_dynamic.png" alt="" data-align="center" width="290">
 </div>
 
-**2. System theme:**
+##### 2. System theme:
 
 The color palette used for the application is based on the theme of your device (light or dark theme).
 
@@ -102,7 +100,7 @@ The color palette used for the application is based on the theme of your device 
     <img title="" src="screenshots/main_light_theme.png" alt="" data-align="center" width="290">
 </div>
 
-**3. Personalized theme:**
+##### 3. Personalized theme:
 
 The default theme used is the system one, but you can choose to use a dynamic theme for the player view or for the playlist/album/artist view.
 
