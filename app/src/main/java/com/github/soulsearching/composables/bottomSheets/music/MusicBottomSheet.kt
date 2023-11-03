@@ -153,7 +153,8 @@ fun MusicBottomSheet(
                     }
                 }
             },
-            isInQuickAccess = musicState.selectedMusic.isInQuickAccess
+            isInQuickAccess = musicState.selectedMusic.isInQuickAccess,
+            isCurrentlyPlaying = PlayerUtils.playerViewModel.isSameMusic(musicState.selectedMusic.musicId)
         )
     }
 }

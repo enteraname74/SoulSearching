@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.composables.bottomSheets.BottomSheetRow
@@ -28,7 +29,8 @@ fun MusicBottomSheetMenu(
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isInQuickAccess: Boolean,
     primaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary
+    textColor: Color = DynamicColor.onSecondary,
+    isCurrentlyPlaying: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -59,12 +61,14 @@ fun MusicBottomSheetMenu(
             onClick = modifyAction,
             textColor = textColor
         )
-        BottomSheetRow(
-            icon = Icons.Default.PlaylistPlay,
-            text = stringResource(id = R.string.play_next),
-            onClick = playNextAction,
-            textColor = textColor
-        )
+        if (!isCurrentlyPlaying) {
+            BottomSheetRow(
+                icon = Icons.Default.PlaylistPlay,
+                text = stringResource(id = R.string.play_next),
+                onClick = playNextAction,
+                textColor = textColor
+            )
+        }
         if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {
             BottomSheetRow(
                 icon = Icons.Default.Delete,
