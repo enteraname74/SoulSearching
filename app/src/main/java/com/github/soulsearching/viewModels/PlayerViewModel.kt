@@ -207,9 +207,10 @@ class PlayerViewModel : ViewModel() {
             isPlaying = false
             isMainPlaylist = false
 
+            playlist.shuffle()
+
             initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
-            currentPlaylist.shuffle()
             playerMode = PlayerMode.NORMAL
             SharedPrefUtils.setPlayerMode()
             SharedPrefUtils.setPlayerSavedCurrentMusic()
