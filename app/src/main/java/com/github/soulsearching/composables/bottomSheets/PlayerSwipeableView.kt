@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import kotlin.math.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.ColorPaletteUtils
@@ -52,8 +51,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.reflect.KSuspendFunction1
 
@@ -68,6 +69,10 @@ fun PlayerSwipeableView(
     onMusicEvent: (MusicEvent) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
     isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,
+    navigateToAlbum: (String) -> Unit,
+    navigateToArtist: (String) -> Unit,
+    retrieveArtistIdMethod: (UUID) -> UUID?,
+    retrieveAlbumIdMethod: (UUID) -> UUID?,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -108,6 +113,19 @@ fun PlayerSwipeableView(
             Color.White
         } else {
             DynamicColor.onPrimary
+        },
+        tween(Constants.AnimationTime.normal)
+    )
+
+    val subTextColor: Color by animateColorAsState(
+        targetValue =
+        if (
+            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+            && PlayerUtils.playerViewModel.currentColorPalette != null
+        ) {
+            Color.LightGray
+        } else {
+            DynamicColor.subText
         },
         tween(Constants.AnimationTime.normal)
     )
@@ -206,8 +224,15 @@ fun PlayerSwipeableView(
             }
         }
         else -> {
-            if ((1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat() > 0.1) {
-                (1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat().coerceAtMost(1.0F)
+            if ((1.0 / (abs(
+                    max(
+                        swipeableState.offset.value.roundToInt(),
+                        0
+                    )
+                ) / 100)).toFloat() > 0.1
+            ) {
+                (1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat()
+                    .coerceAtMost(1.0F)
             } else {
                 0.0F
             }
@@ -278,11 +303,17 @@ fun PlayerSwipeableView(
                 val imagePaddingStart =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxWidth * 1.5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 15)).roundToInt().dp,
+                            (((maxWidth * 1.5) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
-                            (((maxWidth * 3.5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 40)).roundToInt().dp,
+                            (((maxWidth * 3.5) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 40)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                     }
@@ -290,11 +321,17 @@ fun PlayerSwipeableView(
                 val imagePaddingTop =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxHeight * 7) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 5)).roundToInt().dp,
+                            (((maxHeight * 7) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 5)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
-                            (((maxHeight * 5) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 15)).roundToInt().dp,
+                            (((maxHeight * 5) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                     }
@@ -303,11 +340,17 @@ fun PlayerSwipeableView(
                 val imageSize =
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
-                            (((maxWidth * 10) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 2)).dp,
+                            (((maxWidth * 10) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 2)).dp,
                             55.dp
                         )
                         else -> max(
-                            (((maxWidth * 30) / 100) - (max(swipeableState.offset.value.roundToInt(), 0) / 7)).dp,
+                            (((maxWidth * 30) / 100) - (max(
+                                swipeableState.offset.value.roundToInt(),
+                                0
+                            ) / 7)).dp,
                             55.dp
                         )
                     }
@@ -410,15 +453,101 @@ fun PlayerSwipeableView(
                                 modifier = Modifier
                                     .basicMarquee()
                             )
-                            Text(
-                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
-                                color = textColor,
-                                fontSize = 15.sp,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.width(250.dp),
-                                overflow = TextOverflow.Ellipsis
-                            )
+
+                            val clickableArtistModifier =
+                                if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                    Modifier.clickable {
+                                        PlayerUtils.playerViewModel.currentMusic?.let {
+                                            coroutineScope.launch {
+                                                val artistId = withContext(Dispatchers.IO) {
+                                                    retrieveArtistIdMethod(it.musicId)
+                                                }
+                                                artistId?.let { id ->
+                                                    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                                        navigateToArtist(id.toString())
+
+                                                        swipeableState.animateTo(
+                                                            BottomSheetStates.MINIMISED,
+                                                            tween(Constants.AnimationTime.normal)
+                                                        )
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Modifier
+                                }
+
+                            val clickableAlbumModifier =
+                                if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                    Modifier.clickable {
+                                        PlayerUtils.playerViewModel.currentMusic?.let {
+                                            coroutineScope.launch {
+                                                val albumId = withContext(Dispatchers.IO) {
+                                                    retrieveAlbumIdMethod(it.musicId)
+                                                }
+                                                albumId?.let { id ->
+                                                    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                                        navigateToAlbum(id.toString())
+
+                                                        swipeableState.animateTo(
+                                                            BottomSheetStates.MINIMISED,
+                                                            tween(Constants.AnimationTime.normal)
+                                                        )
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Modifier
+                                }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = if (PlayerUtils.playerViewModel.currentMusic != null) formatTextForEllipsis(
+                                        PlayerUtils.playerViewModel.currentMusic!!.artist,
+                                        orientation
+                                    )
+                                    else "",
+                                    color = subTextColor,
+                                    fontSize = 15.sp,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .composed {
+                                            clickableArtistModifier
+                                        },
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = " | ",
+                                    color = subTextColor,
+                                    fontSize = 15.sp,
+                                )
+                                Text(
+                                    text = if (PlayerUtils.playerViewModel.currentMusic != null) formatTextForEllipsis(
+                                        PlayerUtils.playerViewModel.currentMusic!!.album,
+                                        orientation
+                                    ) else "",
+                                    color = subTextColor,
+                                    fontSize = 15.sp,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .composed {
+                                            clickableAlbumModifier
+                                        },
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                         Image(
                             imageVector = Icons.Rounded.QueueMusic,
@@ -505,5 +634,16 @@ fun PlayerSwipeableView(
                 }
             }
         }
+    }
+}
+
+private fun formatTextForEllipsis(text: String, orientation: Int): String {
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        return text
+    }
+    return if (text.length > 16) {
+        "${text.subSequence(0, 16)}…"
+    } else {
+        text
     }
 }

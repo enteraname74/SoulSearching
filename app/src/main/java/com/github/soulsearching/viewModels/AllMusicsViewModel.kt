@@ -206,6 +206,13 @@ class AllMusicsViewModel @Inject constructor(
         return musicDao.getMusicFromFavoritePlaylist(musicId = musicId) != null
     }
 
+    fun getArtistIdFromMusicId(musicId: UUID): UUID? {
+        return musicArtistDao.getArtistIdFromMusicId(musicId)
+    }
+
+    fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
+        return musicAlbumDao.getAlbumIdFromMusicId(musicId)
+    }
     fun checkAndDeleteMusicIfNotExist(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             var deleteCount = 0

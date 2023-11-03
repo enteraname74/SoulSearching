@@ -206,7 +206,7 @@ fun PlayerMusicListView(
                                 }
                             }
                         },
-                    colorFilter = ColorFilter.tint(DynamicColor.onSecondary)
+                    colorFilter = ColorFilter.tint(textColor)
                 )
             }
 
@@ -248,7 +248,6 @@ fun PlayerMusicListView(
                             }
                         },
                         musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
-                        primaryColor = secondaryColor,
                         textColor = textColor
                     )
                 }

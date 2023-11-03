@@ -70,8 +70,6 @@ fun MusicList(
             items = musicState.musics
         ) { music ->
             MusicItemComposable(
-                primaryColor = primaryColor,
-                textColor = onPrimaryColor,
                 music = music,
                 onClick = {
                     coroutineScope.launch {
@@ -107,7 +105,8 @@ fun MusicList(
                         onMusicEvent(MusicEvent.BottomSheet(isShown = true))
                     }
                 },
-                musicCover = retrieveCoverMethod(music.coverId)
+                musicCover = retrieveCoverMethod(music.coverId),
+                textColor = onPrimaryColor
             )
         }
         item {

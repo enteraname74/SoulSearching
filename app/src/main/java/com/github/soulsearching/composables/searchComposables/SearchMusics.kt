@@ -60,8 +60,6 @@ fun SearchMusics(
             }
             items(foundedMusics) {
                 MusicItemComposable(
-                    primaryColor = primaryColor,
-                    textColor = textColor,
                     music = it,
                     onClick = { music ->
                         coroutineScope.launch {
@@ -95,7 +93,8 @@ fun SearchMusics(
                             )
                         }
                     },
-                    musicCover = retrieveCoverMethod(it.coverId)
+                    musicCover = retrieveCoverMethod(it.coverId),
+                    textColor = textColor
                 )
             }
         }

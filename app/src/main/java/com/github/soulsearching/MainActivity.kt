@@ -426,6 +426,11 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
+
+                                            navController.backQueue.subList(0, navController.backQueue.size - 1).removeIf {entry ->
+                                                entry.destination.route?.contains("selectedAlbum") == true
+                                            }
+
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {
@@ -460,6 +465,10 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
+                                            navController.backQueue.subList(0, navController.backQueue.size - 1).removeIf {entry ->
+                                                entry.destination.route?.contains("selectedArtist") == true
+                                            }
+
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {
@@ -654,7 +663,19 @@ class MainActivity : AppCompatActivity() {
                                 musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel,
                                 onMusicEvent = allMusicsViewModel::onMusicEvent,
-                                isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite
+                                isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite,
+                                navigateToArtist = {
+                                    navController.navigate("selectedArtist/$it")
+                                },
+                                navigateToAlbum = {
+                                    navController.navigate("selectedAlbum/$it")
+                                },
+                                retrieveAlbumIdMethod = {
+                                    allMusicsViewModel.getAlbumIdFromMusicId(it)
+                                },
+                                retrieveArtistIdMethod = {
+                                    allMusicsViewModel.getArtistIdFromMusicId(it)
+                                }
                             )
 
                             PlayerMusicListView(

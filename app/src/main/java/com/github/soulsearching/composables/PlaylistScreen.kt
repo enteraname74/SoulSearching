@@ -66,7 +66,7 @@ fun PlaylistScreen(
         BottomSheetStates.COLLAPSED
     )
 
-    var hasPlaylistPaletteBeenFetched by rememberSaveable {
+    var hasPlaylistPaletteBeenFetched by remember {
         mutableStateOf(false)
     }
 
@@ -238,8 +238,6 @@ fun PlaylistScreen(
                             items = musicState.musics
                         ) { elt ->
                             MusicItemComposable(
-                                primaryColor = DynamicColor.primary,
-                                textColor = DynamicColor.onPrimary,
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
@@ -282,6 +280,7 @@ fun PlaylistScreen(
                                     }
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
+                                textColor = DynamicColor.onPrimary,
                             )
                         }
                         item { PlayerSpacer() }
