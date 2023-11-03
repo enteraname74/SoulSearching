@@ -23,11 +23,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
-@SuppressLint("CoroutineCreationDuringComposition", "UnnecessaryComposedModifier")
+@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicItemComposable(
@@ -39,19 +40,9 @@ fun MusicItemComposable(
     primaryColor: Color = DynamicColor.primary,
     textColor: Color = DynamicColor.onPrimary
 ) {
-
-    val currentMusicModifier = if (isCurrentPlayedMusic) {
-        Modifier.background(color = primaryColor)
-    } else {
-        Modifier
-    }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .composed {
-                currentMusicModifier
-            }
             .combinedClickable(
                 onClick = { onClick(music) },
                 onLongClick = onLongClick
@@ -81,7 +72,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isCurrentPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (PlayerUtils.playerViewModel.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
@@ -89,7 +80,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isCurrentPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (PlayerUtils.playerViewModel.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
                 )
 
             }
