@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.FolderStateType
 import com.github.soulsearching.composables.AppHeaderBar
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.FolderStateComposable
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
@@ -85,6 +86,9 @@ fun SettingsUsedFoldersScreen(
                             },
                             isChecked = it.isSelected
                         )
+                    }
+                    item {
+                        PlayerSpacer()
                     }
                 }
             }

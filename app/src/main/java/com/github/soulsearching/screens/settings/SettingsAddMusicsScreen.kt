@@ -23,6 +23,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AddMusicsEvent
@@ -159,6 +160,9 @@ fun SettingsAddMusicsScreen(
                                 isSelected = it.isSelected,
                                 musicCover = it.cover
                             )
+                        }
+                        item {
+                            PlayerSpacer()
                         }
                     }
                 }
