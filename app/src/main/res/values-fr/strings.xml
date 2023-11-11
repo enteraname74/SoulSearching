@@ -78,7 +78,7 @@
     <string name="delete_album_dialog_title">Voulez-vous vraiment supprimer cet album ?</string>
     <string name="delete_artist_dialog_title">Voulez-vous vraiment supprimer cet artiste ?</string>
     <string name="remove_music_from_playlist_title">Voulez-vous vraiment supprimer cette musique de cette playlist ?</string>
-    <string name="delete_music_dialog_text">Vous pouvez la récupérer dans la section "musiques supprimées" de l\'application.</string>
+    <string name="delete_music_dialog_text">Elle sera supprimée de l\'application.</string>
     <string name="remove_music_from_playlist_text">Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l\'application.</string>
     <string name="create_playlist_dialog_title">Créer une nouvelle playlist</string>
     <string name="delete">Supprimer</string>
