@@ -40,11 +40,16 @@ import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.composables.AppImage
+import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -73,6 +78,10 @@ fun PlayerSwipeableView(
     navigateToArtist: (String) -> Unit,
     retrieveArtistIdMethod: (UUID) -> UUID?,
     retrieveAlbumIdMethod: (UUID) -> UUID?,
+    musicState: MusicState,
+    playlistState: PlaylistState,
+    onPlaylistEvent: (PlaylistEvent) -> Unit,
+    navigateToModifyMusic: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -189,7 +198,6 @@ fun PlayerSwipeableView(
         darkIcons = backHandlerIconsColor
     )
 
-
     BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
@@ -282,6 +290,30 @@ fun PlayerSwipeableView(
                 }
             }
 
+        MusicBottomSheetEvents(
+            musicBottomSheetState = MusicBottomSheetState.PLAYER,
+            musicState = musicState,
+            playlistState = playlistState,
+            onMusicEvent = onMusicEvent,
+            onPlaylistsEvent = onPlaylistEvent,
+            navigateToModifyMusic = { path ->
+                coroutineScope.launch {
+                    swipeableState.animateTo(
+                        BottomSheetStates.MINIMISED,
+                        tween(Constants.AnimationTime.normal)
+                    )
+                }.invokeOnCompletion {
+                    navigateToModifyMusic(path)
+                }
+            },
+            playerMusicListViewModel = playerMusicListViewModel,
+            playerSwipeableState = swipeableState,
+            primaryColor = backgroundColor,
+            secondaryColor = navigationBarColor,
+            onSecondaryColor = textColor,
+            onPrimaryColor = textColor
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -355,6 +387,30 @@ fun PlayerSwipeableView(
                         )
                     }
 
+                val imageModifier = if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                    Modifier.combinedClickable(
+                        onLongClick = {
+                            PlayerUtils.playerViewModel.currentMusic?.let {currentMusic ->
+                                coroutineScope.launch {
+                                    onMusicEvent(
+                                        MusicEvent.SetSelectedMusic(
+                                            currentMusic
+                                        )
+                                    )
+                                    onMusicEvent(
+                                        MusicEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            }
+                        },
+                        onClick = { }
+                    )
+                } else {
+                    Modifier
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -365,7 +421,9 @@ fun PlayerSwipeableView(
                         )
                 ) {
                     AppImage(
-                        bitmap = retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
+                        modifier = imageModifier,
+                        bitmap =
+                            retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
                         size = imageSize,
                         roundedPercent = (swipeableState.offset.value / 100).roundToInt()
                             .coerceIn(3, 10)

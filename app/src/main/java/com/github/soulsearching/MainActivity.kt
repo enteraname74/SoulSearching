@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
     private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
 
     // Player view model :
+    private val playerViewModel: PlayerViewModel by viewModels()
     private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
 
     // Settings view models:
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         SharedPrefUtils.initializeSettings()
 
         registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
-
+        PlayerUtils.playerViewModel = playerViewModel
         PlayerUtils.playerViewModel.retrieveCoverMethod = allImageCoversViewModel::getImageCover
         PlayerUtils.playerViewModel.updateNbPlayed =
             { allMusicsViewModel.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
@@ -120,7 +121,8 @@ class MainActivity : AppCompatActivity() {
                 val artistState by allArtistsViewModel.state.collectAsState()
                 val musicState by allMusicsViewModel.state.collectAsState()
                 val coversState by allImageCoversViewModel.state.collectAsState()
-                val playerMusicState by playerMusicListViewModel.state.collectAsState()
+                val playerMusicListState by playerMusicListViewModel.state.collectAsState()
+                val playerMusicState by PlayerUtils.playerViewModel.state.collectAsState()
                 val quickAccessState by allQuickAccessViewModel.state.collectAsState()
 
                 val playerSwipeableState = rememberSwipeableState(
@@ -653,7 +655,7 @@ class MainActivity : AppCompatActivity() {
                                 retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                                 musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel,
-                                onMusicEvent = allMusicsViewModel::onMusicEvent,
+                                onMusicEvent = playerViewModel::onMusicEvent,
                                 isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite,
                                 navigateToArtist = {
                                     navController.navigate("selectedArtist/$it")
@@ -666,13 +668,19 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 retrieveArtistIdMethod = {
                                     allMusicsViewModel.getArtistIdFromMusicId(it)
+                                },
+                                musicState = playerMusicState,
+                                playlistState = playlistState,
+                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                navigateToModifyMusic = {
+                                    navController.navigate("modifyMusic/$it")
                                 }
                             )
 
                             PlayerMusicListView(
                                 maxHeight = maxHeight,
                                 coverList = coversState.covers,
-                                musicState = playerMusicState,
+                                musicState = playerMusicListState,
                                 playlistState = playlistState,
                                 onMusicEvent = playerMusicListViewModel::onMusicEvent,
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,

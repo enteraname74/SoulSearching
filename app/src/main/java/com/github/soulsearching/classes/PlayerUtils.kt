@@ -3,7 +3,7 @@ package com.github.soulsearching.classes
 import com.github.soulsearching.viewModels.PlayerViewModel
 
 object PlayerUtils {
-    val playerViewModel = PlayerViewModel()
+    lateinit var playerViewModel: PlayerViewModel
 
     fun convertDuration(duration: Int): String {
         val minutes: Float = duration.toFloat() / 1000 / 60

@@ -8,16 +8,41 @@ import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import com.github.soulsearching.classes.*
 import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
+import com.github.soulsearching.classes.enumsAndTypes.SortDirection
+import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.states.MusicState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.lang.Integer.max
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.reflect.KFunction1
 
 @SuppressLint("MutableCollectionMutableState")
-class PlayerViewModel : ViewModel() {
+@HiltViewModel
+class PlayerViewModel @Inject constructor(
+    private val musicDao: MusicDao,
+    private val playlistDao: PlaylistDao,
+    private val musicPlaylistDao: MusicPlaylistDao,
+    private val albumDao: AlbumDao,
+    private val artistDao: ArtistDao,
+    private val musicAlbumDao: MusicAlbumDao,
+    private val musicArtistDao: MusicArtistDao,
+    private val albumArtistDao: AlbumArtistDao,
+    private val imageCoverDao: ImageCoverDao,
+) : ViewModel() {
+    private val _state = MutableStateFlow(MusicState())
+    val state = _state.asStateFlow()
+    private val _sortType = MutableStateFlow(SortType.NAME)
+    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+
     var currentMusic by mutableStateOf<Music?>(null)
     var currentMusicPosition by mutableStateOf(0)
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
@@ -344,5 +369,24 @@ class PlayerViewModel : ViewModel() {
         isServiceLaunched = false
         shouldServiceBeLaunched = false
         isCounting = false
+    }
+
+    fun onMusicEvent(event: MusicEvent) {
+        EventUtils.onMusicEvent(
+            event = event,
+            _state = _state,
+            state = state,
+            musicDao = musicDao,
+            playlistDao = playlistDao,
+            albumDao = albumDao,
+            artistDao = artistDao,
+            musicPlaylistDao = musicPlaylistDao,
+            musicAlbumDao = musicAlbumDao,
+            musicArtistDao = musicArtistDao,
+            albumArtistDao = albumArtistDao,
+            _sortDirection = _sortDirection,
+            _sortType = _sortType,
+            imageCoverDao = imageCoverDao
+        )
     }
 }
