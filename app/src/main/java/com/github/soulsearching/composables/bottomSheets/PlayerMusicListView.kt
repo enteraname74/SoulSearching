@@ -19,6 +19,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.swipeable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,7 +70,10 @@ fun PlayerMusicListView(
 
     BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+            musicListSwipeableState.animateTo(
+                BottomSheetStates.COLLAPSED,
+                tween(Constants.AnimationTime.normal)
+            )
         }
     }
 
@@ -77,7 +81,10 @@ fun PlayerMusicListView(
         if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+                    musicListSwipeableState.animateTo(
+                        BottomSheetStates.COLLAPSED,
+                        tween(Constants.AnimationTime.normal)
+                    )
                 }
             }
         } else {
@@ -86,36 +93,32 @@ fun PlayerMusicListView(
 
     val primaryColor: Color by animateColorAsState(
         targetValue =
-        if (PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            DynamicColor.primary
-        } else {
+        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
             ColorPaletteUtils.getDynamicPrimaryColor()
+        } else {
+            MaterialTheme.colorScheme.primary
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val secondaryColor: Color by animateColorAsState(
         targetValue =
-        if (PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
         ) {
-            DynamicColor.secondary
-        } else {
             ColorPaletteUtils.getDynamicSecondaryColor()
+        } else {
+            MaterialTheme.colorScheme.secondary
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val textColor: Color by animateColorAsState(
         targetValue =
-        if (PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
         ) {
-            DynamicColor.onSecondary
-        } else {
             Color.White
+        } else {
+               MaterialTheme.colorScheme.onPrimary
         },
         tween(Constants.AnimationTime.normal)
     )
@@ -128,10 +131,16 @@ fun PlayerMusicListView(
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = { path ->
             coroutineScope.launch {
-                musicListSwipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+                musicListSwipeableState.animateTo(
+                    BottomSheetStates.COLLAPSED,
+                    tween(Constants.AnimationTime.normal)
+                )
             }.invokeOnCompletion {
                 coroutineScope.launch {
-                    playerSwipeableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationTime.normal))
+                    playerSwipeableState.animateTo(
+                        BottomSheetStates.MINIMISED,
+                        tween(Constants.AnimationTime.normal)
+                    )
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
                 }

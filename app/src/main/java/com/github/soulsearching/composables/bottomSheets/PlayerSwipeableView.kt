@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -98,87 +99,89 @@ fun PlayerSwipeableView(
     }
 
     val backgroundColor: Color by animateColorAsState(
-        targetValue =
-        if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
-            DynamicColor.secondary
-        } else if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-            && PlayerUtils.playerViewModel.currentColorPalette != null
-        ) {
-            ColorPaletteUtils.getDynamicPrimaryColor()
-        } else {
-            DynamicColor.primary
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.secondary
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    ColorPaletteUtils.getDynamicPrimaryColor()
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
+            }
         },
         tween(Constants.AnimationTime.normal)
     )
     val textColor: Color by animateColorAsState(
-        targetValue =
-        if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
-            DynamicColor.onSecondary
-        } else if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-            && PlayerUtils.playerViewModel.currentColorPalette != null
-        ) {
-            Color.White
-        } else {
-            DynamicColor.onPrimary
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.onPrimary
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    Color.White
+                } else {
+                    MaterialTheme.colorScheme.onPrimary
+                }
+            }
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val subTextColor: Color by animateColorAsState(
-        targetValue =
-        if (
-            SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-            && PlayerUtils.playerViewModel.currentColorPalette != null
-        ) {
-            Color.LightGray
-        } else {
-            DynamicColor.subText
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.subText
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    Color.LightGray
+                } else {
+                    MaterialTheme.colorScheme.outline
+                }
+            }
         },
         tween(Constants.AnimationTime.normal)
     )
 
+
     val contentColor: Color by animateColorAsState(
-        targetValue = if (swipeableState.currentValue != BottomSheetStates.MINIMISED
-            && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-            && PlayerUtils.playerViewModel.currentColorPalette != null
-        ) {
-            ColorPaletteUtils.getDynamicSecondaryColor()
-        } else {
-            DynamicColor.secondary
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.secondary
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    ColorPaletteUtils.getDynamicSecondaryColor()
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
+            }
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val systemUiController = rememberSystemUiController()
     val statusBarColor: Color by animateColorAsState(
-        targetValue =
-        if (
-            swipeableState.currentValue != BottomSheetStates.EXPANDED
-            || PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            DynamicColor.primary
-        } else {
-            ColorPaletteUtils.getDynamicPrimaryColor()
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    ColorPaletteUtils.getDynamicPrimaryColor()
+                } else {
+                    MaterialTheme.colorScheme.primary
+                }
+            }
         },
         tween(Constants.AnimationTime.normal)
     )
 
     val navigationBarColor: Color by animateColorAsState(
-        targetValue =
-        if (swipeableState.currentValue == BottomSheetStates.COLLAPSED) {
-            DynamicColor.primary
-        } else if (swipeableState.currentValue == BottomSheetStates.MINIMISED
-            || PlayerUtils.playerViewModel.currentColorPalette == null
-            || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            DynamicColor.secondary
-        } else {
-            ColorPaletteUtils.getDynamicSecondaryColor()
-        },
-        tween(Constants.AnimationTime.normal)
+        targetValue = when(swipeableState.currentValue) {
+            BottomSheetStates.COLLAPSED -> DynamicColor.primary
+            BottomSheetStates.MINIMISED -> DynamicColor.secondary
+            BottomSheetStates.EXPANDED -> {
+                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                    ColorPaletteUtils.getDynamicSecondaryColor()
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
+            }
+        }
+        ,tween(Constants.AnimationTime.normal)
     )
 
     val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null

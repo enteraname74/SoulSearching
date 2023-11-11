@@ -44,6 +44,13 @@ fun PersonalizedColorThemeCard(
                 padding = PaddingValues(0.dp),
                 titleFontSize = 16.sp
             )
+            SettingsSwitchElement(
+                title = stringResource(id = R.string.dynamic_other_views),
+                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicOtherViewsTheme() },
+                isChecked = SettingsUtils.settingsViewModel.isDynamicOtherViewsThemeSelected,
+                padding = PaddingValues(0.dp),
+                titleFontSize = 16.sp
+            )
         }
     }
 }

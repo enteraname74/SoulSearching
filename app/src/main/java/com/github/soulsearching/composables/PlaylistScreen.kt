@@ -14,7 +14,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -75,6 +74,11 @@ fun PlaylistScreen(
             SettingsUtils.settingsViewModel.setPlaylistColorPalette(it)
             hasPlaylistPaletteBeenFetched = true
         }
+    }
+
+    if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOff()) {
+        SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists = true
+        hasPlaylistPaletteBeenFetched = true
     }
 
     BackHandler(playerSwipeableState.currentValue != BottomSheetStates.EXPANDED) {

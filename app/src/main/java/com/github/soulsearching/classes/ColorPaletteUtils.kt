@@ -1,8 +1,8 @@
 package com.github.soulsearching.classes
 
 import android.graphics.Bitmap
-import android.util.Log
-import androidx.annotation.ColorInt
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
@@ -22,27 +22,33 @@ object ColorPaletteUtils {
         }
     }
 
+    @Composable
     fun getDynamicPrimaryColor(
-        baseColor: Int = PlayerUtils.playerViewModel.currentColorPalette!!.rgb
+        baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb
     ): Color {
-        return Color(
+        return if (baseColor != null) Color(
             ColorUtils.blendARGB(
                 baseColor,
                 Color.Black.toArgb(),
                 0.5f
             )
-        )
+        ) else {
+            MaterialTheme.colorScheme.primary
+        }
     }
 
+    @Composable
     fun getDynamicSecondaryColor(
-        baseColor: Int = PlayerUtils.playerViewModel.currentColorPalette!!.rgb
+        baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb
     ): Color {
-        return Color(
+        return if (baseColor != null) Color(
             ColorUtils.blendARGB(
                 baseColor,
                 Color.Black.toArgb(),
                 0.2f
             )
-        )
+        ) else {
+            MaterialTheme.colorScheme.secondary
+        }
     }
 }

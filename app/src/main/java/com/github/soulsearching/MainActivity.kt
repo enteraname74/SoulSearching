@@ -394,6 +394,7 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
+                                            SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists = false
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {
@@ -428,6 +429,7 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
+                                            SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists = false
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {
@@ -462,6 +464,7 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
+                                            SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists = false
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {

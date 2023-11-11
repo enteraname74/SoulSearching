@@ -1,7 +1,6 @@
 package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,6 +15,7 @@ class SettingsViewModel: ViewModel() {
     var colorTheme by mutableStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
     var isDynamicPlaylistThemeSelected by mutableStateOf(false)
+    var isDynamicOtherViewsThemeSelected by mutableStateOf(false)
 
     var isQuickAccessShown by mutableStateOf(true)
     var isPlaylistsShown by mutableStateOf(true)
@@ -25,6 +25,7 @@ class SettingsViewModel: ViewModel() {
     var isVerticalBarShown by mutableStateOf(false)
 
     var playlistPalette by mutableStateOf<Palette.Swatch?>(null)
+    var forceBasicThemeForPlaylists by mutableStateOf(false)
 
     fun updateColorTheme(newTheme: Int) {
         colorTheme = newTheme
@@ -34,12 +35,24 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    fun isPersonalizedDynamicPlaylistThemeOff(): Boolean {
+        return colorTheme == ColorThemeType.PERSONALIZED && !isDynamicPlaylistThemeSelected
+    }
+
     fun isPersonalizedDynamicPlayerThemeOn(): Boolean {
         return (colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlayerThemeSelected) || colorTheme == ColorThemeType.DYNAMIC
     }
 
     fun isPersonalizedDynamicPlaylistThemeOn(): Boolean {
         return colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlaylistThemeSelected
+    }
+
+    fun isDynamicThemeOn(): Boolean {
+        return colorTheme == ColorThemeType.DYNAMIC
+    }
+
+    fun isPersonalizedDynamicOtherViewsThemeOn(): Boolean {
+        return colorTheme == ColorThemeType.PERSONALIZED && isDynamicOtherViewsThemeSelected
     }
 
     fun toggleDynamicPlayerTheme() {
@@ -55,6 +68,13 @@ class SettingsViewModel: ViewModel() {
         SharedPrefUtils.updateBooleanValue(
             keyToUpdate = SharedPrefUtils.DYNAMIC_PLAYLIST_THEME,
             newValue = isDynamicPlaylistThemeSelected
+        )
+    }
+    fun toggleDynamicOtherViewsTheme() {
+        isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
+        SharedPrefUtils.updateBooleanValue(
+            keyToUpdate = SharedPrefUtils.DYNAMIC_OTHER_VIEWS_THEME,
+            newValue = isDynamicOtherViewsThemeSelected
         )
     }
 
