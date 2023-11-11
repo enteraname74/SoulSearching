@@ -33,7 +33,7 @@ fun SelectedArtistScreen(
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>
 ) {
-    var isArtistFetched by rememberSaveable {
+    var isArtistFetched by remember {
         mutableStateOf(false)
     }
 

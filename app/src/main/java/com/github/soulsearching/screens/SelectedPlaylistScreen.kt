@@ -28,7 +28,7 @@ fun SelectedPlaylistScreen(
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>
 ){
-    var isPlaylistFetched by rememberSaveable {
+    var isPlaylistFetched by remember {
         mutableStateOf(false)
     }
 

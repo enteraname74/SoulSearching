@@ -426,11 +426,6 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
-
-                                            navController.backQueue.subList(0, navController.backQueue.size - 1).removeIf {entry ->
-                                                entry.destination.route?.contains("selectedAlbum") == true
-                                            }
-
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {
@@ -465,10 +460,6 @@ class MainActivity : AppCompatActivity() {
                                             SettingsUtils.settingsViewModel.setPlaylistColorPalette(
                                                 null
                                             )
-                                            navController.backQueue.subList(0, navController.backQueue.size - 1).removeIf {entry ->
-                                                entry.destination.route?.contains("selectedArtist") == true
-                                            }
-
                                             navController.popBackStack()
                                         },
                                         retrieveCoverMethod = {

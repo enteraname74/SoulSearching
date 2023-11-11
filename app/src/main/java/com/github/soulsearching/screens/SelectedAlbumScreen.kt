@@ -33,7 +33,7 @@ fun SelectedAlbumScreen(
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     swipeableState: SwipeableState<BottomSheetStates>
 ) {
-    var isAlbumFetched by rememberSaveable {
+    var isAlbumFetched by remember {
         mutableStateOf(false)
     }
     if (!isAlbumFetched) {

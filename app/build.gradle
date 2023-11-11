@@ -11,10 +11,10 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.github.soulsearching"
+        applicationId "com.github.enteraname74.soulsearching"
         minSdk 26
         targetSdk 33
-        versionCode 8
+        versionCode 9
         versionName version_name
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
