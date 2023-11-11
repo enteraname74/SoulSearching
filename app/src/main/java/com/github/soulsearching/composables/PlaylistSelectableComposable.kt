@@ -48,9 +48,9 @@ fun PlaylistSelectableComposable(
                 onClick()
             },
             colors = CheckboxDefaults.colors(
-                checkmarkColor = DynamicColor.onPrimary,
+                checkmarkColor = textColor,
                 checkedColor = Color.Transparent,
-
+                uncheckedColor = textColor
             )
         )
     }

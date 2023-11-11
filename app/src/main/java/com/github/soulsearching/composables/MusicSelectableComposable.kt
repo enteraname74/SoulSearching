@@ -77,6 +77,7 @@ fun MusicSelectableComposable(
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = textColor,
                     checkedColor = Color.Transparent,
+                    uncheckedColor = textColor
                 )
             )
         }
