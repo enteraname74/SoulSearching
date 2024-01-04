@@ -4,18 +4,14 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ImageCover
-import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.util.*
 import javax.inject.Inject
 
@@ -47,33 +43,6 @@ class AllImageCoversViewModel @Inject constructor(
     fun getImageCover(coverId: UUID?): Bitmap? {
         return state.value.covers.find { it.coverId == coverId }?.cover
     }
-
-
-    private var mutex = Mutex()
-    suspend fun getCover(coverId: UUID?): Bitmap? {
-
-        mutex.withLock {
-            return if (coverId != null) {
-                val res = imageCoverDao.getCoverOfElement(coverId = coverId)?.cover
-                res
-            } else {
-                null
-            }
-        }
-
-    }
-
-//    fun updateCovers(coverId : UUID) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val copy = imageCovers.map { it.copy() } as ArrayList<ImageCover>
-//            val cover = imageCoverDao.getCoverOfElement(coverId)
-//
-//            cover?.let {
-//                copy.add(it)
-//                imageCovers = copy
-//            }
-//        }
-//    }
 
     suspend fun verifyIfImageIsUsed(cover: ImageCover) {
         if (

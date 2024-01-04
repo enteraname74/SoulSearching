@@ -146,7 +146,7 @@ class AllMusicsViewModel @Inject constructor(
             } else {
                 null
             }
-            val shouldPutAlbumCoverWithMusic = (albumCover != null) && (musicCover == null)
+            val shouldPutAlbumCoverWithMusic = (albumCover != null)
             val shouldUpdateArtistCover =
                 (correspondingArtist?.coverId == null) && ((albumCover != null) || (musicCover != null))
 
