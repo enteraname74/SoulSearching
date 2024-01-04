@@ -8,14 +8,16 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.QueueMusic
-import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -69,7 +71,7 @@ import kotlin.reflect.KSuspendFunction1
 @Composable
 fun PlayerSwipeableView(
     maxHeight: Float,
-    swipeableState: SwipeableState<BottomSheetStates>,
+    swipeableState: AnchoredDraggableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
@@ -109,7 +111,8 @@ fun PlayerSwipeableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "BACKGROUND_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
     val textColor: Color by animateColorAsState(
         targetValue = when(swipeableState.currentValue) {
@@ -122,7 +125,8 @@ fun PlayerSwipeableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "TEXT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
 
     val subTextColor: Color by animateColorAsState(
@@ -136,7 +140,8 @@ fun PlayerSwipeableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "SUB_TEXT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
 
 
@@ -151,7 +156,8 @@ fun PlayerSwipeableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "CONTENT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
 
     val systemUiController = rememberSystemUiController()
@@ -166,7 +172,8 @@ fun PlayerSwipeableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "STATUS_BAR_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
 
     val navigationBarColor: Color by animateColorAsState(
@@ -181,7 +188,8 @@ fun PlayerSwipeableView(
                 }
             }
         }
-        ,tween(Constants.AnimationTime.normal)
+        ,tween(Constants.AnimationTime.normal),
+        label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
     )
 
     val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null
@@ -211,7 +219,7 @@ fun PlayerSwipeableView(
             }
             swipeableState.animateTo(
                 BottomSheetStates.MINIMISED,
-                tween(Constants.AnimationTime.normal)
+                Constants.AnimationTime.normal.toFloat()
             )
         }
     }
@@ -228,8 +236,8 @@ fun PlayerSwipeableView(
 
     val alphaTransition = when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            if ((1.0 / (abs(swipeableState.offset.value) / 70)).toFloat() > 0.1) {
-                (1.0 / (abs(swipeableState.offset.value) / 70)).toFloat().coerceAtMost(1.0F)
+            if ((1.0 / (abs(swipeableState.offset) / 70)).toFloat() > 0.1) {
+                (1.0 / (abs(swipeableState.offset) / 70)).toFloat().coerceAtMost(1.0F)
             } else {
                 0.0F
             }
@@ -237,12 +245,12 @@ fun PlayerSwipeableView(
         else -> {
             if ((1.0 / (abs(
                     max(
-                        swipeableState.offset.value.roundToInt(),
+                        swipeableState.offset.roundToInt(),
                         0
                     )
                 ) / 100)).toFloat() > 0.1
             ) {
-                (1.0 / (abs(max(swipeableState.offset.value.roundToInt(), 0)) / 100)).toFloat()
+                (1.0 / (abs(max(swipeableState.offset.roundToInt(), 0)) / 100)).toFloat()
                     .coerceAtMost(1.0F)
             } else {
                 0.0F
@@ -255,17 +263,12 @@ fun PlayerSwipeableView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = max(swipeableState.offset.value.roundToInt(), 0)
+                    y = max(swipeableState.offset.roundToInt(), 0)
                 )
             }
-            .swipeable(
+            .anchoredDraggable(
                 state = swipeableState,
                 orientation = Orientation.Vertical,
-                anchors = mapOf(
-                    (maxHeight - 200f) to BottomSheetStates.MINIMISED,
-                    maxHeight to BottomSheetStates.COLLAPSED,
-                    0f to BottomSheetStates.EXPANDED
-                )
             )
     ) {
         val mainBoxClickableModifier =
@@ -274,7 +277,7 @@ fun PlayerSwipeableView(
                     coroutineScope.launch {
                         swipeableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationTime.normal)
+                            Constants.AnimationTime.normal.toFloat()
                         )
                     }
                 }
@@ -303,7 +306,7 @@ fun PlayerSwipeableView(
                 coroutineScope.launch {
                     swipeableState.animateTo(
                         BottomSheetStates.MINIMISED,
-                        tween(Constants.AnimationTime.normal)
+                        Constants.AnimationTime.normal.toFloat()
                     )
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
@@ -339,14 +342,14 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxWidth * 1.5) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxWidth * 3.5) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 40)).roundToInt().dp,
                             Constants.Spacing.small
@@ -357,14 +360,14 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxHeight * 7) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 5)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxHeight * 5) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
@@ -376,14 +379,14 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxWidth * 10) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 2)).dp,
                             55.dp
                         )
                         else -> max(
                             (((maxWidth * 30) / 100) - (max(
-                                swipeableState.offset.value.roundToInt(),
+                                swipeableState.offset.roundToInt(),
                                 0
                             ) / 7)).dp,
                             55.dp
@@ -428,7 +431,7 @@ fun PlayerSwipeableView(
                         bitmap =
                             retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
                         size = imageSize,
-                        roundedPercent = (swipeableState.offset.value / 100).roundToInt()
+                        roundedPercent = (swipeableState.offset / 100).roundToInt()
                             .coerceIn(3, 10)
                     )
                 }
@@ -447,7 +450,7 @@ fun PlayerSwipeableView(
                                 }
                                 swipeableState.animateTo(
                                     BottomSheetStates.MINIMISED,
-                                    tween(Constants.AnimationTime.normal)
+                                    Constants.AnimationTime.normal.toFloat()
                                 )
                             }
                         }
@@ -529,7 +532,7 @@ fun PlayerSwipeableView(
 
                                                         swipeableState.animateTo(
                                                             BottomSheetStates.MINIMISED,
-                                                            tween(Constants.AnimationTime.normal)
+                                                            Constants.AnimationTime.normal.toFloat()
                                                         )
                                                     }
                                                 }
@@ -555,7 +558,7 @@ fun PlayerSwipeableView(
 
                                                         swipeableState.animateTo(
                                                             BottomSheetStates.MINIMISED,
-                                                            tween(Constants.AnimationTime.normal)
+                                                            Constants.AnimationTime.normal.toFloat()
                                                         )
                                                     }
                                                 }
@@ -662,7 +665,7 @@ fun PlayerSwipeableView(
                             start = imageSize + Constants.Spacing.large,
                             end = Constants.Spacing.small
                         )
-                        .alpha((swipeableState.offset.value / maxHeight).coerceIn(0.0F, 1.0F)),
+                        .alpha((swipeableState.offset / maxHeight).coerceIn(0.0F, 1.0F)),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {

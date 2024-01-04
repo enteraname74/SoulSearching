@@ -1,6 +1,8 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
@@ -19,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectedAlbumScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -31,7 +33,7 @@ fun SelectedAlbumScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack : () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: SwipeableState<BottomSheetStates>
+    swipeableState: AnchoredDraggableState<BottomSheetStates>
 ) {
     var isAlbumFetched by remember {
         mutableStateOf(false)

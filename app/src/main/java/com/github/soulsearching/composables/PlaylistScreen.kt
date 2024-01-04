@@ -7,11 +7,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,7 +54,7 @@ fun PlaylistScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
@@ -91,7 +92,7 @@ fun PlaylistScreen(
                 .launch {
                     playerSwipeableState.animateTo(
                         BottomSheetStates.EXPANDED,
-                        tween(Constants.AnimationTime.normal)
+                        Constants.AnimationTime.normal.toFloat()
                     )
                 }
                 .invokeOnCompletion {
@@ -169,19 +170,18 @@ fun PlaylistScreen(
                         playlistType = playlistType,
                     )
                     MusicList(
-                        musicBottomSheetState = musicBottomSheetState,
                         musicState = musicState,
                         playlistState = playlistState,
                         onMusicEvent = onMusicEvent,
                         onPlaylistEvent = onPlaylistEvent,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        retrieveCoverMethod = { retrieveCoverMethod(it) },
-                        swipeableState = playerSwipeableState,
-                        playlistId = playlistId,
                         playerMusicListViewModel = playerMusicListViewModel,
+                        navigateToModifyMusic = navigateToModifyMusic,
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f),
+                        retrieveCoverMethod = { retrieveCoverMethod(it) },
+                        playlistId = playlistId,
+                        musicBottomSheetState = musicBottomSheetState,
                         playerSwipeableState = playerSwipeableState,
                         updateNbPlayedAction = updateNbPlayedAction,
                     )
@@ -247,7 +247,7 @@ fun PlaylistScreen(
                                     coroutineScope.launch {
                                         playerSwipeableState.animateTo(
                                             BottomSheetStates.EXPANDED,
-                                            tween(Constants.AnimationTime.normal)
+                                            Constants.AnimationTime.normal.toFloat()
                                         )
                                     }.invokeOnCompletion {
                                         playlistId?.let {

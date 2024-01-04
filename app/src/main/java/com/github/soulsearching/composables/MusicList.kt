@@ -1,19 +1,20 @@
 package com.github.soulsearching.composables
 
 import android.graphics.Bitmap
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
-import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -22,9 +23,9 @@ import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MusicList(
     musicState: MusicState,
@@ -35,11 +36,10 @@ fun MusicList(
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier = Modifier,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: SwipeableState<BottomSheetStates>,
     playlistId: UUID?,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isMainPlaylist: Boolean = false,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     updateNbPlayedAction: (UUID) -> Unit,
     primaryColor: Color = DynamicColor.primary,
     secondaryColor: Color = DynamicColor.secondary,
@@ -73,9 +73,9 @@ fun MusicList(
                 music = music,
                 onClick = {
                     coroutineScope.launch {
-                        swipeableState.animateTo(
+                        playerSwipeableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationTime.normal)
+                            Constants.AnimationTime.normal.toFloat()
                         )
                     }.invokeOnCompletion {
                         playlistId?.let {

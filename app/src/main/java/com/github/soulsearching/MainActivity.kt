@@ -14,14 +14,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.animateTo
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.content.ContextCompat
@@ -30,29 +40,68 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.ColorPaletteUtils
+import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableSaver
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.composables.*
+import com.github.soulsearching.composables.FetchingMusicsComposable
+import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
 import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
+import com.github.soulsearching.composables.remembercomposable.rememberPlayerComposableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.screens.*
-import com.github.soulsearching.screens.settings.*
+import com.github.soulsearching.screens.MainPageScreen
+import com.github.soulsearching.screens.ModifyAlbumScreen
+import com.github.soulsearching.screens.ModifyArtistScreen
+import com.github.soulsearching.screens.ModifyMusicScreen
+import com.github.soulsearching.screens.ModifyPlaylistScreen
+import com.github.soulsearching.screens.MoreAlbumsScreen
+import com.github.soulsearching.screens.MoreArtistsScreen
+import com.github.soulsearching.screens.MorePlaylistsScreen
+import com.github.soulsearching.screens.SelectedAlbumScreen
+import com.github.soulsearching.screens.SelectedArtistScreen
+import com.github.soulsearching.screens.SelectedPlaylistScreen
+import com.github.soulsearching.screens.settings.SettingsAboutScreen
+import com.github.soulsearching.screens.settings.SettingsAddMusicsScreen
+import com.github.soulsearching.screens.settings.SettingsColorThemeScreen
+import com.github.soulsearching.screens.settings.SettingsDevelopersScreen
+import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
+import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
+import com.github.soulsearching.screens.settings.SettingsScreen
+import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.*
+import com.github.soulsearching.viewModels.AddMusicsViewModel
+import com.github.soulsearching.viewModels.AllAlbumsViewModel
+import com.github.soulsearching.viewModels.AllArtistsViewModel
+import com.github.soulsearching.viewModels.AllFoldersViewModel
+import com.github.soulsearching.viewModels.AllImageCoversViewModel
+import com.github.soulsearching.viewModels.AllMusicsViewModel
+import com.github.soulsearching.viewModels.AllPlaylistsViewModel
+import com.github.soulsearching.viewModels.AllQuickAccessViewModel
+import com.github.soulsearching.viewModels.ModifyAlbumViewModel
+import com.github.soulsearching.viewModels.ModifyArtistViewModel
+import com.github.soulsearching.viewModels.ModifyMusicViewModel
+import com.github.soulsearching.viewModels.ModifyPlaylistViewModel
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
+import com.github.soulsearching.viewModels.PlayerViewModel
+import com.github.soulsearching.viewModels.SelectedAlbumViewModel
+import com.github.soulsearching.viewModels.SelectedArtistViewModel
+import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.*
 
-@Suppress("UNCHECKED_CAST")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     // Main page view models
@@ -92,8 +141,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CoroutineCreationDuringComposition")
-    @OptIn(ExperimentalMaterialApi::class)
+    @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +157,14 @@ class MainActivity : AppCompatActivity() {
         )
         SharedPrefUtils.initializeSettings()
 
-        registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
+        if (Build.VERSION.SDK_INT >= 33) {
+            registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE),
+                RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
+        }
+
+
         PlayerUtils.playerViewModel = playerViewModel
         PlayerUtils.playerViewModel.retrieveCoverMethod = allImageCoversViewModel::getImageCover
         PlayerUtils.playerViewModel.updateNbPlayed =
@@ -125,9 +181,6 @@ class MainActivity : AppCompatActivity() {
                 val playerMusicState by PlayerUtils.playerViewModel.state.collectAsState()
                 val quickAccessState by allQuickAccessViewModel.state.collectAsState()
 
-                val playerSwipeableState = rememberSwipeableState(
-                    BottomSheetStates.COLLAPSED
-                )
                 val musicListSwipeableState = rememberSwipeableState(
                     BottomSheetStates.COLLAPSED
                 )
@@ -140,28 +193,7 @@ class MainActivity : AppCompatActivity() {
                     mutableStateOf(false)
                 }
 
-                if (!hasPlayerMusicBeenFetched) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val playerSavedMusics = playerMusicListViewModel.getPlayerMusicList()
-                        if (playerSavedMusics.isNotEmpty()) {
-                            PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(
-                                playerSavedMusics
-                            )
-                            Utils.launchService(
-                                context = this@MainActivity,
-                                isFromSavedList = true
-                            )
-                            PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
-                            coroutineScope.launch {
-                                playerSwipeableState.animateTo(
-                                    BottomSheetStates.MINIMISED,
-                                    tween(Constants.AnimationTime.normal)
-                                )
-                            }
-                        }
-                    }
-                    hasPlayerMusicBeenFetched = true
-                }
+                // SHOULD BE PUT HERE
 
                 val context = LocalContext.current
                 var isReadPermissionGranted by rememberSaveable {
@@ -317,6 +349,34 @@ class MainActivity : AppCompatActivity() {
                                 constraintsScope.maxHeight.toPx()
                             }
 
+                            val playerSwipeableState = rememberPlayerComposableState(
+                                constraintsScope = constraintsScope
+                            )
+
+
+                            if (!hasPlayerMusicBeenFetched) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val playerSavedMusics = playerMusicListViewModel.getPlayerMusicList()
+                                    if (playerSavedMusics.isNotEmpty()) {
+                                        PlayerUtils.playerViewModel.setPlayerInformationsFromSavedList(
+                                            playerSavedMusics
+                                        )
+                                        Utils.launchService(
+                                            context = this@MainActivity,
+                                            isFromSavedList = true
+                                        )
+                                        PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
+                                        coroutineScope.launch {
+                                            playerSwipeableState.state.animateTo(
+                                                BottomSheetStates.MINIMISED,
+                                                Constants.AnimationTime.normal.toFloat()
+                                            )
+                                        }
+                                    }
+                                }
+                                hasPlayerMusicBeenFetched = true
+                            }
+
                             NavHost(navController = navController, startDestination = "mainPage") {
                                 composable("mainPage") {
                                     MainPageScreen(
@@ -362,7 +422,7 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSettings = {
                                             navController.navigate("settings")
                                         },
-                                        playerSwipeableState = playerSwipeableState,
+                                        playerSwipeableState = playerSwipeableState.state,
                                         searchSwipeableState = searchSwipeableState,
                                         musicState = musicState,
                                         playlistState = playlistState,
@@ -402,7 +462,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState,
+                                        swipeableState = playerSwipeableState.state,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -437,7 +497,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState,
+                                        swipeableState = playerSwipeableState.state,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -472,7 +532,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState,
+                                        swipeableState = playerSwipeableState.state,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -654,7 +714,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             PlayerSwipeableView(
                                 maxHeight = maxHeight,
-                                swipeableState = playerSwipeableState,
+                                swipeableState = playerSwipeableState.state,
                                 retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                                 musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel,
@@ -692,7 +752,7 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 musicListSwipeableState = musicListSwipeableState,
                                 playerMusicListViewModel = playerMusicListViewModel,
-                                playerSwipeableState = playerSwipeableState
+                                playerSwipeableState = playerSwipeableState.state
                             )
                         }
                     }

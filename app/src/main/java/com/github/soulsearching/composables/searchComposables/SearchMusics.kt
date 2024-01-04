@@ -3,6 +3,8 @@ package com.github.soulsearching.composables.searchComposables
 import android.graphics.Bitmap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,10 +28,10 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchMusics(
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     searchText: String,
     musicState: MusicState,
     onMusicEvent: (MusicEvent) -> Unit,
@@ -66,7 +68,7 @@ fun SearchMusics(
                             focusManager.clearFocus()
                             playerSwipeableState.animateTo(
                                 BottomSheetStates.EXPANDED,
-                                tween(Constants.AnimationTime.normal)
+                                Constants.AnimationTime.normal.toFloat()
                             )
                         }.invokeOnCompletion {
                             PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(

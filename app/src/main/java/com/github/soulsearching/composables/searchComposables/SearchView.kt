@@ -2,7 +2,9 @@ package com.github.soulsearching.composables.searchComposables
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -23,11 +25,11 @@ import com.github.soulsearching.ui.theme.DynamicColor
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SearchView(
     swipeableState: SwipeableState<BottomSheetStates>,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     maxHeight: Float,
     placeholder: String,
     primaryColor: Color = DynamicColor.primary,

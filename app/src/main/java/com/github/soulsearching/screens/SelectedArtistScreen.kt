@@ -1,10 +1,15 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
@@ -17,9 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectedArtistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -31,7 +37,7 @@ fun SelectedArtistScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: SwipeableState<BottomSheetStates>
+    swipeableState: AnchoredDraggableState<BottomSheetStates>
 ) {
     var isArtistFetched by remember {
         mutableStateOf(false)

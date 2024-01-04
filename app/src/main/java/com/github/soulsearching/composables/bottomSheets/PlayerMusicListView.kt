@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,13 +47,13 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import androidx.compose.foundation.gestures.animateTo
 
 @SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlayerMusicListView(
     maxHeight: Float,
@@ -62,7 +64,7 @@ fun PlayerMusicListView(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicListSwipeableState: SwipeableState<BottomSheetStates>,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -98,7 +100,8 @@ fun PlayerMusicListView(
         } else {
             MaterialTheme.colorScheme.primary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "PRIMARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
     val secondaryColor: Color by animateColorAsState(
@@ -109,7 +112,8 @@ fun PlayerMusicListView(
         } else {
             MaterialTheme.colorScheme.secondary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "SECONDARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
     val textColor: Color by animateColorAsState(
@@ -120,7 +124,8 @@ fun PlayerMusicListView(
         } else {
                MaterialTheme.colorScheme.onPrimary
         },
-        tween(Constants.AnimationTime.normal)
+        tween(Constants.AnimationTime.normal),
+        label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
     MusicBottomSheetEvents(
@@ -139,7 +144,7 @@ fun PlayerMusicListView(
                 coroutineScope.launch {
                     playerSwipeableState.animateTo(
                         BottomSheetStates.MINIMISED,
-                        tween(Constants.AnimationTime.normal)
+                        Constants.AnimationTime.normal.toFloat()
                     )
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)

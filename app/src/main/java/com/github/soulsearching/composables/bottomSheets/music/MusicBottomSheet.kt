@@ -1,8 +1,9 @@
 package com.github.soulsearching.composables.bottomSheets.music
 
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -11,9 +12,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
-import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -22,10 +23,12 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun MusicBottomSheet(
     onMusicEvent: (MusicEvent) -> Unit,
@@ -35,7 +38,7 @@ fun MusicBottomSheet(
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     primaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary
 ) {
@@ -140,8 +143,8 @@ fun MusicBottomSheet(
                     coroutineScope.launch {
                         if (playerSwipeableState.currentValue == BottomSheetStates.COLLAPSED) {
                             playerSwipeableState.animateTo(
-                                BottomSheetStates.MINIMISED, tween(
-                                Constants.AnimationTime.normal)
+                                BottomSheetStates.MINIMISED,
+                                Constants.AnimationTime.normal.toFloat()
                             )
                         }
                     }.invokeOnCompletion {

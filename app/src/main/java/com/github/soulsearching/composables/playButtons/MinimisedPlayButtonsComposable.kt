@@ -1,12 +1,12 @@
 package com.github.soulsearching.composables.playButtons
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -18,16 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
-    playerViewSwipeableState: SwipeableState<BottomSheetStates>
+    playerViewSwipeableState: AnchoredDraggableState<BottomSheetStates>
 ) {
     Row(
         modifier = modifier,

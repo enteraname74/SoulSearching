@@ -3,6 +3,8 @@ package com.github.soulsearching.screens
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.AnchoredDraggableState
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -63,7 +65,7 @@ fun MainPageScreen(
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
     navigateToSettings: () -> Unit,
-    playerSwipeableState: SwipeableState<BottomSheetStates>,
+    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
     searchSwipeableState: SwipeableState<BottomSheetStates>,
     musicState: MusicState,
     playlistState: PlaylistState,
@@ -210,7 +212,7 @@ fun MainPageScreen(
                                     coroutineScope.launch {
                                         playerSwipeableState.animateTo(
                                             BottomSheetStates.EXPANDED,
-                                            tween(Constants.AnimationTime.normal)
+                                            Constants.AnimationTime.normal.toFloat()
                                         )
                                     }.invokeOnCompletion {
                                         val musicListSingleton = arrayListOf(music)
@@ -471,7 +473,7 @@ fun MainPageScreen(
                                                     .launch {
                                                         playerSwipeableState.animateTo(
                                                             BottomSheetStates.EXPANDED,
-                                                            tween(Constants.AnimationTime.normal)
+                                                            Constants.AnimationTime.normal.toFloat()
                                                         )
                                                     }
                                                     .invokeOnCompletion {
@@ -498,7 +500,7 @@ fun MainPageScreen(
                                 coroutineScope.launch {
                                     playerSwipeableState.animateTo(
                                         BottomSheetStates.EXPANDED,
-                                        tween(Constants.AnimationTime.normal)
+                                        Constants.AnimationTime.normal.toFloat()
                                     )
                                 }.invokeOnCompletion {
                                     if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
