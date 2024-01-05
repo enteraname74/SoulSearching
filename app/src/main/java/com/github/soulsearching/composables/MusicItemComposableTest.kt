@@ -8,7 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,7 +48,7 @@ fun MusicItemComposableTest(
         mutableStateOf(false)
     }
 
-    val coroutineScope = rememberCoroutineScope()
+    rememberCoroutineScope()
     if (!isCoverFetched) {
         Log.d("MUSIC ITEM", "WILL FETCH")
         DisposableEffect(key1 = music.musicId) {
@@ -103,7 +103,7 @@ fun MusicItemComposableTest(
         }
         Icon(
             modifier = Modifier.clickable { onLongClick() },
-            imageVector = Icons.Default.MoreVert,
+            imageVector = Icons.Rounded.MoreVert,
             contentDescription = stringResource(id = R.string.more_button),
             tint = MaterialTheme.colorScheme.onPrimary
         )

@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.rounded.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +39,7 @@ fun AddToPlaylistMenuBottomSheet(
             title = stringResource(id = R.string.add_to_playlist),
             leftAction = cancelAction,
             rightAction = validationAction,
-            rightIcon = Icons.Default.Done,
+            rightIcon = Icons.Rounded.Done,
             backgroundColor = Color.Transparent,
             contentColor = textColor
         )

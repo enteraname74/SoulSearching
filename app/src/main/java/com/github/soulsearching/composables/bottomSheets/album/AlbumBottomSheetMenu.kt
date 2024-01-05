@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.DoubleArrow
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.DoubleArrow
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +30,7 @@ fun AlbumBottomSheetMenu(
     ) {
         if (SettingsUtils.settingsViewModel.isQuickAccessShown) {
             BottomSheetRow(
-                icon = Icons.Default.DoubleArrow,
+                icon = Icons.Rounded.DoubleArrow,
                 text = if (isInQuickAccess) {
                     stringResource(id = R.string.remove_from_quick_access)
                 } else {
@@ -40,12 +40,12 @@ fun AlbumBottomSheetMenu(
             )
         }
         BottomSheetRow(
-            icon = Icons.Default.Edit,
+            icon = Icons.Rounded.Edit,
             text = stringResource(id = R.string.modify_album),
             onClick = modifyAction
         )
         BottomSheetRow(
-            icon = Icons.Default.Delete,
+            icon = Icons.Rounded.Delete,
             text = stringResource(id = R.string.delete_album),
             onClick = deleteAction
         )

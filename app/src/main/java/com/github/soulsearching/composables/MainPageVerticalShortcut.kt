@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -77,7 +78,7 @@ fun MainPageVerticalShortcut(
                     colorFilter = ColorFilter.tint(DynamicColor.onPrimary),
                     imageVector = when (it) {
                         ElementEnum.QUICK_ACCESS -> Icons.Rounded.DoubleArrow
-                        ElementEnum.PLAYLISTS -> Icons.Rounded.QueueMusic
+                        ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Rounded.QueueMusic
                         ElementEnum.ALBUMS -> Icons.Rounded.Album
                         ElementEnum.ARTISTS -> Icons.Rounded.Person
                         ElementEnum.MUSICS -> Icons.Rounded.MusicNote

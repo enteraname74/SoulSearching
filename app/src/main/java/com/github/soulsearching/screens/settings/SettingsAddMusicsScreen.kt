@@ -13,8 +13,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -78,11 +84,12 @@ fun SettingsAddMusicsScreen(
         when(addMusicsState.state) {
             AddMusicsStateType.FETCHING_MUSICS -> {
                 var progress by rememberSaveable {
-                    mutableStateOf(0F)
+                    mutableFloatStateOf(0F)
                 }
                 val animatedProgress by animateFloatAsState(
                     targetValue = progress,
-                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                    animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+                    label = "ANIMATED_PROGRESS_FETCHING_MUSICS_SETTINGS_ADD_MUSICS_VIEW"
                 )
                 LoadingComposable(
                     progressIndicator = animatedProgress,
@@ -103,11 +110,12 @@ fun SettingsAddMusicsScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     var progress by rememberSaveable {
-                        mutableStateOf(0F)
+                        mutableFloatStateOf(0F)
                     }
                     val animatedProgress by animateFloatAsState(
                         targetValue = progress,
-                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+                        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+                        label = "ANIMATED_PROGRESS_SAVING_MUSICS_SETTINGS_ADD_MUSICS_VIEW"
                     )
                     LoadingComposable(
                         progressIndicator = animatedProgress,

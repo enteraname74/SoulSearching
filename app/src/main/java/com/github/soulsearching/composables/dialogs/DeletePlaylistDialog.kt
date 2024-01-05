@@ -2,7 +2,7 @@ package com.github.soulsearching.composables.dialogs
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -51,7 +51,7 @@ fun DeletePlaylistDialog(
         },
         icon = {
             Image(
-                imageVector = Icons.Default.Delete,
+                imageVector = Icons.Rounded.Delete,
                 contentDescription = stringResource(id = R.string.delete),
                 colorFilter = ColorFilter.tint(DynamicColor.onPrimary)
             )
