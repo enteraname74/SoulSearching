@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes.notification
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -7,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.soulsearching.MainActivity
@@ -47,11 +49,21 @@ abstract class SoulSearchingNotification(
         PendingIntent.FLAG_IMMUTABLE
     )
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun initializeNotification() {
-        context.registerReceiver(
-            broadcastReceiver,
-            IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
-        )
+        if (Build.VERSION.SDK_INT >= 33) {
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION),
+                Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
+            )
+
+        }
 
         notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)

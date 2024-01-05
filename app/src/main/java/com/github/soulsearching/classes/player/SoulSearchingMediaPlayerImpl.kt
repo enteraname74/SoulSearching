@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes.player
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -248,8 +249,14 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         mediaSession.isActive = true
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun initializeBroadcastReceiver() {
-        context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
+        if (Build.VERSION.SDK_INT >= 33) {
+            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION),
+                Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
+        }
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
