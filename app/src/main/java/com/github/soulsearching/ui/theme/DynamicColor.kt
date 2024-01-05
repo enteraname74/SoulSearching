@@ -6,10 +6,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 
+/**
+ * Dynamic colors used in the application.
+ */
 object DynamicColor {
     val primary: Color
         @Composable
@@ -31,7 +34,8 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.primary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "PRIMARY_DYNAMIC_COLOR"
         ).value
 
     val onPrimary: Color
@@ -55,9 +59,9 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onPrimary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "ON_PRIMARY_DYNAMIC_COLOR"
         ).value
-
 
     val secondary: Color
         @Composable
@@ -78,7 +82,8 @@ object DynamicColor {
             }  else {
                 MaterialTheme.colorScheme.secondary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "SECONDARY_DYNAMIC_COLOR"
         ).value
 
     val onSecondary: Color
@@ -102,7 +107,8 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onSecondary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "ON_SECONDARY_DYNAMIC_COLOR"
         ).value
 
     val subText: Color
@@ -126,6 +132,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.outline
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "SUB_TEXT_DYNAMIC_COLOR"
         ).value
 }

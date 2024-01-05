@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.utils
 
 import android.content.ContentResolver
 import android.content.Context
@@ -19,9 +19,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
+/**
+ * All kind of different methods.
+ */
 object Utils {
     const val BITMAP_SIZE = 300
 
+    /**
+     * Launch the playback service.
+     * It also assure that the service is launched in the player view model.
+     */
     fun launchService(
         context: Context,
         isFromSavedList: Boolean,
@@ -34,6 +41,9 @@ object Utils {
         }
     }
 
+    /**
+     * Retrieve a bitmap from a given Uri.
+     */
     fun getBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap {
         return if (Build.VERSION.SDK_INT >= 29) {
             contentResolver.loadThumbnail(
@@ -51,6 +61,9 @@ object Utils {
         }
     }
 
+    /**
+     * Remove a music from the app.
+     */
     suspend fun removeMusicFromApp(
         musicDao: MusicDao,
         albumDao: AlbumDao,
@@ -84,6 +97,9 @@ object Utils {
         )
     }
 
+    /**
+     * Remove an album from the app.
+     */
     private suspend fun removeAlbumFromApp(
         albumToRemove: Album,
         albumDao: AlbumDao,
@@ -93,6 +109,9 @@ object Utils {
         albumArtistDao.deleteAlbumFromArtist(albumId = albumToRemove.albumId)
     }
 
+    /**
+     * Remove an artist from the app.
+     */
     private suspend fun removeArtistFromApp(
         artistToRemove: Artist,
         artistDao: ArtistDao,
@@ -100,6 +119,10 @@ object Utils {
         artistDao.deleteArtist(artist = artistToRemove)
     }
 
+    /**
+     * Check if an album can be deleted automatically (no songs in the album).
+     * Delete the album if possible.
+     */
     private suspend fun checkAndDeleteAlbum(
         albumToCheck: Album,
         albumDao: AlbumDao,
@@ -118,6 +141,10 @@ object Utils {
         }
     }
 
+    /**
+     * Check if an artist can be deleted automatically (no songs in the artist).
+     * Delete the artist if possible.
+     */
     suspend fun checkAndDeleteArtist(
         artistToCheck: Artist,
         musicArtistDao: MusicArtistDao,
@@ -134,6 +161,9 @@ object Utils {
         }
     }
 
+    /**
+     * Change the album of a music.
+     */
     suspend fun modifyMusicAlbum(
         artist: Artist,
         musicAlbumDao: MusicAlbumDao,
@@ -187,6 +217,9 @@ object Utils {
         )
     }
 
+    /**
+     * Tries to retrieve the corresponding album of a music.
+     */
     private fun getCorrespondingAlbum(
         musicId: UUID,
         albumDao: AlbumDao,
@@ -204,6 +237,9 @@ object Utils {
         }
     }
 
+    /**
+     * Tries to retrieve the corresponding artist of a music.
+     */
     fun getCorrespondingArtist(
         musicId: UUID,
         artistDao: ArtistDao,

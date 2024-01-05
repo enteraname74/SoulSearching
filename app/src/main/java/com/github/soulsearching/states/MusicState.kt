@@ -7,6 +7,9 @@ import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.MusicWithCover
 import java.util.UUID
 
+/**
+ * Manage elements related to musics.
+ */
 data class MusicState(
     val musics: ArrayList<Music> = ArrayList(),
     val musicsWithCover: List<MusicWithCover> = emptyList(),

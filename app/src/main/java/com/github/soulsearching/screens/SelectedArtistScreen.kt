@@ -54,7 +54,7 @@ fun SelectedArtistScreen(
         // On doit quand même regarder si l'artiste correspondant existe avant de revenir en arrière
         LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
             CoroutineScope(Dispatchers.IO).launch {
-                if (selectedArtistViewModel.checkIfArtistIdDeleted(UUID.fromString(selectedArtistId))) {
+                if (selectedArtistViewModel.doesArtistExists(UUID.fromString(selectedArtistId))) {
                     withContext(Dispatchers.Main) {
                         navigateBack()
                     }

@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
@@ -54,7 +54,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.setPlayingState()
+                            PlayerUtils.playerViewModel.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
@@ -67,7 +67,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.setPlayingState()
+                            PlayerUtils.playerViewModel.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)

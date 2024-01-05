@@ -1,9 +1,8 @@
 package com.github.soulsearching.viewModels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.classes.MusicUtils
+import com.github.soulsearching.classes.utils.MusicUtils
 import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 import com.github.soulsearching.database.dao.FolderDao
@@ -19,6 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * View model for adding new musics from the settings..
+ */
 @HiltViewModel
 class AddMusicsViewModel @Inject constructor(
     private val folderDao: FolderDao, private val musicDao: MusicDao
@@ -26,6 +28,9 @@ class AddMusicsViewModel @Inject constructor(
     private var _state = MutableStateFlow(AddMusicsState())
     val state = _state.asStateFlow()
 
+    /**
+     * Manage add music events.
+     */
     fun onAddMusicEvent(event: AddMusicsEvent) {
         when (event) {
             AddMusicsEvent.ResetState -> {
@@ -66,6 +71,9 @@ class AddMusicsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Retrieve new musics.
+     */
     fun fetchNewMusics(
         context: Context,
         updateProgressBar: (Float) -> Unit,

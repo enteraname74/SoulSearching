@@ -2,8 +2,8 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.EventUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.*
@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for the player music list view.
+ */
 @HiltViewModel
 class PlayerMusicListViewModel @Inject constructor(
     private val playerMusicDao: PlayerMusicDao,
@@ -59,12 +62,18 @@ class PlayerMusicListViewModel @Inject constructor(
         MusicState()
     )
 
+    /**
+     * Retrieve the player music list from the database.
+     */
     suspend fun getPlayerMusicList(): ArrayList<Music> {
         val playerWithMusics = playerMusicDao.getAllPlayerMusics()
 
         return playerWithMusics.filter { it.music != null }.map { it.music!! } as ArrayList<Music>
     }
 
+    /**
+     * Save the player music list to the database.
+     */
     fun savePlayerMusicList(musicList : ArrayList<UUID>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
@@ -79,6 +88,9 @@ class PlayerMusicListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Reset the player music list to the database.
+     */
     fun resetPlayerMusicList() {
         CoroutineScope(Dispatchers.IO).launch {
             playerMusicDao.deleteAllPlayerMusic()
@@ -86,6 +98,9 @@ class PlayerMusicListViewModel @Inject constructor(
         SharedPrefUtils.setPlayerSavedCurrentMusic()
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

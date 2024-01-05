@@ -2,9 +2,9 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Artist
 import com.github.soulsearching.database.model.ImageCover
@@ -22,6 +22,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for the modify album screen.
+ */
 @HiltViewModel
 class ModifyAlbumViewModel @Inject constructor(
     private val musicDao: MusicDao,
@@ -39,6 +42,9 @@ class ModifyAlbumViewModel @Inject constructor(
         SelectedAlbumState()
     )
 
+    /**
+     * Manage album events.
+     */
     fun onAlbumEvent(event: AlbumEvent) {
         when (event) {
             AlbumEvent.UpdateAlbum -> {

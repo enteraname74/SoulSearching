@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.MusicUtils
+import com.github.soulsearching.classes.utils.MusicUtils
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.google.accompanist.pager.ExperimentalPagerApi

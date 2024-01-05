@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.database.model.PlaylistWithMusics
@@ -19,6 +19,9 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+/**
+ * View model for the selected playlist screen.
+ */
 @HiltViewModel
 class SelectedPlaylistViewModel @Inject constructor(
     private val playlistDao: PlaylistDao,
@@ -41,6 +44,9 @@ class SelectedPlaylistViewModel @Inject constructor(
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
+    /**
+     * Set the selected playlist.
+     */
     fun setSelectedPlaylist(playlistId: UUID) {
         _selectedPlaylistMusics = playlistDao
             .getPlaylistWithMusics(playlistId = playlistId)
@@ -91,6 +97,9 @@ class SelectedPlaylistViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Manage playlist events.
+     */
     fun onPlaylistEvent(event: PlaylistEvent) {
         when(event) {
             is PlaylistEvent.AddNbPlayed -> {
@@ -105,6 +114,9 @@ class SelectedPlaylistViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event : MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

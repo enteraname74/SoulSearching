@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.ImageCoverDao
@@ -15,6 +15,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+/**
+ * View model for managing all playlists.
+ */
 @HiltViewModel
 class AllPlaylistsViewModel @Inject constructor(
     private val playlistDao: PlaylistDao,
@@ -72,6 +75,9 @@ class AllPlaylistsViewModel @Inject constructor(
         PlaylistState()
     )
 
+    /**
+     * Manage playlist events.
+     */
     fun onPlaylistEvent(event: PlaylistEvent) {
         EventUtils.onPlaylistEvent(
             event = event,

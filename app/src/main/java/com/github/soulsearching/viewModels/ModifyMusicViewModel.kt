@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
@@ -17,6 +17,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for the modify music screen.
+ */
 @HiltViewModel
 class ModifyMusicViewModel @Inject constructor(
     private val musicDao: MusicDao,
@@ -37,6 +40,10 @@ class ModifyMusicViewModel @Inject constructor(
         MusicState()
     )
 
+    /**
+     * Define the selected music in the state from a given id.
+     * It will also fetch the cover of the music.
+     */
     fun getMusicFromId(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             val music = musicDao.getMusicFromId(musicId)
@@ -58,6 +65,9 @@ class ModifyMusicViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

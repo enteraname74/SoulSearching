@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * View model for managing all quick access.
+ */
 @HiltViewModel
 class AllQuickAccessViewModel @Inject constructor(
     musicDao: MusicDao,

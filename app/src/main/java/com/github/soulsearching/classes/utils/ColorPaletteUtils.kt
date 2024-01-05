@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.utils
 
 import android.graphics.Bitmap
 import androidx.compose.material3.MaterialTheme
@@ -8,13 +8,20 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
 
+/**
+ * Utils for managing color palettes.
+ */
 object ColorPaletteUtils {
-    fun getPaletteFromAlbumArt(albumArt: Bitmap?): Palette.Swatch? {
-        if (albumArt == null) {
+
+    /**
+     * Tries to retrieve a palette from a potential image.
+     */
+    fun getPaletteFromAlbumArt(image: Bitmap?): Palette.Swatch? {
+        if (image == null) {
             return null
         }
 
-        val palette = Palette.from(albumArt).generate()
+        val palette = Palette.from(image).generate()
         return if (palette.darkVibrantSwatch == null) {
             palette.dominantSwatch
         } else {
@@ -22,6 +29,11 @@ object ColorPaletteUtils {
         }
     }
 
+    /**
+     * Retrieve the dynamic primary color from a color palette.
+     * It will use the palette of the current played song by default.
+     * If the palette is null, it will use the material theme.
+     */
     @Composable
     fun getDynamicPrimaryColor(
         baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb
@@ -37,6 +49,11 @@ object ColorPaletteUtils {
         }
     }
 
+    /**
+     * Retrieve the dynamic secondary color from a color palette.
+     * It will use the palette of the current played song by default.
+     * If the palette is null, it will use the material theme.
+     */
     @Composable
     fun getDynamicSecondaryColor(
         baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb

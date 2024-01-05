@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.player
 
 
 import android.annotation.SuppressLint
@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
@@ -109,7 +109,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "BACKGROUND_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
     val textColor: Color by animateColorAsState(
@@ -123,7 +123,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -138,7 +138,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "SUB_TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -154,7 +154,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "CONTENT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -170,7 +170,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -186,7 +186,7 @@ fun PlayerDraggableView(
                 }
             }
         }
-        ,tween(Constants.AnimationTime.normal),
+        ,tween(Constants.AnimationDuration.normal),
         label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -379,7 +379,7 @@ fun PlayerDraggableView(
                 val imageModifier = if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
-                            PlayerUtils.playerViewModel.currentMusic?.let {currentMusic ->
+                            PlayerUtils.playerViewModel.currentMusic?.let { currentMusic ->
                                 coroutineScope.launch {
                                     onMusicEvent(
                                         MusicEvent.SetSelectedMusic(

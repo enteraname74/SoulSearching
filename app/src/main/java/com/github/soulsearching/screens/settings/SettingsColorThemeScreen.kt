@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer

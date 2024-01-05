@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
-import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
@@ -148,7 +148,7 @@ fun ExpandedPlayButtonsComposable(
                         contentDescription = "",
                         modifier = Modifier
                             .size(78.dp)
-                            .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                            .clickable { PlayerUtils.playerViewModel.togglePlayPause() },
                         colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 } else {
@@ -157,7 +157,7 @@ fun ExpandedPlayButtonsComposable(
                         contentDescription = "",
                         modifier = Modifier
                             .size(78.dp)
-                            .clickable { PlayerUtils.playerViewModel.setPlayingState() },
+                            .clickable { PlayerUtils.playerViewModel.togglePlayPause() },
                         colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 }

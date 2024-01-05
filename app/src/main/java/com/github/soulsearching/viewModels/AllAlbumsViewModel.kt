@@ -2,10 +2,10 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * View model for managing all albums.
+ */
 @HiltViewModel
 class AllAlbumsViewModel @Inject constructor(
     private val albumDao: AlbumDao,
@@ -75,6 +78,9 @@ class AllAlbumsViewModel @Inject constructor(
         AlbumState()
     )
 
+    /**
+     * Manage album events.
+     */
     fun onAlbumEvent(event: AlbumEvent) {
         when (event) {
             AlbumEvent.DeleteAlbum -> {

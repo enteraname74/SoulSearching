@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.utils
 
 import android.util.Log
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection

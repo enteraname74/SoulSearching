@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.AlbumDao
@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * View model for managing all artists.
+ */
 @HiltViewModel
 class AllArtistsViewModel @Inject constructor(
     private val artistDao: ArtistDao,
@@ -68,6 +71,9 @@ class AllArtistsViewModel @Inject constructor(
         ArtistState()
     )
 
+    /**
+     * Manage artists events.
+     */
     fun onArtistEvent(event: ArtistEvent) {
         when (event) {
             ArtistEvent.DeleteArtist -> {

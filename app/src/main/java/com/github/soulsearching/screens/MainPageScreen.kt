@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.SearchDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
@@ -330,7 +330,6 @@ fun MainPageScreen(
                         }
                     }
                     if (SettingsUtils.settingsViewModel.isAlbumsShown) {
-
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel::getImageCover,

@@ -13,10 +13,13 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.receivers.DeletedNotificationIntentReceiver
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 
+/**
+ * Notification used for the playback by the service.
+ */
 abstract class SoulSearchingNotification(
     protected val context: Context,
     protected val mediaSessionToken: MediaSessionCompat.Token
@@ -49,6 +52,10 @@ abstract class SoulSearchingNotification(
         PendingIntent.FLAG_IMMUTABLE
     )
 
+    /**
+     * Initialize the notification.
+     * It will show the information of the current played song if there is one.
+     */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun initializeNotification() {
         if (Build.VERSION.SDK_INT >= 33) {
@@ -82,12 +89,22 @@ abstract class SoulSearchingNotification(
         notification = notificationBuilder.build()
     }
 
+    /**
+     * Abstract method for updating the notification.
+     */
     abstract fun updateNotification()
 
+    /**
+     * Return the instance of the Notification for the app notification.
+     */
     fun getPlayerNotification(): Notification {
         return notification
     }
 
+    /**
+     * Dismiss the notification.
+     * It will cancel the notification and unregister the broadcast receiver linked to it.
+     */
     fun dismissNotification() {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

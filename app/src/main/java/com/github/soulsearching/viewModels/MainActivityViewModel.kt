@@ -4,10 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 
 /**
- * ViewModel for managing the MainActivity.
+ * ViewModel for managing the main activity.
  */
 class MainActivityViewModel : ViewModel() {
     var hasLastPlayedMusicsBeenFetched by mutableStateOf(false)

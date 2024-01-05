@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.database.dao.ImageCoverDao
 import com.github.soulsearching.database.dao.MusicPlaylistDao
 import com.github.soulsearching.database.dao.PlaylistDao
@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+/**
+ * View model for the modify playlist screen.
+ */
 @HiltViewModel
 class ModifyPlaylistViewModel @Inject constructor(
     private val playlistDao : PlaylistDao,
@@ -28,6 +31,9 @@ class ModifyPlaylistViewModel @Inject constructor(
         PlaylistState()
     )
 
+    /**
+     * Manage playlist events.
+     */
     fun onPlaylistEvent(event : PlaylistEvent) {
         EventUtils.onPlaylistEvent(
             event = event,

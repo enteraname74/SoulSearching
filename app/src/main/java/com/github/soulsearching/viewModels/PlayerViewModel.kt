@@ -10,6 +10,10 @@ import com.github.soulsearching.classes.*
 import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.EventUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
+import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
@@ -25,6 +29,9 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.reflect.KFunction1
 
+/**
+ * View model for the player.
+ */
 @SuppressLint("MutableCollectionMutableState")
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
@@ -66,6 +73,10 @@ class PlayerViewModel @Inject constructor(
     private var isCounting = false
     private var isChangingPlayMode = false
 
+    /**
+     * Retrieve the index of the current played music.
+     * Return -1 if the current music is null or if it is not found in the current playlist
+     */
     fun getIndexOfCurrentMusic(): Int {
         return if (currentMusic == null) {
             -1
@@ -74,6 +85,13 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Set information from a given saved list.
+     * It will search the saved current music and set it.
+     * it will also define the player mode, palette and cover.
+     *
+     * Information are found from the shared preferences.
+     */
     fun setPlayerInformationFromSavedList(musicList: ArrayList<Music>) {
         currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
         initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
@@ -83,6 +101,10 @@ class PlayerViewModel @Inject constructor(
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
 
+    /**
+     * Check if a music is the same as the current one.
+     * If there is no current music, return false.
+     */
     fun isSameMusic(musicId: UUID): Boolean {
         return if (currentMusic == null) {
             false
@@ -91,6 +113,11 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Check if a playlist is the same as the current one.
+     * We can also check with a isMainPlaylist value (the main playlist, with all songs, does not have
+     * a UUID).
+     */
     fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
         if (playlistId == null && this.currentPlaylistId == null) {
             return isMainPlaylist == this.isMainPlaylist
@@ -100,6 +127,9 @@ class PlayerViewModel @Inject constructor(
         return false
     }
 
+    /**
+     * Update information of a song in the initial list, current list and the current music if it's the same.
+     */
     fun updateMusic(music: Music) {
         currentMusic?.let {
             if (it.musicId.compareTo(music.musicId) == 0) {
@@ -118,17 +148,29 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Define the current music cover and the current color palette from the cover.
+     */
     fun defineCoverAndPaletteFromCoverId(coverId: UUID?) {
         currentMusicCover = retrieveCoverMethod(coverId)
         currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
 
+    /**
+     * Define the current music.
+     */
     private fun setNewCurrentMusicInformation(music: Music?) {
         currentMusic = music
         currentMusicPosition = 0
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
 
+    /**
+     * Add a music to play next.
+     * Does nothing if we try to add the current music.
+     * If the playlist is empty (nothing is playing), we load the music.
+     * It will remove the previous apparition of the music if there was one.
+     */
     fun addMusicToPlayNext(
         music: Music,
         context: Context
@@ -159,6 +201,9 @@ class PlayerViewModel @Inject constructor(
         SharedPrefUtils.setPlayerSavedCurrentMusic()
     }
 
+    /**
+     * Remove a music from the playlist if the playlist is the same as a specified one.
+     */
     fun removeMusicIfSamePlaylist(musicId: UUID, context: Context, playlistId: UUID?) {
         if (playlistId == null && currentPlaylistId == null) {
             removeMusicFromCurrentPlaylist(musicId, context)
@@ -169,6 +214,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Remove a music from the current playlist.
+     * it no songs are left, the playback will stop.
+     */
     fun removeMusicFromCurrentPlaylist(musicId: UUID, context: Context) {
         val currentIndex = getIndexOfCurrentMusic()
         currentPlaylist.removeIf { it.musicId == musicId }
@@ -190,6 +239,9 @@ class PlayerViewModel @Inject constructor(
         SharedPrefUtils.setPlayerSavedCurrentMusic()
     }
 
+    /**
+     * Change the current music information to the next music.
+     */
     fun setNextMusic() {
         if (currentPlaylist.size != 0) {
             val currentIndex = getIndexOfCurrentMusic()
@@ -200,10 +252,20 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Retrieve the next music in the current playlist.
+     * Return null if nothing is found.
+     * Return the first music if we are at the end of the playlist.
+     */
     private fun getNextMusic(currentIndex: Int): Music? {
         return if (currentPlaylist.isNotEmpty()) currentPlaylist[(currentIndex + 1) % currentPlaylist.size] else null
     }
 
+    /**
+     * Retrieve the previous music in the current playlist.
+     * Return null if nothing is found.
+     * Return the last music if we are at the start of the playlist.
+     */
     private fun getPreviousMusic(currentIndex: Int): Music? {
         return if (currentPlaylist.isNotEmpty()) {
             if (currentIndex == 0) {
@@ -216,6 +278,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Change the current music information to the previous music.
+     */
     fun setPreviousMusic() {
         val currentIndex = getIndexOfCurrentMusic()
 
@@ -224,11 +289,17 @@ class PlayerViewModel @Inject constructor(
         SharedPrefUtils.setPlayerSavedCurrentMusic()
     }
 
-    fun setPlayingState() {
+    /**
+     * Play or pause the player.
+     */
+    fun togglePlayPause() {
         PlayerService.togglePlayPause()
         isPlaying = PlayerService.isPlayerPlaying()
     }
 
+    /**
+     * Play a playlist in shuffle and save it.
+     */
     fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
         CoroutineScope(Dispatchers.IO).launch {
             currentPlaylistId = null
@@ -256,6 +327,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Define the current playlist and music.
+     * Primarily used when clicking on a music.
+     */
     fun setCurrentPlaylistAndMusic(
         music: Music,
         playlist: ArrayList<Music>,
@@ -295,11 +370,13 @@ class PlayerViewModel @Inject constructor(
                 PlayerService.setAndPlayCurrentMusic()
             } else {
                 shouldServiceBeLaunched = true
-
             }
         }
     }
 
+    /**
+     * Shuffle the current playlist and place the current music at first place in the list.
+     */
     private fun shuffleCurrentList(listToShuffle: ArrayList<Music>) {
         val tmpList = listToShuffle.map { it.copy() } as ArrayList<Music>
         tmpList.shuffle()
@@ -310,6 +387,9 @@ class PlayerViewModel @Inject constructor(
         currentPlaylist = tmpList
     }
 
+    /**
+     * Change the player mode.
+     */
     fun changePlayerMode() {
         if (!isChangingPlayMode) {
             isChangingPlayMode = true
@@ -339,6 +419,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Force the player mode the normal.
+     * The current playlist will be reset to be like the music list passed in parameter.
+     */
     private fun forcePlayerModeToNormal(musicList: ArrayList<Music>) {
         if (!isChangingPlayMode) {
             isChangingPlayMode = true
@@ -349,8 +433,12 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Define the current music from a given index.
+     * If the index is out of bound, the current music will be the first one of the playlist.
+     */
     fun setMusicFromIndex(index: Int) {
-        if (currentPlaylist.lastIndex != -1) {
+        if (currentPlaylist.isNotEmpty()) {
             currentMusic = if (index <= currentPlaylist.lastIndex) {
                 currentPlaylist[max(0, index)]
             } else {
@@ -359,6 +447,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Reset player view model information.
+     */
     fun resetPlayerData() {
         currentMusic = null
         currentMusicCover = null
@@ -374,6 +465,9 @@ class PlayerViewModel @Inject constructor(
         isCounting = false
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

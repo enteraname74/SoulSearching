@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for the modify artist screen.
+ */
 @HiltViewModel
 class ModifyArtistViewModel @Inject constructor(
     private val musicDao: MusicDao,
@@ -37,11 +40,13 @@ class ModifyArtistViewModel @Inject constructor(
         SelectedArtistState()
     )
 
+    /**
+     * Manage artist events.
+     */
     fun onArtistEvent(event: ArtistEvent) {
         when (event) {
             ArtistEvent.UpdateArtist -> {
                 CoroutineScope(Dispatchers.IO).launch {
-
                     val coverId = if (state.value.hasCoverBeenChanged) {
                         val id = UUID.randomUUID()
                         imageCoverDao.insertImageCover(
@@ -66,9 +71,6 @@ class ModifyArtistViewModel @Inject constructor(
                     val legacyArtistOfAlbums = albumDao.getAllAlbumsWithMusicsSimple().filter {
                         (it.artist!!.artistName == state.value.artistWithMusics.artist.artistName.trim())
                     }
-
-                    Log.d("LEGACY ALBUMS", legacyArtistOfAlbums.size.toString())
-                    Log.d("LEGACY ALBUMS", legacyArtistOfAlbums.toString())
 
                     /*
                      Si, une fois le nom de l'artiste changé,

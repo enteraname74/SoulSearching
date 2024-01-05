@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.Music
@@ -18,6 +18,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for the selected artist screen.
+ */
 @HiltViewModel
 class SelectedArtistViewModel @Inject constructor(
     private val artistDao: ArtistDao,
@@ -38,9 +41,12 @@ class SelectedArtistViewModel @Inject constructor(
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
-    fun setSelectedArtist(albumId: UUID) {
+    /**
+     * Set the selected artist.
+     */
+    fun setSelectedArtist(artistId: UUID) {
         _selectedArtistWithMusics = artistDao
-            .getArtistWithMusics(artistId = albumId)
+            .getArtistWithMusics(artistId = artistId)
             .stateIn(
                 viewModelScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
             )
@@ -86,12 +92,18 @@ class SelectedArtistViewModel @Inject constructor(
         }
     }
 
-    fun checkIfArtistIdDeleted(artistId : UUID) : Boolean{
+    /**
+     * Check if an artist exists.
+     */
+    fun doesArtistExists(artistId : UUID) : Boolean{
         return artistDao.getArtistFromId(
             artistId
         ) == null
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,
@@ -109,6 +121,9 @@ class SelectedArtistViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Manage artist events.
+     */
     fun onArtistEvent(event : ArtistEvent) {
         when(event) {
             is ArtistEvent.AddNbPlayed -> {

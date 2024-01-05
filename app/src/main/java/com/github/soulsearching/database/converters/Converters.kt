@@ -7,15 +7,18 @@ import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 
+/**
+ * Used for converting complex types to more simple ones for the database.
+ */
 class Converters {
     @TypeConverter
     fun bitmapToString(bitmap: Bitmap?): String {
 
         if (bitmap == null) return ""
 
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-        val b = baos.toByteArray()
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        val b = outputStream.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
 

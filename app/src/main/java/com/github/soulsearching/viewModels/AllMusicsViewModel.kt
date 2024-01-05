@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.EventUtils
-import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.utils.EventUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.dao.*
@@ -21,6 +21,9 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * View model for managing all musics.
+ */
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
     private val musicDao: MusicDao,
@@ -85,7 +88,9 @@ class AllMusicsViewModel @Inject constructor(
         MusicState()
     )
 
-
+    /**
+     * Persist a music and its cover.
+     */
     suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicDao.getMusicFromPath(musicToAdd.path)
@@ -202,17 +207,30 @@ class AllMusicsViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Check if a music is in the favorites.
+     */
     suspend fun isMusicInFavorite(musicId: UUID): Boolean {
         return musicDao.getMusicFromFavoritePlaylist(musicId = musicId) != null
     }
 
+    /**
+     * Retrieve the artist id of a music.
+     */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {
         return musicArtistDao.getArtistIdFromMusicId(musicId)
     }
 
+    /**
+     * Retrieve the album id of a music.
+     */
     fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
         return musicAlbumDao.getAlbumIdFromMusicId(musicId)
     }
+
+    /**
+     * Check all musics and delete the one that does not exists (if the path of the music is not valid).
+     */
     fun checkAndDeleteMusicIfNotExist(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             var deleteCount = 0
@@ -247,6 +265,9 @@ class AllMusicsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Manage music events.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

@@ -9,6 +9,9 @@ import com.github.soulsearching.database.model.PlaylistWithMusicsNumber
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Manage elements related to playlists.
+ */
 data class PlaylistState(
     val playlists: List<PlaylistWithMusicsNumber> = emptyList(),
     val selectedPlaylist: Playlist = Playlist(),

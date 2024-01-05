@@ -50,7 +50,7 @@ fun SelectedAlbumScreen(
         // On doit quand même regarder si l'album correspondant existe avant de revenir en arrière
         LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
             CoroutineScope(Dispatchers.IO).launch {
-                if (selectedAlbumViewModel.checkIfAlbumIsDeleted(UUID.fromString(selectedAlbumId))) {
+                if (selectedAlbumViewModel.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
                     withContext(Dispatchers.Main) {
                         navigateBack()
                     }

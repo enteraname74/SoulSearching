@@ -2,10 +2,12 @@ package com.github.soulsearching.events
 
 import android.graphics.Bitmap
 import com.github.soulsearching.database.model.Playlist
-import com.github.soulsearching.database.model.PlaylistWithMusics
-import java.util.*
+import java.util.UUID
 
-interface PlaylistEvent {
+/**
+ * Events related to playlists
+ */
+sealed interface PlaylistEvent {
     object UpdatePlaylist : PlaylistEvent
     object DeletePlaylist : PlaylistEvent
     object UpdateQuickAccessState: PlaylistEvent

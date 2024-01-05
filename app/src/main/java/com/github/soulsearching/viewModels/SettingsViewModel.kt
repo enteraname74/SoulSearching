@@ -7,11 +7,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.classes.enumsAndTypes.ElementEnum
 
+/**
+ * View model for the settings.
+ */
 class SettingsViewModel: ViewModel() {
     var colorTheme by mutableIntStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
@@ -28,6 +31,9 @@ class SettingsViewModel: ViewModel() {
     var playlistPalette by mutableStateOf<Palette.Swatch?>(null)
     var forceBasicThemeForPlaylists by mutableStateOf(false)
 
+    /**
+     * Update the type of color theme used in the application.
+     */
     fun updateColorTheme(newTheme: Int) {
         colorTheme = newTheme
         SharedPrefUtils.updateIntValue(
@@ -36,26 +42,57 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Check if the personalized dynamic playlist theme is off.
+     * The conditions are :
+     * - App color theme is on personalized
+     * - The dynamic playlist theme is NOT selected
+     */
     fun isPersonalizedDynamicPlaylistThemeOff(): Boolean {
         return colorTheme == ColorThemeType.PERSONALIZED && !isDynamicPlaylistThemeSelected
     }
 
+    /**
+     * Check if the personalized dynamic player theme is on.
+     * The conditions are :
+     * - App color theme is on personalized && The dynamic playlist theme is selected
+     * - Or the color theme is on dynamic.
+     */
     fun isPersonalizedDynamicPlayerThemeOn(): Boolean {
         return (colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlayerThemeSelected) || colorTheme == ColorThemeType.DYNAMIC
     }
 
+    /**
+     * Check if the personalized dynamic playlist theme is on.
+     * The conditions are :
+     * - App color theme is on personalized
+     * - The dynamic playlist theme is selected
+     */
     fun isPersonalizedDynamicPlaylistThemeOn(): Boolean {
         return colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlaylistThemeSelected
     }
 
+    /**
+     * Check if the dynamic theme is on.
+     */
     fun isDynamicThemeOn(): Boolean {
         return colorTheme == ColorThemeType.DYNAMIC
     }
 
+
+    /**
+     * Check if the personalized dynamic other views theme is on.
+     * The conditions are :
+     * - App color theme is on personalized
+     * - The dynamic theme for other views is selected
+     */
     fun isPersonalizedDynamicOtherViewsThemeOn(): Boolean {
         return colorTheme == ColorThemeType.PERSONALIZED && isDynamicOtherViewsThemeSelected
     }
 
+    /**
+     * Toggle dynamic theme for player.
+     */
     fun toggleDynamicPlayerTheme() {
         isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
         SharedPrefUtils.updateBooleanValue(
@@ -64,6 +101,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Toggle dynamic theme for playlist.
+     */
     fun toggleDynamicPlaylistTheme() {
         isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
         SharedPrefUtils.updateBooleanValue(
@@ -71,6 +111,11 @@ class SettingsViewModel: ViewModel() {
             newValue = isDynamicPlaylistThemeSelected
         )
     }
+
+
+    /**
+     * Toggle dynamic theme for other views (everything except playlists and player view).
+     */
     fun toggleDynamicOtherViewsTheme() {
         isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
         SharedPrefUtils.updateBooleanValue(
@@ -79,6 +124,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Show or hide the quick access on the main page screen.
+     */
     fun toggleQuickAccessVisibility() {
         isQuickAccessShown = !isQuickAccessShown
         SharedPrefUtils.updateBooleanValue(
@@ -87,6 +135,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Show or hide the playlists on the main page screen.
+     */
     fun togglePlaylistsVisibility() {
         isPlaylistsShown = !isPlaylistsShown
         SharedPrefUtils.updateBooleanValue(
@@ -95,6 +146,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Show or hide the albums on the main page screen.
+     */
     fun toggleAlbumsVisibility() {
         isAlbumsShown = !isAlbumsShown
         SharedPrefUtils.updateBooleanValue(
@@ -103,6 +157,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Show or hide the artists on the main page screen.
+     */
     fun toggleArtistsVisibility() {
         isArtistsShown = !isArtistsShown
         SharedPrefUtils.updateBooleanValue(
@@ -111,6 +168,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Activate or deactivate the vertical bar on the main page screen.
+     */
     fun toggleVerticalBarVisibility() {
         isVerticalBarShown = !isVerticalBarShown
         SharedPrefUtils.updateBooleanValue(
@@ -119,6 +179,9 @@ class SettingsViewModel: ViewModel() {
         )
     }
 
+    /**
+     * Retrieve a list of visible elements on the main page screen.
+     */
     fun getListOfVisibleElements(): ArrayList<ElementEnum> {
         val list: ArrayList<ElementEnum> = ArrayList()
         if (isQuickAccessShown) {
@@ -137,6 +200,9 @@ class SettingsViewModel: ViewModel() {
         return list
     }
 
+    /**
+     * Define the current playlist palette from its image.
+     */
     fun setPlaylistColorPalette(playlistImage: Bitmap?) {
         playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(playlistImage)
     }

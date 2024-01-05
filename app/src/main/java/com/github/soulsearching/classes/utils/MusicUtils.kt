@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import com.github.soulsearching.R
+import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.database.model.Music
 import java.io.File
 import java.io.IOException

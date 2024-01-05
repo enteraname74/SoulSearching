@@ -7,6 +7,9 @@ import android.support.v4.media.session.MediaSessionCompat.Token
 import android.util.Log
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 
+/**
+ * Specification of a SoulSearchingNotification for Android 13 and above.
+ */
 class SoulSearchingNotificationAndroid13(
     context: Context,
     mediaSessionToken: Token

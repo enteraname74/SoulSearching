@@ -5,6 +5,9 @@ import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.database.model.AlbumWithArtist
 
+/**
+ * Manage elements related to albums.
+ */
 data class AlbumState(
     val albums: List<AlbumWithArtist> = emptyList(),
     val selectedAlbumWithArtist : AlbumWithArtist = AlbumWithArtist(),

@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.EventUtils
+import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.AlbumWithMusics
 import com.github.soulsearching.database.model.Music
@@ -19,6 +19,9 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+/**
+ * View model for the selected album screen.
+ */
 @HiltViewModel
 class SelectedAlbumViewModel @Inject constructor(
     private val albumDao: AlbumDao,
@@ -39,6 +42,9 @@ class SelectedAlbumViewModel @Inject constructor(
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
+    /**
+     * Set the selected album.
+     */
     fun setSelectedAlbum(albumId: UUID) {
         _selectedAlbumWithMusics = albumDao
             .getAlbumWithMusics(albumId = albumId)
@@ -86,12 +92,18 @@ class SelectedAlbumViewModel @Inject constructor(
         }
     }
 
-    fun checkIfAlbumIsDeleted(albumId : UUID) : Boolean{
+    /**
+     * Check if an album exists.
+     */
+    fun doesAlbumExists(albumId : UUID) : Boolean{
         return albumDao.getAlbumFromId(
             albumId
         ) == null
     }
 
+    /**
+     * Manage album events.
+     */
     fun onAlbumEvent(event: AlbumEvent) {
         when(event) {
             is AlbumEvent.AddNbPlayed -> {
@@ -102,9 +114,13 @@ class SelectedAlbumViewModel @Inject constructor(
                     )
                 }
             }
+            else -> {}
         }
     }
 
+    /**
+     * Manage music event.
+     */
     fun onMusicEvent(event: MusicEvent) {
         EventUtils.onMusicEvent(
             event = event,

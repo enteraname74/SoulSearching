@@ -1,10 +1,18 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.classes.utils
 
 import com.github.soulsearching.viewModels.PlayerViewModel
 
+/**
+ * Object containing the instance of the player view model.
+ * It is static because we need to access this view model in multiple parts of the applications
+ * like the service for example.
+ */
 object PlayerUtils {
     lateinit var playerViewModel: PlayerViewModel
 
+    /**
+     * Convert a duration to a viewable duration.
+     */
     fun convertDuration(duration: Int): String {
         val minutes: Float = duration.toFloat() / 1000 / 60
         val seconds: Float = duration.toFloat() / 1000 % 60

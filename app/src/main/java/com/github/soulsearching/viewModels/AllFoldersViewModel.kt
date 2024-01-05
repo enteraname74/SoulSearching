@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.classes.Utils
+import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.classes.enumsAndTypes.FolderStateType
 import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.database.model.Folder
@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * View model for managing all folders.
+ */
 @HiltViewModel
 class AllFoldersViewModel @Inject constructor(
     private val folderDao: FolderDao,
@@ -30,6 +33,9 @@ class AllFoldersViewModel @Inject constructor(
     private val _state = MutableStateFlow(FolderState())
     val state = _state.asStateFlow()
 
+    /**
+     * Manage folder events.
+     */
     fun onFolderEvent(event: FolderEvent) {
         when (event) {
             FolderEvent.FetchFolders -> {

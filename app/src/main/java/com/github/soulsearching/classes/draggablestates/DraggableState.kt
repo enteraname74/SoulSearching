@@ -24,7 +24,7 @@ open class DraggableState @OptIn(ExperimentalFoundationApi::class) constructor(
         anchors = anchors,
         positionalThreshold = { distance: Float -> distance * 0.5f },
         velocityThreshold = { with(density) { 100.dp.toPx() } },
-        animationSpec = tween(Constants.AnimationTime.normal),
+        animationSpec = tween(Constants.AnimationDuration.normal),
     )
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -37,7 +37,7 @@ open class DraggableState @OptIn(ExperimentalFoundationApi::class) constructor(
     @OptIn(ExperimentalFoundationApi::class)
     suspend fun animateTo(
         targetValue: BottomSheetStates,
-        velocity: Float = Constants.AnimationTime.normal.toFloat()
+        velocity: Float = Constants.AnimationDuration.normal.toFloat()
     ) {
         this._state.animateTo(targetValue, velocity)
     }

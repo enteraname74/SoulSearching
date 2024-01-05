@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomSheets
+package com.github.soulsearching.composables.player
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
@@ -100,7 +100,7 @@ fun PlayerMusicListView(
         } else {
             MaterialTheme.colorScheme.primary
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "PRIMARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
@@ -112,7 +112,7 @@ fun PlayerMusicListView(
         } else {
             MaterialTheme.colorScheme.secondary
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "SECONDARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
@@ -124,7 +124,7 @@ fun PlayerMusicListView(
         } else {
             MaterialTheme.colorScheme.onPrimary
         },
-        tween(Constants.AnimationTime.normal),
+        tween(Constants.AnimationDuration.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
