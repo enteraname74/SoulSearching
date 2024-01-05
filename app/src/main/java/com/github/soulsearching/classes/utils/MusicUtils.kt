@@ -14,14 +14,20 @@ import com.github.soulsearching.database.model.Music
 import java.io.File
 import java.io.IOException
 
+/**
+ * Utils for musics.
+ */
 object MusicUtils {
+
+    /**
+     * Fetch all musics.
+     */
     fun fetchMusics(
         context: Context,
         updateProgress: (Float) -> Unit,
         addingMusicAction: (Music, Bitmap?) -> Unit,
         finishAction: () -> Unit
     ) {
-        Log.d("FETCHING MUSIC", "START")
         val mediaMetadataRetriever = MediaMetadataRetriever()
 
         val projection: Array<String> = arrayOf(
@@ -42,7 +48,6 @@ object MusicUtils {
             null,
             null
         )
-        Log.d("FETCHING MUSIC", "CURSOR : ${cursor?.count}")
         when (cursor?.count) {
             null -> {
                 Toast.makeText(
@@ -101,7 +106,9 @@ object MusicUtils {
         }
     }
 
-
+    /**
+     * Fetch new musics.
+     */
     fun fetchNewMusics(
         context: Context,
         updateProgress: (Float) -> Unit,

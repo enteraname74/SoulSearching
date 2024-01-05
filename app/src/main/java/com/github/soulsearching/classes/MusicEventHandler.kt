@@ -328,11 +328,6 @@ class MusicEventHandler(
      */
     private fun setSortDirection(event: MusicEvent.SetSortDirection) {
         sortDirection.value = event.type
-        privateState.update {
-            it.copy(
-                sortDirection = event.type
-            )
-        }
 
         SharedPrefUtils.updateIntValue(
             keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
@@ -364,7 +359,7 @@ class MusicEventHandler(
     }
 
     /**
-     * Update the quick acces state of the selected music.
+     * Update the quick access state of the selected music.
      */
     private fun updateQuickAccessState() {
         CoroutineScope(Dispatchers.IO).launch {

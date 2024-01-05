@@ -2,7 +2,7 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.utils.EventUtils
+import com.github.soulsearching.classes.PlaylistEventHandler
 import com.github.soulsearching.database.dao.ImageCoverDao
 import com.github.soulsearching.database.dao.MusicPlaylistDao
 import com.github.soulsearching.database.dao.PlaylistDao
@@ -31,17 +31,18 @@ class ModifyPlaylistViewModel @Inject constructor(
         PlaylistState()
     )
 
+    private val playlistEventHandler = PlaylistEventHandler(
+        privateState = _state,
+        publicState = state,
+        playlistDao = playlistDao,
+        musicPlaylistDao = musicPlaylistDao,
+        imageCoverDao = imageCoverDao
+    )
+
     /**
      * Manage playlist events.
      */
     fun onPlaylistEvent(event : PlaylistEvent) {
-        EventUtils.onPlaylistEvent(
-            event = event,
-            _state = _state,
-            state = state,
-            playlistDao = playlistDao,
-            musicPlaylistDao = musicPlaylistDao,
-            imageCoverDao = imageCoverDao
-        )
+        playlistEventHandler.handleEvent(event)
     }
 }

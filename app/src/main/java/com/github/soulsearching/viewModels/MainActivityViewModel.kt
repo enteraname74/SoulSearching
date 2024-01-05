@@ -15,7 +15,7 @@ class MainActivityViewModel : ViewModel() {
     var cleanMusicsLaunched by mutableStateOf(false)
     var hasMusicsBeenFetched by mutableStateOf(SharedPrefUtils.hasMusicsBeenFetched())
 
-    var isReadPermissionGranted: Boolean = false
-    var isPostNotificationGranted: Boolean = false
+    var isReadPermissionGranted by mutableStateOf(false)
+    var isPostNotificationGranted by mutableStateOf(false)
 
 }
