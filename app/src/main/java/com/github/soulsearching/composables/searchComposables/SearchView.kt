@@ -1,18 +1,22 @@
 package com.github.soulsearching.composables.searchComposables
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.material.swipeable
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
@@ -20,33 +24,34 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.soulsearching.Constants
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.SearchDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.ui.theme.DynamicColor
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchView(
-    swipeableState: SwipeableState<BottomSheetStates>,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
-    maxHeight: Float,
+    draggableState: SearchDraggableState,
+    playerDraggableState: PlayerDraggableState,
     placeholder: String,
     primaryColor: Color = DynamicColor.primary,
     secondaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary,
-    searchResult: @Composable ((String, FocusManager) -> Unit)
+    searchResult: @Composable (String, FocusManager) -> Unit
 
-    ) {
+) {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
     BackHandler(
-        swipeableState.currentValue == BottomSheetStates.EXPANDED
-                && playerSwipeableState.currentValue != BottomSheetStates.EXPANDED
+        draggableState.state.currentValue == BottomSheetStates.EXPANDED
+                && playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED
     ) {
         coroutineScope.launch {
-            swipeableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationTime.normal))
+            draggableState.animateTo(BottomSheetStates.COLLAPSED)
         }
     }
 
@@ -54,7 +59,7 @@ fun SearchView(
         mutableStateOf("")
     }
 
-    if (swipeableState.currentValue == BottomSheetStates.COLLAPSED) {
+    if (draggableState.state.currentValue == BottomSheetStates.COLLAPSED) {
         searchText = ""
     }
 
@@ -63,16 +68,12 @@ fun SearchView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = swipeableState.offset.value.roundToInt()
+                    y = draggableState.state.offset.roundToInt()
                 )
             }
-            .swipeable(
-                state = swipeableState,
-                orientation = Orientation.Vertical,
-                anchors = mapOf(
-                    maxHeight to BottomSheetStates.COLLAPSED,
-                    0f to BottomSheetStates.EXPANDED
-                )
+            .anchoredDraggable(
+                state = draggableState.state,
+                orientation = Orientation.Vertical
             )
     ) {
         Column(

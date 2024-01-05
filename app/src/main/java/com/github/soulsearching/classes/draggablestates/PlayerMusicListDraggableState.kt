@@ -6,19 +6,18 @@ import androidx.compose.ui.unit.Density
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 
 /**
- * State used to control the player view draggable actions.
+ * State used to control the currently played music list draggable actions.
  */
 @OptIn(ExperimentalFoundationApi::class)
-class PlayerDraggableState(
+class PlayerMusicListDraggableState(
     val maxHeight: Float,
     density: Density,
     initialValue: BottomSheetStates = BottomSheetStates.COLLAPSED
-) : DraggableState(
+): DraggableState(
     density = density,
     initialValue = initialValue,
     anchors = DraggableAnchors {
-        BottomSheetStates.MINIMISED at (maxHeight - 200f)
-        BottomSheetStates.COLLAPSED at maxHeight
         BottomSheetStates.EXPANDED at 0f
+        BottomSheetStates.COLLAPSED at maxHeight
     }
 )

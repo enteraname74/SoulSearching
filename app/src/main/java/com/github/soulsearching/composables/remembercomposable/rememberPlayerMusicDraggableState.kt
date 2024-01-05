@@ -4,26 +4,26 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
-import com.github.soulsearching.classes.savers.PlayerDraggableStateSaver
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.classes.savers.PlayerMusicListDraggableStateSaver
 
 /**
- * Create a PlayerDraggableState for managing the draggable state of the player view.
- * It also manages the state of the PlayerDraggableState between recompositions.
+ * Create a PlayerMusicListDraggableState for managing the draggable state of the played music list view.
+ * It also manages the state of the PlayerMusicListDraggableState between recompositions.
  */
 @Composable
-fun rememberPlayerDraggableState(constraintsScope: BoxWithConstraintsScope): PlayerDraggableState {
+fun rememberPlayerMusicDraggableState(constraintsScope: BoxWithConstraintsScope): PlayerMusicListDraggableState {
     val density = LocalDensity.current
     val maxHeight = with(LocalDensity.current) {
         constraintsScope.maxHeight.toPx()
     }
     return rememberSaveable(
-        saver = PlayerDraggableStateSaver(
+        saver = PlayerMusicListDraggableStateSaver(
             maxHeight = maxHeight,
             density = density
         )
     ) {
-        PlayerDraggableState(
+        PlayerMusicListDraggableState(
             maxHeight = maxHeight,
             density = density
         )

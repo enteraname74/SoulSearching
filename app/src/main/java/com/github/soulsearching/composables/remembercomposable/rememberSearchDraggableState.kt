@@ -4,26 +4,26 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
-import com.github.soulsearching.classes.savers.PlayerDraggableStateSaver
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.SearchDraggableState
+import com.github.soulsearching.classes.savers.SearchDraggableStateSaver
 
 /**
- * Create a PlayerDraggableState for managing the draggable state of the player view.
- * It also manages the state of the PlayerDraggableState between recompositions.
+ * Create a SearchDraggableState for managing the draggable state of the search view.
+ * It also manages the state of the SearchDraggableState between recompositions.
  */
 @Composable
-fun rememberPlayerDraggableState(constraintsScope: BoxWithConstraintsScope): PlayerDraggableState {
+fun rememberSearchDraggableState(constraintsScope: BoxWithConstraintsScope): SearchDraggableState {
     val density = LocalDensity.current
     val maxHeight = with(LocalDensity.current) {
         constraintsScope.maxHeight.toPx()
     }
     return rememberSaveable(
-        saver = PlayerDraggableStateSaver(
+        saver = SearchDraggableStateSaver(
             maxHeight = maxHeight,
             density = density
         )
     ) {
-        PlayerDraggableState(
+        SearchDraggableState(
             maxHeight = maxHeight,
             density = density
         )

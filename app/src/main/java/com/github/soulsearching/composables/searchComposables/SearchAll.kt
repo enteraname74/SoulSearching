@@ -2,18 +2,15 @@ package com.github.soulsearching.composables.searchComposables
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
@@ -31,7 +28,7 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
     searchText: String,
@@ -48,7 +45,7 @@ fun SearchAll(
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
+    playerDraggableState: PlayerDraggableState,
     isMainPlaylist: Boolean,
     focusManager: FocusManager
 ) {
@@ -192,10 +189,7 @@ fun SearchAll(
                     onClick = {
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            playerSwipeableState.animateTo(
-                                BottomSheetStates.EXPANDED,
-                                Constants.AnimationTime.normal.toFloat()
-                            )
+                            playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                         }.invokeOnCompletion {
                             PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                 music = music,

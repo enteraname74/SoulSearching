@@ -1,22 +1,21 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SelectedPlaylistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -28,7 +27,7 @@ fun SelectedPlaylistScreen(
     navigateToModifyMusic : (String) -> Unit,
     navigateBack : () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: AnchoredDraggableState<BottomSheetStates>
+    playerDraggableState: PlayerDraggableState
 ){
     var isPlaylistFetched by remember {
         mutableStateOf(false)
@@ -55,7 +54,7 @@ fun SelectedPlaylistScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerSwipeableState = swipeableState,
+        playerDraggableState = playerDraggableState,
         playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
         playerMusicListViewModel = playerMusicListViewModel,
         updateNbPlayedAction = { selectedPlaylistViewModel.onPlaylistEvent(PlaylistEvent.AddNbPlayed(it)) },

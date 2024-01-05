@@ -19,8 +19,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -31,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.core.content.ContextCompat
@@ -45,14 +42,14 @@ import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
 import com.github.soulsearching.classes.SharedPrefUtils
 import com.github.soulsearching.classes.Utils
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableSaver
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
+import com.github.soulsearching.composables.bottomSheets.PlayerDraggableView
 import com.github.soulsearching.composables.bottomSheets.PlayerMusicListView
-import com.github.soulsearching.composables.bottomSheets.PlayerSwipeableView
-import com.github.soulsearching.composables.remembercomposable.rememberPlayerComposableState
+import com.github.soulsearching.composables.remembercomposable.rememberPlayerDraggableState
+import com.github.soulsearching.composables.remembercomposable.rememberPlayerMusicDraggableState
+import com.github.soulsearching.composables.remembercomposable.rememberSearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
@@ -142,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalFoundationApi::class)
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,12 +178,6 @@ class MainActivity : AppCompatActivity() {
                 val playerMusicState by PlayerUtils.playerViewModel.state.collectAsState()
                 val quickAccessState by allQuickAccessViewModel.state.collectAsState()
 
-                val musicListSwipeableState = rememberSwipeableState(
-                    BottomSheetStates.COLLAPSED
-                )
-                val searchSwipeableState = rememberSwipeableState(
-                    BottomSheetStates.COLLAPSED
-                )
                 val coroutineScope = rememberCoroutineScope()
 
                 var hasPlayerMusicBeenFetched by rememberSaveable {
@@ -349,7 +340,14 @@ class MainActivity : AppCompatActivity() {
                                 constraintsScope.maxHeight.toPx()
                             }
 
-                            val playerSwipeableState = rememberPlayerComposableState(
+                            val playerDraggableState = rememberPlayerDraggableState(
+                                constraintsScope = constraintsScope
+                            )
+
+                            val musicListDraggableState = rememberPlayerMusicDraggableState(
+                                constraintsScope = constraintsScope
+                            )
+                            val searchDraggableState = rememberSearchDraggableState(
                                 constraintsScope = constraintsScope
                             )
 
@@ -367,10 +365,7 @@ class MainActivity : AppCompatActivity() {
                                         )
                                         PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
                                         coroutineScope.launch {
-                                            playerSwipeableState.state.animateTo(
-                                                BottomSheetStates.MINIMISED,
-                                                Constants.AnimationTime.normal.toFloat()
-                                            )
+                                            playerDraggableState.state.animateTo(BottomSheetStates.MINIMISED)
                                         }
                                     }
                                 }
@@ -422,8 +417,8 @@ class MainActivity : AppCompatActivity() {
                                         navigateToSettings = {
                                             navController.navigate("settings")
                                         },
-                                        playerSwipeableState = playerSwipeableState.state,
-                                        searchSwipeableState = searchSwipeableState,
+                                        playerDraggableState = playerDraggableState,
+                                        searchDraggableState = searchDraggableState,
                                         musicState = musicState,
                                         playlistState = playlistState,
                                         albumState = albumState,
@@ -462,7 +457,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState.state,
+                                        playerDraggableState = playerDraggableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -497,7 +492,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState.state,
+                                        playerDraggableState = playerDraggableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -532,7 +527,7 @@ class MainActivity : AppCompatActivity() {
                                                 it
                                             )
                                         },
-                                        swipeableState = playerSwipeableState.state,
+                                        playerDraggableState = playerDraggableState,
                                         playerMusicListViewModel = playerMusicListViewModel
                                     )
                                 }
@@ -712,11 +707,11 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                            PlayerSwipeableView(
+                            PlayerDraggableView(
                                 maxHeight = maxHeight,
-                                swipeableState = playerSwipeableState.state,
+                                draggableState = playerDraggableState,
                                 retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                musicListSwipeableState = musicListSwipeableState,
+                                musicListDraggableState = musicListDraggableState,
                                 playerMusicListViewModel = playerMusicListViewModel,
                                 onMusicEvent = playerViewModel::onMusicEvent,
                                 isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite,
@@ -741,7 +736,6 @@ class MainActivity : AppCompatActivity() {
                             )
 
                             PlayerMusicListView(
-                                maxHeight = maxHeight,
                                 coverList = coversState.covers,
                                 musicState = playerMusicListState,
                                 playlistState = playlistState,
@@ -750,9 +744,9 @@ class MainActivity : AppCompatActivity() {
                                 navigateToModifyMusic = {
                                     navController.navigate("modifyMusic/$it")
                                 },
-                                musicListSwipeableState = musicListSwipeableState,
-                                playerMusicListViewModel = playerMusicListViewModel,
-                                playerSwipeableState = playerSwipeableState.state
+                                musicListDraggableState = musicListDraggableState,
+                                playerDraggableState = playerDraggableState,
+                                playerMusicListViewModel = playerMusicListViewModel
                             )
                         }
                     }

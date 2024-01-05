@@ -2,9 +2,6 @@ package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -13,9 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.composables.dialogs.SoulSearchingDialog
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -26,10 +23,10 @@ import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class
 )
 @Composable
@@ -38,10 +35,10 @@ fun MusicBottomSheetEvents(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
-    navigateToModifyMusic : (String) -> Unit,
+    navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
+    playerDraggableState: PlayerDraggableState,
     primaryColor: Color = DynamicColor.primary,
     secondaryColor: Color = DynamicColor.secondary,
     onPrimaryColor: Color = DynamicColor.onPrimary,
@@ -147,7 +144,7 @@ fun MusicBottomSheetEvents(
             musicState = musicState,
             navigateToModifyMusic = navigateToModifyMusic,
             playerMusicListViewModel = playerMusicListViewModel,
-            playerSwipeableState = playerSwipeableState,
+            playerDraggableState = playerDraggableState,
             primaryColor = secondaryColor,
             textColor = onSecondaryColor
         )

@@ -1,13 +1,14 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.AlbumEvent
@@ -19,9 +20,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectedAlbumScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -33,7 +33,7 @@ fun SelectedAlbumScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack : () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: AnchoredDraggableState<BottomSheetStates>
+    playerDraggableState: PlayerDraggableState
 ) {
     var isAlbumFetched by remember {
         mutableStateOf(false)
@@ -71,7 +71,7 @@ fun SelectedAlbumScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerSwipeableState = swipeableState,
+        playerDraggableState = playerDraggableState,
         playlistId = albumWithMusicsState.albumWithMusics.album.albumId,
         playerMusicListViewModel = playerMusicListViewModel,
         updateNbPlayedAction = { selectedAlbumViewModel.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) },

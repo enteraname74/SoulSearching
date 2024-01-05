@@ -3,7 +3,6 @@ package com.github.soulsearching.composables.playButtons
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -19,16 +18,16 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
-    playerViewSwipeableState: AnchoredDraggableState<BottomSheetStates>
+    playerViewDraggableState: PlayerDraggableState
 ) {
     Row(
         modifier = modifier,
@@ -41,7 +40,7 @@ fun MinimisedPlayButtonsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clickable {
-                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                    if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                         PlayerService.playPrevious()
                     }
                 },
@@ -54,7 +53,7 @@ fun MinimisedPlayButtonsComposable(
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                        if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                             PlayerUtils.playerViewModel.setPlayingState()
                         }
                     },
@@ -67,7 +66,7 @@ fun MinimisedPlayButtonsComposable(
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                        if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                             PlayerUtils.playerViewModel.setPlayingState()
                         }
                     },
@@ -80,7 +79,7 @@ fun MinimisedPlayButtonsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clickable {
-                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                    if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                         PlayerService.playNext()
                     }
                 },

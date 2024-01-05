@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +40,7 @@ fun MusicBottomSheetMenu(
     ) {
         if (SettingsUtils.settingsViewModel.isQuickAccessShown) {
             BottomSheetRow(
-                icon = Icons.Default.DoubleArrow,
+                icon = Icons.Rounded.DoubleArrow,
                 text = if (isInQuickAccess) {
                     stringResource(id = R.string.remove_from_quick_access)
                 } else {

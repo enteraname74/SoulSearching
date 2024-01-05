@@ -8,20 +8,26 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
-import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,10 +42,12 @@ import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.database.model.ImageCover
@@ -50,43 +58,35 @@ import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import androidx.compose.foundation.gestures.animateTo
 
 @SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerMusicListView(
-    maxHeight: Float,
     coverList: ArrayList<ImageCover>,
     musicState: MusicState,
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    musicListSwipeableState: SwipeableState<BottomSheetStates>,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
+    musicListDraggableState: PlayerMusicListDraggableState,
+    playerDraggableState: PlayerDraggableState,
     playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
 
-    BackHandler(musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+    BackHandler(musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListSwipeableState.animateTo(
-                BottomSheetStates.COLLAPSED,
-                tween(Constants.AnimationTime.normal)
-            )
+            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
         }
     }
 
     val mainBoxClickableModifier =
-        if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+        if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListSwipeableState.animateTo(
-                        BottomSheetStates.COLLAPSED,
-                        tween(Constants.AnimationTime.normal)
-                    )
+                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                 }
             }
         } else {
@@ -122,7 +122,7 @@ fun PlayerMusicListView(
         ) {
             Color.White
         } else {
-               MaterialTheme.colorScheme.onPrimary
+            MaterialTheme.colorScheme.onPrimary
         },
         tween(Constants.AnimationTime.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
@@ -136,23 +136,17 @@ fun PlayerMusicListView(
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = { path ->
             coroutineScope.launch {
-                musicListSwipeableState.animateTo(
-                    BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationTime.normal)
-                )
+                musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
             }.invokeOnCompletion {
                 coroutineScope.launch {
-                    playerSwipeableState.animateTo(
-                        BottomSheetStates.MINIMISED,
-                        Constants.AnimationTime.normal.toFloat()
-                    )
+                    playerDraggableState.animateTo(BottomSheetStates.MINIMISED)
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
                 }
             }
         },
         playerMusicListViewModel = playerMusicListViewModel,
-        playerSwipeableState = playerSwipeableState,
+        playerDraggableState = playerDraggableState,
         primaryColor = primaryColor,
         secondaryColor = secondaryColor,
         onSecondaryColor = textColor,
@@ -165,16 +159,12 @@ fun PlayerMusicListView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = musicListSwipeableState.offset.value.roundToInt()
+                    y = musicListDraggableState.state.offset.roundToInt()
                 )
             }
-            .swipeable(
-                state = musicListSwipeableState,
-                orientation = Orientation.Vertical,
-                anchors = mapOf(
-                    0f to BottomSheetStates.EXPANDED,
-                    maxHeight to BottomSheetStates.COLLAPSED,
-                )
+            .anchoredDraggable(
+                state = musicListDraggableState.state,
+                orientation = Orientation.Vertical
             )
     ) {
         Column(
@@ -234,10 +224,7 @@ fun PlayerMusicListView(
                         music = elt,
                         onClick = { music ->
                             coroutineScope.launch {
-                                musicListSwipeableState.animateTo(
-                                    BottomSheetStates.COLLAPSED,
-                                    tween(Constants.AnimationTime.normal)
-                                )
+                                musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                             }.invokeOnCompletion {
                                 PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
                                     music = music,

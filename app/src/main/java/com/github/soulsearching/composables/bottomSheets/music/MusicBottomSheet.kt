@@ -1,9 +1,6 @@
 package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.foundation.gestures.animateTo
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -11,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.events.MusicEvent
@@ -26,8 +23,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class
 )
 @Composable
 fun MusicBottomSheet(
@@ -38,7 +34,7 @@ fun MusicBottomSheet(
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
+    playerDraggableState: PlayerDraggableState,
     primaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary
 ) {
@@ -141,11 +137,8 @@ fun MusicBottomSheet(
                         }
                     }
                     coroutineScope.launch {
-                        if (playerSwipeableState.currentValue == BottomSheetStates.COLLAPSED) {
-                            playerSwipeableState.animateTo(
-                                BottomSheetStates.MINIMISED,
-                                Constants.AnimationTime.normal.toFloat()
-                            )
+                        if (playerDraggableState.state.currentValue == BottomSheetStates.COLLAPSED) {
+                            playerDraggableState.animateTo(BottomSheetStates.MINIMISED)
                         }
                     }.invokeOnCompletion {
                         PlayerUtils.playerViewModel.addMusicToPlayNext(

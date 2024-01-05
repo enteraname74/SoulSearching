@@ -8,16 +8,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -42,6 +38,8 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.ColorPaletteUtils
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.composables.AppImage
@@ -67,15 +65,15 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KSuspendFunction1
 
 @SuppressLint("UnnecessaryComposedModifier")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlayerSwipeableView(
+fun PlayerDraggableView(
     maxHeight: Float,
-    swipeableState: AnchoredDraggableState<BottomSheetStates>,
+    draggableState: PlayerDraggableState,
     playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
-    musicListSwipeableState: SwipeableState<BottomSheetStates>,
+    musicListDraggableState: PlayerMusicListDraggableState,
     isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -92,7 +90,7 @@ fun PlayerSwipeableView(
         mutableStateOf(false)
     }
 
-    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
         PlayerUtils.playerViewModel.currentMusic?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
@@ -101,7 +99,7 @@ fun PlayerSwipeableView(
     }
 
     val backgroundColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
@@ -112,10 +110,10 @@ fun PlayerSwipeableView(
             }
         },
         tween(Constants.AnimationTime.normal),
-        label = "BACKGROUND_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "BACKGROUND_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
     val textColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.onPrimary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
@@ -126,11 +124,11 @@ fun PlayerSwipeableView(
             }
         },
         tween(Constants.AnimationTime.normal),
-        label = "TEXT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
     val subTextColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.subText
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
@@ -141,12 +139,12 @@ fun PlayerSwipeableView(
             }
         },
         tween(Constants.AnimationTime.normal),
-        label = "SUB_TEXT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "SUB_TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
 
     val contentColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
@@ -157,12 +155,12 @@ fun PlayerSwipeableView(
             }
         },
         tween(Constants.AnimationTime.normal),
-        label = "CONTENT_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "CONTENT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
     val systemUiController = rememberSystemUiController()
     val statusBarColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
@@ -173,11 +171,11 @@ fun PlayerSwipeableView(
             }
         },
         tween(Constants.AnimationTime.normal),
-        label = "STATUS_BAR_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
     val navigationBarColor: Color by animateColorAsState(
-        targetValue = when(swipeableState.currentValue) {
+        targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED -> DynamicColor.primary
             BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
@@ -189,7 +187,7 @@ fun PlayerSwipeableView(
             }
         }
         ,tween(Constants.AnimationTime.normal),
-        label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_SWIPEABLE_VIEW"
+        label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
     val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null
@@ -209,24 +207,18 @@ fun PlayerSwipeableView(
         darkIcons = backHandlerIconsColor
     )
 
-    BackHandler(swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+    BackHandler(draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
-                musicListSwipeableState.animateTo(
-                    BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationTime.normal)
-                )
+            if (musicListDraggableState.state.currentValue != BottomSheetStates.COLLAPSED) {
+                musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
             }
-            swipeableState.animateTo(
-                BottomSheetStates.MINIMISED,
-                Constants.AnimationTime.normal.toFloat()
-            )
+            draggableState.animateTo(BottomSheetStates.MINIMISED)
         }
     }
 
-    if (swipeableState.currentValue == BottomSheetStates.COLLAPSED
+    if (draggableState.state.currentValue == BottomSheetStates.COLLAPSED
         && PlayerUtils.playerViewModel.isServiceLaunched
-        && !swipeableState.isAnimationRunning
+        && !draggableState.state.isAnimationRunning
     ) {
         PlayerService.stopMusic(context)
         playerMusicListViewModel.resetPlayerMusicList()
@@ -236,8 +228,8 @@ fun PlayerSwipeableView(
 
     val alphaTransition = when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            if ((1.0 / (abs(swipeableState.offset) / 70)).toFloat() > 0.1) {
-                (1.0 / (abs(swipeableState.offset) / 70)).toFloat().coerceAtMost(1.0F)
+            if ((1.0 / (abs(draggableState.state.offset) / 70)).toFloat() > 0.1) {
+                (1.0 / (abs(draggableState.state.offset) / 70)).toFloat().coerceAtMost(1.0F)
             } else {
                 0.0F
             }
@@ -245,12 +237,12 @@ fun PlayerSwipeableView(
         else -> {
             if ((1.0 / (abs(
                     max(
-                        swipeableState.offset.roundToInt(),
+                        draggableState.state.offset.roundToInt(),
                         0
                     )
                 ) / 100)).toFloat() > 0.1
             ) {
-                (1.0 / (abs(max(swipeableState.offset.roundToInt(), 0)) / 100)).toFloat()
+                (1.0 / (abs(max(draggableState.state.offset.roundToInt(), 0)) / 100)).toFloat()
                     .coerceAtMost(1.0F)
             } else {
                 0.0F
@@ -263,32 +255,26 @@ fun PlayerSwipeableView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = max(swipeableState.offset.roundToInt(), 0)
+                    y = max(draggableState.state.offset.roundToInt(), 0)
                 )
             }
             .anchoredDraggable(
-                state = swipeableState,
-                orientation = Orientation.Vertical,
+                state = draggableState.state,
+                orientation = Orientation.Vertical
             )
     ) {
         val mainBoxClickableModifier =
-            if (swipeableState.currentValue == BottomSheetStates.MINIMISED) {
+            if (draggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                 Modifier.clickable {
                     coroutineScope.launch {
-                        swipeableState.animateTo(
-                            BottomSheetStates.EXPANDED,
-                            Constants.AnimationTime.normal.toFloat()
-                        )
+                        draggableState.animateTo(BottomSheetStates.EXPANDED)
                     }
                 }
             } else {
-                if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.clickable {
                         coroutineScope.launch {
-                            musicListSwipeableState.animateTo(
-                                BottomSheetStates.COLLAPSED,
-                                tween(Constants.AnimationTime.normal)
-                            )
+                            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                         }
                     }
                 } else {
@@ -304,16 +290,13 @@ fun PlayerSwipeableView(
             onPlaylistsEvent = onPlaylistEvent,
             navigateToModifyMusic = { path ->
                 coroutineScope.launch {
-                    swipeableState.animateTo(
-                        BottomSheetStates.MINIMISED,
-                        Constants.AnimationTime.normal.toFloat()
-                    )
+                    draggableState.animateTo(BottomSheetStates.MINIMISED)
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
                 }
             },
             playerMusicListViewModel = playerMusicListViewModel,
-            playerSwipeableState = swipeableState,
+            playerDraggableState = draggableState,
             primaryColor = backgroundColor,
             secondaryColor = navigationBarColor,
             onSecondaryColor = textColor,
@@ -342,14 +325,14 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxWidth * 1.5) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxWidth * 3.5) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 40)).roundToInt().dp,
                             Constants.Spacing.small
@@ -360,14 +343,14 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxHeight * 7) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 5)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxHeight * 5) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
@@ -379,21 +362,21 @@ fun PlayerSwipeableView(
                     when (orientation) {
                         Configuration.ORIENTATION_LANDSCAPE -> max(
                             (((maxWidth * 10) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 2)).dp,
                             55.dp
                         )
                         else -> max(
                             (((maxWidth * 30) / 100) - (max(
-                                swipeableState.offset.roundToInt(),
+                                draggableState.state.offset.roundToInt(),
                                 0
                             ) / 7)).dp,
                             55.dp
                         )
                     }
 
-                val imageModifier = if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                val imageModifier = if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
                             PlayerUtils.playerViewModel.currentMusic?.let {currentMusic ->
@@ -431,47 +414,35 @@ fun PlayerSwipeableView(
                         bitmap =
                             retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
                         size = imageSize,
-                        roundedPercent = (swipeableState.offset / 100).roundToInt()
+                        roundedPercent = (draggableState.state.offset / 100).roundToInt()
                             .coerceIn(3, 10)
                     )
                 }
 
                 val backImageClickableModifier =
-                    if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+                    if (draggableState.state.currentValue != BottomSheetStates.EXPANDED) {
                         Modifier
                     } else {
                         Modifier.clickable {
                             coroutineScope.launch {
-                                if (musicListSwipeableState.currentValue != BottomSheetStates.COLLAPSED) {
-                                    musicListSwipeableState.animateTo(
-                                        BottomSheetStates.COLLAPSED,
-                                        tween(Constants.AnimationTime.normal)
-                                    )
+                                if (musicListDraggableState.state.currentValue != BottomSheetStates.COLLAPSED) {
+                                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                                 }
-                                swipeableState.animateTo(
-                                    BottomSheetStates.MINIMISED,
-                                    Constants.AnimationTime.normal.toFloat()
-                                )
+                                draggableState.animateTo(BottomSheetStates.MINIMISED)
                             }
                         }
                     }
 
                 val showMusicListModifier =
-                    if (swipeableState.currentValue != BottomSheetStates.EXPANDED) {
+                    if (draggableState.state.currentValue != BottomSheetStates.EXPANDED) {
                         Modifier
                     } else {
                         Modifier.clickable {
                             coroutineScope.launch {
-                                if (musicListSwipeableState.currentValue == BottomSheetStates.EXPANDED) {
-                                    musicListSwipeableState.animateTo(
-                                        BottomSheetStates.COLLAPSED,
-                                        tween(Constants.AnimationTime.normal)
-                                    )
+                                if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                                 } else {
-                                    musicListSwipeableState.animateTo(
-                                        BottomSheetStates.EXPANDED,
-                                        tween(Constants.AnimationTime.normal)
-                                    )
+                                    musicListDraggableState.animateTo(BottomSheetStates.EXPANDED)
                                 }
                             }
                         }
@@ -519,7 +490,7 @@ fun PlayerSwipeableView(
                             )
 
                             val clickableArtistModifier =
-                                if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
                                         PlayerUtils.playerViewModel.currentMusic?.let {
                                             coroutineScope.launch {
@@ -527,13 +498,10 @@ fun PlayerSwipeableView(
                                                     retrieveArtistIdMethod(it.musicId)
                                                 }
                                                 artistId?.let { id ->
-                                                    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                                    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                                         navigateToArtist(id.toString())
 
-                                                        swipeableState.animateTo(
-                                                            BottomSheetStates.MINIMISED,
-                                                            Constants.AnimationTime.normal.toFloat()
-                                                        )
+                                                        draggableState.animateTo(BottomSheetStates.MINIMISED)
                                                     }
                                                 }
 
@@ -545,7 +513,7 @@ fun PlayerSwipeableView(
                                 }
 
                             val clickableAlbumModifier =
-                                if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
                                         PlayerUtils.playerViewModel.currentMusic?.let {
                                             coroutineScope.launch {
@@ -553,13 +521,10 @@ fun PlayerSwipeableView(
                                                     retrieveAlbumIdMethod(it.musicId)
                                                 }
                                                 albumId?.let { id ->
-                                                    if (swipeableState.currentValue == BottomSheetStates.EXPANDED) {
+                                                    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                                         navigateToAlbum(id.toString())
 
-                                                        swipeableState.animateTo(
-                                                            BottomSheetStates.MINIMISED,
-                                                            Constants.AnimationTime.normal.toFloat()
-                                                        )
+                                                        draggableState.animateTo(BottomSheetStates.MINIMISED)
                                                     }
                                                 }
 
@@ -614,7 +579,7 @@ fun PlayerSwipeableView(
                             }
                         }
                         Image(
-                            imageVector = Icons.Rounded.QueueMusic,
+                            imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(Constants.ImageSize.medium)
@@ -665,7 +630,7 @@ fun PlayerSwipeableView(
                             start = imageSize + Constants.Spacing.large,
                             end = Constants.Spacing.small
                         )
-                        .alpha((swipeableState.offset / maxHeight).coerceIn(0.0F, 1.0F)),
+                        .alpha((draggableState.state.offset / maxHeight).coerceIn(0.0F, 1.0F)),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -693,7 +658,7 @@ fun PlayerSwipeableView(
                         )
                     }
                     MinimisedPlayButtonsComposable(
-                        playerViewSwipeableState = swipeableState
+                        playerViewDraggableState = draggableState
                     )
                 }
             }

@@ -1,31 +1,39 @@
 package com.github.soulsearching.screens
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.AnchoredDraggableState
-import androidx.compose.foundation.gestures.animateTo
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.draggablestates.SearchDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.composables.*
+import com.github.soulsearching.composables.MainMenuHeaderComposable
+import com.github.soulsearching.composables.MainMenuLazyListRow
+import com.github.soulsearching.composables.MainPageVerticalShortcut
+import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.composables.SubMenuComposable
 import com.github.soulsearching.composables.bottomSheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
@@ -37,14 +45,22 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.states.*
+import com.github.soulsearching.states.AlbumState
+import com.github.soulsearching.states.ArtistState
+import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.states.QuickAccessState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewModels.*
+import com.github.soulsearching.viewModels.AllAlbumsViewModel
+import com.github.soulsearching.viewModels.AllArtistsViewModel
+import com.github.soulsearching.viewModels.AllImageCoversViewModel
+import com.github.soulsearching.viewModels.AllMusicsViewModel
+import com.github.soulsearching.viewModels.AllPlaylistsViewModel
+import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
-@Suppress("UNCHECKED_CAST")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPageScreen(
     allMusicsViewModel: AllMusicsViewModel,
@@ -65,8 +81,8 @@ fun MainPageScreen(
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
     navigateToSettings: () -> Unit,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
-    searchSwipeableState: SwipeableState<BottomSheetStates>,
+    playerDraggableState: PlayerDraggableState,
+    searchDraggableState: SearchDraggableState,
     musicState: MusicState,
     playlistState: PlaylistState,
     albumState: AlbumState,
@@ -81,7 +97,7 @@ fun MainPageScreen(
         onPlaylistsEvent = allPlaylistsViewModel::onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
         playerMusicListViewModel = playerMusicListViewModel,
-        playerSwipeableState = playerSwipeableState
+        playerDraggableState = playerDraggableState
     )
 
     PlaylistBottomSheetEvents(
@@ -107,14 +123,10 @@ fun MainPageScreen(
     }
 
 
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val constraintsScope = this
-        val maxHeight = with(LocalDensity.current) {
-            constraintsScope.maxHeight.toPx()
-        }
         val listState = rememberLazyListState()
 
         Column(
@@ -125,10 +137,7 @@ fun MainPageScreen(
                 settingsAction = navigateToSettings,
                 searchAction = {
                     coroutineScope.launch {
-                        searchSwipeableState.animateTo(
-                            BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationTime.normal)
-                        )
+                        searchDraggableState.animateTo(BottomSheetStates.EXPANDED)
                     }
                 }
             )
@@ -210,10 +219,7 @@ fun MainPageScreen(
                                 },
                                 playMusicAction = { music ->
                                     coroutineScope.launch {
-                                        playerSwipeableState.animateTo(
-                                            BottomSheetStates.EXPANDED,
-                                            Constants.AnimationTime.normal.toFloat()
-                                        )
+                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                                     }.invokeOnCompletion {
                                         val musicListSingleton = arrayListOf(music)
                                         if (!PlayerUtils.playerViewModel.isSameMusic(music.musicId)) {
@@ -471,10 +477,7 @@ fun MainPageScreen(
                                             if (musicState.musics.isNotEmpty()) {
                                                 coroutineScope
                                                     .launch {
-                                                        playerSwipeableState.animateTo(
-                                                            BottomSheetStates.EXPANDED,
-                                                            Constants.AnimationTime.normal.toFloat()
-                                                        )
+                                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                                                     }
                                                     .invokeOnCompletion {
                                                         PlayerUtils.playerViewModel.playShuffle(
@@ -498,10 +501,7 @@ fun MainPageScreen(
                             music = elt,
                             onClick = { music ->
                                 coroutineScope.launch {
-                                    playerSwipeableState.animateTo(
-                                        BottomSheetStates.EXPANDED,
-                                        Constants.AnimationTime.normal.toFloat()
-                                    )
+                                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                                 }.invokeOnCompletion {
                                     if (!PlayerUtils.playerViewModel.isSamePlaylist(true, null)) {
                                         playerMusicListViewModel.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
@@ -539,10 +539,9 @@ fun MainPageScreen(
             }
         }
         SearchView(
-            swipeableState = searchSwipeableState,
-            maxHeight = maxHeight,
-            placeholder = stringResource(id = R.string.search_all),
-            playerSwipeableState = playerSwipeableState
+            draggableState = searchDraggableState,
+            playerDraggableState = playerDraggableState,
+            placeholder = stringResource(id = R.string.search_all)
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,
@@ -559,7 +558,7 @@ fun MainPageScreen(
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
                 playerMusicListViewModel = playerMusicListViewModel,
-                playerSwipeableState = playerSwipeableState,
+                playerDraggableState = playerDraggableState,
                 isMainPlaylist = false,
                 focusManager = focusManager
             )

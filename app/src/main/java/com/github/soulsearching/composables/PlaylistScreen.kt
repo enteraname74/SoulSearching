@@ -4,17 +4,25 @@ package com.github.soulsearching.composables
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.animateTo
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberSwipeableState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -24,11 +32,13 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.PlayerUtils
 import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
 import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playlistComposables.PlaylistPanel
+import com.github.soulsearching.composables.remembercomposable.rememberSearchDraggableState
 import com.github.soulsearching.composables.searchComposables.SearchMusics
 import com.github.soulsearching.composables.searchComposables.SearchView
 import com.github.soulsearching.events.MusicEvent
@@ -38,9 +48,9 @@ import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaylistScreen(
     musicState: MusicState,
@@ -54,17 +64,13 @@ fun PlaylistScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    playerSwipeableState: AnchoredDraggableState<BottomSheetStates>,
+    playerDraggableState: PlayerDraggableState,
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
 ) {
     val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
-
-    val searchSwipeableState = rememberSwipeableState(
-        BottomSheetStates.COLLAPSED
-    )
 
     var hasPlaylistPaletteBeenFetched by remember {
         mutableStateOf(false)
@@ -82,7 +88,7 @@ fun PlaylistScreen(
         hasPlaylistPaletteBeenFetched = true
     }
 
-    BackHandler(playerSwipeableState.currentValue != BottomSheetStates.EXPANDED) {
+    BackHandler(playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED) {
         navigateBack()
     }
 
@@ -90,10 +96,7 @@ fun PlaylistScreen(
         if (musicState.musics.isNotEmpty()) {
             coroutineScope
                 .launch {
-                    playerSwipeableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        Constants.AnimationTime.normal.toFloat()
-                    )
+                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                 }
                 .invokeOnCompletion {
                     PlayerUtils.playerViewModel.playShuffle(
@@ -104,15 +107,6 @@ fun PlaylistScreen(
         }
     }
 
-    val searchAction = {
-        coroutineScope
-            .launch {
-                searchSwipeableState.animateTo(
-                    BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationTime.normal)
-                )
-            }
-    }
 
     val musicBottomSheetState = when (playlistType) {
         PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
@@ -125,9 +119,13 @@ fun PlaylistScreen(
             .fillMaxSize()
             .background(DynamicColor.primary)
     ) {
-        val constraintsScope = this
-        val maxHeight = with(LocalDensity.current) {
-            constraintsScope.maxHeight.toPx()
+        val searchDraggableState = rememberSearchDraggableState(constraintsScope = this)
+
+        val searchAction = {
+            coroutineScope
+                .launch {
+                    searchDraggableState.state.animateTo(BottomSheetStates.EXPANDED)
+                }
         }
 
         when (orientation) {
@@ -182,11 +180,12 @@ fun PlaylistScreen(
                         retrieveCoverMethod = { retrieveCoverMethod(it) },
                         playlistId = playlistId,
                         musicBottomSheetState = musicBottomSheetState,
-                        playerSwipeableState = playerSwipeableState,
+                        playerDraggableState = playerDraggableState,
                         updateNbPlayedAction = updateNbPlayedAction,
                     )
                 }
             }
+
             else -> {
                 MusicBottomSheetEvents(
                     musicBottomSheetState = musicBottomSheetState,
@@ -196,7 +195,7 @@ fun PlaylistScreen(
                     onPlaylistsEvent = onPlaylistEvent,
                     navigateToModifyMusic = navigateToModifyMusic,
                     playerMusicListViewModel = playerMusicListViewModel,
-                    playerSwipeableState = playerSwipeableState,
+                    playerDraggableState = playerDraggableState,
                 )
 
                 Column(
@@ -245,10 +244,7 @@ fun PlaylistScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerSwipeableState.animateTo(
-                                            BottomSheetStates.EXPANDED,
-                                            Constants.AnimationTime.normal.toFloat()
-                                        )
+                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)
@@ -294,13 +290,12 @@ fun PlaylistScreen(
         }
 
         SearchView(
-            swipeableState = searchSwipeableState,
-            maxHeight = maxHeight,
+            draggableState = searchDraggableState,
+            playerDraggableState = playerDraggableState,
             placeholder = stringResource(id = R.string.search_for_musics),
-            playerSwipeableState = playerSwipeableState,
         ) { searchText, focusManager ->
             SearchMusics(
-                playerSwipeableState = playerSwipeableState,
+                playerDraggableState = playerDraggableState,
                 searchText = searchText,
                 musicState = musicState,
                 onMusicEvent = onMusicEvent,
