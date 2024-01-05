@@ -139,7 +139,6 @@ object EventUtils {
                         )
                         if (newArtist == null) {
                             // C'est un nouvel artist, il faut le créer :
-                            Log.d("Nouvel artiste", "nouvel artiste")
                             val newArtistId = UUID.randomUUID()
                             newArtist = Artist(
                                 artistId = newArtistId,
