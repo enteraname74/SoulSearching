@@ -2,6 +2,7 @@ package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,7 @@ import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
 import com.github.soulsearching.classes.enumsAndTypes.ElementEnum
 
 class SettingsViewModel: ViewModel() {
-    var colorTheme by mutableStateOf(ColorThemeType.SYSTEM)
+    var colorTheme by mutableIntStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
     var isDynamicPlaylistThemeSelected by mutableStateOf(false)
     var isDynamicOtherViewsThemeSelected by mutableStateOf(false)

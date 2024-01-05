@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.stateIn
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * ViewModel for managing all image covers.
+ */
 @HiltViewModel
 class AllImageCoversViewModel @Inject constructor(
     private val imageCoverDao: ImageCoverDao,
@@ -40,18 +43,23 @@ class AllImageCoversViewModel @Inject constructor(
         ImageCoverState()
     )
 
+    /**
+     * Tries to retrieves a Bitmap representation of the id of an image cover.
+     */
     fun getImageCover(coverId: UUID?): Bitmap? {
         return state.value.covers.find { it.coverId == coverId }?.cover
     }
 
-    suspend fun verifyIfImageIsUsed(cover: ImageCover) {
+    /**
+     * Delete an image if it's not used by a song, an album, an artist or a playlist.
+     */
+    suspend fun deleteImageIsNotUsed(cover: ImageCover) {
         if (
             musicDao.getNumberOfMusicsWithCoverId(cover.coverId) == 0
             && albumDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
             && playlistDao.getNumberOfPlaylistsWithCoverId(cover.coverId) == 0
             && artistDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
         ) {
-            Log.d("VERIFY", "IMAGE NOT USED !")
             imageCoverDao.deleteFromCoverId(cover.coverId)
         }
     }
