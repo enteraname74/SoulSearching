@@ -2,8 +2,16 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.utils.EventUtils
-import com.github.soulsearching.database.dao.*
+import com.github.soulsearching.classes.MusicEventHandler
+import com.github.soulsearching.database.dao.AlbumArtistDao
+import com.github.soulsearching.database.dao.AlbumDao
+import com.github.soulsearching.database.dao.ArtistDao
+import com.github.soulsearching.database.dao.ImageCoverDao
+import com.github.soulsearching.database.dao.MusicAlbumDao
+import com.github.soulsearching.database.dao.MusicArtistDao
+import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.database.dao.MusicPlaylistDao
+import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.database.model.ArtistWithMusics
 import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.ArtistEvent
@@ -13,9 +21,14 @@ import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -24,14 +37,14 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectedArtistViewModel @Inject constructor(
     private val artistDao: ArtistDao,
-    private val musicDao: MusicDao,
-    private val albumDao: AlbumDao,
-    private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val albumArtistDao: AlbumArtistDao,
-    private val musicAlbumDao: MusicAlbumDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val imageCoverDao: ImageCoverDao
+    musicDao: MusicDao,
+    albumDao: AlbumDao,
+    playlistDao: PlaylistDao,
+    musicPlaylistDao: MusicPlaylistDao,
+    albumArtistDao: AlbumArtistDao,
+    musicAlbumDao: MusicAlbumDao,
+    musicArtistDao: MusicArtistDao,
+    imageCoverDao: ImageCoverDao
 ) : ViewModel() {
     private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics?> = MutableStateFlow(ArtistWithMusics())
 
@@ -40,6 +53,20 @@ class SelectedArtistViewModel @Inject constructor(
 
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
+
+    private val musicEventHandler = MusicEventHandler(
+        privateState = _musicState,
+        publicState = musicState,
+        musicDao = musicDao,
+        playlistDao = playlistDao,
+        albumDao = albumDao,
+        artistDao = artistDao,
+        musicPlaylistDao = musicPlaylistDao,
+        musicAlbumDao = musicAlbumDao,
+        musicArtistDao = musicArtistDao,
+        albumArtistDao = albumArtistDao,
+        imageCoverDao = imageCoverDao
+    )
 
     /**
      * Set the selected artist.
@@ -105,20 +132,7 @@ class SelectedArtistViewModel @Inject constructor(
      * Manage music events.
      */
     fun onMusicEvent(event: MusicEvent) {
-        EventUtils.onMusicEvent(
-            event = event,
-            _state = _musicState,
-            state = musicState,
-            musicDao = musicDao,
-            playlistDao = playlistDao,
-            albumDao = albumDao,
-            artistDao = artistDao,
-            musicPlaylistDao = musicPlaylistDao,
-            musicAlbumDao = musicAlbumDao,
-            musicArtistDao = musicArtistDao,
-            albumArtistDao = albumArtistDao,
-            imageCoverDao = imageCoverDao
-        )
+        musicEventHandler.handleEvent(event)
     }
 
     /**

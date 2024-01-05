@@ -11,7 +11,6 @@ import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.EventUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.database.dao.*
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.lang.Integer.max
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.reflect.KFunction1
 
 /**
@@ -49,6 +47,22 @@ class PlayerViewModel @Inject constructor(
     val state = _state.asStateFlow()
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+
+    private val musicEventHandler = MusicEventHandler(
+        privateState = _state,
+        publicState = state,
+        musicDao = musicDao,
+        playlistDao = playlistDao,
+        albumDao = albumDao,
+        artistDao = artistDao,
+        musicPlaylistDao = musicPlaylistDao,
+        musicAlbumDao = musicAlbumDao,
+        musicArtistDao = musicArtistDao,
+        albumArtistDao = albumArtistDao,
+        imageCoverDao = imageCoverDao,
+        sortDirection = _sortDirection,
+        sortType = _sortType
+    )
 
     var currentMusic by mutableStateOf<Music?>(null)
     var currentMusicPosition by mutableIntStateOf(0)
@@ -469,21 +483,6 @@ class PlayerViewModel @Inject constructor(
      * Manage music events.
      */
     fun onMusicEvent(event: MusicEvent) {
-        EventUtils.onMusicEvent(
-            event = event,
-            _state = _state,
-            state = state,
-            musicDao = musicDao,
-            playlistDao = playlistDao,
-            albumDao = albumDao,
-            artistDao = artistDao,
-            musicPlaylistDao = musicPlaylistDao,
-            musicAlbumDao = musicAlbumDao,
-            musicArtistDao = musicArtistDao,
-            albumArtistDao = albumArtistDao,
-            _sortDirection = _sortDirection,
-            _sortType = _sortType,
-            imageCoverDao = imageCoverDao
-        )
+        musicEventHandler.handleEvent(event)
     }
 }

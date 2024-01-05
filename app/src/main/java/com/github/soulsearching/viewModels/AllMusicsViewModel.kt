@@ -6,19 +6,43 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.EventUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.*
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.database.dao.AlbumArtistDao
+import com.github.soulsearching.database.dao.AlbumDao
+import com.github.soulsearching.database.dao.ArtistDao
+import com.github.soulsearching.database.dao.FolderDao
+import com.github.soulsearching.database.dao.ImageCoverDao
+import com.github.soulsearching.database.dao.MusicAlbumDao
+import com.github.soulsearching.database.dao.MusicArtistDao
+import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.database.dao.MusicPlaylistDao
+import com.github.soulsearching.database.dao.PlaylistDao
+import com.github.soulsearching.database.model.Album
+import com.github.soulsearching.database.model.AlbumArtist
+import com.github.soulsearching.database.model.Artist
+import com.github.soulsearching.database.model.Folder
+import com.github.soulsearching.database.model.ImageCover
+import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.database.model.MusicAlbum
+import com.github.soulsearching.database.model.MusicArtist
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -27,8 +51,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
     private val musicDao: MusicDao,
-    private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
+    playlistDao: PlaylistDao,
+    musicPlaylistDao: MusicPlaylistDao,
     private val albumDao: AlbumDao,
     private val artistDao: ArtistDao,
     private val musicAlbumDao: MusicAlbumDao,
@@ -86,6 +110,22 @@ class AllMusicsViewModel @Inject constructor(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         MusicState()
+    )
+
+    private val musicEventHandler = MusicEventHandler(
+        privateState = _state,
+        publicState = state,
+        musicDao = musicDao,
+        playlistDao = playlistDao,
+        albumDao = albumDao,
+        artistDao = artistDao,
+        musicPlaylistDao = musicPlaylistDao,
+        musicAlbumDao = musicAlbumDao,
+        musicArtistDao = musicArtistDao,
+        albumArtistDao = albumArtistDao,
+        imageCoverDao = imageCoverDao,
+        sortDirection = _sortDirection,
+        sortType = _sortType
     )
 
     /**
@@ -269,21 +309,6 @@ class AllMusicsViewModel @Inject constructor(
      * Manage music events.
      */
     fun onMusicEvent(event: MusicEvent) {
-        EventUtils.onMusicEvent(
-            event = event,
-            _state = _state,
-            state = state,
-            musicDao = musicDao,
-            playlistDao = playlistDao,
-            albumDao = albumDao,
-            artistDao = artistDao,
-            musicPlaylistDao = musicPlaylistDao,
-            musicAlbumDao = musicAlbumDao,
-            musicArtistDao = musicArtistDao,
-            albumArtistDao = albumArtistDao,
-            _sortDirection = _sortDirection,
-            _sortType = _sortType,
-            imageCoverDao = imageCoverDao
-        )
+        musicEventHandler.handleEvent(event)
     }
 }

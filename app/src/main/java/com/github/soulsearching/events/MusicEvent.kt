@@ -11,7 +11,6 @@ sealed interface MusicEvent {
     object UpdateMusic : MusicEvent
     object DeleteMusic : MusicEvent
     object UpdateQuickAccessState: MusicEvent
-    data class SetPlayedMusic(val music: Music) : MusicEvent
     data class SetSortDirection(val type: Int) : MusicEvent
     data class SetSortType(val type: Int) : MusicEvent
     data class DeleteDialog(val isShown: Boolean) : MusicEvent
