@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables.bottomSheets.music
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -29,7 +30,8 @@ fun AddToPlaylistBottomSheet(
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         onDismissRequest = {
             onMusicEvent(
                 MusicEvent.AddToPlaylistBottomSheet(

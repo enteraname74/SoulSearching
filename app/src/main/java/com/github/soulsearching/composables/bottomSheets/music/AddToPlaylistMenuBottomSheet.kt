@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,45 +25,60 @@ import com.github.soulsearching.ui.theme.DynamicColor
 @Composable
 fun AddToPlaylistMenuBottomSheet(
     playlistState: PlaylistState,
-    onPlaylistEvent : (PlaylistEvent) -> Unit,
-    cancelAction : () -> Unit,
-    validationAction : () -> Unit,
+    onPlaylistEvent: (PlaylistEvent) -> Unit,
+    cancelAction: () -> Unit,
+    validationAction: () -> Unit,
     primaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(primaryColor)
-        .padding(Constants.Spacing.medium)
-    ) {
-        AppHeaderBar(
-            title = stringResource(id = R.string.add_to_playlist),
-            leftAction = cancelAction,
-            rightAction = validationAction,
-            rightIcon = Icons.Rounded.Done,
-            backgroundColor = Color.Transparent,
-            contentColor = textColor
-        )
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
+    Scaffold {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(primaryColor)
+                .padding(it)
+                .padding(Constants.Spacing.medium)
         ) {
-            items(playlistState.playlistsWithMusics) { playlistWithMusics ->
-                if (playlistWithMusics.playlist.playlistId in playlistState.multiplePlaylistSelected) {
-                    PlaylistSelectableComposable(
-                        playlist = playlistWithMusics.playlist,
-                        onClick = { onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlistWithMusics.playlist.playlistId)) },
-                        isSelected = true,
-                        textColor = textColor
-                    )
-                } else {
-                    PlaylistSelectableComposable(
-                        playlist = playlistWithMusics.playlist,
-                        onClick = {
-                            onPlaylistEvent(PlaylistEvent.TogglePlaylistSelectedState(playlistWithMusics.playlist.playlistId))
-                        },
-                        isSelected = false,
-                        textColor = textColor
-                    )
+            AppHeaderBar(
+                title = stringResource(id = R.string.add_to_playlist),
+                leftAction = cancelAction,
+                rightAction = validationAction,
+                rightIcon = Icons.Rounded.Done,
+                backgroundColor = Color.Transparent,
+                contentColor = textColor
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(playlistState.playlistsWithMusics) { playlistWithMusics ->
+                    if (playlistWithMusics.playlist.playlistId in playlistState.multiplePlaylistSelected) {
+                        PlaylistSelectableComposable(
+                            playlist = playlistWithMusics.playlist,
+                            onClick = {
+                                onPlaylistEvent(
+                                    PlaylistEvent.TogglePlaylistSelectedState(
+                                        playlistWithMusics.playlist.playlistId
+                                    )
+                                )
+                            },
+                            isSelected = true,
+                            textColor = textColor
+                        )
+                    } else {
+                        PlaylistSelectableComposable(
+                            playlist = playlistWithMusics.playlist,
+                            onClick = {
+                                onPlaylistEvent(
+                                    PlaylistEvent.TogglePlaylistSelectedState(
+                                        playlistWithMusics.playlist.playlistId
+                                    )
+                                )
+                            },
+                            isSelected = false,
+                            textColor = textColor
+                        )
+                    }
                 }
             }
         }
