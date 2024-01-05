@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
 /**
- * Retrieve the state of the post notification permission.
+ * Check the state of the post notification permission.
  * If the device is below Android 13, the post notification is not necessary.
  */
 @Composable

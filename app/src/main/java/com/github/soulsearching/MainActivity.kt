@@ -43,8 +43,8 @@ import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
 import com.github.soulsearching.composables.remembercomposable.rememberPlayerDraggableState
 import com.github.soulsearching.composables.remembercomposable.rememberPlayerMusicDraggableState
-import com.github.soulsearching.composables.remembercomposable.rememberPostNotificationGranted
-import com.github.soulsearching.composables.remembercomposable.rememberReadPermissionGranted
+import com.github.soulsearching.composables.remembercomposable.checkIfPostNotificationGranted
+import com.github.soulsearching.composables.remembercomposable.checkIfReadPermissionGranted
 import com.github.soulsearching.composables.remembercomposable.rememberSearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
@@ -208,7 +208,6 @@ class MainActivity : AppCompatActivity() {
                 val postNotificationLauncher = permissionLauncher { isGranted ->
                     mainActivityViewModel.isPostNotificationGranted = isGranted
                 }
-
                 SideEffect {
                     checkAndAskMissingPermissions(
                         isReadPermissionGranted = mainActivityViewModel.isReadPermissionGranted,
@@ -217,7 +216,6 @@ class MainActivity : AppCompatActivity() {
                         postNotificationLauncher = postNotificationLauncher
                     )
                 }
-
                 if (!mainActivityViewModel.isReadPermissionGranted || !mainActivityViewModel.isPostNotificationGranted) {
                     MissingPermissionsComposable()
                     return@SoulSearchingTheme
@@ -238,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                         },
                         createFavoritePlaylistAction = {
                             allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.AddFavoritePlaylist(
+                                PlaylistEvent.CreateFavoritePlaylist(
                                     name = applicationContext.getString(R.string.favorite)
                                 )
                             )
@@ -246,6 +244,7 @@ class MainActivity : AppCompatActivity() {
                     )
                     return@SoulSearchingTheme
                 }
+
                 if (coversState.covers.isNotEmpty() && !mainActivityViewModel.cleanImagesLaunched) {
                     LaunchedEffect(key1 = "Launch") {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -711,8 +710,8 @@ class MainActivity : AppCompatActivity() {
      */
     @Composable
     private fun InitializeMainActivityViewModel() {
-        mainActivityViewModel.isReadPermissionGranted = rememberReadPermissionGranted().value
-        mainActivityViewModel.isPostNotificationGranted = rememberPostNotificationGranted().value
+        mainActivityViewModel.isReadPermissionGranted = checkIfReadPermissionGranted()
+        mainActivityViewModel.isPostNotificationGranted = checkIfPostNotificationGranted()
     }
 
     /**
@@ -748,7 +747,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        if (!isPostNotificationGranted && (Build.VERSION.SDK_INT >= 33)) {
+        if (!isPostNotificationGranted && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)) {
             postNotificationLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
     }
