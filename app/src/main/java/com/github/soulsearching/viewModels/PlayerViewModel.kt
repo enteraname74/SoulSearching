@@ -44,7 +44,7 @@ class PlayerViewModel @Inject constructor(
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
     var currentMusic by mutableStateOf<Music?>(null)
-    var currentMusicPosition by mutableStateOf(0)
+    var currentMusicPosition by mutableIntStateOf(0)
     var currentMusicCover by mutableStateOf<Bitmap?>(null)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
@@ -74,14 +74,13 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun setPlayerInformationsFromSavedList(musicList: ArrayList<Music>) {
+    fun setPlayerInformationFromSavedList(musicList: ArrayList<Music>) {
         currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
         initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
 
         SharedPrefUtils.getPlayerSavedCurrentMusic()
         SharedPrefUtils.getPlayerMode()
-        currentMusicCover = retrieveCoverMethod(currentMusic!!.coverId)
-        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
+        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
 
     fun isSameMusic(musicId: UUID): Boolean {
@@ -119,11 +118,15 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun defineCoverAndPaletteFromCoverId(coverId: UUID?) {
+        currentMusicCover = retrieveCoverMethod(coverId)
+        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
+    }
+
     private fun setNewCurrentMusicInformation(music: Music?) {
         currentMusic = music
         currentMusicPosition = 0
-        currentMusicCover = retrieveCoverMethod(currentMusic?.coverId)
-        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
+        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
 
     fun addMusicToPlayNext(
