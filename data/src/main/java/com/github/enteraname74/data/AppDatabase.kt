@@ -20,7 +20,7 @@ import com.github.enteraname74.data.model.*
         RoomAlbumArtist::class,
         RoomImageCover::class,
         RoomPlayerMusic::class,
-        Room::class
+        RoomFolder::class
     ],
     version = 14
 )

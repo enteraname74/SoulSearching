@@ -2,9 +2,13 @@ package com.github.enteraname74.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.Music
 import java.time.LocalDateTime
 import java.util.UUID
 
+/**
+ * Room representation of a song.
+ */
 @Entity
 internal data class RoomMusic(
     @PrimaryKey
@@ -20,4 +24,40 @@ internal data class RoomMusic(
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false
+)
+
+/**
+ * Converts a RoomMusic to a Music.
+ */
+internal fun RoomMusic.toMusic(): Music = Music(
+    musicId = musicId,
+    name = name,
+    album = album,
+    artist = artist,
+    coverId = coverId,
+    duration = duration,
+    path = path,
+    folder = folder,
+    addedDate = addedDate,
+    nbPlayed = nbPlayed,
+    isInQuickAccess = isInQuickAccess,
+    isHidden = isHidden
+)
+
+/**
+ * Converts a Music to a RoomMusic.
+ */
+internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
+    musicId = musicId,
+    name = name,
+    album = album,
+    artist = artist,
+    coverId = coverId,
+    duration = duration,
+    path = path,
+    folder = folder,
+    addedDate = addedDate,
+    nbPlayed = nbPlayed,
+    isInQuickAccess = isInQuickAccess,
+    isHidden = isHidden
 )

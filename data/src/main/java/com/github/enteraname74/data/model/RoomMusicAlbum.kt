@@ -4,8 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.util.*
+import com.github.enteraname74.domain.model.MusicAlbum
+import java.util.UUID
 
+/**
+ * Room representation of a MusicAlbum.
+ */
 @Entity(
     foreignKeys = [
         ForeignKey(
@@ -26,4 +30,22 @@ internal data class RoomMusicAlbum(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val albumId: UUID = UUID.randomUUID()
+)
+
+/**
+ * Converts a RoomMusicAlbum to a MusicAlbum.
+ */
+internal fun RoomMusicAlbum.toMusicAlbum(): MusicAlbum = MusicAlbum(
+    id = id,
+    musicId = musicId,
+    albumId = albumId
+)
+
+/**
+ * Converts a MusicAlbum to a RoomMusicAlbum.
+ */
+internal fun MusicAlbum.toRoomMusicAlbum(): RoomMusicAlbum = RoomMusicAlbum(
+    id = id,
+    musicId = musicId,
+    albumId = albumId
 )

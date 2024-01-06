@@ -4,8 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.MusicArtist
 import java.util.*
 
+/**
+ * Room representation of a MusicArtist.
+ */
 @Entity(
     foreignKeys = [
         ForeignKey(
@@ -26,4 +30,22 @@ internal data class RoomMusicArtist(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val artistId: UUID = UUID.randomUUID()
+)
+
+/**
+ * Converts a RoomMusicArtist to a MusicArtist.
+ */
+internal fun RoomMusicArtist.toMusicArtist(): MusicArtist = MusicArtist(
+    id = id,
+    musicId = musicId,
+    artistId = artistId
+)
+
+/**
+ * Converts a MusicArtist to a RoomMusicArtist.
+ */
+internal fun MusicArtist.toRoomMusicArtist(): RoomMusicArtist = RoomMusicArtist(
+    id = id,
+    musicId = musicId,
+    artistId = artistId
 )
