@@ -9,13 +9,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.DynamicColor

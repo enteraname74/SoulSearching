@@ -15,12 +15,12 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.KeyEvent
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
 import java.io.File

@@ -12,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.domain.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.model.*
-import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 
@@ -112,7 +115,7 @@ fun MainMenuLazyListRow(
                             BigPreviewComposable(
                                 image = element.album.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.album.albumName,
-                                text = if (element.artist != null) element.artist.artistName else "",
+                                text = if (element.artist != null) element.artist!!.artistName else "",
                                 onClick = {
                                     navigateToAlbum(element.album.albumId.toString())
                                 },

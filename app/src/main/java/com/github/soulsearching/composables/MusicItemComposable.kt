@@ -19,10 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 

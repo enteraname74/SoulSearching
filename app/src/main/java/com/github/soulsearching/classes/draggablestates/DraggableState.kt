@@ -19,17 +19,13 @@ open class DraggableState @OptIn(ExperimentalFoundationApi::class) constructor(
     anchors: DraggableAnchors<BottomSheetStates>
 ) {
     @OptIn(ExperimentalFoundationApi::class)
-    private val _state = AnchoredDraggableState(
+    val state = AnchoredDraggableState(
         initialValue = initialValue,
         anchors = anchors,
         positionalThreshold = { distance: Float -> distance * 0.5f },
         velocityThreshold = { with(density) { 100.dp.toPx() } },
         animationSpec = tween(Constants.AnimationDuration.normal),
     )
-
-    @OptIn(ExperimentalFoundationApi::class)
-    val state
-        get() = _state
 
     /**
      * Change the draggable state by switching to a target value at a given velocity.
@@ -39,6 +35,6 @@ open class DraggableState @OptIn(ExperimentalFoundationApi::class) constructor(
         targetValue: BottomSheetStates,
         velocity: Float = Constants.AnimationDuration.normal.toFloat()
     ) {
-        this._state.animateTo(targetValue, velocity)
+        this.state.animateTo(targetValue, velocity)
     }
 }

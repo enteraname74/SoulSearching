@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.res.stringResource
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
@@ -15,7 +16,6 @@ import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -135,7 +135,7 @@ fun SearchAll(
 
         val foundedAlbums = albumState.albums.filter {
             if (it.artist != null) {
-                it.artist.artistName.lowercase().contains(searchText.lowercase())
+                it.artist!!.artistName.lowercase().contains(searchText.lowercase())
                 it.album.albumName.lowercase().contains(searchText.lowercase())
             } else {
                 it.album.albumName.lowercase().contains(searchText.lowercase())
@@ -148,7 +148,7 @@ fun SearchAll(
             items(foundedAlbums) { album ->
                 LinearPreviewComposable(
                     title = album.album.albumName,
-                    text = if (album.artist != null) album.artist.artistName else "",
+                    text = if (album.artist != null) album.artist!!.artistName else "",
                     onClick = {
                         focusManager.clearFocus()
                         navigateToAlbum(album.album.albumId.toString())

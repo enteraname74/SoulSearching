@@ -8,11 +8,16 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Size
-import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumArtist
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.Music
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumArtist
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -220,7 +225,7 @@ object Utils {
     /**
      * Tries to retrieve the corresponding album of a music.
      */
-    private fun getCorrespondingAlbum(
+    private suspend fun getCorrespondingAlbum(
         musicId: UUID,
         albumRepository: AlbumRepository,
         musicAlbumRepository: MusicAlbumRepository
@@ -240,7 +245,7 @@ object Utils {
     /**
      * Tries to retrieve the corresponding artist of a music.
      */
-    fun getCorrespondingArtist(
+    suspend fun getCorrespondingArtist(
         musicId: UUID,
         artistRepository: ArtistRepository,
         musicArtistRepository: MusicArtistRepository
