@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Soul Searching"
 include(":app")
 include(":domain")
+include(":data")

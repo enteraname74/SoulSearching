@@ -1,3 +1,6 @@
+import com.github.enteraname74.buildsrc.Dependencies
+import com.github.enteraname74.buildsrc.AndroidConfig
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -6,21 +9,16 @@ plugins {
     id("kotlin-parcelize")
 }
 
-val versionName = extra["version.name"]
-val composeVersion = extra["compose.version"]
-val accompanistVersion = extra["accompanist.version"]
-val roomVersion = extra["room.version"]
-
 android {
-    namespace = "com.github.soulsearching"
-    compileSdk = 34
+    namespace = AndroidConfig.NAMESPACE
+    compileSdk = AndroidConfig.COMPILE_SDK
 
     defaultConfig {
-        applicationId = "com.github.enteraname74.soulsearching"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 9
-        versionName = versionName
+        applicationId = AndroidConfig.APP_ID
+        minSdk = AndroidConfig.MIN_SDK
+        targetSdk = AndroidConfig.TARGET_SDK
+        versionCode = AndroidConfig.VERSION_CODE
+        versionName = AndroidConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -28,20 +26,20 @@ android {
 
     this.buildOutputs.all {
         val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-        val name = "com.github.enteraname74.soulsearching_$versionName.apk"
+        val name = "${AndroidConfig.APP_ID}_${AndroidConfig.VERSION_NAME}.apk"
         variantOutputImpl.outputFileName = name
     }
 
     buildTypes {
         debug {
-            buildConfigField("String", "VERSION_NAME", "\"" + versionName + "-dev" + "\"")
+            buildConfigField("String", "VERSION_NAME", "\"" + AndroidConfig.VERSION_NAME + "-dev" + "\"")
             manifestPlaceholders["appName"] = "Soul Searching Dev"
             versionNameSuffix = "-dev"
             applicationIdSuffix = ".dev"
         }
 
         release {
-            buildConfigField("String", "VERSION_NAME", "\"" + versionName + "\"")
+            buildConfigField("String", "VERSION_NAME", "\"" + AndroidConfig.VERSION_NAME + "\"")
             manifestPlaceholders["appName"] = "Soul Searching"
             isMinifyEnabled = true
             proguardFiles(
@@ -76,49 +74,43 @@ kapt {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.compose.material3:material3:1.2.0-beta01")
-    implementation("androidx.compose.material:material:1.6.0-beta03")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation(Dependencies.AndroidX.CORE)
+    implementation(Dependencies.AndroidX.LIFECYCLE)
+    implementation(Dependencies.AndroidX.ACTIVITY_COMPOSE)
+    implementation(Dependencies.AndroidX.UI)
+    implementation(Dependencies.AndroidX.UI_TOOLING)
+    implementation(Dependencies.AndroidX.MATERIAL3)
+    implementation(Dependencies.AndroidX.MATERIAL)
+    implementation(Dependencies.AndroidX.MATERIAL_ICON_EXTENDED)
+    implementation(Dependencies.AndroidX.ROOM)
+    implementation(Dependencies.AndroidX.APPCOMPAT_RESOURCES)
+    implementation(Dependencies.AndroidX.APPCOMPAT)
+    implementation(Dependencies.AndroidX.NAVIGATION_COMPOSE)
+    implementation(Dependencies.AndroidX.PALETTE)
+    implementation(Dependencies.AndroidX.MEDIA)
 
-    implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    implementation(Dependencies.Google.ACCOMPANIST_PAGER)
+    implementation(Dependencies.Google.ACCOMPANIST_PAGER_INDICATORS)
+    implementation(Dependencies.Google.HILT_ANDROID)
+    implementation(Dependencies.Google.GSON)
+    implementation(Dependencies.Google.ACCOMPANIST_SYSTEMUICONTROLLER)
 
-    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
+    androidTestImplementation(Dependencies.AndroidX.JUNIT)
+    androidTestImplementation(Dependencies.AndroidX.ESPRESSO_CORE)
+    androidTestImplementation(Dependencies.AndroidX.UI_TEST_JUNIT4)
 
-    implementation("androidx.appcompat:appcompat-resources:1.6.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
+    debugImplementation(Dependencies.AndroidX.UI_TOOLING_PREVIEW)
+    debugImplementation(Dependencies.AndroidX.UI_TEST_MANIFEST)
 
-    implementation("com.google.dagger:hilt-android:2.47")
-    kapt("com.google.dagger:hilt-compiler:2.47")
+    testImplementation(Dependencies.JUNIT)
+    kapt(Dependencies.AndroidX.ROOM_COMPILER)
+    kapt(Dependencies.Google.HILT_COMPILER)
 
     // For instrumentation tests
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.47")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.47")
+    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
 
     // For local unit tests
-    testImplementation("com.google.dagger:hilt-android-testing:2.47")
-    kaptTest("com.google.dagger:hilt-compiler:2.47")
-
-    implementation("com.google.code.gson:gson:2.10.1")
-
-    // Navigation :
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-
-    // Dynamic colors :
-    implementation("androidx.palette:palette-ktx:1.0.0")
-
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
-    implementation("androidx.media:media:1.7.0")
+    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+    kaptTest(Dependencies.Google.HILT_COMPILER)
 }
