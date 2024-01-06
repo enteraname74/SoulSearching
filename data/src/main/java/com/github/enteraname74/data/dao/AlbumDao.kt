@@ -70,7 +70,7 @@ internal interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE isInQuickAccess = 1")
-    fun getAllAlbumsFromQuickAccessAsFlow(): Flow<List<RoomAlbumWithArtist>>
+    fun getAllAlbumWithArtistFromQuickAccessAsFlow(): Flow<List<RoomAlbumWithArtist>>
 
     @Query(
         "SELECT RoomAlbum.* FROM RoomAlbum INNER JOIN RoomAlbumArtist ON RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbum.albumName = :albumName AND RoomAlbumArtist.artistId = :artistId"
@@ -89,7 +89,7 @@ internal interface AlbumDao {
     suspend fun updateQuickAccessState(newQuickAccessState: Boolean, albumId: UUID)
 
     @Query("SELECT COUNT(*) FROM RoomAlbum WHERE coverId = :coverId")
-    suspend fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+    suspend fun getNumberOfAlbumsWithCoverId(coverId : UUID) : Int
 
     @Query("SELECT nbPlayed FROM RoomAlbum WHERE albumId = :albumId")
     suspend fun getNbPlayedOfAlbum(albumId: UUID): Int
