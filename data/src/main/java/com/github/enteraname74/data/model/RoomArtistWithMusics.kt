@@ -4,12 +4,12 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-internal data class ArtistWithMusics(
-    @Embedded val artist: Artist = Artist(),
+internal data class RoomArtistWithMusics(
+    @Embedded val roomArtist: RoomArtist = RoomArtist(),
     @Relation(
         parentColumn = "artistId",
         entityColumn = "musicId",
-        associateBy = Junction(MusicArtist::class)
+        associateBy = Junction(RoomMusicArtist::class)
     )
-    val musics : List<Music> = emptyList()
+    val roomMusics : List<RoomMusic> = emptyList()
 )

@@ -4,23 +4,23 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.github.enteraname74.data.model.Folder
+import com.github.enteraname74.data.model.Room
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface FolderDao {
     @Upsert
-    suspend fun insertFolder(folder : Folder)
+    suspend fun insertFolder(room : Room)
 
     @Delete
-    suspend fun deleteFolder(folder: Folder)
+    suspend fun deleteFolder(room: Room)
 
-    @Query("SELECT * FROM Folder")
-    fun getAllFolders(): Flow<List<Folder>>
+    @Query("SELECT * FROM Room")
+    fun getAllFolders(): Flow<List<Room>>
 
-    @Query("SELECT * FROM Folder")
-    fun getAllFoldersSimple(): List<Folder>
+    @Query("SELECT * FROM Room")
+    fun getAllFoldersSimple(): List<Room>
 
-    @Query("SELECT folderPath FROM Folder WHERE isSelected = 0")
+    @Query("SELECT folderPath FROM Room WHERE isSelected = 0")
     suspend fun getAllHiddenFoldersPaths(): List<String>
 }

@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-internal data class Music(
+internal data class RoomMusic(
     @PrimaryKey
     val musicId: UUID = UUID.randomUUID(),
     var name: String = "",

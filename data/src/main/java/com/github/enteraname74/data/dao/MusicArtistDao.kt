@@ -1,23 +1,23 @@
 package com.github.enteraname74.data.dao
 
 import androidx.room.*
-import com.github.enteraname74.data.model.MusicArtist
+import com.github.enteraname74.data.model.RoomMusicArtist
 import java.util.UUID
 
 @Dao
 internal interface MusicArtistDao {
     @Upsert
-    suspend fun insertMusicIntoArtist(musicArtist: MusicArtist)
+    suspend fun insertMusicIntoArtist(roomMusicArtist: RoomMusicArtist)
 
-    @Query("UPDATE MusicArtist SET artistId = :newArtistId WHERE musicId = :musicId")
+    @Query("UPDATE RoomMusicArtist SET artistId = :newArtistId WHERE musicId = :musicId")
     suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID)
 
-    @Query("DELETE FROM MusicArtist WHERE musicId = :musicId")
+    @Query("DELETE FROM RoomMusicArtist WHERE musicId = :musicId")
     suspend fun deleteMusicFromArtist(musicId: UUID)
 
-    @Query("SELECT artistId FROM MusicArtist WHERE musicId = :musicId")
+    @Query("SELECT artistId FROM RoomMusicArtist WHERE musicId = :musicId")
     fun getArtistIdFromMusicId(musicId: UUID) : UUID?
 
-    @Query("SELECT COUNT(*) FROM MusicArtist WHERE artistId = :artistId")
+    @Query("SELECT COUNT(*) FROM RoomMusicArtist WHERE artistId = :artistId")
     fun getNumberOfMusicsFromArtist(artistId : UUID) : Int
 }

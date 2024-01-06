@@ -1,8 +1,8 @@
 package com.github.enteraname74.data.dao
 
 import androidx.room.*
-import com.github.enteraname74.data.model.Artist
-import com.github.enteraname74.data.model.ArtistWithMusics
+import com.github.enteraname74.data.model.RoomArtist
+import com.github.enteraname74.data.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -10,72 +10,72 @@ import java.util.*
 internal interface ArtistDao {
 
     @Upsert
-    suspend fun insertArtist(artist: Artist)
+    suspend fun insertArtist(roomArtist: RoomArtist)
 
     @Delete
-    suspend fun deleteArtist(artist: Artist)
+    suspend fun deleteArtist(roomArtist: RoomArtist)
 
-    @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistFromId(artistId: UUID) : Artist?
+    @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
+    fun getArtistFromId(artistId: UUID) : RoomArtist?
 
-    @Query("SELECT * FROM Artist ORDER BY artistName ASC")
-    fun getAllArtistsSortByName(): Flow<List<Artist>>
-
-    @Transaction
-    @Query("SELECT * FROM Artist ORDER BY artistName ASC")
-    fun getAllArtistsWithMusicsSortByNameAsc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
+    fun getAllArtistsSortByName(): Flow<List<RoomArtist>>
 
     @Transaction
-    @Query("SELECT * FROM Artist ORDER BY artistName DESC")
-    fun getAllArtistWithMusicsSortByNameDesc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
+    fun getAllArtistsWithMusicsSortByNameAsc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist ORDER BY addedDate ASC")
-    fun getAllArtistWithMusicsSortByAddedDateAsc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY artistName DESC")
+    fun getAllArtistWithMusicsSortByNameDesc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist ORDER BY addedDate DESC")
-    fun getAllArtistWithMusicsSortByAddedDateDesc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY addedDate ASC")
+    fun getAllArtistWithMusicsSortByAddedDateAsc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist ORDER BY nbPlayed ASC")
-    fun getAllArtistWithMusicsSortByNbPlayedAsc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY addedDate DESC")
+    fun getAllArtistWithMusicsSortByAddedDateDesc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist ORDER BY nbPlayed DESC")
-    fun getAllArtistWithMusicsSortByNbPlayedDesc(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed ASC")
+    fun getAllArtistWithMusicsSortByNbPlayedAsc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist WHERE artistName = :artistName AND artistId != :artistId")
-    fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : ArtistWithMusics?
-
-    @Query("SELECT * FROM Artist WHERE artistName = :artistName LIMIT 1")
-    fun getArtistFromInfo(artistName: String): Artist?
+    @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed DESC")
+    fun getAllArtistWithMusicsSortByNbPlayedDesc(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics>
+    @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName AND artistId != :artistId")
+    fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : RoomArtistWithMusics?
+
+    @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
+    fun getArtistFromInfo(artistName: String): RoomArtist?
 
     @Transaction
-    @Query("SELECT * FROM Artist WHERE isInQuickAccess = 1")
-    fun getAllArtistsFromQuickAccess(): Flow<List<ArtistWithMusics>>
+    @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
+    fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics>
 
     @Transaction
-    @Query("SELECT * FROM Artist WHERE artistId = :artistId")
-    fun getArtistWithMusicsSimple(artistId: UUID): ArtistWithMusics
+    @Query("SELECT * FROM RoomArtist WHERE isInQuickAccess = 1")
+    fun getAllArtistsFromQuickAccess(): Flow<List<RoomArtistWithMusics>>
 
-    @Query("UPDATE Artist SET coverId = :newCoverId WHERE artistId = :artistId")
+    @Transaction
+    @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
+    fun getArtistWithMusicsSimple(artistId: UUID): RoomArtistWithMusics
+
+    @Query("UPDATE RoomArtist SET coverId = :newCoverId WHERE artistId = :artistId")
     fun updateArtistCover(newCoverId : UUID, artistId : UUID)
 
-    @Query("SELECT COUNT(*) FROM Artist WHERE coverId = :coverId")
+    @Query("SELECT COUNT(*) FROM RoomArtist WHERE coverId = :coverId")
     fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
 
-    @Query("UPDATE Artist SET isInQuickAccess = :newQuickAccessState WHERE artistId = :artistId")
+    @Query("UPDATE RoomArtist SET isInQuickAccess = :newQuickAccessState WHERE artistId = :artistId")
     fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
 
-    @Query("SELECT nbPlayed FROM Artist WHERE artistId = :artistId")
+    @Query("SELECT nbPlayed FROM RoomArtist WHERE artistId = :artistId")
     fun getNbPlayedOfArtist(artistId: UUID): Int
 
-    @Query("UPDATE Artist SET nbPlayed = :newNbPlayed WHERE artistId = :artistId")
+    @Query("UPDATE RoomArtist SET nbPlayed = :newNbPlayed WHERE artistId = :artistId")
     fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
 }

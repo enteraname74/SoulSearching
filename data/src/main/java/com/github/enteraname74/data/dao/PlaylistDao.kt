@@ -1,8 +1,8 @@
 package com.github.enteraname74.data.dao
 
 import androidx.room.*
-import com.github.enteraname74.data.model.Playlist
-import com.github.enteraname74.data.model.PlaylistWithMusics
+import com.github.enteraname74.data.model.RoomPlaylist
+import com.github.enteraname74.data.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -10,65 +10,65 @@ import java.util.*
 internal interface PlaylistDao {
 
     @Upsert
-    suspend fun insertPlaylist(playlist : Playlist)
+    suspend fun insertPlaylist(roomPlaylist : RoomPlaylist)
 
     @Delete
-    suspend fun deletePlaylist(playlist : Playlist)
+    suspend fun deletePlaylist(roomPlaylist : RoomPlaylist)
 
-    @Query("SELECT * FROM Playlist ORDER BY name ASC")
-    fun getAllPlaylists(): Flow<List<Playlist>>
-
-    @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY name ASC")
-    fun getAllPlaylistsWithMusicsSortByNameAsc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
+    fun getAllPlaylists(): Flow<List<RoomPlaylist>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY name DESC")
-    fun getAllPlaylistWithMusicsSortByNameDesc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
+    fun getAllPlaylistsWithMusicsSortByNameAsc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY addedDate ASC")
-    fun getAllPlaylistWithMusicsSortByAddedDateAsc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY name DESC")
+    fun getAllPlaylistWithMusicsSortByNameDesc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY addedDate DESC")
-    fun getAllPlaylistWithMusicsSortByAddedDateDesc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate ASC")
+    fun getAllPlaylistWithMusicsSortByAddedDateAsc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY nbPlayed ASC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedAsc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate DESC")
+    fun getAllPlaylistWithMusicsSortByAddedDateDesc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist ORDER BY nbPlayed DESC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<PlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed ASC")
+    fun getAllPlaylistWithMusicsSortByNbPlayedAsc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE isInQuickAccess = 1")
-    fun getAllPlaylistsFromQuickAccess(): Flow<List<PlaylistWithMusics>>
-
-    @Query("SELECT * FROM Playlist WHERE isFavorite = 1")
-    fun getFavoritePlaylist(): Playlist
-
-    @Query("SELECT * FROM Playlist WHERE playlistId = :playlistId")
-    fun getPlaylistFromId(playlistId: UUID) : Playlist
+    @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed DESC")
+    fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE playlistId = :playlistId")
-    fun getPlaylistWithMusics(playlistId : UUID): Flow<PlaylistWithMusics?>
+    @Query("SELECT * FROM RoomPlaylist WHERE isInQuickAccess = 1")
+    fun getAllPlaylistsFromQuickAccess(): Flow<List<RoomPlaylistWithMusics>>
+
+    @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1")
+    fun getFavoritePlaylist(): RoomPlaylist
+
+    @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
+    fun getPlaylistFromId(playlistId: UUID) : RoomPlaylist
 
     @Transaction
-    @Query("SELECT * FROM Playlist")
-    suspend fun getAllPlaylistsWithMusicsSimple() : List<PlaylistWithMusics>
+    @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
+    fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
 
-    @Query("SELECT COUNT(*) FROM Playlist WHERE coverId = :coverId")
+    @Transaction
+    @Query("SELECT * FROM RoomPlaylist")
+    suspend fun getAllPlaylistsWithMusicsSimple() : List<RoomPlaylistWithMusics>
+
+    @Query("SELECT COUNT(*) FROM RoomPlaylist WHERE coverId = :coverId")
     fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
 
-    @Query("UPDATE Playlist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
+    @Query("UPDATE RoomPlaylist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
     fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
 
-    @Query("SELECT nbPlayed FROM Playlist WHERE playlistId = :playlistId")
+    @Query("SELECT nbPlayed FROM RoomPlaylist WHERE playlistId = :playlistId")
     fun getNbPlayedOfPlaylist(playlistId: UUID): Int
 
-    @Query("UPDATE Playlist SET nbPlayed = :newNbPlayed WHERE playlistId = :playlistId")
+    @Query("UPDATE RoomPlaylist SET nbPlayed = :newNbPlayed WHERE playlistId = :playlistId")
     fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID)
 }

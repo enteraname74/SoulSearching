@@ -1,14 +1,13 @@
 package com.github.enteraname74.data.model
 
 import androidx.room.Embedded
-import androidx.room.Junction
 import androidx.room.Relation
 
-internal data class PlayerWithMusicItem(
-    @Embedded val playerMusic: PlayerMusic = PlayerMusic(),
+internal data class RoomPlayerWithMusicItem(
+    @Embedded val roomPlayerMusic: RoomPlayerMusic = RoomPlayerMusic(),
     @Relation(
         parentColumn = "playerMusicId",
         entityColumn = "musicId",
     )
-    val music: Music? = null
+    val roomMusic: RoomMusic? = null
 )

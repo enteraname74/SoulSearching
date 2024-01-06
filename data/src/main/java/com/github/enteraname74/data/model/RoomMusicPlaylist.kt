@@ -9,20 +9,20 @@ import java.util.*
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = Music::class,
+            entity = RoomMusic::class,
             parentColumns = ["musicId"],
             childColumns = ["musicId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Playlist::class,
+            entity = RoomPlaylist::class,
             parentColumns = ["playlistId"],
             childColumns = ["playlistId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-internal data class MusicPlaylist(
+internal data class RoomMusicPlaylist(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val playlistId: UUID = UUID.randomUUID()

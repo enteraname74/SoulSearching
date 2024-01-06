@@ -9,21 +9,21 @@ import java.util.*
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = Music::class,
-            parentColumns = ["musicId"],
-            childColumns = ["musicId"],
+            entity = RoomAlbum::class,
+            parentColumns = ["albumId"],
+            childColumns = ["albumId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Artist::class,
+            entity = RoomArtist::class,
             parentColumns = ["artistId"],
             childColumns = ["artistId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-internal data class MusicArtist(
+internal data class RoomAlbumArtist(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
+    @ColumnInfo(index = true) val albumId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val artistId: UUID = UUID.randomUUID()
 )

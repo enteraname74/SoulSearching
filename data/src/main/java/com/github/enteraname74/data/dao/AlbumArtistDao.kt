@@ -3,17 +3,17 @@ package com.github.enteraname74.data.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.github.enteraname74.data.model.AlbumArtist
+import com.github.enteraname74.data.model.RoomAlbumArtist
 import java.util.*
 
 @Dao
 internal interface AlbumArtistDao {
     @Upsert
-    suspend fun insertAlbumIntoArtist(albumArtist: AlbumArtist)
+    suspend fun insertAlbumIntoArtist(roomAlbumArtist: RoomAlbumArtist)
 
-    @Query("UPDATE AlbumArtist SET artistId = :newArtistId WHERE albumId = :albumId")
+    @Query("UPDATE RoomAlbumArtist SET artistId = :newArtistId WHERE albumId = :albumId")
     suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID)
 
-    @Query("DELETE FROM AlbumArtist WHERE albumId = :albumId")
+    @Query("DELETE FROM RoomAlbumArtist WHERE albumId = :albumId")
     suspend fun deleteAlbumFromArtist(albumId: UUID)
 }

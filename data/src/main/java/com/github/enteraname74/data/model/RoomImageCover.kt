@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.util.UUID
 
 @Entity
-internal data class ImageCover(
+internal data class RoomImageCover(
     @PrimaryKey(autoGenerate = true) val id : Long = 0L,
     val coverId : UUID = UUID.randomUUID(),
     val cover : Bitmap? = null

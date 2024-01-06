@@ -10,17 +10,17 @@ import com.github.enteraname74.data.model.*
 
 @Database(
     entities = [
-        Music::class,
-        Album::class,
-        Artist::class,
-        Playlist::class,
-        MusicPlaylist::class,
-        MusicAlbum::class,
-        MusicArtist::class,
-        AlbumArtist::class,
-        ImageCover::class,
-        PlayerMusic::class,
-        Folder::class
+        RoomMusic::class,
+        RoomAlbum::class,
+        RoomArtist::class,
+        RoomPlaylist::class,
+        RoomMusicPlaylist::class,
+        RoomMusicAlbum::class,
+        RoomMusicArtist::class,
+        RoomAlbumArtist::class,
+        RoomImageCover::class,
+        RoomPlayerMusic::class,
+        Room::class
     ],
     version = 14
 )

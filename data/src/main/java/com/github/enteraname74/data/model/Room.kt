@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-internal data class Folder(
+internal data class Room(
     @PrimaryKey
     val folderPath: String = "",
     val isSelected: Boolean = true
