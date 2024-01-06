@@ -1,9 +1,9 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
+import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.model.ArtistWithMusics
 
 /**
  * Manage elements related to artists.

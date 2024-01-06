@@ -1,13 +1,12 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.model.Playlist
-import com.github.soulsearching.database.model.PlaylistWithMusics
-import com.github.soulsearching.database.model.PlaylistWithMusicsNumber
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.UUID
 
 /**
  * Manage elements related to playlists.

@@ -1,7 +1,7 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ArtistWithMusics
 
 /**
      * State for managing a selected artist.
