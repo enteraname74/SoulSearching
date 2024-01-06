@@ -5,7 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+//    id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
 }
 
@@ -74,8 +74,6 @@ kapt {
 }
 
 dependencies {
-    runtimeOnly(project(":data"))
-    implementation(project(":domain"))
 
     implementation(Dependencies.AndroidX.CORE)
     implementation(Dependencies.AndroidX.LIFECYCLE)
@@ -105,15 +103,18 @@ dependencies {
     debugImplementation(Dependencies.AndroidX.UI_TOOLING_PREVIEW)
     debugImplementation(Dependencies.AndroidX.UI_TEST_MANIFEST)
 
-    testImplementation(Dependencies.JUNIT)
-    kapt(Dependencies.AndroidX.ROOM_COMPILER)
-    kapt(Dependencies.Google.HILT_COMPILER)
+//    testImplementation(Dependencies.JUNIT)
+//    kapt(Dependencies.AndroidX.ROOM_COMPILER)
+//    kapt(Dependencies.Google.HILT_COMPILER)
+//
+//    // For instrumentation tests
+//    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+//    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
+//
+//    // For local unit tests
+//    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+//    kaptTest(Dependencies.Google.HILT_COMPILER)
 
-    // For instrumentation tests
-    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
-
-    // For local unit tests
-    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-    kaptTest(Dependencies.Google.HILT_COMPILER)
+    implementation(project(":domain"))
+    runtimeOnly(project(":data"))
 }

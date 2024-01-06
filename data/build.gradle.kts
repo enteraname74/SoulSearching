@@ -3,7 +3,7 @@ import com.github.enteraname74.buildsrc.Dependencies
 
 plugins {
     kotlin("kapt")
-    id("com.android.application")
+    id("com.android.library")
     kotlin("android")
     id("com.google.dagger.hilt.android")
 }
@@ -14,6 +14,15 @@ android {
 
     defaultConfig {
         minSdk = AndroidConfig.MIN_SDK
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        jvmToolchain(17)
     }
 }
 
