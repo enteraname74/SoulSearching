@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 internal interface PlayerMusicDao {
     @Upsert
-    suspend fun insertPlayerMusic(PlayerMusic: PlayerMusic)
+    suspend fun insertPlayerMusic(playerMusic: PlayerMusic)
 
     @Query("DELETE FROM PlayerMusic WHERE playerMusicId = :musicId")
     suspend fun deleteMusicFromPlayerList(musicId : UUID)

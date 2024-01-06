@@ -32,7 +32,7 @@ internal class Converters {
     }
 
     @TypeConverter
-    fun localDateToLong(date : LocalDateTime) : String {
+    fun localDateToString(date : LocalDateTime) : String {
         return date.toString()
     }
 
