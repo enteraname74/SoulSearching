@@ -92,20 +92,20 @@ interface ArtistDataSource {
     /**
      * Get the number of artists sharing the same cover.
      */
-    fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+    suspend fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
 
     /**
      * Update the quick access status of an Artist.
      */
-    fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
+    suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
 
     /**
      * Get the number of time an Artist has been played.
      */
-    fun getNbPlayedOfArtist(artistId: UUID): Int
+    suspend fun getNbPlayedOfArtist(artistId: UUID): Int
 
     /**
      * Update the total of played time of an Artist.
      */
-    fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
+    suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
 }

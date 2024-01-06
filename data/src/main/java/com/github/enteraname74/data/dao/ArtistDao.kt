@@ -22,7 +22,7 @@ internal interface ArtistDao {
     suspend fun getArtistFromId(artistId: UUID): RoomArtist?
 
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    suspend fun getAllArtistsSortByName(): Flow<List<RoomArtist>>
+    fun getAllArtistsSortByNameAsFlow(): Flow<List<RoomArtist>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
