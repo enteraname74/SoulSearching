@@ -1,24 +1,25 @@
 package com.github.soulsearching.classes
 
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.ColorPaletteUtils
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
-import com.github.soulsearching.database.dao.AlbumArtistDao
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.ImageCover
-import com.github.soulsearching.database.model.MusicPlaylist
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.UIImageCover
+import com.github.soulsearching.model.toImageCover
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.CoroutineScope
@@ -35,15 +36,15 @@ import java.util.UUID
 class MusicEventHandler(
     private val privateState: MutableStateFlow<MusicState>,
     private val publicState: StateFlow<MusicState>,
-    private val musicDao: MusicDao,
-    private val playlistDao: PlaylistDao,
-    private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val musicAlbumDao: MusicAlbumDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val albumArtistDao: AlbumArtistDao,
-    private val imageCoverDao: ImageCoverDao,
+    private val musicRepository: MusicRepository,
+    private val playlistRepository: PlaylistRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
+    private val musicPlaylistRepository: MusicPlaylistRepository,
+    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicArtistRepository: MusicArtistRepository,
+    private val albumArtistRepository: AlbumArtistRepository,
+    private val imageCoverRepository: ImageCoverRepository,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
 ) {
@@ -99,12 +100,12 @@ class MusicEventHandler(
     private fun deleteMusicFromApp() {
         CoroutineScope(Dispatchers.IO).launch {
             Utils.removeMusicFromApp(
-                musicDao = musicDao,
-                albumDao = albumDao,
-                artistDao = artistDao,
-                albumArtistDao = albumArtistDao,
-                musicAlbumDao = musicAlbumDao,
-                musicArtistDao = musicArtistDao,
+                musicRepository = musicRepository,
+                albumRepository = albumRepository,
+                artistRepository = artistRepository,
+                albumArtistRepository = albumArtistRepository,
+                musicAlbumRepository = musicAlbumRepository,
+                musicArtistRepository = musicArtistRepository,
                 musicToRemove = publicState.value.selectedMusic
             )
         }
@@ -198,21 +199,21 @@ class MusicEventHandler(
         CoroutineScope(Dispatchers.IO).launch {
             val coverId = if (publicState.value.hasCoverBeenChanged) {
                 val id = UUID.randomUUID()
-                imageCoverDao.insertImageCover(
-                    ImageCover(
+                imageCoverRepository.insertImageCover(
+                    UIImageCover(
                         coverId = id,
                         cover = publicState.value.cover
-                    )
+                    ).toImageCover()
                 )
                 id
             } else {
                 publicState.value.selectedMusic.coverId
             }
             if (publicState.value.selectedMusic.artist != publicState.value.artist.trim()) {
-                val legacyArtist = artistDao.getArtistFromInfo(
+                val legacyArtist = artistRepository.getArtistFromInfo(
                     artistName = publicState.value.selectedMusic.artist
                 )
-                var newArtist = artistDao.getArtistFromInfo(
+                var newArtist = artistRepository.getArtistFromInfo(
                     artistName = publicState.value.artist.trim()
                 )
                 if (newArtist == null) {
@@ -223,42 +224,42 @@ class MusicEventHandler(
                         artistName = publicState.value.artist.trim(),
                         coverId = coverId
                     )
-                    artistDao.insertArtist(
+                    artistRepository.insertArtist(
                         newArtist
                     )
                 }
 
                 // On met les infos de la musique à jour :
-                musicArtistDao.updateArtistOfMusic(
+                musicArtistRepository.updateArtistOfMusic(
                     musicId = publicState.value.selectedMusic.musicId,
                     newArtistId = newArtist.artistId
                 )
 
                 Utils.modifyMusicAlbum(
                     artist = newArtist,
-                    musicAlbumDao = musicAlbumDao,
-                    albumDao = albumDao,
-                    albumArtistDao = albumArtistDao,
+                    musicAlbumRepository = musicAlbumRepository,
+                    albumRepository = albumRepository,
+                    albumArtistRepository = albumArtistRepository,
                     legacyMusic = publicState.value.selectedMusic,
                     currentAlbum = publicState.value.album.trim(),
                 )
 
                 Utils.checkAndDeleteArtist(
                     artistToCheck = legacyArtist!!,
-                    artistDao = artistDao,
-                    musicArtistDao = musicArtistDao
+                    artistRepository = artistRepository,
+                    musicArtistRepository = musicArtistRepository
                 )
             } else if (publicState.value.selectedMusic.album != publicState.value.album) {
                 val artist = Utils.getCorrespondingArtist(
                     musicId = publicState.value.selectedMusic.musicId,
-                    artistDao = artistDao,
-                    musicArtistDao = musicArtistDao
+                    artistRepository = artistRepository,
+                    musicArtistRepository = musicArtistRepository
                 )
 
                 Utils.modifyMusicAlbum(
-                    musicAlbumDao = musicAlbumDao,
-                    albumDao = albumDao,
-                    albumArtistDao = albumArtistDao,
+                    musicAlbumRepository = musicAlbumRepository,
+                    albumRepository = albumRepository,
+                    albumArtistRepository = albumArtistRepository,
                     legacyMusic = publicState.value.selectedMusic,
                     currentAlbum = publicState.value.album.trim(),
                     artist = artist!!
@@ -266,20 +267,20 @@ class MusicEventHandler(
             }
             if (publicState.value.hasCoverBeenChanged) {
                 // On mets à jour la cover pour l'album et l'artiste :
-                val artist = artistDao.getArtistFromInfo(
+                val artist = artistRepository.getArtistFromInfo(
                     publicState.value.artist.trim()
                 )
-                val album = albumDao.getCorrespondingAlbum(
+                val album = albumRepository.getCorrespondingAlbum(
                     albumName = publicState.value.album.trim(),
                     artistId = artist!!.artistId
                 )
                 // Si l'artiste n'a pas d'image, on lui donne la nouvelle cover
                 if (artist.coverId == null) {
-                    artistDao.updateArtistCover(coverId!!, artist.artistId)
+                    artistRepository.updateArtistCover(coverId!!, artist.artistId)
                 }
                 // Faison de même pour l'album :
                 if (album!!.coverId == null) {
-                    albumDao.updateAlbumCover(coverId!!, album.albumId)
+                    albumRepository.updateAlbumCover(coverId!!, album.albumId)
                 }
             }
             val newMusic = publicState.value.selectedMusic.copy(
@@ -288,7 +289,7 @@ class MusicEventHandler(
                 artist = publicState.value.artist.trim(),
                 coverId = coverId
             )
-            musicDao.insertMusic(newMusic)
+            musicRepository.insertMusic(newMusic)
 
             CoroutineScope(Dispatchers.IO).launch {
                 PlayerUtils.playerViewModel.updateMusic(newMusic)
@@ -340,15 +341,15 @@ class MusicEventHandler(
      */
     private fun toggleFavoriteStatus(event: MusicEvent.SetFavorite) {
         CoroutineScope(Dispatchers.IO).launch {
-            val isInFavorite = musicDao.getMusicFromFavoritePlaylist(event.musicId) != null
-            val playlistId = playlistDao.getFavoritePlaylist().playlistId
+            val isInFavorite = musicRepository.getMusicFromFavoritePlaylist(event.musicId) != null
+            val playlistId = playlistRepository.getFavoritePlaylist().playlistId
             if (isInFavorite) {
-                musicPlaylistDao.deleteMusicFromPlaylist(
+                musicPlaylistRepository.deleteMusicFromPlaylist(
                     musicId = event.musicId,
                     playlistId = playlistId
                 )
             } else {
-                musicPlaylistDao.insertMusicIntoPlaylist(
+                musicPlaylistRepository.insertMusicIntoPlaylist(
                     MusicPlaylist(
                         musicId = event.musicId,
                         playlistId = playlistId
@@ -363,7 +364,7 @@ class MusicEventHandler(
      */
     private fun updateQuickAccessState() {
         CoroutineScope(Dispatchers.IO).launch {
-            musicDao.updateQuickAccessState(
+            musicRepository.updateQuickAccessState(
                 musicId = publicState.value.selectedMusic.musicId,
                 newQuickAccessState = !publicState.value.selectedMusic.isInQuickAccess
             )
@@ -375,8 +376,8 @@ class MusicEventHandler(
      */
     private fun incrementNbPlayedOfMusic(event: MusicEvent.AddNbPlayed) {
         CoroutineScope(Dispatchers.IO).launch {
-            val currentNbPlayed = musicDao.getNbPlayedOfMusic(event.musicId)
-            musicDao.updateNbPlayed(
+            val currentNbPlayed = musicRepository.getNbPlayedOfMusic(event.musicId)
+            musicRepository.updateNbPlayed(
                 newNbPlayed = currentNbPlayed + 1,
                 musicId = event.musicId
             )

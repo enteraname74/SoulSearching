@@ -2,13 +2,21 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.classes.utils.ColorPaletteUtils
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.Utils
-import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.ImageCover
 import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.model.UIImageCover
+import com.github.soulsearching.model.toImageCover
+import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +27,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -27,13 +35,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ModifyAlbumViewModel @Inject constructor(
-    private val musicDao: MusicDao,
-    private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val musicAlbumDao: MusicAlbumDao,
-    private val albumArtistDao: AlbumArtistDao,
-    private val imageCoverDao: ImageCoverDao
+    private val musicRepository: MusicRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
+    private val musicArtistRepository: MusicArtistRepository,
+    private val musicAlbumRepository: MusicAlbumRepository,
+    private val albumArtistRepository: AlbumArtistRepository,
+    private val imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SelectedAlbumState())
     val state = _state.stateIn(
@@ -50,11 +58,11 @@ class ModifyAlbumViewModel @Inject constructor(
             AlbumEvent.UpdateAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
 
-                    val initialAlbum = albumDao.getAlbumFromId(
+                    val initialAlbum = albumRepository.getAlbumFromId(
                         albumId = state.value.albumWithMusics.album.albumId
                     )!!
 
-                    val initialArtist = artistDao.getArtistFromId(
+                    val initialArtist = artistRepository.getArtistFromId(
                         artistId = state.value.albumWithMusics.artist!!.artistId
                     )
                     var currentArtist = initialArtist
@@ -62,11 +70,11 @@ class ModifyAlbumViewModel @Inject constructor(
                     // Si on a changé l'image de l'album, il faut changer l'id de la couverture :
                     val coverId = if (state.value.hasSetNewCover) {
                         val newCoverId = UUID.randomUUID()
-                        imageCoverDao.insertImageCover(
-                            ImageCover(
+                        imageCoverRepository.insertImageCover(
+                            UIImageCover(
                                 coverId = newCoverId,
                                 cover = state.value.albumCover
-                            )
+                            ).toImageCover()
                         )
                         newCoverId
                     } else {
@@ -75,7 +83,7 @@ class ModifyAlbumViewModel @Inject constructor(
 
                     if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist!!.artistName) {
                         // On cherche le nouvel artiste correspondant :
-                        var newArtist = artistDao.getArtistFromInfo(
+                        var newArtist = artistRepository.getArtistFromInfo(
                             artistName = state.value.albumWithMusics.artist!!.artistName.trim()
                         )
                         // Si ce nouvel artiste n'existe pas, on le crée :
@@ -84,17 +92,17 @@ class ModifyAlbumViewModel @Inject constructor(
                                 artistName = state.value.albumWithMusics.artist!!.artistName.trim(),
                                 coverId = coverId
                             )
-                            artistDao.insertArtist(
+                            artistRepository.insertArtist(
                                 artist = newArtist
                             )
                         }
                         // On met à jour le lien vers l'artiste :
-                        albumArtistDao.updateArtistOfAlbum(
+                        albumArtistRepository.updateArtistOfAlbum(
                             albumId = state.value.albumWithMusics.album.albumId,
                             newArtistId = newArtist.artistId
                         )
 
-                        val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
+                        val duplicateAlbum = albumRepository.getPossibleDuplicateAlbum(
                             albumId = state.value.albumWithMusics.album.albumId,
                             albumName = state.value.albumWithMusics.album.albumName.trim(),
                             artistId = newArtist.artistId
@@ -105,21 +113,21 @@ class ModifyAlbumViewModel @Inject constructor(
                              Un album a le même nom d'album et d'artiste !
                              On redirige les musiques de l'album dupliqué :
                              */
-                            musicAlbumDao.updateMusicsAlbum(
+                            musicAlbumRepository.updateMusicsAlbum(
                                 newAlbumId = state.value.albumWithMusics.album.albumId,
                                 legacyAlbumId = duplicateAlbum.albumId
                             )
                             // On supprime l'ancien album :
-                            albumArtistDao.deleteAlbumFromArtist(
+                            albumArtistRepository.deleteAlbumFromArtist(
                                 albumId = duplicateAlbum.albumId
                             )
-                            albumDao.deleteAlbum(
+                            albumRepository.deleteAlbum(
                                 album = duplicateAlbum
                             )
                         }
                         currentArtist = newArtist
                     } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName) {
-                        val duplicateAlbum = albumDao.getPossibleDuplicateAlbum(
+                        val duplicateAlbum = albumRepository.getPossibleDuplicateAlbum(
                             albumId = state.value.albumWithMusics.album.albumId,
                             albumName = state.value.albumWithMusics.album.albumName.trim(),
                             artistId = state.value.albumWithMusics.artist!!.artistId
@@ -130,22 +138,22 @@ class ModifyAlbumViewModel @Inject constructor(
                              Un album a le même nom d'album et d'artiste !
                              On redirige les musiques de l'album dupliqué :
                              */
-                            musicAlbumDao.updateMusicsAlbum(
+                            musicAlbumRepository.updateMusicsAlbum(
                                 newAlbumId = state.value.albumWithMusics.album.albumId,
                                 legacyAlbumId = duplicateAlbum.albumId
                             )
                             // On supprime l'ancien album :
-                            albumArtistDao.deleteAlbumFromArtist(
+                            albumArtistRepository.deleteAlbumFromArtist(
                                 albumId = duplicateAlbum.albumId
                             )
-                            albumDao.deleteAlbum(
+                            albumRepository.deleteAlbum(
                                 album = duplicateAlbum
                             )
                         }
                     }
 
                     // On met à jour les musiques de l'album :
-                    val musicsFromAlbum = musicDao.getMusicsFromAlbum(
+                    val musicsFromAlbum = musicRepository.getAllMusicFromAlbum(
                         albumId = state.value.albumWithMusics.album.albumId
                     )
                     for (music in musicsFromAlbum) {
@@ -155,9 +163,9 @@ class ModifyAlbumViewModel @Inject constructor(
                             coverId = coverId,
                             artist = state.value.albumWithMusics.artist!!.artistName.trim()
                         )
-                        musicDao.insertMusic(newMusic)
+                        musicRepository.insertMusic(newMusic)
                         // Ainsi que leur liens :
-                        musicArtistDao.updateArtistOfMusic(
+                        musicArtistRepository.updateArtistOfMusic(
                             musicId = music.musicId,
                             newArtistId = currentArtist!!.artistId
                         )
@@ -176,7 +184,7 @@ class ModifyAlbumViewModel @Inject constructor(
                     }
 
                     // On modifie notre album :
-                    albumDao.insertAlbum(
+                    albumRepository.insertAlbum(
                         state.value.albumWithMusics.album.copy(
                             albumName = state.value.albumWithMusics.album.albumName.trim(),
                             coverId = coverId
@@ -186,16 +194,16 @@ class ModifyAlbumViewModel @Inject constructor(
                     // On vérifie si l'ancien artiste possède encore des musiques :
                     Utils.checkAndDeleteArtist(
                         artistToCheck = initialArtist,
-                        musicArtistDao = musicArtistDao,
-                        artistDao = artistDao,
+                        musicArtistRepository = musicArtistRepository,
+                        artistRepository = artistRepository,
                     )
                 }
             }
             is AlbumEvent.AlbumFromID -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val albumWithMusics = albumDao.getAlbumWithMusicsSimple(event.albumId)
+                    val albumWithMusics = albumRepository.getAlbumWithMusics(event.albumId)
                     val cover = if (albumWithMusics.album.coverId != null) {
-                        imageCoverDao.getCoverOfElement(albumWithMusics.album.coverId !!)?.cover
+                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId !!)?.toUIImageCover()?.cover
                     } else {
                         null
                     }

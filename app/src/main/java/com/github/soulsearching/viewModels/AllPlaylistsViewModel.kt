@@ -2,12 +2,12 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.PlaylistEventHandler
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,9 +20,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AllPlaylistsViewModel @Inject constructor(
-    private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val imageCoverDao: ImageCoverDao
+    private val playlistRepository: PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -32,21 +32,21 @@ class AllPlaylistsViewModel @Inject constructor(
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
-                        SortType.ADDED_DATE -> playlistDao.getAllPlaylistWithMusicsSortByAddedDateAsc()
-                        SortType.NB_PLAYED -> playlistDao.getAllPlaylistWithMusicsSortByNbPlayedAsc()
-                        else -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
+                        SortType.NAME -> playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
+                        SortType.ADDED_DATE -> playlistRepository.getAllPlaylistWithMusicsSortByAddedDateAscAsFlow()
+                        SortType.NB_PLAYED -> playlistRepository.getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow()
+                        else -> playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
                     }
                 }
                 SortDirection.DESC -> {
                     when (sortType) {
-                        SortType.NAME -> playlistDao.getAllPlaylistWithMusicsSortByNameDesc()
-                        SortType.ADDED_DATE -> playlistDao.getAllPlaylistWithMusicsSortByAddedDateDesc()
-                        SortType.NB_PLAYED -> playlistDao.getAllPlaylistWithMusicsSortByNbPlayedDesc()
-                        else -> playlistDao.getAllPlaylistWithMusicsSortByNameDesc()
+                        SortType.NAME -> playlistRepository.getAllPlaylistWithMusicsSortByNameDescAsFlow()
+                        SortType.ADDED_DATE -> playlistRepository.getAllPlaylistWithMusicsSortByAddedDateDescAsFlow()
+                        SortType.NB_PLAYED -> playlistRepository.getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow()
+                        else -> playlistRepository.getAllPlaylistWithMusicsSortByNameDescAsFlow()
                     }
                 }
-                else -> playlistDao.getAllPlaylistsWithMusicsSortByNameAsc()
+                else -> playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
             }
         }
     }.stateIn(
@@ -78,9 +78,9 @@ class AllPlaylistsViewModel @Inject constructor(
     private val playlistEventHandler = PlaylistEventHandler(
         privateState = _state,
         publicState = state,
-        playlistDao = playlistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        imageCoverDao = imageCoverDao,
+        playlistRepository = playlistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
         sortType = _sortType
     )

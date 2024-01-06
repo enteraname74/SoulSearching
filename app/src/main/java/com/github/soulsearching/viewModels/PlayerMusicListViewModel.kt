@@ -2,22 +2,22 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlayerMusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
-import com.github.soulsearching.database.dao.AlbumArtistDao
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlayerMusicDao
-import com.github.soulsearching.database.dao.PlaylistDao
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.PlayerMusic
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,22 +37,22 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class PlayerMusicListViewModel @Inject constructor(
-    private val playerMusicDao: PlayerMusicDao,
-    musicDao: MusicDao,
-    playlistDao: PlaylistDao,
-    musicPlaylistDao: MusicPlaylistDao,
-    albumDao: AlbumDao,
-    artistDao: ArtistDao,
-    musicAlbumDao: MusicAlbumDao,
-    musicArtistDao: MusicArtistDao,
-    albumArtistDao: AlbumArtistDao,
-    imageCoverDao: ImageCoverDao,
+    private val playerMusicRepository: PlayerMusicRepository,
+    musicRepository: MusicRepository,
+    playlistRepository: PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    albumRepository: AlbumRepository,
+    artistRepository: ArtistRepository,
+    musicAlbumRepository: MusicAlbumRepository,
+    musicArtistRepository: MusicArtistRepository,
+    albumArtistRepository: AlbumArtistRepository,
+    imageCoverRepository: ImageCoverRepository,
 ) : ViewModel() {
     private var job: Job? = null
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
-    private var _playerMusicList = playerMusicDao.getAllPlayerMusicsFlow()
+    private var _playerMusicList = playerMusicRepository.getAllPlayerMusicsAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
     private val _state = MutableStateFlow(MusicState())
 
@@ -74,15 +74,15 @@ class PlayerMusicListViewModel @Inject constructor(
     private val musicEventHandler = MusicEventHandler(
         privateState = _state,
         publicState = state,
-        musicDao = musicDao,
-        playlistDao = playlistDao,
-        albumDao = albumDao,
-        artistDao = artistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        musicAlbumDao = musicAlbumDao,
-        musicArtistDao = musicArtistDao,
-        albumArtistDao = albumArtistDao,
-        imageCoverDao = imageCoverDao,
+        musicRepository = musicRepository,
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicAlbumRepository = musicAlbumRepository,
+        musicArtistRepository = musicArtistRepository,
+        albumArtistRepository = albumArtistRepository,
+        imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
         sortType = _sortType
     )
@@ -91,7 +91,7 @@ class PlayerMusicListViewModel @Inject constructor(
      * Retrieve the player music list from the database.
      */
     suspend fun getPlayerMusicList(): ArrayList<Music> {
-        val playerWithMusics = playerMusicDao.getAllPlayerMusics()
+        val playerWithMusics = playerMusicRepository.getAllPlayerMusics()
 
         return playerWithMusics.filter { it.music != null }.map { it.music!! } as ArrayList<Music>
     }
@@ -102,10 +102,10 @@ class PlayerMusicListViewModel @Inject constructor(
     fun savePlayerMusicList(musicList: ArrayList<UUID>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
-            playerMusicDao.deleteAllPlayerMusic()
+            playerMusicRepository.deleteAllPlayerMusic()
             for (id in musicList) {
-                playerMusicDao.insertPlayerMusic(
-                    PlayerMusic = PlayerMusic(
+                playerMusicRepository.insertPlayerMusic(
+                    playerMusic = PlayerMusic(
                         playerMusicId = id
                     )
                 )
@@ -118,7 +118,7 @@ class PlayerMusicListViewModel @Inject constructor(
      */
     fun resetPlayerMusicList() {
         CoroutineScope(Dispatchers.IO).launch {
-            playerMusicDao.deleteAllPlayerMusic()
+            playerMusicRepository.deleteAllPlayerMusic()
         }
         SharedPrefUtils.setPlayerSavedCurrentMusic()
     }

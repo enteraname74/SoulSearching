@@ -2,17 +2,18 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
-import com.github.soulsearching.database.dao.AlbumArtistDao
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -30,15 +31,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ModifyMusicViewModel @Inject constructor(
-    private val musicDao: MusicDao,
-    playlistDao: PlaylistDao,
-    artistDao: ArtistDao,
-    albumDao: AlbumDao,
-    musicPlaylistDao: MusicPlaylistDao,
-    musicAlbumDao: MusicAlbumDao,
-    albumArtistDao: AlbumArtistDao,
-    musicArtistDao: MusicArtistDao,
-    private val imageCoverDao: ImageCoverDao
+    private val musicRepository: MusicRepository,
+    playlistRepository: PlaylistRepository,
+    artistRepository: ArtistRepository,
+    albumRepository: AlbumRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    musicAlbumRepository: MusicAlbumRepository,
+    albumArtistRepository: AlbumArtistRepository,
+    musicArtistRepository: MusicArtistRepository,
+    private val imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MusicState())
@@ -51,15 +52,15 @@ class ModifyMusicViewModel @Inject constructor(
     private val musicEventHandler = MusicEventHandler(
         privateState = _state,
         publicState = state,
-        musicDao = musicDao,
-        playlistDao = playlistDao,
-        albumDao = albumDao,
-        artistDao = artistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        musicAlbumDao = musicAlbumDao,
-        musicArtistDao = musicArtistDao,
-        albumArtistDao = albumArtistDao,
-        imageCoverDao = imageCoverDao
+        musicRepository = musicRepository,
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicAlbumRepository = musicAlbumRepository,
+        musicArtistRepository = musicArtistRepository,
+        albumArtistRepository = albumArtistRepository,
+        imageCoverRepository = imageCoverRepository
     )
 
     /**
@@ -68,9 +69,9 @@ class ModifyMusicViewModel @Inject constructor(
      */
     fun getMusicFromId(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            val music = musicDao.getMusicFromId(musicId)
+            val music = musicRepository.getMusicFromId(musicId)
             val cover = if (music.coverId != null) {
-                imageCoverDao.getCoverOfElement(music.coverId!!)
+                imageCoverRepository.getCoverOfElement(music.coverId!!)?.toUIImageCover()
             } else {
                 null
             }

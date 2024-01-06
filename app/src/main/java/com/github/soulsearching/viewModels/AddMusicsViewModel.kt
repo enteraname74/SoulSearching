@@ -2,11 +2,11 @@ package com.github.soulsearching.viewModels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.classes.utils.MusicUtils
+import com.github.enteraname74.domain.repository.FolderRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
-import com.github.soulsearching.database.dao.FolderDao
-import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.classes.utils.MusicUtils
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.states.AddMusicsState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AddMusicsViewModel @Inject constructor(
-    private val folderDao: FolderDao, private val musicDao: MusicDao
+    private val folderRepository: FolderRepository,
+    private val musicRepository: MusicRepository
 ) : ViewModel() {
     private var _state = MutableStateFlow(AddMusicsState())
     val state = _state.asStateFlow()
@@ -79,8 +80,8 @@ class AddMusicsViewModel @Inject constructor(
         updateProgressBar: (Float) -> Unit,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
-            val hiddenFoldersPaths = folderDao.getAllHiddenFoldersPaths()
-            val allMusics = musicDao.getAllMusicsPaths()
+            val hiddenFoldersPaths = folderRepository.getAllHiddenFoldersPaths()
+            val allMusics = musicRepository.getAllMusicsPaths()
 
             val newMusics = MusicUtils.fetchNewMusics(
                 context, updateProgressBar, allMusics, hiddenFoldersPaths

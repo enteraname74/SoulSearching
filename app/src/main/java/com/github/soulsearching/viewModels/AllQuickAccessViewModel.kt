@@ -2,10 +2,10 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.PlaylistDao
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.states.QuickAccessState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,18 +19,18 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AllQuickAccessViewModel @Inject constructor(
-    musicDao: MusicDao,
-    playlistDao: PlaylistDao,
-    albumDao: AlbumDao,
-    artistDao: ArtistDao,
+    musicRepository: MusicRepository,
+    playlistRepository: PlaylistRepository,
+    albumRepository: AlbumRepository,
+    artistRepository: ArtistRepository,
 ) : ViewModel() {
-    private var _musics = musicDao.getAllMusicsFromQuickAccess()
+    private var _musics = musicRepository.getAllMusicsFromQuickAccessAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
-    private var _playlists = playlistDao.getAllPlaylistsFromQuickAccess()
+    private var _playlists = playlistRepository.getAllPlaylistsFromQuickAccessAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
-    private var _albums = albumDao.getAllAlbumsFromQuickAccess()
+    private var _albums = albumRepository.getAllAlbumWithArtistFromQuickAccessAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
-    private var _artists = artistDao.getAllArtistsFromQuickAccess()
+    private var _artists = artistRepository.getAllArtistWithMusicsFromQuickAccessAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
 
     private val _state = MutableStateFlow(QuickAccessState())

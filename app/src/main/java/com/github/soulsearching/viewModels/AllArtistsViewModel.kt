@@ -2,12 +2,12 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.classes.utils.SharedPrefUtils
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.MusicDao
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +23,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AllArtistsViewModel @Inject constructor(
-    private val artistDao: ArtistDao,
-    private val musicDao: MusicDao,
-    private val albumDao: AlbumDao
+    private val artistRepository: ArtistRepository,
+    private val musicRepository: MusicRepository,
+    private val albumRepository: AlbumRepository
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -35,21 +35,21 @@ class AllArtistsViewModel @Inject constructor(
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
-                        SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateAsc()
-                        SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedAsc()
-                        else -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
+                        SortType.NAME -> artistRepository.getAllArtistsWithMusicsSortByNameAscAsFlow()
+                        SortType.ADDED_DATE -> artistRepository.getAllArtistWithMusicsSortByAddedDateAscAsFlow()
+                        SortType.NB_PLAYED -> artistRepository.getAllArtistWithMusicsSortByNbPlayedAscAsFlow()
+                        else -> artistRepository.getAllArtistsWithMusicsSortByNameAscAsFlow()
                     }
                 }
                 SortDirection.DESC -> {
                     when (sortType) {
-                        SortType.NAME -> artistDao.getAllArtistWithMusicsSortByNameDesc()
-                        SortType.ADDED_DATE -> artistDao.getAllArtistWithMusicsSortByAddedDateDesc()
-                        SortType.NB_PLAYED -> artistDao.getAllArtistWithMusicsSortByNbPlayedDesc()
-                        else -> artistDao.getAllArtistWithMusicsSortByNameDesc()
+                        SortType.NAME -> artistRepository.getAllArtistWithMusicsSortByNameDescAsFlow()
+                        SortType.ADDED_DATE -> artistRepository.getAllArtistWithMusicsSortByAddedDateDescAsFlow()
+                        SortType.NB_PLAYED -> artistRepository.getAllArtistWithMusicsSortByNbPlayedDescAsFlow()
+                        else -> artistRepository.getAllArtistWithMusicsSortByNameDescAsFlow()
                     }
                 }
-                else -> artistDao.getAllArtistsWithMusicsSortByNameAsc()
+                else -> artistRepository.getAllArtistsWithMusicsSortByNameAscAsFlow()
             }
         }
     }.stateIn(
@@ -80,17 +80,17 @@ class AllArtistsViewModel @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     // On supprime d'abord les musiques de l'artiste :
                     for (music in state.value.selectedArtist.musics){
-                        musicDao.deleteMusic(music)
+                        musicRepository.deleteMusic(music)
                     }
                     // On supprime ensuite tous les albums de l'artiste :
-                    val albumsToDelete = albumDao.getAllAlbumsFromArtist(
+                    val albumsToDelete = albumRepository.getAllAlbumsFromArtist(
                         artistId = state.value.selectedArtist.artist.artistId
                     )
                     for (album in albumsToDelete) {
-                        albumDao.deleteAlbum(album)
+                        albumRepository.deleteAlbum(album)
                     }
                     // On supprime enfin l'artiste :
-                    artistDao.deleteArtist(state.value.selectedArtist.artist)
+                    artistRepository.deleteArtist(state.value.selectedArtist.artist)
                 }
             }
             is ArtistEvent.SetSelectedArtistWithMusics -> {
@@ -130,7 +130,7 @@ class AllArtistsViewModel @Inject constructor(
             }
             is ArtistEvent.UpdateQuickAccessState -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    artistDao.updateQuickAccessState(
+                    artistRepository.updateQuickAccessState(
                         newQuickAccessState = !state.value.selectedArtist.artist.isInQuickAccess,
                         artistId = state.value.selectedArtist.artist.artistId
                     )

@@ -65,35 +65,35 @@ object Utils {
      * Remove a music from the app.
      */
     suspend fun removeMusicFromApp(
-        musicDao: MusicDao,
-        albumDao: AlbumDao,
-        artistDao: ArtistDao,
-        albumArtistDao: AlbumArtistDao,
-        musicAlbumDao: MusicAlbumDao,
-        musicArtistDao: MusicArtistDao,
+        musicRepository: MusicRepository,
+        albumRepository: AlbumRepository,
+        artistRepository: ArtistRepository,
+        albumArtistRepository: AlbumArtistRepository,
+        musicAlbumRepository: MusicAlbumRepository,
+        musicArtistRepository: MusicArtistRepository,
         musicToRemove: Music
     ) {
-        val artist = artistDao.getArtistFromInfo(
+        val artist = artistRepository.getArtistFromInfo(
             artistName = musicToRemove.artist
         )
         val album = getCorrespondingAlbum(
             musicId = musicToRemove.musicId,
-            albumDao = albumDao,
-            musicAlbumDao = musicAlbumDao
+            albumRepository = albumRepository,
+            musicAlbumRepository = musicAlbumRepository
         )
 
-        musicDao.deleteMusic(music = musicToRemove)
+        musicRepository.deleteMusic(music = musicToRemove)
 
         checkAndDeleteAlbum(
             albumToCheck = album!!,
-            albumDao = albumDao,
-            musicAlbumDao = musicAlbumDao,
-            albumArtistDao = albumArtistDao
+            albumRepository = albumRepository,
+            musicAlbumRepository = musicAlbumRepository,
+            albumArtistRepository = albumArtistRepository
         )
         checkAndDeleteArtist(
             artistToCheck = artist!!,
-            musicArtistDao = musicArtistDao,
-            artistDao = artistDao
+            musicArtistRepository = musicArtistRepository,
+            artistRepository = artistRepository
         )
     }
 
@@ -102,11 +102,11 @@ object Utils {
      */
     private suspend fun removeAlbumFromApp(
         albumToRemove: Album,
-        albumDao: AlbumDao,
-        albumArtistDao: AlbumArtistDao
+        albumRepository: AlbumRepository,
+        albumArtistRepository: AlbumArtistRepository
     ) {
-        albumDao.deleteAlbum(album = albumToRemove)
-        albumArtistDao.deleteAlbumFromArtist(albumId = albumToRemove.albumId)
+        albumRepository.deleteAlbum(album = albumToRemove)
+        albumArtistRepository.deleteAlbumFromArtist(albumId = albumToRemove.albumId)
     }
 
     /**
@@ -114,9 +114,9 @@ object Utils {
      */
     private suspend fun removeArtistFromApp(
         artistToRemove: Artist,
-        artistDao: ArtistDao,
+        artistRepository: ArtistRepository,
     ) {
-        artistDao.deleteArtist(artist = artistToRemove)
+        artistRepository.deleteArtist(artist = artistToRemove)
     }
 
     /**
@@ -125,18 +125,18 @@ object Utils {
      */
     private suspend fun checkAndDeleteAlbum(
         albumToCheck: Album,
-        albumDao: AlbumDao,
-        musicAlbumDao: MusicAlbumDao,
-        albumArtistDao: AlbumArtistDao
+        albumRepository: AlbumRepository,
+        musicAlbumRepository: MusicAlbumRepository,
+        albumArtistRepository: AlbumArtistRepository
     ) {
-        if (musicAlbumDao.getNumberOfMusicsFromAlbum(
+        if (musicAlbumRepository.getNumberOfMusicsFromAlbum(
                 albumId = albumToCheck.albumId
             ) == 0
         ) {
             removeAlbumFromApp(
                 albumToRemove = albumToCheck,
-                albumDao = albumDao,
-                albumArtistDao = albumArtistDao
+                albumRepository = albumRepository,
+                albumArtistRepository = albumArtistRepository
             )
         }
     }
@@ -147,16 +147,16 @@ object Utils {
      */
     suspend fun checkAndDeleteArtist(
         artistToCheck: Artist,
-        musicArtistDao: MusicArtistDao,
-        artistDao: ArtistDao
+        musicArtistRepository: MusicArtistRepository,
+        artistRepository: ArtistRepository
     ) {
-        if (musicArtistDao.getNumberOfMusicsFromArtist(
+        if (musicArtistRepository.getNumberOfMusicsFromArtist(
                 artistId = artistToCheck.artistId
             ) == 0
         ) {
             removeArtistFromApp(
                 artistToRemove = artistToCheck,
-                artistDao = artistDao
+                artistRepository = artistRepository
             )
         }
     }
@@ -166,20 +166,20 @@ object Utils {
      */
     suspend fun modifyMusicAlbum(
         artist: Artist,
-        musicAlbumDao: MusicAlbumDao,
-        albumDao: AlbumDao,
-        albumArtistDao: AlbumArtistDao,
+        musicAlbumRepository: MusicAlbumRepository,
+        albumRepository: AlbumRepository,
+        albumArtistRepository: AlbumArtistRepository,
         legacyMusic: Music,
         currentAlbum: String,
     ) {
         // On récupère l'ancien album :
         val legacyAlbum = getCorrespondingAlbum(
             musicId = legacyMusic.musicId,
-            albumDao = albumDao,
-            musicAlbumDao = musicAlbumDao
+            albumRepository = albumRepository,
+            musicAlbumRepository = musicAlbumRepository
         )
 
-        var newAlbum = albumDao.getCorrespondingAlbum(
+        var newAlbum = albumRepository.getCorrespondingAlbum(
             albumName = currentAlbum,
             artistId = artist.artistId
         )
@@ -192,11 +192,11 @@ object Utils {
             )
             newAlbum = album
 
-            albumDao.insertAlbum(
+            albumRepository.insertAlbum(
                 album = album
             )
             // On lie l'album crée à son artiste :
-            albumArtistDao.insertAlbumIntoArtist(
+            albumArtistRepository.insertAlbumIntoArtist(
                 AlbumArtist(
                     albumId = newAlbum.albumId,
                     artistId = artist.artistId
@@ -204,16 +204,16 @@ object Utils {
             )
         }
         // On met les infos de la musique à jour :
-        musicAlbumDao.updateAlbumOfMusic(
+        musicAlbumRepository.updateAlbumOfMusic(
             musicId = legacyMusic.musicId,
             newAlbumId = newAlbum.albumId
         )
 
         checkAndDeleteAlbum(
             albumToCheck = legacyAlbum!!,
-            musicAlbumDao = musicAlbumDao,
-            albumDao = albumDao,
-            albumArtistDao = albumArtistDao
+            musicAlbumRepository = musicAlbumRepository,
+            albumRepository = albumRepository,
+            albumArtistRepository = albumArtistRepository
         )
     }
 
@@ -222,16 +222,16 @@ object Utils {
      */
     private fun getCorrespondingAlbum(
         musicId: UUID,
-        albumDao: AlbumDao,
-        musicAlbumDao: MusicAlbumDao
+        albumRepository: AlbumRepository,
+        musicAlbumRepository: MusicAlbumRepository
     ): Album? {
-        val albumId: UUID? = musicAlbumDao.getAlbumIdFromMusicId(
+        val albumId: UUID? = musicAlbumRepository.getAlbumIdFromMusicId(
             musicId = musicId
         )
         return if (albumId == null) {
             null
         } else {
-            albumDao.getAlbumFromId(
+            albumRepository.getAlbumFromId(
                 albumId = albumId
             )
         }
@@ -242,16 +242,16 @@ object Utils {
      */
     fun getCorrespondingArtist(
         musicId: UUID,
-        artistDao: ArtistDao,
-        musicArtistDao: MusicArtistDao
+        artistRepository: ArtistRepository,
+        musicArtistRepository: MusicArtistRepository
     ): Artist? {
-        val artistId: UUID? = musicArtistDao.getArtistIdFromMusicId(
+        val artistId: UUID? = musicArtistRepository.getArtistIdFromMusicId(
             musicId = musicId
         )
         return if (artistId == null) {
             null
         } else {
-            artistDao.getArtistFromId(
+            artistRepository.getArtistFromId(
                 artistId = artistId
             )
         }

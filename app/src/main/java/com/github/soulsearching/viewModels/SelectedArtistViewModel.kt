@@ -2,18 +2,18 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
-import com.github.soulsearching.database.dao.AlbumArtistDao
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
-import com.github.soulsearching.database.model.ArtistWithMusics
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
@@ -36,15 +36,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SelectedArtistViewModel @Inject constructor(
-    private val artistDao: ArtistDao,
-    musicDao: MusicDao,
-    albumDao: AlbumDao,
-    playlistDao: PlaylistDao,
-    musicPlaylistDao: MusicPlaylistDao,
-    albumArtistDao: AlbumArtistDao,
-    musicAlbumDao: MusicAlbumDao,
-    musicArtistDao: MusicArtistDao,
-    imageCoverDao: ImageCoverDao
+    private val artistRepository: ArtistRepository,
+    musicRepository: MusicRepository,
+    albumRepository: AlbumRepository,
+    playlistRepository: PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    albumArtistRepository: AlbumArtistRepository,
+    musicAlbumRepository: MusicAlbumRepository,
+    musicArtistRepository: MusicArtistRepository,
+    imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
     private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics?> = MutableStateFlow(ArtistWithMusics())
 
@@ -57,23 +57,23 @@ class SelectedArtistViewModel @Inject constructor(
     private val musicEventHandler = MusicEventHandler(
         privateState = _musicState,
         publicState = musicState,
-        musicDao = musicDao,
-        playlistDao = playlistDao,
-        albumDao = albumDao,
-        artistDao = artistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        musicAlbumDao = musicAlbumDao,
-        musicArtistDao = musicArtistDao,
-        albumArtistDao = albumArtistDao,
-        imageCoverDao = imageCoverDao
+        musicRepository = musicRepository,
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicAlbumRepository = musicAlbumRepository,
+        musicArtistRepository = musicArtistRepository,
+        albumArtistRepository = albumArtistRepository,
+        imageCoverRepository = imageCoverRepository
     )
 
     /**
      * Set the selected artist.
      */
     fun setSelectedArtist(artistId: UUID) {
-        _selectedArtistWithMusics = artistDao
-            .getArtistWithMusics(artistId = artistId)
+        _selectedArtistWithMusics = artistRepository
+            .getArtistWithMusicsAsFlow(artistId = artistId)
             .stateIn(
                 viewModelScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
             )
@@ -122,8 +122,8 @@ class SelectedArtistViewModel @Inject constructor(
     /**
      * Check if an artist exists.
      */
-    fun doesArtistExists(artistId : UUID) : Boolean{
-        return artistDao.getArtistFromId(
+    suspend fun doesArtistExists(artistId : UUID) : Boolean{
+        return artistRepository.getArtistFromId(
             artistId
         ) == null
     }
@@ -142,8 +142,8 @@ class SelectedArtistViewModel @Inject constructor(
         when(event) {
             is ArtistEvent.AddNbPlayed -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    artistDao.updateNbPlayed(
-                        newNbPlayed = artistDao.getNbPlayedOfArtist(event.artistId) + 1,
+                    artistRepository.updateNbPlayed(
+                        newNbPlayed = artistRepository.getNbPlayedOfArtist(event.artistId) + 1,
                         artistId = event.artistId
                     )
                 }

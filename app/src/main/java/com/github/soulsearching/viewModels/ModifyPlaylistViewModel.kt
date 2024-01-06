@@ -2,10 +2,10 @@ package com.github.soulsearching.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.PlaylistEventHandler
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +19,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ModifyPlaylistViewModel @Inject constructor(
-    private val playlistDao : PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val imageCoverDao: ImageCoverDao
+    playlistRepository : PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PlaylistState())
@@ -34,9 +34,9 @@ class ModifyPlaylistViewModel @Inject constructor(
     private val playlistEventHandler = PlaylistEventHandler(
         privateState = _state,
         publicState = state,
-        playlistDao = playlistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        imageCoverDao = imageCoverDao
+        playlistRepository = playlistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        imageCoverRepository = imageCoverRepository
     )
 
     /**

@@ -10,16 +10,16 @@ import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.database.dao.AlbumArtistDao
-import com.github.soulsearching.database.dao.AlbumDao
-import com.github.soulsearching.database.dao.ArtistDao
-import com.github.soulsearching.database.dao.FolderDao
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicAlbumDao
-import com.github.soulsearching.database.dao.MusicArtistDao
-import com.github.soulsearching.database.dao.MusicDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
+import com.github.soulsearching.database.dao.AlbumArtistRepository
+import com.github.soulsearching.database.dao.AlbumRepository
+import com.github.soulsearching.database.dao.ArtistRepository
+import com.github.soulsearching.database.dao.FolderRepository
+import com.github.soulsearching.database.dao.ImageCoverRepository
+import com.github.soulsearching.database.dao.MusicAlbumRepository
+import com.github.soulsearching.database.dao.MusicArtistRepository
+import com.github.soulsearching.database.dao.MusicRepository
+import com.github.soulsearching.database.dao.MusicPlaylistRepository
+import com.github.soulsearching.database.dao.PlaylistRepository
 import com.github.soulsearching.database.model.Album
 import com.github.soulsearching.database.model.AlbumArtist
 import com.github.soulsearching.database.model.Artist
@@ -50,16 +50,16 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
-    private val musicDao: MusicDao,
-    playlistDao: PlaylistDao,
-    musicPlaylistDao: MusicPlaylistDao,
-    private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao,
-    private val musicAlbumDao: MusicAlbumDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val albumArtistDao: AlbumArtistDao,
-    private val imageCoverDao: ImageCoverDao,
-    private val folderDao: FolderDao
+    private val musicRepository: MusicRepository,
+    playlistRepository: PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
+    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicArtistRepository: MusicArtistRepository,
+    private val albumArtistRepository: AlbumArtistRepository,
+    private val imageCoverRepository: ImageCoverRepository,
+    private val folderRepository: FolderRepository
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -70,21 +70,21 @@ class AllMusicsViewModel @Inject constructor(
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> musicDao.getAllMusicsSortByNameAsc()
-                        SortType.ADDED_DATE -> musicDao.getAllMusicsSortByAddedDateAsc()
-                        SortType.NB_PLAYED -> musicDao.getAllMusicsSortByNbPlayedAsc()
-                        else -> musicDao.getAllMusicsSortByNameAsc()
+                        SortType.NAME -> musicRepository.getAllMusicsSortByNameAsc()
+                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateAsc()
+                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedAsc()
+                        else -> musicRepository.getAllMusicsSortByNameAsc()
                     }
                 }
                 SortDirection.DESC -> {
                     when (sortType) {
-                        SortType.NAME -> musicDao.getAllMusicsSortByNameDesc()
-                        SortType.ADDED_DATE -> musicDao.getAllMusicsSortByAddedDateDesc()
-                        SortType.NB_PLAYED -> musicDao.getAllMusicsSortByNbPlayedDesc()
-                        else -> musicDao.getAllMusicsSortByNameDesc()
+                        SortType.NAME -> musicRepository.getAllMusicsSortByNameDesc()
+                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateDesc()
+                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedDesc()
+                        else -> musicRepository.getAllMusicsSortByNameDesc()
                     }
                 }
-                else -> musicDao.getAllMusicsSortByNameAsc()
+                else -> musicRepository.getAllMusicsSortByNameAsc()
             }
         }
     }.stateIn(
@@ -115,15 +115,15 @@ class AllMusicsViewModel @Inject constructor(
     private val musicEventHandler = MusicEventHandler(
         privateState = _state,
         publicState = state,
-        musicDao = musicDao,
-        playlistDao = playlistDao,
-        albumDao = albumDao,
-        artistDao = artistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        musicAlbumDao = musicAlbumDao,
-        musicArtistDao = musicArtistDao,
-        albumArtistDao = albumArtistDao,
-        imageCoverDao = imageCoverDao,
+        musicRepository = musicRepository,
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicAlbumRepository = musicAlbumRepository,
+        musicArtistRepository = musicArtistRepository,
+        albumArtistRepository = albumArtistRepository,
+        imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
         sortType = _sortType
     )
@@ -133,19 +133,19 @@ class AllMusicsViewModel @Inject constructor(
      */
     suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
-        val existingMusic = musicDao.getMusicFromPath(musicToAdd.path)
+        val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {
             return
         }
 
-        val correspondingArtist = artistDao.getArtistFromInfo(
+        val correspondingArtist = artistRepository.getArtistFromInfo(
             artistName = musicToAdd.artist
         )
         // Si l'artiste existe, on regarde si on trouve un album correspondant :
         val correspondingAlbum = if (correspondingArtist == null) {
             null
         } else {
-            albumDao.getCorrespondingAlbum(
+            albumRepository.getCorrespondingAlbum(
                 albumName = musicToAdd.album,
                 artistId = correspondingArtist.artistId
             )
@@ -156,7 +156,7 @@ class AllMusicsViewModel @Inject constructor(
             val coverId = UUID.randomUUID()
             if (musicCover != null) {
                 musicToAdd.coverId = coverId
-                imageCoverDao.insertImageCover(
+                imageCoverRepository.insertImageCover(
                     ImageCover(
                         coverId = coverId,
                         cover = musicCover
@@ -164,21 +164,21 @@ class AllMusicsViewModel @Inject constructor(
                 )
             }
 
-            albumDao.insertAlbum(
+            albumRepository.insertAlbum(
                 Album(
                     coverId = if (musicCover != null) coverId else null,
                     albumId = albumId,
                     albumName = musicToAdd.album
                 )
             )
-            artistDao.insertArtist(
+            artistRepository.insertArtist(
                 Artist(
                     coverId = if (musicCover != null) coverId else null,
                     artistId = artistId,
                     artistName = musicToAdd.artist
                 )
             )
-            albumArtistDao.insertAlbumIntoArtist(
+            albumArtistRepository.insertAlbumIntoArtist(
                 AlbumArtist(
                     albumId = albumId,
                     artistId = artistId
@@ -187,7 +187,7 @@ class AllMusicsViewModel @Inject constructor(
         } else {
             // On ajoute si possible la couverture de l'album de la musique :
             val albumCover = if (correspondingAlbum.coverId != null) {
-                imageCoverDao.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
+                imageCoverRepository.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
             } else {
                 null
             }
@@ -200,14 +200,14 @@ class AllMusicsViewModel @Inject constructor(
             } else if (musicCover != null) {
                 val coverId = UUID.randomUUID()
                 musicToAdd.coverId = coverId
-                imageCoverDao.insertImageCover(
+                imageCoverRepository.insertImageCover(
                     ImageCover(
                         coverId = coverId,
                         cover = musicCover
                     )
                 )
                 // Dans ce cas, l'album n'a pas d'image, on lui en ajoute une :
-                albumDao.updateAlbumCover(
+                albumRepository.updateAlbumCover(
                     newCoverId = coverId,
                     albumId = correspondingAlbum.albumId
                 )
@@ -220,26 +220,26 @@ class AllMusicsViewModel @Inject constructor(
                     musicToAdd.coverId
                 }
                 if (correspondingArtist != null && newArtistCover != null) {
-                    artistDao.updateArtistCover(
+                    artistRepository.updateArtistCover(
                         newCoverId = newArtistCover,
                         artistId = correspondingArtist.artistId
                     )
                 }
             }
         }
-        musicDao.insertMusic(musicToAdd)
-        folderDao.insertFolder(
+        musicRepository.insertMusic(musicToAdd)
+        folderRepository.insertFolder(
             Folder(
                 folderPath = musicToAdd.folder
             )
         )
-        musicAlbumDao.insertMusicIntoAlbum(
+        musicAlbumRepository.insertMusicIntoAlbum(
             MusicAlbum(
                 musicId = musicToAdd.musicId,
                 albumId = albumId
             )
         )
-        musicArtistDao.insertMusicIntoArtist(
+        musicArtistRepository.insertMusicIntoArtist(
             MusicArtist(
                 musicId = musicToAdd.musicId,
                 artistId = artistId
@@ -251,21 +251,21 @@ class AllMusicsViewModel @Inject constructor(
      * Check if a music is in the favorites.
      */
     suspend fun isMusicInFavorite(musicId: UUID): Boolean {
-        return musicDao.getMusicFromFavoritePlaylist(musicId = musicId) != null
+        return musicRepository.getMusicFromFavoritePlaylist(musicId = musicId) != null
     }
 
     /**
      * Retrieve the artist id of a music.
      */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return musicArtistDao.getArtistIdFromMusicId(musicId)
+        return musicArtistRepository.getArtistIdFromMusicId(musicId)
     }
 
     /**
      * Retrieve the album id of a music.
      */
     fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return musicAlbumDao.getAlbumIdFromMusicId(musicId)
+        return musicAlbumRepository.getAlbumIdFromMusicId(musicId)
     }
 
     /**
@@ -280,7 +280,7 @@ class AllMusicsViewModel @Inject constructor(
                         music.musicId,
                         context
                     )
-                    musicDao.deleteMusic(music)
+                    musicRepository.deleteMusic(music)
                     deleteCount += 1
                 }
             }

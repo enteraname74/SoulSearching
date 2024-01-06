@@ -1,18 +1,22 @@
 package com.github.soulsearching.viewModels
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.ImageCover
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.model.UIImageCover
+import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -20,13 +24,13 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AllImageCoversViewModel @Inject constructor(
-    private val imageCoverDao: ImageCoverDao,
-    private val musicDao: MusicDao,
-    private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao,
-    private val playlistDao: PlaylistDao
+    private val imageCoverRepository: ImageCoverRepository,
+    private val musicRepository: MusicRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
+    private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
-    private val _covers = imageCoverDao.getAllCovers()
+    private val _covers = imageCoverRepository.getAllCoversAsFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
     private val _state = MutableStateFlow(ImageCoverState())
     val state = combine(
@@ -34,7 +38,7 @@ class AllImageCoversViewModel @Inject constructor(
         _covers
     ) { state, covers ->
         return@combine state.copy(
-            covers = covers as ArrayList<ImageCover>
+            covers = covers.map { it.toUIImageCover() } as ArrayList<UIImageCover>
         )
 
     }.stateIn(
@@ -53,14 +57,14 @@ class AllImageCoversViewModel @Inject constructor(
     /**
      * Delete an image if it's not used by a song, an album, an artist or a playlist.
      */
-    suspend fun deleteImageIsNotUsed(cover: ImageCover) {
+    suspend fun deleteImageIsNotUsed(cover: UIImageCover) {
         if (
-            musicDao.getNumberOfMusicsWithCoverId(cover.coverId) == 0
-            && albumDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
-            && playlistDao.getNumberOfPlaylistsWithCoverId(cover.coverId) == 0
-            && artistDao.getNumberOfArtistsWithCoverId(cover.coverId) == 0
+            musicRepository.getNumberOfMusicsWithCoverId(cover.coverId) == 0
+            && albumRepository.getNumberOfAlbumsWithCoverId(cover.coverId) == 0
+            && playlistRepository.getNumberOfPlaylistsWithCoverId(cover.coverId) == 0
+            && artistRepository.getNumberOfArtistsWithCoverId(cover.coverId) == 0
         ) {
-            imageCoverDao.deleteFromCoverId(cover.coverId)
+            imageCoverRepository.deleteFromCoverId(cover.coverId)
         }
     }
 }

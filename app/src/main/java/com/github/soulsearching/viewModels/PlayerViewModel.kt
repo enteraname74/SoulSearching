@@ -6,6 +6,16 @@ import android.graphics.Bitmap
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.*
 import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
@@ -14,7 +24,6 @@ import com.github.soulsearching.classes.utils.ColorPaletteUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.database.dao.*
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
@@ -33,15 +42,15 @@ import kotlin.reflect.KFunction1
 @SuppressLint("MutableCollectionMutableState")
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val musicDao: MusicDao,
-    private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val albumDao: AlbumDao,
-    private val artistDao: ArtistDao,
-    private val musicAlbumDao: MusicAlbumDao,
-    private val musicArtistDao: MusicArtistDao,
-    private val albumArtistDao: AlbumArtistDao,
-    private val imageCoverDao: ImageCoverDao,
+    musicRepository: MusicRepository,
+    playlistRepository: PlaylistRepository,
+    musicPlaylistRepository: MusicPlaylistRepository,
+    albumRepository: AlbumRepository,
+    artistRepository: ArtistRepository,
+    musicAlbumRepository: MusicAlbumRepository,
+    musicArtistRepository: MusicArtistRepository,
+    albumArtistRepository: AlbumArtistRepository,
+    imageCoverRepository: ImageCoverRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MusicState())
     val state = _state.asStateFlow()
@@ -51,15 +60,15 @@ class PlayerViewModel @Inject constructor(
     private val musicEventHandler = MusicEventHandler(
         privateState = _state,
         publicState = state,
-        musicDao = musicDao,
-        playlistDao = playlistDao,
-        albumDao = albumDao,
-        artistDao = artistDao,
-        musicPlaylistDao = musicPlaylistDao,
-        musicAlbumDao = musicAlbumDao,
-        musicArtistDao = musicArtistDao,
-        albumArtistDao = albumArtistDao,
-        imageCoverDao = imageCoverDao,
+        musicRepository = musicRepository,
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicAlbumRepository = musicAlbumRepository,
+        musicArtistRepository = musicArtistRepository,
+        albumArtistRepository = albumArtistRepository,
+        imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
         sortType = _sortType
     )

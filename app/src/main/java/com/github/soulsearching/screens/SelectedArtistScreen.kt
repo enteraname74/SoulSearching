@@ -1,7 +1,6 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,7 +23,6 @@ import kotlinx.coroutines.withContext
 import java.util.UUID
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectedArtistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,

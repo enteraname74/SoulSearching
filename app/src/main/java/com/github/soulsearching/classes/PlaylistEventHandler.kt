@@ -1,15 +1,17 @@
 package com.github.soulsearching.classes
 
+import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
-import com.github.soulsearching.database.dao.ImageCoverDao
-import com.github.soulsearching.database.dao.MusicPlaylistDao
-import com.github.soulsearching.database.dao.PlaylistDao
-import com.github.soulsearching.database.model.ImageCover
-import com.github.soulsearching.database.model.MusicPlaylist
-import com.github.soulsearching.database.model.Playlist
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.UIImageCover
+import com.github.soulsearching.model.toImageCover
+import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +29,9 @@ class PlaylistEventHandler(
     private val publicState: StateFlow<PlaylistState>,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
-    private val playlistDao: PlaylistDao,
-    private val musicPlaylistDao: MusicPlaylistDao,
-    private val imageCoverDao: ImageCoverDao
+    private val playlistRepository: PlaylistRepository,
+    private val musicPlaylistRepository: MusicPlaylistRepository,
+    private val imageCoverRepository: ImageCoverRepository
 ) {
 
     /**
@@ -97,7 +99,7 @@ class PlaylistEventHandler(
      */
     private fun addPlaylist(event: PlaylistEvent.AddPlaylist) {
         CoroutineScope(Dispatchers.IO).launch {
-            playlistDao.insertPlaylist(
+            playlistRepository.insertPlaylist(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = event.name
@@ -112,7 +114,7 @@ class PlaylistEventHandler(
     private fun addMusicToPlaylists(event: PlaylistEvent.AddMusicToPlaylists) {
         CoroutineScope(Dispatchers.IO).launch {
             for (selectedPlaylistId in publicState.value.multiplePlaylistSelected) {
-                musicPlaylistDao.insertMusicIntoPlaylist(
+                musicPlaylistRepository.insertMusicIntoPlaylist(
                     MusicPlaylist(
                         musicId = event.musicId,
                         playlistId = selectedPlaylistId
@@ -132,7 +134,7 @@ class PlaylistEventHandler(
      */
     private fun removeMusicFromSelectedPlaylist(event: PlaylistEvent.RemoveMusicFromPlaylist) {
         CoroutineScope(Dispatchers.IO).launch {
-            musicPlaylistDao.deleteMusicFromPlaylist(
+            musicPlaylistRepository.deleteMusicFromPlaylist(
                 musicId = event.musicId,
                 playlistId = publicState.value.selectedPlaylist.playlistId
             )
@@ -144,7 +146,7 @@ class PlaylistEventHandler(
      */
     private fun deleteSelectedPlaylist() {
         CoroutineScope(Dispatchers.IO).launch {
-            playlistDao.deletePlaylist(publicState.value.selectedPlaylist)
+            playlistRepository.deletePlaylist(publicState.value.selectedPlaylist)
         }
     }
 
@@ -179,7 +181,7 @@ class PlaylistEventHandler(
      */
     private fun setSelectablePlaylistsForMusic(event: PlaylistEvent.PlaylistsSelection) {
         CoroutineScope(Dispatchers.IO).launch {
-            val playlists = playlistDao.getAllPlaylistsWithMusicsSimple()
+            val playlists = playlistRepository.getAllPlaylistsWithMusics()
                 .filter { playlistWithMusics ->
                     playlistWithMusics.musics.find { it.musicId == event.musicId } == null
                 }
@@ -199,17 +201,17 @@ class PlaylistEventHandler(
         CoroutineScope(Dispatchers.IO).launch {
             val coverId = if (publicState.value.hasSetNewCover) {
                 val id = UUID.randomUUID()
-                imageCoverDao.insertImageCover(
-                    ImageCover(
+                imageCoverRepository.insertImageCover(
+                    UIImageCover(
                         coverId = id,
                         cover = publicState.value.cover
-                    )
+                    ).toImageCover()
                 )
                 id
             } else {
                 publicState.value.selectedPlaylist.coverId
             }
-            playlistDao.insertPlaylist(
+            playlistRepository.insertPlaylist(
                 publicState.value.selectedPlaylist.copy(
                     name = publicState.value.name.trim(),
                     coverId = coverId
@@ -223,9 +225,9 @@ class PlaylistEventHandler(
      */
     private fun setPlaylistInformation(event: PlaylistEvent.PlaylistFromId) {
         CoroutineScope(Dispatchers.IO).launch {
-            val playlist = playlistDao.getPlaylistFromId(event.playlistId)
+            val playlist = playlistRepository.getPlaylistFromId(event.playlistId)
             val cover = if (playlist.coverId != null) {
-                imageCoverDao.getCoverOfElement(playlist.coverId!!)?.cover
+                imageCoverRepository.getCoverOfElement(playlist.coverId!!)?.toUIImageCover()?.cover
             } else {
                 null
             }
@@ -292,7 +294,7 @@ class PlaylistEventHandler(
      */
     private fun createFavoritePlaylist(event: PlaylistEvent.CreateFavoritePlaylist) {
         CoroutineScope(Dispatchers.IO).launch {
-            playlistDao.insertPlaylist(
+            playlistRepository.insertPlaylist(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = event.name,
@@ -307,7 +309,7 @@ class PlaylistEventHandler(
      */
     private fun updateQuickAccessState() {
         CoroutineScope(Dispatchers.IO).launch {
-            playlistDao.updateQuickAccessState(
+            playlistRepository.updateQuickAccessState(
                 newQuickAccessState = !publicState.value.selectedPlaylist.isInQuickAccess,
                 playlistId = publicState.value.selectedPlaylist.playlistId
             )
@@ -319,8 +321,8 @@ class PlaylistEventHandler(
      */
     private fun incrementNbPlayedOfPlaylist(event: PlaylistEvent.AddNbPlayed) {
         CoroutineScope(Dispatchers.IO).launch {
-            playlistDao.updateNbPlayed(
-                newNbPlayed = playlistDao.getNbPlayedOfPlaylist(event.playlistId) + 1,
+            playlistRepository.updateNbPlayed(
+                newNbPlayed = playlistRepository.getNbPlayedOfPlaylist(event.playlistId) + 1,
                 playlistId = event.playlistId
             )
         }
