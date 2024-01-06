@@ -10,6 +10,8 @@ plugins {
 
 android {
     namespace = AndroidConfig.DATA_NAMESPACE
+    compileSdk = AndroidConfig.COMPILE_SDK
+
     defaultConfig {
         minSdk = AndroidConfig.MIN_SDK
     }

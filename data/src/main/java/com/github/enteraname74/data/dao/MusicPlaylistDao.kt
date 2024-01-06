@@ -19,7 +19,7 @@ internal interface MusicPlaylistDao {
     suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID)
 
     @Query("SELECT * FROM RoomMusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
-    suspend fun checkIfMusicInPlaylist(musicId: UUID, playlistId: UUID): RoomMusicPlaylist?
+    suspend fun getMusicPlaylist(musicId: UUID, playlistId: UUID): RoomMusicPlaylist?
 
     @Query("DELETE FROM RoomMusicPlaylist WHERE musicId = :musicId")
     suspend fun deleteMusicFromAllPlaylists(musicId: UUID)

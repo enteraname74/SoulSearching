@@ -11,7 +11,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 /**
- * Implementation of the MusicArtistDataSource with Room's DAO.
+ * Implementation of the MusicDataSource with Room's DAO.
  */
 internal class MusicDataSourceImpl @Inject constructor(
     private val appDatabase: AppDatabase

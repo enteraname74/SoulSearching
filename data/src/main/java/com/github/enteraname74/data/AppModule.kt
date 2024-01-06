@@ -3,6 +3,29 @@ package com.github.enteraname74.data
 import android.content.Context
 import androidx.room.Room
 import com.github.enteraname74.data.dao.*
+import com.github.enteraname74.data.datasourceimpl.AlbumArtistDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.AlbumDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.ArtistDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.FolderDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.ImageCoverDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.MusicAlbumDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.MusicArtistDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.MusicDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.MusicPlaylistDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.PlayerMusicDataSourceImpl
+import com.github.enteraname74.data.datasourceimpl.PlaylistDataSourceImpl
+import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
+import com.github.enteraname74.domain.datasource.AlbumDataSource
+import com.github.enteraname74.domain.datasource.ArtistDataSource
+import com.github.enteraname74.domain.datasource.FolderDataSource
+import com.github.enteraname74.domain.datasource.ImageCoverDataSource
+import com.github.enteraname74.domain.datasource.MusicAlbumDataSource
+import com.github.enteraname74.domain.datasource.MusicArtistDataSource
+import com.github.enteraname74.domain.datasource.MusicDataSource
+import com.github.enteraname74.domain.datasource.MusicPlaylistDataSource
+import com.github.enteraname74.domain.datasource.PlayerMusicDataSource
+import com.github.enteraname74.domain.datasource.PlaylistDataSource
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,58 +46,95 @@ internal class AppModule {
         ).fallbackToDestructiveMigration().build()
     }
 
-    @Provides
-    fun provideMusicDao(appDatabase: AppDatabase): MusicDao {
-        return appDatabase.musicDao
-    }
+//    @Provides
+//    fun provideMusicDao(appDatabase: AppDatabase): MusicDao {
+//        return appDatabase.musicDao
+//    }
+//
+//    @Provides
+//    fun providePlaylistDao(appDatabase: AppDatabase): PlaylistDao {
+//        return appDatabase.playlistDao
+//    }
+//
+//    @Provides
+//    fun provideAlbumDao(appDatabase: AppDatabase): AlbumDao {
+//        return appDatabase.albumDao
+//    }
+//
+//    @Provides
+//    fun provideArtistDao(appDatabase: AppDatabase): ArtistDao {
+//        return appDatabase.artistDao
+//    }
+//
+//    @Provides
+//    fun provideMusicPlaylistDao(appDatabase: AppDatabase): MusicPlaylistDao {
+//        return appDatabase.musicPlaylistDao
+//    }
+//
+//    @Provides
+//    fun provideMusicAlbumDao(appDatabase: AppDatabase): MusicAlbumDao {
+//        return appDatabase.musicAlbumDao
+//    }
+//
+//    @Provides
+//    fun provideMusicArtistDao(appDatabase: AppDatabase): MusicArtistDao {
+//        return appDatabase.musicArtistDao
+//    }
+//
+//    @Provides
+//    fun provideAlbumArtistDao(appDatabase: AppDatabase): AlbumArtistDao {
+//        return appDatabase.albumArtistDao
+//    }
+//
+//    @Provides
+//    fun provideImageCoverDao(appDatabase: AppDatabase): ImageCoverDao {
+//        return appDatabase.imageCoverDao
+//    }
+//
+//    @Provides
+//    fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): PlayerMusicDao {
+//        return appDatabase.playerMusicDao
+//    }
+//
+//    @Provides
+//    fun provideFolderDao(appDatabase: AppDatabase): FolderDao {
+//        return appDatabase.folderDao
+//    }
+}
 
-    @Provides
-    fun providePlaylistDao(appDatabase: AppDatabase): PlaylistDao {
-        return appDatabase.playlistDao
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataSourceModule {
+    @Binds
+    internal abstract fun bindAlbumArtistDataSource(dataSourceImpl: AlbumArtistDataSourceImpl): AlbumArtistDataSource
 
-    @Provides
-    fun provideAlbumDao(appDatabase: AppDatabase): AlbumDao {
-        return appDatabase.albumDao
-    }
+    @Binds
+    internal abstract fun bindAlbumDataSource(dataSourceImpl: AlbumDataSourceImpl): AlbumDataSource
 
-    @Provides
-    fun provideArtistDao(appDatabase: AppDatabase): ArtistDao {
-        return appDatabase.artistDao
-    }
+    @Binds
+    internal abstract fun bindArtistDataSource(dataSourceImpl: ArtistDataSourceImpl): ArtistDataSource
 
-    @Provides
-    fun provideMusicPlaylistDao(appDatabase: AppDatabase): MusicPlaylistDao {
-        return appDatabase.musicPlaylistDao
-    }
+    @Binds
+    internal abstract fun bindFolderDataSource(dataSourceImpl: FolderDataSourceImpl): FolderDataSource
 
-    @Provides
-    fun provideMusicAlbumDao(appDatabase: AppDatabase): MusicAlbumDao {
-        return appDatabase.musicAlbumDao
-    }
+    @Binds
+    internal abstract fun bindImageCoverDataSource(dataSourceImpl: ImageCoverDataSourceImpl): ImageCoverDataSource
 
-    @Provides
-    fun provideMusicArtistDao(appDatabase: AppDatabase): MusicArtistDao {
-        return appDatabase.musicArtistDao
-    }
+    @Binds
+    internal abstract fun bindMusicAlbumDataSource(dataSourceImpl: MusicAlbumDataSourceImpl): MusicAlbumDataSource
 
-    @Provides
-    fun provideAlbumArtistDao(appDatabase: AppDatabase): AlbumArtistDao {
-        return appDatabase.albumArtistDao
-    }
+    @Binds
+    internal abstract fun bindMusicArtistDataSource(dataSourceImpl: MusicArtistDataSourceImpl): MusicArtistDataSource
 
-    @Provides
-    fun provideImageCoverDao(appDatabase: AppDatabase): ImageCoverDao {
-        return appDatabase.imageCoverDao
-    }
+    @Binds
+    internal abstract fun bindMusicDataSource(dataSourceImpl: MusicDataSourceImpl): MusicDataSource
 
-    @Provides
-    fun provideCurrentPlaylistItemDao(appDatabase: AppDatabase): PlayerMusicDao {
-        return appDatabase.playerMusicDao
-    }
+    @Binds
+    internal abstract fun bindMusicPlaylistDataSource(dataSourceImpl: MusicPlaylistDataSourceImpl): MusicPlaylistDataSource
 
-    @Provides
-    fun provideFolderDao(appDatabase: AppDatabase): FolderDao {
-        return appDatabase.folderDao
-    }
+    @Binds
+    internal abstract fun bindPlayerMusicDataSource(dataSourceImpl: PlayerMusicDataSourceImpl): PlayerMusicDataSource
+
+    @Binds
+    internal abstract fun bindPlaylistDataSourceImpl(dataSourceImpl: PlaylistDataSourceImpl): PlaylistDataSource
 }
