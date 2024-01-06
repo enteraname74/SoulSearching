@@ -10,5 +10,6 @@ object AndroidConfig {
     const val COMPILE_SDK = 34
     const val MIN_SDK = 26
     const val APP_ID = "com.github.enteraname74.soulsearching"
-    const val NAMESPACE = "com.github.soulsearching"
+    const val APP_NAMESPACE = "com.github.soulsearching"
+    const val DATA_NAMESPACE = "com.github.enteraname74.data"
 }

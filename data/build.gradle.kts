@@ -1,9 +1,38 @@
+import com.github.enteraname74.buildsrc.AndroidConfig
+import com.github.enteraname74.buildsrc.Dependencies
+
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+    kotlin("kapt")
+    id("com.android.application")
+    kotlin("android")
+    id("com.google.dagger.hilt.android")
+}
+
+android {
+    namespace = AndroidConfig.DATA_NAMESPACE
+    defaultConfig {
+        minSdk = AndroidConfig.MIN_SDK
+    }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    implementation(project(mapOf("path" to ":domain")))
+    implementation(Dependencies.AndroidX.CORE)
+    implementation(Dependencies.AndroidX.ROOM)
+    implementation(Dependencies.Google.HILT_ANDROID)
+
+    kapt(Dependencies.Google.HILT_COMPILER)
+
+    // For instrumentation tests
+    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
+
+    // For local unit tests
+    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
+    kaptTest(Dependencies.Google.HILT_COMPILER)
 }

@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = AndroidConfig.NAMESPACE
+    namespace = AndroidConfig.APP_NAMESPACE
     compileSdk = AndroidConfig.COMPILE_SDK
 
     defaultConfig {
@@ -74,6 +74,9 @@ kapt {
 }
 
 dependencies {
+    runtimeOnly(project(":data"))
+    implementation(project(":domain"))
+
     implementation(Dependencies.AndroidX.CORE)
     implementation(Dependencies.AndroidX.LIFECYCLE)
     implementation(Dependencies.AndroidX.ACTIVITY_COMPOSE)
