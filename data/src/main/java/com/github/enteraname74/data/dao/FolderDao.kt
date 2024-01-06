@@ -7,6 +7,9 @@ import androidx.room.Upsert
 import com.github.enteraname74.data.model.RoomFolder
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * DAO of a Folder.
+ */
 @Dao
 internal interface FolderDao {
     @Upsert
@@ -16,10 +19,10 @@ internal interface FolderDao {
     suspend fun deleteFolder(roomFolder: RoomFolder)
 
     @Query("SELECT * FROM RoomFolder")
-    fun getAllFolders(): Flow<List<RoomFolder>>
+    fun getAllFoldersAsFlow(): Flow<List<RoomFolder>>
 
     @Query("SELECT * FROM RoomFolder")
-    fun getAllFoldersSimple(): List<RoomFolder>
+    suspend fun getAllFolders(): List<RoomFolder>
 
     @Query("SELECT folderPath FROM RoomFolder WHERE isSelected = 0")
     suspend fun getAllHiddenFoldersPaths(): List<String>

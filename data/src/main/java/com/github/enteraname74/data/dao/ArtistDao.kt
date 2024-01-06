@@ -6,6 +6,9 @@ import com.github.enteraname74.data.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
+/**
+ * DAO of an Artist.
+ */
 @Dao
 internal interface ArtistDao {
 
@@ -16,66 +19,69 @@ internal interface ArtistDao {
     suspend fun deleteArtist(roomArtist: RoomArtist)
 
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    fun getArtistFromId(artistId: UUID) : RoomArtist?
+    suspend fun getArtistFromId(artistId: UUID): RoomArtist?
 
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAllArtistsSortByName(): Flow<List<RoomArtist>>
+    suspend fun getAllArtistsSortByName(): Flow<List<RoomArtist>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAllArtistsWithMusicsSortByNameAsc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName DESC")
-    fun getAllArtistWithMusicsSortByNameDesc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY addedDate ASC")
-    fun getAllArtistWithMusicsSortByAddedDateAsc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY addedDate DESC")
-    fun getAllArtistWithMusicsSortByAddedDateDesc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed ASC")
-    fun getAllArtistWithMusicsSortByNbPlayedAsc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed DESC")
-    fun getAllArtistWithMusicsSortByNbPlayedDesc(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName AND artistId != :artistId")
-    fun getPossibleDuplicatedArtistName(artistId: UUID, artistName: String) : RoomArtistWithMusics?
+    suspend fun getPossibleDuplicatedArtistName(
+        artistId: UUID,
+        artistName: String
+    ): RoomArtistWithMusics?
 
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
-    fun getArtistFromInfo(artistName: String): RoomArtist?
+    suspend fun getArtistFromInfo(artistName: String): RoomArtist?
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics>
+    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<RoomArtistWithMusics>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE isInQuickAccess = 1")
-    fun getAllArtistsFromQuickAccess(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistsFromQuickAccessAsFlow(): Flow<List<RoomArtistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    fun getArtistWithMusicsSimple(artistId: UUID): RoomArtistWithMusics
+    suspend fun getArtistWithMusics(artistId: UUID): RoomArtistWithMusics
 
     @Query("UPDATE RoomArtist SET coverId = :newCoverId WHERE artistId = :artistId")
-    fun updateArtistCover(newCoverId : UUID, artistId : UUID)
+    suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID)
 
     @Query("SELECT COUNT(*) FROM RoomArtist WHERE coverId = :coverId")
-    fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+    suspend fun getNumberOfArtistsWithCoverId(coverId: UUID): Int
 
     @Query("UPDATE RoomArtist SET isInQuickAccess = :newQuickAccessState WHERE artistId = :artistId")
-    fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
+    suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
 
     @Query("SELECT nbPlayed FROM RoomArtist WHERE artistId = :artistId")
-    fun getNbPlayedOfArtist(artistId: UUID): Int
+    suspend fun getNbPlayedOfArtist(artistId: UUID): Int
 
     @Query("UPDATE RoomArtist SET nbPlayed = :newNbPlayed WHERE artistId = :artistId")
-    fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
+    suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)
 }

@@ -9,6 +9,9 @@ import com.github.enteraname74.data.model.RoomImageCover
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
+/**
+ * DAO of an ImageCover.
+ */
 @Dao
 internal interface ImageCoverDao {
     @Upsert
@@ -24,5 +27,5 @@ internal interface ImageCoverDao {
     suspend fun getCoverOfElement(coverId : UUID) : RoomImageCover?
 
     @Query("SELECT * FROM RoomImageCover")
-    fun getAllCovers() : Flow<List<RoomImageCover>>
+    fun getAllCoversAsFlow() : Flow<List<RoomImageCover>>
 }

@@ -6,6 +6,9 @@ import androidx.room.Upsert
 import com.github.enteraname74.data.model.RoomMusicAlbum
 import java.util.UUID
 
+/**
+ * DAO of a MusicAlbum.
+ */
 @Dao
 internal interface MusicAlbumDao {
     @Upsert
@@ -21,11 +24,11 @@ internal interface MusicAlbumDao {
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId : UUID)
 
     @Query("SELECT musicId FROM RoomMusicAlbum WHERE albumId = :albumId")
-    fun getMusicsIdsFromAlbumId(albumId : UUID) : List<UUID>
+    suspend fun getMusicsIdsFromAlbumId(albumId : UUID) : List<UUID>
 
     @Query("SELECT albumId FROM RoomMusicAlbum WHERE musicId = :musicId")
-    fun getAlbumIdFromMusicId(musicId: UUID) : UUID?
+    suspend fun getAlbumIdFromMusicId(musicId: UUID) : UUID?
 
     @Query("SELECT COUNT(*) FROM RoomMusicAlbum WHERE albumId = :albumId")
-    fun getNumberOfMusicsFromAlbum(albumId : UUID) : Int
+    suspend fun getNumberOfMusicsFromAlbum(albumId : UUID) : Int
 }

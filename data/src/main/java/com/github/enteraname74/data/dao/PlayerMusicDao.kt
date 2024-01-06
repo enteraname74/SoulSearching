@@ -6,6 +6,9 @@ import com.github.enteraname74.data.model.RoomPlayerWithMusicItem
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * DAO of a PlayerMusic
+ */
 @Dao
 internal interface PlayerMusicDao {
     @Upsert
@@ -26,5 +29,5 @@ internal interface PlayerMusicDao {
 
     @Transaction
     @Query("SELECT * FROM RoomPlayerMusic")
-    fun getAllPlayerMusicsFlow(): Flow<List<RoomPlayerWithMusicItem>>
+    fun getAllPlayerMusicsAsFlow(): Flow<List<RoomPlayerWithMusicItem>>
 }

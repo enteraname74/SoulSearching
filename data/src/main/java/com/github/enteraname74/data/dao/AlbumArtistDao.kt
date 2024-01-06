@@ -6,6 +6,9 @@ import androidx.room.Upsert
 import com.github.enteraname74.data.model.RoomAlbumArtist
 import java.util.*
 
+/**
+ * DAO of an AlbumArtist.
+ */
 @Dao
 internal interface AlbumArtistDao {
     @Upsert

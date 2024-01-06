@@ -6,6 +6,8 @@ package com.github.enteraname74.buildsrc
 object Dependencies {
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val GRADLE = "com.android.tools.build:gradle:${Versions.GRADLE}"
+    const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES_CORE}"
+    const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECt_API}"
     object AndroidX {
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.LIFECYCLE}"

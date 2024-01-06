@@ -6,6 +6,9 @@ import com.github.enteraname74.data.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
+/**
+ * DAO of a Playlist.
+ */
 @Dao
 internal interface PlaylistDao {
 
@@ -16,59 +19,59 @@ internal interface PlaylistDao {
     suspend fun deletePlaylist(roomPlaylist : RoomPlaylist)
 
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAllPlaylists(): Flow<List<RoomPlaylist>>
+    fun getAllPlaylistsSortByNameAscAsFlow(): Flow<List<RoomPlaylist>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAllPlaylistsWithMusicsSortByNameAsc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name DESC")
-    fun getAllPlaylistWithMusicsSortByNameDesc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistWithMusicsSortByNameDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate ASC")
-    fun getAllPlaylistWithMusicsSortByAddedDateAsc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate DESC")
-    fun getAllPlaylistWithMusicsSortByAddedDateDesc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed ASC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedAsc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed DESC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedDesc(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE isInQuickAccess = 1")
-    fun getAllPlaylistsFromQuickAccess(): Flow<List<RoomPlaylistWithMusics>>
+    fun getAllPlaylistsFromQuickAccessAsFlow(): Flow<List<RoomPlaylistWithMusics>>
 
     @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1")
-    fun getFavoritePlaylist(): RoomPlaylist
+    suspend fun getFavoritePlaylist(): RoomPlaylist
 
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getPlaylistFromId(playlistId: UUID) : RoomPlaylist
+    suspend fun getPlaylistFromId(playlistId: UUID) : RoomPlaylist
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
+    fun getPlaylistWithMusicsAsFlow(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist")
-    suspend fun getAllPlaylistsWithMusicsSimple() : List<RoomPlaylistWithMusics>
+    suspend fun getAllPlaylistsWithMusics() : List<RoomPlaylistWithMusics>
 
     @Query("SELECT COUNT(*) FROM RoomPlaylist WHERE coverId = :coverId")
-    fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
+    suspend fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
 
     @Query("UPDATE RoomPlaylist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
-    fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
+    suspend fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
 
     @Query("SELECT nbPlayed FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getNbPlayedOfPlaylist(playlistId: UUID): Int
+    suspend fun getNbPlayedOfPlaylist(playlistId: UUID): Int
 
     @Query("UPDATE RoomPlaylist SET nbPlayed = :newNbPlayed WHERE playlistId = :playlistId")
-    fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID)
+    suspend fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID)
 }

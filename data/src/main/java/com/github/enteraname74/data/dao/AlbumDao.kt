@@ -7,6 +7,9 @@ import com.github.enteraname74.data.model.RoomAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
+/**
+ * DAO of an Album.
+ */
 @Dao
 internal interface AlbumDao {
 
@@ -20,77 +23,77 @@ internal interface AlbumDao {
     suspend fun getAllAlbumsFromArtist(artistId: UUID) : List<RoomAlbum>
 
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAllAlbumsSortByNameAsc(): Flow<List<RoomAlbum>>
+    fun getAllAlbumsSortByNameAscAsFlow(): Flow<List<RoomAlbum>>
 
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
-    fun getAlbumFromId(albumId: UUID): RoomAlbum?
-
-    @Transaction
-    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
-    fun getAlbumWithMusics(albumId: UUID): Flow<RoomAlbumWithMusics?>
+    suspend fun getAlbumFromId(albumId: UUID): RoomAlbum?
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
-    fun getAlbumWithMusicsSimple(albumId: UUID): RoomAlbumWithMusics
+    fun getAlbumWithMusicsAsFlow(albumId: UUID): Flow<RoomAlbumWithMusics?>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
+    suspend fun getAlbumWithMusics(albumId: UUID): RoomAlbumWithMusics
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
-    fun getAllAlbumsWithMusicsSortByNameAsc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName DESC")
-    fun getAllAlbumsWithMusicsSortByNameDesc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByNameDescAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY addedDate ASC")
-    fun getAllAlbumsWithMusicsSortByAddedDateAsc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY addedDate DESC")
-    fun getAllAlbumsWithMusicsSortByAddedDateDesc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY nbPlayed ASC")
-    fun getAllAlbumsWithMusicsSortByNbPlayedAsc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY nbPlayed DESC")
-    fun getAllAlbumsWithMusicsSortByNbPlayedDesc(): Flow<List<RoomAlbumWithMusics>>
+    fun getAllAlbumsWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomAlbumWithMusics>>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum")
-    fun getAllAlbumsWithArtistSimple(): List<RoomAlbumWithArtist>
+    suspend fun getAllAlbumsWithArtist(): List<RoomAlbumWithArtist>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum")
-    fun getAllAlbumsWithMusicsSimple(): List<RoomAlbumWithMusics>
+    suspend fun getAllAlbumsWithMusics(): List<RoomAlbumWithMusics>
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum WHERE isInQuickAccess = 1")
-    fun getAllAlbumsFromQuickAccess(): Flow<List<RoomAlbumWithArtist>>
+    fun getAllAlbumsFromQuickAccessAsFlow(): Flow<List<RoomAlbumWithArtist>>
 
     @Query(
         "SELECT RoomAlbum.* FROM RoomAlbum INNER JOIN RoomAlbumArtist ON RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbum.albumName = :albumName AND RoomAlbumArtist.artistId = :artistId"
     )
-    fun getCorrespondingAlbum(albumName: String, artistId: UUID): RoomAlbum?
+    suspend fun getCorrespondingAlbum(albumName: String, artistId: UUID): RoomAlbum?
 
     @Query(
         "SELECT RoomAlbum.* FROM RoomAlbum INNER JOIN RoomAlbumArtist ON RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbum.albumName = :albumName AND RoomAlbumArtist.artistId = :artistId AND RoomAlbum.albumId != :albumId"
     )
-    fun getPossibleDuplicateAlbum(albumId: UUID, albumName: String, artistId: UUID): RoomAlbum?
+    suspend fun getPossibleDuplicateAlbum(albumId: UUID, albumName: String, artistId: UUID): RoomAlbum?
 
     @Query("UPDATE RoomAlbum SET coverId = :newCoverId WHERE albumId = :albumId")
-    fun updateAlbumCover(newCoverId : UUID, albumId : UUID)
+    suspend fun updateAlbumCover(newCoverId : UUID, albumId : UUID)
 
     @Query("UPDATE RoomAlbum SET isInQuickAccess = :newQuickAccessState WHERE albumId = :albumId")
-    fun updateQuickAccessState(newQuickAccessState: Boolean, albumId: UUID)
+    suspend fun updateQuickAccessState(newQuickAccessState: Boolean, albumId: UUID)
 
     @Query("SELECT COUNT(*) FROM RoomAlbum WHERE coverId = :coverId")
-    fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
+    suspend fun getNumberOfArtistsWithCoverId(coverId : UUID) : Int
 
     @Query("SELECT nbPlayed FROM RoomAlbum WHERE albumId = :albumId")
-    fun getNbPlayedOfAlbum(albumId: UUID): Int
+    suspend fun getNbPlayedOfAlbum(albumId: UUID): Int
 
     @Query("UPDATE RoomAlbum SET nbPlayed = :newNbPlayed WHERE albumId = :albumId")
-    fun updateNbPlayed(newNbPlayed: Int, albumId: UUID)
+    suspend fun updateNbPlayed(newNbPlayed: Int, albumId: UUID)
 }

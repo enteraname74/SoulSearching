@@ -4,6 +4,9 @@ import androidx.room.*
 import com.github.enteraname74.data.model.RoomMusicArtist
 import java.util.UUID
 
+/**
+ * DAO of a MusicArtist
+ */
 @Dao
 internal interface MusicArtistDao {
     @Upsert
@@ -16,8 +19,8 @@ internal interface MusicArtistDao {
     suspend fun deleteMusicFromArtist(musicId: UUID)
 
     @Query("SELECT artistId FROM RoomMusicArtist WHERE musicId = :musicId")
-    fun getArtistIdFromMusicId(musicId: UUID) : UUID?
+    suspend fun getArtistIdFromMusicId(musicId: UUID) : UUID?
 
     @Query("SELECT COUNT(*) FROM RoomMusicArtist WHERE artistId = :artistId")
-    fun getNumberOfMusicsFromArtist(artistId : UUID) : Int
+    suspend fun getNumberOfMusicsFromArtist(artistId : UUID) : Int
 }

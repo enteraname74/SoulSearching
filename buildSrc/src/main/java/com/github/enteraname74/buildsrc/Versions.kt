@@ -6,6 +6,8 @@ package com.github.enteraname74.buildsrc
 object Versions {
     const val JUNIT = "4.13.2"
     const val GRADLE = "8.2.1"
+    const val COROUTINES_CORE = "1.7.3"
+    const val INJECt_API = "2.0.1"
     object AndroidX {
         const val COMPOSE = "1.6.0-beta03"
         const val CORE = "1.12.0"
