@@ -1,8 +1,8 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.AlbumWithArtist
-import java.util.*
+import com.github.enteraname74.domain.model.AlbumWithArtist
+import java.util.UUID
 
 /**
  * Events related to albums.

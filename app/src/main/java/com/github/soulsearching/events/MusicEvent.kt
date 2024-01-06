@@ -1,7 +1,7 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.Music
+import com.github.enteraname74.domain.model.Music
 import java.util.UUID
 
 /**
