@@ -25,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.LoadingComposable
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.viewModels.AddMusicsViewModel

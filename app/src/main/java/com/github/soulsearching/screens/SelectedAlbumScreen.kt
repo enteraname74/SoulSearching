@@ -2,7 +2,7 @@ package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,8 +47,7 @@ fun SelectedAlbumScreen(
     val musicState by selectedAlbumViewModel.musicState.collectAsState()
 
     if (musicState.musics.isEmpty()) {
-        // On doit quand même regarder si l'album correspondant existe avant de revenir en arrière
-        LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
+        SideEffect {
             CoroutineScope(Dispatchers.IO).launch {
                 if (selectedAlbumViewModel.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
                     withContext(Dispatchers.Main) {

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -26,7 +26,7 @@ fun SettingsAboutScreen(
     navigateToDevelopers: () -> Unit
 ) {
     var clickCount by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val context = LocalContext.current
     val versionName = BuildConfig.VERSION_NAME

@@ -2,7 +2,7 @@ package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,8 +49,7 @@ fun SelectedArtistScreen(
     val musicState by selectedArtistViewModel.musicState.collectAsState()
 
     if (musicState.musics.isEmpty()) {
-        // On doit quand même regarder si l'artiste correspondant existe avant de revenir en arrière
-        LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
+        SideEffect {
             CoroutineScope(Dispatchers.IO).launch {
                 if (selectedArtistViewModel.doesArtistExists(UUID.fromString(selectedArtistId))) {
                     withContext(Dispatchers.Main) {
