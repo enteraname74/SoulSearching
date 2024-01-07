@@ -1,17 +1,19 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.ArtistWithMusics
-import java.util.*
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import java.util.UUID
 
-interface ArtistEvent {
+/**
+ * Events related to artists.
+ */
+sealed interface ArtistEvent {
     object UpdateArtist : ArtistEvent
     object DeleteArtist: ArtistEvent
     object UpdateQuickAccessState: ArtistEvent
     data class SetSortDirection(val type: Int) : ArtistEvent
     data class SetSortType(val type: Int) : ArtistEvent
     data class ArtistFromId(val artistId : UUID) : ArtistEvent
-    data class ArtistWithMusicsFromId(val artistId : UUID) : ArtistEvent
     data class SetSelectedArtistWithMusics(val artistWithMusics : ArtistWithMusics) : ArtistEvent
     data class SetName(val name: String) : ArtistEvent
     data class SetCover(val cover : Bitmap) : ArtistEvent

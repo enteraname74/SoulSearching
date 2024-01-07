@@ -2,7 +2,12 @@ package com.github.soulsearching.composables
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -14,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
-import com.github.soulsearching.database.model.Music
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
@@ -77,6 +82,7 @@ fun MusicSelectableComposable(
                 colors = CheckboxDefaults.colors(
                     checkmarkColor = textColor,
                     checkedColor = Color.Transparent,
+                    uncheckedColor = textColor
                 )
             )
         }

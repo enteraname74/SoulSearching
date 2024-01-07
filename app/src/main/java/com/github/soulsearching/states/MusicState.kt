@@ -1,12 +1,15 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicWithCover
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicWithCover
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 import java.util.UUID
 
+/**
+ * Manage elements related to musics.
+ */
 data class MusicState(
     val musics: ArrayList<Music> = ArrayList(),
     val musicsWithCover: List<MusicWithCover> = emptyList(),

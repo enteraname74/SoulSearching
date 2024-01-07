@@ -13,6 +13,9 @@ import com.github.soulsearching.classes.notification.receivers.PausePlayNotifica
 import com.github.soulsearching.classes.notification.receivers.PreviousMusicNotificationReceiver
 import com.github.soulsearching.service.PlayerService
 
+/**
+ * Specification of a SoulSearchingNotification for devices below Android 13.
+ */
 class SoulSearchingNotificationBelowAndroid13(
     context: Context,
     mediaSessionToken: MediaSessionCompat.Token

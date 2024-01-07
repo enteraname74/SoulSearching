@@ -1,18 +1,20 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.Playlist
-import com.github.soulsearching.database.model.PlaylistWithMusics
-import java.util.*
+import com.github.enteraname74.domain.model.Playlist
+import java.util.UUID
 
-interface PlaylistEvent {
+/**
+ * Events related to playlists
+ */
+sealed interface PlaylistEvent {
     object UpdatePlaylist : PlaylistEvent
     object DeletePlaylist : PlaylistEvent
     object UpdateQuickAccessState: PlaylistEvent
     data class SetSortDirection(val type: Int) : PlaylistEvent
     data class SetSortType(val type: Int) : PlaylistEvent
     data class AddPlaylist(val name : String) : PlaylistEvent
-    data class AddFavoritePlaylist(val name : String) : PlaylistEvent
+    data class CreateFavoritePlaylist(val name : String) : PlaylistEvent
     data class SetSelectedPlaylist(val playlist: Playlist) : PlaylistEvent
     data class TogglePlaylistSelectedState(val playlistId: UUID) : PlaylistEvent
     data class PlaylistFromId(val playlistId: UUID) : PlaylistEvent

@@ -4,8 +4,9 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
     <application
         android:name=".App"
@@ -14,14 +15,16 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.SoulSearching"
-        android:largeHeap="true"
         tools:targetApi="31">
         <service
             android:name=".service.PlayerService"
+            android:enabled="true"
             android:exported="true"
-            android:enabled="true" />
+            android:foregroundServiceType="mediaPlayback"
+            />
 
         <receiver
             android:name=".classes.notification.receivers.ChangeFavoriteStateNotificationReceiver"
@@ -43,13 +46,6 @@
             android:name=".classes.notification.receivers.PreviousMusicNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-<!--        <receiver-->
-<!--            android:name="androidx.media.session.MediaButtonReceiver"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MEDIA_BUTTON" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
 
         <activity
             android:name=".MainActivity"

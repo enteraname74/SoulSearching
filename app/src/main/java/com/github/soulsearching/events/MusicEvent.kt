@@ -1,16 +1,16 @@
 package com.github.soulsearching.events
 
 import android.graphics.Bitmap
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicPlaylist
+import com.github.enteraname74.domain.model.Music
 import java.util.UUID
 
+/**
+ * Events related to musics.
+ */
 sealed interface MusicEvent {
-    object AddMusic : MusicEvent
     object UpdateMusic : MusicEvent
     object DeleteMusic : MusicEvent
     object UpdateQuickAccessState: MusicEvent
-    data class SetPlayedMusic(val music: Music) : MusicEvent
     data class SetSortDirection(val type: Int) : MusicEvent
     data class SetSortType(val type: Int) : MusicEvent
     data class DeleteDialog(val isShown: Boolean) : MusicEvent
@@ -22,7 +22,6 @@ sealed interface MusicEvent {
     data class SetArtist(val artist: String) : MusicEvent
     data class SetAlbum(val album: String) : MusicEvent
     data class SetCover(val cover: Bitmap) : MusicEvent
-    data class DeleteMusicFromPlaylist(val musicPlaylist: MusicPlaylist) : MusicEvent
     data class SetFavorite(val musicId: UUID) : MusicEvent
     data class AddNbPlayed(val musicId: UUID): MusicEvent
 

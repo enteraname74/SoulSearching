@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes.player
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,13 +15,12 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.KeyEvent
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SharedPrefUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
-import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationAndroid13
-import com.github.soulsearching.classes.notification.notificationImpl.SoulSearchingNotificationBelowAndroid13
-import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
 import com.github.soulsearching.service.PlayerService
 import kotlinx.coroutines.*
 import java.io.File
@@ -35,11 +35,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     private val player: MediaPlayer = MediaPlayer()
     private val mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
-    private val notificationService: SoulSearchingNotification = if (Build.VERSION.SDK_INT >= 33) {
-        SoulSearchingNotificationAndroid13(context, mediaSession.sessionToken)
-    } else {
-        SoulSearchingNotificationBelowAndroid13(context, mediaSession.sessionToken)
-    }
+    private val notificationService: SoulSearchingNotification = SoulSearchingNotificationBuilder.buildNotification(
+        context = context,
+        mediaSessionToken = mediaSession.sessionToken
+    )
     private var currentDurationJob : Job? = null
     private var isOnlyLoadingMusic: Boolean = false
 
@@ -54,6 +53,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         .setOnAudioFocusChangeListener(this)
         .build()
 
+    /**
+     * Broadcast receiver used to control the player from the notification.
+     */
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.extras?.getBoolean("STOP") != null) {
@@ -108,6 +110,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Tries to retrieve the audio focus and play the current music.
+     */
     private fun play() {
         when (audioManager.requestAudioFocus(audioFocusRequest)) {
             AudioManager.AUDIOFOCUS_GAIN -> {
@@ -125,6 +130,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Release the audio focus and pause the current music.
+     */
     private fun pause() {
         try {
             PlayerUtils.playerViewModel.isPlaying = false
@@ -207,6 +215,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Initialize the media session used by the player.
+     */
+    @Suppress("DEPRECATION")
     private fun initializeMediaSession() {
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
@@ -248,8 +260,17 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         mediaSession.isActive = true
     }
 
+    /**
+     * Initialize the broadcast receiver used by the player.
+     */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun initializeBroadcastReceiver() {
-        context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
+        if (Build.VERSION.SDK_INT >= 33) {
+            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION),
+                Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
+        }
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
@@ -309,6 +330,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Launch a job that save the current music position to the shared preferences.
+     * It is used to save the current music position between app sessions.
+     */
     private fun launchDurationJob() {
         currentDurationJob = CoroutineScope(Dispatchers.IO).launch {
             while(true){
@@ -323,6 +348,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Release the duration job.
+     */
     private fun releaseDurationJob() {
         if (currentDurationJob != null) {
             currentDurationJob!!.cancel()
@@ -330,6 +358,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         }
     }
 
+    /**
+     * Update media session data with information the current played song in the player view model.
+     */
     private fun updateMediaSessionMetadata() {
         val bitmap = if (PlayerUtils.playerViewModel.currentMusicCover != null) {
             PlayerUtils.playerViewModel.currentMusicCover
@@ -377,6 +408,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         )
     }
 
+    /**
+     * Update the state of the player's media session.
+     */
     private fun updateMediaSessionState() {
         val musicState = if (player.isPlaying) {
             PlaybackState.STATE_PLAYING
@@ -403,6 +437,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         )
     }
 
+    /**
+     * Manage the audio becoming noisy event.
+     */
     private fun manageAudioBecomingNoisy() {
         context.registerReceiver(
             audioBecomingNoisyReceiver,
@@ -410,6 +447,9 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
         )
     }
 
+    /**
+     * Release the broadcast receiver managing the audio becoming noisy event.
+     */
     private fun releaseAudioBecomingNoisyReceiver() {
         context.unregisterReceiver(audioBecomingNoisyReceiver)
     }

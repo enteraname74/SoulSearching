@@ -1,10 +1,13 @@
 package com.github.soulsearching.events
 
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.SelectableMusicItem
-import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
-import com.github.soulsearching.database.model.Music
+import com.github.soulsearching.classes.types.AddMusicsStateType
 
-interface AddMusicsEvent {
+/**
+ * Events related to the operation of adding musics.
+ */
+sealed interface AddMusicsEvent {
     object ResetState: AddMusicsEvent
     data class SetState(val newState: AddMusicsStateType): AddMusicsEvent
     data class AddFetchedMusics(val musics: ArrayList<SelectableMusicItem>): AddMusicsEvent

@@ -1,25 +1,28 @@
 package com.github.soulsearching.screens
 
 import android.graphics.Bitmap
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewModels.PlayerMusicListViewModel
-import com.github.soulsearching.viewModels.SelectedArtistViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun SelectedArtistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -31,9 +34,9 @@ fun SelectedArtistScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> Bitmap?,
-    swipeableState: SwipeableState<BottomSheetStates>
+    playerDraggableState: PlayerDraggableState
 ) {
-    var isArtistFetched by rememberSaveable {
+    var isArtistFetched by remember {
         mutableStateOf(false)
     }
 
@@ -46,10 +49,9 @@ fun SelectedArtistScreen(
     val musicState by selectedArtistViewModel.musicState.collectAsState()
 
     if (musicState.musics.isEmpty()) {
-        // On doit quand même regarder si l'artiste correspondant existe avant de revenir en arrière
-        LaunchedEffect(key1 = "CheckIfAlbumDeleted") {
+        SideEffect {
             CoroutineScope(Dispatchers.IO).launch {
-                if (selectedArtistViewModel.checkIfArtistIdDeleted(UUID.fromString(selectedArtistId))) {
+                if (selectedArtistViewModel.doesArtistExists(UUID.fromString(selectedArtistId))) {
                     withContext(Dispatchers.Main) {
                         navigateBack()
                     }
@@ -71,7 +73,7 @@ fun SelectedArtistScreen(
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerSwipeableState = swipeableState,
+        playerDraggableState = playerDraggableState,
         playlistId = artistWithMusicsState.artistWithMusics.artist.artistId,
         playerMusicListViewModel = playerMusicListViewModel,
         updateNbPlayedAction = { selectedArtistViewModel.onArtistEvent(ArtistEvent.AddNbPlayed(it)) },

@@ -6,40 +6,48 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.ColorPaletteUtils
-import com.github.soulsearching.classes.PlayerUtils
-import com.github.soulsearching.classes.SettingsUtils
-import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 
+/**
+ * Dynamic colors used in the application.
+ */
 object DynamicColor {
     val primary: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (
-                SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
-            ) {
-                ColorPaletteUtils.getDynamicPrimaryColor()
+            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+                MaterialTheme.colorScheme.primary
             } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
                 && SettingsUtils.settingsViewModel.playlistPalette != null
             ) {
                 ColorPaletteUtils.getDynamicPrimaryColor(
-                    SettingsUtils.settingsViewModel.playlistPalette!!.rgb
+                    SettingsUtils.settingsViewModel.playlistPalette?.rgb
                 )
+            } else if (
+                SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
+                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
+            ) {
+                ColorPaletteUtils.getDynamicPrimaryColor()
             } else {
                 MaterialTheme.colorScheme.primary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "PRIMARY_DYNAMIC_COLOR"
         ).value
 
     val onPrimary: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (
+            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+                MaterialTheme.colorScheme.onPrimary
+            } else if (
                 (
-                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
                                 && PlayerUtils.playerViewModel.currentColorPalette != null
                         )
                 || (
@@ -51,37 +59,43 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onPrimary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "ON_PRIMARY_DYNAMIC_COLOR"
         ).value
-
 
     val secondary: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
-                && PlayerUtils.playerViewModel.currentColorPalette != null
-            ) {
-                ColorPaletteUtils.getDynamicSecondaryColor()
+            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+                MaterialTheme.colorScheme.secondary
             } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
                 && SettingsUtils.settingsViewModel.playlistPalette != null
             ) {
                 ColorPaletteUtils.getDynamicSecondaryColor(
                     SettingsUtils.settingsViewModel.playlistPalette!!.rgb
                 )
-            } else {
+            } else if (SettingsUtils.settingsViewModel.isDynamicThemeOn()
+                || SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
+            ) {
+                ColorPaletteUtils.getDynamicSecondaryColor()
+            }  else {
                 MaterialTheme.colorScheme.secondary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "SECONDARY_DYNAMIC_COLOR"
         ).value
 
     val onSecondary: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (
+            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+                MaterialTheme.colorScheme.onSecondary
+            } else if (
                 (
-                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
                                 && PlayerUtils.playerViewModel.currentColorPalette != null
                         )
                 || (
@@ -93,16 +107,20 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.onSecondary
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "ON_SECONDARY_DYNAMIC_COLOR"
         ).value
 
     val subText: Color
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (
+            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+                MaterialTheme.colorScheme.outline
+            } else if (
                 (
-                        SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC
+                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
                                 && PlayerUtils.playerViewModel.currentColorPalette != null
                         )
                 || (
@@ -114,6 +132,7 @@ object DynamicColor {
             } else {
                 MaterialTheme.colorScheme.outline
             },
-            tween(Constants.AnimationTime.short)
+            tween(Constants.AnimationDuration.short),
+            label = "SUB_TEXT_DYNAMIC_COLOR"
         ).value
 }

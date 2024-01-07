@@ -1,12 +1,11 @@
 package com.github.soulsearching.composables.playButtons
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -18,16 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.PlayerUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
-    playerViewSwipeableState: SwipeableState<BottomSheetStates>
+    playerViewDraggableState: PlayerDraggableState
 ) {
     Row(
         modifier = modifier,
@@ -40,7 +40,7 @@ fun MinimisedPlayButtonsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clickable {
-                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                    if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                         PlayerService.playPrevious()
                     }
                 },
@@ -53,8 +53,8 @@ fun MinimisedPlayButtonsComposable(
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.setPlayingState()
+                        if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
+                            PlayerUtils.playerViewModel.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
@@ -66,8 +66,8 @@ fun MinimisedPlayButtonsComposable(
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-                        if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.setPlayingState()
+                        if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
+                            PlayerUtils.playerViewModel.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
@@ -79,7 +79,7 @@ fun MinimisedPlayButtonsComposable(
             modifier = Modifier
                 .size(40.dp)
                 .clickable {
-                    if (playerViewSwipeableState.currentValue == BottomSheetStates.MINIMISED) {
+                    if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
                         PlayerService.playNext()
                     }
                 },

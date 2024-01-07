@@ -14,7 +14,10 @@ class App : Application() {
         createNotificationChannel()
     }
 
-    private fun createNotificationChannel(){
+    /**
+     * Create the channel used by the Notification.
+     */
+    private fun createNotificationChannel() {
         val channel = NotificationChannel(
             SoulSearchingNotification.MUSIC_NOTIFICATION_CHANNEL_ID,
             getString(R.string.notification_name),
@@ -22,7 +25,8 @@ class App : Application() {
         )
         channel.description = getString(R.string.notification_channel_description)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
 
     }

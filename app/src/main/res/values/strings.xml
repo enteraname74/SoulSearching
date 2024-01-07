@@ -77,7 +77,7 @@
     <string name="delete_album_dialog_title">Are you sure to delete this album?</string>
     <string name="delete_artist_dialog_title">Are you sure to delete this artist?</string>
     <string name="remove_music_from_playlist_title">Are you sure to remove this song from this playlist?</string>
-    <string name="delete_music_dialog_text">You can retrieve it in the "deleted songs" section of the application.</string>
+    <string name="delete_music_dialog_text">It will be removed from the application.</string>
     <string name="remove_music_from_playlist_text">This song will be removed from this playlist but not deleted from the application.</string>
     <string name="create_playlist_dialog_title">Create a new playlist</string>
     <string name="delete">Delete</string>
@@ -131,7 +131,7 @@
     <string name="personalized_theme_text">Define precisely your color theme</string>
     <string name="dynamic_player_view">Use dynamic theme for player view</string>
     <string name="dynamic_playlist_view">Use dynamic theme for playlist, album and artist view</string>
-    <string name="dynamic_other_view">Use dynamic theme for other view</string>
+    <string name="dynamic_other_views">Use dynamic theme for the other views</string>
 
     <!-- Personalization strings -->
     <string name="main_page_title">Main page</string>

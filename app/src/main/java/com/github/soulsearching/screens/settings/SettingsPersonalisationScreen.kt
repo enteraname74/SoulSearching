@@ -11,11 +11,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.SettingsUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.settings.SettingsElement
-import com.github.soulsearching.composables.settings.SettingsSwitchElement
+import com.github.soulsearching.composables.setting.SettingsElement
+import com.github.soulsearching.composables.setting.SettingsSwitchElement
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable

@@ -1,10 +1,13 @@
 package com.github.soulsearching.states
 
 import android.graphics.Bitmap
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
-import com.github.soulsearching.database.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 
+/**
+ * Manage elements related to artists.
+ */
 data class ArtistState(
     val artists: List<ArtistWithMusics> = emptyList(),
     val selectedArtist : ArtistWithMusics = ArtistWithMusics(),
