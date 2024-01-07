@@ -14,6 +14,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateTo
@@ -32,7 +35,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
@@ -41,11 +44,11 @@ import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
-import com.github.soulsearching.composables.remembercomposable.checkIfPostNotificationGranted
-import com.github.soulsearching.composables.remembercomposable.checkIfReadPermissionGranted
-import com.github.soulsearching.composables.remembercomposable.rememberPlayerDraggableState
-import com.github.soulsearching.composables.remembercomposable.rememberPlayerMusicDraggableState
-import com.github.soulsearching.composables.remembercomposable.rememberSearchDraggableState
+import com.github.soulsearching.composables.remembers.checkIfPostNotificationGranted
+import com.github.soulsearching.composables.remembers.checkIfReadPermissionGranted
+import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
+import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggableState
+import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
@@ -71,24 +74,24 @@ import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewModels.AddMusicsViewModel
-import com.github.soulsearching.viewModels.AllAlbumsViewModel
-import com.github.soulsearching.viewModels.AllArtistsViewModel
-import com.github.soulsearching.viewModels.AllFoldersViewModel
-import com.github.soulsearching.viewModels.AllImageCoversViewModel
-import com.github.soulsearching.viewModels.AllMusicsViewModel
-import com.github.soulsearching.viewModels.AllPlaylistsViewModel
-import com.github.soulsearching.viewModels.AllQuickAccessViewModel
-import com.github.soulsearching.viewModels.MainActivityViewModel
-import com.github.soulsearching.viewModels.ModifyAlbumViewModel
-import com.github.soulsearching.viewModels.ModifyArtistViewModel
-import com.github.soulsearching.viewModels.ModifyMusicViewModel
-import com.github.soulsearching.viewModels.ModifyPlaylistViewModel
-import com.github.soulsearching.viewModels.PlayerMusicListViewModel
-import com.github.soulsearching.viewModels.PlayerViewModel
-import com.github.soulsearching.viewModels.SelectedAlbumViewModel
-import com.github.soulsearching.viewModels.SelectedArtistViewModel
-import com.github.soulsearching.viewModels.SelectedPlaylistViewModel
+import com.github.soulsearching.viewmodel.AddMusicsViewModel
+import com.github.soulsearching.viewmodel.AllAlbumsViewModel
+import com.github.soulsearching.viewmodel.AllArtistsViewModel
+import com.github.soulsearching.viewmodel.AllFoldersViewModel
+import com.github.soulsearching.viewmodel.AllImageCoversViewModel
+import com.github.soulsearching.viewmodel.AllMusicsViewModel
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
+import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
+import com.github.soulsearching.viewmodel.MainActivityViewModel
+import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
+import com.github.soulsearching.viewmodel.ModifyArtistViewModel
+import com.github.soulsearching.viewmodel.ModifyMusicViewModel
+import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
+import com.github.soulsearching.viewmodel.SelectedArtistViewModel
+import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -304,7 +307,15 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    NavHost(navController = navController, startDestination = "mainPage") {
+                    NavHost(
+                        modifier = Modifier.fillMaxSize(),
+                        navController = navController,
+                        startDestination = "mainPage",
+                        enterTransition =
+                        { fadeIn(animationSpec = tween(Constants.AnimationDuration.normal)) },
+                        exitTransition =
+                        { fadeOut(animationSpec = tween(Constants.AnimationDuration.normal)) },
+                    ) {
                         composable("mainPage") {
                             MainPageScreen(
                                 allMusicsViewModel = allMusicsViewModel,
