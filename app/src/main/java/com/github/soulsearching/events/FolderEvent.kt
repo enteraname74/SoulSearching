@@ -1,7 +1,7 @@
 package com.github.soulsearching.events
 
 import com.github.enteraname74.domain.model.Folder
-import com.github.soulsearching.classes.enumsAndTypes.FolderStateType
+import com.github.soulsearching.classes.types.FolderStateType
 
 /**
  * Events related to folders.

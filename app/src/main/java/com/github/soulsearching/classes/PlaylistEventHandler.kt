@@ -6,8 +6,8 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState

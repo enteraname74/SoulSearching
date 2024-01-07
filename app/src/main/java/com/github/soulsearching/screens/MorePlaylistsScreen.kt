@@ -22,15 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
-import com.github.soulsearching.composables.bottomSheets.playlist.PlaylistBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheet.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewModels.AllPlaylistsViewModel
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 

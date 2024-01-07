@@ -9,15 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
-import com.github.soulsearching.classes.enumsAndTypes.MusicBottomSheetState
-import com.github.soulsearching.composables.bottomSheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewModels.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 

@@ -3,8 +3,8 @@ package com.github.soulsearching.states
 import android.graphics.Bitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicWithCover
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 import java.util.UUID
 
 /**

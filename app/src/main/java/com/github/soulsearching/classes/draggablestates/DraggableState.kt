@@ -8,7 +8,7 @@ import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.types.BottomSheetStates
 
 /**
  * Manage the state of a Draggable element.

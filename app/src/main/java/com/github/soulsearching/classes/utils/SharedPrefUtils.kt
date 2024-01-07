@@ -1,10 +1,10 @@
 package com.github.soulsearching.classes.utils
 
 import android.content.SharedPreferences
-import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
-import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
-import com.github.soulsearching.classes.enumsAndTypes.SortDirection
-import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.types.ColorThemeType
+import com.github.soulsearching.classes.types.PlayerMode
+import com.github.soulsearching.classes.types.SortDirection
+import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent

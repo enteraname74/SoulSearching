@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.SettingsUtils
-import com.github.soulsearching.classes.enumsAndTypes.ColorThemeType
+import com.github.soulsearching.classes.types.ColorThemeType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.settings.ColorThemeCard
-import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
+import com.github.soulsearching.composables.setting.ColorThemeCard
+import com.github.soulsearching.composables.setting.PersonalizedColorThemeCard
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable

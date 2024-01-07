@@ -2,7 +2,7 @@ package com.github.soulsearching.events
 
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.SelectableMusicItem
-import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
+import com.github.soulsearching.classes.types.AddMusicsStateType
 
 /**
  * Events related to the operation of adding musics.

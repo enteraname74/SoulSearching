@@ -47,7 +47,7 @@ import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewModels.ModifyMusicViewModel
+import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import java.util.UUID
 
 @Composable

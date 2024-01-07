@@ -18,11 +18,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.enumsAndTypes.PlayerMode
+import com.github.soulsearching.classes.types.PlayerMode
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.viewModels.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 

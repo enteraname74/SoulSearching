@@ -1,6 +1,6 @@
 package com.github.soulsearching.classes.utils
 
-import com.github.soulsearching.viewModels.SettingsViewModel
+import com.github.soulsearching.viewmodel.SettingsViewModel
 
 /**
  * Object containing the instance of the setting view model.

@@ -5,7 +5,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.ui.unit.Density
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
+import com.github.soulsearching.classes.types.BottomSheetStates
 
 /**
  * Saver used to save the state of a SearchDraggableState between recompositions.

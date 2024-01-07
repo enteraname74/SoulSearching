@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewModels.AllMusicsViewModel
+import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope

@@ -1,6 +1,6 @@
 package com.github.soulsearching.classes.utils
 
-import com.github.soulsearching.viewModels.PlayerViewModel
+import com.github.soulsearching.viewmodel.PlayerViewModel
 
 /**
  * Object containing the instance of the player view model.

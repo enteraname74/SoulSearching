@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.settings.SettingsElement
+import com.github.soulsearching.composables.setting.SettingsElement
 import com.github.soulsearching.ui.theme.DynamicColor
 
 @Composable
