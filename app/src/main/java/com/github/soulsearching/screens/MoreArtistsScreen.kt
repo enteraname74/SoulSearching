@@ -50,7 +50,6 @@ fun MoreArtistsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 80.dp)
             .background(color = DynamicColor.primary)
     ) {
         AppHeaderBar(
@@ -96,7 +95,12 @@ fun MoreArtistsScreen(
         }
         LazyVerticalGrid(
             columns = GridCells.FixedSize(Constants.ImageSize.huge),
-            contentPadding = PaddingValues(Constants.Spacing.small),
+            contentPadding = PaddingValues(
+                top = Constants.Spacing.small,
+                start = Constants.Spacing.small,
+                end = Constants.Spacing.small,
+                bottom = 80.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
