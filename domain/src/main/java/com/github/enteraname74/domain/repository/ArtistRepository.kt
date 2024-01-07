@@ -95,7 +95,7 @@ class ArtistRepository @Inject constructor(
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
-    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics> =
+    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?> =
         artistDataSource.getArtistWithMusicsAsFlow(
             artistId = artistId
         )
@@ -109,7 +109,7 @@ class ArtistRepository @Inject constructor(
     /**
      * Retrieves an ArtistWithMusics.
      */
-    suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics =
+    suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics? =
         artistDataSource.getArtistWithMusics(
             artistId = artistId
         )

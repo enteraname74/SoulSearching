@@ -92,6 +92,7 @@ fun PlaylistScreen(
 
     val shuffleAction = {
         if (musicState.musics.isNotEmpty()) {
+            playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
                     playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
@@ -158,7 +159,6 @@ fun PlaylistScreen(
                     PlaylistPanel(
                         editAction = navigateToModifyPlaylist,
                         shuffleAction = {
-                            playlistId?.let(updateNbPlayedAction)
                             shuffleAction()
                         },
                         searchAction = { searchAction() },

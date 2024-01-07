@@ -44,37 +44,37 @@ internal class ArtistDataSourceImpl @Inject constructor(
 
     override fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistsWithMusicsSortByNameAscAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
     override fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusicsSortByNameDescAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
     override fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusicsSortByAddedDateAscAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
     override fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusicsSortByAddedDateDescAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
     override fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusicsSortByNbPlayedAscAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
     override fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusicsSortByNbPlayedDescAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
@@ -94,22 +94,22 @@ internal class ArtistDataSourceImpl @Inject constructor(
         )?.toArtist()
     }
 
-    override fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics> {
+    override fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?> {
         return appDatabase.artistDao.getArtistWithMusicsAsFlow(
             artistId = artistId
-        ).map { it.toArtistWithMusics() }
+        ).map { it?.toArtistWithMusics() }
     }
 
     override fun getAllArtistWithMusicsFromQuickAccessAsFlow(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistsFromQuickAccessAsFlow().map { list ->
-            list.map { it.toArtistWithMusics() }
+            list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }
 
-    override suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics {
+    override suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics? {
         return appDatabase.artistDao.getArtistWithMusics(
             artistId = artistId
-        ).toArtistWithMusics()
+        )?.toArtistWithMusics()
     }
 
     override suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID) {
@@ -135,7 +135,7 @@ internal class ArtistDataSourceImpl @Inject constructor(
     override suspend fun getNbPlayedOfArtist(artistId: UUID): Int {
         return appDatabase.artistDao.getNbPlayedOfArtist(
             artistId = artistId
-        )
+        ) ?: 0
     }
 
     override suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID) {

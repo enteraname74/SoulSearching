@@ -154,7 +154,7 @@ internal class AlbumDataSourceImpl @Inject constructor(
     override suspend fun getNbPlayedOfAlbum(albumId: UUID): Int {
         return appDatabase.albumDao.getNbPlayedOfAlbum(
             albumId = albumId
-        )
+        ) ?: 0
     }
 
     override suspend fun updateNbPlayed(newNbPlayed: Int, albumId: UUID) {

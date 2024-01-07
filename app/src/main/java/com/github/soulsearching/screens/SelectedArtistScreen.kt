@@ -48,17 +48,17 @@ fun SelectedArtistScreen(
     val artistWithMusicsState by selectedArtistViewModel.selectedArtistState.collectAsState()
     val musicState by selectedArtistViewModel.musicState.collectAsState()
 
-    if (musicState.musics.isEmpty()) {
-        SideEffect {
-            CoroutineScope(Dispatchers.IO).launch {
-                if (selectedArtistViewModel.doesArtistExists(UUID.fromString(selectedArtistId))) {
-                    withContext(Dispatchers.Main) {
-                        navigateBack()
-                    }
-                }
-            }
-        }
-    }
+//    if (musicState.musics.isEmpty()) {
+//        SideEffect {
+//            CoroutineScope(Dispatchers.IO).launch {
+//                if (!selectedArtistViewModel.doesArtistExists(UUID.fromString(selectedArtistId))) {
+//                    withContext(Dispatchers.Main) {
+//                        navigateBack()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     PlaylistScreen(
         navigateBack = navigateBack,

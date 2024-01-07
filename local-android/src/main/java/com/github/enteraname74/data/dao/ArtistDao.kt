@@ -26,27 +26,27 @@ internal interface ArtistDao {
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY artistName DESC")
-    fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY addedDate ASC")
-    fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY addedDate DESC")
-    fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed ASC")
-    fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist ORDER BY nbPlayed DESC")
-    fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName AND artistId != :artistId")
@@ -60,15 +60,15 @@ internal interface ArtistDao {
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<RoomArtistWithMusics>
+    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<RoomArtistWithMusics?>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE isInQuickAccess = 1")
-    fun getAllArtistsFromQuickAccessAsFlow(): Flow<List<RoomArtistWithMusics>>
+    fun getAllArtistsFromQuickAccessAsFlow(): Flow<List<RoomArtistWithMusics?>>
 
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
-    suspend fun getArtistWithMusics(artistId: UUID): RoomArtistWithMusics
+    suspend fun getArtistWithMusics(artistId: UUID): RoomArtistWithMusics?
 
     @Query("UPDATE RoomArtist SET coverId = :newCoverId WHERE artistId = :artistId")
     suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID)
@@ -80,7 +80,7 @@ internal interface ArtistDao {
     suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID)
 
     @Query("SELECT nbPlayed FROM RoomArtist WHERE artistId = :artistId")
-    suspend fun getNbPlayedOfArtist(artistId: UUID): Int
+    suspend fun getNbPlayedOfArtist(artistId: UUID): Int?
 
     @Query("UPDATE RoomArtist SET nbPlayed = :newNbPlayed WHERE artistId = :artistId")
     suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID)

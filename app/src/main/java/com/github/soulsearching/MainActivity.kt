@@ -274,6 +274,7 @@ class MainActivity : AppCompatActivity() {
                     val maxHeight = with(LocalDensity.current) {
                         constraintsScope.maxHeight.toPx()
                     }
+                    println("MAIN BOX")
 
                     val playerDraggableState = rememberPlayerDraggableState(
                         constraintsScope = constraintsScope
@@ -306,6 +307,8 @@ class MainActivity : AppCompatActivity() {
                             mainActivityViewModel.hasLastPlayedMusicsBeenFetched = true
                         }
                     }
+
+                    println("NAV HOST WITH DIR: ${navController.currentDestination?.route}")
 
                     NavHost(
                         modifier = Modifier.fillMaxSize(),

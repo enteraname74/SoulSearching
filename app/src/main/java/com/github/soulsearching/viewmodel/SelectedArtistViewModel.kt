@@ -125,7 +125,7 @@ class SelectedArtistViewModel @Inject constructor(
     suspend fun doesArtistExists(artistId : UUID) : Boolean{
         return artistRepository.getArtistFromId(
             artistId
-        ) == null
+        ) != null
     }
 
     /**

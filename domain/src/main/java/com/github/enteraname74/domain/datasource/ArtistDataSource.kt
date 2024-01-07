@@ -72,7 +72,7 @@ interface ArtistDataSource {
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
-    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics>
+    fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?>
 
     /**
      * Retrieves all ArtistWithMusics from the quick access
@@ -82,7 +82,7 @@ interface ArtistDataSource {
     /**
      * Retrieves an ArtistWithMusics.
      */
-    suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics
+    suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics?
 
     /**
      * Update the cover of an Artist.
