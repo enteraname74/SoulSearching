@@ -2,9 +2,9 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.datasource.MusicDataSource
 import com.github.enteraname74.domain.model.Music
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Repository of a Music.

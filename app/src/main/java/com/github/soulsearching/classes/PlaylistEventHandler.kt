@@ -1,5 +1,6 @@
 package com.github.soulsearching.classes
 
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.repository.ImageCoverRepository
@@ -9,9 +10,6 @@ import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.model.UIImageCover
-import com.github.soulsearching.model.toImageCover
-import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -202,10 +200,10 @@ class PlaylistEventHandler(
             val coverId = if (publicState.value.hasSetNewCover) {
                 val id = UUID.randomUUID()
                 imageCoverRepository.insertImageCover(
-                    UIImageCover(
+                    ImageCover(
                         coverId = id,
                         cover = publicState.value.cover
-                    ).toImageCover()
+                    )
                 )
                 id
             } else {
@@ -227,7 +225,7 @@ class PlaylistEventHandler(
         CoroutineScope(Dispatchers.IO).launch {
             val playlist = playlistRepository.getPlaylistFromId(event.playlistId)
             val cover = if (playlist.coverId != null) {
-                imageCoverRepository.getCoverOfElement(playlist.coverId!!)?.toUIImageCover()?.cover
+                imageCoverRepository.getCoverOfElement(playlist.coverId!!)?.cover
             } else {
                 null
             }

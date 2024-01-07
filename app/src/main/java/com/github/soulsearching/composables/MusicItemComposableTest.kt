@@ -30,6 +30,7 @@ import kotlin.reflect.KSuspendFunction1
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
+@Suppress("UNUSED_PARAMETER", "UNUSED")
 @Composable
 fun MusicItemComposableTest(
     music: Music,

@@ -49,6 +49,7 @@ object Utils {
     /**
      * Retrieve a bitmap from a given Uri.
      */
+    @Suppress("DEPRECATION")
     fun getBitmapFromUri(uri: Uri, contentResolver: ContentResolver): Bitmap {
         return if (Build.VERSION.SDK_INT >= 29) {
             contentResolver.loadThumbnail(

@@ -13,7 +13,6 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +70,7 @@ class ModifyMusicViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             val music = musicRepository.getMusicFromId(musicId)
             val cover = if (music.coverId != null) {
-                imageCoverRepository.getCoverOfElement(music.coverId!!)?.toUIImageCover()
+                imageCoverRepository.getCoverOfElement(music.coverId!!)
             } else {
                 null
             }

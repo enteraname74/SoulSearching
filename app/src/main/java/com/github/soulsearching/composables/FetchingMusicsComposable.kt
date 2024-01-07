@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,11 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.MusicUtils
 import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.viewModels.AllMusicsViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
@@ -38,8 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FetchingMusicsComposable(
     finishAddingMusicsAction: () -> Unit,
-    addingMusicAction: (Music, Bitmap?) -> Unit,
-    createFavoritePlaylistAction: () -> Unit
+    allMusicsViewModel: AllMusicsViewModel
 ) {
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)
@@ -106,15 +103,13 @@ fun FetchingMusicsComposable(
         LaunchedEffect(key1 = "FetchingMusics") {
             CoroutineScope(Dispatchers.IO).launch {
                 isFetchingMusics = true
-                MusicUtils.fetchMusics(
+                allMusicsViewModel.fetchMusics(
                     context = context,
                     updateProgress = {
                         progress = it
                     },
-                    addingMusicAction = addingMusicAction,
                     finishAction = finishAddingMusicsAction
                 )
-                createFavoritePlaylistAction()
             }
         }
     }

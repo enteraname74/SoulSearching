@@ -2,10 +2,9 @@ import com.github.enteraname74.buildsrc.AndroidConfig
 import com.github.enteraname74.buildsrc.Dependencies
 
 plugins {
-    kotlin("kapt")
     id("com.android.library")
-    kotlin("android")
-    id("com.google.dagger.hilt.android")
+    id("kotlin-android")
+    kotlin("kapt")
 }
 
 android {
@@ -33,17 +32,23 @@ java {
 
 dependencies {
     implementation(project(mapOf("path" to ":domain")))
-    implementation(Dependencies.AndroidX.CORE)
-    implementation(Dependencies.AndroidX.ROOM)
-    implementation(Dependencies.Google.HILT_ANDROID)
 
-    kapt(Dependencies.Google.HILT_COMPILER)
+    with(Dependencies.AndroidX) {
+        implementation(CORE)
+        implementation(ROOM)
+        kapt(ROOM_COMPILER)
+    }
 
-    // For instrumentation tests
-    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
+    with(Dependencies.Google) {
+        implementation(HILT_ANDROID)
+        kapt(HILT_COMPILER)
 
-    // For local unit tests
-    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-    kaptTest(Dependencies.Google.HILT_COMPILER)
+        // For instrumentation tests
+        androidTestImplementation(HILT_ANDROID_TESTING)
+        kaptAndroidTest(HILT_COMPILER)
+
+        // For local unit tests
+        testImplementation(HILT_ANDROID_TESTING)
+        kaptTest(HILT_COMPILER)
+    }
 }

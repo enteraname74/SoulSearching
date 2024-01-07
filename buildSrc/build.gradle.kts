@@ -1,5 +1,4 @@
 plugins {
-    id("java-library")
     `kotlin-dsl`
     `kotlin-dsl-precompiled-script-plugins`
 }

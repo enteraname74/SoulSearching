@@ -32,24 +32,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
-import com.github.soulsearching.classes.enumsAndTypes.BottomSheetStates
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
-import com.github.soulsearching.composables.remembercomposable.rememberPlayerDraggableState
-import com.github.soulsearching.composables.remembercomposable.rememberPlayerMusicDraggableState
 import com.github.soulsearching.composables.remembercomposable.checkIfPostNotificationGranted
 import com.github.soulsearching.composables.remembercomposable.checkIfReadPermissionGranted
+import com.github.soulsearching.composables.remembercomposable.rememberPlayerDraggableState
+import com.github.soulsearching.composables.remembercomposable.rememberPlayerMusicDraggableState
 import com.github.soulsearching.composables.remembercomposable.rememberSearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.screens.MainPageScreen
 import com.github.soulsearching.screens.ModifyAlbumScreen
 import com.github.soulsearching.screens.ModifyArtistScreen
@@ -94,7 +93,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -226,21 +224,7 @@ class MainActivity : AppCompatActivity() {
                             SharedPrefUtils.setMusicsFetched()
                             mainActivityViewModel.hasMusicsBeenFetched = true
                         },
-                        addingMusicAction = { music, cover ->
-                            runBlocking {
-                                val job = CoroutineScope(Dispatchers.IO).launch {
-                                    allMusicsViewModel.addMusic(music, cover)
-                                }
-                                job.join()
-                            }
-                        },
-                        createFavoritePlaylistAction = {
-                            allPlaylistsViewModel.onPlaylistEvent(
-                                PlaylistEvent.CreateFavoritePlaylist(
-                                    name = applicationContext.getString(R.string.favorite)
-                                )
-                            )
-                        }
+                        allMusicsViewModel = allMusicsViewModel
                     )
                     return@SoulSearchingTheme
                 }

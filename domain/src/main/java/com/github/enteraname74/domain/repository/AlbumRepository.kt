@@ -4,9 +4,9 @@ import com.github.enteraname74.domain.datasource.AlbumDataSource
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Repository of an Album.

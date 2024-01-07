@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Soul Searching"
 include(":app")
 include(":domain")
-include(":data")
+include(":local-android")

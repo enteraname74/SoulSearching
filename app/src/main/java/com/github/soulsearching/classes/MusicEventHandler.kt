@@ -1,6 +1,7 @@
 package com.github.soulsearching.classes
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
@@ -18,8 +19,6 @@ import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.model.UIImageCover
-import com.github.soulsearching.model.toImageCover
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.CoroutineScope
@@ -200,10 +199,10 @@ class MusicEventHandler(
             val coverId = if (publicState.value.hasCoverBeenChanged) {
                 val id = UUID.randomUUID()
                 imageCoverRepository.insertImageCover(
-                    UIImageCover(
+                    ImageCover(
                         coverId = id,
                         cover = publicState.value.cover
-                    ).toImageCover()
+                    )
                 )
                 id
             } else {

@@ -10,7 +10,6 @@ import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
 import com.github.soulsearching.classes.utils.Utils
-import com.github.soulsearching.database.dao.*
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel

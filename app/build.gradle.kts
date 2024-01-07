@@ -3,10 +3,13 @@ import com.github.enteraname74.buildsrc.AndroidConfig
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("kotlin-android")
+//    id("org.jetbrains.kotlin.android")
+//    id("kotlin-kapt")
 //    id("com.google.dagger.hilt.android")
-    id("kotlin-parcelize")
+//    id("kotlin-parcelize")
+    id("dagger.hilt.android.plugin")
+    kotlin("kapt")
 }
 
 android {
@@ -73,48 +76,58 @@ kapt {
     correctErrorTypes = true
 }
 
+hilt {
+    enableAggregatingTask = true
+}
+
 dependencies {
 
-    implementation(Dependencies.AndroidX.CORE)
-    implementation(Dependencies.AndroidX.LIFECYCLE)
-    implementation(Dependencies.AndroidX.ACTIVITY_COMPOSE)
-    implementation(Dependencies.AndroidX.UI)
-    implementation(Dependencies.AndroidX.UI_TOOLING)
-    implementation(Dependencies.AndroidX.MATERIAL3)
-    implementation(Dependencies.AndroidX.MATERIAL)
-    implementation(Dependencies.AndroidX.MATERIAL_ICON_EXTENDED)
-    implementation(Dependencies.AndroidX.ROOM)
-    implementation(Dependencies.AndroidX.APPCOMPAT_RESOURCES)
-    implementation(Dependencies.AndroidX.APPCOMPAT)
-    implementation(Dependencies.AndroidX.NAVIGATION_COMPOSE)
-    implementation(Dependencies.AndroidX.PALETTE)
-    implementation(Dependencies.AndroidX.MEDIA)
+    with(Dependencies.AndroidX) {
+        implementation(CORE)
+        implementation(LIFECYCLE)
+        implementation(ACTIVITY_COMPOSE)
+        implementation(UI)
+        implementation(UI_TOOLING)
+        implementation(MATERIAL3)
+        implementation(MATERIAL)
+        implementation(MATERIAL_ICON_EXTENDED)
+        implementation(ROOM)
+        implementation(APPCOMPAT_RESOURCES)
+        implementation(APPCOMPAT)
+        implementation(NAVIGATION_COMPOSE)
+        implementation(PALETTE)
+        implementation(MEDIA)
 
-    implementation(Dependencies.Google.ACCOMPANIST_PAGER)
-    implementation(Dependencies.Google.ACCOMPANIST_PAGER_INDICATORS)
-    implementation(Dependencies.Google.HILT_ANDROID)
-    implementation(Dependencies.Google.GSON)
-    implementation(Dependencies.Google.ACCOMPANIST_SYSTEMUICONTROLLER)
+        androidTestImplementation(JUNIT)
+        androidTestImplementation(ESPRESSO_CORE)
+        androidTestImplementation(UI_TEST_JUNIT4)
 
-    androidTestImplementation(Dependencies.AndroidX.JUNIT)
-    androidTestImplementation(Dependencies.AndroidX.ESPRESSO_CORE)
-    androidTestImplementation(Dependencies.AndroidX.UI_TEST_JUNIT4)
+        debugImplementation(UI_TOOLING_PREVIEW)
+        debugImplementation(UI_TEST_MANIFEST)
 
-    debugImplementation(Dependencies.AndroidX.UI_TOOLING_PREVIEW)
-    debugImplementation(Dependencies.AndroidX.UI_TEST_MANIFEST)
+        kapt(ROOM_COMPILER)
+    }
 
-//    testImplementation(Dependencies.JUNIT)
-//    kapt(Dependencies.AndroidX.ROOM_COMPILER)
-//    kapt(Dependencies.Google.HILT_COMPILER)
-//
-//    // For instrumentation tests
-//    androidTestImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-//    kaptAndroidTest(Dependencies.Google.HILT_COMPILER)
-//
-//    // For local unit tests
-//    testImplementation(Dependencies.Google.HILT_ANDROID_TESTING)
-//    kaptTest(Dependencies.Google.HILT_COMPILER)
+    with(Dependencies.Google) {
+        implementation(ACCOMPANIST_PAGER)
+        implementation(ACCOMPANIST_PAGER_INDICATORS)
+        implementation(HILT_ANDROID)
+        implementation(GSON)
+        implementation(ACCOMPANIST_SYSTEMUICONTROLLER)
+
+        kapt(HILT_COMPILER)
+
+        // For instrumentation tests
+        androidTestImplementation(HILT_ANDROID_TESTING)
+        kaptAndroidTest(HILT_COMPILER)
+
+        // For local unit tests
+        testImplementation(HILT_ANDROID_TESTING)
+        kaptTest(HILT_COMPILER)
+    }
+
+    testImplementation(Dependencies.JUNIT)
 
     implementation(project(":domain"))
-    runtimeOnly(project(":data"))
+    runtimeOnly(project(":local-android"))
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
@@ -12,9 +13,6 @@ import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.events.ArtistEvent
-import com.github.soulsearching.model.UIImageCover
-import com.github.soulsearching.model.toImageCover
-import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.SelectedArtistState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -58,10 +56,10 @@ class ModifyArtistViewModel @Inject constructor(
                     val coverId = if (state.value.hasCoverBeenChanged) {
                         val id = UUID.randomUUID()
                         imageCoverRepository.insertImageCover(
-                            UIImageCover(
+                            ImageCover(
                                 coverId = id,
                                 cover = state.value.cover
-                            ).toImageCover()
+                            )
                         )
                         id
                     } else {
@@ -159,7 +157,7 @@ class ModifyArtistViewModel @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     val artistWithMusics = artistRepository.getArtistWithMusics(event.artistId)
                     val cover = if (artistWithMusics.artist.coverId != null) {
-                        imageCoverRepository.getCoverOfElement(artistWithMusics.artist.coverId!!)?.toUIImageCover()?.cover
+                        imageCoverRepository.getCoverOfElement(artistWithMusics.artist.coverId!!)?.cover
                     } else {
                         null
                     }

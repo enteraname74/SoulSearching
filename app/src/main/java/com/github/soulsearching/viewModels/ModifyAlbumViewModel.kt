@@ -3,6 +3,7 @@ package com.github.soulsearching.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
@@ -14,9 +15,6 @@ import com.github.soulsearching.classes.utils.ColorPaletteUtils
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.model.UIImageCover
-import com.github.soulsearching.model.toImageCover
-import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,10 +69,10 @@ class ModifyAlbumViewModel @Inject constructor(
                     val coverId = if (state.value.hasSetNewCover) {
                         val newCoverId = UUID.randomUUID()
                         imageCoverRepository.insertImageCover(
-                            UIImageCover(
+                            ImageCover(
                                 coverId = newCoverId,
                                 cover = state.value.albumCover
-                            ).toImageCover()
+                            )
                         )
                         newCoverId
                     } else {
@@ -203,7 +201,7 @@ class ModifyAlbumViewModel @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     val albumWithMusics = albumRepository.getAlbumWithMusics(event.albumId)
                     val cover = if (albumWithMusics.album.coverId != null) {
-                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId !!)?.toUIImageCover()?.cover
+                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId !!)?.cover
                     } else {
                         null
                     }

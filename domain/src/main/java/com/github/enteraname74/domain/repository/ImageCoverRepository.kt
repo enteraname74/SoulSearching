@@ -2,9 +2,9 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.datasource.ImageCoverDataSource
 import com.github.enteraname74.domain.model.ImageCover
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Repository of an ImageCover.

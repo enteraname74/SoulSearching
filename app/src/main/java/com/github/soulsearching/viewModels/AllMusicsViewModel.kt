@@ -5,29 +5,30 @@ import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumArtist
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicAlbum
+import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.FolderRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.enumsAndTypes.SortDirection
 import com.github.soulsearching.classes.enumsAndTypes.SortType
+import com.github.soulsearching.classes.utils.MusicFetcher
 import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.database.dao.AlbumArtistRepository
-import com.github.soulsearching.database.dao.AlbumRepository
-import com.github.soulsearching.database.dao.ArtistRepository
-import com.github.soulsearching.database.dao.FolderRepository
-import com.github.soulsearching.database.dao.ImageCoverRepository
-import com.github.soulsearching.database.dao.MusicAlbumRepository
-import com.github.soulsearching.database.dao.MusicArtistRepository
-import com.github.soulsearching.database.dao.MusicRepository
-import com.github.soulsearching.database.dao.MusicPlaylistRepository
-import com.github.soulsearching.database.dao.PlaylistRepository
-import com.github.soulsearching.database.model.Album
-import com.github.soulsearching.database.model.AlbumArtist
-import com.github.soulsearching.database.model.Artist
-import com.github.soulsearching.database.model.Folder
-import com.github.soulsearching.database.model.ImageCover
-import com.github.soulsearching.database.model.Music
-import com.github.soulsearching.database.model.MusicAlbum
-import com.github.soulsearching.database.model.MusicArtist
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
@@ -51,7 +53,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AllMusicsViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
-    playlistRepository: PlaylistRepository,
+    private val playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
@@ -70,21 +72,21 @@ class AllMusicsViewModel @Inject constructor(
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> musicRepository.getAllMusicsSortByNameAsc()
-                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateAsc()
-                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedAsc()
-                        else -> musicRepository.getAllMusicsSortByNameAsc()
+                        SortType.NAME -> musicRepository.getAllMusicsSortByNameAscAsFlow()
+                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateAscAsFlow()
+                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedAscAsFlow()
+                        else -> musicRepository.getAllMusicsSortByNameAscAsFlow()
                     }
                 }
                 SortDirection.DESC -> {
                     when (sortType) {
-                        SortType.NAME -> musicRepository.getAllMusicsSortByNameDesc()
-                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateDesc()
-                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedDesc()
-                        else -> musicRepository.getAllMusicsSortByNameDesc()
+                        SortType.NAME -> musicRepository.getAllMusicsSortByNameDescAsFlow()
+                        SortType.ADDED_DATE -> musicRepository.getAllMusicsSortByAddedDateDescAsFlow()
+                        SortType.NB_PLAYED -> musicRepository.getAllMusicsSortByNbPlayedDescAsFlow()
+                        else -> musicRepository.getAllMusicsSortByNameDescAsFlow()
                     }
                 }
-                else -> musicRepository.getAllMusicsSortByNameAsc()
+                else -> musicRepository.getAllMusicsSortByNameAscAsFlow()
             }
         }
     }.stateIn(
@@ -258,14 +260,40 @@ class AllMusicsViewModel @Inject constructor(
      * Retrieve the artist id of a music.
      */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return musicArtistRepository.getArtistIdFromMusicId(musicId)
+        return runBlocking(context = Dispatchers.IO) { musicArtistRepository.getArtistIdFromMusicId(musicId) }
     }
 
     /**
      * Retrieve the album id of a music.
      */
     fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return musicAlbumRepository.getAlbumIdFromMusicId(musicId)
+        return runBlocking(context = Dispatchers.IO) { musicAlbumRepository.getAlbumIdFromMusicId(musicId) }
+    }
+
+    /**
+     * Fetch all musics.
+     */
+    suspend fun fetchMusics(
+        context: Context,
+        updateProgress: (Float) -> Unit,
+        finishAction: () -> Unit
+    ) {
+        val musicFetcher = MusicFetcher(
+            context = context,
+            musicRepository = musicRepository,
+            playlistRepository = playlistRepository,
+            albumRepository = albumRepository,
+            artistRepository = artistRepository,
+            musicAlbumRepository = musicAlbumRepository,
+            musicArtistRepository = musicArtistRepository,
+            albumArtistRepository = albumArtistRepository,
+            imageCoverRepository = imageCoverRepository,
+            folderRepository = folderRepository
+        )
+        musicFetcher.fetchMusics(
+            updateProgress = updateProgress,
+            finishAction = finishAction
+        )
     }
 
     /**

@@ -3,9 +3,9 @@ package com.github.enteraname74.domain.repository
 import com.github.enteraname74.domain.datasource.ArtistDataSource
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Repository of a Artist.

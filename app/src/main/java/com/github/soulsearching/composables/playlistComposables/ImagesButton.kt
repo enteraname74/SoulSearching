@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.classes.enumsAndTypes.PlaylistType
 import com.github.soulsearching.ui.theme.DynamicColor
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun ImagesButton(
     editAction: () -> Unit,

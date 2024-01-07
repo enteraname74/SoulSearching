@@ -3,13 +3,12 @@ package com.github.soulsearching.viewModels
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.model.UIImageCover
-import com.github.soulsearching.model.toUIImageCover
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +37,7 @@ class AllImageCoversViewModel @Inject constructor(
         _covers
     ) { state, covers ->
         return@combine state.copy(
-            covers = covers.map { it.toUIImageCover() } as ArrayList<UIImageCover>
+            covers = covers as ArrayList<ImageCover>
         )
 
     }.stateIn(
@@ -57,7 +56,7 @@ class AllImageCoversViewModel @Inject constructor(
     /**
      * Delete an image if it's not used by a song, an album, an artist or a playlist.
      */
-    suspend fun deleteImageIsNotUsed(cover: UIImageCover) {
+    suspend fun deleteImageIsNotUsed(cover: ImageCover) {
         if (
             musicRepository.getNumberOfMusicsWithCoverId(cover.coverId) == 0
             && albumRepository.getNumberOfAlbumsWithCoverId(cover.coverId) == 0

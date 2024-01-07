@@ -2,11 +2,18 @@ package com.github.soulsearching.viewModels
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.FolderRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.classes.enumsAndTypes.AddMusicsStateType
-import com.github.soulsearching.classes.utils.MusicUtils
+import com.github.soulsearching.classes.utils.MusicFetcher
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.states.AddMusicsState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +31,14 @@ import javax.inject.Inject
 @HiltViewModel
 class AddMusicsViewModel @Inject constructor(
     private val folderRepository: FolderRepository,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val playlistRepository: PlaylistRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
+    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicArtistRepository: MusicArtistRepository,
+    private val albumArtistRepository: AlbumArtistRepository,
+    private val imageCoverRepository: ImageCoverRepository,
 ) : ViewModel() {
     private var _state = MutableStateFlow(AddMusicsState())
     val state = _state.asStateFlow()
@@ -83,10 +97,42 @@ class AddMusicsViewModel @Inject constructor(
             val hiddenFoldersPaths = folderRepository.getAllHiddenFoldersPaths()
             val allMusics = musicRepository.getAllMusicsPaths()
 
-            val newMusics = MusicUtils.fetchNewMusics(
-                context, updateProgressBar, allMusics, hiddenFoldersPaths
+            val newMusics = fetchNewMusics(
+                context = context,
+                updateProgress = updateProgressBar,
+                alreadyPresentMusicsPaths = allMusics,
+                hiddenFoldersPaths = hiddenFoldersPaths
             )
             onAddMusicEvent(AddMusicsEvent.AddFetchedMusics(newMusics))
         }
+    }
+
+    /**
+     * Fetch new musics.
+     */
+    private fun fetchNewMusics(
+        context: Context,
+        updateProgress: (Float) -> Unit,
+        alreadyPresentMusicsPaths: List<String>,
+        hiddenFoldersPaths: List<String>
+    ) : ArrayList<SelectableMusicItem> {
+        val musicFetcher = MusicFetcher(
+            context = context,
+            musicRepository = musicRepository,
+            playlistRepository = playlistRepository,
+            albumRepository = albumRepository,
+            artistRepository = artistRepository,
+            musicAlbumRepository = musicAlbumRepository,
+            musicArtistRepository = musicArtistRepository,
+            albumArtistRepository = albumArtistRepository,
+            imageCoverRepository = imageCoverRepository,
+            folderRepository = folderRepository
+        )
+
+        return musicFetcher.fetchNewMusics(
+            updateProgress = updateProgress,
+            alreadyPresentMusicsPaths = alreadyPresentMusicsPaths,
+            hiddenFoldersPaths = hiddenFoldersPaths
+        )
     }
 }

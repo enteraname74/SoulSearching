@@ -2,8 +2,8 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.domain.model.MusicPlaylist
-import jakarta.inject.Inject
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * Repository of a MusicPlaylist.

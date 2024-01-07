@@ -22,7 +22,7 @@ import com.github.enteraname74.data.model.*
         RoomPlayerMusic::class,
         RoomFolder::class
     ],
-    version = 14
+    version = 16
 )
 
 @TypeConverters(Converters::class)

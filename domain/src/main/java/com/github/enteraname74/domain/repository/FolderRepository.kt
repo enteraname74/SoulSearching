@@ -2,8 +2,8 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.datasource.FolderDataSource
 import com.github.enteraname74.domain.model.Folder
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 /**
  * Repository of a Folder.
