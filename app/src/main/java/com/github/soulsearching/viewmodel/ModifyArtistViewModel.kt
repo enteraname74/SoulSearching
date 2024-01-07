@@ -155,7 +155,7 @@ class ModifyArtistViewModel @Inject constructor(
             }
             is ArtistEvent.ArtistFromId -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val artistWithMusics = artistRepository.getArtistWithMusics(event.artistId)
+                    val artistWithMusics = artistRepository.getArtistWithMusics(event.artistId) ?: return@launch
                     val cover = if (artistWithMusics.artist.coverId != null) {
                         imageCoverRepository.getCoverOfElement(artistWithMusics.artist.coverId!!)?.cover
                     } else {

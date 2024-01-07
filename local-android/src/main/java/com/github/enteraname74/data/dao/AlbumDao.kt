@@ -92,7 +92,7 @@ internal interface AlbumDao {
     suspend fun getNumberOfAlbumsWithCoverId(coverId : UUID) : Int
 
     @Query("SELECT nbPlayed FROM RoomAlbum WHERE albumId = :albumId")
-    suspend fun getNbPlayedOfAlbum(albumId: UUID): Int
+    suspend fun getNbPlayedOfAlbum(albumId: UUID): Int?
 
     @Query("UPDATE RoomAlbum SET nbPlayed = :newNbPlayed WHERE albumId = :albumId")
     suspend fun updateNbPlayed(newNbPlayed: Int, albumId: UUID)
