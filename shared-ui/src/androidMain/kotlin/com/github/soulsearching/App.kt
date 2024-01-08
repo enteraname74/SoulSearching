@@ -9,11 +9,9 @@ import com.github.enteraname74.localandroid.roomModule
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.SettingsViewModelImpl
-import dagger.hilt.android.HiltAndroidApp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-@HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         super.onCreate()

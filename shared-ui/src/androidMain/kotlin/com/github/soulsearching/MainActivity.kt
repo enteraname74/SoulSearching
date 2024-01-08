@@ -90,7 +90,6 @@ import com.github.soulsearching.viewmodel.PlayerViewModelImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -98,7 +97,6 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.compose.koinViewModel
 import java.lang.RuntimeException
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private lateinit var allMusicsViewModel: AllMusicsViewModel

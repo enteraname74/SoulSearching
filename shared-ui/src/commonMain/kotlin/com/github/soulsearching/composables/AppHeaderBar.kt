@@ -17,12 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.R
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 
 @Composable
@@ -45,7 +44,7 @@ fun AppHeaderBar(
         IconButton(onClick = leftAction) {
             Icon(
                 imageVector = leftIcon,
-                contentDescription = stringResource(id = R.string.back_button),
+                contentDescription = strings.backButton,
                 tint = contentColor
             )
         }
@@ -67,7 +66,7 @@ fun AppHeaderBar(
             IconButton(onClick = rightAction) {
                 Icon(
                     imageVector = rightIcon,
-                    contentDescription = stringResource(id = R.string.header_bar_right_button),
+                    contentDescription = strings.headerBarRightButton,
                     tint = contentColor
                 )
             }

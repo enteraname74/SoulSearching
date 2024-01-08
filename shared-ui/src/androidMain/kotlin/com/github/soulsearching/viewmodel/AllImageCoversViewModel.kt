@@ -15,12 +15,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * ViewModel for managing all image covers.
  */
-class AllImageCoversViewModel @Inject constructor(
+class AllImageCoversViewModel(
     private val imageCoverRepository: ImageCoverRepository,
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,

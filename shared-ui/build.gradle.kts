@@ -1,24 +1,11 @@
 import com.github.enteraname74.buildsrc.Config
 import com.github.enteraname74.buildsrc.Dependencies
-import com.github.enteraname74.buildsrc.Versions
-import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
-import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
-    id("dagger.hilt.android.plugin")
-    kotlin("kapt")
-}
-
-kapt {
-    correctErrorTypes = true
-}
-
-hilt {
-    enableAggregatingTask = true
 }
 
 kotlin {
@@ -38,6 +25,7 @@ kotlin {
                 implementation(Dependencies.KOIN_CORE)
                 implementation(Dependencies.KOIN_COMPOSE)
                 implementation(Dependencies.KMPALETTE_CORE)
+                implementation("org.jetbrains.compose.components:components-resources:1.5.11")
 
                 with(Dependencies.AndroidX) {
                     implementation(RUNTIME)
@@ -45,6 +33,7 @@ kotlin {
                     implementation(UI)
                     implementation(MATERIAL)
                     implementation(MATERIAL3)
+                    implementation(MATERIAL_ICON_EXTENDED)
                 }
             }
         }
@@ -58,9 +47,6 @@ kotlin {
                     implementation(LIFECYCLE)
                     implementation(UI)
                     implementation(UI_TOOLING)
-                    implementation(MATERIAL3)
-                    implementation(MATERIAL)
-                    implementation(MATERIAL_ICON_EXTENDED)
                     implementation(ROOM)
                     implementation(APPCOMPAT_RESOURCES)
                     implementation(APPCOMPAT)
@@ -71,17 +57,8 @@ kotlin {
                 with(Dependencies.Google) {
                     implementation(ACCOMPANIST_PAGER)
                     implementation(ACCOMPANIST_PAGER_INDICATORS)
-                    implementation(HILT_ANDROID)
                     implementation(GSON)
                     implementation(ACCOMPANIST_SYSTEMUICONTROLLER)
-
-                    configurations.getByName("kapt").dependencies.add(
-                        DefaultExternalModuleDependency(
-                            "com.google.dagger",
-                            "hilt-compiler",
-                            Versions.Google.DAGGER
-                        )
-                    )
                 }
             }
         }

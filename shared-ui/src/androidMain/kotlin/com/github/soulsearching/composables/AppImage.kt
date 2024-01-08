@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.R
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 
 @SuppressLint("UnnecessaryComposedModifier")
@@ -38,14 +39,14 @@ fun AppImage(
         Image(
             modifier = modifierBase,
             bitmap = bitmap,
-            contentDescription = stringResource(id = R.string.image),
+            contentDescription = strings.image,
             contentScale = ContentScale.Crop
         )
     } else {
         Image(
             modifier = modifierBase,
-            painter = painterResource(id = R.drawable.ic_saxophone_svg),
-            contentDescription = stringResource(id = R.string.image),
+            painter = painterResource(R.drawable.ic_saxophone_svg),
+            contentDescription = strings.image,
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(tint)
         )
