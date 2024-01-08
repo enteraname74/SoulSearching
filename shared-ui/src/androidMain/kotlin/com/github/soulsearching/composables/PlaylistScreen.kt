@@ -34,7 +34,7 @@ import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
 import com.github.soulsearching.classes.types.PlaylistType
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
@@ -43,7 +43,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -76,7 +76,7 @@ fun PlaylistScreen(
 
     image?.let {
         if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()) {
-            SettingsUtils.settingsViewModel.setPlaylistCover(it)
+            SettingsUtils.settingsViewModel.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
         }
     }

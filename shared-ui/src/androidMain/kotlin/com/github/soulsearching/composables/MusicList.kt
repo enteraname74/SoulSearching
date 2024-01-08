@@ -16,7 +16,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID

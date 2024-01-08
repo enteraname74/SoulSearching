@@ -21,7 +21,7 @@ import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun FolderStateComposable(

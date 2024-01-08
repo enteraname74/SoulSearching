@@ -8,7 +8,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun AppTextField(

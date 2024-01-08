@@ -18,7 +18,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.SettingsElement
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun SettingsAboutScreen(

@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.R
 import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun DeleteAlbumDialog(

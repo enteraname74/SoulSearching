@@ -18,7 +18,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,8 +72,7 @@ fun MusicBottomSheetEvents(
                 onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
                 CoroutineScope(Dispatchers.IO).launch {
                     PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
-                        musicId = musicState.selectedMusic.musicId,
-                        context = context
+                        musicId = musicState.selectedMusic.musicId
                     )
                     playerMusicListViewModel.savePlayerMusicList(
                         PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>
@@ -108,7 +107,6 @@ fun MusicBottomSheetEvents(
                 CoroutineScope(Dispatchers.IO).launch {
                     PlayerUtils.playerViewModel.removeMusicIfSamePlaylist(
                         musicId = musicState.selectedMusic.musicId,
-                        context = context,
                         playlistId = playlistState.selectedPlaylist.playlistId
                     )
                     playerMusicListViewModel.savePlayerMusicList(

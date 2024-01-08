@@ -28,7 +28,7 @@ import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheet.album.AlbumBottomSheetEvents
 import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID

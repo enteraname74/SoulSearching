@@ -20,7 +20,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun SortOptionsComposable(

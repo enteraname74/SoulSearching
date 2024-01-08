@@ -36,11 +36,12 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     private val player: MediaPlayer = MediaPlayer()
     private val mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
-    private val notificationService: SoulSearchingNotification = SoulSearchingNotificationBuilder.buildNotification(
-        context = context,
-        mediaSessionToken = mediaSession.sessionToken
-    )
-    private var currentDurationJob : Job? = null
+    private val notificationService: SoulSearchingNotification =
+        SoulSearchingNotificationBuilder.buildNotification(
+            context = context,
+            mediaSessionToken = mediaSession.sessionToken
+        )
+    private var currentDurationJob: Job? = null
     private var isOnlyLoadingMusic: Boolean = false
 
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -125,6 +126,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 } catch (_: IllegalStateException) {
                 }
             }
+
             else -> {
                 Log.d("PLAYER", "MISSING AUDIO MANAGER")
             }
@@ -267,8 +269,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun initializeBroadcastReceiver() {
         if (Build.VERSION.SDK_INT >= 33) {
-            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION),
-                Context.RECEIVER_NOT_EXPORTED)
+            context.registerReceiver(
+                broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION),
+                Context.RECEIVER_NOT_EXPORTED
+            )
         } else {
             context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
         }
@@ -282,11 +286,10 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
 
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
         Log.d("MEDIA PLAYER", "ERROR CODE : $what, $extra")
-        when(what) {
+        when (what) {
             MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                 PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
-                    musicId = PlayerUtils.playerViewModel.currentMusic!!.musicId,
-                    context = context
+                    musicId = PlayerUtils.playerViewModel.currentMusic!!.musicId
                 )
             }
         }
@@ -317,6 +320,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
 
                     SharedPrefUtils.setPlayerSavedCurrentMusic()
                 }
+
                 else -> {}
             }
         }
@@ -337,11 +341,12 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
      */
     private fun launchDurationJob() {
         currentDurationJob = CoroutineScope(Dispatchers.IO).launch {
-            while(true){
+            while (true) {
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1000)
                 }
-                PlayerUtils.playerViewModel.currentMusicPosition = PlayerService.getCurrentMusicPosition()
+                PlayerUtils.playerViewModel.currentMusicPosition =
+                    PlayerService.getCurrentMusicPosition()
                 if (player.isPlaying) {
                     SharedPrefUtils.setCurrentMusicPosition()
                 }

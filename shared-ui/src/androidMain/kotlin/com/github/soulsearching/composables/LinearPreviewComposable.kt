@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

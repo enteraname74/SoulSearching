@@ -25,7 +25,7 @@ import com.github.soulsearching.composables.setting.FolderStateComposable
 import com.github.soulsearching.composables.setting.LoadingComposable
 import com.github.soulsearching.composables.setting.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.AllFoldersViewModel
 
 @Composable

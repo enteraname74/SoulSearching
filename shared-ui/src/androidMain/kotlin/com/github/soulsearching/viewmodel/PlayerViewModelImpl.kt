@@ -62,7 +62,7 @@ class PlayerViewModelImpl(
      *
      * Information are found from the shared preferences.
      */
-    fun setPlayerInformationFromSavedList(musicList: ArrayList<Music>) {
+    override fun setPlayerInformationFromSavedList(musicList: ArrayList<Music>) {
         currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
         initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
 
@@ -77,10 +77,7 @@ class PlayerViewModelImpl(
      * If the playlist is empty (nothing is playing), we load the music.
      * It will remove the previous apparition of the music if there was one.
      */
-    fun addMusicToPlayNext(
-        music: Music,
-        context: Context
-    ) {
+    override fun addMusicToPlayNext(music: Music) {
         // If same music than the one played, does nothing :
         currentMusic?.let {
             if (music.musicId.compareTo(it.musicId) == 0) {
@@ -110,12 +107,12 @@ class PlayerViewModelImpl(
     /**
      * Remove a music from the playlist if the playlist is the same as a specified one.
      */
-    fun removeMusicIfSamePlaylist(musicId: UUID, context: Context, playlistId: UUID?) {
+    override fun removeMusicIfSamePlaylist(musicId: UUID, playlistId: UUID?) {
         if (playlistId == null && currentPlaylistId == null) {
-            removeMusicFromCurrentPlaylist(musicId, context)
+            removeMusicFromCurrentPlaylist(musicId)
         } else if (playlistId != null && currentPlaylistId != null) {
             if (playlistId.compareTo(currentPlaylistId) == 0) {
-                removeMusicFromCurrentPlaylist(musicId, context)
+                removeMusicFromCurrentPlaylist(musicId)
             }
         }
     }
@@ -124,7 +121,7 @@ class PlayerViewModelImpl(
      * Remove a music from the current playlist.
      * it no songs are left, the playback will stop.
      */
-    fun removeMusicFromCurrentPlaylist(musicId: UUID, context: Context) {
+    override fun removeMusicFromCurrentPlaylist(musicId: UUID) {
         val currentIndex = getIndexOfCurrentMusic()
         currentPlaylist.removeIf { it.musicId == musicId }
 
@@ -148,7 +145,7 @@ class PlayerViewModelImpl(
     /**
      * Change the current music information to the next music.
      */
-    fun setNextMusic() {
+    override fun setNextMusic() {
         if (currentPlaylist.size != 0) {
             val currentIndex = getIndexOfCurrentMusic()
 
@@ -161,7 +158,7 @@ class PlayerViewModelImpl(
     /**
      * Change the current music information to the previous music.
      */
-    fun setPreviousMusic() {
+    override fun setPreviousMusic() {
         val currentIndex = getIndexOfCurrentMusic()
 
         setNewCurrentMusicInformation(getPreviousMusic(currentIndex))
@@ -172,7 +169,7 @@ class PlayerViewModelImpl(
     /**
      * Play or pause the player.
      */
-    fun togglePlayPause() {
+    override fun togglePlayPause() {
         PlayerService.togglePlayPause()
         isPlaying = PlayerService.isPlayerPlaying()
     }
@@ -180,7 +177,7 @@ class PlayerViewModelImpl(
     /**
      * Play a playlist in shuffle and save it.
      */
-    fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
+    override fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
         CoroutineScope(Dispatchers.IO).launch {
             currentPlaylistId = null
             isPlaying = false
@@ -211,12 +208,12 @@ class PlayerViewModelImpl(
      * Define the current playlist and music.
      * Primarily used when clicking on a music.
      */
-    fun setCurrentPlaylistAndMusic(
+    override fun setCurrentPlaylistAndMusic(
         music: Music,
         playlist: ArrayList<Music>,
         playlistId: UUID?,
-        isMainPlaylist: Boolean = false,
-        isForcingNewPlaylist: Boolean = false
+        isMainPlaylist: Boolean,
+        isForcingNewPlaylist: Boolean
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             // When selecting a music manually, we force the player mode to normal:
@@ -257,7 +254,7 @@ class PlayerViewModelImpl(
     /**
      * Change the player mode.
      */
-    fun changePlayerMode() {
+    override fun changePlayerMode() {
         if (!isChangingPlayMode) {
             isChangingPlayMode = true
             when (playerMode) {
@@ -290,7 +287,7 @@ class PlayerViewModelImpl(
      * Force the player mode the normal.
      * The current playlist will be reset to be like the music list passed in parameter.
      */
-    private fun forcePlayerModeToNormal(musicList: ArrayList<Music>) {
+    override fun forcePlayerModeToNormal(musicList: ArrayList<Music>) {
         if (!isChangingPlayMode) {
             isChangingPlayMode = true
             playerMode = PlayerMode.NORMAL
@@ -303,7 +300,7 @@ class PlayerViewModelImpl(
     /**
      * Manage music events.
      */
-    fun onMusicEvent(event: MusicEvent) {
+    override fun onMusicEvent(event: MusicEvent) {
         musicEventHandler.handleEvent(event)
     }
 }

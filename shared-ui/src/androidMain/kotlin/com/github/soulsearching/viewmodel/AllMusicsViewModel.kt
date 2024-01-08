@@ -302,8 +302,7 @@ class AllMusicsViewModel(
             for (music in state.value.musics) {
                 if (!File(music.path).exists()) {
                     PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
-                        music.musicId,
-                        context
+                        music.musicId
                     )
                     musicRepository.deleteMusic(music)
                     deleteCount += 1

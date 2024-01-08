@@ -7,6 +7,8 @@ import android.content.Context
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localandroid.roomModule
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
+import com.github.soulsearching.utils.SettingsUtils
+import com.github.soulsearching.viewmodel.SettingsViewModelImpl
 import dagger.hilt.android.HiltAndroidApp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -15,6 +17,7 @@ import org.koin.core.context.startKoin
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        SettingsUtils.settingsViewModel = SettingsViewModelImpl()
         createNotificationChannel()
         startKoin {
             androidContext(applicationContext)

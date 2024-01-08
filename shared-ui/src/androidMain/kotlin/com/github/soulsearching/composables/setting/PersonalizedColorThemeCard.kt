@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 
 @Composable
 fun PersonalizedColorThemeCard(

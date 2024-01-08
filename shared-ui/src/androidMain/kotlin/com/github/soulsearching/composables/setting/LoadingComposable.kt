@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.ProgressIndicatorComposable
 import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun LoadingComposable(

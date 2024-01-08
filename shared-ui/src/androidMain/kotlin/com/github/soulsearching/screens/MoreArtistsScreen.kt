@@ -29,7 +29,7 @@ import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheet.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.events.ArtistEvent
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID

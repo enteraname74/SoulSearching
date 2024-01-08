@@ -41,7 +41,7 @@ import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
@@ -51,7 +51,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope

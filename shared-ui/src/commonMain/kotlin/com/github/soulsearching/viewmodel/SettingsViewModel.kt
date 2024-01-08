@@ -5,15 +5,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.lifecycle.ViewModel
 import com.github.soulsearching.classes.types.ColorThemeType
 import com.github.soulsearching.classes.types.ElementEnum
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 
-/**
- * View model for the settings.
- */
-class SettingsViewModel: ViewModel() {
+abstract class SettingsViewModel {
     var colorTheme by mutableIntStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
     var isDynamicPlaylistThemeSelected by mutableStateOf(false)
@@ -30,14 +25,31 @@ class SettingsViewModel: ViewModel() {
     var forceBasicThemeForPlaylists by mutableStateOf(false)
 
     /**
-     * Update the type of color theme used in the application.
+     * Retrieve a list of visible elements on the main page screen.
      */
-    fun updateColorTheme(newTheme: Int) {
-        colorTheme = newTheme
-        SharedPrefUtils.updateIntValue(
-            keyToUpdate = SharedPrefUtils.COLOR_THEME_KEY,
-            newValue = newTheme
-        )
+    fun getListOfVisibleElements(): ArrayList<ElementEnum> {
+        val list: ArrayList<ElementEnum> = ArrayList()
+        if (isQuickAccessShown) {
+            list.add(ElementEnum.QUICK_ACCESS)
+        }
+        if (isPlaylistsShown) {
+            list.add(ElementEnum.PLAYLISTS)
+        }
+        if (isAlbumsShown) {
+            list.add(ElementEnum.ALBUMS)
+        }
+        if (isArtistsShown) {
+            list.add(ElementEnum.ARTISTS)
+        }
+        list.add(ElementEnum.MUSICS)
+        return list
+    }
+
+    /**
+     * Define the current playlist cover.
+     */
+    fun setNewPlaylistCover(playlistImage: ImageBitmap?) {
+        playlistCover = playlistImage
     }
 
     /**
@@ -89,119 +101,47 @@ class SettingsViewModel: ViewModel() {
     }
 
     /**
+     * Update the type of color theme used in the application.
+     */
+    abstract fun updateColorTheme(newTheme: Int)
+
+    /**
      * Toggle dynamic theme for player.
      */
-    fun toggleDynamicPlayerTheme() {
-        isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.DYNAMIC_PLAYER_THEME,
-            newValue = isDynamicPlayerThemeSelected
-        )
-    }
+    abstract fun toggleDynamicPlayerTheme()
 
     /**
      * Toggle dynamic theme for playlist.
      */
-    fun toggleDynamicPlaylistTheme() {
-        isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.DYNAMIC_PLAYLIST_THEME,
-            newValue = isDynamicPlaylistThemeSelected
-        )
-    }
-
+    abstract fun toggleDynamicPlaylistTheme()
 
     /**
      * Toggle dynamic theme for other views (everything except playlists and player view).
      */
-    fun toggleDynamicOtherViewsTheme() {
-        isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.DYNAMIC_OTHER_VIEWS_THEME,
-            newValue = isDynamicOtherViewsThemeSelected
-        )
-    }
+    abstract fun toggleDynamicOtherViewsTheme()
 
     /**
      * Show or hide the quick access on the main page screen.
      */
-    fun toggleQuickAccessVisibility() {
-        isQuickAccessShown = !isQuickAccessShown
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.IS_QUICK_ACCESS_SHOWN,
-            newValue = isQuickAccessShown
-        )
-    }
+    abstract fun toggleQuickAccessVisibility()
 
     /**
      * Show or hide the playlists on the main page screen.
      */
-    fun togglePlaylistsVisibility() {
-        isPlaylistsShown = !isPlaylistsShown
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.IS_PLAYLISTS_SHOWN,
-            newValue = isPlaylistsShown
-        )
-    }
+    abstract fun togglePlaylistsVisibility()
 
     /**
      * Show or hide the albums on the main page screen.
      */
-    fun toggleAlbumsVisibility() {
-        isAlbumsShown = !isAlbumsShown
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.IS_ALBUMS_SHOWN,
-            newValue = isAlbumsShown
-        )
-    }
+    abstract fun toggleAlbumsVisibility()
 
     /**
      * Show or hide the artists on the main page screen.
      */
-    fun toggleArtistsVisibility() {
-        isArtistsShown = !isArtistsShown
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.IS_ARTISTS_SHOWN,
-            newValue = isArtistsShown
-        )
-    }
+    abstract fun toggleArtistsVisibility()
 
     /**
      * Activate or deactivate the vertical bar on the main page screen.
      */
-    fun toggleVerticalBarVisibility() {
-        isVerticalBarShown = !isVerticalBarShown
-        SharedPrefUtils.updateBooleanValue(
-            keyToUpdate = SharedPrefUtils.IS_VERTICAL_BAR_SHOWN,
-            newValue = isVerticalBarShown
-        )
-    }
-
-    /**
-     * Retrieve a list of visible elements on the main page screen.
-     */
-    fun getListOfVisibleElements(): ArrayList<ElementEnum> {
-        val list: ArrayList<ElementEnum> = ArrayList()
-        if (isQuickAccessShown) {
-            list.add(ElementEnum.QUICK_ACCESS)
-        }
-        if (isPlaylistsShown) {
-            list.add(ElementEnum.PLAYLISTS)
-        }
-        if (isAlbumsShown) {
-            list.add(ElementEnum.ALBUMS)
-        }
-        if (isArtistsShown) {
-            list.add(ElementEnum.ARTISTS)
-        }
-        list.add(ElementEnum.MUSICS)
-        return list
-    }
-
-    /**
-     * Define the current playlist cover.
-     */
-    fun setPlaylistCover(playlistImage: ImageBitmap?) {
-        playlistCover = playlistImage
-    }
+    abstract fun toggleVerticalBarVisibility()
 }

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import kotlinx.coroutines.launch
 import java.util.*
 

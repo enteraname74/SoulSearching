@@ -48,7 +48,7 @@ import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent

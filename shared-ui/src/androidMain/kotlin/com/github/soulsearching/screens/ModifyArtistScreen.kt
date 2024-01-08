@@ -46,7 +46,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.SelectedArtistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import java.util.UUID
 

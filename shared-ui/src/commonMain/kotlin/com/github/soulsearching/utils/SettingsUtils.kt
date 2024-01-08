@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.utils
+package com.github.soulsearching.utils
 
 import com.github.soulsearching.viewmodel.SettingsViewModel
 
@@ -7,5 +7,5 @@ import com.github.soulsearching.viewmodel.SettingsViewModel
  * It is static because we need to access this view model in multiple parts of the applications
  */
 object SettingsUtils {
-    val settingsViewModel = SettingsViewModel()
+    lateinit var settingsViewModel: SettingsViewModel
 }

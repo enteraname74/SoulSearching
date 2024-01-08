@@ -20,7 +20,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlaylistSelectableComposable
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(

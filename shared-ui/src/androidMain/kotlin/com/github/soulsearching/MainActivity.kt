@@ -36,7 +36,7 @@ import androidx.navigation.navArgument
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.FetchingMusicsComposable
@@ -424,7 +424,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistCover(
+                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
@@ -460,7 +460,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistCover(
+                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
@@ -496,7 +496,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistCover(
+                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =

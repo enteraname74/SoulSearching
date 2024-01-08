@@ -10,11 +10,16 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.types.PlayerMode
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.UUID
+import kotlin.reflect.KFunction1
 
+/**
+ * Represent the PlayerViewModel to used in differents implementations.
+ */
 abstract class PlayerViewModel {
     protected val _state = MutableStateFlow(MusicState())
     val state = _state.asStateFlow()
@@ -189,4 +194,80 @@ abstract class PlayerViewModel {
         shouldServiceBeLaunched = false
         isCounting = false
     }
+
+    /**
+     * Set information from a given saved list.
+     * It will search the saved current music and set it.
+     * it will also define the player mode, palette and cover.
+     *
+     * Information are found from the shared preferences.
+     */
+    abstract fun setPlayerInformationFromSavedList(musicList: ArrayList<Music>)
+
+    /**
+     * Add a music to play next.
+     * Does nothing if we try to add the current music.
+     * If the playlist is empty (nothing is playing), we load the music.
+     * It will remove the previous apparition of the music if there was one.
+     */
+    abstract fun addMusicToPlayNext(music: Music)
+
+    /**
+     * Remove a music from the playlist if the playlist is the same as a specified one.
+     */
+    abstract fun removeMusicIfSamePlaylist(musicId: UUID, playlistId: UUID?)
+
+    /**
+     * Remove a music from the current playlist.
+     * it no songs are left, the playback will stop.
+     */
+    abstract fun removeMusicFromCurrentPlaylist(musicId: UUID)
+
+    /**
+     * Change the current music information to the next music.
+     */
+    abstract fun setNextMusic()
+
+    /**
+     * Change the current music information to the previous music.
+     */
+    abstract fun setPreviousMusic()
+
+    /**
+     * Play or pause the player.
+     */
+    abstract fun togglePlayPause()
+
+    /**
+     * Play a playlist in shuffle and save it.
+     */
+    abstract fun playShuffle(playlist: java.util.ArrayList<Music>, savePlayerListMethod: KFunction1<java.util.ArrayList<UUID>, Unit>)
+
+    /**
+     * Define the current playlist and music.
+     * Primarily used when clicking on a music.
+     */
+    abstract fun setCurrentPlaylistAndMusic(
+        music: Music,
+        playlist: java.util.ArrayList<Music>,
+        playlistId: UUID?,
+        isMainPlaylist: Boolean = false,
+        isForcingNewPlaylist: Boolean = false
+    )
+
+    /**
+     * Change the player mode.
+     */
+    abstract fun changePlayerMode()
+
+    /**
+     * Force the player mode the normal.
+     * The current playlist will be reset to be like the music list passed in parameter.
+     */
+    protected abstract fun forcePlayerModeToNormal(musicList: java.util.ArrayList<Music>)
+
+    /**
+     * Manage music events.
+     */
+    abstract fun onMusicEvent(event: MusicEvent)
 }

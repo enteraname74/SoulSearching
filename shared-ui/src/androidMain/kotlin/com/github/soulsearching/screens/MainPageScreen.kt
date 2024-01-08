@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.SearchDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
@@ -51,7 +51,7 @@ import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.states.QuickAccessState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel

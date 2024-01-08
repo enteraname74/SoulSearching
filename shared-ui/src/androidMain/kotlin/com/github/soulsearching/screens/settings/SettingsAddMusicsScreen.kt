@@ -33,7 +33,7 @@ import com.github.soulsearching.composables.MusicSelectableComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

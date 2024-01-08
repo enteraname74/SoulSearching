@@ -1,4 +1,4 @@
-package com.github.soulsearching.ui.theme
+package com.github.soulsearching.theme
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
+import com.github.soulsearching.utils.SettingsUtils
 
 /**
  * Dynamic colors used in the application.

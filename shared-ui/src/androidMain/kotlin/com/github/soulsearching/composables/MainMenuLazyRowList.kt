@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,7 +21,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import java.util.*
 
 @Composable

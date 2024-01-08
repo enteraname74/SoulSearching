@@ -46,7 +46,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.ui.theme.DynamicColor
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
 import java.util.UUID
 
