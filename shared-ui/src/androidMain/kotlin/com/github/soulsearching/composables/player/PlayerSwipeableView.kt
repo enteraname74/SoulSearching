@@ -39,8 +39,8 @@ import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
@@ -103,7 +103,9 @@ fun PlayerDraggableView(
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicPrimaryColor()
+                    ColorPaletteUtils.getDynamicPrimaryColor(
+                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    )
                 } else {
                     MaterialTheme.colorScheme.primary
                 }
@@ -148,7 +150,9 @@ fun PlayerDraggableView(
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicSecondaryColor()
+                    ColorPaletteUtils.getDynamicSecondaryColor(
+                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    )
                 } else {
                     MaterialTheme.colorScheme.secondary
                 }
@@ -164,7 +168,9 @@ fun PlayerDraggableView(
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicPrimaryColor()
+                    ColorPaletteUtils.getDynamicPrimaryColor(
+                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    )
                 } else {
                     MaterialTheme.colorScheme.primary
                 }
@@ -180,7 +186,9 @@ fun PlayerDraggableView(
             BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicSecondaryColor()
+                    ColorPaletteUtils.getDynamicSecondaryColor(
+                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    )
                 } else {
                     MaterialTheme.colorScheme.secondary
                 }

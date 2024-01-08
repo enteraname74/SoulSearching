@@ -12,7 +12,7 @@ import com.github.enteraname74.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer

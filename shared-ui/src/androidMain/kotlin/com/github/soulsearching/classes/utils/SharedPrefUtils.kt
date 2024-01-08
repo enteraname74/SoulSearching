@@ -9,6 +9,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

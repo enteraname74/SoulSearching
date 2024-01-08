@@ -46,8 +46,8 @@ import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
@@ -96,7 +96,9 @@ fun PlayerMusicListView(
     val primaryColor: Color by animateColorAsState(
         targetValue =
         if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
-            ColorPaletteUtils.getDynamicPrimaryColor()
+            ColorPaletteUtils.getDynamicPrimaryColor(
+                baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+            )
         } else {
             MaterialTheme.colorScheme.primary
         },
@@ -108,7 +110,9 @@ fun PlayerMusicListView(
         targetValue =
         if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
         ) {
-            ColorPaletteUtils.getDynamicSecondaryColor()
+            ColorPaletteUtils.getDynamicSecondaryColor(
+                baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+            )
         } else {
             MaterialTheme.colorScheme.secondary
         },

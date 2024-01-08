@@ -40,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.Utils
+import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
@@ -67,7 +67,7 @@ fun ModifyAlbumScreen(
                 val uri: Uri? = result.data?.data
                 modifyAlbumViewModel.onAlbumEvent(
                     AlbumEvent.SetCover(
-                        Utils.getBitmapFromUri(uri as Uri, context.contentResolver)
+                        AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
                 )
             }

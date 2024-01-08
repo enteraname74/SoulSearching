@@ -13,7 +13,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.receivers.DeletedNotificationIntentReceiver
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 

@@ -6,8 +6,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 
 /**
@@ -33,7 +33,9 @@ object DynamicColor {
                 SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
                 SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
             ) {
-                ColorPaletteUtils.getDynamicPrimaryColor()
+                ColorPaletteUtils.getDynamicPrimaryColor(
+                    baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                )
             } else {
                 MaterialTheme.colorScheme.primary
             },
@@ -84,7 +86,9 @@ object DynamicColor {
             } else if (SettingsUtils.settingsViewModel.isDynamicThemeOn()
                 || SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
             ) {
-                ColorPaletteUtils.getDynamicSecondaryColor()
+                ColorPaletteUtils.getDynamicSecondaryColor(
+                    baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                )
             }  else {
                 MaterialTheme.colorScheme.secondary
             },

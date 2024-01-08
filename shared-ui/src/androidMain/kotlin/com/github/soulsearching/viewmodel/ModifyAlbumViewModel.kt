@@ -11,9 +11,8 @@ import com.github.enteraname74.repository.ImageCoverRepository
 import com.github.enteraname74.repository.MusicAlbumRepository
 import com.github.enteraname74.repository.MusicArtistRepository
 import com.github.enteraname74.repository.MusicRepository
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.Utils
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
@@ -184,7 +183,7 @@ class ModifyAlbumViewModel(
                     )
 
                     // On vérifie si l'ancien artiste possède encore des musiques :
-                    Utils.checkAndDeleteArtist(
+                    AndroidUtils.checkAndDeleteArtist(
                         artistToCheck = initialArtist,
                         musicArtistRepository = musicArtistRepository,
                         artistRepository = artistRepository,

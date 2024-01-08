@@ -34,11 +34,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
-import com.github.soulsearching.classes.utils.Utils
+import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("MAIN ACTIVITY", "SERVICE DIED, WILL RESTART")
-            Utils.launchService(
+            AndroidUtils.launchService(
                 context = context,
                 isFromSavedList = false
             )
@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {
-                    Utils.launchService(
+                    AndroidUtils.launchService(
                         context = this@MainActivity,
                         isFromSavedList = false
                     )
@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity() {
                                 PlayerUtils.playerViewModel.setPlayerInformationFromSavedList(
                                     playerSavedMusics
                                 )
-                                Utils.launchService(
+                                AndroidUtils.launchService(
                                     context = this@MainActivity,
                                     isFromSavedList = true
                                 )

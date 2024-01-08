@@ -1,4 +1,4 @@
-package com.github.soulsearching.utils
+package com.github.soulsearching
 
 import androidx.compose.ui.text.intl.Locale
 

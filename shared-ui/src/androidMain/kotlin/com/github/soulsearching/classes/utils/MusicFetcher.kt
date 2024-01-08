@@ -96,8 +96,8 @@ class MusicFetcher(
                     )
                     ThumbnailUtils.extractThumbnail(
                         tempBitmap,
-                        Utils.BITMAP_SIZE,
-                        Utils.BITMAP_SIZE
+                        AndroidUtils.BITMAP_SIZE,
+                        AndroidUtils.BITMAP_SIZE
                     ).asImageBitmap()
                 }
             } catch (error: IOException) {

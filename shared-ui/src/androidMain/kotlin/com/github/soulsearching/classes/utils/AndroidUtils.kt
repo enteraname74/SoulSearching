@@ -21,15 +21,16 @@ import com.github.enteraname74.repository.MusicAlbumRepository
 import com.github.enteraname74.repository.MusicArtistRepository
 import com.github.enteraname74.repository.MusicRepository
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
 /**
- * All kind of different methods.
+ * All kind of different methods for android.
  */
-object Utils {
+object AndroidUtils {
     const val BITMAP_SIZE = 300
 
     /**

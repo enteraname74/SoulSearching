@@ -18,7 +18,7 @@ import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.enteraname74.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder

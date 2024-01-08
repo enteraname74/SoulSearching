@@ -1,11 +1,12 @@
-package com.github.soulsearching.classes.utils
+package com.github.soulsearching.utils
 
+import androidx.annotation.ColorInt
+import androidx.annotation.FloatRange
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
 import com.kmpalette.rememberPaletteState
 import kotlinx.coroutines.runBlocking
@@ -40,14 +41,12 @@ object ColorPaletteUtils {
      */
     @Composable
     fun getDynamicPrimaryColor(
-        baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+        baseColor: Int?
     ): Color {
-        return if (baseColor != null) Color(
-            ColorUtils.blendARGB(
-                baseColor,
-                Color.Black.toArgb(),
-                0.5f
-            )
+        return if (baseColor != null) blendARGB(
+            baseColor,
+            Color.Black.toArgb(),
+            0.5f
         ) else {
             MaterialTheme.colorScheme.primary
         }
@@ -60,16 +59,37 @@ object ColorPaletteUtils {
      */
     @Composable
     fun getDynamicSecondaryColor(
-        baseColor: Int? = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+        baseColor: Int?
     ): Color {
-        return if (baseColor != null) Color(
-            ColorUtils.blendARGB(
-                baseColor,
-                Color.Black.toArgb(),
-                0.2f
-            )
+        return if (baseColor != null) blendARGB(
+            baseColor,
+            Color.Black.toArgb(),
+            0.2f
         ) else {
             MaterialTheme.colorScheme.secondary
         }
+    }
+
+    /**
+     * Blend two colors together.
+     */
+    private fun blendARGB(
+        @ColorInt color1: Int, @ColorInt color2: Int,
+        @FloatRange(from = 0.0, to = 1.0) ratio: Float
+    ): Color {
+        val firstColor = Color(color1)
+        val secondColor = Color(color2)
+
+        val inverseRatio = 1 - ratio
+        val a = firstColor.alpha * inverseRatio + secondColor.alpha* ratio
+        val r = firstColor.red * inverseRatio + secondColor.red * ratio
+        val g = firstColor.green * inverseRatio + secondColor.green * ratio
+        val b = firstColor.blue * inverseRatio + secondColor.blue * ratio
+        return Color(
+            red = r,
+            green = g,
+            blue = b,
+            alpha = a
+        )
     }
 }

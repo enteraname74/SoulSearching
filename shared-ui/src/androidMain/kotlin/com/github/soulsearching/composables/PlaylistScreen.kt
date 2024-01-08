@@ -33,7 +33,7 @@ import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
 import com.github.soulsearching.classes.types.PlaylistType
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState

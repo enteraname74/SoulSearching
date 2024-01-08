@@ -9,7 +9,7 @@ import com.github.enteraname74.repository.MusicRepository
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
-import com.github.soulsearching.classes.utils.Utils
+import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +99,7 @@ class AllAlbumsViewModel(
                     albumRepository.deleteAlbum(state.value.selectedAlbumWithArtist.album)
 
                     // On vérifie si on peut supprimer l'artiste :
-                    Utils.checkAndDeleteArtist(
+                    AndroidUtils.checkAndDeleteArtist(
                         artistToCheck = state.value.selectedAlbumWithArtist.artist!!,
                         musicArtistRepository = musicArtistRepository,
                         artistRepository = artistRepository

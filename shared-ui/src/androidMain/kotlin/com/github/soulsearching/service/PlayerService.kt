@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.classes.player.SoulSearchingPlayer

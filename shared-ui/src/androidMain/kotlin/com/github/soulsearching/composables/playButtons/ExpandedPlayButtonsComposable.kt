@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.classes.types.PlayerMode
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.utils.Utils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import java.util.*
 import kotlin.collections.ArrayList
@@ -100,12 +101,12 @@ fun ExpandedPlayButtonsComposable(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = PlayerUtils.convertDuration(PlayerUtils.playerViewModel.currentMusicPosition),
+                    text = Utils.convertDuration(PlayerUtils.playerViewModel.currentMusicPosition),
                     color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
-                    text = PlayerUtils.convertDuration(PlayerService.getMusicDuration()),
+                    text = Utils.convertDuration(PlayerService.getMusicDuration()),
                     color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )

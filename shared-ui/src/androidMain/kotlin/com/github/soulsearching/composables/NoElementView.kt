@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.utils.strings
+import com.github.soulsearching.strings
 
 @Composable
 fun NoElementView(

@@ -14,10 +14,9 @@ import com.github.enteraname74.repository.MusicRepository
 import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
-import com.github.soulsearching.classes.utils.Utils
+import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
@@ -98,7 +97,7 @@ class MusicEventHandler(
      */
     private fun deleteMusicFromApp() {
         CoroutineScope(Dispatchers.IO).launch {
-            Utils.removeMusicFromApp(
+            AndroidUtils.removeMusicFromApp(
                 musicRepository = musicRepository,
                 albumRepository = albumRepository,
                 artistRepository = artistRepository,
@@ -234,7 +233,7 @@ class MusicEventHandler(
                     newArtistId = newArtist.artistId
                 )
 
-                Utils.modifyMusicAlbum(
+                AndroidUtils.modifyMusicAlbum(
                     artist = newArtist,
                     musicAlbumRepository = musicAlbumRepository,
                     albumRepository = albumRepository,
@@ -243,19 +242,19 @@ class MusicEventHandler(
                     currentAlbum = publicState.value.album.trim(),
                 )
 
-                Utils.checkAndDeleteArtist(
+                AndroidUtils.checkAndDeleteArtist(
                     artistToCheck = legacyArtist!!,
                     artistRepository = artistRepository,
                     musicArtistRepository = musicArtistRepository
                 )
             } else if (publicState.value.selectedMusic.album != publicState.value.album) {
-                val artist = Utils.getCorrespondingArtist(
+                val artist = AndroidUtils.getCorrespondingArtist(
                     musicId = publicState.value.selectedMusic.musicId,
                     artistRepository = artistRepository,
                     musicArtistRepository = musicArtistRepository
                 )
 
-                Utils.modifyMusicAlbum(
+                AndroidUtils.modifyMusicAlbum(
                     musicAlbumRepository = musicAlbumRepository,
                     albumRepository = albumRepository,
                     albumArtistRepository = albumArtistRepository,

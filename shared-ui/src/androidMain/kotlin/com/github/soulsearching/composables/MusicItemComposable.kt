@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.ui.theme.DynamicColor
 import java.util.*
 

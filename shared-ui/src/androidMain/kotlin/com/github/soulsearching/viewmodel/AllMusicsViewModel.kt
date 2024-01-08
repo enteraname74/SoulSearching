@@ -28,7 +28,7 @@ import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.MusicFetcher
-import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.CoroutineScope
