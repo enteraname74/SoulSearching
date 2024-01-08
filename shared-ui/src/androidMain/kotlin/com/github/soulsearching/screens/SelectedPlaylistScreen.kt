@@ -12,7 +12,7 @@ import com.github.soulsearching.classes.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
 import java.util.UUID
 
@@ -21,7 +21,7 @@ fun SelectedPlaylistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     navigateToModifyPlaylist : (String) -> Unit,
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,

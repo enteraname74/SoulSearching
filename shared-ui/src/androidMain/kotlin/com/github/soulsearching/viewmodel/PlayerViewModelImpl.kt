@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
 import com.github.enteraname74.model.Music
 import com.github.enteraname74.repository.AlbumArtistRepository
@@ -37,7 +36,7 @@ import kotlin.reflect.KFunction1
  * View model for the player.
  */
 @SuppressLint("MutableCollectionMutableState")
-class PlayerViewModel(
+class PlayerViewModelImpl(
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
@@ -47,7 +46,8 @@ class PlayerViewModel(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
-) : ViewModel() {
+) {
+    lateinit var context: Context
     private val _state = MutableStateFlow(MusicState())
     val state = _state.asStateFlow()
     private val _sortType = MutableStateFlow(SortType.NAME)
@@ -69,12 +69,17 @@ class PlayerViewModel(
         sortType = _sortType
     )
 
+    private var isCounting = false
+    private var isChangingPlayMode = false
+
+    private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
+
+
     var currentMusic by mutableStateOf<Music?>(null)
     var currentMusicPosition by mutableIntStateOf(0)
     var currentMusicCover by mutableStateOf<ImageBitmap?>(null)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
-    private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylistId by mutableStateOf<UUID?>(null)
 
@@ -88,9 +93,6 @@ class PlayerViewModel(
 
     lateinit var retrieveCoverMethod: (UUID?) -> ImageBitmap?
     lateinit var updateNbPlayed: (UUID) -> Unit
-
-    private var isCounting = false
-    private var isChangingPlayMode = false
 
     /**
      * Retrieve the index of the current played music.
@@ -172,7 +174,6 @@ class PlayerViewModel(
      */
     fun defineCoverAndPaletteFromCoverId(coverId: UUID?) {
         currentMusicCover = retrieveCoverMethod(coverId)
-        currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(currentMusicCover)
     }
 
     /**
@@ -377,7 +378,7 @@ class PlayerViewModel(
                 currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
                 initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
                 currentPlaylistId = playlistId
-                this@PlayerViewModel.isMainPlaylist = isMainPlaylist
+                this@PlayerViewModelImpl.isMainPlaylist = isMainPlaylist
                 SharedPrefUtils.setPlayerSavedCurrentMusic()
             }
 

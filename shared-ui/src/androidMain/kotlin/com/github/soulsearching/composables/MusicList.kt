@@ -17,7 +17,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -27,7 +27,7 @@ fun MusicList(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier = Modifier,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,

@@ -170,9 +170,6 @@ class ModifyAlbumViewModel(
                         PlayerUtils.playerViewModel.currentMusic?.let {
                             if (it.musicId.compareTo(music.musicId) == 0) {
                                 PlayerUtils.playerViewModel.currentMusicCover = state.value.albumCover
-                                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                                    PlayerUtils.playerViewModel.currentMusicCover
-                                )
                                 PlayerService.updateNotification()
                             }
                         }

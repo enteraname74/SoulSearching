@@ -34,7 +34,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.AddMusicsViewModel
+import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,7 +42,7 @@ import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun SettingsAddMusicsScreen(
-    addMusicsViewModel: AddMusicsViewModel,
+    addMusicsViewModel: AddMusicsViewModelImpl,
     finishAction: () -> Unit,
     saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
 ) {
@@ -98,7 +98,7 @@ fun SettingsAddMusicsScreen(
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
                         isFetchingMusics = true
-                        addMusicsViewModel.fetchNewMusics(context) { progress = it }
+                        addMusicsViewModel.fetchAndAddNewMusics(context) { progress = it }
                         isFetchingMusics = false
                     }
                 }

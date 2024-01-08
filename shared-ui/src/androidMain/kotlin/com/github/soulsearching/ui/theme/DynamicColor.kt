@@ -21,10 +21,13 @@ object DynamicColor {
             if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.primary
             } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                && SettingsUtils.settingsViewModel.playlistPalette != null
+                && SettingsUtils.settingsViewModel.playlistCover != null
             ) {
+                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    image = SettingsUtils.settingsViewModel.playlistCover
+                )
                 ColorPaletteUtils.getDynamicPrimaryColor(
-                    SettingsUtils.settingsViewModel.playlistPalette?.rgb
+                    playlistPalette?.rgb
                 )
             } else if (
                 SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
@@ -52,7 +55,7 @@ object DynamicColor {
                         )
                 || (
                         SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                                && SettingsUtils.settingsViewModel.playlistCover != null
                         )
             ) {
                 Color.White
@@ -70,10 +73,13 @@ object DynamicColor {
             if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.secondary
             } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                && SettingsUtils.settingsViewModel.playlistPalette != null
+                && SettingsUtils.settingsViewModel.playlistCover != null
             ) {
+                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    image = SettingsUtils.settingsViewModel.playlistCover
+                )
                 ColorPaletteUtils.getDynamicSecondaryColor(
-                    SettingsUtils.settingsViewModel.playlistPalette!!.rgb
+                    playlistPalette?.rgb
                 )
             } else if (SettingsUtils.settingsViewModel.isDynamicThemeOn()
                 || SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
@@ -100,7 +106,7 @@ object DynamicColor {
                         )
                 || (
                         SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                                && SettingsUtils.settingsViewModel.playlistCover != null
                         )
             ) {
                 Color.White
@@ -125,7 +131,7 @@ object DynamicColor {
                         )
                 || (
                         SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistPalette != null
+                                && SettingsUtils.settingsViewModel.playlistCover != null
                         )
             ) {
                 Color.LightGray

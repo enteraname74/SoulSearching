@@ -296,10 +296,6 @@ class MusicEventHandler(
                 PlayerUtils.playerViewModel.currentMusic?.let {
                     if (it.musicId.compareTo(newMusic.musicId) == 0) {
                         PlayerUtils.playerViewModel.currentMusicCover = publicState.value.cover
-                        PlayerUtils.playerViewModel.currentColorPalette =
-                            ColorPaletteUtils.getPaletteFromAlbumArt(
-                                PlayerUtils.playerViewModel.currentMusicCover
-                            )
                         PlayerService.updateNotification()
                     }
                 }

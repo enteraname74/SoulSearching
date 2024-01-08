@@ -37,6 +37,8 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(Dependencies.KOIN_CORE)
                 implementation(Dependencies.KOIN_COMPOSE)
+                implementation(Dependencies.KMPALETTE_CORE)
+
                 with(Dependencies.AndroidX) {
                     implementation(RUNTIME)
                     implementation(FOUNDATION)
@@ -63,7 +65,6 @@ kotlin {
                     implementation(APPCOMPAT_RESOURCES)
                     implementation(APPCOMPAT)
                     implementation(NAVIGATION_COMPOSE)
-                    implementation(PALETTE)
                     implementation(MEDIA)
                 }
 

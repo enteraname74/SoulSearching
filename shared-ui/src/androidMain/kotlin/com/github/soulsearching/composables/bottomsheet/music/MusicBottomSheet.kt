@@ -16,7 +16,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ fun MusicBottomSheet(
     musicState: MusicState,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     playerDraggableState: PlayerDraggableState,
     primaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary

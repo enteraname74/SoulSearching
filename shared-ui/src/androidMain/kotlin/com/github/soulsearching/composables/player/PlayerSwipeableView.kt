@@ -52,7 +52,7 @@ import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,7 +70,7 @@ import kotlin.reflect.KSuspendFunction1
 fun PlayerDraggableView(
     maxHeight: Float,
     draggableState: PlayerDraggableState,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
     musicListDraggableState: PlayerMusicListDraggableState,

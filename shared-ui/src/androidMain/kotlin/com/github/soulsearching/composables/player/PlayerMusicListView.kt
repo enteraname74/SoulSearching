@@ -55,7 +55,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -71,7 +71,7 @@ fun PlayerMusicListView(
     navigateToModifyMusic: (String) -> Unit,
     musicListDraggableState: PlayerMusicListDraggableState,
     playerDraggableState: PlayerDraggableState,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()

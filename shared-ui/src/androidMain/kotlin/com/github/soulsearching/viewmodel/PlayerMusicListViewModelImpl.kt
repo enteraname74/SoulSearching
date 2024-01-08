@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.model.Music
 import com.github.enteraname74.model.PlayerMusic
+import com.github.enteraname74.model.PlayerWithMusicItem
 import com.github.enteraname74.repository.AlbumArtistRepository
 import com.github.enteraname74.repository.AlbumRepository
 import com.github.enteraname74.repository.ArtistRepository
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -33,7 +35,7 @@ import java.util.UUID
 /**
  * View model for the player music list view.
  */
-class PlayerMusicListViewModel(
+class PlayerMusicListViewModelImpl(
     private val playerMusicRepository: PlayerMusicRepository,
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
@@ -44,16 +46,17 @@ class PlayerMusicListViewModel(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
-) : ViewModel() {
+) : ViewModel(), PlayerMusicListViewModel {
     private var job: Job? = null
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
-    private var _playerMusicList = playerMusicRepository.getAllPlayerMusicsAsFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
+    private var _playerMusicList: StateFlow<List<PlayerWithMusicItem>> =
+        playerMusicRepository.getAllPlayerMusicsAsFlow()
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ArrayList())
     private val _state = MutableStateFlow(MusicState())
 
-    val state = combine(
+    override var state: StateFlow<MusicState> = combine(
         _state,
         _playerMusicList
     ) { state, playerMusicList ->
@@ -87,7 +90,7 @@ class PlayerMusicListViewModel(
     /**
      * Retrieve the player music list from the database.
      */
-    suspend fun getPlayerMusicList(): ArrayList<Music> {
+    override suspend fun getPlayerMusicList(): ArrayList<Music> {
         val playerWithMusics = playerMusicRepository.getAllPlayerMusics()
 
         return playerWithMusics.filter { it.music != null }.map { it.music!! } as ArrayList<Music>
@@ -96,7 +99,7 @@ class PlayerMusicListViewModel(
     /**
      * Save the player music list to the database.
      */
-    fun savePlayerMusicList(musicList: ArrayList<UUID>) {
+    override fun savePlayerMusicList(musicList: ArrayList<UUID>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
             playerMusicRepository.deleteAllPlayerMusic()
@@ -113,7 +116,7 @@ class PlayerMusicListViewModel(
     /**
      * Reset the player music list to the database.
      */
-    fun resetPlayerMusicList() {
+    override fun resetPlayerMusicList() {
         CoroutineScope(Dispatchers.IO).launch {
             playerMusicRepository.deleteAllPlayerMusic()
         }
@@ -123,7 +126,7 @@ class PlayerMusicListViewModel(
     /**
      * Manage music events.
      */
-    fun onMusicEvent(event: MusicEvent) {
+    override fun onMusicEvent(event: MusicEvent) {
         musicEventHandler.handleEvent(event)
     }
 }

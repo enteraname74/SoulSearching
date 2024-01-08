@@ -10,6 +10,7 @@ object Dependencies {
     const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECT_API}"
     const val KOIN_CORE = "io.insert-koin:koin-core:${Versions.KOIN}"
     const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
+    const val KMPALETTE_CORE = "com.kmpalette:kmpalette-core:${Versions.KMPALETTE}"
 
     object AndroidX {
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"

@@ -24,7 +24,7 @@ import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -44,7 +44,7 @@ fun SearchAll(
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     playerDraggableState: PlayerDraggableState,
     isMainPlaylist: Boolean,
     focusManager: FocusManager

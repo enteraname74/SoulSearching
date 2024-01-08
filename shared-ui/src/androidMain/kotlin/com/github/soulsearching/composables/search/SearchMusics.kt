@@ -19,7 +19,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -30,7 +30,7 @@ fun SearchMusics(
     searchText: String,
     musicState: MusicState,
     onMusicEvent: (MusicEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,

@@ -57,7 +57,7 @@ import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -69,7 +69,7 @@ fun MainPageScreen(
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
     allImageCoversViewModel: AllImageCoversViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,

@@ -1,33 +1,35 @@
 package com.github.soulsearching.classes.utils
 
-import android.graphics.Bitmap
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
+import com.kmpalette.rememberPaletteState
+import kotlinx.coroutines.runBlocking
 
 /**
  * Utils for managing color palettes.
  */
 object ColorPaletteUtils {
-
     /**
      * Tries to retrieve a palette from a potential image.
      */
+    @Composable
     fun getPaletteFromAlbumArt(image: ImageBitmap?): Palette.Swatch? {
         if (image == null) {
             return null
         }
-
-        val palette = Palette.from(image.asAndroidBitmap()).generate()
-        return if (palette.darkVibrantSwatch == null) {
-            palette.dominantSwatch
+        val paletteState = rememberPaletteState()
+        runBlocking {
+            paletteState.generate(image)
+        }
+        return if (paletteState.palette?.darkVibrantSwatch == null) {
+            paletteState.palette?.dominantSwatch
         } else {
-            palette.darkVibrantSwatch
+            paletteState.palette?.darkVibrantSwatch
         }
     }
 

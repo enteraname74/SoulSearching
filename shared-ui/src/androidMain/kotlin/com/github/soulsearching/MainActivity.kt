@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
@@ -71,7 +72,7 @@ import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.viewmodel.AddMusicsViewModel
+import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllFoldersViewModel
@@ -84,8 +85,8 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.viewmodel.PlayerViewModelImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
@@ -93,38 +94,39 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.androidx.compose.koinViewModel
+import java.lang.RuntimeException
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    lateinit var allMusicsViewModel: AllMusicsViewModel
-    lateinit var allPlaylistsViewModel: AllPlaylistsViewModel
-    lateinit var allAlbumsViewModel: AllAlbumsViewModel
-    lateinit var allArtistsViewModel: AllArtistsViewModel
-    lateinit var allImageCoversViewModel: AllImageCoversViewModel
-    lateinit var allQuickAccessViewModel: AllQuickAccessViewModel
+    private lateinit var allMusicsViewModel: AllMusicsViewModel
+    private lateinit var allPlaylistsViewModel: AllPlaylistsViewModel
+    private lateinit var allAlbumsViewModel: AllAlbumsViewModel
+    private lateinit var allArtistsViewModel: AllArtistsViewModel
+    private lateinit var allImageCoversViewModel: AllImageCoversViewModel
+    private lateinit var allQuickAccessViewModel: AllQuickAccessViewModel
 
     // Selected page view models
-    lateinit var selectedPlaylistViewModel: SelectedPlaylistViewModel
-    lateinit var selectedAlbumViewModel: SelectedAlbumViewModel
-    lateinit var selectedArtistsViewModel: SelectedArtistViewModel
+    private lateinit var selectedPlaylistViewModel: SelectedPlaylistViewModel
+    private lateinit var selectedAlbumViewModel: SelectedAlbumViewModel
+    private lateinit var selectedArtistsViewModel: SelectedArtistViewModel
 
     // Modify page view models
-    lateinit var modifyPlaylistViewModel: ModifyPlaylistViewModel
-    lateinit var modifyAlbumViewModel: ModifyAlbumViewModel
-    lateinit var modifyArtistViewModel: ModifyArtistViewModel
-    lateinit var modifyMusicViewModel: ModifyMusicViewModel
+    private lateinit var modifyPlaylistViewModel: ModifyPlaylistViewModel
+    private lateinit var modifyAlbumViewModel: ModifyAlbumViewModel
+    private lateinit var modifyArtistViewModel: ModifyArtistViewModel
+    private lateinit var modifyMusicViewModel: ModifyMusicViewModel
 
     // Player view model :
-    lateinit var playerViewModel: PlayerViewModel
-    lateinit var playerMusicListViewModel: PlayerMusicListViewModel
+    lateinit var playerMusicListViewModel: PlayerMusicListViewModelImpl
 
     // Settings view models:
-    lateinit var allFoldersViewModel: AllFoldersViewModel
-    lateinit var addMusicsViewModel: AddMusicsViewModel
+    private lateinit var allFoldersViewModel: AllFoldersViewModel
+    private lateinit var addMusicsViewModel: AddMusicsViewModelImpl
 
-    lateinit var mainActivityViewModel: MainActivityViewModel
+    private lateinit var mainActivityViewModel: MainActivityViewModel
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -154,7 +156,10 @@ class MainActivity : AppCompatActivity() {
     /**
      * Initialize the player ViewModel, used for managing view elements related to the playback.
      */
-    private fun initializePlayerViewModel() {
+    private fun initializePlayerViewModel(
+        playerViewModel: PlayerViewModelImpl
+    ) {
+        playerViewModel.context = applicationContext
         PlayerUtils.playerViewModel = playerViewModel
         PlayerUtils.playerViewModel.retrieveCoverMethod = allImageCoversViewModel::getImageCover
         PlayerUtils.playerViewModel.updateNbPlayed =
@@ -203,7 +208,7 @@ class MainActivity : AppCompatActivity() {
             modifyMusicViewModel = koinViewModel()
 
             // Player view model :
-            playerViewModel = koinViewModel()
+            val playerViewModel: PlayerViewModelImpl = get()
             playerMusicListViewModel = koinViewModel()
 
             // Settings view models:
@@ -211,7 +216,7 @@ class MainActivity : AppCompatActivity() {
             addMusicsViewModel = koinViewModel()
 
             initializeSharedPreferences()
-            initializePlayerViewModel()
+            initializePlayerViewModel(playerViewModel)
             initializeBroadcastReceive()
 
             mainActivityViewModel = koinViewModel<MainActivityViewModel>()
@@ -229,7 +234,9 @@ class MainActivity : AppCompatActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
-
+                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    image = PlayerUtils.playerViewModel.currentMusicCover
+                )
 
                 val readPermissionLauncher = permissionLauncher { isGranted ->
                     mainActivityViewModel.isReadPermissionGranted = isGranted
@@ -417,7 +424,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                    SettingsUtils.settingsViewModel.setPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
@@ -453,7 +460,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                    SettingsUtils.settingsViewModel.setPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
@@ -489,7 +496,7 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setPlaylistColorPalette(
+                                    SettingsUtils.settingsViewModel.setPlaylistCover(
                                         null
                                     )
                                     SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
@@ -687,7 +694,7 @@ class MainActivity : AppCompatActivity() {
                         retrieveCoverMethod = allImageCoversViewModel::getImageCover,
                         musicListDraggableState = musicListDraggableState,
                         playerMusicListViewModel = playerMusicListViewModel,
-                        onMusicEvent = playerViewModel::onMusicEvent,
+                        onMusicEvent = PlayerUtils.playerViewModel::onMusicEvent,
                         isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite,
                         navigateToArtist = {
                             navController.navigate("selectedArtist/$it")
@@ -777,6 +784,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-//        allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
+        try {
+            allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
+        } catch (_:RuntimeException) {
+
+        }
     }
 }

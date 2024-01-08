@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for adding new musics from the settings..
  */
-class AddMusicsViewModel(
+class AddMusicsViewModelImpl(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
     private val playlistRepository: PlaylistRepository,
@@ -84,9 +84,9 @@ class AddMusicsViewModel(
     }
 
     /**
-     * Retrieve new musics.
+     * Fetch and add new musics.
      */
-    fun fetchNewMusics(
+    fun fetchAndAddNewMusics(
         context: Context,
         updateProgressBar: (Float) -> Unit,
     ) {

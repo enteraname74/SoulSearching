@@ -1,6 +1,6 @@
 package com.github.soulsearching.classes.utils
 
-import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.viewmodel.PlayerViewModelImpl
 
 /**
  * Object containing the instance of the player view model.
@@ -8,7 +8,7 @@ import com.github.soulsearching.viewmodel.PlayerViewModel
  * like the service for example.
  */
 object PlayerUtils {
-    lateinit var playerViewModel: PlayerViewModel
+    lateinit var playerViewModel: PlayerViewModelImpl
 
     /**
      * Convert a duration to a viewable duration.

@@ -1,6 +1,6 @@
 package com.github.soulsearching
 
-import com.github.soulsearching.viewmodel.AddMusicsViewModel
+import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllFoldersViewModel
@@ -13,12 +13,11 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.viewmodel.PlayerViewModelImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
-import com.github.soulsearching.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -27,7 +26,7 @@ import org.koin.dsl.module
  */
 val viewModelModule = module {
     viewModel {
-        AddMusicsViewModel(
+        AddMusicsViewModelImpl(
             folderRepository = get(),
             musicRepository = get(),
             playlistRepository = get(),
@@ -149,7 +148,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        PlayerMusicListViewModel(
+        PlayerMusicListViewModelImpl(
             playerMusicRepository = get(),
             musicRepository = get(),
             playlistRepository = get(),
@@ -162,8 +161,8 @@ val viewModelModule = module {
             imageCoverRepository = get()
         )
     }
-    viewModel {
-        PlayerViewModel(
+    single {
+        PlayerViewModelImpl(
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),

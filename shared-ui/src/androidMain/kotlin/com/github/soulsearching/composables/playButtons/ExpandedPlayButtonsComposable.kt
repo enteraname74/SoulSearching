@@ -22,7 +22,7 @@ import com.github.soulsearching.classes.types.PlayerMode
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -38,7 +38,7 @@ fun ExpandedPlayButtonsComposable(
     sliderInactiveBarColor: Color,
     onMusicEvent: (MusicEvent) -> Unit,
     isMusicInFavorite: Boolean,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
 ) {
     Column(
         modifier = Modifier

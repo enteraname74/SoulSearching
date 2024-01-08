@@ -2,7 +2,6 @@ package com.github.soulsearching.composables
 
 
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -45,7 +44,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.ui.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -56,7 +55,7 @@ fun PlaylistScreen(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModelImpl,
     title: String,
     image: ImageBitmap?,
     navigateToModifyPlaylist: () -> Unit = {},
@@ -77,7 +76,7 @@ fun PlaylistScreen(
 
     image?.let {
         if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()) {
-            SettingsUtils.settingsViewModel.setPlaylistColorPalette(it)
+            SettingsUtils.settingsViewModel.setPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
         }
     }
