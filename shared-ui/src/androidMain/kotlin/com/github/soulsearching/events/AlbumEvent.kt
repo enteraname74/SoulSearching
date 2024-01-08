@@ -8,10 +8,10 @@ import java.util.UUID
  * Events related to albums.
  */
 sealed interface AlbumEvent {
-    object UpdateAlbum : AlbumEvent
-    object UpdateQuickAccessState: AlbumEvent
+    data object UpdateAlbum : AlbumEvent
+    data object UpdateQuickAccessState: AlbumEvent
     data class AlbumFromID(val albumId: UUID) : AlbumEvent
-    object DeleteAlbum : AlbumEvent
+    data object DeleteAlbum : AlbumEvent
     data class SetSortDirection(val type: Int) : AlbumEvent
     data class SetSortType(val type: Int) : AlbumEvent
     data class SetSelectedAlbum(val albumWithArtist: AlbumWithArtist): AlbumEvent

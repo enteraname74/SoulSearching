@@ -8,9 +8,9 @@ import java.util.UUID
  * Events related to artists.
  */
 sealed interface ArtistEvent {
-    object UpdateArtist : ArtistEvent
-    object DeleteArtist: ArtistEvent
-    object UpdateQuickAccessState: ArtistEvent
+    data object UpdateArtist : ArtistEvent
+    data object DeleteArtist: ArtistEvent
+    data object UpdateQuickAccessState: ArtistEvent
     data class SetSortDirection(val type: Int) : ArtistEvent
     data class SetSortType(val type: Int) : ArtistEvent
     data class ArtistFromId(val artistId : UUID) : ArtistEvent

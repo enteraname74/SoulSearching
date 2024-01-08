@@ -8,9 +8,9 @@ import java.util.UUID
  * Events related to playlists
  */
 sealed interface PlaylistEvent {
-    object UpdatePlaylist : PlaylistEvent
-    object DeletePlaylist : PlaylistEvent
-    object UpdateQuickAccessState: PlaylistEvent
+    data object UpdatePlaylist : PlaylistEvent
+    data object DeletePlaylist : PlaylistEvent
+    data object UpdateQuickAccessState: PlaylistEvent
     data class SetSortDirection(val type: Int) : PlaylistEvent
     data class SetSortType(val type: Int) : PlaylistEvent
     data class AddPlaylist(val name : String) : PlaylistEvent

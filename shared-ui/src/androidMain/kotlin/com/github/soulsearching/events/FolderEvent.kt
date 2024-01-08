@@ -10,5 +10,5 @@ sealed interface FolderEvent {
     data class SetState(val newState: FolderStateType): FolderEvent
     data class SetSelectedFolder(val folder: Folder, val isSelected: Boolean): FolderEvent
     data class SaveSelection(val updateProgress: (Float) -> Unit): FolderEvent
-    object FetchFolders: FolderEvent
+    data object FetchFolders: FolderEvent
 }

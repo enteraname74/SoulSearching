@@ -8,9 +8,9 @@ import java.util.UUID
  * Events related to musics.
  */
 sealed interface MusicEvent {
-    object UpdateMusic : MusicEvent
-    object DeleteMusic : MusicEvent
-    object UpdateQuickAccessState: MusicEvent
+    data object UpdateMusic : MusicEvent
+    data object DeleteMusic : MusicEvent
+    data object UpdateQuickAccessState: MusicEvent
     data class SetSortDirection(val type: Int) : MusicEvent
     data class SetSortType(val type: Int) : MusicEvent
     data class DeleteDialog(val isShown: Boolean) : MusicEvent
