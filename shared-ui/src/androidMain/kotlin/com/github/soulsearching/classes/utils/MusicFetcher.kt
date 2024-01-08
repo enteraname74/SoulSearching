@@ -2,31 +2,33 @@ package com.github.soulsearching.classes.utils
 
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumArtist
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicAlbum
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import com.github.enteraname74.model.Album
+import com.github.enteraname74.model.AlbumArtist
+import com.github.enteraname74.model.Artist
+import com.github.enteraname74.model.Folder
+import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.model.Music
+import com.github.enteraname74.model.MusicAlbum
+import com.github.enteraname74.model.MusicArtist
+import com.github.enteraname74.model.Playlist
+import com.github.enteraname74.repository.AlbumArtistRepository
+import com.github.enteraname74.repository.AlbumRepository
+import com.github.enteraname74.repository.ArtistRepository
+import com.github.enteraname74.repository.FolderRepository
+import com.github.enteraname74.repository.ImageCoverRepository
+import com.github.enteraname74.repository.MusicAlbumRepository
+import com.github.enteraname74.repository.MusicArtistRepository
+import com.github.enteraname74.repository.MusicRepository
+import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.SelectableMusicItem
 import java.io.File
@@ -75,7 +77,7 @@ class MusicFetcher(
     /**
      * Tries to retrieve the cover of a music file in a cursor.
      */
-    private fun fetchMusicCoverFromCursorElement(cursor: Cursor): Bitmap? {
+    private fun fetchMusicCoverFromCursorElement(cursor: Cursor): ImageBitmap? {
         val mediaMetadataRetriever = MediaMetadataRetriever()
         return try {
             mediaMetadataRetriever.setDataSource(cursor.getString(4))
@@ -96,7 +98,7 @@ class MusicFetcher(
                         tempBitmap,
                         Utils.BITMAP_SIZE,
                         Utils.BITMAP_SIZE
-                    )
+                    ).asImageBitmap()
                 }
             } catch (error: IOException) {
                 null
@@ -126,7 +128,7 @@ class MusicFetcher(
             else -> {
                 var count = 0
                 while (cursor.moveToNext()) {
-                    val cover: Bitmap? = fetchMusicCoverFromCursorElement(cursor = cursor)
+                    val cover: ImageBitmap? = fetchMusicCoverFromCursorElement(cursor = cursor)
 
                     val music = Music(
                         name = cursor.getString(0).trim(),
@@ -137,7 +139,7 @@ class MusicFetcher(
                         folder = File(cursor.getString(4)).parent ?: ""
                     )
                     addMusic(music, cover)
-                    cover?.recycle()
+                    cover?.asAndroidBitmap()?.recycle()
                     count++
                     updateProgress((count * 1F) / cursor.count)
                 }
@@ -163,7 +165,6 @@ class MusicFetcher(
         hiddenFoldersPaths: List<String>
     ) : ArrayList<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
-        val mediaMetadataRetriever = MediaMetadataRetriever()
 
         val projection: Array<String> = arrayOf(
             MediaStore.Audio.Media.TITLE,
@@ -198,33 +199,7 @@ class MusicFetcher(
                     val musicPath = cursor.getString(4)
                     val musicFolder = File(musicPath).parent ?: ""
                     if (!alreadyPresentMusicsPaths.any { it == musicPath } && !hiddenFoldersPaths.any { it == musicFolder }) {
-                        val albumCover: Bitmap? = try {
-                            mediaMetadataRetriever.setDataSource(cursor.getString(4))
-                            try {
-                                val byteArray = mediaMetadataRetriever.embeddedPicture
-                                if (byteArray == null) {
-                                    null
-                                } else {
-                                    val options = BitmapFactory.Options()
-                                    options.inSampleSize = 2
-                                    val tempBitmap = BitmapFactory.decodeByteArray(
-                                        byteArray,
-                                        0,
-                                        byteArray.size,
-                                        options
-                                    )
-                                    ThumbnailUtils.extractThumbnail(
-                                        tempBitmap,
-                                        Utils.BITMAP_SIZE,
-                                        Utils.BITMAP_SIZE
-                                    )
-                                }
-                            } catch (error: IOException) {
-                                null
-                            }
-                        } catch (error: java.lang.RuntimeException) {
-                            null
-                        }
+                        val albumCover: ImageBitmap? = fetchMusicCoverFromCursorElement(cursor = cursor)
 
                         val music = Music(
                             name = cursor.getString(0).trim(),
@@ -254,7 +229,7 @@ class MusicFetcher(
     /**
      * Persist a music and its cover.
      */
-    private suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
+    private suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {

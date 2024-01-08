@@ -3,7 +3,7 @@ package com.github.enteraname74.localandroid.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.model.ArtistWithMusics
 
 /**
  * Room representation of an ArtistWithMusics.

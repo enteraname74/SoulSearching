@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -15,11 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
@@ -33,7 +33,7 @@ fun MusicItemComposable(
     music: Music,
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
-    musicCover: Bitmap? = null,
+    musicCover: ImageBitmap? = null,
     textColor: Color = DynamicColor.onPrimary
 ) {
     Row(

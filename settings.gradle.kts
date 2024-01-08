@@ -15,7 +15,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Soul Searching"
-//include(":app")
 include(":domain")
 include(":local-android")
 include(":shared-ui")

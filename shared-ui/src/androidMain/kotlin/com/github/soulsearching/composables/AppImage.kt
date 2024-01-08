@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +10,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,7 +21,7 @@ import com.github.soulsearching.ui.theme.DynamicColor
 @SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun AppImage(
-    bitmap : Bitmap?,
+    bitmap : ImageBitmap?,
     size : Dp,
     modifier: Modifier = Modifier,
     roundedPercent : Int = 10,
@@ -38,7 +37,7 @@ fun AppImage(
     if (bitmap != null) {
         Image(
             modifier = modifierBase,
-            bitmap = bitmap.asImageBitmap(),
+            bitmap = bitmap,
             contentDescription = stringResource(id = R.string.image),
             contentScale = ContentScale.Crop
         )

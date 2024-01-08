@@ -3,8 +3,8 @@ package com.github.enteraname74.localandroid.datasourceimpl
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toImageCover
 import com.github.enteraname74.localandroid.model.toRoomImageCover
-import com.github.enteraname74.domain.datasource.ImageCoverDataSource
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.datasource.ImageCoverDataSource
+import com.github.enteraname74.model.ImageCover
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID

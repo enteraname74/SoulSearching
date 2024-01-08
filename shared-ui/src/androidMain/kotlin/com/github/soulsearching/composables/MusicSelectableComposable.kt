@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.ui.theme.DynamicColor
 
@@ -27,7 +27,7 @@ import com.github.soulsearching.ui.theme.DynamicColor
 fun MusicSelectableComposable(
     music: Music,
     onClick: () -> Unit,
-    musicCover: Bitmap?,
+    musicCover: ImageBitmap?,
     isSelected: Boolean,
     textColor: Color = DynamicColor.onPrimary
 ) {

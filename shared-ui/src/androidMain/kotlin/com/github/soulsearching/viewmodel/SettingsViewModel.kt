@@ -1,16 +1,16 @@
 package com.github.soulsearching.viewmodel
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.types.ColorThemeType
 import com.github.soulsearching.classes.types.ElementEnum
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 
 /**
  * View model for the settings.
@@ -203,7 +203,7 @@ class SettingsViewModel: ViewModel() {
     /**
      * Define the current playlist palette from its image.
      */
-    fun setPlaylistColorPalette(playlistImage: Bitmap?) {
+    fun setPlaylistColorPalette(playlistImage: ImageBitmap?) {
         playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(playlistImage)
     }
 }

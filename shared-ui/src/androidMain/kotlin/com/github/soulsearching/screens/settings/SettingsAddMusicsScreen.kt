@@ -1,6 +1,5 @@
 package com.github.soulsearching.screens.settings
 
-import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -23,9 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.types.AddMusicsStateType
 import com.github.soulsearching.composables.AppHeaderBar
@@ -44,7 +44,7 @@ import kotlin.reflect.KSuspendFunction2
 fun SettingsAddMusicsScreen(
     addMusicsViewModel: AddMusicsViewModel,
     finishAction: () -> Unit,
-    saveMusicFunction: KSuspendFunction2<Music, Bitmap?, Unit>
+    saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
 ) {
     val addMusicsState by addMusicsViewModel.state.collectAsState()
     val context = LocalContext.current
@@ -132,7 +132,8 @@ fun SettingsAddMusicsScreen(
                                     progress = (count * 1F) / addMusicsState.fetchedMusics.size
                                 }
                                 isSavingMusics = false
-                                addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.SetState(
+                                addMusicsViewModel.onAddMusicEvent(
+                                    AddMusicsEvent.SetState(
                                     newState = AddMusicsStateType.FETCHING_MUSICS
                                 ))
                             }

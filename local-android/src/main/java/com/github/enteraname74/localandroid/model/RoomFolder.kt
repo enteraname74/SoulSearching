@@ -2,7 +2,7 @@ package com.github.enteraname74.localandroid.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.model.Folder
 
 /**
  * Room representation of a Folder.

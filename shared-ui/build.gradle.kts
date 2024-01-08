@@ -32,8 +32,9 @@ kotlin {
                 implementation(compose.desktop.currentOs)
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
+                implementation(project(":domain"))
                 with(Dependencies.AndroidX) {
                     implementation(RUNTIME)
                     implementation(FOUNDATION)
@@ -43,7 +44,7 @@ kotlin {
                 }
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 runtimeOnly(project(":local-android"))
 
@@ -107,7 +108,11 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "VERSION_NAME", "\"" + Config.ANDROID_VERSION_NAME + "-dev" + "\"")
+            buildConfigField(
+                "String",
+                "VERSION_NAME",
+                "\"" + Config.ANDROID_VERSION_NAME + "-dev" + "\""
+            )
             manifestPlaceholders["appName"] = "Soul Searching Dev"
             versionNameSuffix = "-dev"
             applicationIdSuffix = ".dev"
@@ -154,8 +159,4 @@ compose.desktop {
             packageVersion = Config.DESKTOP_VERSION_NAME
         }
     }
-}
-
-dependencies {
-    implementation(project(":domain"))
 }

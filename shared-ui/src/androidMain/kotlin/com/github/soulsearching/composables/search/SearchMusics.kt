@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables.search
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,12 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.events.MusicEvent
@@ -33,7 +33,7 @@ fun SearchMusics(
     playerMusicListViewModel: PlayerMusicListViewModel,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     primaryColor: Color = DynamicColor.primary,
     textColor: Color = DynamicColor.onPrimary
 ) {

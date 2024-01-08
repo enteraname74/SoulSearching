@@ -15,7 +15,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.KeyEvent
-import com.github.enteraname74.domain.model.Music
+import androidx.compose.ui.graphics.asAndroidBitmap
+import com.github.enteraname74.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.SharedPrefUtils
@@ -363,7 +364,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
      */
     private fun updateMediaSessionMetadata() {
         val bitmap = if (PlayerUtils.playerViewModel.currentMusicCover != null) {
-            PlayerUtils.playerViewModel.currentMusicCover
+            PlayerUtils.playerViewModel.currentMusicCover?.asAndroidBitmap()
         } else {
             BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
         }

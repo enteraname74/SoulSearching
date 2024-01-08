@@ -1,14 +1,14 @@
 package com.github.soulsearching.viewmodel
 
-import android.graphics.Bitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.repository.AlbumRepository
+import com.github.enteraname74.repository.ArtistRepository
+import com.github.enteraname74.repository.ImageCoverRepository
+import com.github.enteraname74.repository.MusicRepository
+import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.states.ImageCoverState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,9 +47,9 @@ class AllImageCoversViewModel @Inject constructor(
     )
 
     /**
-     * Tries to retrieves a Bitmap representation of the id of an image cover.
+     * Tries to retrieves an ImageBitmap representation of the id of an image cover.
      */
-    fun getImageCover(coverId: UUID?): Bitmap? {
+    fun getImageCover(coverId: UUID?): ImageBitmap? {
         return state.value.covers.find { it.coverId == coverId }?.cover
     }
 

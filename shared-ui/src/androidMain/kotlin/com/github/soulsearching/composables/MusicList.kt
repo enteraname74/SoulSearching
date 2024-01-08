@@ -1,16 +1,16 @@
 package com.github.soulsearching.composables
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.classes.utils.PlayerUtils
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -30,7 +30,7 @@ fun MusicList(
     playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier = Modifier,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playlistId: UUID?,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isMainPlaylist: Boolean = false,

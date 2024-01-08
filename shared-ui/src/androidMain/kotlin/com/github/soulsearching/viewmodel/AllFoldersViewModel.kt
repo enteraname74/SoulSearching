@@ -1,14 +1,14 @@
 package com.github.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.model.Folder
+import com.github.enteraname74.repository.AlbumArtistRepository
+import com.github.enteraname74.repository.AlbumRepository
+import com.github.enteraname74.repository.ArtistRepository
+import com.github.enteraname74.repository.FolderRepository
+import com.github.enteraname74.repository.MusicAlbumRepository
+import com.github.enteraname74.repository.MusicArtistRepository
+import com.github.enteraname74.repository.MusicRepository
 import com.github.soulsearching.classes.types.FolderStateType
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.FolderEvent

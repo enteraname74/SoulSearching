@@ -2,9 +2,9 @@ package com.github.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.repository.ImageCoverRepository
+import com.github.enteraname74.repository.MusicPlaylistRepository
+import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.classes.PlaylistEventHandler
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType

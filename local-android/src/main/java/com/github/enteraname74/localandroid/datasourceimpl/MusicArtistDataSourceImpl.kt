@@ -2,8 +2,8 @@ package com.github.enteraname74.localandroid.datasourceimpl
 
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toRoomMusicArtist
-import com.github.enteraname74.domain.datasource.MusicArtistDataSource
-import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.datasource.MusicArtistDataSource
+import com.github.enteraname74.model.MusicArtist
 import java.util.UUID
 import javax.inject.Inject
 

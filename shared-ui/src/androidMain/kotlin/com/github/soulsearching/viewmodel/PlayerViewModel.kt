@@ -2,20 +2,20 @@ package com.github.soulsearching.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.palette.graphics.Palette
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.model.Music
+import com.github.enteraname74.repository.AlbumArtistRepository
+import com.github.enteraname74.repository.AlbumRepository
+import com.github.enteraname74.repository.ArtistRepository
+import com.github.enteraname74.repository.ImageCoverRepository
+import com.github.enteraname74.repository.MusicAlbumRepository
+import com.github.enteraname74.repository.MusicArtistRepository
+import com.github.enteraname74.repository.MusicPlaylistRepository
+import com.github.enteraname74.repository.MusicRepository
+import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.classes.*
 import com.github.soulsearching.classes.types.PlayerMode
 import com.github.soulsearching.classes.types.SortDirection
@@ -74,7 +74,7 @@ class PlayerViewModel @Inject constructor(
 
     var currentMusic by mutableStateOf<Music?>(null)
     var currentMusicPosition by mutableIntStateOf(0)
-    var currentMusicCover by mutableStateOf<Bitmap?>(null)
+    var currentMusicCover by mutableStateOf<ImageBitmap?>(null)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
     private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
@@ -89,7 +89,7 @@ class PlayerViewModel @Inject constructor(
 
     var playerMode by mutableStateOf(PlayerMode.NORMAL)
 
-    lateinit var retrieveCoverMethod: (UUID?) -> Bitmap?
+    lateinit var retrieveCoverMethod: (UUID?) -> ImageBitmap?
     lateinit var updateNbPlayed: (UUID) -> Unit
 
     private var isCounting = false

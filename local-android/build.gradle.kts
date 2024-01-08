@@ -1,10 +1,50 @@
 import com.github.enteraname74.buildsrc.Config
 import com.github.enteraname74.buildsrc.Dependencies
+import com.github.enteraname74.buildsrc.Versions
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
+//    id("kotlin-android")
+    id("org.jetbrains.kotlin.multiplatform")
     kotlin("kapt")
+}
+
+kotlin {
+    androidTarget()
+    jvm("desktop")
+
+    sourceSets {
+        androidMain {
+            dependencies {
+                implementation(project(mapOf("path" to ":domain")))
+                implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
+
+                with(Dependencies.AndroidX) {
+                    implementation(CORE)
+                    implementation(ROOM)
+                    configurations.getByName("kapt").dependencies.add(
+                        DefaultExternalModuleDependency(
+                            "androidx.room",
+                            "room-compiler",
+                            Versions.AndroidX.ROOM
+                        )
+                    )
+                }
+
+                with(Dependencies.Google) {
+                    implementation(HILT_ANDROID)
+                    configurations.getByName("kapt").dependencies.add(
+                        DefaultExternalModuleDependency(
+                            "com.google.dagger",
+                            "hilt-compiler",
+                            Versions.Google.DAGGER
+                        )
+                    )
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -28,27 +68,4 @@ android {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-dependencies {
-    implementation(project(mapOf("path" to ":domain")))
-
-    with(Dependencies.AndroidX) {
-        implementation(CORE)
-        implementation(ROOM)
-        kapt(ROOM_COMPILER)
-    }
-
-    with(Dependencies.Google) {
-        implementation(HILT_ANDROID)
-        kapt(HILT_COMPILER)
-
-        // For instrumentation tests
-        androidTestImplementation(HILT_ANDROID_TESTING)
-        kaptAndroidTest(HILT_COMPILER)
-
-        // For local unit tests
-        testImplementation(HILT_ANDROID_TESTING)
-        kaptTest(HILT_COMPILER)
-    }
 }

@@ -1,28 +1,28 @@
 package com.github.soulsearching.viewmodel
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.widget.Toast
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumArtist
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicAlbum
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.model.Album
+import com.github.enteraname74.model.AlbumArtist
+import com.github.enteraname74.model.Artist
+import com.github.enteraname74.model.Folder
+import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.model.Music
+import com.github.enteraname74.model.MusicAlbum
+import com.github.enteraname74.model.MusicArtist
+import com.github.enteraname74.repository.AlbumArtistRepository
+import com.github.enteraname74.repository.AlbumRepository
+import com.github.enteraname74.repository.ArtistRepository
+import com.github.enteraname74.repository.FolderRepository
+import com.github.enteraname74.repository.ImageCoverRepository
+import com.github.enteraname74.repository.MusicAlbumRepository
+import com.github.enteraname74.repository.MusicArtistRepository
+import com.github.enteraname74.repository.MusicPlaylistRepository
+import com.github.enteraname74.repository.MusicRepository
+import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.classes.types.SortDirection
@@ -133,7 +133,7 @@ class AllMusicsViewModel @Inject constructor(
     /**
      * Persist a music and its cover.
      */
-    suspend fun addMusic(musicToAdd: Music, musicCover: Bitmap?) {
+    suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {

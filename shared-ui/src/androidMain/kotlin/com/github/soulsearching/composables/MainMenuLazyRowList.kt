@@ -9,14 +9,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.model.AlbumWithArtist
+import com.github.enteraname74.model.ArtistWithMusics
+import com.github.enteraname74.model.Music
+import com.github.enteraname74.model.Playlist
+import com.github.enteraname74.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.types.SortDirection
@@ -26,7 +27,7 @@ import java.util.*
 
 @Composable
 fun MainMenuLazyListRow(
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     list: List<Any>,
     title: String,
     navigateToMore: () -> Unit,

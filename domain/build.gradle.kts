@@ -2,9 +2,31 @@ import com.github.enteraname74.buildsrc.Config
 import com.github.enteraname74.buildsrc.Dependencies
 
 plugins {
+    id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("kotlin-android")
-    kotlin("kapt")
+}
+
+kotlin {
+    androidTarget()
+    jvm("desktop")
+    jvmToolchain(17)
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(Dependencies.COROUTINES_CORE)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation(Dependencies.INJECT_API)
+                with(Dependencies.AndroidX) {
+                    implementation(RUNTIME)
+                    implementation(FOUNDATION)
+                    implementation(UI)
+                    implementation(MATERIAL)
+                    implementation(MATERIAL3)
+                }
+            }
+        }
+    }
 }
 
 android {
@@ -30,8 +52,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-dependencies {
-    implementation(Dependencies.COROUTINES_CORE)
-    implementation(Dependencies.Google.HILT_ANDROID)
-    kapt(Dependencies.Google.HILT_COMPILER)
-}
+//dependencies {
+//    implementation(Dependencies.COROUTINES_CORE)
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+//    implementation(Dependencies.INJECT_API)
+//    implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
+//}

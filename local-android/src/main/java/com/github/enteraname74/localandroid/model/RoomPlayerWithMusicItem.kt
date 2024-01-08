@@ -2,7 +2,7 @@ package com.github.enteraname74.localandroid.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.github.enteraname74.domain.model.PlayerWithMusicItem
+import com.github.enteraname74.model.PlayerWithMusicItem
 
 /**
  * Room representation of a PlayerWithMusicItem.

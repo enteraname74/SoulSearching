@@ -15,5 +15,5 @@ object Config {
 
     const val APP_NAMESPACE = "com.github.soulsearching"
     const val DATA_NAMESPACE = "com.github.enteraname74.soulsearching.data"
-    const val DOMAIN_NAMESPACE = "com.github.enteraname74.soulsearching.domain"
+    const val DOMAIN_NAMESPACE = "com.github.enteraname74.soulsearching"
 }

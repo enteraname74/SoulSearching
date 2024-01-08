@@ -1,9 +1,11 @@
 package com.github.enteraname74.localandroid.model
 
 import android.graphics.Bitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.model.ImageCover
 import java.util.UUID
 
 /**
@@ -22,7 +24,7 @@ internal data class RoomImageCover(
 internal fun RoomImageCover.toImageCover(): ImageCover = ImageCover(
     id = id,
     coverId = coverId,
-    cover = cover
+    cover = cover?.asImageBitmap()
 )
 
 /**
@@ -31,5 +33,5 @@ internal fun RoomImageCover.toImageCover(): ImageCover = ImageCover(
 internal fun ImageCover.toRoomImageCover(): RoomImageCover = RoomImageCover(
     id = id,
     coverId = coverId,
-    cover = cover
+    cover = cover?.asAndroidBitmap()
 )

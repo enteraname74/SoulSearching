@@ -25,16 +25,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
 import com.github.soulsearching.classes.types.PlaylistType
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
@@ -57,11 +58,11 @@ fun PlaylistScreen(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     playerMusicListViewModel: PlayerMusicListViewModel,
     title: String,
-    image: Bitmap?,
+    image: ImageBitmap?,
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: PlayerDraggableState,
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,

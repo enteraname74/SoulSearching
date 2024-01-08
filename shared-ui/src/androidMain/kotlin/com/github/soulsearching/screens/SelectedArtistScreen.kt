@@ -1,13 +1,12 @@
 package com.github.soulsearching.screens
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
@@ -16,10 +15,6 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.UUID
 
 
@@ -33,7 +28,7 @@ fun SelectedArtistScreen(
     navigateToModifyArtist : (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: PlayerDraggableState
 ) {
     var isArtistFetched by remember {

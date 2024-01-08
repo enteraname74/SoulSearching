@@ -4,9 +4,9 @@ import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toArtist
 import com.github.enteraname74.localandroid.model.toArtistWithMusics
 import com.github.enteraname74.localandroid.model.toRoomArtist
-import com.github.enteraname74.domain.datasource.ArtistDataSource
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.datasource.ArtistDataSource
+import com.github.enteraname74.model.Artist
+import com.github.enteraname74.model.ArtistWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID

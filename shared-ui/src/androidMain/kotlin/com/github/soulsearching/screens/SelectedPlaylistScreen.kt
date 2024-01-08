@@ -1,12 +1,12 @@
 package com.github.soulsearching.screens
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
@@ -26,7 +26,7 @@ fun SelectedPlaylistScreen(
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
     navigateBack : () -> Unit,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: PlayerDraggableState
 ){
     var isPlaylistFetched by remember {

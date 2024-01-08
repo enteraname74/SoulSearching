@@ -1,7 +1,6 @@
 package com.github.soulsearching.composables
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,7 +26,7 @@ import com.github.soulsearching.ui.theme.DynamicColor
 @Composable
 fun BigPreviewComposable(
     modifier : Modifier = Modifier,
-    image : Bitmap?,
+    image : ImageBitmap?,
     title : String,
     text : String,
     onClick : () -> Unit,

@@ -5,10 +5,10 @@ import com.github.enteraname74.localandroid.model.toAlbum
 import com.github.enteraname74.localandroid.model.toAlbumWithArtist
 import com.github.enteraname74.localandroid.model.toAlbumWithMusics
 import com.github.enteraname74.localandroid.model.toRoomAlbum
-import com.github.enteraname74.domain.datasource.AlbumDataSource
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.datasource.AlbumDataSource
+import com.github.enteraname74.model.Album
+import com.github.enteraname74.model.AlbumWithArtist
+import com.github.enteraname74.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID

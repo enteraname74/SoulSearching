@@ -3,7 +3,6 @@ package com.github.soulsearching.composables.player
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -24,6 +23,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -35,13 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.utils.ColorPaletteUtils
-import com.github.soulsearching.classes.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
 import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.classes.types.BottomSheetStates
 import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.classes.utils.ColorPaletteUtils
+import com.github.soulsearching.classes.utils.PlayerUtils
+import com.github.soulsearching.classes.utils.SettingsUtils
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
@@ -71,7 +71,7 @@ fun PlayerDraggableView(
     maxHeight: Float,
     draggableState: PlayerDraggableState,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    retrieveCoverMethod: (UUID?) -> Bitmap?,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
     musicListDraggableState: PlayerMusicListDraggableState,
     isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,

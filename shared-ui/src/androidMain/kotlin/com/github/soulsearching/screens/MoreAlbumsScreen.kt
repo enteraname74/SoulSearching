@@ -1,6 +1,5 @@
 package com.github.soulsearching.screens
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
@@ -39,7 +39,7 @@ fun MoreAlbumsScreen(
     navigateToSelectedAlbum: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     finishAction: () -> Unit,
-    retrieveCoverMethod: (UUID?) -> Bitmap?
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 

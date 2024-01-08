@@ -1,7 +1,7 @@
 package com.github.enteraname74.localandroid.model
 
 import androidx.room.Embedded
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.model.PlaylistWithMusicsNumber
 
 /**
  * Room representation of a PlaylistWithMusicsNumber.

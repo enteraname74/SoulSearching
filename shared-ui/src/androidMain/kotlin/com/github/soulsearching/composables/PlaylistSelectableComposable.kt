@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.model.Playlist
 import com.github.soulsearching.Constants
 import com.github.soulsearching.ui.theme.DynamicColor
 
