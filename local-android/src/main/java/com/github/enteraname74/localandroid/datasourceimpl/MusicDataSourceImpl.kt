@@ -1,10 +1,10 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
-import com.github.enteraname74.datasource.MusicDataSource
+import com.github.enteraname74.domain.datasource.MusicDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toMusic
 import com.github.enteraname74.localandroid.model.toRoomMusic
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID

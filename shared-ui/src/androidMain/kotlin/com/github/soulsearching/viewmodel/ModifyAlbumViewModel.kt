@@ -2,15 +2,15 @@ package com.github.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.model.Artist
-import com.github.enteraname74.model.ImageCover
-import com.github.enteraname74.repository.AlbumArtistRepository
-import com.github.enteraname74.repository.AlbumRepository
-import com.github.enteraname74.repository.ArtistRepository
-import com.github.enteraname74.repository.ImageCoverRepository
-import com.github.enteraname74.repository.MusicAlbumRepository
-import com.github.enteraname74.repository.MusicArtistRepository
-import com.github.enteraname74.repository.MusicRepository
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.AlbumEvent

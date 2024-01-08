@@ -1,6 +1,6 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.flow.StateFlow

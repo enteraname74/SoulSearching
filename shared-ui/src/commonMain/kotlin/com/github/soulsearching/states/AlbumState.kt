@@ -1,7 +1,7 @@
 package com.github.soulsearching.states
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 

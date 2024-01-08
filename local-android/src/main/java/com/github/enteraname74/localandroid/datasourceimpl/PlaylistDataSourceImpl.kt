@@ -1,12 +1,12 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
-import com.github.enteraname74.datasource.PlaylistDataSource
+import com.github.enteraname74.domain.datasource.PlaylistDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toPlaylist
 import com.github.enteraname74.localandroid.model.toPlaylistWIthMusics
 import com.github.enteraname74.localandroid.model.toRoomPlaylist
-import com.github.enteraname74.model.Playlist
-import com.github.enteraname74.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID

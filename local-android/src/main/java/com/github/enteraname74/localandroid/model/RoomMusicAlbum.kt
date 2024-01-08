@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.github.enteraname74.model.MusicAlbum
+import com.github.enteraname74.domain.model.MusicAlbum
 import java.util.UUID
 
 /**

@@ -1,7 +1,7 @@
 package com.github.soulsearching.classes
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 
 /**
  * Define information about a song, its cover and if it is selected.

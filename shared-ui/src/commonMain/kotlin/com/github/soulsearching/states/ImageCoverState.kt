@@ -1,6 +1,6 @@
 package com.github.soulsearching.states
 
-import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.domain.model.ImageCover
 
 /**
  * State for managing all image covers.

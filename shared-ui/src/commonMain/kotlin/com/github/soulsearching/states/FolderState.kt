@@ -1,6 +1,6 @@
 package com.github.soulsearching.states
 
-import com.github.enteraname74.model.Folder
+import com.github.enteraname74.domain.model.Folder
 import com.github.soulsearching.classes.types.FolderStateType
 
 /**

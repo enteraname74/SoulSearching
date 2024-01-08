@@ -2,7 +2,7 @@ package com.github.enteraname74.localandroid.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.model.Album
+import com.github.enteraname74.domain.model.Album
 import java.time.LocalDateTime
 import java.util.UUID
 

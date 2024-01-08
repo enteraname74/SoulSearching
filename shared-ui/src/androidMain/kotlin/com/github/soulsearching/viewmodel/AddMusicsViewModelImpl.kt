@@ -2,15 +2,15 @@ package com.github.soulsearching.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.github.enteraname74.repository.AlbumArtistRepository
-import com.github.enteraname74.repository.AlbumRepository
-import com.github.enteraname74.repository.ArtistRepository
-import com.github.enteraname74.repository.FolderRepository
-import com.github.enteraname74.repository.ImageCoverRepository
-import com.github.enteraname74.repository.MusicAlbumRepository
-import com.github.enteraname74.repository.MusicArtistRepository
-import com.github.enteraname74.repository.MusicRepository
-import com.github.enteraname74.repository.PlaylistRepository
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.FolderRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.classes.types.AddMusicsStateType
 import com.github.soulsearching.classes.utils.MusicFetcher

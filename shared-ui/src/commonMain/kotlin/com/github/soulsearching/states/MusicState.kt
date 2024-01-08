@@ -1,8 +1,8 @@
 package com.github.soulsearching.states
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.model.Music
-import com.github.enteraname74.model.MusicWithCover
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicWithCover
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import java.util.UUID

@@ -2,17 +2,17 @@ package com.github.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.model.ArtistWithMusics
-import com.github.enteraname74.model.Music
-import com.github.enteraname74.repository.AlbumArtistRepository
-import com.github.enteraname74.repository.AlbumRepository
-import com.github.enteraname74.repository.ArtistRepository
-import com.github.enteraname74.repository.ImageCoverRepository
-import com.github.enteraname74.repository.MusicAlbumRepository
-import com.github.enteraname74.repository.MusicArtistRepository
-import com.github.enteraname74.repository.MusicPlaylistRepository
-import com.github.enteraname74.repository.MusicRepository
-import com.github.enteraname74.repository.PlaylistRepository
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.AlbumArtistRepository
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.ImageCoverRepository
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -43,7 +43,9 @@ class SelectedArtistViewModel(
     musicArtistRepository: MusicArtistRepository,
     imageCoverRepository: ImageCoverRepository
 ) : ViewModel() {
-    private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics?> = MutableStateFlow(ArtistWithMusics())
+    private var _selectedArtistWithMusics : StateFlow<ArtistWithMusics?> = MutableStateFlow(
+        ArtistWithMusics()
+    )
 
     private val _selectedArtistState = MutableStateFlow(SelectedArtistState())
     var selectedArtistState: StateFlow<SelectedArtistState> = _selectedArtistState

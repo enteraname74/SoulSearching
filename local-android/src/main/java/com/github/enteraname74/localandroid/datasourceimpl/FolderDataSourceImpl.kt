@@ -1,10 +1,10 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
-import com.github.enteraname74.datasource.FolderDataSource
+import com.github.enteraname74.domain.datasource.FolderDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toFolder
 import com.github.enteraname74.localandroid.model.toRoomFolder
-import com.github.enteraname74.model.Folder
+import com.github.enteraname74.domain.model.Folder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

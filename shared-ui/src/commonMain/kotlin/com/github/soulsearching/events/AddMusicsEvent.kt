@@ -1,6 +1,6 @@
 package com.github.soulsearching.events
 
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.SelectableMusicItem
 import com.github.soulsearching.classes.types.AddMusicsStateType
 

@@ -1,6 +1,6 @@
 package com.github.soulsearching.states
 
-import com.github.enteraname74.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 
 /**
  * State for managing a selected playlist.

@@ -39,7 +39,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.draggablestates.PlayerDraggableState

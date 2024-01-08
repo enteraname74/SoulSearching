@@ -1,10 +1,10 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
-import com.github.enteraname74.datasource.MusicPlaylistDataSource
+import com.github.enteraname74.domain.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toMusicPlaylist
 import com.github.enteraname74.localandroid.model.toRoomMusicPlaylist
-import com.github.enteraname74.model.MusicPlaylist
+import com.github.enteraname74.domain.model.MusicPlaylist
 import java.util.UUID
 
 /**

@@ -1,7 +1,7 @@
 package com.github.soulsearching.classes.player
 
 import android.app.Notification
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 
 /**
  * Represent the player used by the service.

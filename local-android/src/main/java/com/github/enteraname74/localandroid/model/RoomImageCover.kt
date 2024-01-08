@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.enteraname74.model.ImageCover
+import com.github.enteraname74.domain.model.ImageCover
 import java.util.UUID
 
 /**

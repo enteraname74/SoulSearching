@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.palette.graphics.Palette
-import com.github.enteraname74.model.Music
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.types.PlayerMode
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
