@@ -7,9 +7,11 @@ object Dependencies {
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val GRADLE = "com.android.tools.build:gradle:${Versions.GRADLE}"
     const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES_CORE}"
-    const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECt_API}"
+    const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECT_API}"
     object AndroidX {
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"
+        const val FOUNDATION = "androidx.compose.foundation:foundation:${Versions.AndroidX.FOUNDATION}"
+        const val RUNTIME = "androidx.compose.runtime:runtime:${Versions.AndroidX.RUNTIME}"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.LIFECYCLE}"
         const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Versions.AndroidX.ACTIVITY_COMPOSE}"
         const val UI = "androidx.compose.ui:ui:${Versions.AndroidX.COMPOSE}"

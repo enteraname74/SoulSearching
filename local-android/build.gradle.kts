@@ -1,4 +1,4 @@
-import com.github.enteraname74.buildsrc.AndroidConfig
+import com.github.enteraname74.buildsrc.Config
 import com.github.enteraname74.buildsrc.Dependencies
 
 plugins {
@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = AndroidConfig.DATA_NAMESPACE
-    compileSdk = AndroidConfig.COMPILE_SDK
+    namespace = Config.DATA_NAMESPACE
+    compileSdk = Config.COMPILE_SDK
 
     defaultConfig {
-        minSdk = AndroidConfig.MIN_SDK
+        minSdk = Config.MIN_SDK
     }
 
     compileOptions {
