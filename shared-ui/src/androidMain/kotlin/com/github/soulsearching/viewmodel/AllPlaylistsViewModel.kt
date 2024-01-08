@@ -10,16 +10,17 @@ import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 
 /**
  * View model for managing all playlists.
  */
-@HiltViewModel
-class AllPlaylistsViewModel @Inject constructor(
+class AllPlaylistsViewModel(
     private val playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
     imageCoverRepository: ImageCoverRepository

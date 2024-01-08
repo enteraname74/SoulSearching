@@ -10,7 +10,6 @@ import com.github.enteraname74.repository.ImageCoverRepository
 import com.github.enteraname74.repository.MusicRepository
 import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.states.ImageCoverState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -21,7 +20,6 @@ import javax.inject.Inject
 /**
  * ViewModel for managing all image covers.
  */
-@HiltViewModel
 class AllImageCoversViewModel @Inject constructor(
     private val imageCoverRepository: ImageCoverRepository,
     private val musicRepository: MusicRepository,

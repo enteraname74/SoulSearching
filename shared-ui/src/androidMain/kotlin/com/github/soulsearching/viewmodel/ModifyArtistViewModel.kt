@@ -14,7 +14,6 @@ import com.github.enteraname74.repository.MusicArtistRepository
 import com.github.enteraname74.repository.MusicRepository
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.SelectedArtistState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,13 +22,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * View model for the modify artist screen.
  */
-@HiltViewModel
-class ModifyArtistViewModel @Inject constructor(
+class ModifyArtistViewModel(
     private val musicRepository: MusicRepository,
     private val artistRepository: ArtistRepository,
     private val musicArtistRepository: MusicArtistRepository,

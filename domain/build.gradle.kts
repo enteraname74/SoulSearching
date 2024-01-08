@@ -14,6 +14,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(Dependencies.KOIN_CORE)
+
                 implementation(Dependencies.COROUTINES_CORE)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation(Dependencies.INJECT_API)

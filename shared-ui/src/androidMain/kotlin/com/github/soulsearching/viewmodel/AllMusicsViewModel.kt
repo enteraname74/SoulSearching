@@ -31,7 +31,6 @@ import com.github.soulsearching.classes.utils.MusicFetcher
 import com.github.soulsearching.classes.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,13 +44,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * View model for managing all musics.
  */
-@HiltViewModel
-class AllMusicsViewModel @Inject constructor(
+class AllMusicsViewModel(
     private val musicRepository: MusicRepository,
     private val playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,

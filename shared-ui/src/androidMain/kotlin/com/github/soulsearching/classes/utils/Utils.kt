@@ -194,7 +194,6 @@ object Utils {
 
         if (newAlbum == null) {
             // C'est un nouvel album, il faut le créer :
-            println("Nouvel album !")
             val album = Album(
                 albumName = currentAlbum
             )

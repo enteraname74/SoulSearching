@@ -35,6 +35,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":domain"))
+                implementation(Dependencies.KOIN_CORE)
+                implementation(Dependencies.KOIN_COMPOSE)
                 with(Dependencies.AndroidX) {
                     implementation(RUNTIME)
                     implementation(FOUNDATION)
@@ -46,7 +48,7 @@ kotlin {
         }
         androidMain {
             dependencies {
-                runtimeOnly(project(":local-android"))
+                implementation(project(":local-android"))
 
                 with(Dependencies.AndroidX) {
                     implementation(ACTIVITY_COMPOSE)

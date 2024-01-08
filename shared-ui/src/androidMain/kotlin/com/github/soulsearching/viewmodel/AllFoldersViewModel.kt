@@ -13,7 +13,6 @@ import com.github.soulsearching.classes.types.FolderStateType
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.states.FolderState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +20,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 /**
  * View model for managing all folders.
  */
-@HiltViewModel
-class AllFoldersViewModel @Inject constructor(
+class AllFoldersViewModel(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,

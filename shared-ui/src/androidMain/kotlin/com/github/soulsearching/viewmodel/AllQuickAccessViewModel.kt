@@ -7,18 +7,15 @@ import com.github.enteraname74.repository.ArtistRepository
 import com.github.enteraname74.repository.MusicRepository
 import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.states.QuickAccessState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 /**
  * View model for managing all quick access.
  */
-@HiltViewModel
-class AllQuickAccessViewModel @Inject constructor(
+class AllQuickAccessViewModel(
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
     albumRepository: AlbumRepository,

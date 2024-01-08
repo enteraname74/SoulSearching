@@ -16,20 +16,17 @@ import com.github.soulsearching.classes.types.AddMusicsStateType
 import com.github.soulsearching.classes.utils.MusicFetcher
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.states.AddMusicsState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * View model for adding new musics from the settings..
  */
-@HiltViewModel
-class AddMusicsViewModel @Inject constructor(
+class AddMusicsViewModel(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
     private val playlistRepository: PlaylistRepository,

@@ -1,18 +1,17 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.FolderDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toFolder
 import com.github.enteraname74.localandroid.model.toRoomFolder
-import com.github.enteraname74.datasource.FolderDataSource
 import com.github.enteraname74.model.Folder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * Implementation of the FolderDataSource with Room's DAO.
  */
-internal class FolderDataSourceImpl @Inject constructor(
+internal class FolderDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : FolderDataSource {
     override suspend fun insertFolder(folder: Folder) {

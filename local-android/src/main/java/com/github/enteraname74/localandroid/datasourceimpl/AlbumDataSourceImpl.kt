@@ -1,23 +1,22 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.AlbumDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toAlbum
 import com.github.enteraname74.localandroid.model.toAlbumWithArtist
 import com.github.enteraname74.localandroid.model.toAlbumWithMusics
 import com.github.enteraname74.localandroid.model.toRoomAlbum
-import com.github.enteraname74.datasource.AlbumDataSource
 import com.github.enteraname74.model.Album
 import com.github.enteraname74.model.AlbumWithArtist
 import com.github.enteraname74.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * Implementation of the AlbumDataSource with Room's DAO.
  */
-internal class AlbumDataSourceImpl @Inject constructor(
+internal class AlbumDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : AlbumDataSource {
     override suspend fun insertAlbum(album: Album) {

@@ -26,21 +26,18 @@ import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.lang.Integer.max
 import java.util.*
-import javax.inject.Inject
 import kotlin.reflect.KFunction1
 
 /**
  * View model for the player.
  */
 @SuppressLint("MutableCollectionMutableState")
-@HiltViewModel
-class PlayerViewModel @Inject constructor(
+class PlayerViewModel(
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,

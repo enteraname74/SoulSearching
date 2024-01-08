@@ -1,17 +1,16 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.PlayerMusicDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toPlayerWithMusicItem
 import com.github.enteraname74.localandroid.model.toRoomPlayerMusic
-import com.github.enteraname74.datasource.PlayerMusicDataSource
 import com.github.enteraname74.model.PlayerMusic
 import com.github.enteraname74.model.PlayerWithMusicItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
-import javax.inject.Inject
 
-internal class PlayerMusicDataSourceImpl @Inject constructor(
+internal class PlayerMusicDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : PlayerMusicDataSource {
     override suspend fun insertPlayerMusic(playerMusic: PlayerMusic) {

@@ -10,19 +10,21 @@ import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * View model for managing all artists.
  */
-@HiltViewModel
-class AllArtistsViewModel @Inject constructor(
+class AllArtistsViewModel(
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository

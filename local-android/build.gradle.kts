@@ -20,6 +20,9 @@ kotlin {
                 implementation(project(mapOf("path" to ":domain")))
                 implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
 
+                implementation(Dependencies.KOIN_CORE)
+                implementation(Dependencies.KOIN_COMPOSE)
+
                 with(Dependencies.AndroidX) {
                     implementation(CORE)
                     implementation(ROOM)

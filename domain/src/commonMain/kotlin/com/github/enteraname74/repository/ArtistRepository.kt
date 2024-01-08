@@ -3,14 +3,13 @@ package com.github.enteraname74.repository
 import com.github.enteraname74.datasource.ArtistDataSource
 import com.github.enteraname74.model.Artist
 import com.github.enteraname74.model.ArtistWithMusics
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 /**
  * Repository of a Artist.
  */
-class ArtistRepository @Inject constructor(
+class ArtistRepository(
     private val artistDataSource: ArtistDataSource
 ) {
     /**

@@ -1,17 +1,16 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toMusicPlaylist
 import com.github.enteraname74.localandroid.model.toRoomMusicPlaylist
-import com.github.enteraname74.datasource.MusicPlaylistDataSource
 import com.github.enteraname74.model.MusicPlaylist
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * Implementation of the MusicPlaylistDataSource with Room's DAO.
  */
-internal class MusicPlaylistDataSourceImpl @Inject constructor(
+internal class MusicPlaylistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicPlaylistDataSource {
     override suspend fun insertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {

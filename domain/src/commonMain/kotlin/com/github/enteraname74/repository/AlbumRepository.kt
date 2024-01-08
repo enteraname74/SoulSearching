@@ -4,14 +4,13 @@ import com.github.enteraname74.datasource.AlbumDataSource
 import com.github.enteraname74.model.Album
 import com.github.enteraname74.model.AlbumWithArtist
 import com.github.enteraname74.model.AlbumWithMusics
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 /**
  * Repository of an Album.
  */
-class AlbumRepository @Inject constructor(
+class AlbumRepository(
     private val albumDataSource: AlbumDataSource
 ) {
     /**

@@ -6,25 +6,27 @@ import com.github.enteraname74.repository.AlbumRepository
 import com.github.enteraname74.repository.ArtistRepository
 import com.github.enteraname74.repository.MusicArtistRepository
 import com.github.enteraname74.repository.MusicRepository
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * View model for managing all albums.
  */
-@HiltViewModel
-class AllAlbumsViewModel @Inject constructor(
+class AllAlbumsViewModel(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val artistRepository: ArtistRepository,

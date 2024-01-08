@@ -8,17 +8,14 @@ import com.github.enteraname74.repository.PlaylistRepository
 import com.github.soulsearching.classes.PlaylistEventHandler
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 /**
  * View model for the modify playlist screen.
  */
-@HiltViewModel
-class ModifyPlaylistViewModel @Inject constructor(
+class ModifyPlaylistViewModel(
     playlistRepository : PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
     imageCoverRepository: ImageCoverRepository

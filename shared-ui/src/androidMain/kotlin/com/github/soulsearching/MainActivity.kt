@@ -12,13 +12,11 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,7 +70,6 @@ import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
 import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.service.PlayerService
-import com.github.soulsearching.ui.theme.DynamicColor
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.viewmodel.AddMusicsViewModel
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
@@ -96,36 +93,38 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private val mainActivityViewModel: MainActivityViewModel by viewModels()
-    private val allMusicsViewModel: AllMusicsViewModel by viewModels()
-    private val allPlaylistsViewModel: AllPlaylistsViewModel by viewModels()
-    private val allAlbumsViewModel: AllAlbumsViewModel by viewModels()
-    private val allArtistsViewModel: AllArtistsViewModel by viewModels()
-    private val allImageCoversViewModel: AllImageCoversViewModel by viewModels()
-    private val allQuickAccessViewModel: AllQuickAccessViewModel by viewModels()
+    lateinit var allMusicsViewModel: AllMusicsViewModel
+    lateinit var allPlaylistsViewModel: AllPlaylistsViewModel
+    lateinit var allAlbumsViewModel: AllAlbumsViewModel
+    lateinit var allArtistsViewModel: AllArtistsViewModel
+    lateinit var allImageCoversViewModel: AllImageCoversViewModel
+    lateinit var allQuickAccessViewModel: AllQuickAccessViewModel
 
     // Selected page view models
-    private val selectedPlaylistViewModel: SelectedPlaylistViewModel by viewModels()
-    private val selectedAlbumViewModel: SelectedAlbumViewModel by viewModels()
-    private val selectedArtistsViewModel: SelectedArtistViewModel by viewModels()
+    lateinit var selectedPlaylistViewModel: SelectedPlaylistViewModel
+    lateinit var selectedAlbumViewModel: SelectedAlbumViewModel
+    lateinit var selectedArtistsViewModel: SelectedArtistViewModel
 
     // Modify page view models
-    private val modifyPlaylistViewModel: ModifyPlaylistViewModel by viewModels()
-    private val modifyAlbumViewModel: ModifyAlbumViewModel by viewModels()
-    private val modifyArtistViewModel: ModifyArtistViewModel by viewModels()
-    private val modifyMusicViewModel: ModifyMusicViewModel by viewModels()
+    lateinit var modifyPlaylistViewModel: ModifyPlaylistViewModel
+    lateinit var modifyAlbumViewModel: ModifyAlbumViewModel
+    lateinit var modifyArtistViewModel: ModifyArtistViewModel
+    lateinit var modifyMusicViewModel: ModifyMusicViewModel
 
     // Player view model :
-    private val playerViewModel: PlayerViewModel by viewModels<PlayerViewModel>()
-    private val playerMusicListViewModel: PlayerMusicListViewModel by viewModels()
+    lateinit var playerViewModel: PlayerViewModel
+    lateinit var playerMusicListViewModel: PlayerMusicListViewModel
 
     // Settings view models:
-    private val allFoldersViewModel: AllFoldersViewModel by viewModels()
-    private val addMusicsViewModel: AddMusicsViewModel by viewModels()
+    lateinit var allFoldersViewModel: AllFoldersViewModel
+    lateinit var addMusicsViewModel: AddMusicsViewModel
+
+    lateinit var mainActivityViewModel: MainActivityViewModel
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -183,11 +182,41 @@ class MainActivity : AppCompatActivity() {
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initializeSharedPreferences()
-        initializePlayerViewModel()
-        initializeBroadcastReceive()
-
         setContent {
+            // Main page view models
+            allMusicsViewModel = koinViewModel()
+            allPlaylistsViewModel = koinViewModel()
+            allAlbumsViewModel = koinViewModel()
+            allArtistsViewModel = koinViewModel()
+            allImageCoversViewModel = koinViewModel()
+            allQuickAccessViewModel = koinViewModel()
+
+            // Selected page view models
+            selectedPlaylistViewModel = koinViewModel()
+            selectedAlbumViewModel = koinViewModel()
+            selectedArtistsViewModel = koinViewModel()
+
+            // Modify page view models
+            modifyPlaylistViewModel = koinViewModel()
+            modifyAlbumViewModel = koinViewModel()
+            modifyArtistViewModel = koinViewModel()
+            modifyMusicViewModel = koinViewModel()
+
+            // Player view model :
+            playerViewModel = koinViewModel()
+            playerMusicListViewModel = koinViewModel()
+
+            // Settings view models:
+            allFoldersViewModel = koinViewModel()
+            addMusicsViewModel = koinViewModel()
+
+            initializeSharedPreferences()
+            initializePlayerViewModel()
+            initializeBroadcastReceive()
+
+            mainActivityViewModel = koinViewModel<MainActivityViewModel>()
+            InitializeMainActivityViewModel()
+
             SoulSearchingTheme {
                 val playlistState by allPlaylistsViewModel.state.collectAsState()
                 val albumState by allAlbumsViewModel.state.collectAsState()
@@ -200,7 +229,7 @@ class MainActivity : AppCompatActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
-                InitializeMainActivityViewModel()
+
 
                 val readPermissionLauncher = permissionLauncher { isGranted ->
                     mainActivityViewModel.isReadPermissionGranted = isGranted
@@ -267,14 +296,12 @@ class MainActivity : AppCompatActivity() {
                 BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = DynamicColor.primary)
                 ) {
                     val navController = rememberNavController()
                     val constraintsScope = this
                     val maxHeight = with(LocalDensity.current) {
                         constraintsScope.maxHeight.toPx()
                     }
-                    println("MAIN BOX")
 
                     val playerDraggableState = rememberPlayerDraggableState(
                         constraintsScope = constraintsScope
@@ -307,8 +334,6 @@ class MainActivity : AppCompatActivity() {
                             mainActivityViewModel.hasLastPlayedMusicsBeenFetched = true
                         }
                     }
-
-                    println("NAV HOST WITH DIR: ${navController.currentDestination?.route}")
 
                     NavHost(
                         modifier = Modifier.fillMaxSize(),
@@ -752,6 +777,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
+//        allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
     }
 }

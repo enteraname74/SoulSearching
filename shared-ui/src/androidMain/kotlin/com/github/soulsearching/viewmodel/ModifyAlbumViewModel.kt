@@ -17,7 +17,6 @@ import com.github.soulsearching.classes.utils.Utils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,13 +25,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * View model for the modify album screen.
  */
-@HiltViewModel
-class ModifyAlbumViewModel @Inject constructor(
+class ModifyAlbumViewModel(
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,

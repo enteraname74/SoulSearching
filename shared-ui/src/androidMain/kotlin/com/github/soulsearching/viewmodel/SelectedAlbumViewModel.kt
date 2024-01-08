@@ -18,7 +18,6 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.SelectedAlbumState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,13 +28,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * View model for the selected album screen.
  */
-@HiltViewModel
-class SelectedAlbumViewModel @Inject constructor(
+class SelectedAlbumViewModel(
     private val albumRepository: AlbumRepository,
     artistRepository: ArtistRepository,
     musicRepository: MusicRepository,

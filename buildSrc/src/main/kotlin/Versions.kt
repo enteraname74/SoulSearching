@@ -8,6 +8,7 @@ object Versions {
     const val GRADLE = "8.2.1"
     const val COROUTINES_CORE = "1.7.3"
     const val INJECT_API = "2.0.1"
+    const val KOIN = "3.5.3"
     object AndroidX {
         const val COMPOSE = "1.6.0-beta03"
         const val CORE = "1.12.0"

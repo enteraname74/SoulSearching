@@ -1,19 +1,18 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.MusicDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toMusic
 import com.github.enteraname74.localandroid.model.toRoomMusic
-import com.github.enteraname74.datasource.MusicDataSource
 import com.github.enteraname74.model.Music
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
  */
-internal class MusicDataSourceImpl @Inject constructor(
+internal class MusicDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicDataSource {
     override suspend fun insertMusic(music: Music) {

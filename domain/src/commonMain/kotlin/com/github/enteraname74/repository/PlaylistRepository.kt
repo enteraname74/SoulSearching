@@ -3,14 +3,13 @@ package com.github.enteraname74.repository
 import com.github.enteraname74.datasource.PlaylistDataSource
 import com.github.enteraname74.model.Playlist
 import com.github.enteraname74.model.PlaylistWithMusics
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 /**
  * Repository of a Playlist.
  */
-class PlaylistRepository @Inject constructor(
+class PlaylistRepository(
     private val playlistDataSource: PlaylistDataSource
 ) {
     /**

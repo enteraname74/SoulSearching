@@ -2,13 +2,12 @@ package com.github.enteraname74.repository
 
 import com.github.enteraname74.datasource.FolderDataSource
 import com.github.enteraname74.model.Folder
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Repository of a Folder.
  */
-class FolderRepository @Inject constructor(
+class FolderRepository(
     private val folderDataSource: FolderDataSource
 ) {
     /**

@@ -2,13 +2,12 @@ package com.github.enteraname74.repository
 
 import com.github.enteraname74.datasource.MusicAlbumDataSource
 import com.github.enteraname74.model.MusicAlbum
-import jakarta.inject.Inject
 import java.util.UUID
 
 /**
  * Repository of a MusicAlbum.
  */
-class MusicAlbumRepository @Inject constructor(
+class MusicAlbumRepository(
     private val musicAlbumDataSource: MusicAlbumDataSource
 ) {
     /**

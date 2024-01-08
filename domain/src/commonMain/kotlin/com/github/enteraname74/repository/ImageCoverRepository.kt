@@ -1,14 +1,13 @@
 package com.github.enteraname74.repository
 import com.github.enteraname74.datasource.ImageCoverDataSource
 import com.github.enteraname74.model.ImageCover
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 /**
  * Repository of an ImageCover.
  */
-class ImageCoverRepository @Inject constructor(
+class ImageCoverRepository(
     private val imageCoverDataSource: ImageCoverDataSource
 ) {
     /**

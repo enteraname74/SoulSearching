@@ -8,6 +8,9 @@ object Dependencies {
     const val GRADLE = "com.android.tools.build:gradle:${Versions.GRADLE}"
     const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${Versions.COROUTINES_CORE}"
     const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECT_API}"
+    const val KOIN_CORE = "io.insert-koin:koin-core:${Versions.KOIN}"
+    const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
+
     object AndroidX {
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"
         const val FOUNDATION = "androidx.compose.foundation:foundation:${Versions.AndroidX.FOUNDATION}"

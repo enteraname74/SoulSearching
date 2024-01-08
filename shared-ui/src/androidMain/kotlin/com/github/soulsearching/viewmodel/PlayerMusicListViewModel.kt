@@ -20,7 +20,6 @@ import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,13 +29,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
 
 /**
  * View model for the player music list view.
  */
-@HiltViewModel
-class PlayerMusicListViewModel @Inject constructor(
+class PlayerMusicListViewModel(
     private val playerMusicRepository: PlayerMusicRepository,
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,

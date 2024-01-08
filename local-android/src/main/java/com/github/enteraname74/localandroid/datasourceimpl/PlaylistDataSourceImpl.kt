@@ -1,18 +1,17 @@
 package com.github.enteraname74.localandroid.datasourceimpl
 
+import com.github.enteraname74.datasource.PlaylistDataSource
 import com.github.enteraname74.localandroid.AppDatabase
 import com.github.enteraname74.localandroid.model.toPlaylist
 import com.github.enteraname74.localandroid.model.toPlaylistWIthMusics
 import com.github.enteraname74.localandroid.model.toRoomPlaylist
-import com.github.enteraname74.datasource.PlaylistDataSource
 import com.github.enteraname74.model.Playlist
 import com.github.enteraname74.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
-import javax.inject.Inject
 
-internal class PlaylistDataSourceImpl @Inject constructor(
+internal class PlaylistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : PlaylistDataSource {
     override suspend fun insertPlaylist(playlist: Playlist) {
