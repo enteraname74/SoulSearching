@@ -6,6 +6,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import com.github.soulsearching.theme.Typography
+import com.github.soulsearching.theme.primaryColorDark
+import com.github.soulsearching.theme.primaryColorLight
+import com.github.soulsearching.theme.secondaryColorDark
+import com.github.soulsearching.theme.secondaryColorLight
+import com.github.soulsearching.theme.subTextColorDark
+import com.github.soulsearching.theme.subTextColorLight
+import com.github.soulsearching.theme.textColorDark
+import com.github.soulsearching.theme.textColorLight
+import com.github.soulsearching.theme.thirdColorDark
+import com.github.soulsearching.theme.thirdColorLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(

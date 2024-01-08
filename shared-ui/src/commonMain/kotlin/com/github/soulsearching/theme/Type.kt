@@ -1,4 +1,4 @@
-package com.github.soulsearching.ui.theme
+package com.github.soulsearching.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

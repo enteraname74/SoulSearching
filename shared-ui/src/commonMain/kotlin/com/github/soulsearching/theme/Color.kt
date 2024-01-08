@@ -1,4 +1,4 @@
-package com.github.soulsearching.ui.theme
+package com.github.soulsearching.theme
 
 import androidx.compose.ui.graphics.Color
 
