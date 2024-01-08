@@ -476,7 +476,8 @@ fun MainPageScreen(
                                             if (musicState.musics.isNotEmpty()) {
                                                 coroutineScope
                                                     .launch {
-                                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                                        playerDraggableState.animateTo(
+                                                            BottomSheetStates.EXPANDED)
                                                     }
                                                     .invokeOnCompletion {
                                                         PlayerUtils.playerViewModel.playShuffle(
