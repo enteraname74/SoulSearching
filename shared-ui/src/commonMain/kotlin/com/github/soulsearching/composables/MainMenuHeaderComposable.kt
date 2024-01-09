@@ -2,7 +2,11 @@ package com.github.soulsearching.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
@@ -12,10 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 
 @Composable
@@ -43,11 +46,11 @@ fun MainMenuHeaderComposable(
                     settingsAction()
                 },
             imageVector = Icons.Rounded.Settings,
-            contentDescription = stringResource(id = R.string.navigation_drawer_desc),
+            contentDescription = strings.settingsAccessButton,
             tint = DynamicColor.onPrimary
         )
         Text(
-            text = stringResource(id = R.string.app_name),
+            text = strings.appName,
             color = DynamicColor.onPrimary,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
@@ -59,7 +62,7 @@ fun MainMenuHeaderComposable(
                     searchAction()
                 },
             imageVector = Icons.Rounded.Search,
-            contentDescription = stringResource(id = R.string.shuffle_button_desc),
+            contentDescription = strings.shuffleButton,
             tint = DynamicColor.onPrimary
         )
     }

@@ -26,19 +26,19 @@ import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MusicBottomSheetEvents(
+actual fun MusicBottomSheetEvents(
     musicState: MusicState,
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    musicBottomSheetState: MusicBottomSheetState,
     playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: PlayerDraggableState,
-    primaryColor: Color = DynamicColor.primary,
-    secondaryColor: Color = DynamicColor.secondary,
-    onPrimaryColor: Color = DynamicColor.onPrimary,
-    onSecondaryColor: Color = DynamicColor.onSecondary
+    primaryColor: Color,
+    secondaryColor: Color,
+    onPrimaryColor: Color,
+    onSecondaryColor: Color,
 ) {
     val coroutineScope = rememberCoroutineScope()
 

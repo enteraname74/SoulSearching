@@ -1,9 +1,12 @@
 package com.github.soulsearching.composables
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Icon
@@ -21,7 +24,6 @@ import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.theme.DynamicColor
 
-@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BigPreviewComposable(

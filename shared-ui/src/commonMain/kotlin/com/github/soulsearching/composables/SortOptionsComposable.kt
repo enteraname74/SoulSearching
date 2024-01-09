@@ -8,19 +8,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.rounded.North
+import androidx.compose.material.icons.rounded.Pin
+import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material.icons.rounded.SortByAlpha
+import androidx.compose.material.icons.rounded.South
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.strings
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
-import com.github.soulsearching.theme.DynamicColor
 
 @Composable
 fun SortOptionsComposable(
@@ -52,7 +55,7 @@ fun SortOptionsComposable(
                         if (sortType == SortType.ADDED_DATE) (imageSize + imageSize / 3) else imageSize
                     ),
                 imageVector = Icons.Rounded.Schedule,
-                contentDescription = stringResource(id = R.string.sort_by_date_added),
+                contentDescription = strings.sortByDateAdded,
                 tint = if (sortType == SortType.ADDED_DATE) DynamicColor.onPrimary else DynamicColor.subText
             )
             Icon(
@@ -63,7 +66,7 @@ fun SortOptionsComposable(
                         if (sortType == SortType.NB_PLAYED) (imageSize + imageSize / 3) else imageSize
                     ),
                 imageVector = Icons.Rounded.Pin,
-                contentDescription = stringResource(id = R.string.sort_by_most_listened),
+                contentDescription = strings.sortByMostListened,
                 tint = if (sortType == SortType.NB_PLAYED) DynamicColor.onPrimary else DynamicColor.subText
             )
             Icon(
@@ -74,7 +77,7 @@ fun SortOptionsComposable(
                         if (sortType == SortType.NAME) (imageSize + imageSize / 3) else imageSize
                     ),
                 imageVector = Icons.Rounded.SortByAlpha,
-                contentDescription = stringResource(id = R.string.sort_by_name),
+                contentDescription = strings.sortByName,
                 tint = if (sortType == SortType.NAME) DynamicColor.onPrimary else DynamicColor.subText
             )
         }
@@ -86,7 +89,7 @@ fun SortOptionsComposable(
                     imageSize
                 ),
             imageVector = if (sortDirection == SortDirection.ASC) Icons.Rounded.North else Icons.Rounded.South,
-            contentDescription = stringResource(id = R.string.sort_by_asc_or_dsc),
+            contentDescription = strings.sortByAscOrDesc,
             tint = DynamicColor.onPrimary
         )
     }

@@ -12,10 +12,25 @@ val strings = when(Locale.current.language) {
  */
 interface Strings {
     val appName: String get() = "Soul Searching"
+    val appLogo: String
     val noElements: String
     val backButton: String
     val headerBarRightButton: String
     val image: String
+    val moreButton: String
+    val more: String
+    val settingsAccessButton: String
+    val shuffleButton: String
+    val playlists: String get() = "Playlists"
+    val albums: String get() = "Albums"
+    val artists: String
+    val musics: String
+    val quickAccess: String
+
+    val sortByDateAdded: String
+    val sortByMostListened: String
+    val sortByName: String
+    val sortByAscOrDesc: String
 
     val removeFromQuickAccess: String
     val removeFromPlaylist: String
@@ -46,16 +61,34 @@ interface Strings {
 
     val playNext: String
 
+    /**
+     * Show a text indicating the number of musics.
+     */
+    fun musics(total: Int): String
 }
 
 /**
  * French translation for application strings
  */
 object FrStrings : Strings {
+    override val appLogo = "Logo de l'application"
     override val noElements = "Aucun élément"
     override val backButton = "Bouton de retour"
     override val headerBarRightButton = "Bouton droit de la bar d'état"
     override val image = "Image"
+    override val moreButton = "Bouton pour plus d'options"
+    override val more = "Plus"
+    override val settingsAccessButton = "Bouton d'accès aux paramètres de l'application"
+    override val shuffleButton = "Bouton pour jouer une liste de musique en aléatoire"
+
+    override val artists = "Artistes"
+    override val musics = "Musiques"
+    override val quickAccess = "Accès rapides"
+
+    override val sortByDateAdded = "Trier par data d'ajout"
+    override val sortByMostListened = "Trier par le nombre d'écoutes"
+    override val sortByName = "Trier par nom"
+    override val sortByAscOrDesc = "Tri ascendant ou descendant"
 
     override val removeFromQuickAccess = "Retirer des accès rapides"
     override val removeFromPlaylist = "Retirer de la playlist"
@@ -86,16 +119,37 @@ object FrStrings : Strings {
 
     override val playNext = "Jouer ensuite"
 
+    override fun musics(total: Int): String {
+        return if (total == 1) {
+            "musique"
+        } else {
+            "musiques"
+        }
+    }
 }
 
 /**
  * English translation for application strings
  */
 object EnStrings : Strings {
+    override val appLogo = "Application's logo"
     override val noElements = "No elements"
     override val backButton = "Back button"
     override val headerBarRightButton = "Header bar right button"
     override val image = "Image"
+    override val moreButton = "More button"
+    override val more = "More"
+    override val settingsAccessButton = "Settings access button"
+    override val shuffleButton = "Shuffle button"
+
+    override val artists = "Artists"
+    override val musics = "Songs"
+    override val quickAccess = "Quick Access"
+
+    override val sortByDateAdded = "Sort by date added"
+    override val sortByMostListened = "Sort by most listened"
+    override val sortByName = "Sort by name"
+    override val sortByAscOrDesc = "ascending or descending Sort"
 
     override val removeFromQuickAccess = "Remove from quick access"
     override val removeFromPlaylist = "Remove from playlist"
@@ -125,4 +179,12 @@ object EnStrings : Strings {
     override val deletePlaylist = "Delete this playlist"
 
     override val playNext = "Play next"
+
+    override fun musics(total: Int): String {
+        return if (total == 1) {
+            "song"
+        } else {
+            "songs"
+        }
+    }
 }

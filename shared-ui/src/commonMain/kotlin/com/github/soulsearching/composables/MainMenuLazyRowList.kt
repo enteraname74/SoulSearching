@@ -1,6 +1,11 @@
 package com.github.soulsearching.composables
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -9,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.AlbumWithArtist
@@ -18,11 +22,11 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.strings
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
-import com.github.soulsearching.theme.DynamicColor
-import java.util.*
+import java.util.UUID
 
 @Composable
 fun MainMenuLazyListRow(
@@ -67,7 +71,7 @@ fun MainMenuLazyListRow(
                     ) {
                         TextButton(onClick = navigateToMore) {
                             Text(
-                                text = stringResource(id = R.string.more),
+                                text = strings.more,
                                 color = DynamicColor.onPrimary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -99,11 +103,7 @@ fun MainMenuLazyListRow(
                             BigPreviewComposable(
                                 image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.playlist.name,
-                                text = if (element.musicsNumber == 1) {
-                                    stringResource(id = R.string.one_music)
-                                } else stringResource(
-                                    id = R.string.multiple_musics, element.musicsNumber
-                                ),
+                                text = strings.musics(element.musicsNumber),
                                 onClick = {
                                     navigateToPlaylist(element.playlist)
                                 },
@@ -126,11 +126,7 @@ fun MainMenuLazyListRow(
                             BigPreviewComposable(
                                 image = element.artist.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.artist.artistName,
-                                text = if (element.musics.size == 1) {
-                                    stringResource(id = R.string.one_music)
-                                } else stringResource(
-                                    id = R.string.multiple_musics, element.musics.size
-                                ),
+                                text = strings.musics(element.musics.size),
                                 onClick = {
                                     navigateToArtist(element.artist.artistId.toString())
                                 },
