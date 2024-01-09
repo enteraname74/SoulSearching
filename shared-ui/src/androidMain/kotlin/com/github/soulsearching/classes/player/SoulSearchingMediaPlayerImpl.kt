@@ -20,7 +20,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
+import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.*
@@ -30,7 +30,7 @@ class SoulSearchingMediaPlayerImpl(
     private val context: Context,
     private val settings: SoulSearchingSettings
 ) :
-    SoulSearchingPlayer,
+    SoulSearchingAndroidPlayer(),
     MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener,
     MediaPlayer.OnErrorListener,

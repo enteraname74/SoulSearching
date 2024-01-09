@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.composables.bottomsheet.BottomSheetRow
 import com.github.soulsearching.theme.DynamicColor
 

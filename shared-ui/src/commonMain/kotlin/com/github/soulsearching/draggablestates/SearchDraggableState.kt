@@ -1,15 +1,15 @@
-package com.github.soulsearching.classes.draggablestates
+package com.github.soulsearching.draggablestates
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.ui.unit.Density
-import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.types.BottomSheetStates
 
 /**
- * State used to control the currently played music list draggable actions.
+ * State used to control the search view draggable actions.
  */
 @OptIn(ExperimentalFoundationApi::class)
-class PlayerMusicListDraggableState(
+class SearchDraggableState(
     val maxHeight: Float,
     density: Density,
     initialValue: BottomSheetStates = BottomSheetStates.COLLAPSED

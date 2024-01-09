@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
-import com.github.soulsearching.classes.savers.PlayerDraggableStateSaver
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
+import com.github.soulsearching.savers.PlayerDraggableStateSaver
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 
 /**
  * Create a PlayerDraggableState for managing the draggable state of the player view.

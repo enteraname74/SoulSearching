@@ -33,8 +33,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
@@ -72,7 +72,7 @@ import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel

@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.model
 
 import androidx.compose.runtime.Composable
 

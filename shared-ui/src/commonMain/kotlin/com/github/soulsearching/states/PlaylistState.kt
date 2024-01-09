@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import java.util.UUID
 
 /**

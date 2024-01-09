@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.palette.graphics.Palette
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.classes.types.PlayerMode
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.types.PlayerMode
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.flow.MutableStateFlow

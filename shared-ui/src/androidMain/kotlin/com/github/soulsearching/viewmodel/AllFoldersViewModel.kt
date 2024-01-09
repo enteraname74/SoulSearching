@@ -9,10 +9,11 @@ import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.classes.types.FolderStateType
+import com.github.soulsearching.types.FolderStateType
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.states.FolderState
+import com.github.soulsearching.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,7 +100,7 @@ class AllFoldersViewModel(
                             }
                             var count = 0
                             musicsFromFolder.forEach { music ->
-                                AndroidUtils.removeMusicFromApp(
+                                Utils.removeMusicFromApp(
                                     musicRepository = musicRepository,
                                     albumRepository = albumRepository,
                                     artistRepository = artistRepository,

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.classes.types.ElementEnum
+import com.github.soulsearching.types.ElementEnum
 import com.github.soulsearching.theme.DynamicColor
 import kotlinx.coroutines.launch
 

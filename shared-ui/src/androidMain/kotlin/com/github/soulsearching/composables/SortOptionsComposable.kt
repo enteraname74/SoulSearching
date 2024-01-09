@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.theme.DynamicColor
 
 @Composable

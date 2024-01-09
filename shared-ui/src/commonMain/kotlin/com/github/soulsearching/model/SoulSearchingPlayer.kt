@@ -1,8 +1,6 @@
-package com.github.soulsearching.classes.player
+package com.github.soulsearching.model
 
-import android.app.Notification
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.SoulSearchingContext
 
 /**
  * Represent the player used by the service.
@@ -58,14 +56,4 @@ interface SoulSearchingPlayer {
      * Retrieve the current position in the current played song.
      */
     fun getMusicPosition(): Int
-
-    /**
-     * Update the notification of the player.
-     */
-    fun updateNotification()
-
-    /**
-     * Retrieve the instance of the notification of the player.
-     */
-    fun getNotification(): Notification
 }

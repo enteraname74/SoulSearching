@@ -1,6 +1,7 @@
 package com.github.soulsearching
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 
 /**

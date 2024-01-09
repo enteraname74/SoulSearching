@@ -18,8 +18,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.theme.DynamicColor
 

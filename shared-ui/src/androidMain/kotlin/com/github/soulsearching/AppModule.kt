@@ -1,8 +1,8 @@
 package com.github.soulsearching
 
 import android.content.Context
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel

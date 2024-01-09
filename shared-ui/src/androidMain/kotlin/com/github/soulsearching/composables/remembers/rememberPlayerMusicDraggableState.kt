@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
-import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
-import com.github.soulsearching.classes.savers.PlayerMusicListDraggableStateSaver
+import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.savers.PlayerMusicListDraggableStateSaver
 
 /**
  * Create a PlayerMusicListDraggableState for managing the draggable state of the played music list view.

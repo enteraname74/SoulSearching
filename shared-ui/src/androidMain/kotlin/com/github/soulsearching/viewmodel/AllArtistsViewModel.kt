@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
 import kotlinx.coroutines.CoroutineScope

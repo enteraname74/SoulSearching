@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.TabRowItem
+import com.github.soulsearching.model.TabRowItem
 import com.github.soulsearching.states.*
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch

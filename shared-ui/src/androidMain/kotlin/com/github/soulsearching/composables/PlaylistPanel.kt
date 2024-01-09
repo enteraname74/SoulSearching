@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.types.PlaylistType
+import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.theme.DynamicColor
 
 @SuppressLint("UnnecessaryComposedModifier")

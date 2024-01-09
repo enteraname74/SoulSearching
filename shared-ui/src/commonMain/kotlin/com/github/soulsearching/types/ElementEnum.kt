@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.types
+package com.github.soulsearching.types
 
 /**
  * Represent all elements that can be shown on the main page screen.

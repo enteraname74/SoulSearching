@@ -2,8 +2,8 @@ package com.github.soulsearching.states
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 
 /**
  * Manage elements related to albums.

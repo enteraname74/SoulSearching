@@ -4,12 +4,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
+import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayer
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
-import com.github.soulsearching.classes.player.SoulSearchingPlayer
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,7 +56,7 @@ class PlayerService : Service() {
 
     companion object {
         const val IS_FROM_SAVED_LIST = "isFromSavedList"
-        private var player: SoulSearchingPlayer? = null
+        private var player: SoulSearchingAndroidPlayer? = null
         private var isDoingOperations: Boolean = false
 
 

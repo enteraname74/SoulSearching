@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.types
+package com.github.soulsearching.types
 
 /**
  * Represent the possible operations for adding musics.

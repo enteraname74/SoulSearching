@@ -29,10 +29,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.types.MusicBottomSheetState
-import com.github.soulsearching.classes.types.PlaylistType
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents

@@ -35,10 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.draggablestates.PlayerMusicListDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils

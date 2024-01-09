@@ -1,6 +1,6 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
+import com.github.soulsearching.model.settings.SoulSearchingSettings
 
 /**
  * View model for the settings.

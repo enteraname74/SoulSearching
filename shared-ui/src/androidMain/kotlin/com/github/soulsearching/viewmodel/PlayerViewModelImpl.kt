@@ -14,8 +14,8 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.*
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.types.PlayerMode
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService

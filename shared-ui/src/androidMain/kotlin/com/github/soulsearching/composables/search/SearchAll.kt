@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable

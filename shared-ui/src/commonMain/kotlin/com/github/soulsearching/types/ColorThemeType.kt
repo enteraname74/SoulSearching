@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.types
+package com.github.soulsearching.types
 
 /**
  * Define the type of color theme used for the application.

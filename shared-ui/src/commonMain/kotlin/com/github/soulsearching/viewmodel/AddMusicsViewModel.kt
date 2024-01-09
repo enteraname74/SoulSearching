@@ -1,6 +1,6 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.soulsearching.classes.SelectableMusicItem
+import com.github.soulsearching.model.SelectableMusicItem
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.states.AddMusicsState
 import kotlinx.coroutines.flow.MutableStateFlow

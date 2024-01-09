@@ -14,7 +14,7 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
+import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState

@@ -24,11 +24,11 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.draggablestates.SearchDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.draggablestates.SearchDraggableState
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.composables.MainMenuHeaderComposable
 import com.github.soulsearching.composables.MainMenuLazyListRow
 import com.github.soulsearching.composables.MainPageVerticalShortcut

@@ -1,8 +1,8 @@
-package com.github.soulsearching.classes.settings
+package com.github.soulsearching.model.settings
 
-import com.github.soulsearching.classes.types.PlayerMode
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
+import com.github.soulsearching.types.PlayerMode
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent

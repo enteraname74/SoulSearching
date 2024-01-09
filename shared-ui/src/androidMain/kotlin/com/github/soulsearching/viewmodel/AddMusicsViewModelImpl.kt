@@ -11,10 +11,11 @@ import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.classes.SelectableMusicItem
-import com.github.soulsearching.classes.types.AddMusicsStateType
-import com.github.soulsearching.classes.utils.MusicFetcher
+import com.github.soulsearching.model.SelectableMusicItem
+import com.github.soulsearching.types.AddMusicsStateType
+import com.github.soulsearching.classes.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.events.AddMusicsEvent
+import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.states.AddMusicsState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -113,7 +114,7 @@ class AddMusicsViewModelImpl(
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ) : ArrayList<SelectableMusicItem> {
-        val musicFetcher = MusicFetcher(
+        val musicFetcher: MusicFetcher = MusicFetcherAndroidImpl(
             context = context,
             musicRepository = musicRepository,
             playlistRepository = playlistRepository,
@@ -126,7 +127,7 @@ class AddMusicsViewModelImpl(
             folderRepository = folderRepository
         )
 
-        return musicFetcher.fetchNewMusics(
+        return musicFetcher.fetchMusicsFromSelectedFolders(
             updateProgress = updateProgress,
             alreadyPresentMusicsPaths = alreadyPresentMusicsPaths,
             hiddenFoldersPaths = hiddenFoldersPaths

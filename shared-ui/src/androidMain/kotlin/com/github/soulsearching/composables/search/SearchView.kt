@@ -24,9 +24,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.soulsearching.Constants
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.draggablestates.SearchDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.draggablestates.SearchDraggableState
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.theme.DynamicColor
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

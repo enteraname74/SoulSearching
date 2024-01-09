@@ -1,7 +1,7 @@
 package com.github.soulsearching.states
 
-import com.github.soulsearching.classes.SelectableMusicItem
-import com.github.soulsearching.classes.types.AddMusicsStateType
+import com.github.soulsearching.model.SelectableMusicItem
+import com.github.soulsearching.types.AddMusicsStateType
 
 /**
  * State for managing adding musics.

@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
-import com.github.soulsearching.classes.draggablestates.SearchDraggableState
-import com.github.soulsearching.classes.savers.SearchDraggableStateSaver
+import com.github.soulsearching.draggablestates.SearchDraggableState
+import com.github.soulsearching.savers.SearchDraggableStateSaver
 
 /**
  * Create a SearchDraggableState for managing the draggable state of the search view.

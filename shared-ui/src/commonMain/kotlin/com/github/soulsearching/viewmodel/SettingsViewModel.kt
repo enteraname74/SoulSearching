@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.types.ColorThemeType
-import com.github.soulsearching.classes.types.ElementEnum
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.types.ColorThemeType
+import com.github.soulsearching.types.ElementEnum
 
 open class SettingsViewModel(
     private val settings: SoulSearchingSettings

@@ -25,12 +25,13 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicEventHandler
-import com.github.soulsearching.classes.settings.SoulSearchingSettings
-import com.github.soulsearching.classes.types.SortDirection
-import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.MusicFetcher
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
+import com.github.soulsearching.classes.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -278,7 +279,7 @@ class AllMusicsViewModel(
         updateProgress: (Float) -> Unit,
         finishAction: () -> Unit
     ) {
-        val musicFetcher = MusicFetcher(
+        val musicFetcher: MusicFetcher = MusicFetcherAndroidImpl(
             context = context,
             musicRepository = musicRepository,
             playlistRepository = playlistRepository,

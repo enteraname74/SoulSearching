@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.types
+package com.github.soulsearching.types
 
 /**
  * Possible types of sorts.

@@ -9,9 +9,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.draggablestates.PlayerDraggableState
-import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.classes.types.MusicBottomSheetState
+import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState

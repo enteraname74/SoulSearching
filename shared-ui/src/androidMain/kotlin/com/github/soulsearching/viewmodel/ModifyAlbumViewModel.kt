@@ -16,6 +16,7 @@ import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.SelectedAlbumState
+import com.github.soulsearching.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -183,7 +184,7 @@ class ModifyAlbumViewModel(
                     )
 
                     // On vérifie si l'ancien artiste possède encore des musiques :
-                    AndroidUtils.checkAndDeleteArtist(
+                    Utils.checkAndDeleteArtist(
                         artistToCheck = initialArtist,
                         musicArtistRepository = musicArtistRepository,
                         artistRepository = artistRepository,
