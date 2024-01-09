@@ -61,6 +61,12 @@ interface Strings {
 
     val playNext: String
 
+    val personalizedThemeTitle: String
+    val personalizedThemeText: String
+    val dynamicPlayerView: String
+    val dynamicPlaylistView: String
+    val dynamicOtherView: String
+
     /**
      * Show a text indicating the number of musics.
      */
@@ -118,6 +124,12 @@ object FrStrings : Strings {
     override val deletePlaylist = "Supprimer cette playlist"
 
     override val playNext = "Jouer ensuite"
+
+    override val personalizedThemeTitle = "Thème personnalisé"
+    override val personalizedThemeText = "Définissez précisémment votre thème de couleur"
+    override val dynamicPlayerView = "Utiliser le thème dynamique pour la vue du player"
+    override val dynamicPlaylistView = "Utiliser le thème dynamique pour la vue des playlists, albums et artistes"
+    override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
 
     override fun musics(total: Int): String {
         return if (total == 1) {
@@ -179,6 +191,12 @@ object EnStrings : Strings {
     override val deletePlaylist = "Delete this playlist"
 
     override val playNext = "Play next"
+
+    override val personalizedThemeTitle = "Personalized theme"
+    override val personalizedThemeText = "Define precisely your color theme"
+    override val dynamicPlayerView = "Use dynamic theme for player view"
+    override val dynamicPlaylistView = "Use dynamic theme for playlist, album and artist view"
+    override val dynamicOtherView = "Use dynamic theme for the other views"
 
     override fun musics(total: Int): String {
         return if (total == 1) {

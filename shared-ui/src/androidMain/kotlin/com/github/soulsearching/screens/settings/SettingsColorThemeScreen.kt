@@ -14,7 +14,7 @@ import com.github.soulsearching.types.ColorThemeType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.ColorThemeCard
-import com.github.soulsearching.composables.setting.PersonalizedColorThemeCard
+import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
 import com.github.soulsearching.theme.DynamicColor
 
 @Composable

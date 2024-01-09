@@ -7,9 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
@@ -22,6 +20,7 @@ import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.strings
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
@@ -57,16 +56,12 @@ fun SearchAll(
         }
         if (foundedPlaylists.isNotEmpty()) {
             stickyHeader {
-                SearchType(title = stringResource(id = R.string.playlists))
+                SearchType(title = strings.playlists)
             }
             items(foundedPlaylists) { playlist ->
                 LinearPreviewComposable(
                     title = playlist.playlist.name,
-                    text = if (playlist.musicsNumber == 1) {
-                        stringResource(id = R.string.one_music)
-                    } else stringResource(
-                        id = R.string.multiple_musics, playlist.musicsNumber
-                    ),
+                    text = strings.musics(playlist.musicsNumber),
                     onClick = {
                         focusManager.clearFocus()
                         onPlaylistEvent(
@@ -100,16 +95,12 @@ fun SearchAll(
         }
         if (foundedArtists.isNotEmpty()) {
             stickyHeader {
-                SearchType(title = stringResource(id = R.string.artists))
+                SearchType(title = strings.artists)
             }
             items(foundedArtists) { artist ->
                 LinearPreviewComposable(
                     title = artist.artist.artistName,
-                    text = if (artist.musics.size == 1) {
-                        stringResource(id = R.string.one_music)
-                    } else stringResource(
-                        id = R.string.multiple_musics, artist.musics.size
-                    ),
+                    text = strings.musics(artist.musics.size),
                     onClick = {
                         focusManager.clearFocus()
                         navigateToArtist(artist.artist.artistId.toString())
@@ -143,7 +134,7 @@ fun SearchAll(
         }
         if (foundedAlbums.isNotEmpty()) {
             stickyHeader {
-                SearchType(title = stringResource(id = R.string.albums))
+                SearchType(title = strings.albums)
             }
             items(foundedAlbums) { album ->
                 LinearPreviewComposable(
@@ -181,7 +172,7 @@ fun SearchAll(
 
         if (foundedMusics.isNotEmpty()) {
             stickyHeader {
-                SearchType(title = stringResource(id = R.string.musics))
+                SearchType(title = strings.musics)
             }
             items(foundedMusics) { music ->
                 MusicItemComposable(

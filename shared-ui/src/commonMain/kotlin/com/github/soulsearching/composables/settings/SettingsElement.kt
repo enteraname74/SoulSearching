@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.setting
+package com.github.soulsearching.composables.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

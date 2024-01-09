@@ -8,14 +8,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils
@@ -50,7 +49,7 @@ fun SearchMusics(
         if (foundedMusics.isNotEmpty()) {
             stickyHeader {
                 SearchType(
-                    title = stringResource(id = R.string.musics),
+                    title = strings.musics,
                     primaryColor = primaryColor,
                     textColor = textColor
                 )
