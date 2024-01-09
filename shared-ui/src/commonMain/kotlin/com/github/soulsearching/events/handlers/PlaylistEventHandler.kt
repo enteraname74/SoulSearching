@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.events.handlers
 
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.MusicPlaylist
@@ -6,9 +6,9 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +29,8 @@ class PlaylistEventHandler(
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
     private val playlistRepository: PlaylistRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
-    private val imageCoverRepository: ImageCoverRepository
+    private val imageCoverRepository: ImageCoverRepository,
+    private val settings: SoulSearchingSettings
 ) {
 
     /**
@@ -270,9 +271,9 @@ class PlaylistEventHandler(
      */
     private fun setSortDirection(event: PlaylistEvent.SetSortDirection) {
         sortDirection.value = event.type
-        SharedPrefUtils.updateIntValue(
-            keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_DIRECTION_KEY,
-            newValue = event.type
+        settings.setInt(
+            key = SoulSearchingSettings.SORT_PLAYLISTS_DIRECTION_KEY,
+            value = event.type
         )
     }
 
@@ -281,9 +282,9 @@ class PlaylistEventHandler(
      */
     private fun setSortType(event: PlaylistEvent.SetSortType) {
         sortType.value = event.type
-        SharedPrefUtils.updateIntValue(
-            keyToUpdate = SharedPrefUtils.SORT_PLAYLISTS_TYPE_KEY,
-            newValue = event.type
+        settings.setInt(
+            key = SoulSearchingSettings.SORT_PLAYLISTS_TYPE_KEY,
+            value = event.type
         )
     }
 

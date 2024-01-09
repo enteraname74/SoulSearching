@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 class AllArtistsViewModel(
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
-    private val albumRepository: AlbumRepository
+    private val albumRepository: AlbumRepository,
+    private val settings: SoulSearchingSettings
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -118,16 +119,16 @@ class AllArtistsViewModel(
             }
             is ArtistEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
-                SharedPrefUtils.updateIntValue(
-                    keyToUpdate = SharedPrefUtils.SORT_ARTISTS_DIRECTION_KEY,
-                    newValue = event.type
+                settings.setInt(
+                    key = SoulSearchingSettings.SORT_ARTISTS_DIRECTION_KEY,
+                    value = event.type
                 )
             }
             is ArtistEvent.SetSortType -> {
                 _sortType.value = event.type
-                SharedPrefUtils.updateIntValue(
-                    keyToUpdate = SharedPrefUtils.SORT_ARTISTS_TYPE_KEY,
-                    newValue = event.type
+                settings.setInt(
+                    key = SoulSearchingSettings.SORT_ARTISTS_TYPE_KEY,
+                    value = event.type
                 )
             }
             is ArtistEvent.UpdateQuickAccessState -> {

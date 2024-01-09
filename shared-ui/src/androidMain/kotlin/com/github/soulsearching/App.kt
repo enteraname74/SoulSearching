@@ -15,7 +15,6 @@ import org.koin.core.context.startKoin
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        SettingsUtils.settingsViewModel = SettingsViewModelImpl()
         createNotificationChannel()
         startKoin {
             androidContext(applicationContext)

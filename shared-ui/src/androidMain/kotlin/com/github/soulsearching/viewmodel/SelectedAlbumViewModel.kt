@@ -14,6 +14,7 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
@@ -41,7 +42,8 @@ class SelectedAlbumViewModel(
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
-    imageCoverRepository: ImageCoverRepository
+    imageCoverRepository: ImageCoverRepository,
+    settings: SoulSearchingSettings
 ) : ViewModel() {
     private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics?> = MutableStateFlow(
         AlbumWithMusics()
@@ -64,7 +66,8 @@ class SelectedAlbumViewModel(
         musicAlbumRepository = musicAlbumRepository,
         musicArtistRepository = musicArtistRepository,
         albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository
+        imageCoverRepository = imageCoverRepository,
+        settings = settings
     )
 
     /**

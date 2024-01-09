@@ -31,6 +31,7 @@ kotlin {
                 implementation(Dependencies.KOIN_COMPOSE)
                 implementation(Dependencies.KMPALETTE_CORE)
                 implementation("org.jetbrains.compose.components:components-resources:1.5.11")
+                implementation("com.russhwolf:multiplatform-settings:1.1.1")
 
                 with(Dependencies.AndroidX) {
                     implementation(RUNTIME)

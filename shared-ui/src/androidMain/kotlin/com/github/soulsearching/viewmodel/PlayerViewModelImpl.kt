@@ -14,8 +14,8 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.*
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.PlayerMode
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
@@ -37,6 +37,7 @@ class PlayerViewModelImpl(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
+    private val settings: SoulSearchingSettings
 ): PlayerViewModel() {
     lateinit var context: Context
     private val musicEventHandler = MusicEventHandler(
@@ -52,7 +53,8 @@ class PlayerViewModelImpl(
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
-        sortType = _sortType
+        sortType = _sortType,
+        settings = settings
     )
 
     /**
@@ -66,8 +68,13 @@ class PlayerViewModelImpl(
         currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
         initialPlaylist = musicList.map { it.copy() } as ArrayList<Music>
 
-        SharedPrefUtils.getPlayerSavedCurrentMusic()
-        SharedPrefUtils.getPlayerMode()
+        val index = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY, -1)
+        val position = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, 0)
+
+        setMusicFromIndex(index)
+        currentMusicPosition = position
+
+        playerMode = settings.getPlayerMode()
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
 
@@ -101,7 +108,10 @@ class PlayerViewModelImpl(
         val currentIndex = getIndexOfCurrentMusic()
         currentPlaylist.add(currentIndex + 1, music)
 
-        SharedPrefUtils.setPlayerSavedCurrentMusic()
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = getIndexOfCurrentMusic(),
+            currentMusicPosition = currentMusicPosition
+        )
     }
 
     /**
@@ -139,7 +149,10 @@ class PlayerViewModelImpl(
                 }
             }
         }
-        SharedPrefUtils.setPlayerSavedCurrentMusic()
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = getIndexOfCurrentMusic(),
+            currentMusicPosition = currentMusicPosition
+        )
     }
 
     /**
@@ -151,7 +164,10 @@ class PlayerViewModelImpl(
 
             setNewCurrentMusicInformation(getNextMusic(currentIndex))
 
-            SharedPrefUtils.setPlayerSavedCurrentMusic()
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = getIndexOfCurrentMusic(),
+                currentMusicPosition = currentMusicPosition
+            )
         }
     }
 
@@ -163,7 +179,10 @@ class PlayerViewModelImpl(
 
         setNewCurrentMusicInformation(getPreviousMusic(currentIndex))
 
-        SharedPrefUtils.setPlayerSavedCurrentMusic()
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = getIndexOfCurrentMusic(),
+            currentMusicPosition = currentMusicPosition
+        )
     }
 
     /**
@@ -188,8 +207,14 @@ class PlayerViewModelImpl(
             initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             currentPlaylist = playlist.map { it.copy() } as ArrayList<Music>
             playerMode = PlayerMode.NORMAL
-            SharedPrefUtils.setPlayerMode()
-            SharedPrefUtils.setPlayerSavedCurrentMusic()
+            settings.setPlayerMode(
+                key = SoulSearchingSettings.PLAYER_MODE_KEY,
+                value = playerMode
+            )
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = getIndexOfCurrentMusic(),
+                currentMusicPosition = currentMusicPosition
+            )
 
             setNewCurrentMusicInformation(currentPlaylist[0])
             savePlayerListMethod(currentPlaylist.map { it.musicId } as ArrayList<UUID>)
@@ -236,7 +261,10 @@ class PlayerViewModelImpl(
                 initialPlaylist = playlist.map { it.copy() } as ArrayList<Music>
                 currentPlaylistId = playlistId
                 this@PlayerViewModelImpl.isMainPlaylist = isMainPlaylist
-                SharedPrefUtils.setPlayerSavedCurrentMusic()
+                settings.saveCurrentMusicInformation(
+                    currentMusicIndex = getIndexOfCurrentMusic(),
+                    currentMusicPosition = currentMusicPosition
+                )
             }
 
             if (notSameMusic) {
@@ -277,8 +305,14 @@ class PlayerViewModelImpl(
                     playerMode = PlayerMode.NORMAL
                 }
             }
-            SharedPrefUtils.setPlayerMode()
-            SharedPrefUtils.setPlayerSavedCurrentMusic()
+            settings.setPlayerMode(
+                key = SoulSearchingSettings.PLAYER_MODE_KEY,
+                value = playerMode
+            )
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = getIndexOfCurrentMusic(),
+                currentMusicPosition = currentMusicPosition
+            )
             isChangingPlayMode = false
         }
     }
@@ -292,7 +326,10 @@ class PlayerViewModelImpl(
             isChangingPlayMode = true
             playerMode = PlayerMode.NORMAL
             currentPlaylist = musicList.map { it.copy() } as ArrayList<Music>
-            SharedPrefUtils.setPlayerSavedCurrentMusic()
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = getIndexOfCurrentMusic(),
+                currentMusicPosition = currentMusicPosition
+            )
             isChangingPlayMode = false
         }
     }

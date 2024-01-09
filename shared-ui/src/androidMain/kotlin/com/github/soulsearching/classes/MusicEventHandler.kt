@@ -12,14 +12,14 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +45,7 @@ class MusicEventHandler(
     private val imageCoverRepository: ImageCoverRepository,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
+    private val settings: SoulSearchingSettings
 ) {
     /**
      * handle a music event.
@@ -312,9 +313,9 @@ class MusicEventHandler(
                 sortType = event.type
             )
         }
-        SharedPrefUtils.updateIntValue(
-            keyToUpdate = SharedPrefUtils.SORT_MUSICS_TYPE_KEY,
-            newValue = event.type
+        settings.setInt(
+            key = SoulSearchingSettings.SORT_MUSICS_TYPE_KEY,
+            value = event.type
         )
     }
 
@@ -324,9 +325,9 @@ class MusicEventHandler(
     private fun setSortDirection(event: MusicEvent.SetSortDirection) {
         sortDirection.value = event.type
 
-        SharedPrefUtils.updateIntValue(
-            keyToUpdate = SharedPrefUtils.SORT_MUSICS_DIRECTION_KEY,
-            newValue = event.type
+        settings.setInt(
+            key = SoulSearchingSettings.SORT_MUSICS_DIRECTION_KEY,
+            value = event.type
         )
     }
 

@@ -8,9 +8,12 @@ import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
 import com.github.soulsearching.classes.player.SoulSearchingPlayer
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
+import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 /**
  * Service used for the playback.
@@ -22,7 +25,8 @@ class PlayerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (player == null) {
-            player = SoulSearchingMediaPlayerImpl(applicationContext)
+            val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
+            player = SoulSearchingMediaPlayerImpl(applicationContext, settings)
 
             val extras = intent?.extras
             if (extras != null) {

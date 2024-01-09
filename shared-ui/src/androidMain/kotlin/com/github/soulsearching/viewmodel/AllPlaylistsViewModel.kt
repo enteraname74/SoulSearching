@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.classes.PlaylistEventHandler
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.events.handlers.PlaylistEventHandler
 import com.github.soulsearching.states.PlaylistState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,8 @@ import kotlinx.coroutines.flow.stateIn
 class AllPlaylistsViewModel(
     private val playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
-    imageCoverRepository: ImageCoverRepository
+    imageCoverRepository: ImageCoverRepository,
+    settings: SoulSearchingSettings
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -83,7 +85,8 @@ class AllPlaylistsViewModel(
         musicPlaylistRepository = musicPlaylistRepository,
         imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
-        sortType = _sortType
+        sortType = _sortType,
+        settings = settings
     )
 
     /**

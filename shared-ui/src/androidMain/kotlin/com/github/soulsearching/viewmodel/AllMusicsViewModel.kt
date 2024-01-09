@@ -25,6 +25,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.classes.MusicEventHandler
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
 import com.github.soulsearching.classes.utils.MusicFetcher
@@ -58,7 +59,8 @@ class AllMusicsViewModel(
     private val musicArtistRepository: MusicArtistRepository,
     private val albumArtistRepository: AlbumArtistRepository,
     private val imageCoverRepository: ImageCoverRepository,
-    private val folderRepository: FolderRepository
+    private val folderRepository: FolderRepository,
+    settings: SoulSearchingSettings
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -124,7 +126,8 @@ class AllMusicsViewModel(
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
-        sortType = _sortType
+        sortType = _sortType,
+        settings = settings
     )
 
     /**

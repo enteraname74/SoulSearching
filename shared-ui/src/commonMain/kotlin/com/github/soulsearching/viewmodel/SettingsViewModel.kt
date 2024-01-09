@@ -5,10 +5,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.ColorThemeType
 import com.github.soulsearching.classes.types.ElementEnum
 
-abstract class SettingsViewModel {
+open class SettingsViewModel(
+    private val settings: SoulSearchingSettings
+) {
     var colorTheme by mutableIntStateOf(ColorThemeType.SYSTEM)
     var isDynamicPlayerThemeSelected by mutableStateOf(false)
     var isDynamicPlaylistThemeSelected by mutableStateOf(false)
@@ -23,6 +26,10 @@ abstract class SettingsViewModel {
 
     var playlistCover by mutableStateOf<ImageBitmap?>(null)
     var forceBasicThemeForPlaylists by mutableStateOf(false)
+
+    init {
+        initializeViewModel()
+    }
 
     /**
      * Retrieve a list of visible elements on the main page screen.
@@ -101,47 +108,133 @@ abstract class SettingsViewModel {
     }
 
     /**
+     * Initialize the view model.
+     */
+    private fun initializeViewModel() {
+        with(settings) {
+            colorTheme = getInt(
+                SoulSearchingSettings.COLOR_THEME_KEY, ColorThemeType.DYNAMIC
+            )
+            isDynamicPlayerThemeSelected = settings.getBoolean(
+                SoulSearchingSettings.DYNAMIC_PLAYER_THEME, false
+            )
+            isDynamicPlaylistThemeSelected = settings.getBoolean(
+                SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME, false
+            )
+            isQuickAccessShown = settings.getBoolean(
+                SoulSearchingSettings.IS_QUICK_ACCESS_SHOWN, true
+            )
+            isPlaylistsShown = settings.getBoolean(
+                SoulSearchingSettings.IS_PLAYLISTS_SHOWN, true
+            )
+            isAlbumsShown = settings.getBoolean(
+                SoulSearchingSettings.IS_ALBUMS_SHOWN, true
+            )
+            isArtistsShown = settings.getBoolean(
+                SoulSearchingSettings.IS_ARTISTS_SHOWN, true
+            )
+            isVerticalBarShown = settings.getBoolean(
+                SoulSearchingSettings.IS_VERTICAL_BAR_SHOWN, false
+            )
+        }
+    }
+
+    /**
      * Update the type of color theme used in the application.
      */
-    abstract fun updateColorTheme(newTheme: Int)
+    fun updateColorTheme(newTheme: Int) {
+        colorTheme = newTheme
+        settings.setInt(
+            key = SoulSearchingSettings.COLOR_THEME_KEY,
+            value = newTheme
+        )
+    }
 
     /**
      * Toggle dynamic theme for player.
      */
-    abstract fun toggleDynamicPlayerTheme()
+    fun toggleDynamicPlayerTheme() {
+        isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
+            value = isDynamicPlayerThemeSelected
+        )
+    }
 
     /**
      * Toggle dynamic theme for playlist.
      */
-    abstract fun toggleDynamicPlaylistTheme()
+    fun toggleDynamicPlaylistTheme() {
+        isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
+            value = isDynamicPlaylistThemeSelected
+        )
+    }
 
     /**
      * Toggle dynamic theme for other views (everything except playlists and player view).
      */
-    abstract fun toggleDynamicOtherViewsTheme()
+    fun toggleDynamicOtherViewsTheme() {
+        isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
+            value = isDynamicOtherViewsThemeSelected
+        )
+    }
 
     /**
      * Show or hide the quick access on the main page screen.
      */
-    abstract fun toggleQuickAccessVisibility()
+    fun toggleQuickAccessVisibility() {
+        isQuickAccessShown = !isQuickAccessShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_QUICK_ACCESS_SHOWN,
+            value = isQuickAccessShown
+        )
+    }
 
     /**
      * Show or hide the playlists on the main page screen.
      */
-    abstract fun togglePlaylistsVisibility()
+    fun togglePlaylistsVisibility() {
+        isPlaylistsShown = !isPlaylistsShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_PLAYLISTS_SHOWN,
+            value = isPlaylistsShown
+        )
+    }
 
     /**
      * Show or hide the albums on the main page screen.
      */
-    abstract fun toggleAlbumsVisibility()
+    fun toggleAlbumsVisibility() {
+        isAlbumsShown = !isAlbumsShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_ALBUMS_SHOWN,
+            value = isAlbumsShown
+        )
+    }
 
     /**
      * Show or hide the artists on the main page screen.
      */
-    abstract fun toggleArtistsVisibility()
+    fun toggleArtistsVisibility() {
+        isArtistsShown = !isArtistsShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_ARTISTS_SHOWN,
+            value = isArtistsShown
+        )
+    }
 
     /**
      * Activate or deactivate the vertical bar on the main page screen.
      */
-    abstract fun toggleVerticalBarVisibility()
+    fun toggleVerticalBarVisibility() {
+        isVerticalBarShown = !isVerticalBarShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_VERTICAL_BAR_SHOWN,
+            value = isVerticalBarShown
+        )
+    }
 }

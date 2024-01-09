@@ -33,11 +33,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.BottomSheetStates
-import com.github.soulsearching.utils.ColorPaletteUtils
-import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
@@ -72,6 +69,10 @@ import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.utils.SettingsUtils
+import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
@@ -94,8 +95,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
-import java.lang.RuntimeException
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
@@ -126,6 +127,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainActivityViewModel: MainActivityViewModel
 
+    private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
+
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("MAIN ACTIVITY", "SERVICE DIED, WILL RESTART")
@@ -140,15 +143,13 @@ class MainActivity : AppCompatActivity() {
      * Initialize the SharedPreferences.
      */
     private fun initializeSharedPreferences() {
-        SharedPrefUtils.sharedPreferences =
-            getSharedPreferences(SharedPrefUtils.SHARED_PREF_KEY, Context.MODE_PRIVATE)
-        SharedPrefUtils.initializeSorts(
+        SettingsUtils.settingsViewModel = get()
+        settings.initializeSorts(
             onMusicEvent = allMusicsViewModel::onMusicEvent,
             onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
             onArtistEvent = allArtistsViewModel::onArtistEvent,
             onAlbumEvent = allAlbumsViewModel::onAlbumEvent
         )
-        SharedPrefUtils.initializeSettings()
     }
 
     /**
@@ -258,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                 if (!mainActivityViewModel.hasMusicsBeenFetched) {
                     FetchingMusicsComposable(
                         finishAddingMusicsAction = {
-                            SharedPrefUtils.setMusicsFetched()
+                            settings.setBoolean(SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY, true)
                             mainActivityViewModel.hasMusicsBeenFetched = true
                         },
                         allMusicsViewModel = allMusicsViewModel

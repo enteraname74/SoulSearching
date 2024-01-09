@@ -12,6 +12,7 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,8 @@ class ModifyMusicViewModel(
     musicAlbumRepository: MusicAlbumRepository,
     albumArtistRepository: AlbumArtistRepository,
     musicArtistRepository: MusicArtistRepository,
-    private val imageCoverRepository: ImageCoverRepository
+    private val imageCoverRepository: ImageCoverRepository,
+    settings: SoulSearchingSettings
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MusicState())
@@ -56,7 +58,8 @@ class ModifyMusicViewModel(
         musicAlbumRepository = musicAlbumRepository,
         musicArtistRepository = musicArtistRepository,
         albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository
+        imageCoverRepository = imageCoverRepository,
+        settings = settings
     )
 
     /**

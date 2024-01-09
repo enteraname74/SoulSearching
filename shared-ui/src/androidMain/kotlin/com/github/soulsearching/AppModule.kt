@@ -1,5 +1,8 @@
 package com.github.soulsearching
 
+import android.content.Context
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
+import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
@@ -18,6 +21,10 @@ import com.github.soulsearching.viewmodel.PlayerViewModelImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
+import com.github.soulsearching.viewmodel.SettingsViewModel
+import com.github.soulsearching.viewmodel.SettingsViewModelImpl
+import com.russhwolf.settings.SharedPreferencesSettings
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -43,14 +50,16 @@ val viewModelModule = module {
             albumRepository = get(),
             musicRepository = get(),
             artistRepository = get(),
-            musicArtistRepository = get()
+            musicArtistRepository = get(),
+            settings = get()
         )
     }
     viewModel {
         AllArtistsViewModel(
             artistRepository = get(),
             musicRepository = get(),
-            albumRepository = get()
+            albumRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -84,14 +93,16 @@ val viewModelModule = module {
             musicArtistRepository = get(),
             albumArtistRepository = get(),
             imageCoverRepository = get(),
-            folderRepository = get()
+            folderRepository = get(),
+            settings = get()
         )
     }
     viewModel {
         AllPlaylistsViewModel(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -103,7 +114,9 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        MainActivityViewModel()
+        MainActivityViewModel(
+            settings = get()
+        )
     }
     viewModel {
         ModifyAlbumViewModel(
@@ -137,14 +150,16 @@ val viewModelModule = module {
             musicAlbumRepository = get(),
             albumArtistRepository = get(),
             musicArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
         ModifyPlaylistViewModel(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -158,7 +173,8 @@ val viewModelModule = module {
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
             albumArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     single {
@@ -172,6 +188,7 @@ val viewModelModule = module {
             musicArtistRepository = get(),
             albumArtistRepository = get(),
             imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -184,7 +201,8 @@ val viewModelModule = module {
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
             albumArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -197,7 +215,8 @@ val viewModelModule = module {
             albumArtistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
     }
     viewModel {
@@ -210,8 +229,22 @@ val viewModelModule = module {
             musicPlaylistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            settings = get()
         )
+    }
+    factory<SoulSearchingSettings> {
+        SoulSearchingSettingsImpl(
+            settings = SharedPreferencesSettings(
+                delegate = androidApplication().getSharedPreferences(
+                    SoulSearchingSettings.SHARED_PREF_KEY,
+                    Context.MODE_PRIVATE
+                )
+            )
+        )
+    }
+    single<SettingsViewModel> {
+        SettingsViewModelImpl(get())
     }
 //    viewModel {
 //        SettingsViewModel()

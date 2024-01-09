@@ -6,9 +6,9 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
@@ -30,7 +30,8 @@ class AllAlbumsViewModel(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val artistRepository: ArtistRepository,
-    private val musicArtistRepository: MusicArtistRepository
+    private val musicArtistRepository: MusicArtistRepository,
+    private val settings: SoulSearchingSettings
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -133,16 +134,16 @@ class AllAlbumsViewModel(
             }
             is AlbumEvent.SetSortType -> {
                 _sortType.value = event.type
-                SharedPrefUtils.updateIntValue(
-                    keyToUpdate = SharedPrefUtils.SORT_ALBUMS_TYPE_KEY,
-                    newValue = event.type
+                settings.setInt(
+                    key = SoulSearchingSettings.SORT_ALBUMS_TYPE_KEY,
+                    value = event.type
                 )
             }
             is AlbumEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
-                SharedPrefUtils.updateIntValue(
-                    keyToUpdate = SharedPrefUtils.SORT_ALBUMS_DIRECTION_KEY,
-                    newValue = event.type
+                settings.setInt(
+                    key = SoulSearchingSettings.SORT_ALBUMS_DIRECTION_KEY,
+                    value = event.type
                 )
             }
             is AlbumEvent.UpdateQuickAccessState -> {

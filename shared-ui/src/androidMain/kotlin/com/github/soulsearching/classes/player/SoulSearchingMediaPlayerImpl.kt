@@ -18,15 +18,18 @@ import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.*
 import java.io.File
 
-class SoulSearchingMediaPlayerImpl(private val context: Context) :
+class SoulSearchingMediaPlayerImpl(
+    private val context: Context,
+    private val settings: SoulSearchingSettings
+) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener,
@@ -318,7 +321,11 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
 
                     updateNotification()
 
-                    SharedPrefUtils.setPlayerSavedCurrentMusic()
+                    settings.saveCurrentMusicInformation(
+                        PlayerUtils.playerViewModel.getIndexOfCurrentMusic(),
+                        PlayerUtils.playerViewModel.currentMusicPosition
+
+                    )
                 }
 
                 else -> {}
@@ -348,7 +355,7 @@ class SoulSearchingMediaPlayerImpl(private val context: Context) :
                 PlayerUtils.playerViewModel.currentMusicPosition =
                     PlayerService.getCurrentMusicPosition()
                 if (player.isPlaying) {
-                    SharedPrefUtils.setCurrentMusicPosition()
+                    settings.setInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
                 }
             }
         }

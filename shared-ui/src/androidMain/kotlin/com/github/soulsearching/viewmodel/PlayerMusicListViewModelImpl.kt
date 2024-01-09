@@ -16,11 +16,12 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.MusicEventHandler
+import com.github.soulsearching.classes.settings.SoulSearchingSettings
 import com.github.soulsearching.classes.types.SortDirection
 import com.github.soulsearching.classes.types.SortType
-import com.github.soulsearching.classes.utils.SharedPrefUtils
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.classes.settings.SoulSearchingSettingsImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -46,6 +47,7 @@ class PlayerMusicListViewModelImpl(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
+    private val settings: SoulSearchingSettings
 ) : ViewModel(), PlayerMusicListViewModel {
     private var job: Job? = null
     private val _sortType = MutableStateFlow(SortType.NAME)
@@ -84,7 +86,8 @@ class PlayerMusicListViewModelImpl(
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         sortDirection = _sortDirection,
-        sortType = _sortType
+        sortType = _sortType,
+        settings = settings
     )
 
     /**
@@ -120,7 +123,10 @@ class PlayerMusicListViewModelImpl(
         CoroutineScope(Dispatchers.IO).launch {
             playerMusicRepository.deleteAllPlayerMusic()
         }
-        SharedPrefUtils.setPlayerSavedCurrentMusic()
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = -1,
+            currentMusicPosition = 0
+        )
     }
 
     /**
