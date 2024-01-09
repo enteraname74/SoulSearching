@@ -11,7 +11,7 @@ import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.receivers.NextMusicNotificationReceiver
 import com.github.soulsearching.classes.notification.receivers.PausePlayNotificationReceiver
 import com.github.soulsearching.classes.notification.receivers.PreviousMusicNotificationReceiver
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.playback.PlayerService
 
 /**
  * Specification of a SoulSearchingNotification for devices below Android 13.

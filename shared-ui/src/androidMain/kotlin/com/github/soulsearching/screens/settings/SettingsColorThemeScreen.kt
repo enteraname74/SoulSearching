@@ -35,8 +35,8 @@ fun SettingsColorThemeScreen(
                 ColorThemeCard(
                     title = stringResource(id = R.string.dynamic_theme_title),
                     text = stringResource(id = R.string.dynamic_theme_text),
-                    onClick = { SettingsUtils.settingsViewModel.updateColorTheme(ColorThemeType.DYNAMIC) },
-                    isSelected = SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.DYNAMIC,
+                    onClick = { SettingsUtils.settingsViewModel.handler.updateColorTheme(ColorThemeType.DYNAMIC) },
+                    isSelected = SettingsUtils.settingsViewModel.handler.colorTheme == ColorThemeType.DYNAMIC,
                     firstImageId = R.drawable.dynamic_main,
                     secondImageId = R.drawable.dynamic_player
                 )
@@ -45,8 +45,8 @@ fun SettingsColorThemeScreen(
                 ColorThemeCard(
                     title = stringResource(id = R.string.system_theme_title),
                     text = stringResource(id = R.string.system_theme_text),
-                    onClick = { SettingsUtils.settingsViewModel.updateColorTheme(ColorThemeType.SYSTEM) },
-                    isSelected = SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.SYSTEM,
+                    onClick = { SettingsUtils.settingsViewModel.handler.updateColorTheme(ColorThemeType.SYSTEM) },
+                    isSelected = SettingsUtils.settingsViewModel.handler.colorTheme == ColorThemeType.SYSTEM,
                     firstImageId = if (isSystemInDarkTheme()) {
                         R.drawable.system_dark_theme_main
                     } else {
@@ -61,8 +61,8 @@ fun SettingsColorThemeScreen(
             }
             item {
                 PersonalizedColorThemeCard(
-                    onClick = { SettingsUtils.settingsViewModel.updateColorTheme(ColorThemeType.PERSONALIZED) },
-                    isSelected = SettingsUtils.settingsViewModel.colorTheme == ColorThemeType.PERSONALIZED
+                    onClick = { SettingsUtils.settingsViewModel.handler.updateColorTheme(ColorThemeType.PERSONALIZED) },
+                    isSelected = SettingsUtils.settingsViewModel.handler.colorTheme == ColorThemeType.PERSONALIZED
                 )
             }
             item {

@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 fun MainPageVerticalShortcut(
     mainListState: LazyListState
 ) {
-    val visibleElements = SettingsUtils.settingsViewModel.getListOfVisibleElements()
+    val visibleElements = SettingsUtils.settingsViewModel.handler.getListOfVisibleElements()
     val currentListItemPosition =
         remember { derivedStateOf { mainListState.firstVisibleItemIndex } }
     val coroutineScope = rememberCoroutineScope()

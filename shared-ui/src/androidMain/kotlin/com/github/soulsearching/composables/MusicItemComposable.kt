@@ -68,7 +68,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (PlayerUtils.playerViewModel.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
@@ -76,7 +76,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (PlayerUtils.playerViewModel.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
                 )
 
             }

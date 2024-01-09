@@ -21,7 +21,7 @@ import com.github.soulsearching.R
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.*
 import java.io.File
@@ -125,7 +125,7 @@ class SoulSearchingAndroidPlayerImpl(
         when (audioManager.requestAudioFocus(audioFocusRequest)) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 try {
-                    PlayerUtils.playerViewModel.isPlaying = true
+                    PlayerUtils.playerViewModel.handler.isPlaying = true
                     player.start()
                     updateMediaSessionState()
                     notificationService.updateNotification()
@@ -144,7 +144,7 @@ class SoulSearchingAndroidPlayerImpl(
      */
     private fun pause() {
         try {
-            PlayerUtils.playerViewModel.isPlaying = false
+            PlayerUtils.playerViewModel.handler.isPlaying = false
             audioManager.abandonAudioFocusRequest(audioFocusRequest)
             player.pause()
             updateMediaSessionState()
@@ -163,15 +163,15 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun seekToPosition(position: Int) {
         player.seekTo(position)
-        PlayerUtils.playerViewModel.currentMusicPosition = position
+        PlayerUtils.playerViewModel.handler.currentMusicPosition = position
         updateMediaSessionState()
         notificationService.updateNotification()
     }
 
     override fun next() {
         pause()
-        PlayerUtils.playerViewModel.setNextMusic()
-        PlayerUtils.playerViewModel.currentMusic?.let {
+        PlayerUtils.playerViewModel.handler.setNextMusic()
+        PlayerUtils.playerViewModel.handler.currentMusic?.let {
             setMusic(it)
             launchMusic()
         }
@@ -179,8 +179,8 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun previous() {
         pause()
-        PlayerUtils.playerViewModel.setPreviousMusic()
-        PlayerUtils.playerViewModel.currentMusic?.let {
+        PlayerUtils.playerViewModel.handler.setPreviousMusic()
+        PlayerUtils.playerViewModel.handler.currentMusic?.let {
             setMusic(it)
             launchMusic()
         }
@@ -294,8 +294,8 @@ class SoulSearchingAndroidPlayerImpl(
         Log.d("MEDIA PLAYER", "ERROR CODE : $what, $extra")
         when (what) {
             MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-                PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
-                    musicId = PlayerUtils.playerViewModel.currentMusic!!.musicId
+                PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
+                    musicId = PlayerUtils.playerViewModel.handler.currentMusic!!.musicId
                 )
             }
         }
@@ -304,8 +304,8 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPrepared(mp: MediaPlayer?) {
         if (isOnlyLoadingMusic) {
-            if (PlayerUtils.playerViewModel.currentMusicPosition <= player.duration) {
-                player.seekTo(PlayerUtils.playerViewModel.currentMusicPosition)
+            if (PlayerUtils.playerViewModel.handler.currentMusicPosition <= player.duration) {
+                player.seekTo(PlayerUtils.playerViewModel.handler.currentMusicPosition)
                 releaseDurationJob()
                 launchDurationJob()
             }
@@ -314,10 +314,10 @@ class SoulSearchingAndroidPlayerImpl(
             when (audioManager.requestAudioFocus(audioFocusRequest)) {
                 AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                     player.start()
-                    PlayerUtils.playerViewModel.currentMusic?.let {
-                        PlayerUtils.playerViewModel.updateNbPlayed(it.musicId)
+                    PlayerUtils.playerViewModel.handler.currentMusic?.let {
+                        PlayerUtils.playerViewModel.handler.updateNbPlayed(it.musicId)
                     }
-                    PlayerUtils.playerViewModel.isPlaying = true
+                    PlayerUtils.playerViewModel.handler.isPlaying = true
 
                     releaseDurationJob()
                     launchDurationJob()
@@ -325,8 +325,8 @@ class SoulSearchingAndroidPlayerImpl(
                     updateNotification()
 
                     settings.saveCurrentMusicInformation(
-                        PlayerUtils.playerViewModel.getIndexOfCurrentMusic(),
-                        PlayerUtils.playerViewModel.currentMusicPosition
+                        PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic(),
+                        PlayerUtils.playerViewModel.handler.currentMusicPosition
 
                     )
                 }
@@ -355,10 +355,10 @@ class SoulSearchingAndroidPlayerImpl(
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1000)
                 }
-                PlayerUtils.playerViewModel.currentMusicPosition =
+                PlayerUtils.playerViewModel.handler.currentMusicPosition =
                     PlayerService.getCurrentMusicPosition()
                 if (player.isPlaying) {
-                    settings.setInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.currentMusicPosition)
+                    settings.setInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.handler.currentMusicPosition)
                 }
             }
         }
@@ -378,8 +378,8 @@ class SoulSearchingAndroidPlayerImpl(
      * Update media session data with information the current played song in the player view model.
      */
     private fun updateMediaSessionMetadata() {
-        val bitmap = if (PlayerUtils.playerViewModel.currentMusicCover != null) {
-            PlayerUtils.playerViewModel.currentMusicCover?.asAndroidBitmap()
+        val bitmap = if (PlayerUtils.playerViewModel.handler.currentMusicCover != null) {
+            PlayerUtils.playerViewModel.handler.currentMusicCover?.asAndroidBitmap()
         } else {
             BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
         }
@@ -396,24 +396,24 @@ class SoulSearchingAndroidPlayerImpl(
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_DISPLAY_TITLE,
-                    PlayerUtils.playerViewModel.currentMusic?.name
+                    PlayerUtils.playerViewModel.handler.currentMusic?.name
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_TRACK_NUMBER,
-                    PlayerUtils.playerViewModel.getIndexOfCurrentMusic().toLong()
+                    PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic().toLong()
                 )
                 .putLong(
                     MediaMetadata.METADATA_KEY_NUM_TRACKS,
-                    PlayerUtils.playerViewModel.currentPlaylist.size.toLong()
+                    PlayerUtils.playerViewModel.handler.currentPlaylist.size.toLong()
                 )
                 // Pour les vieilles versions d'android
                 .putString(
                     MediaMetadata.METADATA_KEY_TITLE,
-                    PlayerUtils.playerViewModel.currentMusic?.name
+                    PlayerUtils.playerViewModel.handler.currentMusic?.name
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_ARTIST,
-                    PlayerUtils.playerViewModel.currentMusic?.artist
+                    PlayerUtils.playerViewModel.handler.currentMusic?.artist
                 )
                 // A small bitmap for the artwork is also recommended
                 .putBitmap(

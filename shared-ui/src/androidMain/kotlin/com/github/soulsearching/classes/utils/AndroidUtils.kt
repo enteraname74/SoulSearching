@@ -10,7 +10,7 @@ import android.provider.MediaStore
 import android.util.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ object AndroidUtils {
             val serviceIntent = Intent(context, PlayerService::class.java)
             serviceIntent.putExtra(PlayerService.IS_FROM_SAVED_LIST, isFromSavedList)
             context.startForegroundService(serviceIntent)
-            PlayerUtils.playerViewModel.isServiceLaunched = true
+            PlayerUtils.playerViewModel.handler.isServiceLaunched = true
         }
     }
 

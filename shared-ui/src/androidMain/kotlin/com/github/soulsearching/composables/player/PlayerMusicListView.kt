@@ -42,20 +42,20 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
-import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -71,7 +71,7 @@ fun PlayerMusicListView(
     navigateToModifyMusic: (String) -> Unit,
     musicListDraggableState: PlayerMusicListDraggableState,
     playerDraggableState: PlayerDraggableState,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -95,9 +95,9 @@ fun PlayerMusicListView(
 
     val primaryColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
             ColorPaletteUtils.getDynamicPrimaryColor(
-                baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
             )
         } else {
             MaterialTheme.colorScheme.primary
@@ -108,10 +108,10 @@ fun PlayerMusicListView(
 
     val secondaryColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
         ) {
             ColorPaletteUtils.getDynamicSecondaryColor(
-                baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
             )
         } else {
             MaterialTheme.colorScheme.secondary
@@ -122,7 +122,7 @@ fun PlayerMusicListView(
 
     val textColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
         ) {
             Color.White
         } else {
@@ -206,7 +206,7 @@ fun PlayerMusicListView(
                         .clickable {
                             coroutineScope.launch {
                                 val currentIndex =
-                                    PlayerUtils.playerViewModel.getIndexOfCurrentMusic()
+                                    PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic()
                                 if (currentIndex != -1) {
                                     playerListState.animateScrollToItem(
                                         currentIndex
@@ -222,7 +222,7 @@ fun PlayerMusicListView(
                 state = playerListState
             ) {
                 items(
-                    items = PlayerUtils.playerViewModel.currentPlaylist,
+                    items = PlayerUtils.playerViewModel.handler.currentPlaylist,
                 ) { elt ->
                     MusicItemComposable(
                         music = elt,
@@ -230,11 +230,11 @@ fun PlayerMusicListView(
                             coroutineScope.launch {
                                 musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                             }.invokeOnCompletion {
-                                PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                     music = music,
                                     playlist = musicState.musics,
-                                    playlistId = PlayerUtils.playerViewModel.currentPlaylistId,
-                                    isMainPlaylist = PlayerUtils.playerViewModel.isMainPlaylist
+                                    playlistId = PlayerUtils.playerViewModel.handler.currentPlaylistId,
+                                    isMainPlaylist = PlayerUtils.playerViewModel.handler.isMainPlaylist
                                 )
                             }
                         },

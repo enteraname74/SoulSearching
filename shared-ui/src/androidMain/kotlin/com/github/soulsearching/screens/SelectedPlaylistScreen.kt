@@ -7,12 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.PlaylistType
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
 import java.util.UUID
 
@@ -21,7 +21,7 @@ fun SelectedPlaylistScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyPlaylist : (String) -> Unit,
     selectedPlaylistId : String,
     navigateToModifyMusic : (String) -> Unit,
@@ -34,16 +34,16 @@ fun SelectedPlaylistScreen(
     }
 
     if (!isPlaylistFetched) {
-        selectedPlaylistViewModel.setSelectedPlaylist(UUID.fromString(selectedPlaylistId))
+        selectedPlaylistViewModel.handler.setSelectedPlaylist(UUID.fromString(selectedPlaylistId))
         isPlaylistFetched = true
     }
 
-    val selectedPlaylistState by selectedPlaylistViewModel.selectedPlaylistState.collectAsState()
-    val musicState by selectedPlaylistViewModel.musicState.collectAsState()
+    val selectedPlaylistState by selectedPlaylistViewModel.handler.selectedPlaylistState.collectAsState()
+    val musicState by selectedPlaylistViewModel.handler.musicState.collectAsState()
 
     PlaylistScreen(
         navigateBack = navigateBack,
-        onMusicEvent = selectedPlaylistViewModel::onMusicEvent,
+        onMusicEvent = selectedPlaylistViewModel.handler::onMusicEvent,
         playlistState = playlistState,
         onPlaylistEvent = onPlaylistEvent,
         musicState = musicState,
@@ -57,7 +57,7 @@ fun SelectedPlaylistScreen(
         playerDraggableState = playerDraggableState,
         playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
         playerMusicListViewModel = playerMusicListViewModel,
-        updateNbPlayedAction = { selectedPlaylistViewModel.onPlaylistEvent(PlaylistEvent.AddNbPlayed(it)) },
+        updateNbPlayedAction = { selectedPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.AddNbPlayed(it)) },
         playlistType = PlaylistType.PLAYLIST
     )
 }

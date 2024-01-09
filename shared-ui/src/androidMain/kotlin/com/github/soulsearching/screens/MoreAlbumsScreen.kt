@@ -21,14 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.types.SortDirection
-import com.github.soulsearching.types.SortType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheet.album.AlbumBottomSheetEvents
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -43,11 +43,11 @@ fun MoreAlbumsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val albumState by allAlbumsViewModel.state.collectAsState()
+    val albumState by allAlbumsViewModel.handler.state.collectAsState()
 
     AlbumBottomSheetEvents(
         albumState = albumState,
-        onAlbumEvent = allAlbumsViewModel::onAlbumEvent,
+        onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
         navigateToModifyAlbum = navigateToModifyAlbum
     )
     Column(
@@ -68,17 +68,17 @@ fun MoreAlbumsScreen(
             SortOptionsComposable(
                 imageSize = Constants.Spacing.large,
                 sortByName = {
-                    allAlbumsViewModel.onAlbumEvent(
+                    allAlbumsViewModel.handler.onAlbumEvent(
                         AlbumEvent.SetSortType(SortType.NAME)
                     )
                 },
                 sortByMostListenedAction = {
-                    allAlbumsViewModel.onAlbumEvent(
+                    allAlbumsViewModel.handler.onAlbumEvent(
                         AlbumEvent.SetSortType(SortType.NB_PLAYED)
                     )
                 },
                 sortByDateAction = {
-                    allAlbumsViewModel.onAlbumEvent(
+                    allAlbumsViewModel.handler.onAlbumEvent(
                         AlbumEvent.SetSortType(SortType.ADDED_DATE)
                     )
                 },
@@ -88,7 +88,7 @@ fun MoreAlbumsScreen(
                     } else {
                         SortDirection.ASC
                     }
-                    allAlbumsViewModel.onAlbumEvent(
+                    allAlbumsViewModel.handler.onAlbumEvent(
                         AlbumEvent.SetSortDirection(newDirection)
                     )
                 },
@@ -118,12 +118,12 @@ fun MoreAlbumsScreen(
                     onClick = { navigateToSelectedAlbum(albumWithArtist.album.albumId.toString()) },
                     onLongClick = {
                         coroutineScope.launch {
-                            allAlbumsViewModel.onAlbumEvent(
+                            allAlbumsViewModel.handler.onAlbumEvent(
                                 AlbumEvent.SetSelectedAlbum(
                                     albumWithArtist
                                 )
                             )
-                            allAlbumsViewModel.onAlbumEvent(
+                            allAlbumsViewModel.handler.onAlbumEvent(
                                 AlbumEvent.BottomSheet(
                                     isShown = true
                                 )

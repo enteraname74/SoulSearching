@@ -20,7 +20,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.theme.DynamicColor
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -46,7 +46,7 @@ fun MinimisedPlayButtonsComposable(
                 },
             colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
         )
-        if (PlayerUtils.playerViewModel.isPlaying) {
+        if (PlayerUtils.playerViewModel.handler.isPlaying) {
             Image(
                 imageVector = Icons.Rounded.Pause,
                 contentDescription = "",
@@ -54,7 +54,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.togglePlayPause()
+                            PlayerUtils.playerViewModel.handler.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
@@ -67,7 +67,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.togglePlayPause()
+                            PlayerUtils.playerViewModel.handler.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)

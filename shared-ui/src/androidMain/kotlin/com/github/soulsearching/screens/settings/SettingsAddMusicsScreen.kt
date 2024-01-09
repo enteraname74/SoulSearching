@@ -23,18 +23,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.types.AddMusicsStateType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
+import com.github.soulsearching.types.AddMusicsStateType
+import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,12 +41,11 @@ import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun SettingsAddMusicsScreen(
-    addMusicsViewModel: AddMusicsViewModelImpl,
+    addMusicsViewModel: AddMusicsViewModelAndroidImpl,
     finishAction: () -> Unit,
     saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
 ) {
     val addMusicsState by addMusicsViewModel.state.collectAsState()
-    val context = LocalContext.current
 
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)
@@ -74,7 +72,7 @@ fun SettingsAddMusicsScreen(
                 if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
                     return@AppHeaderBar
                 }
-                addMusicsViewModel.onAddMusicEvent(
+                addMusicsViewModel.handler.onAddMusicEvent(
                     AddMusicsEvent.SetState(
                         newState = AddMusicsStateType.SAVING_MUSICS
                     )
@@ -98,7 +96,7 @@ fun SettingsAddMusicsScreen(
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
                         isFetchingMusics = true
-                        addMusicsViewModel.fetchAndAddNewMusics(context) { progress = it }
+                        addMusicsViewModel.handler.fetchAndAddNewMusics { progress = it }
                         isFetchingMusics = false
                     }
                 }
@@ -132,7 +130,7 @@ fun SettingsAddMusicsScreen(
                                     progress = (count * 1F) / addMusicsState.fetchedMusics.size
                                 }
                                 isSavingMusics = false
-                                addMusicsViewModel.onAddMusicEvent(
+                                addMusicsViewModel.handler.onAddMusicEvent(
                                     AddMusicsEvent.SetState(
                                     newState = AddMusicsStateType.FETCHING_MUSICS
                                 ))
@@ -159,7 +157,7 @@ fun SettingsAddMusicsScreen(
                             MusicSelectableComposable(
                                 music = it.music,
                                 onClick = {
-                                    addMusicsViewModel.onAddMusicEvent(
+                                    addMusicsViewModel.handler.onAddMusicEvent(
                                         AddMusicsEvent.SetSelectedMusic(
                                             music = it.music,
                                             isSelected = !it.isSelected

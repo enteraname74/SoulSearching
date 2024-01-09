@@ -7,13 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.PlaylistType
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import java.util.UUID
 
@@ -22,7 +22,7 @@ fun SelectedAlbumScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedAlbumViewModel: SelectedAlbumViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     selectedAlbumId: String,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
@@ -34,17 +34,17 @@ fun SelectedAlbumScreen(
         mutableStateOf(false)
     }
     if (!isAlbumFetched) {
-        selectedAlbumViewModel.setSelectedAlbum(UUID.fromString(selectedAlbumId))
+        selectedAlbumViewModel.handler.setSelectedAlbum(UUID.fromString(selectedAlbumId))
         isAlbumFetched = true
     }
 
-    val albumWithMusicsState by selectedAlbumViewModel.selectedAlbumState.collectAsState()
-    val musicState by selectedAlbumViewModel.musicState.collectAsState()
+    val albumWithMusicsState by selectedAlbumViewModel.handler.selectedAlbumState.collectAsState()
+    val musicState by selectedAlbumViewModel.handler.musicState.collectAsState()
 
 //    if (musicState.musics.isEmpty()) {
 //        SideEffect {
 //            CoroutineScope(Dispatchers.IO).launch {
-//                if (selectedAlbumViewModel.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
+//                if (selectedAlbumViewModel.handler.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
 //                    withContext(Dispatchers.Main) {
 //                        navigateBack()
 //                    }
@@ -55,7 +55,7 @@ fun SelectedAlbumScreen(
     PlaylistScreen(
         navigateBack = navigateBack,
         onPlaylistEvent = onPlaylistEvent,
-        onMusicEvent = selectedAlbumViewModel::onMusicEvent,
+        onMusicEvent = selectedAlbumViewModel.handler::onMusicEvent,
         playlistState = playlistState,
         musicState = musicState,
         title = albumWithMusicsState.albumWithMusics.album.albumName,
@@ -68,7 +68,7 @@ fun SelectedAlbumScreen(
         playerDraggableState = playerDraggableState,
         playlistId = albumWithMusicsState.albumWithMusics.album.albumId,
         playerMusicListViewModel = playerMusicListViewModel,
-        updateNbPlayedAction = { selectedAlbumViewModel.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) },
+        updateNbPlayedAction = { selectedAlbumViewModel.handler.onAlbumEvent(AlbumEvent.AddNbPlayed(it)) },
         playlistType = PlaylistType.ALBUM
     )
 }

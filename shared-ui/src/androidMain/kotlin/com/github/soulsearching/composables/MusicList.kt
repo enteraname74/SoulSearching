@@ -7,17 +7,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -27,7 +27,7 @@ fun MusicList(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyMusic: (String) -> Unit,
     modifier: Modifier = Modifier,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -74,16 +74,16 @@ fun MusicList(
                             updateNbPlayedAction(it)
                         }
 
-                        if (!PlayerUtils.playerViewModel.isSamePlaylist(
+                        if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
                                 isMainPlaylist = isMainPlaylist,
                                 playlistId = playlistId
                             )
                         ) {
-                            playerMusicListViewModel.savePlayerMusicList(
+                            playerMusicListViewModel.handler.savePlayerMusicList(
                                 musicState.musics.map { it.musicId } as ArrayList<UUID>
                             )
                         }
-                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                        PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                             music = music,
                             playlist = musicState.musics,
                             playlistId = playlistId,

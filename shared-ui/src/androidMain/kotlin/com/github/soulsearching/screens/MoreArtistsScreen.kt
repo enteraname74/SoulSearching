@@ -22,14 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.types.SortDirection
-import com.github.soulsearching.types.SortType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheet.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -45,11 +45,11 @@ fun MoreArtistsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val artistState by allArtistsViewModel.state.collectAsState()
+    val artistState by allArtistsViewModel.handler.state.collectAsState()
 
     ArtistBottomSheetEvents(
         artistState = artistState,
-        onArtistEvent = allArtistsViewModel::onArtistEvent,
+        onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
         navigateToModifyArtist = navigateToModifyArtist
     )
 
@@ -71,17 +71,17 @@ fun MoreArtistsScreen(
             SortOptionsComposable(
                 imageSize = Constants.Spacing.large,
                 sortByName = {
-                    allArtistsViewModel.onArtistEvent(
+                    allArtistsViewModel.handler.onArtistEvent(
                         ArtistEvent.SetSortType(SortType.NAME)
                     )
                 },
                 sortByMostListenedAction = {
-                    allArtistsViewModel.onArtistEvent(
+                    allArtistsViewModel.handler.onArtistEvent(
                         ArtistEvent.SetSortType(SortType.NB_PLAYED)
                     )
                 },
                 sortByDateAction = {
-                    allArtistsViewModel.onArtistEvent(
+                    allArtistsViewModel.handler.onArtistEvent(
                         ArtistEvent.SetSortType(SortType.ADDED_DATE)
                     )
                 },
@@ -91,7 +91,7 @@ fun MoreArtistsScreen(
                     } else {
                         SortDirection.ASC
                     }
-                    allArtistsViewModel.onArtistEvent(
+                    allArtistsViewModel.handler.onArtistEvent(
                         ArtistEvent.SetSortDirection(newDirection)
                     )
                 },
@@ -130,12 +130,12 @@ fun MoreArtistsScreen(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            allArtistsViewModel.onArtistEvent(
+                            allArtistsViewModel.handler.onArtistEvent(
                                 ArtistEvent.SetSelectedArtistWithMusics(
                                     artistWithMusics
                                 )
                             )
-                            allArtistsViewModel.onArtistEvent(
+                            allArtistsViewModel.handler.onArtistEvent(
                                 ArtistEvent.BottomSheet(
                                     isShown = true
                                 )

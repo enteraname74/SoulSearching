@@ -32,22 +32,22 @@ fun PersonalizedColorThemeCard(
         ) {
             SettingsSwitchElement(
                 title = stringResource(id = R.string.dynamic_player_view),
-                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicPlayerTheme() },
-                isChecked = SettingsUtils.settingsViewModel.isDynamicPlayerThemeSelected,
+                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.handler.toggleDynamicPlayerTheme() },
+                isChecked = SettingsUtils.settingsViewModel.handler.isDynamicPlayerThemeSelected,
                 padding = PaddingValues(0.dp),
                 titleFontSize = 16.sp
             )
             SettingsSwitchElement(
                 title = stringResource(id = R.string.dynamic_playlist_view),
-                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicPlaylistTheme() },
-                isChecked = SettingsUtils.settingsViewModel.isDynamicPlaylistThemeSelected,
+                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.handler.toggleDynamicPlaylistTheme() },
+                isChecked = SettingsUtils.settingsViewModel.handler.isDynamicPlaylistThemeSelected,
                 padding = PaddingValues(0.dp),
                 titleFontSize = 16.sp
             )
             SettingsSwitchElement(
                 title = stringResource(id = R.string.dynamic_other_views),
-                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.toggleDynamicOtherViewsTheme() },
-                isChecked = SettingsUtils.settingsViewModel.isDynamicOtherViewsThemeSelected,
+                toggleAction = { if (isSelected) SettingsUtils.settingsViewModel.handler.toggleDynamicOtherViewsTheme() },
+                isChecked = SettingsUtils.settingsViewModel.handler.isDynamicOtherViewsThemeSelected,
                 padding = PaddingValues(0.dp),
                 titleFontSize = 16.sp
             )

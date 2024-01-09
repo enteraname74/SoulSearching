@@ -33,8 +33,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
@@ -48,6 +46,8 @@ import com.github.soulsearching.composables.remembers.rememberSearchDraggableSta
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.screens.MainPageScreen
 import com.github.soulsearching.screens.ModifyAlbumScreen
 import com.github.soulsearching.screens.ModifyArtistScreen
@@ -67,65 +67,65 @@ import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
 import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
 import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
-import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
-import com.github.soulsearching.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.viewmodel.AllArtistsViewModel
-import com.github.soulsearching.viewmodel.AllFoldersViewModel
-import com.github.soulsearching.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
-import com.github.soulsearching.viewmodel.MainActivityViewModel
-import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
-import com.github.soulsearching.viewmodel.ModifyArtistViewModel
-import com.github.soulsearching.viewmodel.ModifyMusicViewModel
-import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
-import com.github.soulsearching.viewmodel.PlayerViewModelImpl
-import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
-import com.github.soulsearching.viewmodel.SelectedArtistViewModel
-import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
+import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllFoldersViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllQuickAccessViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.MainActivityViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private lateinit var allMusicsViewModel: AllMusicsViewModel
-    private lateinit var allPlaylistsViewModel: AllPlaylistsViewModel
-    private lateinit var allAlbumsViewModel: AllAlbumsViewModel
-    private lateinit var allArtistsViewModel: AllArtistsViewModel
-    private lateinit var allImageCoversViewModel: AllImageCoversViewModel
-    private lateinit var allQuickAccessViewModel: AllQuickAccessViewModel
+    private lateinit var allMusicsViewModel: AllMusicsViewModelAndroidImpl
+    private lateinit var allPlaylistsViewModel: AllPlaylistsViewModelAndroidImpl
+    private lateinit var allAlbumsViewModel: AllAlbumsViewModelAndroidImpl
+    private lateinit var allArtistsViewModel: AllArtistsViewModelAndroidImpl
+    private lateinit var allImageCoversViewModel: AllImageCoversViewModelAndroidImpl
+    private lateinit var allQuickAccessViewModel: AllQuickAccessViewModelAndroidImpl
 
     // Selected page view models
-    private lateinit var selectedPlaylistViewModel: SelectedPlaylistViewModel
-    private lateinit var selectedAlbumViewModel: SelectedAlbumViewModel
-    private lateinit var selectedArtistsViewModel: SelectedArtistViewModel
+    private lateinit var selectedPlaylistViewModel: SelectedPlaylistViewModelAndroidImpl
+    private lateinit var selectedAlbumViewModel: SelectedAlbumViewModelAndroidImpl
+    private lateinit var selectedArtistsViewModel: SelectedArtistViewModelAndroidImpl
 
     // Modify page view models
-    private lateinit var modifyPlaylistViewModel: ModifyPlaylistViewModel
-    private lateinit var modifyAlbumViewModel: ModifyAlbumViewModel
-    private lateinit var modifyArtistViewModel: ModifyArtistViewModel
-    private lateinit var modifyMusicViewModel: ModifyMusicViewModel
+    private lateinit var modifyPlaylistViewModel: ModifyPlaylistViewModelAndroidImpl
+    private lateinit var modifyAlbumViewModel: ModifyAlbumViewModelAndroidImpl
+    private lateinit var modifyArtistViewModel: ModifyArtistViewModelAndroidImpl
+    private lateinit var modifyMusicViewModel: ModifyMusicViewModelAndroidImpl
 
     // Player view model :
-    lateinit var playerMusicListViewModel: PlayerMusicListViewModelImpl
+    lateinit var playerViewModel: PlayerViewModelAndroidImpl
+    lateinit var playerMusicListViewModel: PlayerMusicListViewModelAndroidImpl
 
     // Settings view models:
-    private lateinit var allFoldersViewModel: AllFoldersViewModel
-    private lateinit var addMusicsViewModel: AddMusicsViewModelImpl
+    private lateinit var allFoldersViewModel: AllFoldersViewModelAndroidImpl
+    private lateinit var addMusicsViewModel: AddMusicsViewModelAndroidImpl
 
-    private lateinit var mainActivityViewModel: MainActivityViewModel
+    private lateinit var mainActivityViewModel: MainActivityViewModelAndroidImpl
 
     private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
 
@@ -143,26 +143,22 @@ class MainActivity : AppCompatActivity() {
      * Initialize the SharedPreferences.
      */
     private fun initializeSharedPreferences() {
-        SettingsUtils.settingsViewModel = get()
         settings.initializeSorts(
-            onMusicEvent = allMusicsViewModel::onMusicEvent,
-            onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
-            onArtistEvent = allArtistsViewModel::onArtistEvent,
-            onAlbumEvent = allAlbumsViewModel::onAlbumEvent
+            onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
+            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+            onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
+            onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent
         )
     }
 
     /**
      * Initialize the player ViewModel, used for managing view elements related to the playback.
      */
-    private fun initializePlayerViewModel(
-        playerViewModel: PlayerViewModelImpl
-    ) {
-        playerViewModel.context = applicationContext
+    private fun initializePlayerViewModel(){
         PlayerUtils.playerViewModel = playerViewModel
-        PlayerUtils.playerViewModel.retrieveCoverMethod = allImageCoversViewModel::getImageCover
-        PlayerUtils.playerViewModel.updateNbPlayed =
-            { allMusicsViewModel.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
+        PlayerUtils.playerViewModel.handler.retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
+        PlayerUtils.playerViewModel.handler.updateNbPlayed =
+            { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
     }
 
     /**
@@ -207,92 +203,93 @@ class MainActivity : AppCompatActivity() {
             modifyMusicViewModel = koinViewModel()
 
             // Player view model :
-            val playerViewModel: PlayerViewModelImpl = get()
+            playerViewModel = koinViewModel()
             playerMusicListViewModel = koinViewModel()
 
             // Settings view models:
             allFoldersViewModel = koinViewModel()
             addMusicsViewModel = koinViewModel()
+            SettingsUtils.settingsViewModel = inject<SettingsViewModel>().value
 
             initializeSharedPreferences()
-            initializePlayerViewModel(playerViewModel)
+            initializePlayerViewModel()
             initializeBroadcastReceive()
 
-            mainActivityViewModel = koinViewModel<MainActivityViewModel>()
+            mainActivityViewModel = koinViewModel()
             InitializeMainActivityViewModel()
 
             SoulSearchingTheme {
-                val playlistState by allPlaylistsViewModel.state.collectAsState()
-                val albumState by allAlbumsViewModel.state.collectAsState()
-                val artistState by allArtistsViewModel.state.collectAsState()
-                val musicState by allMusicsViewModel.state.collectAsState()
-                val coversState by allImageCoversViewModel.state.collectAsState()
-                val playerMusicListState by playerMusicListViewModel.state.collectAsState()
-                val playerMusicState by PlayerUtils.playerViewModel.state.collectAsState()
-                val quickAccessState by allQuickAccessViewModel.state.collectAsState()
+                val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
+                val albumState by allAlbumsViewModel.handler.state.collectAsState()
+                val artistState by allArtistsViewModel.handler.state.collectAsState()
+                val musicState by allMusicsViewModel.handler.state.collectAsState()
+                val coversState by allImageCoversViewModel.handler.state.collectAsState()
+                val playerMusicListState by playerMusicListViewModel.handler.state.collectAsState()
+                val playerMusicState by PlayerUtils.playerViewModel.handler.state.collectAsState()
+                val quickAccessState by allQuickAccessViewModel.handler.state.collectAsState()
 
                 val coroutineScope = rememberCoroutineScope()
 
-                PlayerUtils.playerViewModel.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                    image = PlayerUtils.playerViewModel.currentMusicCover
+                PlayerUtils.playerViewModel.handler.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    image = PlayerUtils.playerViewModel.handler.currentMusicCover
                 )
 
                 val readPermissionLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isReadPermissionGranted = isGranted
+                    mainActivityViewModel.handler.isReadPermissionGranted = isGranted
                 }
 
                 val postNotificationLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isPostNotificationGranted = isGranted
+                    mainActivityViewModel.handler.isPostNotificationGranted = isGranted
                 }
                 SideEffect {
                     checkAndAskMissingPermissions(
-                        isReadPermissionGranted = mainActivityViewModel.isReadPermissionGranted,
-                        isPostNotificationGranted = mainActivityViewModel.isPostNotificationGranted,
+                        isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
+                        isPostNotificationGranted = mainActivityViewModel.handler.isPostNotificationGranted,
                         readPermissionLauncher = readPermissionLauncher,
                         postNotificationLauncher = postNotificationLauncher
                     )
                 }
-                if (!mainActivityViewModel.isReadPermissionGranted || !mainActivityViewModel.isPostNotificationGranted) {
+                if (!mainActivityViewModel.handler.isReadPermissionGranted || !mainActivityViewModel.handler.isPostNotificationGranted) {
                     MissingPermissionsComposable()
                     return@SoulSearchingTheme
                 }
-                if (!mainActivityViewModel.hasMusicsBeenFetched) {
+                if (!mainActivityViewModel.handler.hasMusicsBeenFetched) {
                     FetchingMusicsComposable(
                         finishAddingMusicsAction = {
                             settings.setBoolean(SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY, true)
-                            mainActivityViewModel.hasMusicsBeenFetched = true
+                            mainActivityViewModel.handler.hasMusicsBeenFetched = true
                         },
                         allMusicsViewModel = allMusicsViewModel
                     )
                     return@SoulSearchingTheme
                 }
 
-                if (coversState.covers.isNotEmpty() && !mainActivityViewModel.cleanImagesLaunched) {
+                if (coversState.covers.isNotEmpty() && !mainActivityViewModel.handler.cleanImagesLaunched) {
                     LaunchedEffect(key1 = "Launch") {
                         CoroutineScope(Dispatchers.IO).launch {
                             for (cover in coversState.covers) {
-                                allImageCoversViewModel.deleteImageIsNotUsed(cover)
+                                allImageCoversViewModel.handler.deleteImageIsNotUsed(cover)
                             }
                         }
 
                         CoroutineScope(Dispatchers.IO).launch {
-                            if (PlayerUtils.playerViewModel.currentMusic != null) {
-                                PlayerUtils.playerViewModel.defineCoverAndPaletteFromCoverId(
-                                    coverId = PlayerUtils.playerViewModel.currentMusic?.coverId
+                            if (PlayerUtils.playerViewModel.handler.currentMusic != null) {
+                                PlayerUtils.playerViewModel.handler.defineCoverAndPaletteFromCoverId(
+                                    coverId = PlayerUtils.playerViewModel.handler.currentMusic?.coverId
                                 )
                                 PlayerService.updateNotification()
                             }
                         }
-                        mainActivityViewModel.cleanImagesLaunched = true
+                        mainActivityViewModel.handler.cleanImagesLaunched = true
                     }
                 }
 
-                if (musicState.musics.isNotEmpty() && !mainActivityViewModel.cleanMusicsLaunched) {
-                    allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
-                    mainActivityViewModel.cleanMusicsLaunched = true
+                if (musicState.musics.isNotEmpty() && !mainActivityViewModel.handler.cleanMusicsLaunched) {
+                    allMusicsViewModel.handler.checkAndDeleteMusicIfNotExist()
+                    mainActivityViewModel.handler.cleanMusicsLaunched = true
                 }
 
-                if (PlayerUtils.playerViewModel.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.isServiceLaunched) {
+                if (PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.handler.isServiceLaunched) {
                     AndroidUtils.launchService(
                         context = this@MainActivity,
                         isFromSavedList = false
@@ -320,24 +317,24 @@ class MainActivity : AppCompatActivity() {
                         constraintsScope = constraintsScope
                     )
 
-                    if (!mainActivityViewModel.hasLastPlayedMusicsBeenFetched) {
+                    if (!mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched) {
                         LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
                             val playerSavedMusics =
-                                playerMusicListViewModel.getPlayerMusicList()
+                                playerMusicListViewModel.handler.getPlayerMusicList()
                             if (playerSavedMusics.isNotEmpty()) {
-                                PlayerUtils.playerViewModel.setPlayerInformationFromSavedList(
+                                PlayerUtils.playerViewModel.handler.setPlayerInformationFromSavedList(
                                     playerSavedMusics
                                 )
                                 AndroidUtils.launchService(
                                     context = this@MainActivity,
                                     isFromSavedList = true
                                 )
-                                PlayerUtils.playerViewModel.shouldServiceBeLaunched = true
+                                PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched = true
                                 coroutineScope.launch {
                                     playerDraggableState.state.animateTo(BottomSheetStates.MINIMISED)
                                 }
                             }
-                            mainActivityViewModel.hasLastPlayedMusicsBeenFetched = true
+                            mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched = true
                         }
                     }
 
@@ -420,18 +417,18 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 selectedPlaylistId = backStackEntry.arguments?.getString("playlistId")!!,
                                 playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
+                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
                                         null
                                     )
-                                    SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
+                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
                                         false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 },
@@ -456,18 +453,18 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
                                 playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
+                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
                                         null
                                     )
-                                    SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
+                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
                                         false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 },
@@ -492,18 +489,18 @@ class MainActivity : AppCompatActivity() {
                                 },
                                 selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
                                 playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.setNewPlaylistCover(
+                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
                                         null
                                     )
-                                    SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists =
+                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
                                         false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 },
@@ -568,7 +565,7 @@ class MainActivity : AppCompatActivity() {
                                 finishAction = { navController.popBackStack() },
                                 navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 }
@@ -583,7 +580,7 @@ class MainActivity : AppCompatActivity() {
                                 finishAction = { navController.popBackStack() },
                                 navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 }
@@ -598,7 +595,7 @@ class MainActivity : AppCompatActivity() {
                                 finishAction = { navController.popBackStack() },
                                 navigateToModifyArtist = { navController.navigate("modifyArtist/$it") },
                                 retrieveCoverMethod = {
-                                    allImageCoversViewModel.getImageCover(
+                                    allImageCoversViewModel.handler.getImageCover(
                                         it
                                     )
                                 }
@@ -636,13 +633,13 @@ class MainActivity : AppCompatActivity() {
                             SettingsManageMusicsScreen(
                                 finishAction = { navController.popBackStack() },
                                 navigateToFolders = {
-                                    allFoldersViewModel.onFolderEvent(
+                                    allFoldersViewModel.handler.onFolderEvent(
                                         FolderEvent.FetchFolders
                                     )
                                     navController.navigate("usedFolders")
                                 },
                                 navigateToAddMusics = {
-                                    addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.ResetState)
+                                    addMusicsViewModel.handler.onAddMusicEvent(AddMusicsEvent.ResetState)
                                     navController.navigate("addMusics")
                                 }
                             )
@@ -661,7 +658,7 @@ class MainActivity : AppCompatActivity() {
                             SettingsAddMusicsScreen(
                                 addMusicsViewModel = addMusicsViewModel,
                                 finishAction = { navController.popBackStack() },
-                                saveMusicFunction = allMusicsViewModel::addMusic
+                                saveMusicFunction = allMusicsViewModel.handler::addMusic
                             )
                         }
                         composable(
@@ -690,11 +687,11 @@ class MainActivity : AppCompatActivity() {
                     PlayerDraggableView(
                         maxHeight = maxHeight,
                         draggableState = playerDraggableState,
-                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                        retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                         musicListDraggableState = musicListDraggableState,
                         playerMusicListViewModel = playerMusicListViewModel,
-                        onMusicEvent = PlayerUtils.playerViewModel::onMusicEvent,
-                        isMusicInFavoriteMethod = allMusicsViewModel::isMusicInFavorite,
+                        onMusicEvent = PlayerUtils.playerViewModel.handler::onMusicEvent,
+                        isMusicInFavoriteMethod = allMusicsViewModel.handler::isMusicInFavorite,
                         navigateToArtist = {
                             navController.navigate("selectedArtist/$it")
                         },
@@ -702,14 +699,14 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate("selectedAlbum/$it")
                         },
                         retrieveAlbumIdMethod = {
-                            allMusicsViewModel.getAlbumIdFromMusicId(it)
+                            allMusicsViewModel.handler.getAlbumIdFromMusicId(it)
                         },
                         retrieveArtistIdMethod = {
-                            allMusicsViewModel.getArtistIdFromMusicId(it)
+                            allMusicsViewModel.handler.getArtistIdFromMusicId(it)
                         },
                         musicState = playerMusicState,
                         playlistState = playlistState,
-                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                         navigateToModifyMusic = {
                             navController.navigate("modifyMusic/$it")
                         }
@@ -719,8 +716,8 @@ class MainActivity : AppCompatActivity() {
                         coverList = coversState.covers,
                         musicState = playerMusicListState,
                         playlistState = playlistState,
-                        onMusicEvent = playerMusicListViewModel::onMusicEvent,
-                        onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+                        onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
+                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                         navigateToModifyMusic = {
                             navController.navigate("modifyMusic/$it")
                         },
@@ -739,8 +736,8 @@ class MainActivity : AppCompatActivity() {
      */
     @Composable
     private fun InitializeMainActivityViewModel() {
-        mainActivityViewModel.isReadPermissionGranted = checkIfReadPermissionGranted()
-        mainActivityViewModel.isPostNotificationGranted = checkIfPostNotificationGranted()
+        mainActivityViewModel.handler.isReadPermissionGranted = checkIfReadPermissionGranted()
+        mainActivityViewModel.handler.isPostNotificationGranted = checkIfPostNotificationGranted()
     }
 
     /**
@@ -784,7 +781,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         try {
-            allMusicsViewModel.checkAndDeleteMusicIfNotExist(applicationContext)
+            allMusicsViewModel.handler.checkAndDeleteMusicIfNotExist()
         } catch (_:RuntimeException) {
 
         }

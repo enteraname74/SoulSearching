@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
-import com.github.soulsearching.types.FolderStateType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.setting.FolderStateComposable
@@ -26,6 +25,7 @@ import com.github.soulsearching.composables.setting.LoadingComposable
 import com.github.soulsearching.composables.setting.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.FolderStateType
 import com.github.soulsearching.viewmodel.AllFoldersViewModel
 
 @Composable
@@ -33,7 +33,7 @@ fun SettingsUsedFoldersScreen(
     finishAction : () -> Unit,
     allFoldersViewModel: AllFoldersViewModel
 ) {
-    val folderState by allFoldersViewModel.state.collectAsState()
+    val folderState by allFoldersViewModel.handler.state.collectAsState()
 
     var savingProgress by rememberSaveable {
         mutableFloatStateOf(0F)
@@ -54,7 +54,7 @@ fun SettingsUsedFoldersScreen(
             leftAction = finishAction,
             rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
             rightAction = {
-                allFoldersViewModel.onFolderEvent(
+                allFoldersViewModel.handler.onFolderEvent(
                     FolderEvent.SaveSelection(
                         updateProgress = {
                             savingProgress = it
@@ -81,7 +81,7 @@ fun SettingsUsedFoldersScreen(
                         SettingsSwitchElement(
                             title = it.folderPath,
                             toggleAction = {
-                                allFoldersViewModel.onFolderEvent(
+                                allFoldersViewModel.handler.onFolderEvent(
                                     FolderEvent.SetSelectedFolder(
                                         folder = it,
                                         isSelected = !it.isSelected

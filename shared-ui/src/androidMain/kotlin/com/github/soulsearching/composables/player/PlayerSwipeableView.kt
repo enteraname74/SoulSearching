@@ -48,11 +48,11 @@ import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsCompo
 import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.service.PlayerService
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -70,7 +70,7 @@ import kotlin.reflect.KSuspendFunction1
 fun PlayerDraggableView(
     maxHeight: Float,
     draggableState: PlayerDraggableState,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
     musicListDraggableState: PlayerMusicListDraggableState,
@@ -91,7 +91,7 @@ fun PlayerDraggableView(
     }
 
     if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
-        PlayerUtils.playerViewModel.currentMusic?.let {
+        PlayerUtils.playerViewModel.handler.currentMusic?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
             }
@@ -102,9 +102,9 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -118,7 +118,7 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.onPrimary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.White
                 } else {
                     MaterialTheme.colorScheme.onPrimary
@@ -133,7 +133,7 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.subText
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.LightGray
                 } else {
                     MaterialTheme.colorScheme.outline
@@ -149,9 +149,9 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.secondary
@@ -167,9 +167,9 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -185,9 +185,9 @@ fun PlayerDraggableView(
             BottomSheetStates.COLLAPSED -> DynamicColor.primary
             BottomSheetStates.MINIMISED -> DynamicColor.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()) {
+                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.secondary
@@ -198,8 +198,8 @@ fun PlayerDraggableView(
         label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
-    val backHandlerIconsColor = if (PlayerUtils.playerViewModel.currentColorPalette == null
-        || !SettingsUtils.settingsViewModel.isPersonalizedDynamicPlayerThemeOn()
+    val backHandlerIconsColor = if (PlayerUtils.playerViewModel.handler.currentColorPalette == null
+        || !SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
     ) {
         !isSystemInDarkTheme()
     } else {
@@ -225,11 +225,11 @@ fun PlayerDraggableView(
     }
 
     if (draggableState.state.currentValue == BottomSheetStates.COLLAPSED
-        && PlayerUtils.playerViewModel.isServiceLaunched
+        && PlayerUtils.playerViewModel.handler.isServiceLaunched
         && !draggableState.state.isAnimationRunning
     ) {
         PlayerService.stopMusic(context)
-        playerMusicListViewModel.resetPlayerMusicList()
+        playerMusicListViewModel.handler.resetPlayerMusicList()
     }
 
     val orientation = LocalConfiguration.current.orientation
@@ -387,7 +387,7 @@ fun PlayerDraggableView(
                 val imageModifier = if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
-                            PlayerUtils.playerViewModel.currentMusic?.let { currentMusic ->
+                            PlayerUtils.playerViewModel.handler.currentMusic?.let { currentMusic ->
                                 coroutineScope.launch {
                                     onMusicEvent(
                                         MusicEvent.SetSelectedMusic(
@@ -420,7 +420,7 @@ fun PlayerDraggableView(
                     AppImage(
                         modifier = imageModifier,
                         bitmap =
-                            retrieveCoverMethod(PlayerUtils.playerViewModel.currentMusic?.coverId),
+                            retrieveCoverMethod(PlayerUtils.playerViewModel.handler.currentMusic?.coverId),
                         size = imageSize,
                         roundedPercent = (draggableState.state.offset / 100).roundToInt()
                             .coerceIn(3, 10)
@@ -487,7 +487,7 @@ fun PlayerDraggableView(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
-                                text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
+                                text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.name else "",
                                 color = textColor,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
@@ -500,7 +500,7 @@ fun PlayerDraggableView(
                             val clickableArtistModifier =
                                 if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
-                                        PlayerUtils.playerViewModel.currentMusic?.let {
+                                        PlayerUtils.playerViewModel.handler.currentMusic?.let {
                                             coroutineScope.launch {
                                                 val artistId = withContext(Dispatchers.IO) {
                                                     retrieveArtistIdMethod(it.musicId)
@@ -523,7 +523,7 @@ fun PlayerDraggableView(
                             val clickableAlbumModifier =
                                 if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
-                                        PlayerUtils.playerViewModel.currentMusic?.let {
+                                        PlayerUtils.playerViewModel.handler.currentMusic?.let {
                                             coroutineScope.launch {
                                                 val albumId = withContext(Dispatchers.IO) {
                                                     retrieveAlbumIdMethod(it.musicId)
@@ -549,8 +549,8 @@ fun PlayerDraggableView(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = if (PlayerUtils.playerViewModel.currentMusic != null) formatTextForEllipsis(
-                                        PlayerUtils.playerViewModel.currentMusic!!.artist,
+                                    text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
+                                        PlayerUtils.playerViewModel.handler.currentMusic!!.artist,
                                         orientation
                                     )
                                     else "",
@@ -570,8 +570,8 @@ fun PlayerDraggableView(
                                     fontSize = 15.sp,
                                 )
                                 Text(
-                                    text = if (PlayerUtils.playerViewModel.currentMusic != null) formatTextForEllipsis(
-                                        PlayerUtils.playerViewModel.currentMusic!!.album,
+                                    text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
+                                        PlayerUtils.playerViewModel.handler.currentMusic!!.album,
                                         orientation
                                     ) else "",
                                     color = subTextColor,
@@ -649,7 +649,7 @@ fun PlayerDraggableView(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.name else "",
+                            text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.name else "",
                             color = textColor,
                             maxLines = 1,
                             textAlign = TextAlign.Start,
@@ -657,7 +657,7 @@ fun PlayerDraggableView(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic!!.artist else "",
+                            text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.artist else "",
                             color = textColor,
                             fontSize = 12.sp,
                             maxLines = 1,

@@ -1,30 +1,34 @@
 package com.github.soulsearching
 
 import android.content.Context
+import com.github.soulsearching.classes.utils.MusicFetcherAndroidImpl
+import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
-import com.github.soulsearching.viewmodel.AddMusicsViewModelImpl
-import com.github.soulsearching.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.viewmodel.AllArtistsViewModel
-import com.github.soulsearching.viewmodel.AllFoldersViewModel
-import com.github.soulsearching.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
-import com.github.soulsearching.viewmodel.MainActivityViewModel
-import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
-import com.github.soulsearching.viewmodel.ModifyArtistViewModel
-import com.github.soulsearching.viewmodel.ModifyMusicViewModel
-import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
-import com.github.soulsearching.viewmodel.PlayerViewModelImpl
-import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
-import com.github.soulsearching.viewmodel.SelectedArtistViewModel
-import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
+import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllFoldersViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllQuickAccessViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.MainActivityViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SettingsViewModel
-import com.github.soulsearching.viewmodel.SettingsViewModelImpl
+import com.github.soulsearching.viewmodel.SettingsViewModelAndroidImpl
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -33,20 +37,14 @@ import org.koin.dsl.module
  */
 val viewModelModule = module {
     viewModel {
-        AddMusicsViewModelImpl(
+        AddMusicsViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
-            playlistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get()
+            musicFetcher = get()
         )
     }
     viewModel {
-        AllAlbumsViewModel(
+        AllAlbumsViewModelAndroidImpl(
             albumRepository = get(),
             musicRepository = get(),
             artistRepository = get(),
@@ -55,7 +53,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        AllArtistsViewModel(
+        AllArtistsViewModelAndroidImpl(
             artistRepository = get(),
             musicRepository = get(),
             albumRepository = get(),
@@ -63,7 +61,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        AllFoldersViewModel(
+        AllFoldersViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
             albumRepository = get(),
@@ -74,7 +72,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        AllImageCoversViewModel(
+        AllImageCoversViewModelAndroidImpl(
             imageCoverRepository = get(),
             musicRepository = get(),
             albumRepository = get(),
@@ -83,7 +81,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        AllMusicsViewModel(
+        AllMusicsViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
@@ -94,11 +92,14 @@ val viewModelModule = module {
             albumArtistRepository = get(),
             imageCoverRepository = get(),
             folderRepository = get(),
-            settings = get()
+            settings = get(),
+            context = androidContext(),
+            playbackManager = get(),
+            musicFetcher = get()
         )
     }
     viewModel {
-        AllPlaylistsViewModel(
+        AllPlaylistsViewModelAndroidImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
             imageCoverRepository = get(),
@@ -106,7 +107,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        AllQuickAccessViewModel(
+        AllQuickAccessViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
             albumRepository = get(),
@@ -114,23 +115,24 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        MainActivityViewModel(
+        MainActivityViewModelAndroidImpl(
             settings = get()
         )
     }
     viewModel {
-        ModifyAlbumViewModel(
+        ModifyAlbumViewModelAndroidImpl(
             musicRepository = get(),
             albumRepository = get(),
             artistRepository = get(),
             musicArtistRepository = get(),
             musicAlbumRepository = get(),
             albumArtistRepository = get(),
-            imageCoverRepository = get()
+            imageCoverRepository = get(),
+            playbackManager = get()
         )
     }
     viewModel {
-        ModifyArtistViewModel(
+        ModifyArtistViewModelAndroidImpl(
             musicRepository = get(),
             artistRepository = get(),
             musicArtistRepository = get(),
@@ -141,7 +143,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        ModifyMusicViewModel(
+        ModifyMusicViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
             artistRepository = get(),
@@ -151,11 +153,12 @@ val viewModelModule = module {
             albumArtistRepository = get(),
             musicArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            playbackManager = get()
         )
     }
     viewModel {
-        ModifyPlaylistViewModel(
+        ModifyPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
             imageCoverRepository = get(),
@@ -163,7 +166,7 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        PlayerMusicListViewModelImpl(
+        PlayerMusicListViewModelAndroidImpl(
             playerMusicRepository = get(),
             musicRepository = get(),
             playlistRepository = get(),
@@ -174,53 +177,57 @@ val viewModelModule = module {
             musicArtistRepository = get(),
             albumArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
-        )
-    }
-    single {
-        PlayerViewModelImpl(
-            musicRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            playbackManager = get()
         )
     }
     viewModel {
-        SelectedAlbumViewModel(
-            albumRepository = get(),
-            artistRepository = get(),
+        PlayerViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
+            albumRepository = get(),
+            artistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
             albumArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            playbackManager = get()
         )
     }
     viewModel {
-        SelectedArtistViewModel(
+        SelectedAlbumViewModelAndroidImpl(
+            albumRepository = get(),
             artistRepository = get(),
             musicRepository = get(),
-            albumRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            albumArtistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
+            albumArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            playbackManager = get()
         )
     }
     viewModel {
-        SelectedPlaylistViewModel(
+        SelectedArtistViewModelAndroidImpl(
+            artistRepository = get(),
+            musicRepository = get(),
+            albumRepository = get(),
+            playlistRepository = get(),
+            musicPlaylistRepository = get(),
+            albumArtistRepository = get(),
+            musicAlbumRepository = get(),
+            musicArtistRepository = get(),
+            imageCoverRepository = get(),
+            settings = get(),
+            playbackManager = get()
+        )
+    }
+    viewModel {
+        SelectedPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             musicRepository = get(),
             artistRepository = get(),
@@ -230,7 +237,22 @@ val viewModelModule = module {
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            playbackManager = get()
+        )
+    }
+    factory<MusicFetcher> {
+        MusicFetcherAndroidImpl(
+            context = androidContext(),
+            playlistRepository = get(),
+            musicRepository = get(),
+            albumRepository = get(),
+            artistRepository = get(),
+            musicAlbumRepository = get(),
+            musicArtistRepository = get(),
+            albumArtistRepository = get(),
+            imageCoverRepository = get(),
+            folderRepository = get()
         )
     }
     factory<SoulSearchingSettings> {
@@ -243,10 +265,28 @@ val viewModelModule = module {
             )
         )
     }
-    single<SettingsViewModel> {
-        SettingsViewModelImpl(get())
+    single<PlaybackManagerAndroidImpl> {
+        PlaybackManagerAndroidImpl(
+            context = androidContext()
+        )
     }
-//    viewModel {
-//        SettingsViewModel()
-//    }
+    single<SettingsViewModel> {
+        SettingsViewModelAndroidImpl(
+            settings = get()
+        )
+    }
+    single<MusicFetcherAndroidImpl> {
+        MusicFetcherAndroidImpl(
+            context = androidContext(),
+            playlistRepository = get(),
+            musicRepository = get(),
+            albumRepository = get(),
+            artistRepository = get(),
+            musicAlbumRepository = get(),
+            musicArtistRepository = get(),
+            albumArtistRepository = get(),
+            imageCoverRepository = get(),
+            folderRepository = get()
+        )
+    }
 }

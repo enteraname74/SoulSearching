@@ -42,8 +42,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_quick_access),
-                    toggleAction = { SettingsUtils.settingsViewModel.toggleQuickAccessVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.isQuickAccessShown,
+                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleQuickAccessVisibility() },
+                    isChecked = SettingsUtils.settingsViewModel.handler.isQuickAccessShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -56,8 +56,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_playlists),
-                    toggleAction = { SettingsUtils.settingsViewModel.togglePlaylistsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.isPlaylistsShown,
+                    toggleAction = { SettingsUtils.settingsViewModel.handler.togglePlaylistsVisibility() },
+                    isChecked = SettingsUtils.settingsViewModel.handler.isPlaylistsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -70,8 +70,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_albums),
-                    toggleAction = { SettingsUtils.settingsViewModel.toggleAlbumsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.isAlbumsShown,
+                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleAlbumsVisibility() },
+                    isChecked = SettingsUtils.settingsViewModel.handler.isAlbumsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -84,8 +84,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_artists),
-                    toggleAction = { SettingsUtils.settingsViewModel.toggleArtistsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.isArtistsShown,
+                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleArtistsVisibility() },
+                    isChecked = SettingsUtils.settingsViewModel.handler.isArtistsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -99,8 +99,8 @@ fun SettingsPersonalisationScreen(
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_vertical_access_bar_title),
                     text = stringResource(id = R.string.show_vertical_access_bar_text),
-                    toggleAction = { SettingsUtils.settingsViewModel.toggleVerticalBarVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.isVerticalBarShown,
+                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleVerticalBarVisibility() },
+                    isChecked = SettingsUtils.settingsViewModel.handler.isVerticalBarShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,

@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ fun MusicBottomSheet(
     musicState: MusicState,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: PlayerDraggableState,
     primaryColor: Color = DynamicColor.secondary,
     textColor: Color = DynamicColor.onSecondary
@@ -102,11 +102,11 @@ fun MusicBottomSheet(
             },
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    PlayerUtils.playerViewModel.removeMusicFromCurrentPlaylist(
+                    PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
                         musicId = musicState.selectedMusic.musicId
                     )
-                    playerMusicListViewModel.savePlayerMusicList(
-                        PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                    playerMusicListViewModel.handler.savePlayerMusicList(
+                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
                     )
 
                     coroutineScope.launch {
@@ -140,15 +140,15 @@ fun MusicBottomSheet(
                             playerDraggableState.animateTo(BottomSheetStates.MINIMISED)
                         }
                     }.invokeOnCompletion {
-                        PlayerUtils.playerViewModel.addMusicToPlayNext(
+                        PlayerUtils.playerViewModel.handler.addMusicToPlayNext(
                             music = musicState.selectedMusic
                         )
-                        playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
+                        playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
                     }
                 }
             },
             isInQuickAccess = musicState.selectedMusic.isInQuickAccess,
-            isCurrentlyPlaying = PlayerUtils.playerViewModel.isSameMusic(musicState.selectedMusic.musicId)
+            isCurrentlyPlaying = PlayerUtils.playerViewModel.handler.isSameMusic(musicState.selectedMusic.musicId)
         )
     }
 }

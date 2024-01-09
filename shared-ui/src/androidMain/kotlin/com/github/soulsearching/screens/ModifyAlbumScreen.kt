@@ -65,7 +65,7 @@ fun ModifyAlbumScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyAlbumViewModel.onAlbumEvent(
+                modifyAlbumViewModel.handler.onAlbumEvent(
                     AlbumEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -83,7 +83,7 @@ fun ModifyAlbumScreen(
     }
 
     if (!isAlbumFetched) {
-        modifyAlbumViewModel.onAlbumEvent(
+        modifyAlbumViewModel.handler.onAlbumEvent(
             AlbumEvent.AlbumFromID(
                 albumId = UUID.fromString(selectedAlbumId)
             )
@@ -91,7 +91,7 @@ fun ModifyAlbumScreen(
         isAlbumFetched = true
     }
 
-    val albumState by modifyAlbumViewModel.state.collectAsState()
+    val albumState by modifyAlbumViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -100,7 +100,7 @@ fun ModifyAlbumScreen(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyAlbumViewModel.onAlbumEvent(AlbumEvent.UpdateAlbum)
+                    modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.UpdateAlbum)
                     finishAction()
                 }
             )
@@ -145,9 +145,9 @@ fun ModifyAlbumScreen(
                                 .padding(Constants.Spacing.medium),
                             selectedAlbumState = albumState,
                             focusManager = focusManager,
-                            setName = { modifyAlbumViewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
+                            setName = { modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.SetName(it)) },
                             setArtist = {
-                                modifyAlbumViewModel.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onAlbumEvent(
                                     AlbumEvent.SetArtist(
                                         it
                                     )
@@ -196,9 +196,9 @@ fun ModifyAlbumScreen(
                                 .padding(Constants.Spacing.medium),
                             selectedAlbumState = albumState,
                             focusManager = focusManager,
-                            setName = { modifyAlbumViewModel.onAlbumEvent(AlbumEvent.SetName(it)) },
+                            setName = { modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.SetName(it)) },
                             setArtist = {
-                                modifyAlbumViewModel.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onAlbumEvent(
                                     AlbumEvent.SetArtist(
                                         it
                                     )

@@ -18,14 +18,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.service.PlayerService
 import com.github.soulsearching.utils.Utils
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +38,7 @@ fun ExpandedPlayButtonsComposable(
     sliderInactiveBarColor: Color,
     onMusicEvent: (MusicEvent) -> Unit,
     isMusicInFavorite: Boolean,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -63,9 +62,9 @@ fun ExpandedPlayButtonsComposable(
         Slider(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = PlayerUtils.playerViewModel.currentMusicPosition.toFloat(),
+            value = PlayerUtils.playerViewModel.handler.currentMusicPosition.toFloat(),
             onValueChange = {
-                PlayerUtils.playerViewModel.currentMusicPosition = it.toInt()
+                PlayerUtils.playerViewModel.handler.currentMusicPosition = it.toInt()
                 PlayerService.seekToPosition(it.toInt())
             },
             colors = sliderColors,
@@ -101,7 +100,7 @@ fun ExpandedPlayButtonsComposable(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = Utils.convertDuration(PlayerUtils.playerViewModel.currentMusicPosition),
+                    text = Utils.convertDuration(PlayerUtils.playerViewModel.handler.currentMusicPosition),
                     color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
@@ -119,7 +118,7 @@ fun ExpandedPlayButtonsComposable(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Image(
-                    imageVector = when (PlayerUtils.playerViewModel.playerMode) {
+                    imageVector = when (PlayerUtils.playerViewModel.handler.playerMode) {
                         PlayerMode.NORMAL -> Icons.Rounded.Sync
                         PlayerMode.SHUFFLE -> Icons.Rounded.Shuffle
                         PlayerMode.LOOP -> Icons.Rounded.Replay
@@ -128,9 +127,9 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
                         .clickable {
-                            PlayerUtils.playerViewModel.changePlayerMode()
-                            playerMusicListViewModel.savePlayerMusicList(
-                                PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                            PlayerUtils.playerViewModel.handler.changePlayerMode()
+                            playerMusicListViewModel.handler.savePlayerMusicList(
+                                PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
                             )
                         },
                     colorFilter = ColorFilter.tint(color = mainColor)
@@ -143,13 +142,13 @@ fun ExpandedPlayButtonsComposable(
                         .clickable { PlayerService.playPrevious() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
-                if (PlayerUtils.playerViewModel.isPlaying) {
+                if (PlayerUtils.playerViewModel.handler.isPlaying) {
                     Image(
                         imageVector = Icons.Rounded.Pause,
                         contentDescription = "",
                         modifier = Modifier
                             .size(78.dp)
-                            .clickable { PlayerUtils.playerViewModel.togglePlayPause() },
+                            .clickable { PlayerUtils.playerViewModel.handler.togglePlayPause() },
                         colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 } else {
@@ -158,7 +157,7 @@ fun ExpandedPlayButtonsComposable(
                         contentDescription = "",
                         modifier = Modifier
                             .size(78.dp)
-                            .clickable { PlayerUtils.playerViewModel.togglePlayPause() },
+                            .clickable { PlayerUtils.playerViewModel.handler.togglePlayPause() },
                         colorFilter = ColorFilter.tint(color = mainColor)
                     )
                 }
@@ -180,7 +179,7 @@ fun ExpandedPlayButtonsComposable(
                     modifier = Modifier
                         .size(Constants.ImageSize.medium)
                         .clickable {
-                            PlayerUtils.playerViewModel.currentMusic?.let {
+                            PlayerUtils.playerViewModel.handler.currentMusic?.let {
                                 onMusicEvent(
                                     MusicEvent.SetFavorite(
                                         musicId = it.musicId

@@ -74,8 +74,8 @@ abstract class SoulSearchingNotification(
 
         notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)
-            .setContentTitle(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.name else "")
-            .setContentText(if (PlayerUtils.playerViewModel.currentMusic != null) PlayerUtils.playerViewModel.currentMusic?.artist else "")
+            .setContentTitle(if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic?.name else "")
+            .setContentText(if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic?.artist else "")
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setSilent(true)

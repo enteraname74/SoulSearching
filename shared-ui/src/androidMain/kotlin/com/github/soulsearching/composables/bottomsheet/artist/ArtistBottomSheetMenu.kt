@@ -28,7 +28,7 @@ fun ArtistBottomSheetMenu(
             .background(color = DynamicColor.secondary)
             .padding(Constants.Spacing.large)
     ) {
-        if (SettingsUtils.settingsViewModel.isQuickAccessShown) {
+        if (SettingsUtils.settingsViewModel.handler.isQuickAccessShown) {
             BottomSheetRow(
                 icon = Icons.Rounded.DoubleArrow,
                 text = if (isInQuickAccess) {

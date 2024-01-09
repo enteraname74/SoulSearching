@@ -20,7 +20,7 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <service
-            android:name=".service.PlayerService"
+            android:name=".playback.PlayerService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"

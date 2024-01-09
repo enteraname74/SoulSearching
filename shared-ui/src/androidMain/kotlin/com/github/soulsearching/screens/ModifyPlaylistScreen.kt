@@ -64,7 +64,7 @@ fun ModifyPlaylistScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyPlaylistViewModel.onPlaylistEvent(
+                modifyPlaylistViewModel.handler.onPlaylistEvent(
                     PlaylistEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -82,7 +82,7 @@ fun ModifyPlaylistScreen(
     }
 
     if (!isPlaylistFetched) {
-        modifyPlaylistViewModel.onPlaylistEvent(
+        modifyPlaylistViewModel.handler.onPlaylistEvent(
             PlaylistEvent.PlaylistFromId(
                 playlistId = UUID.fromString(selectedPlaylistId)
             )
@@ -90,7 +90,7 @@ fun ModifyPlaylistScreen(
         isPlaylistFetched = true
     }
 
-    val state by modifyPlaylistViewModel.state.collectAsState()
+    val state by modifyPlaylistViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -99,7 +99,7 @@ fun ModifyPlaylistScreen(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyPlaylistViewModel.onPlaylistEvent(PlaylistEvent.UpdatePlaylist)
+                    modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.UpdatePlaylist)
                     finishAction()
                 }
             )
@@ -145,7 +145,7 @@ fun ModifyPlaylistScreen(
                             state = state,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.onPlaylistEvent(PlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.SetName(it))
                             }
                         )
                     }
@@ -191,7 +191,7 @@ fun ModifyPlaylistScreen(
                             state = state,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.onPlaylistEvent(PlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.SetName(it))
                             }
                         )
                     }

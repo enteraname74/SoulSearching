@@ -29,22 +29,22 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.types.PlaylistType
-import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
 import com.github.soulsearching.composables.search.SearchView
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.types.PlaylistType
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.utils.SettingsUtils
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -55,7 +55,7 @@ fun PlaylistScreen(
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     title: String,
     image: ImageBitmap?,
     navigateToModifyPlaylist: () -> Unit = {},
@@ -75,14 +75,14 @@ fun PlaylistScreen(
     }
 
     image?.let {
-        if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()) {
-            SettingsUtils.settingsViewModel.setNewPlaylistCover(it)
+        if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()) {
+            SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
         }
     }
 
-    if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOff()) {
-        SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists = true
+    if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOff()) {
+        SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists = true
         hasPlaylistPaletteBeenFetched = true
     }
 
@@ -98,9 +98,9 @@ fun PlaylistScreen(
                     playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                 }
                 .invokeOnCompletion {
-                    PlayerUtils.playerViewModel.playShuffle(
+                    PlayerUtils.playerViewModel.handler.playShuffle(
                         musicState.musics,
-                        playerMusicListViewModel::savePlayerMusicList
+                        playerMusicListViewModel.handler::savePlayerMusicList
                     )
                 }
         }
@@ -248,14 +248,14 @@ fun PlaylistScreen(
                                             updateNbPlayedAction(it)
                                         }
 
-                                        if (!PlayerUtils.playerViewModel.isSamePlaylist(
+                                        if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
                                                 false,
                                                 playlistId
                                             )
                                         ) {
-                                            playerMusicListViewModel.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
+                                            playerMusicListViewModel.handler.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
                                         }
-                                        PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                                        PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                             music = music,
                                             playlist = musicState.musics,
                                             playlistId = playlistId,

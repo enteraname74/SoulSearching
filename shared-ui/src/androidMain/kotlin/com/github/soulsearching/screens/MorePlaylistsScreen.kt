@@ -22,14 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.types.SortDirection
-import com.github.soulsearching.types.SortType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheet.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.SortDirection
+import com.github.soulsearching.types.SortType
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -45,11 +45,11 @@ fun MorePlaylistsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val playlistState by allPlaylistsViewModel.state.collectAsState()
+    val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
 
     PlaylistBottomSheetEvents(
         playlistState = playlistState,
-        onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
+        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
         navigateToModifyPlaylist = navigateToModifyPlaylist
     )
     Column(
@@ -71,17 +71,17 @@ fun MorePlaylistsScreen(
             SortOptionsComposable(
                 imageSize = Constants.Spacing.large,
                 sortByName = {
-                    allPlaylistsViewModel.onPlaylistEvent(
+                    allPlaylistsViewModel.handler.onPlaylistEvent(
                         PlaylistEvent.SetSortType(SortType.NAME)
                     )
                 },
                 sortByMostListenedAction = {
-                    allPlaylistsViewModel.onPlaylistEvent(
+                    allPlaylistsViewModel.handler.onPlaylistEvent(
                         PlaylistEvent.SetSortType(SortType.NB_PLAYED)
                     )
                 },
                 sortByDateAction = {
-                    allPlaylistsViewModel.onPlaylistEvent(
+                    allPlaylistsViewModel.handler.onPlaylistEvent(
                         PlaylistEvent.SetSortType(SortType.ADDED_DATE)
                     )
                 },
@@ -92,7 +92,7 @@ fun MorePlaylistsScreen(
                         } else {
                             SortDirection.ASC
                         }
-                    allPlaylistsViewModel.onPlaylistEvent(
+                    allPlaylistsViewModel.handler.onPlaylistEvent(
                         PlaylistEvent.SetSortDirection(newDirection)
                     )
                 },
@@ -127,7 +127,7 @@ fun MorePlaylistsScreen(
                         )
                     },
                     onClick = {
-                        allPlaylistsViewModel.onPlaylistEvent(
+                        allPlaylistsViewModel.handler.onPlaylistEvent(
                             PlaylistEvent.SetSelectedPlaylist(
                                 playlistWithMusics.playlist
                             )
@@ -136,12 +136,12 @@ fun MorePlaylistsScreen(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            allPlaylistsViewModel.onPlaylistEvent(
+                            allPlaylistsViewModel.handler.onPlaylistEvent(
                                 PlaylistEvent.SetSelectedPlaylist(
                                     playlistWithMusics.playlist
                                 )
                             )
-                            allPlaylistsViewModel.onPlaylistEvent(
+                            allPlaylistsViewModel.handler.onPlaylistEvent(
                                 PlaylistEvent.BottomSheet(
                                     isShown = true
                                 )

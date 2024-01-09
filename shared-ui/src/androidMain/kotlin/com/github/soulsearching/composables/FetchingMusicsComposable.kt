@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
@@ -51,7 +50,6 @@ fun FetchingMusicsComposable(
     )
 
     val configuration = LocalConfiguration.current
-    val context = LocalContext.current
     val pagerState = rememberPagerState()
 
     when (configuration.orientation) {
@@ -103,8 +101,7 @@ fun FetchingMusicsComposable(
         LaunchedEffect(key1 = "FetchingMusics") {
             CoroutineScope(Dispatchers.IO).launch {
                 isFetchingMusics = true
-                allMusicsViewModel.fetchMusics(
-                    context = context,
+                allMusicsViewModel.handler.fetchMusics(
                     updateProgress = {
                         progress = it
                     },

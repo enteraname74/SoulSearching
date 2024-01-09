@@ -11,15 +11,15 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.theme.DynamicColor
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelImpl
+import com.github.soulsearching.types.BottomSheetStates
+import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -30,7 +30,7 @@ fun SearchMusics(
     searchText: String,
     musicState: MusicState,
     onMusicEvent: (MusicEvent) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModelImpl,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -63,14 +63,14 @@ fun SearchMusics(
                             focusManager.clearFocus()
                             playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
                         }.invokeOnCompletion { _ ->
-                            PlayerUtils.playerViewModel.setCurrentPlaylistAndMusic(
+                            PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
                                 playlist = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
-                            playerMusicListViewModel.savePlayerMusicList(PlayerUtils.playerViewModel.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
+                            playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
                         }
                     },
                     onLongClick = {

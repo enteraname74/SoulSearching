@@ -18,23 +18,23 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+            if (SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.primary
-            } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                && SettingsUtils.settingsViewModel.playlistCover != null
+            } else if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()
+                && SettingsUtils.settingsViewModel.handler.playlistCover != null
             ) {
                 val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                    image = SettingsUtils.settingsViewModel.playlistCover
+                    image = SettingsUtils.settingsViewModel.handler.playlistCover
                 )
                 ColorPaletteUtils.getDynamicPrimaryColor(
                     playlistPalette?.rgb
                 )
             } else if (
-                SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
-                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
+                SettingsUtils.settingsViewModel.handler.isDynamicThemeOn() ||
+                SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn()
             ) {
                 ColorPaletteUtils.getDynamicPrimaryColor(
-                    baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                 )
             } else {
                 MaterialTheme.colorScheme.primary
@@ -47,17 +47,17 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+            if (SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.onPrimary
             } else if (
                 (
-                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
-                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
-                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        (SettingsUtils.settingsViewModel.handler.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn())
+                                && PlayerUtils.playerViewModel.handler.currentColorPalette != null
                         )
                 || (
-                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistCover != null
+                        SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.handler.playlistCover != null
                         )
             ) {
                 Color.White
@@ -72,22 +72,22 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+            if (SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.secondary
-            } else if (SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                && SettingsUtils.settingsViewModel.playlistCover != null
+            } else if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()
+                && SettingsUtils.settingsViewModel.handler.playlistCover != null
             ) {
                 val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                    image = SettingsUtils.settingsViewModel.playlistCover
+                    image = SettingsUtils.settingsViewModel.handler.playlistCover
                 )
                 ColorPaletteUtils.getDynamicSecondaryColor(
                     playlistPalette?.rgb
                 )
-            } else if (SettingsUtils.settingsViewModel.isDynamicThemeOn()
-                || SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn()
+            } else if (SettingsUtils.settingsViewModel.handler.isDynamicThemeOn()
+                || SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn()
             ) {
                 ColorPaletteUtils.getDynamicSecondaryColor(
-                    baseColor = PlayerUtils.playerViewModel.currentColorPalette?.rgb
+                    baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
                 )
             }  else {
                 MaterialTheme.colorScheme.secondary
@@ -100,17 +100,17 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+            if (SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.onSecondary
             } else if (
                 (
-                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
-                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
-                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        (SettingsUtils.settingsViewModel.handler.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn())
+                                && PlayerUtils.playerViewModel.handler.currentColorPalette != null
                         )
                 || (
-                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistCover != null
+                        SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.handler.playlistCover != null
                         )
             ) {
                 Color.White
@@ -125,17 +125,17 @@ object DynamicColor {
         @Composable
         get() = animateColorAsState(
             targetValue =
-            if (SettingsUtils.settingsViewModel.forceBasicThemeForPlaylists) {
+            if (SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists) {
                 MaterialTheme.colorScheme.outline
             } else if (
                 (
-                        (SettingsUtils.settingsViewModel.isDynamicThemeOn() ||
-                                SettingsUtils.settingsViewModel.isPersonalizedDynamicOtherViewsThemeOn())
-                                && PlayerUtils.playerViewModel.currentColorPalette != null
+                        (SettingsUtils.settingsViewModel.handler.isDynamicThemeOn() ||
+                                SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn())
+                                && PlayerUtils.playerViewModel.handler.currentColorPalette != null
                         )
                 || (
-                        SettingsUtils.settingsViewModel.isPersonalizedDynamicPlaylistThemeOn()
-                                && SettingsUtils.settingsViewModel.playlistCover != null
+                        SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()
+                                && SettingsUtils.settingsViewModel.handler.playlistCover != null
                         )
             ) {
                 Color.LightGray

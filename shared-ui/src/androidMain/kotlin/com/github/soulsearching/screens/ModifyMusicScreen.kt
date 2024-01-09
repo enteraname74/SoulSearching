@@ -64,7 +64,7 @@ fun ModifyMusicScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyMusicViewModel.onMusicEvent(
+                modifyMusicViewModel.handler.onMusicEvent(
                     MusicEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -83,11 +83,11 @@ fun ModifyMusicScreen(
     }
 
     if (!isMusicFetched) {
-        modifyMusicViewModel.getMusicFromId(UUID.fromString(selectedMusicId))
+        modifyMusicViewModel.handler.getMusicFromId(UUID.fromString(selectedMusicId))
         isMusicFetched = true
     }
 
-    val musicState by modifyMusicViewModel.state.collectAsState()
+    val musicState by modifyMusicViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -96,7 +96,7 @@ fun ModifyMusicScreen(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyMusicViewModel.onMusicEvent(MusicEvent.UpdateMusic)
+                    modifyMusicViewModel.handler.onMusicEvent(MusicEvent.UpdateMusic)
                     finishAction()
                 }
             )
@@ -141,16 +141,16 @@ fun ModifyMusicScreen(
                                 .padding(Constants.Spacing.medium),
                             state = musicState,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.onMusicEvent(MusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.handler.onMusicEvent(MusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.onMusicEvent(
+                                modifyMusicViewModel.handler.onMusicEvent(
                                     MusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.onMusicEvent(
+                                modifyMusicViewModel.handler.onMusicEvent(
                                     MusicEvent.SetArtist(
                                         it
                                     )
@@ -199,16 +199,16 @@ fun ModifyMusicScreen(
                                 .padding(Constants.Spacing.medium),
                             state = musicState,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.onMusicEvent(MusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.handler.onMusicEvent(MusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.onMusicEvent(
+                                modifyMusicViewModel.handler.onMusicEvent(
                                     MusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.onMusicEvent(
+                                modifyMusicViewModel.handler.onMusicEvent(
                                     MusicEvent.SetArtist(
                                         it
                                     )

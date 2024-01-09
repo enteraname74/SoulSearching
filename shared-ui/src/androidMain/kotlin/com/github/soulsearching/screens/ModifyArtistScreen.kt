@@ -64,7 +64,7 @@ fun ModifyArtistScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyArtistViewModel.onArtistEvent(
+                modifyArtistViewModel.handler.onArtistEvent(
                     ArtistEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -82,7 +82,7 @@ fun ModifyArtistScreen(
     }
 
     if (!isArtistFetched) {
-        modifyArtistViewModel.onArtistEvent(
+        modifyArtistViewModel.handler.onArtistEvent(
             ArtistEvent.ArtistFromId(
                 artistId = UUID.fromString(selectedArtistId)
             )
@@ -90,7 +90,7 @@ fun ModifyArtistScreen(
         isArtistFetched = true
     }
 
-    val artistState by modifyArtistViewModel.state.collectAsState()
+    val artistState by modifyArtistViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -99,7 +99,7 @@ fun ModifyArtistScreen(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyArtistViewModel.onArtistEvent(ArtistEvent.UpdateArtist)
+                    modifyArtistViewModel.handler.onArtistEvent(ArtistEvent.UpdateArtist)
                     finishAction()
                 }
             )
@@ -145,7 +145,7 @@ fun ModifyArtistScreen(
                             selectedArtistState = artistState,
                             focusManager = focusManager,
                             setName = {
-                                modifyArtistViewModel.onArtistEvent(
+                                modifyArtistViewModel.handler.onArtistEvent(
                                     ArtistEvent.SetName(
                                         it
                                     )
@@ -195,7 +195,7 @@ fun ModifyArtistScreen(
                             selectedArtistState = artistState,
                             focusManager = focusManager,
                             setName = {
-                                modifyArtistViewModel.onArtistEvent(
+                                modifyArtistViewModel.handler.onArtistEvent(
                                     ArtistEvent.SetName(
                                         it
                                     )
