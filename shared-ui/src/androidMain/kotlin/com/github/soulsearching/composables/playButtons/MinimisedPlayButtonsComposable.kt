@@ -19,15 +19,16 @@ import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.theme.DynamicColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
-    playerViewDraggableState: PlayerDraggableState
+    playerViewDraggableState: PlayerDraggableState,
+    playbackManager: PlaybackManager
 ) {
     Row(
         modifier = modifier,
@@ -41,7 +42,7 @@ fun MinimisedPlayButtonsComposable(
                 .size(40.dp)
                 .clickable {
                     if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                        PlayerService.playPrevious()
+                        playbackManager.playPrevious()
                     }
                 },
             colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
@@ -80,7 +81,7 @@ fun MinimisedPlayButtonsComposable(
                 .size(40.dp)
                 .clickable {
                     if (playerViewDraggableState.state.currentValue == BottomSheetStates.MINIMISED) {
-                        PlayerService.playNext()
+                        playbackManager.playNext()
                     }
                 },
             colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)

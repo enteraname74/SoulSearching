@@ -28,10 +28,10 @@ import com.github.soulsearching.composables.MainPageVerticalShortcut
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SubMenuComposable
-import com.github.soulsearching.composables.bottomsheet.album.AlbumBottomSheetEvents
-import com.github.soulsearching.composables.bottomsheet.artist.ArtistBottomSheetEvents
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
-import com.github.soulsearching.composables.bottomsheet.playlist.PlaylistBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.soulsearching.composables.search.SearchAll
 import com.github.soulsearching.composables.search.SearchView

@@ -47,6 +47,7 @@ import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.screens.MainPageScreen
 import com.github.soulsearching.screens.ModifyAlbumScreen
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityViewModel: MainActivityViewModelAndroidImpl
 
     private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
+    private val playbackManager: PlaybackManagerAndroidImpl by inject<PlaybackManagerAndroidImpl>()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -277,7 +279,7 @@ class MainActivity : AppCompatActivity() {
                                 PlayerUtils.playerViewModel.handler.defineCoverAndPaletteFromCoverId(
                                     coverId = PlayerUtils.playerViewModel.handler.currentMusic?.coverId
                                 )
-                                PlayerService.updateNotification()
+                                playbackManager.updateNotification()
                             }
                         }
                         mainActivityViewModel.handler.cleanImagesLaunched = true
@@ -709,7 +711,8 @@ class MainActivity : AppCompatActivity() {
                         onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                         navigateToModifyMusic = {
                             navController.navigate("modifyMusic/$it")
-                        }
+                        },
+                        playbackManager = playbackManager
                     )
 
                     PlayerMusicListView(

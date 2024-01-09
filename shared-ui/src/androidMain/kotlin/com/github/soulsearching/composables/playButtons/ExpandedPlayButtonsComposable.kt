@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.playback.PlayerService
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.Utils
@@ -39,6 +39,7 @@ fun ExpandedPlayButtonsComposable(
     onMusicEvent: (MusicEvent) -> Unit,
     isMusicInFavorite: Boolean,
     playerMusicListViewModel: PlayerMusicListViewModel,
+    playbackManager: PlaybackManager
 ) {
     Column(
         modifier = Modifier
@@ -65,10 +66,10 @@ fun ExpandedPlayButtonsComposable(
             value = PlayerUtils.playerViewModel.handler.currentMusicPosition.toFloat(),
             onValueChange = {
                 PlayerUtils.playerViewModel.handler.currentMusicPosition = it.toInt()
-                PlayerService.seekToPosition(it.toInt())
+                playbackManager.seekToPosition(it.toInt())
             },
             colors = sliderColors,
-            valueRange = 0f..PlayerService.getMusicDuration().toFloat(),
+            valueRange = 0f..playbackManager.getMusicDuration().toFloat(),
             interactionSource = interactionSource,
             thumb = {
                 SliderDefaults.Thumb(
@@ -105,7 +106,7 @@ fun ExpandedPlayButtonsComposable(
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
-                    text = Utils.convertDuration(PlayerService.getMusicDuration()),
+                    text = Utils.convertDuration(playbackManager.getMusicDuration()),
                     color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
@@ -139,7 +140,7 @@ fun ExpandedPlayButtonsComposable(
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
-                        .clickable { PlayerService.playPrevious() },
+                        .clickable { playbackManager.playPrevious() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 if (PlayerUtils.playerViewModel.handler.isPlaying) {
@@ -166,7 +167,7 @@ fun ExpandedPlayButtonsComposable(
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
-                        .clickable { PlayerService.playNext() },
+                        .clickable { playbackManager.playNext() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(

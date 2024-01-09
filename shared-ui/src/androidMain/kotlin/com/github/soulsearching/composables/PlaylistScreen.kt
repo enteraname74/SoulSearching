@@ -29,7 +29,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
 import com.github.soulsearching.composables.search.SearchView
@@ -186,12 +186,12 @@ fun PlaylistScreen(
 
             else -> {
                 MusicBottomSheetEvents(
-                    musicBottomSheetState = musicBottomSheetState,
                     musicState = musicState,
                     playlistState = playlistState,
                     onMusicEvent = onMusicEvent,
                     onPlaylistsEvent = onPlaylistEvent,
                     navigateToModifyMusic = navigateToModifyMusic,
+                    musicBottomSheetState = musicBottomSheetState,
                     playerMusicListViewModel = playerMusicListViewModel,
                     playerDraggableState = playerDraggableState,
                 )

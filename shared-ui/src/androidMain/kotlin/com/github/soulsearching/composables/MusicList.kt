@@ -7,7 +7,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -44,17 +44,17 @@ fun MusicList(
     val coroutineScope = rememberCoroutineScope()
 
     MusicBottomSheetEvents(
-        musicBottomSheetState = musicBottomSheetState,
         musicState = musicState,
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = navigateToModifyMusic,
+        musicBottomSheetState = musicBottomSheetState,
         playerMusicListViewModel = playerMusicListViewModel,
         playerDraggableState = playerDraggableState,
-        primaryColor = primaryColor,
         secondaryColor = secondaryColor,
         onSecondaryColor = onSecondaryColor,
+        primaryColor = primaryColor,
         onPrimaryColor = onPrimaryColor
     )
 

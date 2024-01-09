@@ -43,7 +43,7 @@ import com.github.enteraname74.domain.model.ImageCover
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent
@@ -133,7 +133,6 @@ fun PlayerMusicListView(
     )
 
     MusicBottomSheetEvents(
-        musicBottomSheetState = MusicBottomSheetState.PLAYER,
         musicState = musicState,
         playlistState = playlistState,
         onMusicEvent = onMusicEvent,
@@ -149,12 +148,13 @@ fun PlayerMusicListView(
                 }
             }
         },
+        musicBottomSheetState = MusicBottomSheetState.PLAYER,
         playerMusicListViewModel = playerMusicListViewModel,
         playerDraggableState = playerDraggableState,
         primaryColor = primaryColor,
+        onPrimaryColor = textColor,
         secondaryColor = secondaryColor,
-        onSecondaryColor = textColor,
-        onPrimaryColor = textColor
+        onSecondaryColor = textColor
     )
 
     Box(

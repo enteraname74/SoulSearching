@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,23 +34,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.composables.AppImage
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
+import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
+import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
-import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.composables.bottomsheet.music.MusicBottomSheetEvents
-import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
-import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
-import com.github.soulsearching.events.MusicEvent
-import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.playback.PlayerService
-import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
@@ -82,10 +81,10 @@ fun PlayerDraggableView(
     musicState: MusicState,
     playlistState: PlaylistState,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    navigateToModifyMusic: (String) -> Unit
+    navigateToModifyMusic: (String) -> Unit,
+    playbackManager: PlaybackManager
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     var isMusicInFavorite by rememberSaveable {
         mutableStateOf(false)
     }
@@ -228,7 +227,7 @@ fun PlayerDraggableView(
         && PlayerUtils.playerViewModel.handler.isServiceLaunched
         && !draggableState.state.isAnimationRunning
     ) {
-        PlayerService.stopMusic(context)
+        playbackManager.stopMusic()
         playerMusicListViewModel.handler.resetPlayerMusicList()
     }
 
@@ -291,7 +290,6 @@ fun PlayerDraggableView(
             }
 
         MusicBottomSheetEvents(
-            musicBottomSheetState = MusicBottomSheetState.PLAYER,
             musicState = musicState,
             playlistState = playlistState,
             onMusicEvent = onMusicEvent,
@@ -303,12 +301,11 @@ fun PlayerDraggableView(
                     navigateToModifyMusic(path)
                 }
             },
+            musicBottomSheetState = MusicBottomSheetState.PLAYER,
             playerMusicListViewModel = playerMusicListViewModel,
             playerDraggableState = draggableState,
-            primaryColor = backgroundColor,
             secondaryColor = navigationBarColor,
-            onSecondaryColor = textColor,
-            onPrimaryColor = textColor
+            onSecondaryColor = textColor
         )
 
         Box(
@@ -614,7 +611,8 @@ fun PlayerDraggableView(
                                     sliderInactiveBarColor = contentColor,
                                     onMusicEvent = onMusicEvent,
                                     isMusicInFavorite = isMusicInFavorite,
-                                    playerMusicListViewModel = playerMusicListViewModel
+                                    playerMusicListViewModel = playerMusicListViewModel,
+                                    playbackManager = playbackManager
                                 )
                             }
                         }
@@ -624,7 +622,8 @@ fun PlayerDraggableView(
                                 sliderInactiveBarColor = contentColor,
                                 onMusicEvent = onMusicEvent,
                                 isMusicInFavorite = isMusicInFavorite,
-                                playerMusicListViewModel = playerMusicListViewModel
+                                playerMusicListViewModel = playerMusicListViewModel,
+                                playbackManager = playbackManager
                             )
                         }
                     }
@@ -666,7 +665,8 @@ fun PlayerDraggableView(
                         )
                     }
                     MinimisedPlayButtonsComposable(
-                        playerViewDraggableState = draggableState
+                        playerViewDraggableState = draggableState,
+                        playbackManager = playbackManager
                     )
                 }
             }
