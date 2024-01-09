@@ -1,6 +1,6 @@
 package com.github.soulsearching.composables
 
-import android.annotation.SuppressLint
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,14 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import com.github.soulsearching.R
+import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 
-@SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun AppImage(
     bitmap : ImageBitmap?,
@@ -45,7 +42,7 @@ fun AppImage(
     } else {
         Image(
             modifier = modifierBase,
-            painter = painterResource(R.drawable.ic_saxophone_svg),
+            painter = SoulSearchingContext.defaultLogoPainter,
             contentDescription = strings.image,
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(tint)

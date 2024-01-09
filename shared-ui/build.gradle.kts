@@ -13,6 +13,11 @@ kotlin {
     androidTarget()
     jvm("desktop")
 
+    compilerOptions {
+        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     sourceSets {
         val desktopMain by getting {
             dependencies {
