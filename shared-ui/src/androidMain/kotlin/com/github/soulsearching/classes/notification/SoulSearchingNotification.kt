@@ -15,7 +15,7 @@ import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.classes.notification.receivers.DeletedNotificationIntentReceiver
-import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
+import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayerImpl
 
 /**
  * Notification used for the playback by the service.
@@ -61,13 +61,13 @@ abstract class SoulSearchingNotification(
         if (Build.VERSION.SDK_INT >= 33) {
             context.registerReceiver(
                 broadcastReceiver,
-                IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION),
+                IntentFilter(SoulSearchingAndroidPlayerImpl.BROADCAST_NOTIFICATION),
                 Context.RECEIVER_NOT_EXPORTED
             )
         } else {
             context.registerReceiver(
                 broadcastReceiver,
-                IntentFilter(SoulSearchingMediaPlayerImpl.BROADCAST_NOTIFICATION)
+                IntentFilter(SoulSearchingAndroidPlayerImpl.BROADCAST_NOTIFICATION)
             )
 
         }

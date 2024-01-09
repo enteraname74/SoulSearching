@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import com.github.soulsearching.classes.notification.SoulSearchingNotification
 import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayer
-import com.github.soulsearching.classes.player.SoulSearchingMediaPlayerImpl
+import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayerImpl
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +25,7 @@ class PlayerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (player == null) {
             val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
-            player = SoulSearchingMediaPlayerImpl(applicationContext, settings)
+            player = SoulSearchingAndroidPlayerImpl(applicationContext, settings)
 
             val extras = intent?.extras
             if (extras != null) {

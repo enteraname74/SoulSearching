@@ -26,7 +26,10 @@ import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.*
 import java.io.File
 
-class SoulSearchingMediaPlayerImpl(
+/**
+ * Implementation of the SoulSearchingAndroidPlayer
+ */
+class SoulSearchingAndroidPlayerImpl(
     private val context: Context,
     private val settings: SoulSearchingSettings
 ) :
@@ -215,9 +218,9 @@ class SoulSearchingMediaPlayerImpl(
     private fun initializePlayer() {
         player.apply {
             setAudioAttributes(audioAttributes)
-            setOnPreparedListener(this@SoulSearchingMediaPlayerImpl)
-            setOnCompletionListener(this@SoulSearchingMediaPlayerImpl)
-            setOnErrorListener(this@SoulSearchingMediaPlayerImpl)
+            setOnPreparedListener(this@SoulSearchingAndroidPlayerImpl)
+            setOnCompletionListener(this@SoulSearchingAndroidPlayerImpl)
+            setOnErrorListener(this@SoulSearchingAndroidPlayerImpl)
         }
     }
 
