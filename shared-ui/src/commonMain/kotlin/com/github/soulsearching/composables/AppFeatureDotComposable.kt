@@ -35,5 +35,4 @@ fun AppFeatureDotComposable(
             contentDescription = ""
         )
     }
-
 }

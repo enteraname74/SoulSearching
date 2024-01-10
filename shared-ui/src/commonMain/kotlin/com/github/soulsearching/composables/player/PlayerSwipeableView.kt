@@ -1,22 +1,41 @@
 package com.github.soulsearching.composables.player
 
 
-import android.annotation.SuppressLint
-import android.content.res.Configuration
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -24,7 +43,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,7 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.AppImage
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playbuttons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playbuttons.MinimisedPlayButtonsComposable
@@ -48,22 +68,21 @@ import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.reflect.KSuspendFunction1
 
-@SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerDraggableView(
@@ -161,7 +180,6 @@ fun PlayerDraggableView(
         label = "CONTENT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
-    val systemUiController = rememberSystemUiController()
     val statusBarColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
@@ -197,24 +215,21 @@ fun PlayerDraggableView(
         label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
-    val backHandlerIconsColor = if (PlayerUtils.playerViewModel.handler.currentColorPalette == null
+    val isUsingDarkIcons = if (PlayerUtils.playerViewModel.handler.currentColorPalette == null
         || !SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
     ) {
         !isSystemInDarkTheme()
     } else {
         false
     }
-    systemUiController.setStatusBarColor(
-        color = statusBarColor,
-        darkIcons = backHandlerIconsColor
+
+    SoulSearchingContext.setSystemBarsColor(
+        statusBarColor = statusBarColor,
+        navigationBarColor = navigationBarColor,
+        isUsingDarkIcons = isUsingDarkIcons
     )
 
-    systemUiController.setNavigationBarColor(
-        color = navigationBarColor,
-        darkIcons = backHandlerIconsColor
-    )
-
-    BackHandler(draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+    SoulSearchingBackHandler(draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListDraggableState.state.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
@@ -231,10 +246,8 @@ fun PlayerDraggableView(
         playerMusicListViewModel.handler.resetPlayerMusicList()
     }
 
-    val orientation = LocalConfiguration.current.orientation
-
-    val alphaTransition = when (orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
+    val alphaTransition = when (SoulSearchingContext.orientation) {
+        ScreenOrientation.HORIZONTAL -> {
             if ((1.0 / (abs(draggableState.state.offset) / 70)).toFloat() > 0.1) {
                 (1.0 / (abs(draggableState.state.offset) / 70)).toFloat().coerceAtMost(1.0F)
             } else {
@@ -327,8 +340,8 @@ fun PlayerDraggableView(
                 }
 
                 val imagePaddingStart =
-                    when (orientation) {
-                        Configuration.ORIENTATION_LANDSCAPE -> max(
+                    when (SoulSearchingContext.orientation) {
+                        ScreenOrientation.HORIZONTAL -> max(
                             (((maxWidth * 1.5) / 100) - (max(
                                 draggableState.state.offset.roundToInt(),
                                 0
@@ -345,8 +358,8 @@ fun PlayerDraggableView(
                     }
 
                 val imagePaddingTop =
-                    when (orientation) {
-                        Configuration.ORIENTATION_LANDSCAPE -> max(
+                    when (SoulSearchingContext.orientation) {
+                        ScreenOrientation.HORIZONTAL -> max(
                             (((maxHeight * 7) / 100) - (max(
                                 draggableState.state.offset.roundToInt(),
                                 0
@@ -364,8 +377,8 @@ fun PlayerDraggableView(
 
 
                 val imageSize =
-                    when (orientation) {
-                        Configuration.ORIENTATION_LANDSCAPE -> max(
+                    when (SoulSearchingContext.orientation) {
+                        ScreenOrientation.HORIZONTAL -> max(
                             (((maxWidth * 10) / 100) - (max(
                                 draggableState.state.offset.roundToInt(),
                                 0
@@ -548,7 +561,7 @@ fun PlayerDraggableView(
                                 Text(
                                     text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
                                         PlayerUtils.playerViewModel.handler.currentMusic!!.artist,
-                                        orientation
+                                        SoulSearchingContext.orientation
                                     )
                                     else "",
                                     color = subTextColor,
@@ -569,7 +582,7 @@ fun PlayerDraggableView(
                                 Text(
                                     text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
                                         PlayerUtils.playerViewModel.handler.currentMusic!!.album,
-                                        orientation
+                                        SoulSearchingContext.orientation
                                     ) else "",
                                     color = subTextColor,
                                     fontSize = 15.sp,
@@ -596,8 +609,8 @@ fun PlayerDraggableView(
                         )
                     }
 
-                    when (orientation) {
-                        Configuration.ORIENTATION_LANDSCAPE -> {
+                    when (SoulSearchingContext.orientation) {
+                        ScreenOrientation.HORIZONTAL -> {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize(),
@@ -674,8 +687,8 @@ fun PlayerDraggableView(
     }
 }
 
-private fun formatTextForEllipsis(text: String, orientation: Int): String {
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+private fun formatTextForEllipsis(text: String, orientation: ScreenOrientation): String {
+    if (orientation == ScreenOrientation.HORIZONTAL) {
         return text
     }
     return if (text.length > 16) {

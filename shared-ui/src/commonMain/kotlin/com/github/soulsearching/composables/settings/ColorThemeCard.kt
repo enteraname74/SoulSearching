@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.setting
+package com.github.soulsearching.composables.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.settings.ColorCard
 
 @Composable
@@ -20,8 +20,8 @@ fun ColorThemeCard(
     onClick: () -> Unit,
     isSelected: Boolean,
     padding: Dp = Constants.Spacing.large,
-    firstImageId: Int,
-    secondImageId: Int,
+    firstImagePath: String,
+    secondImagePath: String,
 ) {
     ColorCard(
         title = title,
@@ -38,13 +38,13 @@ fun ColorThemeCard(
             Image(
                 modifier = Modifier
                     .size(120.dp, 360.dp),
-                painter = painterResource(firstImageId),
+                painter = SoulSearchingContext.painterResource(resourcePath = firstImagePath),
                 contentDescription = ""
             )
             Image(
                 modifier = Modifier
                     .size(120.dp, 360.dp),
-                painter = painterResource(secondImageId),
+                painter = SoulSearchingContext.painterResource(resourcePath = secondImagePath),
                 contentDescription = ""
             )
         }

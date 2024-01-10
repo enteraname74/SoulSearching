@@ -1,10 +1,10 @@
 package com.github.soulsearching.composables.bottomsheets.playlist
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
@@ -23,7 +23,7 @@ actual fun PlaylistBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    BackHandler(playlistModalSheetState.isVisible) {
+    SoulSearchingBackHandler(playlistModalSheetState.isVisible) {
         coroutineScope.launch { playlistModalSheetState.hide() }
     }
 

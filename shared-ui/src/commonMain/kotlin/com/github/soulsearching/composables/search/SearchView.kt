@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables.search
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -24,10 +23,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.soulsearching.Constants
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
-import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.BottomSheetStates
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -46,7 +46,7 @@ fun SearchView(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    BackHandler(
+    SoulSearchingBackHandler(
         draggableState.state.currentValue == BottomSheetStates.EXPANDED
                 && playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED
     ) {

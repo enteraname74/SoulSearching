@@ -34,6 +34,7 @@ fun AppHeaderBar(
     backgroundColor: Color = DynamicColor.primary,
     contentColor: Color = DynamicColor.onPrimary
 ) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

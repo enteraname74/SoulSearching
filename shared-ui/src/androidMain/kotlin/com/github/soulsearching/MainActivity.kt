@@ -34,12 +34,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.soulsearching.classes.utils.AndroidUtils
-import com.github.soulsearching.composables.FetchingMusicsComposable
+import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
-import com.github.soulsearching.composables.remembers.checkIfPostNotificationGranted
-import com.github.soulsearching.composables.remembers.checkIfReadPermissionGranted
 import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
 import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggableState
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
@@ -119,8 +117,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var modifyMusicViewModel: ModifyMusicViewModelAndroidImpl
 
     // Player view model :
-    lateinit var playerViewModel: PlayerViewModelAndroidImpl
-    lateinit var playerMusicListViewModel: PlayerMusicListViewModelAndroidImpl
+    private lateinit var playerViewModel: PlayerViewModelAndroidImpl
+    private lateinit var playerMusicListViewModel: PlayerMusicListViewModelAndroidImpl
 
     // Settings view models:
     private lateinit var allFoldersViewModel: AllFoldersViewModelAndroidImpl
@@ -739,8 +737,8 @@ class MainActivity : AppCompatActivity() {
      */
     @Composable
     private fun InitializeMainActivityViewModel() {
-        mainActivityViewModel.handler.isReadPermissionGranted = checkIfReadPermissionGranted()
-        mainActivityViewModel.handler.isPostNotificationGranted = checkIfPostNotificationGranted()
+        mainActivityViewModel.handler.isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
+        mainActivityViewModel.handler.isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
     }
 
     /**

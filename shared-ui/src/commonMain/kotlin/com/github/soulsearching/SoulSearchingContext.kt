@@ -1,20 +1,43 @@
 package com.github.soulsearching
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.soulsearching.types.ScreenOrientation
 
 /**
- * Contains all elements related to the context of a SoulSearching application.
+ * Contains all elements related to a specific context of a SoulSearching application.
  */
 expect object SoulSearchingContext {
     /**
-     * Painter for the default SoulSearching logo.
+     * Painter to use for accessing drawable resources.
      */
-    @get:Composable
-    val defaultLogoPainter: Painter
-
     @Composable
-    fun getScreenOrientation(): ScreenOrientation
+    fun painterResource(resourcePath: String): Painter
+
+    @get:Composable
+    val orientation: ScreenOrientation
+
+    /**
+     * Define the system bars color if there is any.
+     */
+    @Composable
+    fun setSystemBarsColor(
+        statusBarColor: Color,
+        navigationBarColor: Color,
+        isUsingDarkIcons: Boolean
+    )
+
+    /**
+     * Check the state of the read permission.
+     */
+    @Composable
+    fun checkIfReadPermissionGranted(): Boolean
+
+    /**
+     * Check the state of the post notification permission.
+     * If the device is below Android 13, the post notification is not necessary.
+     */
+    @Composable
+    fun checkIfPostNotificationGranted(): Boolean
 }

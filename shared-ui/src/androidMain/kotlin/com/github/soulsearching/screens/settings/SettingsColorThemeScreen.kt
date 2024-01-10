@@ -13,7 +13,7 @@ import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.types.ColorThemeType
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.setting.ColorThemeCard
+import com.github.soulsearching.composables.settings.ColorThemeCard
 import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
 import com.github.soulsearching.theme.DynamicColor
 
@@ -37,8 +37,8 @@ fun SettingsColorThemeScreen(
                     text = stringResource(id = R.string.dynamic_theme_text),
                     onClick = { SettingsUtils.settingsViewModel.handler.updateColorTheme(ColorThemeType.DYNAMIC) },
                     isSelected = SettingsUtils.settingsViewModel.handler.colorTheme == ColorThemeType.DYNAMIC,
-                    firstImageId = R.drawable.dynamic_main,
-                    secondImageId = R.drawable.dynamic_player
+                    firstImagePath = "dynamic_main",
+                    secondImagePath = "dynamic_player"
                 )
             }
             item {
@@ -47,15 +47,15 @@ fun SettingsColorThemeScreen(
                     text = stringResource(id = R.string.system_theme_text),
                     onClick = { SettingsUtils.settingsViewModel.handler.updateColorTheme(ColorThemeType.SYSTEM) },
                     isSelected = SettingsUtils.settingsViewModel.handler.colorTheme == ColorThemeType.SYSTEM,
-                    firstImageId = if (isSystemInDarkTheme()) {
-                        R.drawable.system_dark_theme_main
+                    firstImagePath = if (isSystemInDarkTheme()) {
+                        "system_dark_theme_main"
                     } else {
-                        R.drawable.system_light_theme_main
+                        "system_light_theme_main"
                     },
-                    secondImageId = if (isSystemInDarkTheme()) {
-                        R.drawable.system_dark_theme_player
+                    secondImagePath = if (isSystemInDarkTheme()) {
+                        "system_dark_theme_player"
                     } else {
-                        R.drawable.system_light_theme_player
+                        "system_light_theme_player"
                     }
                 )
             }

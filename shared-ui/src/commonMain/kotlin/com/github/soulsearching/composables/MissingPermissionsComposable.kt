@@ -1,6 +1,5 @@
-package com.github.soulsearching.composables.setting
+package com.github.soulsearching.composables
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,30 +10,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
-import com.github.soulsearching.composables.SoulSearchingLogo
+import com.github.soulsearching.SoulSearchingContext
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.ScreenOrientation
 
 @Composable
-fun FolderStateComposable(
-    stateTitle: String
-) {
-    val configuration = LocalConfiguration.current
-
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
+fun MissingPermissionsComposable() {
+    when (SoulSearchingContext.orientation) {
+        ScreenOrientation.HORIZONTAL -> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary),
+                    .background(color = DynamicColor.primary)
+                    .padding(Constants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 SoulSearchingLogo()
                 Text(
-                    text = stateTitle,
+                    text = strings.missingPermissions,
+                    textAlign = TextAlign.Center,
                     color = DynamicColor.onPrimary
                 )
             }
@@ -44,15 +42,20 @@ fun FolderStateComposable(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = DynamicColor.primary)
-                    .padding(top = Constants.Spacing.large),
+                    .padding(
+                        top = Constants.Spacing.large,
+                        bottom = Constants.Spacing.medium,
+                        start = Constants.Spacing.medium,
+                        end = Constants.Spacing.medium
+                    ),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
                     SoulSearchingLogo()
                 }
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     Text(
+                        text = strings.missingPermissions,
                         textAlign = TextAlign.Center,
-                        text = stateTitle,
                         color = DynamicColor.onPrimary
                     )
                 }

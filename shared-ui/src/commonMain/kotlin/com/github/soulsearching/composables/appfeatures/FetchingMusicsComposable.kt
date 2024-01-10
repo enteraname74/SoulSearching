@@ -1,6 +1,5 @@
-package com.github.soulsearching.composables
+package com.github.soulsearching.composables.appfeatures
 
-import android.content.res.Configuration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,19 +18,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.SoulSearchingContext
+import com.github.soulsearching.composables.ProgressIndicatorComposable
+import com.github.soulsearching.composables.SoulSearchingLogo
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FetchingMusicsComposable(
     finishAddingMusicsAction: () -> Unit,
@@ -49,11 +47,8 @@ fun FetchingMusicsComposable(
         label = "PROGRESS_BAR_FETCHING_MUSICS_COMPOSABLE"
     )
 
-    val configuration = LocalConfiguration.current
-    val pagerState = rememberPagerState()
-
-    when (configuration.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
+    when (SoulSearchingContext.orientation) {
+        ScreenOrientation.HORIZONTAL -> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -68,12 +63,11 @@ fun FetchingMusicsComposable(
                     SoulSearchingLogo()
                     ProgressIndicatorComposable(
                         progress = animatedProgress,
-                        progressMessage = stringResource(id = R.string.searching_songs_from_your_device)
+                        progressMessage = strings.searchingSongsFromYourDevice
                     )
                 }
                 FetchingMusicTabLayoutComposable(
-                    modifier = Modifier.weight(1F),
-                    pagerState = pagerState
+                    modifier = Modifier.weight(1F)
                 )
             }
         }
@@ -88,11 +82,9 @@ fun FetchingMusicsComposable(
                 SoulSearchingLogo()
                 ProgressIndicatorComposable(
                     progress = animatedProgress,
-                    progressMessage = stringResource(id = R.string.searching_songs_from_your_device)
+                    progressMessage = strings.searchingSongsFromYourDevice
                 )
-                FetchingMusicTabLayoutComposable(
-                    pagerState = pagerState
-                )
+                FetchingMusicTabLayoutComposable()
             }
         }
     }

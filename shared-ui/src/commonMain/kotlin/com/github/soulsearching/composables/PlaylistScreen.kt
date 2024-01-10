@@ -1,8 +1,6 @@
 package com.github.soulsearching.composables
 
 
-import android.content.res.Configuration
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.animateTo
@@ -25,10 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
@@ -38,10 +34,12 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.PlaylistType
+import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
@@ -67,7 +65,6 @@ fun PlaylistScreen(
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
 ) {
-    val orientation = LocalConfiguration.current.orientation
     val coroutineScope = rememberCoroutineScope()
 
     var hasPlaylistPaletteBeenFetched by remember {
@@ -86,7 +83,7 @@ fun PlaylistScreen(
         hasPlaylistPaletteBeenFetched = true
     }
 
-    BackHandler(playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED) {
+    SoulSearchingBackHandler(playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED) {
         navigateBack()
     }
 
@@ -127,8 +124,8 @@ fun PlaylistScreen(
                 }
         }
 
-        when (orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
+        when (SoulSearchingContext.orientation) {
+            ScreenOrientation.HORIZONTAL -> {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -290,7 +287,7 @@ fun PlaylistScreen(
         SearchView(
             draggableState = searchDraggableState,
             playerDraggableState = playerDraggableState,
-            placeholder = stringResource(id = R.string.search_for_musics),
+            placeholder = strings.searchForMusics,
         ) { searchText, focusManager ->
             SearchMusics(
                 playerDraggableState = playerDraggableState,

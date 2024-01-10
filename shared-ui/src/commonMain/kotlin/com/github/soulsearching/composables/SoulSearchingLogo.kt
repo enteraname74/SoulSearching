@@ -22,7 +22,7 @@ fun SoulSearchingLogo() {
     ) {
         Image(
             modifier = Modifier.size(Constants.ImageSize.veryLarge),
-            painter = SoulSearchingContext.defaultLogoPainter,
+            painter = SoulSearchingContext.painterResource("ic_saxophone_svg"),
             contentDescription = strings.appLogo,
             colorFilter = ColorFilter.tint(color = DynamicColor.onPrimary)
         )

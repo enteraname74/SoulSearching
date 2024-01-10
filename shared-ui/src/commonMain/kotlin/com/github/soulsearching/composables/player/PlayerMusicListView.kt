@@ -1,7 +1,5 @@
 package com.github.soulsearching.composables.player
 
-import android.annotation.SuppressLint
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,13 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
@@ -50,6 +47,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.strings
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
@@ -59,7 +57,6 @@ import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@SuppressLint("UnnecessaryComposedModifier", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerMusicListView(
@@ -76,7 +73,7 @@ fun PlayerMusicListView(
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
 
-    BackHandler(musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+    SoulSearchingBackHandler(musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
         }
@@ -194,7 +191,7 @@ fun PlayerMusicListView(
             ) {
                 Spacer(modifier = Modifier.size(Constants.ImageSize.medium))
                 Text(
-                    text = stringResource(id = R.string.played_list),
+                    text = strings.playedList,
                     color = textColor,
                     fontSize = 15.sp
                 )

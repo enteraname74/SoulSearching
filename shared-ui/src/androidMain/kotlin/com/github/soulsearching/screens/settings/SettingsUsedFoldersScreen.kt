@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.setting.FolderStateComposable
-import com.github.soulsearching.composables.setting.LoadingComposable
+import com.github.soulsearching.composables.settings.FolderStateComposable
+import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.theme.DynamicColor

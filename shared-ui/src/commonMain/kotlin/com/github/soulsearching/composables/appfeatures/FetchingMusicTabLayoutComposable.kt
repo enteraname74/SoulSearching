@@ -1,109 +1,115 @@
-package com.github.soulsearching.composables
+package com.github.soulsearching.composables.appfeatures
 
-import android.annotation.SuppressLint
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
+import com.github.soulsearching.SoulSearchingContext
+import com.github.soulsearching.composables.AppFeatureDotComposable
 import com.github.soulsearching.model.TabRowItem
-import com.github.soulsearching.states.*
-import com.google.accompanist.pager.*
+import com.github.soulsearching.strings
+import com.github.soulsearching.types.ScreenOrientation
 import kotlinx.coroutines.launch
 
 
-@SuppressLint("UnnecessaryComposedModifier")
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FetchingMusicTabLayoutComposable(
-    modifier: Modifier = Modifier,
-    pagerState: PagerState
-) {
-
+fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     val tabRowItems = listOf(
         TabRowItem(
-            title = stringResource(id = R.string.complete_application_title),
+            title = strings.completeApplicationTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.complete_application_title),
-                    description = stringResource(id = R.string.complete_application_text),
-                    imageId = R.drawable.system_dark_theme_main
+                    title = strings.completeApplicationTitle,
+                    description = strings.completeApplicationText,
+                    imagePath = "system_dark_theme_main"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.quick_access_title),
+            title = strings.quickAccessTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.quick_access_title),
-                    description = stringResource(id = R.string.quick_access_text),
-                    imageId = R.drawable.perso_first_example
+                    title = strings.quickAccessTitle,
+                    description = strings.quickAccessText,
+                    imagePath = "perso_first_example"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.modify_elements_title),
+            title = strings.modifyElementsTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.modify_elements_title),
-                    description = stringResource(id = R.string.modify_elements_text),
-                    imageId = R.drawable.modify_album
+                    title = strings.modifyElementsTitle,
+                    description = strings.modifyElementsText,
+                    imagePath = "modify_album"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.dynamic_theme_feature_title),
+            title = strings.dynamicThemeFeatureTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.dynamic_theme_feature_title),
-                    description = stringResource(id = R.string.dynamic_theme_feature_text),
-                    imageId = R.drawable.dynamic_main
+                    title = strings.dynamicThemeFeatureTitle,
+                    description = strings.dynamicThemeFeatureText,
+                    imagePath = "dynamic_main"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.manage_folders_title),
+            title = strings.manageFoldersTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.manage_folders_title),
-                    description = stringResource(id = R.string.manage_folders_text),
-                    imageId = R.drawable.folders_settings
+                    title = strings.manageFoldersTitle,
+                    description = strings.manageFoldersText,
+                    imagePath = "folders_settings"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.add_new_musics_title),
+            title = strings.addNewMusicsTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.add_new_musics_title),
-                    description = stringResource(id = R.string.add_new_musics_text),
-                    imageId = R.drawable.add_new_songs_settings
+                    title = strings.addNewMusicsTitle,
+                    description = strings.addNewMusicsText,
+                    imagePath = "add_new_songs_settings"
                 )
             }
         ),
         TabRowItem(
-            title = stringResource(id = R.string.personalize_main_page_title),
+            title = strings.personalizeMainPageTitle,
             screen = {
                 AppFeatureComposable(
-                    title = stringResource(id = R.string.personalize_main_page_title),
-                    description = stringResource(id = R.string.personalize_main_page_text),
-                    imageId = R.drawable.perso_third_example
+                    title = strings.personalizeMainPageTitle,
+                    description = strings.personalizeMainPageText,
+                    imagePath = "perso_third_example"
                 )
             }
         ),
     )
 
+    val pagerState = rememberPagerState(
+        pageCount = { tabRowItems.size }
+    )
+
     val coroutineScope = rememberCoroutineScope()
 
-    when (LocalConfiguration.current.orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
+    when (SoulSearchingContext.orientation) {
+        ScreenOrientation.HORIZONTAL -> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -115,9 +121,8 @@ fun FetchingMusicTabLayoutComposable(
             ) {
                 VerticalPager(
                     modifier = Modifier.weight(1F),
-                    count = tabRowItems.size,
                     state = pagerState,
-                    itemSpacing = Constants.Spacing.veryLarge,
+                    pageSpacing = Constants.Spacing.veryLarge,
                     contentPadding = PaddingValues(Constants.Spacing.veryLarge)
                 ) {
                     tabRowItems[it].screen()
@@ -153,9 +158,8 @@ fun FetchingMusicTabLayoutComposable(
             ) {
                 HorizontalPager(
                     modifier = Modifier.weight(1F),
-                    count = tabRowItems.size,
                     state = pagerState,
-                    itemSpacing = Constants.Spacing.veryLarge,
+                    pageSpacing = Constants.Spacing.veryLarge,
                     contentPadding = PaddingValues(Constants.Spacing.veryLarge)
                 ) {
                     tabRowItems[it].screen()

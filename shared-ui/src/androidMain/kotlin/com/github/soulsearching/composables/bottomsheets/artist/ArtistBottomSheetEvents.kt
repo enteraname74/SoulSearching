@@ -1,10 +1,10 @@
 package com.github.soulsearching.composables.bottomsheets.artist
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.states.ArtistState
@@ -23,7 +23,7 @@ actual fun ArtistBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    BackHandler(artistModalSheetState.isVisible) {
+    SoulSearchingBackHandler(artistModalSheetState.isVisible) {
         coroutineScope.launch { artistModalSheetState.hide() }
     }
 

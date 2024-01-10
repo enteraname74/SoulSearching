@@ -2,7 +2,6 @@ package com.github.soulsearching.screens
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,13 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
+import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
@@ -47,6 +46,7 @@ import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.SelectedAlbumState
 import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import java.util.UUID
 
@@ -56,8 +56,6 @@ fun ModifyAlbumScreen(
     selectedAlbumId: String,
     finishAction: () -> Unit
 ) {
-
-    val configuration = LocalConfiguration.current
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
@@ -106,8 +104,8 @@ fun ModifyAlbumScreen(
             )
         },
         content = { padding ->
-            when (configuration.orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> {
+            when (SoulSearchingContext.orientation) {
+                ScreenOrientation.HORIZONTAL -> {
                     Row(
                         modifier = Modifier
                             .fillMaxSize()

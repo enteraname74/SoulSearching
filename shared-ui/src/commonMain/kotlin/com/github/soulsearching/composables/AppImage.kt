@@ -42,7 +42,7 @@ fun AppImage(
     } else {
         Image(
             modifier = modifierBase,
-            painter = SoulSearchingContext.defaultLogoPainter,
+            painter = SoulSearchingContext.painterResource("ic_saxophone_svg"),
             contentDescription = strings.image,
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(tint)

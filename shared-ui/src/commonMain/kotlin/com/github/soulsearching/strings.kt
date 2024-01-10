@@ -26,6 +26,27 @@ interface Strings {
     val artists: String
     val musics: String
     val quickAccess: String
+    val missingPermissions: String
+    val playedList: String
+
+    val completeApplicationTitle: String
+    val completeApplicationText: String
+    val quickAccessTitle: String
+    val quickAccessText: String
+    val modifyElementsTitle: String
+    val modifyElementsText: String
+    val dynamicThemeFeatureTitle: String
+    val dynamicThemeFeatureText: String
+    val manageFoldersTitle: String
+    val manageFoldersText: String
+    val addNewMusicsTitle: String
+    val addNewMusicsText: String
+    val personalizeMainPageTitle: String
+    val personalizeMainPageText: String
+
+
+    val searchingSongsFromYourDevice: String
+    val searchForMusics: String
 
     val sortByDateAdded: String
     val sortByMostListened: String
@@ -86,6 +107,26 @@ object FrStrings : Strings {
     override val more = "Plus"
     override val settingsAccessButton = "Bouton d'accès aux paramètres de l'application"
     override val shuffleButton = "Bouton pour jouer une liste de musique en aléatoire"
+    override val missingPermissions = "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
+    override val playedList = "Liste jouée"
+
+    override val completeApplicationTitle = "Une application de musique complète"
+    override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."
+    override val quickAccessTitle = "Gardez ce que vous aimez proche de vous"
+    override val quickAccessText = "Avec les accès rapides, vous pouvez facilement accéder à votre album favori, ou à vos musiques préférées par exemple."
+    override val modifyElementsTitle = "Modifiez vos éléments musicaux"
+    override val modifyElementsText = "Vous pouvez modifier les informations d'un album, d'un artiste, d'une musique…"
+    override val dynamicThemeFeatureTitle = "Thème dynamique"
+    override val dynamicThemeFeatureText = "Soul Searching vous offre la possibilité d'avoir un thème dynamique dépendant de la musique en cours de lecture"
+    override val manageFoldersTitle = "Gérez vos dossiers"
+    override val manageFoldersText = "Définissez quels dossiers sont utilisés par l'application."
+    override val addNewMusicsTitle = "Ajoutez de nouvelles musiques"
+    override val addNewMusicsText = "Vous pouvez facilement ajouter de nouvelles musiques provenant de votre appareil."
+    override val personalizeMainPageTitle = "Définissez ce que vous voulez réellement"
+    override val personalizeMainPageText = "Vous ne voulez pas avoir les accès rapides ou vous voudriez avoir une barre vous aidant à accéder à des éléments du menu principal ? Vous pouvez réaliser vos envies dans les paramètres de l'application."
+
+    override val searchingSongsFromYourDevice = "Recherche de musiques sur votre appareil…"
+    override val searchForMusics = "Rechercher une musique"
 
     override val artists = "Artistes"
     override val musics = "Musiques"
@@ -153,6 +194,26 @@ object EnStrings : Strings {
     override val more = "More"
     override val settingsAccessButton = "Settings access button"
     override val shuffleButton = "Shuffle button"
+    override val missingPermissions = "You must accept all permissions required by the application for it to work properly."
+    override val playedList = "Played list"
+
+    override val completeApplicationTitle = "Complete music application"
+    override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."
+    override val quickAccessTitle = "Keep what you love the most near you."
+    override val quickAccessText = "With the quick access, you can easily access your favorite album, or your preferred songs for example."
+    override val modifyElementsTitle = "Modify your music related elements"
+    override val modifyElementsText = "You can modify information about an album, a song, an artist…"
+    override val dynamicThemeFeatureTitle = "Dynamic theme"
+    override val dynamicThemeFeatureText = "Soul Searching offers you the possibility of having a dynamic theme depending on the current played song."
+    override val manageFoldersTitle = "Manage used folders"
+    override val manageFoldersText = "Manage what folders are used to fetch songs."
+    override val addNewMusicsTitle = "Add new songs"
+    override val addNewMusicsText = "You can easily add new songs from your device."
+    override val personalizeMainPageTitle = "Define what you really want"
+    override val personalizeMainPageText = "You don't want the quick access, or you wish to have a bar that helps you to reach parts of the main page? You can realize your wishes in the settings of the application."
+
+    override val searchingSongsFromYourDevice = "Searching songs from your device…"
+    override val searchForMusics = "Search a song"
 
     override val artists = "Artists"
     override val musics = "Songs"

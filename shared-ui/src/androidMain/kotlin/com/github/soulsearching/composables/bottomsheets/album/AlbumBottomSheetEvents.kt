@@ -1,10 +1,10 @@
 package com.github.soulsearching.composables.bottomsheets.album
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.states.AlbumState
@@ -23,7 +23,7 @@ actual fun AlbumBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    BackHandler(albumModalSheetState.isVisible) {
+    SoulSearchingBackHandler(albumModalSheetState.isVisible) {
         coroutineScope.launch { albumModalSheetState.hide() }
     }
 

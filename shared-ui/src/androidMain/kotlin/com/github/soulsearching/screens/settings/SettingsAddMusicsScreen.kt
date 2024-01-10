@@ -1,6 +1,5 @@
 package com.github.soulsearching.screens.settings
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +28,8 @@ import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.composables.setting.LoadingComposable
+import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.AddMusicsStateType
@@ -55,7 +55,7 @@ fun SettingsAddMusicsScreen(
         mutableStateOf(false)
     }
 
-    BackHandler {
+    SoulSearchingBackHandler {
         finishAction()
     }
 

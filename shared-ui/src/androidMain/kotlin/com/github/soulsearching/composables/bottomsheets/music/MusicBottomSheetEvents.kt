@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
+import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.SoulSearchingDialog
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
@@ -50,11 +51,11 @@ actual fun MusicBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    BackHandler(addToPlaylistModalSheetState.isVisible) {
+    SoulSearchingBackHandler(addToPlaylistModalSheetState.isVisible) {
         coroutineScope.launch { addToPlaylistModalSheetState.hide() }
     }
 
-    BackHandler(musicModalSheetState.isVisible) {
+    SoulSearchingBackHandler(musicModalSheetState.isVisible) {
         coroutineScope.launch { musicModalSheetState.hide() }
     }
 
