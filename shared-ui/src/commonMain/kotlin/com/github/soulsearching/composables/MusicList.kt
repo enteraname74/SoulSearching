@@ -13,7 +13,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.PlayerUtils
@@ -36,10 +36,10 @@ fun MusicList(
     isMainPlaylist: Boolean = false,
     playerDraggableState: PlayerDraggableState,
     updateNbPlayedAction: (UUID) -> Unit,
-    primaryColor: Color = DynamicColor.primary,
-    secondaryColor: Color = DynamicColor.secondary,
-    onPrimaryColor: Color = DynamicColor.onPrimary,
-    onSecondaryColor: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     val coroutineScope = rememberCoroutineScope()
 

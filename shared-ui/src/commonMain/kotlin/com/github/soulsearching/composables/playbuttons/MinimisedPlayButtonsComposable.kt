@@ -21,7 +21,7 @@ import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,7 +45,7 @@ fun MinimisedPlayButtonsComposable(
                         playbackManager.playPrevious()
                     }
                 },
-            colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
+            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
         )
         if (PlayerUtils.playerViewModel.handler.isPlaying) {
             Image(
@@ -58,7 +58,7 @@ fun MinimisedPlayButtonsComposable(
                             PlayerUtils.playerViewModel.handler.togglePlayPause()
                         }
                     },
-                colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
+                colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
             )
         } else {
             Image(
@@ -71,7 +71,7 @@ fun MinimisedPlayButtonsComposable(
                             PlayerUtils.playerViewModel.handler.togglePlayPause()
                         }
                     },
-                colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
+                colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
             )
         }
         Image(
@@ -84,7 +84,7 @@ fun MinimisedPlayButtonsComposable(
                         playbackManager.playNext()
                     }
                 },
-            colorFilter = ColorFilter.tint(color = DynamicColor.onSecondary)
+            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
         )
     }
 }

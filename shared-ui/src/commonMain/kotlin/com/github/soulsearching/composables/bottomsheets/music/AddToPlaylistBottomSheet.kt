@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,6 +18,6 @@ expect fun AddToPlaylistBottomSheet(
     onPlaylistsEvent: (PlaylistEvent) -> Unit,
     addToPlaylistModalSheetState: SheetState,
     playlistState: PlaylistState,
-    primaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 )

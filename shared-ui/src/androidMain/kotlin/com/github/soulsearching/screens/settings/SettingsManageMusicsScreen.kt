@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.settings.SettingsElement
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsManageMusicsScreen(
@@ -24,7 +24,7 @@ fun SettingsManageMusicsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
             title = stringResource(id = R.string.manage_musics_title),

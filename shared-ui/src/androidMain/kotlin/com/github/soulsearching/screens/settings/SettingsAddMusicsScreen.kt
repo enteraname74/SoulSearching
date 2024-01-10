@@ -31,7 +31,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.AddMusicsStateType
 import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +62,7 @@ fun SettingsAddMusicsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
             title = stringResource(id = R.string.add_musics_title),
@@ -148,7 +148,7 @@ fun SettingsAddMusicsScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.no_new_musics),
-                            color = DynamicColor.onPrimary
+                            color = SoulSearchingColorTheme.colorScheme.onPrimary
                         )
                     }
                 } else {

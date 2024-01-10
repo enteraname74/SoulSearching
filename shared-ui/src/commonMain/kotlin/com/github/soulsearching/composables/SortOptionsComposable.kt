@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 
@@ -37,7 +37,7 @@ fun SortOptionsComposable(
 ) {
     Row(
         modifier = Modifier.background(
-            color = DynamicColor.secondary,
+            color = SoulSearchingColorTheme.colorScheme.secondary,
             shape = RoundedCornerShape(10.dp)
         ),
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
@@ -56,7 +56,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Schedule,
                 contentDescription = strings.sortByDateAdded,
-                tint = if (sortType == SortType.ADDED_DATE) DynamicColor.onPrimary else DynamicColor.subText
+                tint = if (sortType == SortType.ADDED_DATE) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
             )
             Icon(
                 modifier = Modifier
@@ -67,7 +67,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Pin,
                 contentDescription = strings.sortByMostListened,
-                tint = if (sortType == SortType.NB_PLAYED) DynamicColor.onPrimary else DynamicColor.subText
+                tint = if (sortType == SortType.NB_PLAYED) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
             )
             Icon(
                 modifier = Modifier
@@ -78,7 +78,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.SortByAlpha,
                 contentDescription = strings.sortByName,
-                tint = if (sortType == SortType.NAME) DynamicColor.onPrimary else DynamicColor.subText
+                tint = if (sortType == SortType.NAME) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
             )
         }
         Icon(
@@ -90,7 +90,7 @@ fun SortOptionsComposable(
                 ),
             imageVector = if (sortDirection == SortDirection.ASC) Icons.Rounded.North else Icons.Rounded.South,
             contentDescription = strings.sortByAscOrDesc,
-            tint = DynamicColor.onPrimary
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary
         )
     }
 }

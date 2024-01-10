@@ -6,6 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.theme.SoulSearchingPalette
 import com.github.soulsearching.theme.Typography
 import com.github.soulsearching.theme.primaryColorDark
 import com.github.soulsearching.theme.primaryColorLight

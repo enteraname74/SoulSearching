@@ -19,7 +19,7 @@ import com.github.soulsearching.composables.PlaylistSelectableComposable
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(
@@ -27,8 +27,8 @@ fun AddToPlaylistMenuBottomSheet(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     cancelAction: () -> Unit,
     validationAction: () -> Unit,
-    primaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     Scaffold {
         Column(

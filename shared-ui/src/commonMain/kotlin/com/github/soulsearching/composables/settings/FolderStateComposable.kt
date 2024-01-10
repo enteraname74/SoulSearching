@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ScreenOrientation
 
 @Composable
@@ -26,14 +26,14 @@ fun FolderStateComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary),
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 SoulSearchingLogo()
                 Text(
                     text = stateTitle,
-                    color = DynamicColor.onPrimary
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -41,7 +41,7 @@ fun FolderStateComposable(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(top = Constants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
@@ -51,7 +51,7 @@ fun FolderStateComposable(
                     Text(
                         textAlign = TextAlign.Center,
                         text = stateTitle,
-                        color = DynamicColor.onPrimary
+                        color = SoulSearchingColorTheme.colorScheme.onPrimary
                     )
                 }
             }

@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ScreenOrientation
 
 @Composable
@@ -24,7 +24,7 @@ fun MissingPermissionsComposable() {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(Constants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
@@ -33,7 +33,7 @@ fun MissingPermissionsComposable() {
                 Text(
                     text = strings.missingPermissions,
                     textAlign = TextAlign.Center,
-                    color = DynamicColor.onPrimary
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -41,7 +41,7 @@ fun MissingPermissionsComposable() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(
                         top = Constants.Spacing.large,
                         bottom = Constants.Spacing.medium,
@@ -56,7 +56,7 @@ fun MissingPermissionsComposable() {
                     Text(
                         text = strings.missingPermissions,
                         textAlign = TextAlign.Center,
-                        color = DynamicColor.onPrimary
+                        color = SoulSearchingColorTheme.colorScheme.onPrimary
                     )
                 }
             }

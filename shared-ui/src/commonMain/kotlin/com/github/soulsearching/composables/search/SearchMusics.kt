@@ -15,7 +15,7 @@ import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
@@ -33,8 +33,8 @@ fun SearchMusics(
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    primaryColor: Color = DynamicColor.primary,
-    textColor: Color = DynamicColor.onPrimary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     val coroutineScope = rememberCoroutineScope()
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppHeaderBar(
@@ -31,8 +31,8 @@ fun AppHeaderBar(
     leftIcon : ImageVector = Icons.AutoMirrored.Rounded.ArrowBack,
     rightAction : () -> Unit = {},
     rightIcon : ImageVector? = null,
-    backgroundColor: Color = DynamicColor.primary,
-    contentColor: Color = DynamicColor.onPrimary
+    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
 
     Row(

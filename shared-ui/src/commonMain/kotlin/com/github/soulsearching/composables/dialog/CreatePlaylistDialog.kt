@@ -20,7 +20,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -48,7 +48,7 @@ fun CreatePlaylistDialog(
                 }) {
                 Text(
                     text = strings.create,
-                    color = DynamicColor.onPrimary
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
         },
@@ -62,7 +62,7 @@ fun CreatePlaylistDialog(
                 }) {
                 Text(
                     text = strings.cancel,
-                    color = DynamicColor.onPrimary
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
         },
@@ -76,7 +76,7 @@ fun CreatePlaylistDialog(
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 24.sp,
-                color = DynamicColor.onPrimary
+                color = SoulSearchingColorTheme.colorScheme.onPrimary
             )
         },
         text = {
@@ -87,7 +87,7 @@ fun CreatePlaylistDialog(
                 focusManager = focusManager
             )
         },
-        backgroundColor = DynamicColor.primary,
-        contentColor = DynamicColor.onPrimary
+        backgroundColor = SoulSearchingColorTheme.colorScheme.primary,
+        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary
     )
 }

@@ -30,7 +30,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ElementEnum
 import com.github.soulsearching.utils.SettingsUtils
 import kotlinx.coroutines.launch
@@ -81,7 +81,7 @@ fun MainPageVerticalShortcut(
                                 1F
                             }
                         ),
-                    colorFilter = ColorFilter.tint(DynamicColor.onPrimary),
+                    colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
                     imageVector = when (it) {
                         ElementEnum.QUICK_ACCESS -> Icons.Rounded.DoubleArrow
                         ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Rounded.QueueMusic
@@ -103,9 +103,9 @@ fun MainPageVerticalShortcut(
                         ElementEnum.MUSICS -> strings.musics
                     },
                     color = if (isCurrentPosition) {
-                        DynamicColor.onPrimary
+                        SoulSearchingColorTheme.colorScheme.onPrimary
                     } else {
-                        DynamicColor.subText
+                        SoulSearchingColorTheme.colorScheme.subText
                     },
                     fontWeight = if (isCurrentPosition) {
                         FontWeight.ExtraBold

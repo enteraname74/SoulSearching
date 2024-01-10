@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun MainMenuHeaderComposable(
@@ -29,7 +29,7 @@ fun MainMenuHeaderComposable(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
             .padding(
                 start = Constants.Spacing.medium,
                 end = Constants.Spacing.medium,
@@ -47,11 +47,11 @@ fun MainMenuHeaderComposable(
                 },
             imageVector = Icons.Rounded.Settings,
             contentDescription = strings.settingsAccessButton,
-            tint = DynamicColor.onPrimary
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary
         )
         Text(
             text = strings.appName,
-            color = DynamicColor.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
@@ -63,7 +63,7 @@ fun MainMenuHeaderComposable(
                 },
             imageVector = Icons.Rounded.Search,
             contentDescription = strings.shuffleButton,
-            tint = DynamicColor.onPrimary
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary
         )
     }
 }

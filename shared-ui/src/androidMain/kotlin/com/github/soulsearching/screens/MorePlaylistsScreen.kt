@@ -27,7 +27,7 @@ import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
@@ -55,7 +55,7 @@ fun MorePlaylistsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = DynamicColor.primary)
+            .background(color = SoulSearchingColorTheme.colorScheme.primary)
             .padding(bottom = 80.dp)
     ) {
         AppHeaderBar(

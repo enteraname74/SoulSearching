@@ -6,6 +6,7 @@ import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
@@ -193,7 +194,8 @@ val androidModule = module {
             albumArtistRepository = get(),
             imageCoverRepository = get(),
             settings = get(),
-            playbackManager = get()
+            playbackManager = get(),
+            colorThemeManager = get()
         )
     }
     viewModel {
@@ -272,7 +274,8 @@ val androidModule = module {
     }
     single<SettingsViewModel> {
         SettingsViewModelAndroidImpl(
-            settings = get()
+            settings = get(),
+            colorThemeManager = get()
         )
     }
     single<MusicFetcherAndroidImpl> {
@@ -287,6 +290,11 @@ val androidModule = module {
             albumArtistRepository = get(),
             imageCoverRepository = get(),
             folderRepository = get()
+        )
+    }
+    single<ColorThemeManager> {
+        ColorThemeManager(
+            settings = get()
         )
     }
 }

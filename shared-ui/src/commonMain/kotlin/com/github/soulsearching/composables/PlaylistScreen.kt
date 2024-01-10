@@ -35,7 +35,8 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.PlaylistType
@@ -44,6 +45,7 @@ import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -64,6 +66,7 @@ fun PlaylistScreen(
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
+    colorThemeManager: ColorThemeManager = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -79,7 +82,7 @@ fun PlaylistScreen(
     }
 
     if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOff()) {
-        SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists = true
+        colorThemeManager.forceBasicThemeForPlaylists = true
         hasPlaylistPaletteBeenFetched = true
     }
 
@@ -113,7 +116,7 @@ fun PlaylistScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         val searchDraggableState = rememberSearchDraggableState(constraintsScope = this)
 
@@ -275,7 +278,7 @@ fun PlaylistScreen(
                                     }
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
-                                textColor = DynamicColor.onPrimary,
+                                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                             )
                         }
                         item { PlayerSpacer() }

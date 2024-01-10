@@ -48,6 +48,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
@@ -55,6 +56,7 @@ import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,6 +71,7 @@ fun PlayerMusicListView(
     musicListDraggableState: PlayerMusicListDraggableState,
     playerDraggableState: PlayerDraggableState,
     playerMusicListViewModel: PlayerMusicListViewModel,
+    colorThemeManager: ColorThemeManager = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -94,7 +97,7 @@ fun PlayerMusicListView(
         targetValue =
         if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
             ColorPaletteUtils.getDynamicPrimaryColor(
-                baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                baseColor = colorThemeManager.currentColorPalette?.rgb
             )
         } else {
             MaterialTheme.colorScheme.primary
@@ -105,10 +108,10 @@ fun PlayerMusicListView(
 
     val secondaryColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
+        if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
         ) {
             ColorPaletteUtils.getDynamicSecondaryColor(
-                baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                baseColor = colorThemeManager.currentColorPalette?.rgb
             )
         } else {
             MaterialTheme.colorScheme.secondary

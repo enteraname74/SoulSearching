@@ -23,7 +23,7 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import java.util.UUID
@@ -72,7 +72,7 @@ fun MainMenuLazyListRow(
                         TextButton(onClick = navigateToMore) {
                             Text(
                                 text = strings.more,
-                                color = DynamicColor.onPrimary,
+                                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )

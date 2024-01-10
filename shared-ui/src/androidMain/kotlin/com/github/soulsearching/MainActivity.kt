@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -34,8 +33,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.soulsearching.classes.utils.AndroidUtils
-import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
 import com.github.soulsearching.composables.MissingPermissionsComposable
+import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
 import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
@@ -66,6 +65,8 @@ import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
 import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
 import com.github.soulsearching.screens.settings.SettingsScreen
 import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
+import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.ColorPaletteUtils
@@ -128,10 +129,10 @@ class MainActivity : AppCompatActivity() {
 
     private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
     private val playbackManager: PlaybackManagerAndroidImpl by inject<PlaybackManagerAndroidImpl>()
+    private val colorThemeManager: ColorThemeManager by inject<ColorThemeManager>()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d("MAIN ACTIVITY", "SERVICE DIED, WILL RESTART")
             AndroidUtils.launchService(
                 context = context,
                 isFromSavedList = false
@@ -183,6 +184,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
+
             // Main page view models
             allMusicsViewModel = koinViewModel()
             allPlaylistsViewModel = koinViewModel()
@@ -230,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
                 val coroutineScope = rememberCoroutineScope()
 
-                PlayerUtils.playerViewModel.handler.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                colorThemeManager.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
                     image = PlayerUtils.playerViewModel.handler.currentMusicCover
                 )
 
@@ -420,11 +423,8 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
-                                        null
-                                    )
-                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
-                                        false
+                                    colorThemeManager.setNewPlaylistCover(null)
+                                    colorThemeManager.forceBasicThemeForPlaylists = false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
@@ -456,11 +456,8 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
-                                        null
-                                    )
-                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
-                                        false
+                                    colorThemeManager.setNewPlaylistCover(null)
+                                    colorThemeManager.forceBasicThemeForPlaylists = false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
@@ -492,11 +489,8 @@ class MainActivity : AppCompatActivity() {
                                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                                 navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
                                 navigateBack = {
-                                    SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(
-                                        null
-                                    )
-                                    SettingsUtils.settingsViewModel.handler.forceBasicThemeForPlaylists =
-                                        false
+                                    colorThemeManager.setNewPlaylistCover(null)
+                                    colorThemeManager.forceBasicThemeForPlaylists = false
                                     navController.popBackStack()
                                 },
                                 retrieveCoverMethod = {
@@ -665,7 +659,8 @@ class MainActivity : AppCompatActivity() {
                             "colorTheme"
                         ) {
                             SettingsColorThemeScreen(
-                                finishAction = { navController.popBackStack() }
+                                finishAction = { navController.popBackStack() },
+                                updateColorThemeMethod = SettingsUtils.settingsViewModel.handler::updateColorTheme
                             )
                         }
                         composable(

@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables.bottomsheets.music
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel

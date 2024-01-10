@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.PlaylistType
 
 @Composable
@@ -22,9 +22,9 @@ fun PlaylistPanel(
     searchAction: () -> Unit,
     isLandscapeMode: Boolean,
     playlistType: PlaylistType,
-    primaryColor: Color = DynamicColor.primary,
-    secondaryColor: Color = DynamicColor.secondary,
-    tint: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     if (isLandscapeMode) {
         Column(modifier = Modifier

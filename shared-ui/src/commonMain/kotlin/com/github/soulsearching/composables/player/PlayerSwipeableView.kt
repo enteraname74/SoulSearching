@@ -65,7 +65,8 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.ScreenOrientation
@@ -77,6 +78,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.compose.koinInject
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
@@ -101,7 +103,8 @@ fun PlayerDraggableView(
     playlistState: PlaylistState,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    playbackManager: PlaybackManager
+    playbackManager: PlaybackManager,
+    colorThemeManager: ColorThemeManager = koinInject()
 ) {
     val coroutineScope = rememberCoroutineScope()
     var isMusicInFavorite by rememberSaveable {
@@ -118,11 +121,11 @@ fun PlayerDraggableView(
 
     val backgroundColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.secondary
+            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                        baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -134,7 +137,7 @@ fun PlayerDraggableView(
     )
     val textColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.onPrimary
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.White
@@ -149,7 +152,7 @@ fun PlayerDraggableView(
 
     val subTextColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.subText
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.LightGray
@@ -165,11 +168,11 @@ fun PlayerDraggableView(
 
     val contentColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> DynamicColor.secondary
+            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                        baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.secondary
@@ -182,11 +185,11 @@ fun PlayerDraggableView(
 
     val statusBarColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> DynamicColor.primary
+            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                        baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -199,12 +202,12 @@ fun PlayerDraggableView(
 
     val navigationBarColor: Color by animateColorAsState(
         targetValue = when(draggableState.state.currentValue) {
-            BottomSheetStates.COLLAPSED -> DynamicColor.primary
-            BottomSheetStates.MINIMISED -> DynamicColor.secondary
+            BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
+            BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
                 if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = PlayerUtils.playerViewModel.handler.currentColorPalette?.rgb
+                        baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
                     MaterialTheme.colorScheme.secondary
@@ -215,8 +218,8 @@ fun PlayerDraggableView(
         label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
-    val isUsingDarkIcons = if (PlayerUtils.playerViewModel.handler.currentColorPalette == null
-        || !SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
+    val isUsingDarkIcons = if (colorThemeManager.currentColorPalette == null
+        || !colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
     ) {
         !isSystemInDarkTheme()
     } else {

@@ -46,7 +46,7 @@ import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.states.QuickAccessState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
@@ -127,7 +127,7 @@ fun MainPageScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = DynamicColor.primary)
+            .background(color = SoulSearchingColorTheme.colorScheme.primary)
     ) {
         val listState = rememberLazyListState()
 
@@ -297,7 +297,7 @@ fun MainPageScreen(
                                             .size(Constants.ImageSize.medium),
                                         imageVector = Icons.Rounded.Add,
                                         contentDescription = stringResource(id = R.string.create_playlist_button),
-                                        tint = DynamicColor.onPrimary
+                                        tint = SoulSearchingColorTheme.colorScheme.onPrimary
                                     )
                                 },
                                 sortByName = {
@@ -440,7 +440,6 @@ fun MainPageScreen(
                     stickyHeader {
                         SubMenuComposable(
                             title = stringResource(id = R.string.musics),
-                            backgroundColor = DynamicColor.primary,
                             sortByDateAction = {
                                 allMusicsViewModel.handler.onMusicEvent(
                                     MusicEvent.SetSortType(SortType.ADDED_DATE)
@@ -491,7 +490,7 @@ fun MainPageScreen(
                                         },
                                     imageVector = Icons.Rounded.Shuffle,
                                     contentDescription = stringResource(id = R.string.shuffle_button_desc),
-                                    tint = DynamicColor.onPrimary
+                                    tint = SoulSearchingColorTheme.colorScheme.onPrimary
                                 )
                             },
                             sortType = musicState.sortType,

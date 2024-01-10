@@ -8,7 +8,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppTextField(
@@ -24,18 +24,18 @@ fun AppTextField(
         singleLine = true,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
-            focusedTextColor = DynamicColor.onPrimary,
-            cursorColor = DynamicColor.onPrimary,
-            focusedIndicatorColor = DynamicColor.onPrimary,
-            focusedLabelColor = DynamicColor.onPrimary,
-            unfocusedTextColor = DynamicColor.onPrimary,
+            focusedTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            cursorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            focusedIndicatorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            focusedLabelColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            unfocusedTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
             focusedContainerColor = Color.Transparent,
             selectionColors = TextSelectionColors(
-                handleColor = DynamicColor.onPrimary,
-                backgroundColor = DynamicColor.secondary
+                handleColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                backgroundColor = SoulSearchingColorTheme.colorScheme.secondary
             ),
-            unfocusedIndicatorColor = DynamicColor.onPrimary,
-            unfocusedLabelColor = DynamicColor.onPrimary
+            unfocusedIndicatorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            unfocusedLabelColor = SoulSearchingColorTheme.colorScheme.onPrimary
         ),
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() }

@@ -26,7 +26,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -37,9 +37,9 @@ fun SearchView(
     draggableState: SearchDraggableState,
     playerDraggableState: PlayerDraggableState,
     placeholder: String,
-    primaryColor: Color = DynamicColor.primary,
-    secondaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary,
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     searchResult: @Composable (String, FocusManager) -> Unit
 
 ) {

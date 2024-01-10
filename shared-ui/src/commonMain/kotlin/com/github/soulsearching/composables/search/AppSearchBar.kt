@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppSearchBar(
@@ -25,8 +25,8 @@ fun AppSearchBar(
     placeholder: String,
     updateTextMethod: (String) -> Unit,
     focusManager: FocusManager,
-    primaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     TextField(
         modifier = Modifier

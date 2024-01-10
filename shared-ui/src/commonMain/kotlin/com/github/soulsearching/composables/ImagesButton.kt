@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.types.PlaylistType
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Suppress("UNUSED_PARAMETER")
 @Composable
@@ -25,8 +25,8 @@ fun ImagesButton(
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     playlistType: PlaylistType,
-    primaryColor: Color = DynamicColor.secondary,
-    tint: Color = DynamicColor.onSecondary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     Image(
         modifier = Modifier

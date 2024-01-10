@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.utils.SettingsUtils
 
 @Composable
@@ -24,7 +24,7 @@ fun ArtistBottomSheetMenu(
 ) {
     Column(
         modifier = Modifier
-            .background(color = DynamicColor.secondary)
+            .background(color = SoulSearchingColorTheme.colorScheme.secondary)
             .padding(Constants.Spacing.large)
     ) {
         if (SettingsUtils.settingsViewModel.handler.isQuickAccessShown) {

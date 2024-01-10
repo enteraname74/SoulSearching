@@ -24,7 +24,7 @@ import com.github.soulsearching.composables.settings.FolderStateComposable
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.FolderStateType
 import com.github.soulsearching.viewmodel.AllFoldersViewModel
 
@@ -47,7 +47,7 @@ fun SettingsUsedFoldersScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
             title = stringResource(id = R.string.used_folders_title),

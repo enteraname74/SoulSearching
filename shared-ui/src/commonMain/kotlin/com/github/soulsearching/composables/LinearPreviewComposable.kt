@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -57,14 +57,14 @@ fun LinearPreviewComposable(
             ) {
                 Text(
                     text = title,
-                    color = DynamicColor.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = text,
-                    color = DynamicColor.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -75,7 +75,7 @@ fun LinearPreviewComposable(
                 modifier = Modifier.clickable { onLongClick() },
                 imageVector = Icons.Rounded.MoreVert,
                 contentDescription = strings.moreButton,
-                tint = DynamicColor.onPrimary
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary
             )
         }
     }

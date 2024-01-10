@@ -1,7 +1,5 @@
 package com.github.soulsearching.composables.dialog
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
@@ -16,8 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -28,8 +25,8 @@ fun SoulSearchingDialog(
     text: String = "",
     confirmText: String,
     dismissText: String,
-    backgroundColor: Color = DynamicColor.primary,
-    contentColor: Color = DynamicColor.onPrimary
+    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     AlertDialog(
         shape = RoundedCornerShape(Constants.Spacing.veryLarge),
@@ -71,7 +68,7 @@ fun SoulSearchingDialog(
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 24.sp,
-                color = DynamicColor.onPrimary
+                color = SoulSearchingColorTheme.colorScheme.onPrimary
             )
         },
         text = {
@@ -79,7 +76,7 @@ fun SoulSearchingDialog(
                 Text(
                     text = text,
                     textAlign = TextAlign.Center,
-                    color = DynamicColor.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

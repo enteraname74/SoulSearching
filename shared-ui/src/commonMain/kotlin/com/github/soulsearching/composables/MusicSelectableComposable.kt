@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun MusicSelectableComposable(
@@ -29,7 +29,7 @@ fun MusicSelectableComposable(
     onClick: () -> Unit,
     musicCover: ImageBitmap?,
     isSelected: Boolean,
-    textColor: Color = DynamicColor.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     Row(
         modifier = Modifier

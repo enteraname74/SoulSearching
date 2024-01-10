@@ -15,6 +15,7 @@ import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.classes.*
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.viewmodel.handler.PlayerViewModelHandler
 import kotlinx.coroutines.*
 import java.util.*
@@ -34,7 +35,8 @@ class PlayerViewModelAndroidImpl(
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings,
-    playbackManager: PlaybackManagerAndroidImpl
+    playbackManager: PlaybackManagerAndroidImpl,
+    colorThemeManager: ColorThemeManager
 ): ViewModel(), PlayerViewModel {
     override val handler: PlayerViewModelHandler = PlayerViewModelHandler(
         musicRepository = musicRepository,
@@ -47,6 +49,7 @@ class PlayerViewModelAndroidImpl(
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         settings = settings,
-        playbackManager = playbackManager
+        playbackManager = playbackManager,
+        colorThemeManager = colorThemeManager
     )
 }

@@ -13,11 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SubMenuComposable(
@@ -31,14 +30,13 @@ fun SubMenuComposable(
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortType: Int,
     sortDirection: Int,
-    isUsingSort: Boolean = true,
-    backgroundColor: Color = Color.Transparent
+    isUsingSort: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(54.dp)
-            .background(color = backgroundColor)
+            .background(color = SoulSearchingColorTheme.colorScheme.primary)
             .clickable { }
             .padding(
                 top = Constants.Spacing.medium,
@@ -53,7 +51,7 @@ fun SubMenuComposable(
     ) {
         Text(
             text = title,
-            color = DynamicColor.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineSmall,
         )

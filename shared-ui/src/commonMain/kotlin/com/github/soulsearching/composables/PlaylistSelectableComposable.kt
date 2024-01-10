@@ -16,14 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Playlist
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun PlaylistSelectableComposable(
     playlist: Playlist,
     onClick: () -> Unit,
     isSelected: Boolean,
-    textColor: Color = DynamicColor.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     Row(
         modifier = Modifier

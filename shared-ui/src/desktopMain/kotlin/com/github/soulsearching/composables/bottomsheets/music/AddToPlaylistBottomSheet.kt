@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)

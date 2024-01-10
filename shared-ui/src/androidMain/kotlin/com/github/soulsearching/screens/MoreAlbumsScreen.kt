@@ -26,7 +26,7 @@ import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.events.AlbumEvent
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
@@ -53,7 +53,7 @@ fun MoreAlbumsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = DynamicColor.primary)
+            .background(color = SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
             title = stringResource(id = R.string.albums),

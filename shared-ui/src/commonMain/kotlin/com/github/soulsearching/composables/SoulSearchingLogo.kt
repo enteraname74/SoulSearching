@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SoulSearchingLogo() {
@@ -24,11 +24,11 @@ fun SoulSearchingLogo() {
             modifier = Modifier.size(Constants.ImageSize.veryLarge),
             painter = SoulSearchingContext.painterResource("ic_saxophone_svg"),
             contentDescription = strings.appLogo,
-            colorFilter = ColorFilter.tint(color = DynamicColor.onPrimary)
+            colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onPrimary)
         )
         Text(
             text = strings.appName,
-            color = DynamicColor.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )

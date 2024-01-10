@@ -11,14 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun BottomSheetRow(
     icon: ImageVector,
     text: String,
     onClick: () -> Unit,
-    textColor: Color = DynamicColor.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     Row(
         modifier = Modifier

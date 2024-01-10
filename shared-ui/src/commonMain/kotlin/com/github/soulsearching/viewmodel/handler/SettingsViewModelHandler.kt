@@ -1,34 +1,26 @@
 package com.github.soulsearching.viewmodel.handler
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.types.ColorThemeType
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.types.ElementEnum
 
 /**
  * Handler for managing the SelectedViewModel.
  */
 class SettingsViewModelHandler(
-    private val settings: SoulSearchingSettings
+    private val settings: SoulSearchingSettings,
+    private val colorThemeManager: ColorThemeManager
 ) : ViewModelHandler {
-    var colorTheme by mutableIntStateOf(ColorThemeType.SYSTEM)
-    var isDynamicPlayerThemeSelected by mutableStateOf(false)
-    var isDynamicPlaylistThemeSelected by mutableStateOf(false)
-    var isDynamicOtherViewsThemeSelected by mutableStateOf(false)
-
     var isQuickAccessShown by mutableStateOf(true)
     var isPlaylistsShown by mutableStateOf(true)
     var isAlbumsShown by mutableStateOf(true)
     var isArtistsShown by mutableStateOf(true)
 
     var isVerticalBarShown by mutableStateOf(false)
-
-    var playlistCover by mutableStateOf<ImageBitmap?>(null)
-    var forceBasicThemeForPlaylists by mutableStateOf(false)
 
     init {
         initializeViewModel()
@@ -59,7 +51,7 @@ class SettingsViewModelHandler(
      * Define the current playlist cover.
      */
     fun setNewPlaylistCover(playlistImage: ImageBitmap?) {
-        playlistCover = playlistImage
+        colorThemeManager.playlistCover = playlistImage
     }
 
     /**
@@ -69,7 +61,7 @@ class SettingsViewModelHandler(
      * - The dynamic playlist theme is NOT selected
      */
     fun isPersonalizedDynamicPlaylistThemeOff(): Boolean {
-        return colorTheme == ColorThemeType.PERSONALIZED && !isDynamicPlaylistThemeSelected
+        return colorThemeManager.isPersonalizedDynamicPlaylistThemeOff()
     }
 
     /**
@@ -79,7 +71,7 @@ class SettingsViewModelHandler(
      * - Or the color theme is on dynamic.
      */
     fun isPersonalizedDynamicPlayerThemeOn(): Boolean {
-        return (colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlayerThemeSelected) || colorTheme == ColorThemeType.DYNAMIC
+        return colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
     }
 
     /**
@@ -89,16 +81,8 @@ class SettingsViewModelHandler(
      * - The dynamic playlist theme is selected
      */
     fun isPersonalizedDynamicPlaylistThemeOn(): Boolean {
-        return colorTheme == ColorThemeType.PERSONALIZED && isDynamicPlaylistThemeSelected
+        return colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()
     }
-
-    /**
-     * Check if the dynamic theme is on.
-     */
-    fun isDynamicThemeOn(): Boolean {
-        return colorTheme == ColorThemeType.DYNAMIC
-    }
-
 
     /**
      * Check if the personalized dynamic other views theme is on.
@@ -107,7 +91,7 @@ class SettingsViewModelHandler(
      * - The dynamic theme for other views is selected
      */
     fun isPersonalizedDynamicOtherViewsThemeOn(): Boolean {
-        return colorTheme == ColorThemeType.PERSONALIZED && isDynamicOtherViewsThemeSelected
+        return colorThemeManager.isPersonalizedDynamicOtherViewsThemeOn()
     }
 
     /**
@@ -115,28 +99,19 @@ class SettingsViewModelHandler(
      */
     private fun initializeViewModel() {
         with(settings) {
-            colorTheme = getInt(
-                SoulSearchingSettings.COLOR_THEME_KEY, ColorThemeType.DYNAMIC
-            )
-            isDynamicPlayerThemeSelected = settings.getBoolean(
-                SoulSearchingSettings.DYNAMIC_PLAYER_THEME, false
-            )
-            isDynamicPlaylistThemeSelected = settings.getBoolean(
-                SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME, false
-            )
-            isQuickAccessShown = settings.getBoolean(
+            isQuickAccessShown = getBoolean(
                 SoulSearchingSettings.IS_QUICK_ACCESS_SHOWN, true
             )
-            isPlaylistsShown = settings.getBoolean(
+            isPlaylistsShown = getBoolean(
                 SoulSearchingSettings.IS_PLAYLISTS_SHOWN, true
             )
-            isAlbumsShown = settings.getBoolean(
+            isAlbumsShown = getBoolean(
                 SoulSearchingSettings.IS_ALBUMS_SHOWN, true
             )
-            isArtistsShown = settings.getBoolean(
+            isArtistsShown = getBoolean(
                 SoulSearchingSettings.IS_ARTISTS_SHOWN, true
             )
-            isVerticalBarShown = settings.getBoolean(
+            isVerticalBarShown = getBoolean(
                 SoulSearchingSettings.IS_VERTICAL_BAR_SHOWN, false
             )
         }
@@ -146,7 +121,7 @@ class SettingsViewModelHandler(
      * Update the type of color theme used in the application.
      */
     fun updateColorTheme(newTheme: Int) {
-        colorTheme = newTheme
+        colorThemeManager.colorThemeType = newTheme
         settings.setInt(
             key = SoulSearchingSettings.COLOR_THEME_KEY,
             value = newTheme
@@ -157,10 +132,10 @@ class SettingsViewModelHandler(
      * Toggle dynamic theme for player.
      */
     fun toggleDynamicPlayerTheme() {
-        isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
+        colorThemeManager.isDynamicPlayerThemeSelected = !colorThemeManager.isDynamicPlayerThemeSelected
         settings.setBoolean(
             key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
-            value = isDynamicPlayerThemeSelected
+            value = colorThemeManager.isDynamicPlayerThemeSelected
         )
     }
 
@@ -168,10 +143,10 @@ class SettingsViewModelHandler(
      * Toggle dynamic theme for playlist.
      */
     fun toggleDynamicPlaylistTheme() {
-        isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
+        colorThemeManager.isDynamicPlaylistThemeSelected = !colorThemeManager.isDynamicPlaylistThemeSelected
         settings.setBoolean(
             key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
-            value = isDynamicPlaylistThemeSelected
+            value = colorThemeManager.isDynamicPlaylistThemeSelected
         )
     }
 
@@ -179,10 +154,10 @@ class SettingsViewModelHandler(
      * Toggle dynamic theme for other views (everything except playlists and player view).
      */
     fun toggleDynamicOtherViewsTheme() {
-        isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
+        colorThemeManager.isDynamicOtherViewsThemeSelected = !colorThemeManager.isDynamicOtherViewsThemeSelected
         settings.setBoolean(
             key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
-            value = isDynamicOtherViewsThemeSelected
+            value = colorThemeManager.isDynamicOtherViewsThemeSelected
         )
     }
 

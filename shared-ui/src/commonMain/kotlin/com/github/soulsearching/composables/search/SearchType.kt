@@ -11,13 +11,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SearchType(
     title: String,
-    primaryColor: Color = DynamicColor.primary,
-    textColor: Color = DynamicColor.onPrimary
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     Row(
         modifier = Modifier

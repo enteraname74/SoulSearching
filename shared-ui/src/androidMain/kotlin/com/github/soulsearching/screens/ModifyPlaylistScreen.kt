@@ -45,7 +45,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
 import java.util.UUID
@@ -109,7 +109,7 @@ fun ModifyPlaylistScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DynamicColor.secondary)
+                            .background(SoulSearchingColorTheme.colorScheme.secondary)
                             .padding(padding)
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
@@ -127,7 +127,7 @@ fun ModifyPlaylistScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.playlist_cover),
-                                color = DynamicColor.onSecondary
+                                color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
                                 bitmap = state.cover,
@@ -139,7 +139,7 @@ fun ModifyPlaylistScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .weight(2F)
-                                .background(color = DynamicColor.primary)
+                                .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
                             state = state,
                             focusManager = focusManager,
@@ -153,7 +153,7 @@ fun ModifyPlaylistScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(DynamicColor.secondary)
+                            .background(SoulSearchingColorTheme.colorScheme.secondary)
                             .padding(padding)
                             .padding(top = Constants.Spacing.medium)
                             .pointerInput(Unit) {
@@ -172,7 +172,7 @@ fun ModifyPlaylistScreen(
                             Text(
                                 modifier = Modifier.padding(bottom = Constants.Spacing.medium),
                                 text = stringResource(id = R.string.playlist_cover),
-                                color = DynamicColor.onSecondary
+                                color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
                                 bitmap = state.cover,
@@ -185,7 +185,7 @@ fun ModifyPlaylistScreen(
                                 .fillMaxSize()
                                 .weight(1F)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
-                                .background(color = DynamicColor.primary)
+                                .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
                             state = state,
                             focusManager = focusManager,

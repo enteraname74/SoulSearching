@@ -13,7 +13,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.ProgressIndicatorComposable
 import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ScreenOrientation
 
 @Composable
@@ -26,7 +26,7 @@ fun LoadingComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary),
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -41,7 +41,7 @@ fun LoadingComposable(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(top = Constants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {

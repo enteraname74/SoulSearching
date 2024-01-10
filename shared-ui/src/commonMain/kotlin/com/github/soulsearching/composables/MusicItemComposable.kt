@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.utils.PlayerUtils
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -35,7 +35,7 @@ fun MusicItemComposable(
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
     musicCover: ImageBitmap? = null,
-    textColor: Color = DynamicColor.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     Row(
         modifier = Modifier

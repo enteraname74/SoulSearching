@@ -16,7 +16,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.SettingsElement
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsPersonalisationScreen(
@@ -25,7 +25,7 @@ fun SettingsPersonalisationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DynamicColor.primary)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
             title = stringResource(id = R.string.personalization_title),

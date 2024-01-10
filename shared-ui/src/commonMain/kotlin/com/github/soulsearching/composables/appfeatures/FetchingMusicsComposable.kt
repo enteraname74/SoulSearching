@@ -23,7 +23,7 @@ import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.ProgressIndicatorComposable
 import com.github.soulsearching.composables.SoulSearchingLogo
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +52,7 @@ fun FetchingMusicsComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
             ) {
                 Column(modifier = Modifier
                     .fillMaxHeight()
@@ -75,7 +75,7 @@ fun FetchingMusicsComposable(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = DynamicColor.primary)
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(top = Constants.Spacing.large),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

@@ -3,7 +3,6 @@ package com.github.soulsearching.composables.bottomsheets.music
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
@@ -16,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.SettingsUtils
 
@@ -31,8 +30,8 @@ fun MusicBottomSheetMenu(
     playNextAction : () -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isInQuickAccess: Boolean,
-    primaryColor: Color = DynamicColor.secondary,
-    textColor: Color = DynamicColor.onSecondary,
+    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     isCurrentlyPlaying: Boolean
 ) {
     Column(

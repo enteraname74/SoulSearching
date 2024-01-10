@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -65,7 +65,7 @@ fun BigPreviewComposable(
                 Icon(
                     imageVector = Icons.Rounded.Favorite,
                     contentDescription = "",
-                    tint = DynamicColor.onPrimary
+                    tint = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
             Column(
@@ -73,7 +73,7 @@ fun BigPreviewComposable(
             ) {
                 Text(
                     text = title,
-                    color = DynamicColor.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     fontWeight = FontWeight.Bold,
                     style = titleStyle,
                     maxLines = 1,
@@ -81,7 +81,7 @@ fun BigPreviewComposable(
                 )
                 Text(
                     text = text,
-                    color = DynamicColor.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
                     style = textStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.SoulSearchingContext
 
 @Composable
@@ -29,8 +29,8 @@ fun AppFeatureComposable(
     Card(
         modifier = Modifier.fillMaxSize(),
         colors = CardDefaults.cardColors(
-            contentColor = DynamicColor.secondary,
-            containerColor = DynamicColor.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.secondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
         Column(
@@ -41,14 +41,14 @@ fun AppFeatureComposable(
         ) {
             Text(
                 text = title,
-                color = DynamicColor.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight(500),
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = description,
-                color = DynamicColor.subText,
+                color = SoulSearchingColorTheme.colorScheme.subText,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )

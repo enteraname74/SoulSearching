@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsActionElement(
@@ -46,7 +46,7 @@ fun SettingsActionElement(
             ) {
                 Text(
                     text = title,
-                    color = DynamicColor.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     fontSize = 18.sp,
                     fontWeight = FontWeight(500),
                     maxLines = 1,
@@ -54,7 +54,7 @@ fun SettingsActionElement(
                 )
                 Text(
                     text = text,
-                    color = DynamicColor.subText,
+                    color = SoulSearchingColorTheme.colorScheme.subText,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -65,8 +65,8 @@ fun SettingsActionElement(
             selected = isSelected,
             onClick = clickAction,
             colors = RadioButtonDefaults.colors(
-                selectedColor = DynamicColor.onPrimary,
-                unselectedColor = DynamicColor.onPrimary
+                selectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary
             )
         )
     }

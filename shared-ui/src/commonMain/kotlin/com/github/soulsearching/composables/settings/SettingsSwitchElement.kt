@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsSwitchElement(
@@ -55,7 +55,7 @@ fun SettingsSwitchElement(
             ) {
                 Text(
                     text = title,
-                    color = DynamicColor.onPrimary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     fontSize = titleFontSize,
                     fontWeight = FontWeight(500),
                     maxLines = 2,
@@ -64,7 +64,7 @@ fun SettingsSwitchElement(
                 if (text.isNotBlank()) {
                     Text(
                         text = text,
-                        color = DynamicColor.subText,
+                        color = SoulSearchingColorTheme.colorScheme.subText,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -76,12 +76,12 @@ fun SettingsSwitchElement(
             checked = isChecked,
             onCheckedChange = { toggleAction() },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = DynamicColor.subText,
-                checkedTrackColor = DynamicColor.onPrimary,
-                checkedBorderColor = DynamicColor.onPrimary,
-                uncheckedThumbColor = DynamicColor.subText,
+                checkedThumbColor = SoulSearchingColorTheme.colorScheme.subText,
+                checkedTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                checkedBorderColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                uncheckedThumbColor = SoulSearchingColorTheme.colorScheme.subText,
                 uncheckedTrackColor = Color.Transparent,
-                uncheckedBorderColor = DynamicColor.subText,
+                uncheckedBorderColor = SoulSearchingColorTheme.colorScheme.subText,
             )
         )
     }

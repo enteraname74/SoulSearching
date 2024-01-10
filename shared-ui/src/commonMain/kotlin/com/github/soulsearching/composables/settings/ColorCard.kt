@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun ColorCard(
@@ -34,8 +34,8 @@ fun ColorCard(
             )
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(
-            contentColor = DynamicColor.secondary,
-            containerColor = DynamicColor.secondary
+            contentColor = SoulSearchingColorTheme.colorScheme.secondary,
+            containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
         Column(

@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppFeatureDotComposable(
@@ -30,7 +30,7 @@ fun AppFeatureDotComposable(
                 .clickable {
                     onClick()
                 },
-            colorFilter = ColorFilter.tint(DynamicColor.onPrimary),
+            colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
             imageVector = if (isSelected) Icons.Rounded.RadioButtonChecked else Icons.Rounded.RadioButtonUnchecked,
             contentDescription = ""
         )

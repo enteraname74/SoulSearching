@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsElement(
@@ -39,7 +39,7 @@ fun SettingsElement(
                 modifier = Modifier.size(Constants.ImageSize.medium),
                 imageVector = it,
                 contentDescription = "",
-                colorFilter = ColorFilter.tint(DynamicColor.onPrimary)
+                colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary)
             )
         }
         Column(
@@ -48,7 +48,7 @@ fun SettingsElement(
         ) {
             Text(
                 text = title,
-                color = DynamicColor.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight(500),
                 maxLines = 1,
@@ -56,7 +56,7 @@ fun SettingsElement(
             )
             Text(
                 text = text,
-                color = DynamicColor.subText,
+                color = SoulSearchingColorTheme.colorScheme.subText,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

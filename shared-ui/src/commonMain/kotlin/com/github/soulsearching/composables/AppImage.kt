@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppImage(
@@ -23,7 +23,7 @@ fun AppImage(
     size : Dp,
     modifier: Modifier = Modifier,
     roundedPercent : Int = 10,
-    tint: Color = DynamicColor.onSecondary
+    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     val modifierBase = Modifier
         .size(size)

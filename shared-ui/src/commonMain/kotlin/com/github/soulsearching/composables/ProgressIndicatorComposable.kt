@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.DynamicColor
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun ProgressIndicatorComposable(
@@ -22,13 +22,13 @@ fun ProgressIndicatorComposable(
         Text(
             modifier = Modifier.padding(Constants.Spacing.medium),
             text = progressMessage,
-            color = DynamicColor.onPrimary,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center
         )
         LinearProgressIndicator(
             progress = { progress },
-            color = DynamicColor.onSecondary,
-            trackColor = DynamicColor.secondary,
+            color = SoulSearchingColorTheme.colorScheme.onSecondary,
+            trackColor = SoulSearchingColorTheme.colorScheme.secondary,
         )
     }
 

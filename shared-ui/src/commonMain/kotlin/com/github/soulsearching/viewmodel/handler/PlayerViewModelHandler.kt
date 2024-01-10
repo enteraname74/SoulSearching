@@ -21,6 +21,7 @@ import com.github.soulsearching.events.handlers.MusicEventHandler
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
@@ -47,6 +48,7 @@ class PlayerViewModelHandler(
     imageCoverRepository: ImageCoverRepository,
     private val settings: SoulSearchingSettings,
     private val playbackManager: PlaybackManager,
+    private val colorThemeManager: ColorThemeManager
 ): ViewModelHandler {
     private val _state = MutableStateFlow(MusicState())
     val state = _state.asStateFlow()
@@ -60,7 +62,6 @@ class PlayerViewModelHandler(
     var currentMusic by mutableStateOf<Music?>(null)
     var currentMusicPosition by mutableIntStateOf(0)
     var currentMusicCover by mutableStateOf<ImageBitmap?>(null)
-    var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
     var currentPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
     var currentPlaylistId by mutableStateOf<UUID?>(null)
@@ -228,7 +229,7 @@ class PlayerViewModelHandler(
     fun resetPlayerData() {
         currentMusic = null
         currentMusicCover = null
-        currentColorPalette = null
+        colorThemeManager.currentColorPalette = null
         playerMode = PlayerMode.NORMAL
         initialPlaylist = java.util.ArrayList()
         currentPlaylist = java.util.ArrayList()
