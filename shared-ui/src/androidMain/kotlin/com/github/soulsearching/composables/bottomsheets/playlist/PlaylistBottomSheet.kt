@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistBottomSheet(
+actual fun PlaylistBottomSheet(
     playlistState: PlaylistState,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     playlistModalSheetState: SheetState,

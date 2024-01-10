@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
-import com.github.soulsearching.composables.playButtons.ExpandedPlayButtonsComposable
-import com.github.soulsearching.composables.playButtons.MinimisedPlayButtonsComposable
+import com.github.soulsearching.composables.playbuttons.ExpandedPlayButtonsComposable
+import com.github.soulsearching.composables.playbuttons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent

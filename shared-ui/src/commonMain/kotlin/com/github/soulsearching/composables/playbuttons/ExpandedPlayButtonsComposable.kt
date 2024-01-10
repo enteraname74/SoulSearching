@@ -1,13 +1,29 @@
-package com.github.soulsearching.composables.playButtons
+package com.github.soulsearching.composables.playbuttons
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Replay
+import androidx.compose.material.icons.rounded.Shuffle
+import androidx.compose.material.icons.rounded.SkipNext
+import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material.icons.rounded.Sync
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,11 +40,10 @@ import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.Utils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import java.util.*
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnnecessaryComposedModifier")
 @Composable
 fun ExpandedPlayButtonsComposable(
     modifier: Modifier = Modifier,

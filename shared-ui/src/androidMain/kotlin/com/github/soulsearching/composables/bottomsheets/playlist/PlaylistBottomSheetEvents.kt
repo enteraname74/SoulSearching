@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaylistBottomSheetEvents(
+actual fun PlaylistBottomSheetEvents(
     playlistState: PlaylistState,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyPlaylist : (String) -> Unit

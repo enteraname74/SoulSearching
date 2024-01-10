@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.playButtons
+package com.github.soulsearching.composables.playbuttons
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

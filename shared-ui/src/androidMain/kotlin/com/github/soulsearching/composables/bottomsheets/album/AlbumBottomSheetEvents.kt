@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlbumBottomSheetEvents(
+actual fun AlbumBottomSheetEvents(
     albumState: AlbumState,
     onAlbumEvent: (AlbumEvent) -> Unit,
     navigateToModifyAlbum: (String) -> Unit

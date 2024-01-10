@@ -13,8 +13,8 @@ object Versions {
     object AndroidX {
         const val COMPOSE = "1.6.0-beta03"
         const val CORE = "1.12.0"
-        const val FOUNDATION = "1.4.0-beta02"
-        const val RUNTIME = "1.4.0-beta01"
+        const val FOUNDATION = "1.5.11"
+        const val RUNTIME = "1.5.11"
         const val LIFECYCLE = "2.6.2"
         const val ACTIVITY_COMPOSE = "1.8.2"
         const val MATERIAL3 = "1.2.0-beta01"
