@@ -5,6 +5,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +21,11 @@ import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
+import com.github.soulsearching.navigation.NavigationController
+import com.github.soulsearching.navigation.NavigationHost
+import com.github.soulsearching.navigation.Route
+import com.github.soulsearching.navigation.RoutesNames
+import com.github.soulsearching.navigation.Screen
 import com.github.soulsearching.screens.MainPageScreen
 import com.github.soulsearching.screens.ModifyAlbumScreen
 import com.github.soulsearching.screens.ModifyArtistScreen
@@ -51,6 +60,7 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
+import com.github.soulsearching.viewmodel.NavigationViewModel
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
@@ -84,8 +94,98 @@ fun NavigationHandler(
     modifyAlbumViewModel: ModifyAlbumViewModel,
     modifyArtistViewModel: ModifyArtistViewModel,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    settingsAllFoldersViewModel: SettingsAllFoldersViewModel
+    settingsAllFoldersViewModel: SettingsAllFoldersViewModel,
+    navigationViewModel: NavigationViewModel
 ) {
+
+    val navigationController = navigationViewModel.handler.navigationController
+
+    NavigationHost(
+        navigationController = navigationController,
+        screens = listOf(
+            Screen(
+                screenRoute = RoutesNames.MAIN_PAGE_SCREEN,
+                screen = {
+                    MainPageScreen(
+                        navigateToPlaylist = {
+                            navController.navigate("selectedPlaylist/$it")
+                        },
+                        navigateToAlbum = {
+                            navController.navigate("selectedAlbum/$it")
+                        },
+                        navigateToArtist = {
+                            navController.navigate("selectedArtist/$it")
+                        },
+                        navigateToMorePlaylist = {
+                            navController.navigate("morePlaylists")
+                        },
+                        navigateToMoreArtists = {
+                            navController.navigate("moreArtists")
+                        },
+                        navigateToMoreShortcuts = {
+                            navController.navigate("moreShortcuts")
+                        },
+                        navigateToMoreAlbums = {
+                            navController.navigate("moreAlbums")
+                        },
+                        navigateToModifyMusic = {
+                            navController.navigate("modifyMusic/$it")
+                        },
+                        navigateToModifyPlaylist = {
+                            navController.navigate("modifyPlaylist/$it")
+                        },
+                        navigateToModifyAlbum = {
+                            navController.navigate("modifyAlbum/$it")
+                        },
+                        navigateToModifyArtist = {
+                            navController.navigate("modifyArtist/$it")
+                        },
+                        navigateToSettings = {
+                            navigationViewModel.handler.navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.SETTINGS
+                                )
+                            )
+                        },
+                        playerDraggableState = playerDraggableState,
+                        searchDraggableState = searchDraggableState,
+                        musicState = musicState,
+                        playlistState = playlistState,
+                        albumState = albumState,
+                        artistState = artistState,
+                        quickAccessState = quickAccessState,
+                        allAlbumsViewModel = allAlbumsViewModel,
+                        allMusicsViewModel = allMusicsViewModel,
+                        allPlaylistsViewModel = allPlaylistsViewModel,
+                        allArtistsViewModel = allArtistsViewModel,
+                        allImageCoversViewModel = allImageCoversViewModel,
+                        playerMusicListViewModel = playerMusicListViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS,
+                screen = {
+                    SettingsScreen(
+                        finishAction = { navigationController.navigateBack() },
+                        navigateToColorTheme = {
+                            navController.navigate("colorTheme")
+                        },
+                        navigateToManageMusics = {
+                            navController.navigate("manageMusics")
+                        },
+                        navigateToPersonalisation = {
+                            navController.navigate("personalisation")
+                        },
+                        navigateToAbout = {
+                            navController.navigate("about")
+                        }
+                    )
+                }
+            )
+        )
+    )
+
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,

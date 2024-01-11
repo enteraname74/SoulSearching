@@ -13,6 +13,7 @@ import com.github.soulsearching.viewmodel.handler.ModifyAlbumViewModelHandler
 import com.github.soulsearching.viewmodel.handler.ModifyArtistViewModelHandler
 import com.github.soulsearching.viewmodel.handler.ModifyMusicViewModelHandler
 import com.github.soulsearching.viewmodel.handler.ModifyPlaylistViewModelHandler
+import com.github.soulsearching.viewmodel.handler.NavigationViewModelHandler
 import com.github.soulsearching.viewmodel.handler.PlayerMusicListViewModelHandler
 import com.github.soulsearching.viewmodel.handler.PlayerViewModelHandler
 import com.github.soulsearching.viewmodel.handler.SelectedAlbumViewModelHandler
@@ -123,3 +124,8 @@ typealias SelectedArtistViewModel = SoulSearchingViewModel<SelectedArtistViewMod
  * ViewModel for the selected playlist screen.
  */
 typealias SelectedPlaylistViewModel = SoulSearchingViewModel<SelectedPlaylistViewModelHandler>
+
+/**
+ * ViewModel for the navigation.
+ */
+typealias NavigationViewModel = SoulSearchingViewModel<NavigationViewModelHandler>

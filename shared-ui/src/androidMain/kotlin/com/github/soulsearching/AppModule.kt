@@ -21,6 +21,7 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.NavigationViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
@@ -241,6 +242,9 @@ val androidModule = module {
             settings = get(),
             playbackManager = get()
         )
+    }
+    viewModel {
+        NavigationViewModelAndroidImpl()
     }
     factory<MusicFetcher> {
         MusicFetcherAndroidImpl(

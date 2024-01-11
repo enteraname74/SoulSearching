@@ -55,6 +55,8 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.NavigationViewModel
+import com.github.soulsearching.viewmodel.NavigationViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
@@ -97,6 +99,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addMusicsViewModel: SettingsAddMusicsViewModelAndroidImpl
 
     private lateinit var mainActivityViewModel: MainActivityViewModelAndroidImpl
+    private lateinit var navigationViewModel: NavigationViewModelAndroidImpl
 
     private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
     private val playbackManager: PlaybackManagerAndroidImpl by inject<PlaybackManagerAndroidImpl>()
@@ -190,6 +193,7 @@ class MainActivity : AppCompatActivity() {
             initializeBroadcastReceive()
 
             mainActivityViewModel = koinViewModel()
+            navigationViewModel = koinViewModel()
             InitializeMainActivityViewModel()
 
             SoulSearchingTheme {
@@ -339,7 +343,8 @@ class MainActivity : AppCompatActivity() {
                         allAlbumsViewModel = allAlbumsViewModel,
                         allMusicsViewModel = allMusicsViewModel,
                         allFoldersViewModel = allFoldersViewModel,
-                        playerMusicListViewModel = playerMusicListViewModel
+                        playerMusicListViewModel = playerMusicListViewModel,
+                        navigationViewModel = navigationViewModel
                     )
 
                     PlayerDraggableView(
