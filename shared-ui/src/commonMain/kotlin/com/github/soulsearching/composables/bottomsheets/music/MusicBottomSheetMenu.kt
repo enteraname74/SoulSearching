@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.utils.SettingsUtils
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -32,14 +33,15 @@ fun MusicBottomSheetMenu(
     isInQuickAccess: Boolean,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    isCurrentlyPlaying: Boolean
+    isCurrentlyPlaying: Boolean,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     Column(
         modifier = Modifier
             .background(color = primaryColor)
             .padding(Constants.Spacing.large)
     ) {
-        if (SettingsUtils.settingsViewModel.handler.isQuickAccessShown) {
+        if (viewSettingsManager.isQuickAccessShown) {
             BottomSheetRow(
                 icon = Icons.Rounded.DoubleArrow,
                 text = if (isInQuickAccess) {

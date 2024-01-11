@@ -29,17 +29,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
+import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ElementEnum
-import com.github.soulsearching.utils.SettingsUtils
 import kotlinx.coroutines.launch
 
 @Composable
 fun MainPageVerticalShortcut(
-    mainListState: LazyListState
+    mainListState: LazyListState,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
-    val visibleElements = SettingsUtils.settingsViewModel.handler.getListOfVisibleElements()
+    val visibleElements = viewSettingsManager.getListOfVisibleElements()
     val currentListItemPosition =
         remember { derivedStateOf { mainListState.firstVisibleItemIndex } }
     val coroutineScope = rememberCoroutineScope()

@@ -18,7 +18,6 @@ import com.github.soulsearching.viewmodel.handler.PlayerViewModelHandler
 import com.github.soulsearching.viewmodel.handler.SelectedAlbumViewModelHandler
 import com.github.soulsearching.viewmodel.handler.SelectedArtistViewModelHandler
 import com.github.soulsearching.viewmodel.handler.SelectedPlaylistViewModelHandler
-import com.github.soulsearching.viewmodel.handler.SettingsViewModelHandler
 import com.github.soulsearching.viewmodel.handler.ViewModelHandler
 
 /**
@@ -124,8 +123,3 @@ typealias SelectedArtistViewModel = SoulSearchingViewModel<SelectedArtistViewMod
  * ViewModel for the selected playlist screen.
  */
 typealias SelectedPlaylistViewModel = SoulSearchingViewModel<SelectedPlaylistViewModelHandler>
-
-/**
- * ViewModel for the settings.
- */
-typealias SettingsViewModel = SoulSearchingViewModel<SettingsViewModelHandler>

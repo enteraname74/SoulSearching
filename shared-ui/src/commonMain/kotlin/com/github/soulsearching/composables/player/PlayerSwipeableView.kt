@@ -58,6 +58,7 @@ import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.playbuttons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playbuttons.MinimisedPlayButtonsComposable
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent
@@ -72,13 +73,11 @@ import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.compose.koinInject
 import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
@@ -104,7 +103,7 @@ fun PlayerDraggableView(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     playbackManager: PlaybackManager,
-    colorThemeManager: ColorThemeManager = koinInject()
+    colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     var isMusicInFavorite by rememberSaveable {
@@ -123,12 +122,12 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
-                    MaterialTheme.colorScheme.primary
+                    SoulSearchingColorTheme.defaultTheme.primary
                 }
             }
         },
@@ -139,10 +138,10 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.White
                 } else {
-                    MaterialTheme.colorScheme.onPrimary
+                    SoulSearchingColorTheme.defaultTheme.onPrimary
                 }
             }
         },
@@ -154,10 +153,10 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     Color.LightGray
                 } else {
-                    MaterialTheme.colorScheme.outline
+                    SoulSearchingColorTheme.defaultTheme.subText
                 }
             }
         },
@@ -170,7 +169,7 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
@@ -187,7 +186,7 @@ fun PlayerDraggableView(
         targetValue = when(draggableState.state.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicPrimaryColor(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
@@ -205,7 +204,7 @@ fun PlayerDraggableView(
             BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
             BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
-                if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
                     ColorPaletteUtils.getDynamicSecondaryColor(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )

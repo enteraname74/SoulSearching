@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +40,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent
@@ -49,14 +49,13 @@ import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -71,7 +70,7 @@ fun PlayerMusicListView(
     musicListDraggableState: PlayerMusicListDraggableState,
     playerDraggableState: PlayerDraggableState,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    colorThemeManager: ColorThemeManager = koinInject()
+    colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -95,12 +94,12 @@ fun PlayerMusicListView(
 
     val primaryColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()) {
+        if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
             ColorPaletteUtils.getDynamicPrimaryColor(
                 baseColor = colorThemeManager.currentColorPalette?.rgb
             )
         } else {
-            MaterialTheme.colorScheme.primary
+            SoulSearchingColorTheme.defaultTheme.primary
         },
         tween(Constants.AnimationDuration.normal),
         label = "PRIMARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
@@ -114,7 +113,7 @@ fun PlayerMusicListView(
                 baseColor = colorThemeManager.currentColorPalette?.rgb
             )
         } else {
-            MaterialTheme.colorScheme.secondary
+            SoulSearchingColorTheme.defaultTheme.secondary
         },
         tween(Constants.AnimationDuration.normal),
         label = "SECONDARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
@@ -122,11 +121,11 @@ fun PlayerMusicListView(
 
     val textColor: Color by animateColorAsState(
         targetValue =
-        if (SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlayerThemeOn()
+        if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
         ) {
             Color.White
         } else {
-            MaterialTheme.colorScheme.onPrimary
+            SoulSearchingColorTheme.defaultTheme.onPrimary
         },
         tween(Constants.AnimationDuration.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"

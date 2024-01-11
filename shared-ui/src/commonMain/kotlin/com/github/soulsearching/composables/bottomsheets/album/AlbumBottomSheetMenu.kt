@@ -11,23 +11,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
-import com.github.soulsearching.utils.SettingsUtils
 
 @Composable
 fun AlbumBottomSheetMenu(
     modifyAction: () -> Unit,
     deleteAction: () -> Unit,
     quickAccessAction: () -> Unit,
-    isInQuickAccess: Boolean
+    isInQuickAccess: Boolean,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     Column(
         modifier = Modifier
             .background(color = SoulSearchingColorTheme.colorScheme.secondary)
             .padding(Constants.Spacing.large)
     ) {
-        if (SettingsUtils.settingsViewModel.handler.isQuickAccessShown) {
+        if (viewSettingsManager.isQuickAccessShown) {
             BottomSheetRow(
                 icon = Icons.Rounded.DoubleArrow,
                 text = if (isInQuickAccess) {

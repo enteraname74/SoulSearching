@@ -5,6 +5,7 @@ import com.github.soulsearching.classes.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
@@ -25,8 +26,6 @@ import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SettingsViewModel
-import com.github.soulsearching.viewmodel.SettingsViewModelAndroidImpl
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -272,12 +271,6 @@ val androidModule = module {
             context = androidContext()
         )
     }
-    single<SettingsViewModel> {
-        SettingsViewModelAndroidImpl(
-            settings = get(),
-            colorThemeManager = get()
-        )
-    }
     single<MusicFetcherAndroidImpl> {
         MusicFetcherAndroidImpl(
             context = androidContext(),
@@ -294,6 +287,11 @@ val androidModule = module {
     }
     single<ColorThemeManager> {
         ColorThemeManager(
+            settings = get()
+        )
+    }
+    single<ViewSettingsManager> {
+        ViewSettingsManager(
             settings = get()
         )
     }

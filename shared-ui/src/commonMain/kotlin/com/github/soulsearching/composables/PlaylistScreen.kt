@@ -29,6 +29,7 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.composables.search.SearchMusics
 import com.github.soulsearching.composables.search.SearchView
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
@@ -42,10 +43,8 @@ import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -66,7 +65,7 @@ fun PlaylistScreen(
     playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
-    colorThemeManager: ColorThemeManager = koinInject()
+    colorThemeManager: ColorThemeManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -75,13 +74,13 @@ fun PlaylistScreen(
     }
 
     image?.let {
-        if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOn()) {
-            SettingsUtils.settingsViewModel.handler.setNewPlaylistCover(it)
+        if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
+            colorThemeManager.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
         }
     }
 
-    if (!hasPlaylistPaletteBeenFetched && SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicPlaylistThemeOff()) {
+    if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOff()) {
         colorThemeManager.forceBasicThemeForPlaylists = true
         hasPlaylistPaletteBeenFetched = true
     }

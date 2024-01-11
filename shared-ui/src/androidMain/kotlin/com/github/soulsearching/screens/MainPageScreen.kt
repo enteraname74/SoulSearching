@@ -35,12 +35,14 @@ import com.github.soulsearching.composables.bottomsheets.playlist.PlaylistBottom
 import com.github.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.soulsearching.composables.search.SearchAll
 import com.github.soulsearching.composables.search.SearchView
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
@@ -51,7 +53,6 @@ import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel
@@ -88,7 +89,8 @@ fun MainPageScreen(
     playlistState: PlaylistState,
     albumState: AlbumState,
     artistState: ArtistState,
-    quickAccessState: QuickAccessState
+    quickAccessState: QuickAccessState,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     MusicBottomSheetEvents(
@@ -148,7 +150,7 @@ fun MainPageScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                if (SettingsUtils.settingsViewModel.handler.isVerticalBarShown) {
+                if (viewSettingsManager.isVerticalBarShown) {
                     MainPageVerticalShortcut(
                         mainListState = listState
                     )
@@ -158,7 +160,7 @@ fun MainPageScreen(
                         .fillMaxSize(),
                     state = listState
                 ) {
-                    if (SettingsUtils.settingsViewModel.handler.isQuickAccessShown) {
+                    if (viewSettingsManager.isQuickAccessShown) {
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
@@ -255,7 +257,7 @@ fun MainPageScreen(
                             )
                         }
                     }
-                    if (SettingsUtils.settingsViewModel.handler.isPlaylistsShown) {
+                    if (viewSettingsManager.isPlaylistsShown) {
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
@@ -331,7 +333,7 @@ fun MainPageScreen(
                             )
                         }
                     }
-                    if (SettingsUtils.settingsViewModel.handler.isAlbumsShown) {
+                    if (viewSettingsManager.isAlbumsShown) {
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
@@ -384,7 +386,7 @@ fun MainPageScreen(
                             )
                         }
                     }
-                    if (SettingsUtils.settingsViewModel.handler.isArtistsShown) {
+                    if (viewSettingsManager.isArtistsShown) {
                         item {
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,

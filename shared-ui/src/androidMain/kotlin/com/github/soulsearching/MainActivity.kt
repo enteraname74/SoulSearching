@@ -40,10 +40,12 @@ import com.github.soulsearching.composables.player.PlayerMusicListView
 import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
 import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggableState
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.screens.MainPageScreen
@@ -71,7 +73,6 @@ import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
@@ -90,7 +91,6 @@ import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -212,7 +212,7 @@ class MainActivity : AppCompatActivity() {
             // Settings view models:
             allFoldersViewModel = koinViewModel()
             addMusicsViewModel = koinViewModel()
-            SettingsUtils.settingsViewModel = inject<SettingsViewModel>().value
+            val viewSettingsManager = injectElement<ViewSettingsManager>()
 
             initializeSharedPreferences()
             initializePlayerViewModel()
@@ -660,7 +660,7 @@ class MainActivity : AppCompatActivity() {
                         ) {
                             SettingsColorThemeScreen(
                                 finishAction = { navController.popBackStack() },
-                                updateColorThemeMethod = SettingsUtils.settingsViewModel.handler::updateColorTheme
+                                updateColorThemeMethod = colorThemeManager::updateColorTheme
                             )
                         }
                         composable(

@@ -13,15 +13,15 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.ColorThemeCard
 import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ColorThemeType
-import org.koin.compose.koinInject
 
 @Composable
 fun SettingsColorThemeScreen(
     finishAction: () -> Unit,
-    colorThemeManager: ColorThemeManager = koinInject(),
+    colorThemeManager: ColorThemeManager = injectElement(),
     updateColorThemeMethod: (colorTheme: Int) -> Unit
 ) {
     Column(

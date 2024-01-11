@@ -2,7 +2,6 @@ package com.github.soulsearching.theme
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -15,7 +14,6 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.types.ColorThemeType
 import com.github.soulsearching.utils.ColorPaletteUtils
-import com.github.soulsearching.utils.SettingsUtils
 
 /**
  * Manage the color theme of the application.
@@ -28,12 +26,153 @@ class ColorThemeManager(
     var isDynamicPlaylistThemeSelected by mutableStateOf(false)
     var isDynamicOtherViewsThemeSelected by mutableStateOf(false)
 
-    var playlistCover by mutableStateOf<ImageBitmap?>(null)
+    private var playlistCover by mutableStateOf<ImageBitmap?>(null)
+
+    /**
+     * Define if the device theme should be forced when in a playlist view (artist, album, playlist)
+     */
     var forceBasicThemeForPlaylists by mutableStateOf(false)
     var currentColorPalette by mutableStateOf<Palette.Swatch?>(null)
 
+    private val primary: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (forceBasicThemeForPlaylists) {
+                SoulSearchingColorTheme.defaultTheme.primary
+            } else if (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null) {
+                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(image = playlistCover)
+                ColorPaletteUtils.getDynamicPrimaryColor(playlistPalette?.rgb)
+            } else if (isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) {
+                ColorPaletteUtils.getDynamicPrimaryColor(baseColor = currentColorPalette?.rgb)
+            } else {
+                SoulSearchingColorTheme.defaultTheme.primary
+            },
+            tween(Constants.AnimationDuration.short),
+            label = "PRIMARY_DYNAMIC_COLOR"
+        ).value
+
+    private val onPrimary: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (forceBasicThemeForPlaylists) {
+                SoulSearchingColorTheme.defaultTheme.onPrimary
+            } else if (
+                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
+                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
+            ) {
+                Color.White
+            } else {
+                SoulSearchingColorTheme.defaultTheme.onPrimary
+            },
+            tween(Constants.AnimationDuration.short),
+            label = "ON_PRIMARY_DYNAMIC_COLOR"
+        ).value
+
+    private val secondary: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (forceBasicThemeForPlaylists) {
+                SoulSearchingColorTheme.defaultTheme.secondary
+            } else if (isPersonalizedDynamicPlaylistThemeOn()
+                && playlistCover != null
+            ) {
+                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(image = playlistCover)
+                ColorPaletteUtils.getDynamicSecondaryColor(playlistPalette?.rgb)
+
+            } else if (isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) {
+                ColorPaletteUtils.getDynamicSecondaryColor(baseColor = currentColorPalette?.rgb)
+            } else {
+                SoulSearchingColorTheme.defaultTheme.secondary
+            },
+            tween(Constants.AnimationDuration.short),
+            label = "SECONDARY_DYNAMIC_COLOR"
+        ).value
+
+    private val onSecondary: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (forceBasicThemeForPlaylists) {
+                SoulSearchingColorTheme.defaultTheme.onSecondary
+            } else if (
+                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
+                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
+            ) {
+                Color.White
+            } else {
+                SoulSearchingColorTheme.defaultTheme.onSecondary
+            },
+            tween(Constants.AnimationDuration.short),
+            label = "ON_SECONDARY_DYNAMIC_COLOR"
+        ).value
+
+    private val subText: Color
+        @Composable
+        get() = animateColorAsState(
+            targetValue =
+            if (forceBasicThemeForPlaylists) {
+                SoulSearchingColorTheme.defaultTheme.subText
+            } else if (
+                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
+                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
+            ) {
+                Color.LightGray
+            } else {
+                SoulSearchingColorTheme.defaultTheme.subText
+            },
+            tween(Constants.AnimationDuration.short),
+            label = "SUB_TEXT_DYNAMIC_COLOR"
+        ).value
+
     init {
         initializeColorThemeManager()
+    }
+
+    /**
+     * Toggle dynamic theme for player.
+     */
+    fun toggleDynamicPlayerTheme() {
+        isDynamicPlayerThemeSelected = !isDynamicPlayerThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
+            value = isDynamicPlayerThemeSelected
+        )
+    }
+
+    /**
+     * Toggle dynamic theme for playlist.
+     */
+    fun toggleDynamicPlaylistTheme() {
+        isDynamicPlaylistThemeSelected = !isDynamicPlaylistThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
+            value = isDynamicPlaylistThemeSelected
+        )
+    }
+
+    /**
+     * Toggle dynamic theme for other views (everything except playlists and player view).
+     */
+    fun toggleDynamicOtherViewsTheme() {
+        isDynamicOtherViewsThemeSelected = !isDynamicOtherViewsThemeSelected
+        settings.setBoolean(
+            key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
+            value = isDynamicOtherViewsThemeSelected
+        )
+    }
+
+    /**
+     * Update the type of color theme used in the application.
+     */
+    fun updateColorTheme(newTheme: Int) {
+        colorThemeType = newTheme
+        settings.setInt(
+            key = SoulSearchingSettings.COLOR_THEME_KEY,
+            value = newTheme
+        )
     }
 
     /**
@@ -110,110 +249,8 @@ class ColorThemeManager(
         return colorThemeType == ColorThemeType.PERSONALIZED && isDynamicOtherViewsThemeSelected
     }
 
-    private val primary: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (forceBasicThemeForPlaylists) {
-                MaterialTheme.colorScheme.primary
-            } else if (isPersonalizedDynamicPlaylistThemeOn()
-                && playlistCover != null
-            ) {
-                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-                    image = playlistCover
-                )
-                ColorPaletteUtils.getDynamicPrimaryColor(
-                    playlistPalette?.rgb
-                )
-            } else if (isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()
-            ) {
-                ColorPaletteUtils.getDynamicPrimaryColor(
-                    baseColor = currentColorPalette?.rgb
-                )
-            } else {
-                MaterialTheme.colorScheme.primary
-            },
-            tween(Constants.AnimationDuration.short),
-            label = "PRIMARY_DYNAMIC_COLOR"
-        ).value
-
-    private val onPrimary: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (forceBasicThemeForPlaylists) {
-                MaterialTheme.colorScheme.onPrimary
-            } else if (
-                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
-                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
-            ) {
-                Color.White
-            } else {
-                MaterialTheme.colorScheme.onPrimary
-            },
-            tween(Constants.AnimationDuration.short),
-            label = "ON_PRIMARY_DYNAMIC_COLOR"
-        ).value
-
-    private val secondary: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (forceBasicThemeForPlaylists) {
-                MaterialTheme.colorScheme.secondary
-            } else if (isPersonalizedDynamicPlaylistThemeOn()
-                && playlistCover != null
-            ) {
-                val playlistPalette = ColorPaletteUtils.getPaletteFromAlbumArt(image = playlistCover)
-                ColorPaletteUtils.getDynamicSecondaryColor(playlistPalette?.rgb)
-
-            } else if (isDynamicThemeOn() || SettingsUtils.settingsViewModel.handler.isPersonalizedDynamicOtherViewsThemeOn()) {
-                ColorPaletteUtils.getDynamicSecondaryColor(baseColor = currentColorPalette?.rgb)
-            } else {
-                MaterialTheme.colorScheme.secondary
-            },
-            tween(Constants.AnimationDuration.short),
-            label = "SECONDARY_DYNAMIC_COLOR"
-        ).value
-
-    private val onSecondary: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (forceBasicThemeForPlaylists) {
-                MaterialTheme.colorScheme.onSecondary
-            } else if (
-                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
-                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
-            ) {
-                Color.White
-            } else {
-                MaterialTheme.colorScheme.onSecondary
-            },
-            tween(Constants.AnimationDuration.short),
-            label = "ON_SECONDARY_DYNAMIC_COLOR"
-        ).value
-
-    private val subText: Color
-        @Composable
-        get() = animateColorAsState(
-            targetValue =
-            if (forceBasicThemeForPlaylists) {
-                MaterialTheme.colorScheme.outline
-            } else if (
-                ((isDynamicThemeOn() || isPersonalizedDynamicOtherViewsThemeOn()) && currentColorPalette != null)
-                || (isPersonalizedDynamicPlaylistThemeOn() && playlistCover != null)
-            ) {
-                Color.LightGray
-            } else {
-                MaterialTheme.colorScheme.outline
-            },
-            tween(Constants.AnimationDuration.short),
-            label = "SUB_TEXT_DYNAMIC_COLOR"
-        ).value
-
     /**
-     * Retrieve
+     * Retrieve the color theme of the application.
      */
     @Composable
     fun getColorTheme(): SoulSearchingPalette = SoulSearchingPalette(

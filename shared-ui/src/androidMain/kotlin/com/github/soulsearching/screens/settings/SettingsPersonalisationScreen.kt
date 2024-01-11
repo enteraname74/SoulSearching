@@ -11,16 +11,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.R
-import com.github.soulsearching.utils.SettingsUtils
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.SettingsElement
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
+import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun SettingsPersonalisationScreen(
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     Column(
         modifier = Modifier
@@ -42,8 +44,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_quick_access),
-                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleQuickAccessVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.handler.isQuickAccessShown,
+                    toggleAction = { viewSettingsManager.toggleQuickAccessVisibility() },
+                    isChecked = viewSettingsManager.isQuickAccessShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -56,8 +58,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_playlists),
-                    toggleAction = { SettingsUtils.settingsViewModel.handler.togglePlaylistsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.handler.isPlaylistsShown,
+                    toggleAction = { viewSettingsManager.togglePlaylistsVisibility() },
+                    isChecked = viewSettingsManager.isPlaylistsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -70,8 +72,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_albums),
-                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleAlbumsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.handler.isAlbumsShown,
+                    toggleAction = { viewSettingsManager.toggleAlbumsVisibility() },
+                    isChecked = viewSettingsManager.isAlbumsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -84,8 +86,8 @@ fun SettingsPersonalisationScreen(
             item {
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_artists),
-                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleArtistsVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.handler.isArtistsShown,
+                    toggleAction = { viewSettingsManager.toggleArtistsVisibility() },
+                    isChecked = viewSettingsManager.isArtistsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
@@ -99,8 +101,8 @@ fun SettingsPersonalisationScreen(
                 SettingsSwitchElement(
                     title = stringResource(id = R.string.show_vertical_access_bar_title),
                     text = stringResource(id = R.string.show_vertical_access_bar_text),
-                    toggleAction = { SettingsUtils.settingsViewModel.handler.toggleVerticalBarVisibility() },
-                    isChecked = SettingsUtils.settingsViewModel.handler.isVerticalBarShown,
+                    toggleAction = { viewSettingsManager.toggleVerticalBarVisibility() },
+                    isChecked = viewSettingsManager.isVerticalBarShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
                         start = Constants.Spacing.veryLarge,
