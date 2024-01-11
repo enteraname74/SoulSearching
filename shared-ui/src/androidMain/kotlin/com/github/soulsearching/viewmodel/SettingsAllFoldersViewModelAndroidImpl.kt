@@ -8,12 +8,12 @@ import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.viewmodel.handler.AllFolderViewModelHandler
+import com.github.soulsearching.viewmodel.handler.SettingsAllFolderViewModelHandler
 
 /**
- * Implementation of the AllFoldersViewModel.
+ * Implementation of the SettingsAllFoldersViewModel.
  */
-class AllFoldersViewModelAndroidImpl(
+class SettingsAllFoldersViewModelAndroidImpl(
     folderRepository: FolderRepository,
     musicRepository: MusicRepository,
     albumRepository: AlbumRepository,
@@ -21,8 +21,8 @@ class AllFoldersViewModelAndroidImpl(
     albumArtistRepository: AlbumArtistRepository,
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
-) : ViewModel(), AllFoldersViewModel {
-    override val handler: AllFolderViewModelHandler = AllFolderViewModelHandler(
+) : ViewModel(), SettingsAllFoldersViewModel {
+    override val handler: SettingsAllFolderViewModelHandler = SettingsAllFolderViewModelHandler(
         folderRepository = folderRepository,
         musicRepository = musicRepository,
         albumRepository = albumRepository,

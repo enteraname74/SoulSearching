@@ -1,9 +1,9 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.soulsearching.viewmodel.handler.AddMusicsViewModelHandler
+import com.github.soulsearching.viewmodel.handler.SettingsAddMusicsViewModelHandler
 import com.github.soulsearching.viewmodel.handler.AllAlbumsViewModeHandler
 import com.github.soulsearching.viewmodel.handler.AllArtistsViewModelHandler
-import com.github.soulsearching.viewmodel.handler.AllFolderViewModelHandler
+import com.github.soulsearching.viewmodel.handler.SettingsAllFolderViewModelHandler
 import com.github.soulsearching.viewmodel.handler.AllImageCoversViewModelHandler
 import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelHandler
 import com.github.soulsearching.viewmodel.handler.AllPlaylistsViewModelHandler
@@ -37,7 +37,7 @@ interface SoulSearchingViewModel<Handler: ViewModelHandler> {
 /**
  * ViewModel for adding new musics from the settings screen.
  */
-typealias AddMusicsViewModel = SoulSearchingViewModel<AddMusicsViewModelHandler>
+typealias SettingsAddMusicsViewModel = SoulSearchingViewModel<SettingsAddMusicsViewModelHandler>
 
 /**
  * ViewModel for managing all albums.
@@ -52,7 +52,7 @@ typealias AllArtistsViewModel = SoulSearchingViewModel<AllArtistsViewModelHandle
 /**
  * ViewModel for managing all folders.
  */
-typealias AllFoldersViewModel = SoulSearchingViewModel<AllFolderViewModelHandler>
+typealias SettingsAllFoldersViewModel = SoulSearchingViewModel<SettingsAllFolderViewModelHandler>
 
 /**
  * ViewModel for managing all image covers.

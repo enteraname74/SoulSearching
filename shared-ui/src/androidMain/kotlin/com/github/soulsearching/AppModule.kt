@@ -8,10 +8,10 @@ import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.theme.ColorThemeManager
-import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.AllFoldersViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
@@ -37,7 +37,7 @@ import org.koin.dsl.module
  */
 val androidModule = module {
     viewModel {
-        AddMusicsViewModelAndroidImpl(
+        SettingsAddMusicsViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
             musicFetcher = get()
@@ -61,7 +61,7 @@ val androidModule = module {
         )
     }
     viewModel {
-        AllFoldersViewModelAndroidImpl(
+        SettingsAllFoldersViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
             albumRepository = get(),

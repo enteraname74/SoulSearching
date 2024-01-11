@@ -210,6 +210,14 @@ class ColorThemeManager(
     }
 
     /**
+     * Remove playlist theme.
+     */
+    fun removePlaylistTheme() {
+        setNewPlaylistCover(null)
+        forceBasicThemeForPlaylists = false
+    }
+
+    /**
      * Check if the personalized dynamic playlist theme is off.
      * The conditions are :
      * - App color theme is on personalized

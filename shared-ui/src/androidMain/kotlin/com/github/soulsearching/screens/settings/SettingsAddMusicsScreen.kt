@@ -33,7 +33,7 @@ import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.AddMusicsStateType
-import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,11 +41,11 @@ import kotlin.reflect.KSuspendFunction2
 
 @Composable
 fun SettingsAddMusicsScreen(
-    addMusicsViewModel: AddMusicsViewModelAndroidImpl,
+    addMusicsViewModel: SettingsAddMusicsViewModel,
     finishAction: () -> Unit,
     saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
 ) {
-    val addMusicsState by addMusicsViewModel.state.collectAsState()
+    val addMusicsState by addMusicsViewModel.handler.state.collectAsState()
 
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)

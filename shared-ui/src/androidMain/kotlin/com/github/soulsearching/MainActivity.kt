@@ -12,9 +12,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,56 +24,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.MissingPermissionsComposable
+import com.github.soulsearching.composables.NavigationHandler
 import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
 import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
 import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggableState
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
-import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.events.AddMusicsEvent
-import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.playback.PlayerService
-import com.github.soulsearching.screens.MainPageScreen
-import com.github.soulsearching.screens.ModifyAlbumScreen
-import com.github.soulsearching.screens.ModifyArtistScreen
-import com.github.soulsearching.screens.ModifyMusicScreen
-import com.github.soulsearching.screens.ModifyPlaylistScreen
-import com.github.soulsearching.screens.MoreAlbumsScreen
-import com.github.soulsearching.screens.MoreArtistsScreen
-import com.github.soulsearching.screens.MorePlaylistsScreen
-import com.github.soulsearching.screens.SelectedAlbumScreen
-import com.github.soulsearching.screens.SelectedArtistScreen
-import com.github.soulsearching.screens.SelectedPlaylistScreen
-import com.github.soulsearching.screens.settings.SettingsAboutScreen
-import com.github.soulsearching.screens.settings.SettingsAddMusicsScreen
-import com.github.soulsearching.screens.settings.SettingsColorThemeScreen
-import com.github.soulsearching.screens.settings.SettingsDevelopersScreen
-import com.github.soulsearching.screens.settings.SettingsManageMusicsScreen
-import com.github.soulsearching.screens.settings.SettingsPersonalisationScreen
-import com.github.soulsearching.screens.settings.SettingsScreen
-import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreen
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.viewmodel.AddMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.AllFoldersViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
@@ -91,6 +60,8 @@ import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,8 +93,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var playerMusicListViewModel: PlayerMusicListViewModelAndroidImpl
 
     // Settings view models:
-    private lateinit var allFoldersViewModel: AllFoldersViewModelAndroidImpl
-    private lateinit var addMusicsViewModel: AddMusicsViewModelAndroidImpl
+    private lateinit var allFoldersViewModel: SettingsAllFoldersViewModelAndroidImpl
+    private lateinit var addMusicsViewModel: SettingsAddMusicsViewModelAndroidImpl
 
     private lateinit var mainActivityViewModel: MainActivityViewModelAndroidImpl
 
@@ -155,9 +126,10 @@ class MainActivity : AppCompatActivity() {
     /**
      * Initialize the player ViewModel, used for managing view elements related to the playback.
      */
-    private fun initializePlayerViewModel(){
+    private fun initializePlayerViewModel() {
         PlayerUtils.playerViewModel = playerViewModel
-        PlayerUtils.playerViewModel.handler.retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
+        PlayerUtils.playerViewModel.handler.retrieveCoverMethod =
+            allImageCoversViewModel.handler::getImageCover
         PlayerUtils.playerViewModel.handler.updateNbPlayed =
             { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
     }
@@ -212,7 +184,6 @@ class MainActivity : AppCompatActivity() {
             // Settings view models:
             allFoldersViewModel = koinViewModel()
             addMusicsViewModel = koinViewModel()
-            val viewSettingsManager = injectElement<ViewSettingsManager>()
 
             initializeSharedPreferences()
             initializePlayerViewModel()
@@ -259,7 +230,10 @@ class MainActivity : AppCompatActivity() {
                 if (!mainActivityViewModel.handler.hasMusicsBeenFetched) {
                     FetchingMusicsComposable(
                         finishAddingMusicsAction = {
-                            settings.setBoolean(SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY, true)
+                            settings.setBoolean(
+                                SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY,
+                                true
+                            )
                             mainActivityViewModel.handler.hasMusicsBeenFetched = true
                         },
                         allMusicsViewModel = allMusicsViewModel
@@ -341,344 +315,33 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    NavHost(
-                        modifier = Modifier.fillMaxSize(),
+                    NavigationHandler(
                         navController = navController,
-                        startDestination = "mainPage",
-                        enterTransition =
-                        { fadeIn(animationSpec = tween(Constants.AnimationDuration.normal)) },
-                        exitTransition =
-                        { fadeOut(animationSpec = tween(Constants.AnimationDuration.normal)) },
-                    ) {
-                        composable("mainPage") {
-                            MainPageScreen(
-                                allMusicsViewModel = allMusicsViewModel,
-                                allPlaylistsViewModel = allPlaylistsViewModel,
-                                allAlbumsViewModel = allAlbumsViewModel,
-                                allArtistsViewModel = allArtistsViewModel,
-                                allImageCoversViewModel = allImageCoversViewModel,
-                                playerMusicListViewModel = playerMusicListViewModel,
-                                navigateToPlaylist = {
-                                    navController.navigate("selectedPlaylist/$it")
-                                },
-                                navigateToAlbum = {
-                                    navController.navigate("selectedAlbum/$it")
-                                },
-                                navigateToArtist = {
-                                    navController.navigate("selectedArtist/$it")
-                                },
-                                navigateToMorePlaylist = {
-                                    navController.navigate("morePlaylists")
-                                },
-                                navigateToMoreArtists = {
-                                    navController.navigate("moreArtists")
-                                },
-                                navigateToMoreShortcuts = {
-                                    navController.navigate("moreShortcuts")
-                                },
-                                navigateToMoreAlbums = {
-                                    navController.navigate("moreAlbums")
-                                },
-                                navigateToModifyMusic = {
-                                    navController.navigate("modifyMusic/$it")
-                                },
-                                navigateToModifyPlaylist = {
-                                    navController.navigate("modifyPlaylist/$it")
-                                },
-                                navigateToModifyAlbum = {
-                                    navController.navigate("modifyAlbum/$it")
-                                },
-                                navigateToModifyArtist = {
-                                    navController.navigate("modifyArtist/$it")
-                                },
-                                navigateToSettings = {
-                                    navController.navigate("settings")
-                                },
-                                playerDraggableState = playerDraggableState,
-                                searchDraggableState = searchDraggableState,
-                                musicState = musicState,
-                                playlistState = playlistState,
-                                albumState = albumState,
-                                artistState = artistState,
-                                quickAccessState = quickAccessState
-                            )
-                        }
-                        composable(
-                            "selectedPlaylist/{playlistId}",
-                            arguments = listOf(navArgument("playlistId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            SelectedPlaylistScreen(
-                                selectedPlaylistViewModel = selectedPlaylistViewModel,
-                                navigateToModifyPlaylist = {
-                                    navController.navigate(
-                                        "modifyPlaylist/" + backStackEntry.arguments?.getString(
-                                            "playlistId"
-                                        )
-                                    )
-                                },
-                                selectedPlaylistId = backStackEntry.arguments?.getString("playlistId")!!,
-                                playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                navigateBack = {
-                                    colorThemeManager.setNewPlaylistCover(null)
-                                    colorThemeManager.forceBasicThemeForPlaylists = false
-                                    navController.popBackStack()
-                                },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                },
-                                playerDraggableState = playerDraggableState,
-                                playerMusicListViewModel = playerMusicListViewModel
-                            )
-                        }
-                        composable(
-                            "selectedAlbum/{albumId}",
-                            arguments = listOf(navArgument("albumId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            SelectedAlbumScreen(
-                                selectedAlbumViewModel = selectedAlbumViewModel,
-                                navigateToModifyAlbum = {
-                                    navController.navigate(
-                                        "modifyAlbum/" + backStackEntry.arguments?.getString(
-                                            "albumId"
-                                        )
-                                    )
-                                },
-                                selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
-                                playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                navigateBack = {
-                                    colorThemeManager.setNewPlaylistCover(null)
-                                    colorThemeManager.forceBasicThemeForPlaylists = false
-                                    navController.popBackStack()
-                                },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                },
-                                playerDraggableState = playerDraggableState,
-                                playerMusicListViewModel = playerMusicListViewModel
-                            )
-                        }
-                        composable(
-                            "selectedArtist/{artistId}",
-                            arguments = listOf(navArgument("artistId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            SelectedArtistScreen(
-                                selectedArtistViewModel = selectedArtistsViewModel,
-                                navigateToModifyArtist = {
-                                    navController.navigate(
-                                        "modifyArtist/" + backStackEntry.arguments?.getString(
-                                            "artistId"
-                                        )
-                                    )
-                                },
-                                selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
-                                playlistState = playlistState,
-                                onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-                                navigateToModifyMusic = { navController.navigate("modifyMusic/$it") },
-                                navigateBack = {
-                                    colorThemeManager.setNewPlaylistCover(null)
-                                    colorThemeManager.forceBasicThemeForPlaylists = false
-                                    navController.popBackStack()
-                                },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                },
-                                playerDraggableState = playerDraggableState,
-                                playerMusicListViewModel = playerMusicListViewModel
-                            )
-                        }
-                        composable(
-                            "modifyPlaylist/{playlistId}",
-                            arguments = listOf(navArgument("playlistId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            ModifyPlaylistScreen(
-                                modifyPlaylistViewModel = modifyPlaylistViewModel,
-                                selectedPlaylistId = backStackEntry.arguments?.getString("playlistId")!!,
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                        composable(
-                            "modifyMusic/{musicId}",
-                            arguments = listOf(navArgument("musicId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            ModifyMusicScreen(
-                                modifyMusicViewModel = modifyMusicViewModel,
-                                selectedMusicId = backStackEntry.arguments?.getString("musicId")!!,
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                        composable(
-                            "modifyAlbum/{albumId}",
-                            arguments = listOf(navArgument("albumId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            ModifyAlbumScreen(
-                                modifyAlbumViewModel = modifyAlbumViewModel,
-                                selectedAlbumId = backStackEntry.arguments?.getString("albumId")!!,
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                        composable(
-                            "modifyArtist/{artistId}",
-                            arguments = listOf(navArgument("artistId") {
-                                type = NavType.StringType
-                            })
-                        ) { backStackEntry ->
-                            ModifyArtistScreen(
-                                modifyArtistViewModel = modifyArtistViewModel,
-                                selectedArtistId = backStackEntry.arguments?.getString("artistId")!!,
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                        composable(
-                            "morePlaylists"
-                        ) {
-                            MorePlaylistsScreen(
-                                allPlaylistsViewModel = allPlaylistsViewModel,
-                                navigateToSelectedPlaylist = { navController.navigate("selectedPlaylist/$it") },
-                                finishAction = { navController.popBackStack() },
-                                navigateToModifyPlaylist = { navController.navigate("modifyPlaylist/$it") },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                }
-                            )
-                        }
-                        composable(
-                            "moreAlbums"
-                        ) {
-                            MoreAlbumsScreen(
-                                allAlbumsViewModel = allAlbumsViewModel,
-                                navigateToSelectedAlbum = { navController.navigate("selectedAlbum/$it") },
-                                finishAction = { navController.popBackStack() },
-                                navigateToModifyAlbum = { navController.navigate("modifyAlbum/$it") },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                }
-                            )
-                        }
-                        composable(
-                            "moreArtists"
-                        ) {
-                            MoreArtistsScreen(
-                                allArtistsViewModel = allArtistsViewModel,
-                                navigateToSelectedArtist = { navController.navigate("selectedArtist/$it") },
-                                finishAction = { navController.popBackStack() },
-                                navigateToModifyArtist = { navController.navigate("modifyArtist/$it") },
-                                retrieveCoverMethod = {
-                                    allImageCoversViewModel.handler.getImageCover(
-                                        it
-                                    )
-                                }
-                            )
-                        }
-                        composable(
-                            "settings"
-                        ) {
-                            SettingsScreen(
-                                finishAction = { navController.popBackStack() },
-                                navigateToColorTheme = {
-                                    navController.navigate("colorTheme")
-                                },
-                                navigateToManageMusics = {
-                                    navController.navigate("manageMusics")
-                                },
-                                navigateToPersonalisation = {
-                                    navController.navigate("personalisation")
-                                },
-                                navigateToAbout = {
-                                    navController.navigate("about")
-                                }
-                            )
-                        }
-                        composable(
-                            "personalisation"
-                        ) {
-                            SettingsPersonalisationScreen(
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                        composable(
-                            "manageMusics"
-                        ) {
-                            SettingsManageMusicsScreen(
-                                finishAction = { navController.popBackStack() },
-                                navigateToFolders = {
-                                    allFoldersViewModel.handler.onFolderEvent(
-                                        FolderEvent.FetchFolders
-                                    )
-                                    navController.navigate("usedFolders")
-                                },
-                                navigateToAddMusics = {
-                                    addMusicsViewModel.handler.onAddMusicEvent(AddMusicsEvent.ResetState)
-                                    navController.navigate("addMusics")
-                                }
-                            )
-                        }
-                        composable(
-                            "usedFolders"
-                        ) {
-                            SettingsUsedFoldersScreen(
-                                finishAction = { navController.popBackStack() },
-                                allFoldersViewModel = allFoldersViewModel
-                            )
-                        }
-                        composable(
-                            "addMusics"
-                        ) {
-                            SettingsAddMusicsScreen(
-                                addMusicsViewModel = addMusicsViewModel,
-                                finishAction = { navController.popBackStack() },
-                                saveMusicFunction = allMusicsViewModel.handler::addMusic
-                            )
-                        }
-                        composable(
-                            "colorTheme"
-                        ) {
-                            SettingsColorThemeScreen(
-                                finishAction = { navController.popBackStack() },
-                                updateColorThemeMethod = colorThemeManager::updateColorTheme
-                            )
-                        }
-                        composable(
-                            "about"
-                        ) {
-                            SettingsAboutScreen(
-                                finishAction = { navController.popBackStack() },
-                                navigateToDevelopers = { navController.navigate("developers") }
-                            )
-                        }
-                        composable(
-                            "developers"
-                        ) {
-                            SettingsDevelopersScreen(
-                                finishAction = { navController.popBackStack() }
-                            )
-                        }
-                    }
+                        playerDraggableState = playerDraggableState,
+                        searchDraggableState = searchDraggableState,
+                        musicState = musicState,
+                        playlistState = playlistState,
+                        albumState = albumState,
+                        artistState = artistState,
+                        quickAccessState = quickAccessState,
+                        allPlaylistsViewModel = allPlaylistsViewModel,
+                        allImageCoversViewModel = allImageCoversViewModel,
+                        modifyArtistViewModel = modifyArtistViewModel,
+                        modifyAlbumViewModel = modifyAlbumViewModel,
+                        modifyMusicViewModel = modifyMusicViewModel,
+                        modifyPlaylistViewModel = modifyPlaylistViewModel,
+                        selectedArtistViewModel = selectedArtistsViewModel,
+                        selectedAlbumViewModel = selectedAlbumViewModel,
+                        selectedPlaylistViewModel = selectedPlaylistViewModel,
+                        settingsAllFoldersViewModel = allFoldersViewModel,
+                        addMusicsViewModel = addMusicsViewModel,
+                        allArtistsViewModel = allArtistsViewModel,
+                        allAlbumsViewModel = allAlbumsViewModel,
+                        allMusicsViewModel = allMusicsViewModel,
+                        allFoldersViewModel = allFoldersViewModel,
+                        playerMusicListViewModel = playerMusicListViewModel
+                    )
+
                     PlayerDraggableView(
                         maxHeight = maxHeight,
                         draggableState = playerDraggableState,
@@ -732,8 +395,10 @@ class MainActivity : AppCompatActivity() {
      */
     @Composable
     private fun InitializeMainActivityViewModel() {
-        mainActivityViewModel.handler.isReadPermissionGranted = SoulSearchingContext.checkIfReadPermissionGranted()
-        mainActivityViewModel.handler.isPostNotificationGranted = SoulSearchingContext.checkIfPostNotificationGranted()
+        mainActivityViewModel.handler.isReadPermissionGranted =
+            SoulSearchingContext.checkIfReadPermissionGranted()
+        mainActivityViewModel.handler.isPostNotificationGranted =
+            SoulSearchingContext.checkIfPostNotificationGranted()
     }
 
     /**
@@ -778,7 +443,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         try {
             allMusicsViewModel.handler.checkAndDeleteMusicIfNotExist()
-        } catch (_:RuntimeException) {
+        } catch (_: RuntimeException) {
 
         }
     }

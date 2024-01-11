@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 /**
  * Handler used for managing the AddMusicsViewModel.
  */
-open class AddMusicsViewModelHandler(
+open class SettingsAddMusicsViewModelHandler(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
     private val musicFetcher: MusicFetcher

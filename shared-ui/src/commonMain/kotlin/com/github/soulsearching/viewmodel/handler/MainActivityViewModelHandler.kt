@@ -23,4 +23,6 @@ class MainActivityViewModelHandler(
 
     var isReadPermissionGranted by mutableStateOf(false)
     var isPostNotificationGranted by mutableStateOf(false)
+
+    var hasSetDraggableStates by mutableStateOf(false)
 }

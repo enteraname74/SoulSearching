@@ -36,7 +36,6 @@ import com.github.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.soulsearching.composables.search.SearchAll
 import com.github.soulsearching.composables.search.SearchView
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.di.injectViewModel
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AlbumEvent
@@ -66,12 +65,12 @@ import java.util.UUID
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPageScreen(
-    allMusicsViewModel: AllMusicsViewModel = injectViewModel(),
-    allPlaylistsViewModel: AllPlaylistsViewModel = injectViewModel(),
-    allAlbumsViewModel: AllAlbumsViewModel = injectViewModel(),
-    allArtistsViewModel: AllArtistsViewModel = injectViewModel(),
-    allImageCoversViewModel: AllImageCoversViewModel = injectViewModel(),
-    playerMusicListViewModel: PlayerMusicListViewModel = injectViewModel(),
+    allMusicsViewModel: AllMusicsViewModel,
+    allPlaylistsViewModel: AllPlaylistsViewModel,
+    allAlbumsViewModel: AllAlbumsViewModel,
+    allArtistsViewModel: AllArtistsViewModel,
+    allImageCoversViewModel: AllImageCoversViewModel,
+    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,

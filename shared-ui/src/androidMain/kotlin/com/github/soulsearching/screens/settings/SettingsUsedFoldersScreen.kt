@@ -26,14 +26,14 @@ import com.github.soulsearching.composables.settings.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.FolderStateType
-import com.github.soulsearching.viewmodel.AllFoldersViewModel
+import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
 
 @Composable
 fun SettingsUsedFoldersScreen(
     finishAction : () -> Unit,
-    allFoldersViewModel: AllFoldersViewModel
+    settingsAllFoldersViewModel: SettingsAllFoldersViewModel
 ) {
-    val folderState by allFoldersViewModel.handler.state.collectAsState()
+    val folderState by settingsAllFoldersViewModel.handler.state.collectAsState()
 
     var savingProgress by rememberSaveable {
         mutableFloatStateOf(0F)
@@ -54,7 +54,7 @@ fun SettingsUsedFoldersScreen(
             leftAction = finishAction,
             rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
             rightAction = {
-                allFoldersViewModel.handler.onFolderEvent(
+                settingsAllFoldersViewModel.handler.onFolderEvent(
                     FolderEvent.SaveSelection(
                         updateProgress = {
                             savingProgress = it
@@ -81,7 +81,7 @@ fun SettingsUsedFoldersScreen(
                         SettingsSwitchElement(
                             title = it.folderPath,
                             toggleAction = {
-                                allFoldersViewModel.handler.onFolderEvent(
+                                settingsAllFoldersViewModel.handler.onFolderEvent(
                                     FolderEvent.SetSelectedFolder(
                                         folder = it,
                                         isSelected = !it.isSelected

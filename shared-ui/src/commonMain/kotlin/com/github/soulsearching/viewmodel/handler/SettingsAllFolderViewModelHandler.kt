@@ -23,7 +23,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * Handler for managing the AllFolderViewModel.
  */
-open class AllFolderViewModelHandler(
+open class SettingsAllFolderViewModelHandler(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,
