@@ -1,6 +1,5 @@
 package com.github.soulsearching.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -29,7 +28,6 @@ fun MainMenuHeaderComposable(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SoulSearchingColorTheme.colorScheme.primary)
             .padding(
                 start = Constants.Spacing.medium,
                 end = Constants.Spacing.medium,

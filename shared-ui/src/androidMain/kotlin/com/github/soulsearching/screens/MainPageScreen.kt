@@ -36,6 +36,7 @@ import com.github.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.soulsearching.composables.search.SearchAll
 import com.github.soulsearching.composables.search.SearchView
 import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.di.injectViewModel
 import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AlbumEvent
@@ -65,12 +66,12 @@ import java.util.UUID
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainPageScreen(
-    allMusicsViewModel: AllMusicsViewModel,
-    allPlaylistsViewModel: AllPlaylistsViewModel,
-    allAlbumsViewModel: AllAlbumsViewModel,
-    allArtistsViewModel: AllArtistsViewModel,
-    allImageCoversViewModel: AllImageCoversViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
+    allMusicsViewModel: AllMusicsViewModel = injectViewModel(),
+    allPlaylistsViewModel: AllPlaylistsViewModel = injectViewModel(),
+    allAlbumsViewModel: AllAlbumsViewModel = injectViewModel(),
+    allArtistsViewModel: AllArtistsViewModel = injectViewModel(),
+    allImageCoversViewModel: AllImageCoversViewModel = injectViewModel(),
+    playerMusicListViewModel: PlayerMusicListViewModel = injectViewModel(),
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -125,7 +126,6 @@ fun MainPageScreen(
         CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent)
     }
 
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -136,6 +136,7 @@ fun MainPageScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = SoulSearchingColorTheme.colorScheme.primary)
         ) {
             MainMenuHeaderComposable(
                 settingsAction = navigateToSettings,
@@ -441,6 +442,7 @@ fun MainPageScreen(
                     }
                     stickyHeader {
                         SubMenuComposable(
+                            backgroundColor = SoulSearchingColorTheme.colorScheme.primary,
                             title = stringResource(id = R.string.musics),
                             sortByDateAction = {
                                 allMusicsViewModel.handler.onMusicEvent(
@@ -480,7 +482,8 @@ fun MainPageScreen(
                                                 coroutineScope
                                                     .launch {
                                                         playerDraggableState.animateTo(
-                                                            BottomSheetStates.EXPANDED)
+                                                            BottomSheetStates.EXPANDED
+                                                        )
                                                     }
                                                     .invokeOnCompletion {
                                                         PlayerUtils.playerViewModel.handler.playShuffle(
