@@ -18,48 +18,47 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
-import com.github.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
-import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
+import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
+import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MorePlaylistsScreen(
-    allPlaylistsViewModel: AllPlaylistsViewModel,
-    navigateToSelectedPlaylist: (String) -> Unit,
+fun MoreArtistsScreen(
+    allArtistsViewModel: AllArtistsViewModel,
+    navigateToSelectedArtist: (String) -> Unit,
+    navigateToModifyArtist: (String) -> Unit,
     finishAction: () -> Unit,
-    navigateToModifyPlaylist: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
+    val artistState by allArtistsViewModel.handler.state.collectAsState()
 
-    PlaylistBottomSheetEvents(
-        playlistState = playlistState,
-        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-        navigateToModifyPlaylist = navigateToModifyPlaylist
+    ArtistBottomSheetEvents(
+        artistState = artistState,
+        onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
+        navigateToModifyArtist = navigateToModifyArtist
     )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = SoulSearchingColorTheme.colorScheme.primary)
-            .padding(bottom = 80.dp)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.playlists),
+            title = strings.artists,
             leftAction = finishAction
         )
         Row(
@@ -71,33 +70,32 @@ fun MorePlaylistsScreen(
             SortOptionsComposable(
                 imageSize = Constants.Spacing.large,
                 sortByName = {
-                    allPlaylistsViewModel.handler.onPlaylistEvent(
-                        PlaylistEvent.SetSortType(SortType.NAME)
+                    allArtistsViewModel.handler.onArtistEvent(
+                        ArtistEvent.SetSortType(SortType.NAME)
                     )
                 },
                 sortByMostListenedAction = {
-                    allPlaylistsViewModel.handler.onPlaylistEvent(
-                        PlaylistEvent.SetSortType(SortType.NB_PLAYED)
+                    allArtistsViewModel.handler.onArtistEvent(
+                        ArtistEvent.SetSortType(SortType.NB_PLAYED)
                     )
                 },
                 sortByDateAction = {
-                    allPlaylistsViewModel.handler.onPlaylistEvent(
-                        PlaylistEvent.SetSortType(SortType.ADDED_DATE)
+                    allArtistsViewModel.handler.onArtistEvent(
+                        ArtistEvent.SetSortType(SortType.ADDED_DATE)
                     )
                 },
                 setSortDirection = {
-                    val newDirection =
-                        if (playlistState.sortDirection == SortDirection.ASC) {
-                            SortDirection.DESC
-                        } else {
-                            SortDirection.ASC
-                        }
-                    allPlaylistsViewModel.handler.onPlaylistEvent(
-                        PlaylistEvent.SetSortDirection(newDirection)
+                    val newDirection = if (artistState.sortDirection == SortDirection.ASC) {
+                        SortDirection.DESC
+                    } else {
+                        SortDirection.ASC
+                    }
+                    allArtistsViewModel.handler.onArtistEvent(
+                        ArtistEvent.SetSortDirection(newDirection)
                     )
                 },
-                sortType = playlistState.sortType,
-                sortDirection = playlistState.sortDirection
+                sortType = artistState.sortType,
+                sortDirection = artistState.sortDirection
             )
         }
         LazyVerticalGrid(
@@ -112,37 +110,25 @@ fun MorePlaylistsScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             items(
-                items = playlistState.playlists
-            ) { playlistWithMusics ->
+                items = artistState.artists,
+            ) { artistWithMusics ->
                 BigPreviewComposable(
                     modifier = Modifier.animateItemPlacement(),
-                    image = retrieveCoverMethod(playlistWithMusics.playlist.coverId),
-                    title = playlistWithMusics.playlist.name,
-                    text = if (playlistWithMusics.musicsNumber == 1) {
-                        stringResource(id = R.string.one_music)
-                    } else {
-                        stringResource(
-                            id = R.string.multiple_musics,
-                            playlistWithMusics.musicsNumber
-                        )
-                    },
+                    image = retrieveCoverMethod(artistWithMusics.artist.coverId),
+                    title = artistWithMusics.artist.artistName,
+                    text = strings.musics(artistWithMusics.musics.size),
                     onClick = {
-                        allPlaylistsViewModel.handler.onPlaylistEvent(
-                            PlaylistEvent.SetSelectedPlaylist(
-                                playlistWithMusics.playlist
-                            )
-                        )
-                        navigateToSelectedPlaylist(playlistWithMusics.playlist.playlistId.toString())
+                        navigateToSelectedArtist(artistWithMusics.artist.artistId.toString())
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            allPlaylistsViewModel.handler.onPlaylistEvent(
-                                PlaylistEvent.SetSelectedPlaylist(
-                                    playlistWithMusics.playlist
+                            allArtistsViewModel.handler.onArtistEvent(
+                                ArtistEvent.SetSelectedArtistWithMusics(
+                                    artistWithMusics
                                 )
                             )
-                            allPlaylistsViewModel.handler.onPlaylistEvent(
-                                PlaylistEvent.BottomSheet(
+                            allArtistsViewModel.handler.onArtistEvent(
+                                ArtistEvent.BottomSheet(
                                     isShown = true
                                 )
                             )

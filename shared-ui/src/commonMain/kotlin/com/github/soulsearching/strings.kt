@@ -44,7 +44,6 @@ interface Strings {
     val personalizeMainPageTitle: String
     val personalizeMainPageText: String
 
-
     val searchingSongsFromYourDevice: String
     val searchForMusics: String
 
@@ -65,6 +64,9 @@ interface Strings {
 
     val createPlaylistDialogTitle: String
     val playlistName: String
+    val playlistCover: String
+    val playlistInformation: String
+
     val deleteMusicDialogTitle: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
@@ -149,6 +151,9 @@ object FrStrings : Strings {
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
     override val playlistName = "Nom de la playlist"
+    override val playlistCover = "Couverture de la playlist"
+    override val playlistInformation = "Informations de la playlist" +
+            ""
     override val deleteMusicDialogTitle = "Are you sure to delete this song?"
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
@@ -236,6 +241,9 @@ object EnStrings : Strings {
 
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
+    override val playlistCover = "Playlist's cover"
+    override val playlistInformation = "Playlist's information"
+
     override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"

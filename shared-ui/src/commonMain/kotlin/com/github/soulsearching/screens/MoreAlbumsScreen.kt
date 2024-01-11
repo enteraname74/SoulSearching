@@ -17,15 +17,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.composables.SortOptionsComposable
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.events.AlbumEvent
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
@@ -56,7 +55,7 @@ fun MoreAlbumsScreen(
             .background(color = SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.albums),
+            title = strings.albums,
             leftAction = finishAction
         )
         Row(
