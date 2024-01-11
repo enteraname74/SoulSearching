@@ -134,9 +134,6 @@ android {
         }
     }
 }
-dependencies {
-    implementation(project(":shared-ui"))
-}
 
 compose.desktop {
     application {
