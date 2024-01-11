@@ -22,15 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.stringResource
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.MusicSelectableComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.AddMusicsStateType
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
@@ -65,7 +64,7 @@ fun SettingsAddMusicsScreen(
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.add_musics_title),
+            title = strings.addMusicsTitle,
             leftAction = finishAction,
             rightIcon = if (addMusicsState.state == AddMusicsStateType.WAITING_FOR_USER_ACTION) Icons.Rounded.Check else null,
             rightAction = {
@@ -91,7 +90,7 @@ fun SettingsAddMusicsScreen(
                 )
                 LoadingComposable(
                     progressIndicator = animatedProgress,
-                    progressMessage = stringResource(id = R.string.searching_songs_from_your_device)
+                    progressMessage = strings.searchingSongsFromYourDevice
                 )
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
@@ -117,7 +116,7 @@ fun SettingsAddMusicsScreen(
                     )
                     LoadingComposable(
                         progressIndicator = animatedProgress,
-                        progressMessage = stringResource(id = R.string.saving_new_musics)
+                        progressMessage = strings.savingNewMusics
                     )
                     if (!isSavingMusics) {
                         LaunchedEffect(key1 = "SavingMusics") {
@@ -147,7 +146,7 @@ fun SettingsAddMusicsScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = stringResource(id = R.string.no_new_musics),
+                            text = strings.noNewMusics,
                             color = SoulSearchingColorTheme.colorScheme.onPrimary
                         )
                     }

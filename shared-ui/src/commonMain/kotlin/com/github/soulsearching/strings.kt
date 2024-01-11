@@ -20,6 +20,7 @@ interface Strings {
     val moreButton: String
     val more: String
     val settingsAccessButton: String
+    val createPlaylistButton: String
     val shuffleButton: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
@@ -46,6 +47,7 @@ interface Strings {
 
     val searchingSongsFromYourDevice: String
     val searchForMusics: String
+    val searchAll: String
 
     val sortByDateAdded: String
     val sortByMostListened: String
@@ -64,8 +66,16 @@ interface Strings {
 
     val createPlaylistDialogTitle: String
     val playlistName: String
+    val musicName: String
+    val albumName: String
+    val artistName: String
     val playlistCover: String
+    val albumCover: String
+    val artistCover: String
     val playlistInformation: String
+    val musicInformation: String
+    val artistInformation: String
+    val albumInformation: String
 
     val deleteMusicDialogTitle: String
     val deleteAlbumDialogTitle: String
@@ -90,6 +100,46 @@ interface Strings {
     val dynamicPlaylistView: String
     val dynamicOtherView: String
 
+    val settings: String
+    val manageMusicsTitle: String
+    val manageMusicsText: String
+    val colorThemeTitle: String
+    val colorThemeText: String
+    val personalizationTitle: String
+    val personalizationText: String
+    val aboutTitle: String
+    val aboutText: String
+
+    val mainPageTitle: String
+    val mainPageText: String
+    val showQuickAccess: String
+    val showPlaylists: String
+    val showAlbums: String
+    val showArtists: String
+    val showVerticalAccessBarTitle: String
+    val showVerticalAccessBarText: String
+
+    val usedFoldersTitle: String
+    val usedFoldersText: String
+    val fetchingFolders: String
+    val addMusicsTitle: String
+    val addMusicsText: String
+    val deletingMusicsFromUnselectedFolders: String
+
+    val dynamicThemeTitle: String
+    val dynamicThemeText: String
+    val systemThemeTitle: String
+    val systemThemeText: String
+
+    val leadDeveloper: String
+    val developersTitle: String
+    val developersText: String
+    val versionNameTitle: String
+    val versionNameActionText: String get() = "Soul Searching - Average White Band - 1976"
+
+    val noNewMusics: String
+    val savingNewMusics: String
+
     /**
      * Show a text indicating the number of musics.
      */
@@ -103,6 +153,7 @@ object FrStrings : Strings {
     override val appLogo = "Logo de l'application"
     override val noElements = "Aucun élément"
     override val backButton = "Bouton de retour"
+    override val createPlaylistButton = "Bouton pour créer une playlist"
     override val headerBarRightButton = "Bouton droit de la bar d'état"
     override val image = "Image"
     override val moreButton = "Bouton pour plus d'options"
@@ -129,6 +180,7 @@ object FrStrings : Strings {
 
     override val searchingSongsFromYourDevice = "Recherche de musiques sur votre appareil…"
     override val searchForMusics = "Rechercher une musique"
+    override val searchAll = "Rechercher une musique, un album, un artiste, une playlist…"
 
     override val artists = "Artistes"
     override val musics = "Musiques"
@@ -151,10 +203,18 @@ object FrStrings : Strings {
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
     override val playlistName = "Nom de la playlist"
+    override val musicName = "Nom de la musique"
+    override val albumName = "Nom de l'album"
+    override val artistName = "Nom de l'artiste"
     override val playlistCover = "Couverture de la playlist"
-    override val playlistInformation = "Informations de la playlist" +
-            ""
-    override val deleteMusicDialogTitle = "Are you sure to delete this song?"
+    override val albumCover = "Couverture de l'album"
+    override val artistCover = "Couverture de l'artiste"
+    override val playlistInformation = "Informations de la playlist"
+    override val musicInformation = "Informations de la musique"
+    override val artistInformation = "Informations de l'artiste"
+    override val albumInformation = "Informations de l'album"
+
+    override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
@@ -177,6 +237,45 @@ object FrStrings : Strings {
     override val dynamicPlaylistView = "Utiliser le thème dynamique pour la vue des playlists, albums et artistes"
     override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
 
+    override val settings = "Paramètres"
+    override val manageMusicsTitle = "Gérer les musiques"
+    override val manageMusicsText = "Ajouter de nouvelles musiques et gérer les dossiers utilisés"
+    override val colorThemeTitle = "Thème de couleur"
+    override val colorThemeText = "Thème dynamique, personnalisé"
+    override val personalizationTitle = "Personnalisation"
+    override val personalizationText = "Gérer la vue de la page principale"
+    override val aboutTitle = "À propos de Soul Searching"
+    override val aboutText = "Développeurs, nom de la version de l'application"
+
+    override val mainPageTitle = "Page principale"
+    override val mainPageText = "Gérer la vue de la page principale"
+    override val showQuickAccess = "Afficher les accès rapides"
+    override val showPlaylists = "Afficher les playlists"
+    override val showAlbums = "Afficher les albums"
+    override val showArtists = "Afficher les artistes"
+    override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
+    override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
+
+    override val usedFoldersTitle = "Dossiers utilisés"
+    override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
+    override val addMusicsTitle = "Ajouter des musiques"
+    override val addMusicsText = "Ajouter des nouvelles musiques de votre téléphone dans l'application"
+    override val fetchingFolders = "Récupération des dossiers"
+    override val deletingMusicsFromUnselectedFolders = "Suppression des musiques des dossiers désélectionnés…"
+
+    override val dynamicThemeTitle = "Thème dynamique"
+    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d\\'album de la musique jouée courante"
+    override val systemThemeTitle = "Thème du système"
+    override val systemThemeText = "Thème de couleur global basé sur le mode de couleur de votre système"
+
+    override val leadDeveloper = "Développeur principal"
+    override val developersTitle = "Développeurs"
+    override val developersText = "Les développeurs derrière le projet Soul Searching"
+    override val versionNameTitle = "Nom de la version de l'application"
+
+    override val noNewMusics = "Aucune nouvelle musique à ajouter !"
+    override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
+
     override fun musics(total: Int): String {
         return if (total == 1) {
             "musique"
@@ -193,6 +292,7 @@ object EnStrings : Strings {
     override val appLogo = "Application's logo"
     override val noElements = "No elements"
     override val backButton = "Back button"
+    override val createPlaylistButton = "Create playlist button"
     override val headerBarRightButton = "Header bar right button"
     override val image = "Image"
     override val moreButton = "More button"
@@ -219,6 +319,7 @@ object EnStrings : Strings {
 
     override val searchingSongsFromYourDevice = "Searching songs from your device…"
     override val searchForMusics = "Search a song"
+    override val searchAll = "Search a song, an artist, an album, a playlist…"
 
     override val artists = "Artists"
     override val musics = "Songs"
@@ -241,10 +342,18 @@ object EnStrings : Strings {
 
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
+    override val musicName = "Song's name"
+    override val albumName = "Album's name"
+    override val artistName = "Artist's name"
     override val playlistCover = "Playlist's cover"
+    override val albumCover = "Album's cover"
+    override val artistCover = "Artist's cover"
     override val playlistInformation = "Playlist's information"
+    override val musicInformation = "Song's information"
+    override val artistInformation = "Artist's information"
+    override val albumInformation = "Album's information"
 
-    override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
+    override val deleteMusicDialogTitle = "Are you sure to delete this song?"
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"
     override val deleteArtistDialogTitle = "Are you sure to delete this artist?"
@@ -266,6 +375,45 @@ object EnStrings : Strings {
     override val dynamicPlayerView = "Use dynamic theme for player view"
     override val dynamicPlaylistView = "Use dynamic theme for playlist, album and artist view"
     override val dynamicOtherView = "Use dynamic theme for the other views"
+
+    override val settings = "Settings"
+    override val manageMusicsTitle = "Manage songs"
+    override val manageMusicsText = "Add new songs and manage used folders"
+    override val colorThemeTitle = "Color theme"
+    override val colorThemeText = "Dynamic theme, personalized theme"
+    override val personalizationTitle = "Personalization"
+    override val personalizationText = "Manage main page view"
+    override val aboutTitle = "About Soul Searching"
+    override val aboutText = "Developers, application's version name"
+
+    override val mainPageTitle = "Main page"
+    override val mainPageText = "Manage main page view"
+    override val showQuickAccess = "Show quick access"
+    override val showPlaylists = "Show playlists"
+    override val showAlbums = "Show albums"
+    override val showArtists = "Show artists"
+    override val showVerticalAccessBarTitle = "Show vertical access bar"
+    override val showVerticalAccessBarText = "Gives quick access to all elements on the main page"
+
+    override val usedFoldersTitle = "Used folders"
+    override val usedFoldersText = "Define the folders used in the application"
+    override val addMusicsTitle = "Add songs"
+    override val addMusicsText = "Add new songs from your device to the application"
+    override val fetchingFolders = "Fetching folders"
+    override val deletingMusicsFromUnselectedFolders = "Deleting songs from unselected folders…"
+
+    override val dynamicThemeTitle = "Dynamic theme"
+    override val dynamicThemeText = "Global color theme based on the current played song's album cover"
+    override val systemThemeTitle = "System theme"
+    override val systemThemeText = "Global color theme based on your system color mode"
+
+    override val leadDeveloper = "Lead developer"
+    override val developersTitle = "Developers"
+    override val developersText = "The developers behind the Soul Searching project"
+    override val versionNameTitle = "Application's version name"
+
+    override val noNewMusics = "No new songs to add!"
+    override val savingNewMusics = "Saving new songs…"
 
     override fun musics(total: Int): String {
         return if (total == 1) {

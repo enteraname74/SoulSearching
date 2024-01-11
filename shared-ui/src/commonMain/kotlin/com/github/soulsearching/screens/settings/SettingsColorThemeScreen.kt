@@ -7,13 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.ColorThemeCard
 import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
 import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ColorThemeType
@@ -30,14 +29,14 @@ fun SettingsColorThemeScreen(
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.color_theme_title),
+            title = strings.colorThemeTitle,
             leftAction = finishAction
         )
         LazyColumn {
             item {
                 ColorThemeCard(
-                    title = stringResource(id = R.string.dynamic_theme_title),
-                    text = stringResource(id = R.string.dynamic_theme_text),
+                    title = strings.dynamicThemeTitle,
+                    text = strings.dynamicThemeText,
                     onClick = { updateColorThemeMethod(ColorThemeType.DYNAMIC) },
                     isSelected = colorThemeManager.colorThemeType == ColorThemeType.DYNAMIC,
                     firstImagePath = "dynamic_main",
@@ -46,8 +45,8 @@ fun SettingsColorThemeScreen(
             }
             item {
                 ColorThemeCard(
-                    title = stringResource(id = R.string.system_theme_title),
-                    text = stringResource(id = R.string.system_theme_text),
+                    title = strings.systemThemeTitle,
+                    text = strings.systemThemeText,
                     onClick = { updateColorThemeMethod(ColorThemeType.SYSTEM) },
                     isSelected = colorThemeManager.colorThemeType == ColorThemeType.SYSTEM,
                     firstImagePath = if (isSystemInDarkTheme()) {

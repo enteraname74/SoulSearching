@@ -19,9 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.Constants
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.MainMenuHeaderComposable
 import com.github.soulsearching.composables.MainMenuLazyListRow
 import com.github.soulsearching.composables.MainPageVerticalShortcut
@@ -48,6 +46,7 @@ import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.states.QuickAccessState
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.SortDirection
@@ -165,7 +164,7 @@ fun MainPageScreen(
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                 list = quickAccessState.allQuickAccess,
-                                title = stringResource(id = R.string.quick_access),
+                                title = strings.quickAccess,
                                 navigateToMore = navigateToMoreShortcuts,
                                 isUsingSort = false,
                                 isUsingMoreButton = false,
@@ -262,7 +261,7 @@ fun MainPageScreen(
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                 list = playlistState.playlists,
-                                title = stringResource(id = R.string.playlists),
+                                title = strings.playlists,
                                 navigateToMore = navigateToMorePlaylist,
                                 navigateToPlaylist = {
                                     allPlaylistsViewModel.handler.onPlaylistEvent(
@@ -298,7 +297,7 @@ fun MainPageScreen(
                                             }
                                             .size(Constants.ImageSize.medium),
                                         imageVector = Icons.Rounded.Add,
-                                        contentDescription = stringResource(id = R.string.create_playlist_button),
+                                        contentDescription = strings.createPlaylistButton,
                                         tint = SoulSearchingColorTheme.colorScheme.onPrimary
                                     )
                                 },
@@ -338,7 +337,7 @@ fun MainPageScreen(
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                 list = albumState.albums,
-                                title = stringResource(id = R.string.albums),
+                                title = strings.albums,
                                 navigateToMore = navigateToMoreAlbums,
                                 navigateToAlbum = navigateToAlbum,
                                 albumBottomSheetAction = {
@@ -391,7 +390,7 @@ fun MainPageScreen(
                             MainMenuLazyListRow(
                                 retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                 list = artistState.artists,
-                                title = stringResource(id = R.string.artists),
+                                title = strings.artists,
                                 navigateToMore = navigateToMoreArtists,
                                 navigateToArtist = navigateToArtist,
                                 artistBottomSheetAction = {
@@ -442,7 +441,7 @@ fun MainPageScreen(
                     stickyHeader {
                         SubMenuComposable(
                             backgroundColor = SoulSearchingColorTheme.colorScheme.primary,
-                            title = stringResource(id = R.string.musics),
+                            title = strings.musics,
                             sortByDateAction = {
                                 allMusicsViewModel.handler.onMusicEvent(
                                     MusicEvent.SetSortType(SortType.ADDED_DATE)
@@ -493,7 +492,7 @@ fun MainPageScreen(
                                             }
                                         },
                                     imageVector = Icons.Rounded.Shuffle,
-                                    contentDescription = stringResource(id = R.string.shuffle_button_desc),
+                                    contentDescription = strings.shuffleButton,
                                     tint = SoulSearchingColorTheme.colorScheme.onPrimary
                                 )
                             },
@@ -546,7 +545,7 @@ fun MainPageScreen(
         SearchView(
             draggableState = searchDraggableState,
             playerDraggableState = playerDraggableState,
-            placeholder = stringResource(id = R.string.search_all)
+            placeholder = strings.searchAll
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,

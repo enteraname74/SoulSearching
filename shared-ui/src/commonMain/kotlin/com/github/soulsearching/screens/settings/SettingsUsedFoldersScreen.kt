@@ -16,14 +16,13 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.FolderStateComposable
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
 import com.github.soulsearching.events.FolderEvent
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.FolderStateType
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
@@ -50,7 +49,7 @@ fun SettingsUsedFoldersScreen(
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.used_folders_title),
+            title = strings.usedFoldersTitle,
             leftAction = finishAction,
             rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
             rightAction = {
@@ -66,13 +65,13 @@ fun SettingsUsedFoldersScreen(
         when(folderState.state) {
             FolderStateType.FETCHING_FOLDERS -> {
                 FolderStateComposable(
-                    stateTitle = stringResource(id = R.string.fetching_folders)
+                    stateTitle = strings.fetchingFolders
                 )
             }
             FolderStateType.SAVING_SELECTION -> {
                 LoadingComposable(
                     progressIndicator = savingAnimatedProgress,
-                    progressMessage = stringResource(id = R.string.deleting_musics_from_unselected_folders)
+                    progressMessage = strings.deletingMusicsFromUnselectedFolders
                 )
             }
             FolderStateType.WAITING_FOR_USER_ACTION -> {

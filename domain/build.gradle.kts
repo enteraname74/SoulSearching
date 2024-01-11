@@ -53,10 +53,3 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
-//dependencies {
-//    implementation(Dependencies.COROUTINES_CORE)
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-//    implementation(Dependencies.INJECT_API)
-//    implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
-//}

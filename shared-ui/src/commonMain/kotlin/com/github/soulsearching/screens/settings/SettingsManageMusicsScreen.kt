@@ -4,46 +4,47 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.R
-import com.github.soulsearching.model.Developer
 import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.SettingsElement
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
-fun SettingsDevelopersScreen(
-    finishAction: () -> Unit
+fun SettingsManageMusicsScreen(
+    finishAction: () -> Unit,
+    navigateToFolders: () -> Unit,
+    navigateToAddMusics: () -> Unit,
 ) {
-    val developers = listOf(
-        Developer(
-            name = "Noah Penin",
-            function = stringResource(id = R.string.lead_developer)
-        )
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.developers_title),
+            title = strings.manageMusicsTitle,
             leftAction = finishAction
         )
         LazyColumn {
-            items(developers) {developer ->
+            item {
                 SettingsElement(
-                    title = developer.name,
-                    text = developer.function
+                    title = strings.usedFoldersTitle,
+                    text = strings.usedFoldersText,
+                    icon = Icons.Rounded.Folder,
+                    clickAction = navigateToFolders
                 )
             }
             item {
-                PlayerSpacer()
+                SettingsElement(
+                    title = strings.addMusicsTitle,
+                    text = strings.addMusicsText,
+                    icon = Icons.Rounded.MusicNote,
+                    clickAction = navigateToAddMusics
+                )
             }
         }
     }

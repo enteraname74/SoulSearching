@@ -11,11 +11,10 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.github.soulsearching.R
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.SettingsElement
+import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
@@ -32,38 +31,38 @@ fun SettingsScreen(
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
         AppHeaderBar(
-            title = stringResource(id = R.string.settings),
+            title = strings.settings,
             leftAction = finishAction
         )
         LazyColumn {
             item {
                 SettingsElement(
-                    title = stringResource(id = R.string.manage_musics_title),
-                    text = stringResource(id = R.string.manage_musics_text),
+                    title = strings.manageMusicsTitle,
+                    text = strings.manageMusicsText,
                     icon = Icons.Rounded.MusicNote,
                     clickAction = navigateToManageMusics
                 )
             }
             item {
                 SettingsElement(
-                    title = stringResource(id = R.string.color_theme_title),
-                    text = stringResource(id = R.string.color_theme_text),
+                    title = strings.colorThemeTitle,
+                    text = strings.colorThemeText,
                     icon = Icons.Rounded.Palette,
                     clickAction = navigateToColorTheme
                 )
             }
             item {
                 SettingsElement(
-                    title = stringResource(id = R.string.personalization_title),
-                    text = stringResource(id = R.string.personalization_text),
+                    title = strings.personalizationTitle,
+                    text = strings.personalizationText,
                     icon = Icons.Rounded.Edit,
                     clickAction = navigateToPersonalisation
                 )
             }
             item {
                 SettingsElement(
-                    title = stringResource(id = R.string.about_title),
-                    text = stringResource(id = R.string.about_text),
+                    title = strings.aboutTitle,
+                    text = strings.aboutText,
                     icon = Icons.Rounded.Info,
                     clickAction = navigateToAbout
                 )

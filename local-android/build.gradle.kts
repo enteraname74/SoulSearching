@@ -5,7 +5,6 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 
 plugins {
     id("com.android.library")
-//    id("kotlin-android")
     id("org.jetbrains.kotlin.multiplatform")
     kotlin("kapt")
 }
@@ -31,17 +30,6 @@ kotlin {
                             "androidx.room",
                             "room-compiler",
                             Versions.AndroidX.ROOM
-                        )
-                    )
-                }
-
-                with(Dependencies.Google) {
-                    implementation(HILT_ANDROID)
-                    configurations.getByName("kapt").dependencies.add(
-                        DefaultExternalModuleDependency(
-                            "com.google.dagger",
-                            "hilt-compiler",
-                            Versions.Google.DAGGER
                         )
                     )
                 }
