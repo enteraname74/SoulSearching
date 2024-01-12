@@ -29,4 +29,11 @@ class NavigationController<T>(
     fun navigateTo(route: Route<T>) {
         navigationStack.add(route)
     }
+
+    /**
+     * Tries to retrieve an argument of the current route.
+     */
+    fun getArgument(key: String): Any? {
+        return currentRoute.arguments[key]
+    }
 }
