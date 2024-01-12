@@ -24,7 +24,6 @@ import com.github.enteraname74.localandroid.model.*
     ],
     version = 16
 )
-
 @TypeConverters(Converters::class)
 internal abstract class AppDatabase : RoomDatabase() {
     abstract val musicDao: MusicDao

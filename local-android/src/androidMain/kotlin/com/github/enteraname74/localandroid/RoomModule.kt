@@ -26,20 +26,6 @@ import com.github.enteraname74.localandroid.datasourceimpl.PlaylistDataSourceImp
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-//@Module
-//@InstallIn(SingletonComponent::class)
-//internal class AppModule {
-//    @Provides
-//    @Singleton
-//    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-//        return Room.databaseBuilder(
-//            appContext,
-//            AppDatabase::class.java,
-//            "SoulSearching.db"
-//        ).fallbackToDestructiveMigration().build()
-//    }
-//}
-
 /**
  * Module for Room.
  */
@@ -64,40 +50,3 @@ val roomModule = module {
     single<PlayerMusicDataSource> { PlayerMusicDataSourceImpl(get()) }
     single<PlaylistDataSource> { PlaylistDataSourceImpl(get()) }
 }
-
-//@Module
-//@InstallIn(SingletonComponent::class)
-//abstract class DataSourceModule {
-//    @Binds
-//    internal abstract fun bindAlbumArtistDataSource(dataSourceImpl: AlbumArtistDataSourceImpl): AlbumArtistDataSource
-//
-//    @Binds
-//    internal abstract fun bindAlbumDataSource(dataSourceImpl: AlbumDataSourceImpl): AlbumDataSource
-//
-//    @Binds
-//    internal abstract fun bindArtistDataSource(dataSourceImpl: ArtistDataSourceImpl): ArtistDataSource
-//
-//    @Binds
-//    internal abstract fun bindFolderDataSource(dataSourceImpl: FolderDataSourceImpl): FolderDataSource
-//
-//    @Binds
-//    internal abstract fun bindImageCoverDataSource(dataSourceImpl: ImageCoverDataSourceImpl): ImageCoverDataSource
-//
-//    @Binds
-//    internal abstract fun bindMusicAlbumDataSource(dataSourceImpl: MusicAlbumDataSourceImpl): MusicAlbumDataSource
-//
-//    @Binds
-//    internal abstract fun bindMusicArtistDataSource(dataSourceImpl: MusicArtistDataSourceImpl): MusicArtistDataSource
-//
-//    @Binds
-//    internal abstract fun bindMusicDataSource(dataSourceImpl: MusicDataSourceImpl): MusicDataSource
-//
-//    @Binds
-//    internal abstract fun bindMusicPlaylistDataSource(dataSourceImpl: MusicPlaylistDataSourceImpl): MusicPlaylistDataSource
-//
-//    @Binds
-//    internal abstract fun bindPlayerMusicDataSource(dataSourceImpl: PlayerMusicDataSourceImpl): PlayerMusicDataSource
-//
-//    @Binds
-//    internal abstract fun bindPlaylistDataSourceImpl(dataSourceImpl: PlaylistDataSourceImpl): PlaylistDataSource
-//}

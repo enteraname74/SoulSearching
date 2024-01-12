@@ -3,9 +3,11 @@ package com.github.soulsearching.composables
 import androidx.compose.runtime.Composable
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
+import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
+import com.github.soulsearching.navigation.NavigationController
 import com.github.soulsearching.navigation.NavigationHost
 import com.github.soulsearching.navigation.Route
 import com.github.soulsearching.navigation.RoutesNames
@@ -44,7 +46,6 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.NavigationViewModel
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
@@ -57,6 +58,7 @@ fun NavigationHandler(
 //    navController: NavHostController,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerDraggableState: PlayerDraggableState,
+    playerMusicListDraggableState: PlayerMusicListDraggableState,
     searchDraggableState: SearchDraggableState,
     musicState: MusicState,
     playlistState: PlaylistState,
@@ -79,12 +81,12 @@ fun NavigationHandler(
     modifyArtistViewModel: ModifyArtistViewModel,
     playerMusicListViewModel: PlayerMusicListViewModel,
     settingsAllFoldersViewModel: SettingsAllFoldersViewModel,
-    navigationViewModel: NavigationViewModel
+    navigationController: NavigationController<RoutesNames>
 ) {
 
-    val navigationController = navigationViewModel.handler.navigationController
-
     NavigationHost(
+        playerDraggableState = playerDraggableState,
+        playerMusicListDraggableState =  playerMusicListDraggableState,
         navigationController = navigationController,
         screens = listOf(
             Screen(
@@ -166,7 +168,7 @@ fun NavigationHandler(
                             )
                         },
                         navigateToSettings = {
-                            navigationViewModel.handler.navigationController.navigateTo(
+                            navigationController.navigateTo(
                                 Route(
                                     route = RoutesNames.SETTINGS_SCREEN
                                 )

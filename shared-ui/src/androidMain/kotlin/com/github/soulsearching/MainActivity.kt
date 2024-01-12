@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -24,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.navigation.compose.rememberNavController
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.composables.NavigationHandler
@@ -36,6 +36,8 @@ import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggab
 import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.navigation.Route
+import com.github.soulsearching.navigation.RoutesNames
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.theme.ColorThemeManager
@@ -55,7 +57,6 @@ import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.NavigationViewModel
 import com.github.soulsearching.viewmodel.NavigationViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
@@ -107,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d("MAIN ACTIVITY", "BROADCAST RECEIVE INFO TO RELAUNCH SERVICE")
             AndroidUtils.launchService(
                 context = context,
                 isFromSavedList = false
@@ -281,7 +283,8 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    val navController = rememberNavController()
+//                    val navController = rememberNavController()
+                    val navigationController = navigationViewModel.handler.navigationController
                     val constraintsScope = this
                     val maxHeight = with(LocalDensity.current) {
                         constraintsScope.maxHeight.toPx()
@@ -320,7 +323,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     NavigationHandler(
-                        navController = navController,
+//                        navController = navController,
+                        navigationController = navigationController,
                         playerDraggableState = playerDraggableState,
                         searchDraggableState = searchDraggableState,
                         musicState = musicState,
@@ -344,7 +348,8 @@ class MainActivity : AppCompatActivity() {
                         allMusicsViewModel = allMusicsViewModel,
                         allFoldersViewModel = allFoldersViewModel,
                         playerMusicListViewModel = playerMusicListViewModel,
-                        navigationViewModel = navigationViewModel
+                        playerMusicListDraggableState = musicListDraggableState,
+//                        navigationViewModel = navigationViewModel
                     )
 
                     PlayerDraggableView(
@@ -356,10 +361,20 @@ class MainActivity : AppCompatActivity() {
                         onMusicEvent = PlayerUtils.playerViewModel.handler::onMusicEvent,
                         isMusicInFavoriteMethod = allMusicsViewModel.handler::isMusicInFavorite,
                         navigateToArtist = {
-                            navController.navigate("selectedArtist/$it")
+                            navigationController.navigateTo(
+                                route = Route(
+                                    route = RoutesNames.SELECTED_ARTIST_SCREEN,
+                                    arguments = mapOf(Pair("artistId", it))
+                                )
+                            )
                         },
                         navigateToAlbum = {
-                            navController.navigate("selectedAlbum/$it")
+                            navigationController.navigateTo(
+                                route = Route(
+                                    route = RoutesNames.SELECTED_ALBUM_SCREEN,
+                                    arguments = mapOf(Pair("albumId", it))
+                                )
+                            )
                         },
                         retrieveAlbumIdMethod = {
                             allMusicsViewModel.handler.getAlbumIdFromMusicId(it)
@@ -371,7 +386,12 @@ class MainActivity : AppCompatActivity() {
                         playlistState = playlistState,
                         onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                         navigateToModifyMusic = {
-                            navController.navigate("modifyMusic/$it")
+                            navigationController.navigateTo(
+                                route = Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
                         },
                         playbackManager = playbackManager
                     )
@@ -383,7 +403,12 @@ class MainActivity : AppCompatActivity() {
                         onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
                         onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                         navigateToModifyMusic = {
-                            navController.navigate("modifyMusic/$it")
+                            navigationController.navigateTo(
+                                route = Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
                         },
                         musicListDraggableState = musicListDraggableState,
                         playerDraggableState = playerDraggableState,
