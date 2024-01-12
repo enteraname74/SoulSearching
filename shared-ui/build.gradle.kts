@@ -45,7 +45,7 @@ kotlin {
         }
         androidMain {
             dependencies {
-                implementation(project(":local-android"))
+                implementation(project(":local-db"))
 
                 with(Dependencies.AndroidX) {
                     implementation(ACTIVITY_COMPOSE)
