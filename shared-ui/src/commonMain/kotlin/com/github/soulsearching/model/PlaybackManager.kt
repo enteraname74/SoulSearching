@@ -1,9 +1,16 @@
 package com.github.soulsearching.model
 
+import com.github.enteraname74.domain.model.Music
+
 /**
  * Used to manage the music playback of the application.
  */
 interface PlaybackManager {
+
+    /**
+     * Initialize the player and the view from a saved music list (from the last app session).
+     */
+    fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>)
 
     /**
      * Initialize the MusicPlayerManager.

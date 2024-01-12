@@ -55,7 +55,6 @@ import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
 
 @Composable
 fun NavigationHandler(
-//    navController: NavHostController,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerDraggableState: PlayerDraggableState,
     playerMusicListDraggableState: PlayerMusicListDraggableState,

@@ -1,8 +1,10 @@
 package com.github.soulsearching.playback
 
 import android.content.Context
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.model.PlaybackManager
+import com.github.soulsearching.utils.PlayerUtils
 
 /**
  * Implementation of a MusicPlayerManager for Android.
@@ -12,6 +14,18 @@ import com.github.soulsearching.model.PlaybackManager
 class PlaybackManagerAndroidImpl(
     private val context: Context
 ): PlaybackManager {
+
+    override fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
+        PlayerUtils.playerViewModel.handler.setPlayerInformationFromSavedList(
+            savedMusicList
+        )
+        AndroidUtils.launchService(
+            context = context,
+            isFromSavedList = true
+        )
+        PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched = true
+    }
+
     override fun initializeMusicPlayerManager(isFromSavedList: Boolean) = AndroidUtils.launchService(
         context = context,
         isFromSavedList = isFromSavedList
