@@ -90,7 +90,7 @@ actual object SoulSearchingContext {
      */
     @SuppressLint("DiscouragedApi")
     @Composable
-    actual fun painterResource(resourcePath: String): Painter {
+    actual fun appPainterResource(resourcePath: String): Painter {
         val context = LocalContext.current
         val drawableId = remember(resourcePath) {
             context.resources.getIdentifier(

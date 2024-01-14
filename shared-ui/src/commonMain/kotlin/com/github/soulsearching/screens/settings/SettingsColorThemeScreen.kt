@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.github.soulsearching.Drawables
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.ColorThemeCard
@@ -39,8 +40,8 @@ fun SettingsColorThemeScreen(
                     text = strings.dynamicThemeText,
                     onClick = { updateColorThemeMethod(ColorThemeType.DYNAMIC) },
                     isSelected = colorThemeManager.colorThemeType == ColorThemeType.DYNAMIC,
-                    firstImagePath = "dynamic_main",
-                    secondImagePath = "dynamic_player"
+                    firstImagePath = Drawables.dynamicMain,
+                    secondImagePath = Drawables.dynamicPlayer
                 )
             }
             item {
@@ -50,14 +51,14 @@ fun SettingsColorThemeScreen(
                     onClick = { updateColorThemeMethod(ColorThemeType.SYSTEM) },
                     isSelected = colorThemeManager.colorThemeType == ColorThemeType.SYSTEM,
                     firstImagePath = if (isSystemInDarkTheme()) {
-                        "system_dark_theme_main"
+                        Drawables.systemDarkThemeMain
                     } else {
-                        "system_light_theme_main"
+                        Drawables.systemLightThemeMain
                     },
                     secondImagePath = if (isSystemInDarkTheme()) {
-                        "system_dark_theme_player"
+                        Drawables.systemDarkThemePlayer
                     } else {
-                        "system_light_theme_player"
+                        Drawables.systemLightThemePlayer
                     }
                 )
             }

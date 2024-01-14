@@ -13,7 +13,7 @@ expect object SoulSearchingContext {
      * Painter to use for accessing drawable resources.
      */
     @Composable
-    fun painterResource(resourcePath: String): Painter
+    fun appPainterResource(resourcePath: String): Painter
 
     @get:Composable
     val orientation: ScreenOrientation

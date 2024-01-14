@@ -49,8 +49,6 @@ class MainActivity : AppCompatActivity() {
     // Main page view models
     private lateinit var allMusicsViewModel: AllMusicsViewModelAndroidImpl
 
-    private val settings: SoulSearchingSettings by inject<SoulSearchingSettings>()
-    private val playbackManager: PlaybackManagerAndroidImpl by inject<PlaybackManagerAndroidImpl>()
     private val colorThemeManager: ColorThemeManager by inject<ColorThemeManager>()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -97,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             // Selected page view models
             val selectedPlaylistViewModel = koinViewModel<SelectedPlaylistViewModelAndroidImpl>()
             val selectedAlbumViewModel = koinViewModel<SelectedAlbumViewModelAndroidImpl>()
-            val  selectedArtistsViewModel = koinViewModel<SelectedArtistViewModelAndroidImpl>()
+            val selectedArtistsViewModel = koinViewModel<SelectedArtistViewModelAndroidImpl>()
 
             // Modify page view models
             val modifyPlaylistViewModel = koinViewModel<ModifyPlaylistViewModelAndroidImpl>()
@@ -110,7 +108,8 @@ class MainActivity : AppCompatActivity() {
             val playerMusicListViewModel = koinViewModel<PlayerMusicListViewModelAndroidImpl>()
 
             // Settings view models:
-            val settingsAllFoldersViewModel = koinViewModel<SettingsAllFoldersViewModelAndroidImpl>()
+            val settingsAllFoldersViewModel =
+                koinViewModel<SettingsAllFoldersViewModelAndroidImpl>()
             val settingsAddMusicsViewModel = koinViewModel<SettingsAddMusicsViewModelAndroidImpl>()
 
 
@@ -169,9 +168,6 @@ class MainActivity : AppCompatActivity() {
                     modifyPlaylistViewModel = modifyPlaylistViewModel,
                     settingsAddMusicsViewModel = settingsAddMusicsViewModel,
                     navigationViewModel = navigationViewModel,
-                    colorThemeManager = colorThemeManager,
-                    settings = settings,
-                    playbackManager = playbackManager,
                     playerViewModel = playerViewModel
                 )
             }

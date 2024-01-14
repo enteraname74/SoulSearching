@@ -18,3 +18,4 @@ rootProject.name = "Soul Searching"
 include(":domain")
 include(":local-db")
 include(":shared-ui")
+include(":desktopApp")

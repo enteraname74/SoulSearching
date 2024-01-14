@@ -2,6 +2,8 @@ package com.github.soulsearching.composables
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -21,6 +23,7 @@ import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MusicList(
     musicState: MusicState,
@@ -34,7 +37,7 @@ fun MusicList(
     playlistId: UUID?,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isMainPlaylist: Boolean = false,
-    playerDraggableState: PlayerDraggableState,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
     updateNbPlayedAction: (UUID) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,

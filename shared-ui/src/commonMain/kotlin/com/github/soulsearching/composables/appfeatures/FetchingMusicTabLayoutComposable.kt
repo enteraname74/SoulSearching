@@ -1,14 +1,7 @@
 package com.github.soulsearching.composables.appfeatures
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -18,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import com.github.soulsearching.Constants
+import com.github.soulsearching.Drawables
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.AppFeatureDotComposable
 import com.github.soulsearching.model.TabRowItem
@@ -36,7 +30,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.completeApplicationTitle,
                     description = strings.completeApplicationText,
-                    imagePath = "system_dark_theme_main"
+                    imagePath = Drawables.systemDarkThemeMain
                 )
             }
         ),
@@ -46,7 +40,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.quickAccessTitle,
                     description = strings.quickAccessText,
-                    imagePath = "perso_first_example"
+                    imagePath = Drawables.persoFirstExample
                 )
             }
         ),
@@ -56,7 +50,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.modifyElementsTitle,
                     description = strings.modifyElementsText,
-                    imagePath = "modify_album"
+                    imagePath = Drawables.modifyAlbum
                 )
             }
         ),
@@ -66,7 +60,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.dynamicThemeFeatureTitle,
                     description = strings.dynamicThemeFeatureText,
-                    imagePath = "dynamic_main"
+                    imagePath = Drawables.dynamicMain
                 )
             }
         ),
@@ -76,7 +70,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.manageFoldersTitle,
                     description = strings.manageFoldersText,
-                    imagePath = "folders_settings"
+                    imagePath = Drawables.foldersSettings
                 )
             }
         ),
@@ -86,7 +80,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.addNewMusicsTitle,
                     description = strings.addNewMusicsText,
-                    imagePath = "add_new_songs_settings"
+                    imagePath = Drawables.addNewSongsSettings
                 )
             }
         ),
@@ -96,7 +90,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.personalizeMainPageTitle,
                     description = strings.personalizeMainPageText,
-                    imagePath = "perso_third_example"
+                    imagePath = Drawables.persoThirdExample
                 )
             }
         ),

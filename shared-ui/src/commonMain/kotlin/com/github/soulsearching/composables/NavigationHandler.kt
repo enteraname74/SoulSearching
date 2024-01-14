@@ -1,5 +1,7 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.draggablestates.PlayerDraggableState
@@ -37,6 +39,7 @@ import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.states.QuickAccessState
 import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel
@@ -53,12 +56,13 @@ import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NavigationHandler(
     colorThemeManager: ColorThemeManager = injectElement(),
-    playerDraggableState: PlayerDraggableState,
-    playerMusicListDraggableState: PlayerMusicListDraggableState,
-    searchDraggableState: SearchDraggableState,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
+    playerMusicListDraggableState: SwipeableState<BottomSheetStates>,
+    searchDraggableState: SwipeableState<BottomSheetStates>,
     musicState: MusicState,
     playlistState: PlaylistState,
     albumState: AlbumState,

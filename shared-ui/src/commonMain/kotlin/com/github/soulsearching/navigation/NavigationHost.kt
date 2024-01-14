@@ -3,6 +3,8 @@ package com.github.soulsearching.navigation
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,14 +18,14 @@ import com.github.soulsearching.types.BottomSheetStates
  * If a screen isn't found by the navigationController, the first screen is shown.
  * If no screens are given, a default view is shown.
  */
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T> NavigationHost(
     modifier: Modifier = Modifier.fillMaxSize(),
     navigationController: NavigationController<T>,
     screens: List<Screen<T>>,
-    playerDraggableState: PlayerDraggableState,
-    playerMusicListDraggableState: PlayerMusicListDraggableState
+    playerDraggableState: SwipeableState<BottomSheetStates>,
+    playerMusicListDraggableState: SwipeableState<BottomSheetStates>
 ) {
     Crossfade(targetState = navigationController.currentRoute) { currentRoute ->
         Scaffold(
@@ -31,7 +33,7 @@ fun <T> NavigationHost(
         ) {
 
             SoulSearchingBackHandler(
-                enabled = playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED && playerMusicListDraggableState.state.currentValue != BottomSheetStates.EXPANDED
+                enabled = playerDraggableState.currentValue != BottomSheetStates.EXPANDED && playerMusicListDraggableState.currentValue != BottomSheetStates.EXPANDED
             ) {
                 navigationController.navigateBack()
             }

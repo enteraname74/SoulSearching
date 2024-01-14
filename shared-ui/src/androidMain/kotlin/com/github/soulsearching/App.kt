@@ -16,7 +16,7 @@ class App : Application() {
         createNotificationChannel()
         startKoin {
             androidContext(applicationContext)
-            modules(androidModule, localDbModule, domainModule)
+            modules(appModule, localDbModule, domainModule)
         }
     }
 

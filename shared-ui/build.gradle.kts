@@ -21,7 +21,10 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(compose.desktop.currentOs)
+                implementation(project(":local-db"))
+                implementation(compose.desktop.common)
+                implementation(Dependencies.AndroidX.RUNTIME_DESKTOP)
+                implementation("org.jetbrains.compose.desktop:desktop:1.6.0-alpha01")
             }
         }
         commonMain {
@@ -29,6 +32,7 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(Dependencies.KOIN_CORE)
                 implementation(Dependencies.KOIN_COMPOSE)
+
                 implementation(Dependencies.KMPALETTE_CORE)
                 implementation("org.jetbrains.compose.components:components-resources:1.5.11")
                 implementation("com.russhwolf:multiplatform-settings:1.1.1")
@@ -48,6 +52,7 @@ kotlin {
                 implementation(project(":local-db"))
 
                 with(Dependencies.AndroidX) {
+                    implementation(KOIN_COMPOSE)
                     implementation(ACTIVITY_COMPOSE)
                     implementation(CORE)
                     implementation(LIFECYCLE)
@@ -141,7 +146,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.github.enteraname74.soulsearching"
+            packageName = "SoulSearching"
             packageVersion = Config.DESKTOP_VERSION_NAME
         }
     }

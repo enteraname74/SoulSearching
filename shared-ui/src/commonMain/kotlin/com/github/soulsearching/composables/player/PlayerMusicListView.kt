@@ -2,28 +2,20 @@ package com.github.soulsearching.composables.player
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
+import androidx.compose.material.swipeable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,8 +33,6 @@ import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -58,34 +48,35 @@ import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerMusicListView(
+    maxHeight: Float,
     coverList: ArrayList<ImageCover>,
     musicState: MusicState,
     playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    musicListDraggableState: PlayerMusicListDraggableState,
-    playerDraggableState: PlayerDraggableState,
+    musicListDraggableState: SwipeableState<BottomSheetStates>,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
 
-    SoulSearchingBackHandler(musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+    SoulSearchingBackHandler(musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
+            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
         }
     }
 
     val mainBoxClickableModifier =
-        if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+        if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
+                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
                 }
             }
         } else {
@@ -162,12 +153,16 @@ fun PlayerMusicListView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = musicListDraggableState.state.offset.roundToInt()
+                    y = musicListDraggableState.offset.value.roundToInt()
                 )
             }
-            .anchoredDraggable(
-                state = musicListDraggableState.state,
-                orientation = Orientation.Vertical
+            .swipeable(
+                state = musicListDraggableState,
+                orientation = Orientation.Vertical,
+                anchors = mapOf(
+                    0f to BottomSheetStates.EXPANDED,
+                    maxHeight to BottomSheetStates.COLLAPSED,
+                )
             )
     ) {
         Column(

@@ -26,7 +26,7 @@ fun ProgressIndicatorComposable(
             textAlign = TextAlign.Center
         )
         LinearProgressIndicator(
-            progress = { progress },
+            progress = progress,
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             trackColor = SoulSearchingColorTheme.colorScheme.secondary,
         )

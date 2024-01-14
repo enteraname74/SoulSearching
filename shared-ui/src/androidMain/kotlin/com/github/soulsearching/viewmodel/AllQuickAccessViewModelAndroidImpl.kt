@@ -9,7 +9,7 @@ import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.viewmodel.handler.AllQuickAccessViewModelHandler
 
 /**
- * Implementation of the allQuickAccessViewModel.handler.
+ * Implementation of the allQuickAccessViewModel.
  */
 class AllQuickAccessViewModelAndroidImpl(
     musicRepository: MusicRepository,

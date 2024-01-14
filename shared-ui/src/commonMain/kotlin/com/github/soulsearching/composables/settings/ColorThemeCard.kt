@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.composables.settings.ColorCard
 
 @Composable
 fun ColorThemeCard(
@@ -38,13 +37,13 @@ fun ColorThemeCard(
             Image(
                 modifier = Modifier
                     .size(120.dp, 360.dp),
-                painter = SoulSearchingContext.painterResource(resourcePath = firstImagePath),
+                painter = SoulSearchingContext.appPainterResource(resourcePath = firstImagePath),
                 contentDescription = ""
             )
             Image(
                 modifier = Modifier
                     .size(120.dp, 360.dp),
-                painter = SoulSearchingContext.painterResource(resourcePath = secondImagePath),
+                painter = SoulSearchingContext.appPainterResource(resourcePath = secondImagePath),
                 contentDescription = ""
             )
         }

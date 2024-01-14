@@ -1,22 +1,20 @@
 package com.github.soulsearching.screens
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.composables.PlaylistScreen
-import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
-import java.util.UUID
+import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectedAlbumScreen(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
@@ -28,7 +26,7 @@ fun SelectedAlbumScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack : () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: PlayerDraggableState
+    playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
     var isAlbumFetched by remember {
         mutableStateOf(false)

@@ -60,7 +60,7 @@ fun AppFeatureComposable(
                 Image(
                     modifier = Modifier
                         .weight(1F),
-                    painter = SoulSearchingContext.painterResource(resourcePath = imagePath),
+                    painter = SoulSearchingContext.appPainterResource(resourcePath = imagePath),
                     contentDescription = ""
                 )
             }

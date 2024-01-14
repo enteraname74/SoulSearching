@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.Drawables
 
 @Composable
 fun AppImage(
@@ -42,7 +43,7 @@ fun AppImage(
     } else {
         Image(
             modifier = modifierBase,
-            painter = SoulSearchingContext.painterResource("ic_saxophone_svg"),
+            painter = SoulSearchingContext.appPainterResource(Drawables.appIcon),
             contentDescription = strings.image,
             contentScale = ContentScale.Crop,
             colorFilter = ColorFilter.tint(tint)

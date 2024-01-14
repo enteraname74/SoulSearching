@@ -28,60 +28,60 @@ fun SoulSearchingDialog(
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
-    AlertDialog(
-        shape = RoundedCornerShape(Constants.Spacing.veryLarge),
-        onDismissRequest = dismissAction,
-        confirmButton = {
-            TextButton(
-                modifier = Modifier.padding(
-                    bottom = Constants.Spacing.veryLarge,
-                    end = Constants.Spacing.large
-                ),
-                onClick = { confirmAction() }
-            ) {
-                Text(
-                    text = confirmText,
-                    color = contentColor
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                modifier = Modifier.padding(
-                    bottom = Constants.Spacing.veryLarge
-                ),
-                onClick = dismissAction
-            ) {
-                Text(
-                    text = dismissText,
-                    color = contentColor
-                )
-            }
-        },
-        title = {
-            Text(
-                modifier = Modifier.padding(
-                    horizontal = Constants.Spacing.medium,
-                    vertical = Constants.Spacing.veryLarge
-                ),
-                text = title,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 24.sp,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary
-            )
-        },
-        text = {
-            if (text.isNotEmpty()) {
-                Text(
-                    text = text,
-                    textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor
-    )
+//    AlertDialog(
+//        shape = RoundedCornerShape(Constants.Spacing.veryLarge),
+//        onDismissRequest = dismissAction,
+//        confirmButton = {
+//            TextButton(
+//                modifier = Modifier.padding(
+//                    bottom = Constants.Spacing.veryLarge,
+//                    end = Constants.Spacing.large
+//                ),
+//                onClick = { confirmAction() }
+//            ) {
+//                Text(
+//                    text = confirmText,
+//                    color = contentColor
+//                )
+//            }
+//        },
+//        dismissButton = {
+//            TextButton(
+//                modifier = Modifier.padding(
+//                    bottom = Constants.Spacing.veryLarge
+//                ),
+//                onClick = dismissAction
+//            ) {
+//                Text(
+//                    text = dismissText,
+//                    color = contentColor
+//                )
+//            }
+//        },
+//        title = {
+//            Text(
+//                modifier = Modifier.padding(
+//                    horizontal = Constants.Spacing.medium,
+//                    vertical = Constants.Spacing.veryLarge
+//                ),
+//                text = title,
+//                textAlign = TextAlign.Center,
+//                fontWeight = FontWeight.ExtraBold,
+//                fontSize = 24.sp,
+//                color = SoulSearchingColorTheme.colorScheme.onPrimary
+//            )
+//        },
+//        text = {
+//            if (text.isNotEmpty()) {
+//                Text(
+//                    text = text,
+//                    textAlign = TextAlign.Center,
+//                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+//            }
+//        },
+//        backgroundColor = backgroundColor,
+//        contentColor = contentColor
+//    )
 }

@@ -9,7 +9,7 @@ import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.viewmodel.handler.AllPlaylistsViewModelHandler
 
 /**
- * Implementation of the allPlaylistsViewModel.handler.
+ * Implementation of the allPlaylistsViewModel.
  */
 class AllPlaylistsViewModelAndroidImpl(
     playlistRepository: PlaylistRepository,

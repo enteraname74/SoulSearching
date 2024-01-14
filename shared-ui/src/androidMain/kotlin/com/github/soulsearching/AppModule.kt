@@ -33,10 +33,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-/**
- * Module for all ViewModel used in the application.
- */
-val androidModule = module {
+actual val appModule = module {
     viewModel {
         SettingsAddMusicsViewModelAndroidImpl(
             folderRepository = get(),

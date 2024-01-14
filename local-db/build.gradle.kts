@@ -16,27 +16,35 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
-                implementation(project(mapOf("path" to ":domain")))
                 implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
 
-                implementation(Dependencies.KOIN_COMPOSE)
-
                 with(Dependencies.AndroidX) {
+                    implementation(KOIN_COMPOSE)
                     implementation(CORE)
-                    implementation(ROOM)
-                    configurations.getByName("kapt").dependencies.add(
-                        DefaultExternalModuleDependency(
-                            "androidx.room",
-                            "room-compiler",
-                            Versions.AndroidX.ROOM
-                        )
-                    )
+//                    implementation(ROOM)
+//                    configurations.getByName("kapt").dependencies.add(
+//                        DefaultExternalModuleDependency(
+//                            "androidx.room",
+//                            "room-compiler",
+//                            Versions.AndroidX.ROOM
+//                        )
+//                    )
                 }
             }
         }
         commonMain {
             dependencies {
+                implementation(project(mapOf("path" to ":domain")))
                 implementation(Dependencies.KOIN_CORE)
+            }
+        }
+        val desktopMain by getting {
+            dependencies {
+                implementation("org.jetbrains.exposed:exposed-core:${Versions.EXPOSED}")
+                implementation("org.jetbrains.exposed:exposed-crypt:${Versions.EXPOSED}")
+                implementation("org.jetbrains.exposed:exposed-dao:${Versions.EXPOSED}")
+                implementation("org.jetbrains.exposed:exposed-jdbc:${Versions.EXPOSED}")
+                implementation("org.jetbrains.exposed:exposed-java-time:${Versions.EXPOSED}")
             }
         }
     }

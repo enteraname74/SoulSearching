@@ -3,11 +3,13 @@ package com.github.soulsearching
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import com.github.soulsearching.types.ScreenOrientation
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
 actual object SoulSearchingContext {
     actual val orientation: ScreenOrientation
+        @Composable
         get() {
             val width = java.awt.Toolkit.getDefaultToolkit().screenSize.width
             return if (width >= 500) {
@@ -51,8 +53,9 @@ actual object SoulSearchingContext {
     /**
      * Painter to use for accessing drawable resources.
      */
+    @OptIn(ExperimentalResourceApi::class)
     @Composable
-    actual fun painterResource(resourcePath: String): Painter {
+    actual fun appPainterResource(resourcePath: String): Painter {
         return painterResource(resourcePath)
     }
 }

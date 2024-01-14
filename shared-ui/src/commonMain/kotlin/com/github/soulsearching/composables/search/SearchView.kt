@@ -1,21 +1,15 @@
 package com.github.soulsearching.composables.search
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.swipeable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
@@ -24,18 +18,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchView(
-    draggableState: SearchDraggableState,
-    playerDraggableState: PlayerDraggableState,
+    maxHeight: Float,
+    draggableState: SwipeableState<BottomSheetStates>,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
     placeholder: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
@@ -47,11 +40,11 @@ fun SearchView(
     val focusManager = LocalFocusManager.current
 
     SoulSearchingBackHandler(
-        draggableState.state.currentValue == BottomSheetStates.EXPANDED
-                && playerDraggableState.state.currentValue != BottomSheetStates.EXPANDED
+        draggableState.currentValue == BottomSheetStates.EXPANDED
+                && playerDraggableState.currentValue != BottomSheetStates.EXPANDED
     ) {
         coroutineScope.launch {
-            draggableState.animateTo(BottomSheetStates.COLLAPSED)
+            draggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
         }
     }
 
@@ -59,7 +52,7 @@ fun SearchView(
         mutableStateOf("")
     }
 
-    if (draggableState.state.currentValue == BottomSheetStates.COLLAPSED) {
+    if (draggableState.currentValue == BottomSheetStates.COLLAPSED) {
         searchText = ""
     }
 
@@ -68,12 +61,16 @@ fun SearchView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = draggableState.state.offset.roundToInt()
+                    y = draggableState.offset.value.roundToInt()
                 )
             }
-            .anchoredDraggable(
-                state = draggableState.state,
-                orientation = Orientation.Vertical
+            .swipeable(
+                state = draggableState,
+                orientation = Orientation.Vertical,
+                anchors = mapOf(
+                    maxHeight to BottomSheetStates.COLLAPSED,
+                    0f to BottomSheetStates.EXPANDED
+                )
             )
     ) {
         Column(

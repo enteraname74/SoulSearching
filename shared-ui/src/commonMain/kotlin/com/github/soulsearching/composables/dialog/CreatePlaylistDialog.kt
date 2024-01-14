@@ -1,9 +1,9 @@
 package com.github.soulsearching.composables.dialog
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -11,18 +11,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreatePlaylistDialog(
     onPlaylistEvent: (PlaylistEvent) -> Unit
@@ -33,61 +34,71 @@ fun CreatePlaylistDialog(
     }
     val focusManager = LocalFocusManager.current
 
-    AlertDialog(
-        shape = RoundedCornerShape(Constants.Spacing.veryLarge),
-        onDismissRequest = { onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false)) },
-        confirmButton = {
-            TextButton(
-                modifier = Modifier.padding(
-                    bottom = Constants.Spacing.veryLarge,
-                    end = Constants.Spacing.large
-                ),
-                onClick = {
-                    onPlaylistEvent(PlaylistEvent.AddPlaylist(playlistName.trim()))
-                    onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false))
-                }) {
-                Text(
-                    text = strings.create,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                modifier = Modifier.padding(
-                    bottom = Constants.Spacing.veryLarge
-                ),
-                onClick = {
-                    onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false))
-                }) {
-                Text(
-                    text = strings.cancel,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary
-                )
-            }
-        },
-        title = {
-            Text(
-                modifier = Modifier.padding(
-                    horizontal = Constants.Spacing.medium,
-                    vertical = Constants.Spacing.veryLarge
-                ),
-                text = strings.createPlaylistDialogTitle,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 24.sp,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary
+    Dialog(
+        onCloseRequest = { onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false)) }
+    ) {
+        Card(
+            shape = RoundedCornerShape(Constants.Spacing.veryLarge),
+            colors = CardDefaults.cardColors(
+                containerColor = SoulSearchingColorTheme.colorScheme.primary,
+                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary
             )
-        },
-        text = {
-            AppTextField(
-                value = playlistName,
-                onValueChange = { playlistName = it },
-                labelName = strings.playlistName,
-                focusManager = focusManager
-            )
-        },
-        backgroundColor = SoulSearchingColorTheme.colorScheme.primary,
-        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary
-    )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            horizontal = Constants.Spacing.medium,
+                            vertical = Constants.Spacing.veryLarge
+                        ),
+                        text = strings.createPlaylistDialogTitle,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 24.sp,
+                        color = SoulSearchingColorTheme.colorScheme.onPrimary
+                    )
+                    AppTextField(
+                        value = playlistName,
+                        onValueChange = { playlistName = it },
+                        labelName = strings.playlistName,
+                        focusManager = focusManager
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(
+                        modifier = Modifier.padding(
+                            end = Constants.Spacing.large
+                        ),
+                        onClick = {
+                            onPlaylistEvent(PlaylistEvent.AddPlaylist(playlistName.trim()))
+                            onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false))
+                        }) {
+                        Text(
+                            text = strings.create,
+                            color = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
+                    TextButton(
+                        onClick = {
+                            onPlaylistEvent(PlaylistEvent.CreatePlaylistDialog(isShown = false))
+                        }) {
+                        Text(
+                            text = strings.cancel,
+                            color = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

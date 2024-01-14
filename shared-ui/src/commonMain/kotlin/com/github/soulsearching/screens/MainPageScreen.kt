@@ -3,15 +3,12 @@ package com.github.soulsearching.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Shuffle
@@ -19,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.MainMenuHeaderComposable
 import com.github.soulsearching.composables.MainMenuLazyListRow
@@ -61,7 +59,7 @@ import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MainPageScreen(
     allMusicsViewModel: AllMusicsViewModel,
@@ -82,8 +80,8 @@ fun MainPageScreen(
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
     navigateToSettings: () -> Unit,
-    playerDraggableState: PlayerDraggableState,
-    searchDraggableState: SearchDraggableState,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
+    searchDraggableState: SwipeableState<BottomSheetStates>,
     musicState: MusicState,
     playlistState: PlaylistState,
     albumState: AlbumState,
@@ -124,12 +122,16 @@ fun MainPageScreen(
         CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent)
     }
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(color = SoulSearchingColorTheme.colorScheme.primary)
     ) {
         val listState = rememberLazyListState()
+        val constraintsScope = this
+        val maxHeight = with(LocalDensity.current) {
+            constraintsScope.maxHeight.toPx()
+        }
 
         Column(
             modifier = Modifier
@@ -545,7 +547,8 @@ fun MainPageScreen(
         SearchView(
             draggableState = searchDraggableState,
             playerDraggableState = playerDraggableState,
-            placeholder = strings.searchAll
+            placeholder = strings.searchAll,
+            maxHeight = maxHeight
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,

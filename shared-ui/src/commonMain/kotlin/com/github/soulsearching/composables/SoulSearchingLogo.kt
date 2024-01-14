@@ -14,6 +14,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.Drawables
 
 @Composable
 fun SoulSearchingLogo() {
@@ -22,7 +23,7 @@ fun SoulSearchingLogo() {
     ) {
         Image(
             modifier = Modifier.size(Constants.ImageSize.veryLarge),
-            painter = SoulSearchingContext.painterResource("ic_saxophone_svg"),
+            painter = SoulSearchingContext.appPainterResource(Drawables.appIcon),
             contentDescription = strings.appLogo,
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onPrimary)
         )

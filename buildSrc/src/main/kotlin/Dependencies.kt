@@ -9,13 +9,15 @@ object Dependencies {
     const val COROUTINES_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${Versions.COROUTINES_CORE}"
     const val INJECT_API = "jakarta.inject:jakarta.inject-api:${Versions.INJECT_API}"
     const val KOIN_CORE = "io.insert-koin:koin-core:${Versions.KOIN}"
-    const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
+    const val KOIN_COMPOSE = "io.insert-koin:koin-compose:${Versions.KOIN_COMPOSE}"
     const val KMPALETTE_CORE = "com.kmpalette:kmpalette-core:${Versions.KMPALETTE}"
 
     object AndroidX {
+        const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"
         const val FOUNDATION = "androidx.compose.foundation:foundation:${Versions.AndroidX.FOUNDATION}"
         const val RUNTIME = "androidx.compose.runtime:runtime:${Versions.AndroidX.RUNTIME}"
+        const val RUNTIME_DESKTOP = "androidx.compose.runtime:runtime:${Versions.AndroidX.RUNTIME}"
         const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.LIFECYCLE}"
         const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Versions.AndroidX.ACTIVITY_COMPOSE}"
         const val UI = "androidx.compose.ui:ui:${Versions.AndroidX.COMPOSE}"

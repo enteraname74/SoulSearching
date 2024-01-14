@@ -1,14 +1,11 @@
 package com.github.soulsearching
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.animateTo
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import com.github.soulsearching.composables.MissingPermissionsComposable
@@ -16,9 +13,7 @@ import com.github.soulsearching.composables.NavigationHandler
 import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
 import com.github.soulsearching.composables.player.PlayerDraggableView
 import com.github.soulsearching.composables.player.PlayerMusicListView
-import com.github.soulsearching.composables.remembers.rememberPlayerDraggableState
-import com.github.soulsearching.composables.remembers.rememberPlayerMusicDraggableState
-import com.github.soulsearching.composables.remembers.rememberSearchDraggableState
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
@@ -28,30 +23,12 @@ import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.ColorPaletteUtils
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.viewmodel.AllArtistsViewModel
-import com.github.soulsearching.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
-import com.github.soulsearching.viewmodel.MainActivityViewModel
-import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
-import com.github.soulsearching.viewmodel.ModifyArtistViewModel
-import com.github.soulsearching.viewmodel.ModifyMusicViewModel
-import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
-import com.github.soulsearching.viewmodel.NavigationViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.viewmodel.PlayerViewModel
-import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
-import com.github.soulsearching.viewmodel.SelectedArtistViewModel
-import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
-import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
-import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
+import com.github.soulsearching.viewmodel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoulSearchingApplication(
     allMusicsViewModel: AllMusicsViewModel,
@@ -72,8 +49,8 @@ fun SoulSearchingApplication(
     modifyPlaylistViewModel: ModifyPlaylistViewModel,
     settingsAddMusicsViewModel: SettingsAddMusicsViewModel,
     navigationViewModel: NavigationViewModel,
-    colorThemeManager: ColorThemeManager,
-    settings: SoulSearchingSettings,
+    colorThemeManager: ColorThemeManager = injectElement(),
+    settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager,
     playerViewModel: PlayerViewModel
 ) {
@@ -89,7 +66,6 @@ fun SoulSearchingApplication(
         retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
         updateNbPlayed = { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
     }
-
 
     val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
     val albumState by allAlbumsViewModel.handler.state.collectAsState()
@@ -159,15 +135,15 @@ fun SoulSearchingApplication(
             constraintsScope.maxHeight.toPx()
         }
 
-        val playerDraggableState = rememberPlayerDraggableState(
-            constraintsScope = constraintsScope
+        val playerDraggableState = rememberSwipeableState(
+            initialValue = BottomSheetStates.COLLAPSED
         )
 
-        val musicListDraggableState = rememberPlayerMusicDraggableState(
-            constraintsScope = constraintsScope
+        val musicListDraggableState = rememberSwipeableState(
+            initialValue = BottomSheetStates.COLLAPSED
         )
-        val searchDraggableState = rememberSearchDraggableState(
-            constraintsScope = constraintsScope
+        val searchDraggableState = rememberSwipeableState(
+            initialValue = BottomSheetStates.COLLAPSED
         )
 
         if (!mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched) {
@@ -177,7 +153,7 @@ fun SoulSearchingApplication(
                 if (playerSavedMusics.isNotEmpty()) {
                     playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                     coroutineScope.launch {
-                        playerDraggableState.state.animateTo(BottomSheetStates.MINIMISED)
+                        playerDraggableState.animateTo(BottomSheetStates.MINIMISED, tween(Constants.AnimationDuration.normal))
                     }
                 }
                 mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched = true
@@ -272,7 +248,8 @@ fun SoulSearchingApplication(
             },
             musicListDraggableState = musicListDraggableState,
             playerDraggableState = playerDraggableState,
-            playerMusicListViewModel = playerMusicListViewModel
+            playerMusicListViewModel = playerMusicListViewModel,
+            maxHeight = maxHeight
         )
     }
 }

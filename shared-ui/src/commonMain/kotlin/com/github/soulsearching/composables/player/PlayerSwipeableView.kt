@@ -3,39 +3,19 @@ package com.github.soulsearching.composables.player
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.anchoredDraggable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -59,8 +39,6 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.composables.playbuttons.ExpandedPlayButtonsComposable
 import com.github.soulsearching.composables.playbuttons.MinimisedPlayButtonsComposable
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.model.PlaybackManager
@@ -78,21 +56,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.reflect.KSuspendFunction1
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
-    draggableState: PlayerDraggableState,
+    draggableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onMusicEvent: (MusicEvent) -> Unit,
-    musicListDraggableState: PlayerMusicListDraggableState,
+    musicListDraggableState: SwipeableState<BottomSheetStates>,
     isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -110,7 +88,7 @@ fun PlayerDraggableView(
         mutableStateOf(false)
     }
 
-    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+    if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
         PlayerUtils.playerViewModel.handler.currentMusic?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
@@ -119,7 +97,7 @@ fun PlayerDraggableView(
     }
 
     val backgroundColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
@@ -135,7 +113,7 @@ fun PlayerDraggableView(
         label = "BACKGROUND_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
     val textColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
@@ -150,7 +128,7 @@ fun PlayerDraggableView(
     )
 
     val subTextColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
             BottomSheetStates.EXPANDED -> {
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
@@ -166,7 +144,7 @@ fun PlayerDraggableView(
 
 
     val contentColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
@@ -183,7 +161,7 @@ fun PlayerDraggableView(
     )
 
     val statusBarColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
             BottomSheetStates.EXPANDED -> {
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
@@ -200,7 +178,7 @@ fun PlayerDraggableView(
     )
 
     val navigationBarColor: Color by animateColorAsState(
-        targetValue = when(draggableState.state.currentValue) {
+        targetValue = when(draggableState.currentValue) {
             BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
             BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
             BottomSheetStates.EXPANDED -> {
@@ -231,18 +209,18 @@ fun PlayerDraggableView(
         isUsingDarkIcons = isUsingDarkIcons
     )
 
-    SoulSearchingBackHandler(draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+    SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            if (musicListDraggableState.state.currentValue != BottomSheetStates.COLLAPSED) {
+            if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
             }
             draggableState.animateTo(BottomSheetStates.MINIMISED)
         }
     }
 
-    if (draggableState.state.currentValue == BottomSheetStates.COLLAPSED
+    if (draggableState.currentValue == BottomSheetStates.COLLAPSED
         && PlayerUtils.playerViewModel.handler.isServiceLaunched
-        && !draggableState.state.isAnimationRunning
+        && !draggableState.isAnimationRunning
     ) {
         playbackManager.stopMusic()
         playerMusicListViewModel.handler.resetPlayerMusicList()
@@ -250,8 +228,8 @@ fun PlayerDraggableView(
 
     val alphaTransition = when (SoulSearchingContext.orientation) {
         ScreenOrientation.HORIZONTAL -> {
-            if ((1.0 / (abs(draggableState.state.offset) / 70)).toFloat() > 0.1) {
-                (1.0 / (abs(draggableState.state.offset) / 70)).toFloat().coerceAtMost(1.0F)
+            if ((1.0 / (abs(draggableState.offset.value) / 70)).toFloat() > 0.1) {
+                (1.0 / (abs(draggableState.offset.value) / 70)).toFloat().coerceAtMost(1.0F)
             } else {
                 0.0F
             }
@@ -259,12 +237,12 @@ fun PlayerDraggableView(
         else -> {
             if ((1.0 / (abs(
                     max(
-                        draggableState.state.offset.roundToInt(),
+                        draggableState.offset.value.roundToInt(),
                         0
                     )
                 ) / 100)).toFloat() > 0.1
             ) {
-                (1.0 / (abs(max(draggableState.state.offset.roundToInt(), 0)) / 100)).toFloat()
+                (1.0 / (abs(max(draggableState.offset.value.roundToInt(), 0)) / 100)).toFloat()
                     .coerceAtMost(1.0F)
             } else {
                 0.0F
@@ -277,26 +255,31 @@ fun PlayerDraggableView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = max(draggableState.state.offset.roundToInt(), 0)
+                    y = max(draggableState.offset.value.roundToInt(), 0)
                 )
             }
-            .anchoredDraggable(
-                state = draggableState.state,
-                orientation = Orientation.Vertical
+            .swipeable(
+                state = draggableState,
+                orientation = Orientation.Vertical,
+                anchors = mapOf(
+                    (maxHeight - 200f) to BottomSheetStates.MINIMISED,
+                    maxHeight to BottomSheetStates.COLLAPSED,
+                    0f to BottomSheetStates.EXPANDED
+                )
             )
     ) {
         val mainBoxClickableModifier =
-            if (draggableState.state.currentValue == BottomSheetStates.MINIMISED) {
+            if (draggableState.currentValue == BottomSheetStates.MINIMISED) {
                 Modifier.clickable {
                     coroutineScope.launch {
-                        draggableState.animateTo(BottomSheetStates.EXPANDED)
+                        draggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                     }
                 }
             } else {
-                if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.clickable {
                         coroutineScope.launch {
-                            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
+                            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
                         }
                     }
                 } else {
@@ -345,14 +328,14 @@ fun PlayerDraggableView(
                     when (SoulSearchingContext.orientation) {
                         ScreenOrientation.HORIZONTAL -> max(
                             (((maxWidth * 1.5) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxWidth * 3.5) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 40)).roundToInt().dp,
                             Constants.Spacing.small
@@ -363,14 +346,14 @@ fun PlayerDraggableView(
                     when (SoulSearchingContext.orientation) {
                         ScreenOrientation.HORIZONTAL -> max(
                             (((maxHeight * 7) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 5)).roundToInt().dp,
                             Constants.Spacing.small
                         )
                         else -> max(
                             (((maxHeight * 5) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 15)).roundToInt().dp,
                             Constants.Spacing.small
@@ -382,21 +365,21 @@ fun PlayerDraggableView(
                     when (SoulSearchingContext.orientation) {
                         ScreenOrientation.HORIZONTAL -> max(
                             (((maxWidth * 10) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 2)).dp,
                             55.dp
                         )
                         else -> max(
                             (((maxWidth * 30) / 100) - (max(
-                                draggableState.state.offset.roundToInt(),
+                                draggableState.offset.value.roundToInt(),
                                 0
                             ) / 7)).dp,
                             55.dp
                         )
                     }
 
-                val imageModifier = if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                val imageModifier = if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
                             PlayerUtils.playerViewModel.handler.currentMusic?.let { currentMusic ->
@@ -434,18 +417,18 @@ fun PlayerDraggableView(
                         bitmap =
                             retrieveCoverMethod(PlayerUtils.playerViewModel.handler.currentMusic?.coverId),
                         size = imageSize,
-                        roundedPercent = (draggableState.state.offset / 100).roundToInt()
+                        roundedPercent = (draggableState.offset.value / 100).roundToInt()
                             .coerceIn(3, 10)
                     )
                 }
 
                 val backImageClickableModifier =
-                    if (draggableState.state.currentValue != BottomSheetStates.EXPANDED) {
+                    if (draggableState.currentValue != BottomSheetStates.EXPANDED) {
                         Modifier
                     } else {
                         Modifier.clickable {
                             coroutineScope.launch {
-                                if (musicListDraggableState.state.currentValue != BottomSheetStates.COLLAPSED) {
+                                if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                                     musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                                 }
                                 draggableState.animateTo(BottomSheetStates.MINIMISED)
@@ -454,12 +437,12 @@ fun PlayerDraggableView(
                     }
 
                 val showMusicListModifier =
-                    if (draggableState.state.currentValue != BottomSheetStates.EXPANDED) {
+                    if (draggableState.currentValue != BottomSheetStates.EXPANDED) {
                         Modifier
                     } else {
                         Modifier.clickable {
                             coroutineScope.launch {
-                                if (musicListDraggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
                                     musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
                                 } else {
                                     musicListDraggableState.animateTo(BottomSheetStates.EXPANDED)
@@ -510,7 +493,7 @@ fun PlayerDraggableView(
                             )
 
                             val clickableArtistModifier =
-                                if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
                                         PlayerUtils.playerViewModel.handler.currentMusic?.let {
                                             coroutineScope.launch {
@@ -518,7 +501,7 @@ fun PlayerDraggableView(
                                                     retrieveArtistIdMethod(it.musicId)
                                                 }
                                                 artistId?.let { id ->
-                                                    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                                    if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                                         navigateToArtist(id.toString())
 
                                                         draggableState.animateTo(BottomSheetStates.MINIMISED)
@@ -533,7 +516,7 @@ fun PlayerDraggableView(
                                 }
 
                             val clickableAlbumModifier =
-                                if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
                                         PlayerUtils.playerViewModel.handler.currentMusic?.let {
                                             coroutineScope.launch {
@@ -541,7 +524,7 @@ fun PlayerDraggableView(
                                                     retrieveAlbumIdMethod(it.musicId)
                                                 }
                                                 albumId?.let { id ->
-                                                    if (draggableState.state.currentValue == BottomSheetStates.EXPANDED) {
+                                                    if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                                         navigateToAlbum(id.toString())
 
                                                         draggableState.animateTo(BottomSheetStates.MINIMISED)
@@ -652,7 +635,7 @@ fun PlayerDraggableView(
                             start = imageSize + Constants.Spacing.large,
                             end = Constants.Spacing.small
                         )
-                        .alpha((draggableState.state.offset / maxHeight).coerceIn(0.0F, 1.0F)),
+                        .alpha((draggableState.offset.value / maxHeight).coerceIn(0.0F, 1.0F)),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {

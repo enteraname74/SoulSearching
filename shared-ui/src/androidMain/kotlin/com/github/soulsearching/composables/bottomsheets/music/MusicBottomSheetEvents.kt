@@ -1,5 +1,7 @@
 package com.github.soulsearching.composables.bottomsheets.music
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings
+import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
@@ -23,7 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 actual fun MusicBottomSheetEvents(
     musicState: MusicState,
@@ -33,7 +36,7 @@ actual fun MusicBottomSheetEvents(
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerDraggableState: PlayerDraggableState,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color,
     secondaryColor: Color,
     onPrimaryColor: Color,

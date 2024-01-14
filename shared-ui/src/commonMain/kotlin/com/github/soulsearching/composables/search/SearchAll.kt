@@ -1,17 +1,20 @@
 package com.github.soulsearching.composables.search
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
+import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -25,9 +28,9 @@ import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchAll(
     searchText: String,
@@ -44,7 +47,7 @@ fun SearchAll(
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    playerDraggableState: PlayerDraggableState,
+    playerDraggableState: SwipeableState<BottomSheetStates>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager
 ) {
@@ -180,7 +183,7 @@ fun SearchAll(
                     onClick = {
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                            playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                         }.invokeOnCompletion {
                             PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                 music = music,
