@@ -1,9 +1,15 @@
 package com.github.soulsearching.screens
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,8 +38,6 @@ import com.github.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.soulsearching.composables.search.SearchAll
 import com.github.soulsearching.composables.search.SearchView
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
@@ -142,7 +146,10 @@ fun MainPageScreen(
                 settingsAction = navigateToSettings,
                 searchAction = {
                     coroutineScope.launch {
-                        searchDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                        searchDraggableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(Constants.AnimationDuration.normal)
+                        )
                     }
                 }
             )
@@ -224,7 +231,10 @@ fun MainPageScreen(
                                 },
                                 playMusicAction = { music ->
                                     coroutineScope.launch {
-                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                        playerDraggableState.animateTo(
+                                            BottomSheetStates.EXPANDED,
+                                            tween(Constants.AnimationDuration.normal)
+                                        )
                                     }.invokeOnCompletion {
                                         val musicListSingleton = arrayListOf(music)
                                         if (!PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) {
@@ -482,7 +492,8 @@ fun MainPageScreen(
                                                 coroutineScope
                                                     .launch {
                                                         playerDraggableState.animateTo(
-                                                            BottomSheetStates.EXPANDED
+                                                            BottomSheetStates.EXPANDED,
+                                                            tween(Constants.AnimationDuration.normal)
                                                         )
                                                     }
                                                     .invokeOnCompletion {
@@ -507,10 +518,18 @@ fun MainPageScreen(
                             music = elt,
                             onClick = { music ->
                                 coroutineScope.launch {
-                                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                    playerDraggableState.animateTo(
+                                        BottomSheetStates.EXPANDED,
+                                        tween(Constants.AnimationDuration.normal)
+                                    )
                                 }.invokeOnCompletion {
-                                    if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(true, null)) {
-                                        playerMusicListViewModel.handler.savePlayerMusicList(musicState.musics.map { it.musicId } as ArrayList<UUID>)
+                                    if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
+                                            true,
+                                            null
+                                        )
+                                    ) {
+                                        playerMusicListViewModel.handler.savePlayerMusicList(
+                                            musicState.musics.map { it.musicId } as ArrayList<UUID>)
                                     }
                                     PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                         music = music,

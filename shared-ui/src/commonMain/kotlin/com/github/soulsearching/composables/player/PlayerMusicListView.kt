@@ -68,7 +68,10 @@ fun PlayerMusicListView(
 
     SoulSearchingBackHandler(musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
-            musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
+            musicListDraggableState.animateTo(
+                BottomSheetStates.COLLAPSED,
+                tween(Constants.AnimationDuration.normal)
+            )
         }
     }
 
@@ -76,7 +79,10 @@ fun PlayerMusicListView(
         if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
             Modifier.clickable {
                 coroutineScope.launch {
-                    musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
+                    musicListDraggableState.animateTo(
+                        BottomSheetStates.COLLAPSED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }
             }
         } else {
@@ -129,10 +135,16 @@ fun PlayerMusicListView(
         onPlaylistsEvent = onPlaylistEvent,
         navigateToModifyMusic = { path ->
             coroutineScope.launch {
-                musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
+                musicListDraggableState.animateTo(
+                    BottomSheetStates.COLLAPSED,
+                    tween(Constants.AnimationDuration.normal)
+                )
             }.invokeOnCompletion {
                 coroutineScope.launch {
-                    playerDraggableState.animateTo(BottomSheetStates.MINIMISED)
+                    playerDraggableState.animateTo(
+                        BottomSheetStates.MINIMISED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }.invokeOnCompletion {
                     navigateToModifyMusic(path)
                 }
@@ -222,7 +234,10 @@ fun PlayerMusicListView(
                         music = elt,
                         onClick = { music ->
                             coroutineScope.launch {
-                                musicListDraggableState.animateTo(BottomSheetStates.COLLAPSED)
+                                musicListDraggableState.animateTo(
+                                    BottomSheetStates.COLLAPSED,
+                                    tween(Constants.AnimationDuration.normal)
+                                )
                             }.invokeOnCompletion {
                                 PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                     music = music,

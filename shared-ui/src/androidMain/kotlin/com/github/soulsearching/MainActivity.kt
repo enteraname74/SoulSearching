@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import com.github.soulsearching.classes.utils.AndroidUtils
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.playback.PlayerService
 import com.github.soulsearching.theme.ColorThemeManager
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
+
             // Main page view models
             allMusicsViewModel = koinViewModel()
             val allPlaylistsViewModel = koinViewModel<AllPlaylistsViewModelAndroidImpl>()
@@ -120,7 +121,9 @@ class MainActivity : AppCompatActivity() {
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
             val navigationViewModel = koinViewModel<NavigationViewModelAndroidImpl>()
+            val playbackManager = injectElement<PlaybackManagerAndroidImpl>()
 
+            PlayerUtils.playerViewModel = playerViewModel
             initializeBroadcastReceive()
 
             SoulSearchingTheme {
@@ -132,14 +135,17 @@ class MainActivity : AppCompatActivity() {
                     mainActivityViewModel.handler.isPostNotificationGranted = isGranted
                 }
 
-                SideEffect {
-                    checkAndAskMissingPermissions(
-                        isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
-                        isPostNotificationGranted = mainActivityViewModel.handler.isPostNotificationGranted,
-                        readPermissionLauncher = readPermissionLauncher,
-                        postNotificationLauncher = postNotificationLauncher
-                    )
+                if (!mainActivityViewModel.handler.isReadPermissionGranted || !mainActivityViewModel.handler.isPostNotificationGranted) {
+                    SideEffect {
+                        checkAndAskMissingPermissions(
+                            isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
+                            isPostNotificationGranted = mainActivityViewModel.handler.isPostNotificationGranted,
+                            readPermissionLauncher = readPermissionLauncher,
+                            postNotificationLauncher = postNotificationLauncher
+                        )
+                    }
                 }
+
 
                 // launch the service for the playback if its needed.
                 if (PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.handler.isServiceLaunched) {
@@ -168,7 +174,8 @@ class MainActivity : AppCompatActivity() {
                     modifyPlaylistViewModel = modifyPlaylistViewModel,
                     settingsAddMusicsViewModel = settingsAddMusicsViewModel,
                     navigationViewModel = navigationViewModel,
-                    playerViewModel = playerViewModel
+                    playerViewModel = playerViewModel,
+                    playbackManager = playbackManager
                 )
             }
         }

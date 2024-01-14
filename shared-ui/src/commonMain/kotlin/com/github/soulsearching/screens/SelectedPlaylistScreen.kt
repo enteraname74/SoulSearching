@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.composables.PlaylistScreen
-import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.types.BottomSheetStates

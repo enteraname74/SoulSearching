@@ -63,7 +63,10 @@ fun SearchMusics(
                     onClick = { selectedMusic ->
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                            playerDraggableState.animateTo(
+                                BottomSheetStates.EXPANDED,
+                                tween(Constants.AnimationDuration.normal)
+                            )
                         }.invokeOnCompletion { _ ->
                             PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,

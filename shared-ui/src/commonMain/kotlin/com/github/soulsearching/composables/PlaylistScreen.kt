@@ -84,7 +84,7 @@ fun PlaylistScreen(
             playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
-                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                 }
                 .invokeOnCompletion {
                     PlayerUtils.playerViewModel.handler.playShuffle(
@@ -238,7 +238,7 @@ fun PlaylistScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)

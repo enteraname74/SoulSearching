@@ -61,7 +61,6 @@ fun SoulSearchingApplication(
         onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent
     )
 
-    PlayerUtils.playerViewModel = playerViewModel
     with(PlayerUtils.playerViewModel.handler) {
         retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
         updateNbPlayed = { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }

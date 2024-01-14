@@ -4,9 +4,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
-import com.github.soulsearching.draggablestates.SearchDraggableState
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.navigation.NavigationController

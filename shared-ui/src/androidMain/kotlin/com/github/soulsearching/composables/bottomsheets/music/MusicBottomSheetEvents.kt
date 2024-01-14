@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import com.github.soulsearching.R
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.SoulSearchingDialog
-import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState

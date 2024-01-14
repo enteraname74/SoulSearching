@@ -44,7 +44,10 @@ fun SearchView(
                 && playerDraggableState.currentValue != BottomSheetStates.EXPANDED
     ) {
         coroutineScope.launch {
-            draggableState.animateTo(BottomSheetStates.COLLAPSED, tween(Constants.AnimationDuration.normal))
+            draggableState.animateTo(
+                BottomSheetStates.COLLAPSED,
+                tween(Constants.AnimationDuration.normal)
+            )
         }
     }
 

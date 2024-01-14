@@ -1,7 +1,6 @@
 package com.github.soulsearching.navigation
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
@@ -9,8 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.draggablestates.PlayerDraggableState
-import com.github.soulsearching.draggablestates.PlayerMusicListDraggableState
 import com.github.soulsearching.types.BottomSheetStates
 
 /**

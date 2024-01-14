@@ -21,16 +21,17 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(project(":local-db"))
+                implementation(project(":local-desktop"))
                 implementation(compose.desktop.common)
-                implementation(Dependencies.AndroidX.RUNTIME_DESKTOP)
-                implementation("org.jetbrains.compose.desktop:desktop:1.6.0-alpha01")
+//                implementation(Dependencies.AndroidX.RUNTIME_DESKTOP)
+//                implementation("org.jetbrains.compose.desktop:desktop:1.6.0-alpha01")
             }
         }
         commonMain {
             dependencies {
                 implementation(project(":domain"))
                 implementation(Dependencies.KOIN_CORE)
+
                 implementation(Dependencies.KOIN_COMPOSE)
 
                 implementation(Dependencies.KMPALETTE_CORE)
@@ -38,18 +39,25 @@ kotlin {
                 implementation("com.russhwolf:multiplatform-settings:1.1.1")
 
                 with(Dependencies.AndroidX) {
-                    implementation(RUNTIME)
-                    implementation(FOUNDATION)
-                    implementation(UI)
-                    implementation(MATERIAL)
-                    implementation(MATERIAL3)
-                    implementation(MATERIAL_ICON_EXTENDED)
+//                    implementation(RUNTIME)
+//                    implementation(FOUNDATION)
+//                    implementation(UI)
+//                    implementation(MATERIAL)
+//                    implementation(MATERIAL3)
+//                    implementation(MATERIAL_ICON_EXTENDED)
                 }
+                implementation("androidx.annotation:annotation:1.7.1")
+                implementation(compose.ui)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.materialIconsExtended)
+                implementation(compose.material3)
             }
         }
         androidMain {
             dependencies {
-                implementation(project(":local-db"))
+                implementation(project(":local-android"))
 
                 with(Dependencies.AndroidX) {
                     implementation(KOIN_COMPOSE)
@@ -131,7 +139,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     packaging {
         resources {

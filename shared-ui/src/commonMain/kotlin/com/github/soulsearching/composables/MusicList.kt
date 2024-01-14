@@ -1,5 +1,6 @@
 package com.github.soulsearching.composables
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -9,8 +10,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
-import com.github.soulsearching.draggablestates.PlayerDraggableState
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.MusicState
@@ -71,7 +72,7 @@ fun MusicList(
                 music = music,
                 onClick = {
                     coroutineScope.launch {
-                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                     }.invokeOnCompletion {
                         playlistId?.let {
                             updateNbPlayedAction(it)

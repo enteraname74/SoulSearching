@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
+import androidx.compose.material.icons.rounded.PlaylistAdd
+import androidx.compose.material.icons.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Edit
@@ -54,7 +54,7 @@ fun MusicBottomSheetMenu(
             )
         }
         BottomSheetRow(
-            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
+            icon = Icons.Rounded.PlaylistAdd,
             text = strings.addToPlaylist,
             onClick = addToPlaylistAction,
             textColor = textColor
@@ -67,7 +67,7 @@ fun MusicBottomSheetMenu(
         )
         if (!isCurrentlyPlaying) {
             BottomSheetRow(
-                icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+                icon = Icons.Rounded.PlaylistPlay,
                 text = strings.playNext,
                 onClick = playNextAction,
                 textColor = textColor

@@ -4,6 +4,7 @@ import com.github.enteraname74.buildsrc.Dependencies
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
+    id("org.jetbrains.compose")
 }
 
 kotlin {
@@ -18,14 +19,10 @@ kotlin {
 
                 implementation(Dependencies.COROUTINES_CORE)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                implementation(Dependencies.INJECT_API)
                 with(Dependencies.AndroidX) {
-                    implementation(RUNTIME)
-                    implementation(FOUNDATION)
-                    implementation(UI)
-                    implementation(MATERIAL)
-                    implementation(MATERIAL3)
+//                    implementation(UI)
                 }
+                implementation(compose.ui)
             }
         }
     }

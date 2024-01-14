@@ -2,13 +2,11 @@ package com.github.soulsearching.utils
 
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.palette.graphics.Palette
-import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.kmpalette.rememberPaletteState
 import kotlinx.coroutines.runBlocking
