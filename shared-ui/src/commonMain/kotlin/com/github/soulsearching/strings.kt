@@ -22,6 +22,7 @@ interface Strings {
     val settingsAccessButton: String
     val createPlaylistButton: String
     val shuffleButton: String
+    val favorite: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
     val artists: String
@@ -160,6 +161,7 @@ object FrStrings : Strings {
     override val more = "Plus"
     override val settingsAccessButton = "Bouton d'accès aux paramètres de l'application"
     override val shuffleButton = "Bouton pour jouer une liste de musique en aléatoire"
+    override val favorite = "Favoris"
     override val missingPermissions = "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
     override val playedList = "Liste jouée"
 
@@ -299,6 +301,7 @@ object EnStrings : Strings {
     override val more = "More"
     override val settingsAccessButton = "Settings access button"
     override val shuffleButton = "Shuffle button"
+    override val favorite = "Favorites"
     override val missingPermissions = "You must accept all permissions required by the application for it to work properly."
     override val playedList = "Played list"
 

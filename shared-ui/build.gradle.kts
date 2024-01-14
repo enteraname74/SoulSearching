@@ -23,6 +23,8 @@ kotlin {
             dependencies {
                 implementation(project(":local-desktop"))
                 implementation(compose.desktop.common)
+                // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
+                implementation("net.jthink:jaudiotagger:3.0.1")
 //                implementation(Dependencies.AndroidX.RUNTIME_DESKTOP)
 //                implementation("org.jetbrains.compose.desktop:desktop:1.6.0-alpha01")
             }
