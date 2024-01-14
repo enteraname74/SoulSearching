@@ -18,6 +18,7 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed-dao:${Versions.EXPOSED}")
                 implementation("org.jetbrains.exposed:exposed-jdbc:${Versions.EXPOSED}")
                 implementation("org.jetbrains.exposed:exposed-java-time:${Versions.EXPOSED}")
+                implementation("org.xerial:sqlite-jdbc:3.41.2.2")
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.github.soulsearching
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.github.enteraname74.domain.domainModule
+import com.github.enteraname74.localdesktop.AppDatabase
 import com.github.enteraname74.localdesktop.localDesktopModule
 import com.github.soulsearching.classes.PlaybackManagerDesktopImpl
 import com.github.soulsearching.di.injectElement
@@ -18,6 +20,11 @@ fun SoulSearchingDesktop() {
             modules(appModule, domainModule, localDesktopModule)
         }
     ) {
+
+        LaunchedEffect(key1 = "DATABASE") {
+            AppDatabase.connectToDatabase()
+        }
+
         val colorThemeManager: ColorThemeManager = injectElement()
         SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
