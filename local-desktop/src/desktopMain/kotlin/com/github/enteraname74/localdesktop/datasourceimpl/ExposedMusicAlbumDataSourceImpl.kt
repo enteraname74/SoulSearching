@@ -2,34 +2,39 @@ package com.github.enteraname74.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.datasource.MusicAlbumDataSource
 import com.github.enteraname74.domain.model.MusicAlbum
+import com.github.enteraname74.localdesktop.dao.MusicAlbumDao
 import java.util.UUID
 
-class ExposedMusicAlbumDataSourceImpl: MusicAlbumDataSource {
-    override suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) {
+/**
+ * Implementation of the MusicAlbumDao with Exposed.
+ */
+internal class ExposedMusicAlbumDataSourceImpl(
+    private val musicAlbumDao: MusicAlbumDao
+) : MusicAlbumDataSource {
+    override suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) =
+        musicAlbumDao.insertMusicIntoAlbum(musicAlbum = musicAlbum)
 
-    }
+    override suspend fun deleteMusicFromAlbum(musicId: UUID) =
+        musicAlbumDao.deleteMusicFromAlbum(musicId = musicId)
 
-    override suspend fun deleteMusicFromAlbum(musicId: UUID) {
+    override suspend fun updateAlbumOfMusic(musicId: UUID, newAlbumId: UUID) =
+        musicAlbumDao.updateAlbumOfMusic(
+            musicId = musicId,
+            newAlbumId = newAlbumId
+        )
 
-    }
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) =
+        musicAlbumDao.updateMusicsAlbum(
+            newAlbumId = newAlbumId,
+            legacyAlbumId = legacyAlbumId
+        )
 
-    override suspend fun updateAlbumOfMusic(musicId: UUID, newAlbumId: UUID) {
+    override suspend fun getMusicsIdsFromAlbumId(albumId: UUID) =
+        musicAlbumDao.getMusicsIdsFromAlbumId(albumId = albumId)
 
-    }
+    override suspend fun getAlbumIdFromMusicId(musicId: UUID) =
+        musicAlbumDao.getAlbumIdFromMusicId(musicId = musicId)
 
-    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
-
-    }
-
-    override suspend fun getMusicsIdsFromAlbumId(albumId: UUID): List<UUID> {
-        return emptyList()
-    }
-
-    override suspend fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return null
-    }
-
-    override suspend fun getNumberOfMusicsFromAlbum(albumId: UUID): Int {
-        return 0
-    }
+    override suspend fun getNumberOfMusicsFromAlbum(albumId: UUID) =
+        musicAlbumDao.getNumberOfMusicsFromAlbum(albumId = albumId)
 }

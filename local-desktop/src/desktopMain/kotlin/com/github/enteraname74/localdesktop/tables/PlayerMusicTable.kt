@@ -6,6 +6,6 @@ import org.jetbrains.exposed.sql.ReferenceOption
 /**
  * Table for storing PlayerMusics.
  */
-object PlayerMusicTable: LongIdTable() {
+internal object PlayerMusicTable: LongIdTable() {
     val musicId = reference("musicId", MusicTable.musicId, onDelete = ReferenceOption.CASCADE)
 }

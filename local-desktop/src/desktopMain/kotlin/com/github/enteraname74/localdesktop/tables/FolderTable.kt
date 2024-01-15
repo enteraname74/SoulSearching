@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.Table
 /**
  * Table for storing Folders.
  */
-object FolderTable: Table() {
+internal object FolderTable: Table() {
     val folderPath = mediumText("folderPath")
     val isSelected = bool("isSelected")
 

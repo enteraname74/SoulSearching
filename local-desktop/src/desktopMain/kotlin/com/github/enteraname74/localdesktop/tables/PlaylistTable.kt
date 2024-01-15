@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 /**
  * Table for storing Playlists.
  */
-object PlaylistTable: Table() {
+internal object PlaylistTable: Table() {
     val playlistId = varchar("playlistId", 128)
     var name = varchar("name", 128)
     var coverId = varchar("coverId", 128)

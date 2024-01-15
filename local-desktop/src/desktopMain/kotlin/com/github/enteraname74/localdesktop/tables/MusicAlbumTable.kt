@@ -7,7 +7,7 @@ import java.util.UUID
 /**
  * Table for storing MusicAlbums.
  */
-object MusicAlbumTable : LongIdTable() {
+internal object MusicAlbumTable : LongIdTable() {
     val musicId = reference("musicId", MusicTable.musicId, onDelete = ReferenceOption.CASCADE)
     val albumId = reference("albumId", AlbumTable.albumId, onDelete = ReferenceOption.CASCADE)
 }

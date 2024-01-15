@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 /**
  * Table for storing Musics.
  */
-object MusicTable: Table() {
+internal object MusicTable: Table() {
     val musicId = varchar("musicId", 128)
     val name = varchar("name", 128)
     val album = varchar("album", 128)

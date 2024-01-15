@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 /**
  * Table for storing Artists.
  */
-object ArtistTable: Table() {
+internal object ArtistTable: Table() {
     val artistId = varchar("artistId", 128)
     val artistName = varchar("artistName", 128)
     val coverId = varchar("coverId", 128)

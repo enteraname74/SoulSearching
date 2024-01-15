@@ -2,92 +2,85 @@ package com.github.enteraname74.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.datasource.ArtistDataSource
 import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import com.github.enteraname74.localdesktop.dao.ArtistDao
 import java.util.UUID
 
-class ExposedArtistDataSourceImpl : ArtistDataSource {
-    override suspend fun insertArtist(artist: Artist) {
+/**
+ * Implementation of the ArtistDataSource with Exposed.
+ */
+internal class ExposedArtistDataSourceImpl(
+    private val artistDao: ArtistDao
+) : ArtistDataSource {
+    override suspend fun insertArtist(artist: Artist) = artistDao.insertArtist(artist = artist)
 
-    }
+    override suspend fun deleteArtist(artist: Artist) = artistDao.deleteArtist(artist = artist)
 
-    override suspend fun deleteArtist(artist: Artist) {
+    override suspend fun getArtistFromId(artistId: UUID) =
+        artistDao.getArtistFromId(artistId = artistId)
 
-    }
+    override fun getAllArtistsSortByNameAscAsFlow() = artistDao.getAllArtistsSortByNameAscAsFlow()
 
-    override suspend fun getArtistFromId(artistId: UUID): Artist? {
-        return null
-    }
+    override fun getAllArtistsWithMusicsSortByNameAscAsFlow() =
+        artistDao.getAllArtistsWithMusicsSortByNameAscAsFlow()
 
-    override fun getAllArtistsSortByNameAscAsFlow(): Flow<List<Artist>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsSortByNameDescAsFlow() =
+        artistDao.getAllArtistWithMusicsSortByNameDescAsFlow()
 
-    override fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsSortByAddedDateAscAsFlow() =
+        artistDao.getAllArtistWithMusicsSortByAddedDateAscAsFlow()
 
-    override fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsSortByAddedDateDescAsFlow() =
+        artistDao.getAllArtistWithMusicsSortByAddedDateDescAsFlow()
 
-    override fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow() =
+        artistDao.getAllArtistWithMusicsSortByNbPlayedAscAsFlow()
 
-    override fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
-
-    override fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
-
-    override fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow() =
+        artistDao.getAllArtistWithMusicsSortByNbPlayedDescAsFlow()
 
     override suspend fun getPossibleDuplicatedArtist(
         artistId: UUID,
         artistName: String
-    ): ArtistWithMusics? {
-        return null
-    }
+    ) = artistDao.getPossibleDuplicatedArtist(
+        artistId = artistId,
+        artistName = artistName
+    )
 
-    override suspend fun getArtistFromInfo(artistName: String): Artist? {
-        return null
-    }
+    override suspend fun getArtistFromInfo(artistName: String) =
+        artistDao.getArtistFromInfo(artistName = artistName)
 
-    override fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?> {
-        return flowOf(null)
-    }
+    override fun getArtistWithMusicsAsFlow(artistId: UUID) =
+        artistDao.getArtistWithMusicsAsFlow(artistId = artistId)
 
-    override fun getAllArtistWithMusicsFromQuickAccessAsFlow(): Flow<List<ArtistWithMusics>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllArtistWithMusicsFromQuickAccessAsFlow() =
+        artistDao.getAllArtistWithMusicsFromQuickAccessAsFlow()
 
-    override suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics? {
-        return null
-    }
+    override suspend fun getArtistWithMusics(artistId: UUID) =
+        artistDao.getArtistWithMusics(artistId = artistId)
 
-    override suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID) {
+    override suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID) =
+        artistDao.updateArtistCover(
+            newCoverId = newCoverId,
+            artistId = artistId
+        )
 
-    }
+    override suspend fun getNumberOfArtistsWithCoverId(coverId: UUID) =
+        artistDao.getNumberOfArtistsWithCoverId(
+            coverId = coverId
+        )
 
-    override suspend fun getNumberOfArtistsWithCoverId(coverId: UUID): Int {
-        return 0
-    }
+    override suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID) =
+        artistDao.updateQuickAccessState(
+            newQuickAccessState = newQuickAccessState,
+            artistId = artistId
+        )
 
-    override suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID) {
+    override suspend fun getNbPlayedOfArtist(artistId: UUID) =
+        artistDao.getNbPlayedOfArtist(artistId = artistId)
 
-    }
-
-    override suspend fun getNbPlayedOfArtist(artistId: UUID): Int {
-        return 0
-    }
-
-    override suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID) {
-
-    }
+    override suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID) =
+        artistDao.updateNbPlayed(
+            newNbPlayed = newNbPlayed,
+            artistId = artistId
+        )
 }

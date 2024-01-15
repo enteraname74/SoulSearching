@@ -2,28 +2,28 @@ package com.github.enteraname74.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.datasource.ImageCoverDataSource
 import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.localdesktop.dao.ImageCoverDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import java.util.UUID
 
-class ExposedImageCoverDataSourceImpl: ImageCoverDataSource {
-    override suspend fun insertImageCover(imageCover: ImageCover) {
+/**
+ * Implementation of the ImageCoverDataSource with Exposed.
+ */
+internal class ExposedImageCoverDataSourceImpl(
+    private val imageCoverDao: ImageCoverDao
+): ImageCoverDataSource {
+    override suspend fun insertImageCover(imageCover: ImageCover) =
+        imageCoverDao.insertImageCover(imageCover = imageCover)
 
-    }
+    override suspend fun deleteImageCover(imageCover: ImageCover) =
+        imageCoverDao.deleteImageCover(imageCover = imageCover)
 
-    override suspend fun deleteImageCover(imageCover: ImageCover) {
+    override suspend fun deleteFromCoverId(coverId: UUID) =
+        imageCoverDao.deleteFromCoverId(coverId = coverId)
 
-    }
+    override suspend fun getCoverOfElement(coverId: UUID) =
+        imageCoverDao.getCoverOfElement(coverId = coverId)
 
-    override suspend fun deleteFromCoverId(coverId: UUID) {
-
-    }
-
-    override suspend fun getCoverOfElement(coverId: UUID): ImageCover? {
-        return null
-    }
-
-    override fun getAllCoversAsFlow(): Flow<List<ImageCover>> {
-        return flowOf(emptyList())
-    }
+    override fun getAllCoversAsFlow() = imageCoverDao.getAllCoversAsFlow()
 }
