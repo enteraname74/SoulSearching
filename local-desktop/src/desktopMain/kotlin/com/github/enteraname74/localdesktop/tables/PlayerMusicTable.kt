@@ -7,5 +7,5 @@ import org.jetbrains.exposed.sql.ReferenceOption
  * Table for storing PlayerMusics.
  */
 internal object PlayerMusicTable: LongIdTable() {
-    val musicId = reference("musicId", MusicTable.musicId, onDelete = ReferenceOption.CASCADE)
+    val playerMusicId = reference("musicId", MusicTable.musicId, onDelete = ReferenceOption.CASCADE)
 }

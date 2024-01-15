@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 /**
  * Table for storing ImageCovers.
  */
-internal object ImageCover : LongIdTable() {
+internal object ImageCoverTable : LongIdTable() {
     val coverId = varchar("coverId", 128)
     val cover = largeText("cover").nullable()
 }

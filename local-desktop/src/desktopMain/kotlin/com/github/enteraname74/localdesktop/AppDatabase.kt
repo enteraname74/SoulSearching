@@ -4,15 +4,17 @@ import com.github.enteraname74.localdesktop.tables.AlbumArtistTable
 import com.github.enteraname74.localdesktop.tables.AlbumTable
 import com.github.enteraname74.localdesktop.tables.ArtistTable
 import com.github.enteraname74.localdesktop.tables.FolderTable
-import com.github.enteraname74.localdesktop.tables.ImageCover
+import com.github.enteraname74.localdesktop.tables.ImageCoverTable
 import com.github.enteraname74.localdesktop.tables.MusicAlbumTable
 import com.github.enteraname74.localdesktop.tables.MusicArtistTable
 import com.github.enteraname74.localdesktop.tables.MusicPlaylistTable
 import com.github.enteraname74.localdesktop.tables.MusicTable
 import com.github.enteraname74.localdesktop.tables.PlayerMusicTable
 import com.github.enteraname74.localdesktop.tables.PlaylistTable
+import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
@@ -31,7 +33,7 @@ object AppDatabase {
                 AlbumTable,
                 ArtistTable,
                 FolderTable,
-                ImageCover,
+                ImageCoverTable,
                 MusicAlbumTable,
                 MusicArtistTable,
                 MusicPlaylistTable,
@@ -42,3 +44,6 @@ object AppDatabase {
         }
     }
 }
+
+suspend fun <T> dbQuery(block: suspend () -> T): T =
+    newSuspendedTransaction(Dispatchers.IO) { block() }

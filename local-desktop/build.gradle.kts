@@ -3,6 +3,7 @@ import com.github.enteraname74.buildsrc.Versions
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.compose")
 }
 
 kotlin {
@@ -19,6 +20,7 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed-jdbc:${Versions.EXPOSED}")
                 implementation("org.jetbrains.exposed:exposed-java-time:${Versions.EXPOSED}")
                 implementation("org.xerial:sqlite-jdbc:3.41.2.2")
+                implementation(compose.ui)
             }
         }
     }
