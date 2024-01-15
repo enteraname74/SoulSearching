@@ -11,7 +11,7 @@ internal object MusicTable: Table() {
     val name = varchar("name", 128)
     val album = varchar("album", 128)
     val artist = varchar("artist", 128)
-    val coverId = varchar("coverId", 128)
+    val coverId = varchar("coverId", 128).nullable()
     val duration = long("duration")
     val path = mediumText("path")
     val folder = varchar("folder", 128)

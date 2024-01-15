@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 internal object AlbumTable: Table() {
     val albumId = varchar("albumId", 128)
     val albumName = varchar("albumName", 128)
-    val coverId = varchar("albumName", 128)
+    val coverId = varchar("albumName", 128).nullable()
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")

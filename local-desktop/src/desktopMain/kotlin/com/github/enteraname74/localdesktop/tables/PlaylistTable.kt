@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 internal object PlaylistTable: Table() {
     val playlistId = varchar("playlistId", 128)
     var name = varchar("name", 128)
-    var coverId = varchar("coverId", 128)
+    var coverId = varchar("coverId", 128).nullable()
     val isFavorite = bool("isFavorite")
     var addedDate = datetime("addedDate")
     var nbPlayed = integer("nbPlayed")

@@ -7,5 +7,5 @@ import org.jetbrains.exposed.dao.id.LongIdTable
  */
 internal object ImageCover : LongIdTable() {
     val coverId = varchar("coverId", 128)
-    val cover = largeText("cover")
+    val cover = largeText("cover").nullable()
 }
