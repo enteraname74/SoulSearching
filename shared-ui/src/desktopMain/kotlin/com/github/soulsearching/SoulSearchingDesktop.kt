@@ -63,7 +63,6 @@ fun SoulSearchingDesktop() {
         with(mainActivityViewModel.handler) {
             isReadPermissionGranted = true
             isPostNotificationGranted = true
-            hasMusicsBeenFetched = false
         }
 
         SoulSearchingApplication(

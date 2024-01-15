@@ -86,18 +86,18 @@ fun ExpandedPlayButtonsComposable(
             colors = sliderColors,
             valueRange = 0f..playbackManager.getMusicDuration().toFloat(),
             interactionSource = interactionSource,
-//            thumb = {
-//                SliderDefaults.Thumb(
-//                    interactionSource = interactionSource,
-//                    modifier = Modifier
-//                        .size(Constants.ImageSize.small)
-//                        .padding(
-//                            start = 4.dp,
-//                            top = 4.dp
-//                        ),
-//                    colors = sliderColors
-//                )
-//            }
+            thumb = {
+                SliderDefaults.Thumb(
+                    interactionSource = interactionSource,
+                    modifier = Modifier
+                        .size(Constants.ImageSize.small)
+                        .padding(
+                            start = 4.dp,
+                            top = 4.dp
+                        ),
+                    colors = sliderColors
+                )
+            }
         )
 
         Column(
