@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
@@ -45,8 +46,9 @@ class ExposedPlayerMusicDaoImpl: PlayerMusicDao {
 
     override suspend fun insertAllPlayerMusics(playlist: List<PlayerMusic>) {
         dbQuery {
-            for(music in playlist) {
-                insertPlayerMusic(music)
+            PlayerMusicTable.batchInsert(playlist) { playerMusic ->
+                if (playerMusic.id != 0L) this[PlayerMusicTable.id] = playerMusic.id
+                this[PlayerMusicTable.playerMusicId] = playerMusic.playerMusicId.toString()
             }
         }
     }
