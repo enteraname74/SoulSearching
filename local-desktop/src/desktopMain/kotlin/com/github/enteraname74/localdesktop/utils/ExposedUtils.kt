@@ -1,23 +1,29 @@
 package com.github.enteraname74.localdesktop.utils
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.model.PlayerWithMusicItem
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.localdesktop.tables.AlbumTable
 import com.github.enteraname74.localdesktop.tables.ArtistTable
 import com.github.enteraname74.localdesktop.tables.FolderTable
 import com.github.enteraname74.localdesktop.tables.ImageCoverTable
+import com.github.enteraname74.localdesktop.tables.MusicPlaylistTable
 import com.github.enteraname74.localdesktop.tables.MusicTable
 import com.github.enteraname74.localdesktop.tables.PlayerMusicTable
 import com.github.enteraname74.localdesktop.tables.PlaylistTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.skia.Image
+import org.jetbrains.skiko.toBufferedImage
+import java.io.ByteArrayOutputStream
 import java.util.Base64
 import java.util.UUID
 
@@ -106,6 +112,23 @@ object ExposedUtils {
     )
 
     /**
+     * Builds a MusicPlaylist from a ResultRow.
+     */
+    fun resultRowToMusicPlaylist(row: ResultRow): MusicPlaylist = MusicPlaylist(
+        id = row[MusicPlaylistTable.id].value,
+        musicId = UUID.fromString(row[MusicPlaylistTable.musicId]),
+        playlistId = UUID.fromString(row[MusicPlaylistTable.playlistId])
+    )
+
+    /**
+     * Builds a PlayerWithMusicItem from a ResultRow.
+     */
+    fun resultRowToPlayerWithMusicItem(row: ResultRow): PlayerWithMusicItem = PlayerWithMusicItem(
+        playerMusic = resultRowToPlayerMusic(row),
+        music = resultRowToMusic(row)
+    )
+
+    /**
      * Converts a string representation of an ImageBitmap to an ImageBitmap.
      */
     private fun stringToImageBitmap(stringBitmap: String?): ImageBitmap? {
@@ -113,5 +136,18 @@ object ExposedUtils {
 
         val imageBytes = Base64.getDecoder().decode(stringBitmap)
         return Image.makeFromEncoded(imageBytes).toComposeImageBitmap()
+    }
+
+    /**
+     * Converts an ImageBitmap to a string representation of it.
+     */
+    fun imageBitmapToString(imageBitmap: ImageBitmap?): String? {
+        if (imageBitmap == null) return null
+
+        imageBitmap.asSkiaBitmap().readPixels()?.let {
+            return Base64.getEncoder().encodeToString(it)
+        }
+
+        return null
     }
 }

@@ -3,7 +3,17 @@ package com.github.enteraname74.localdesktop.daoimpl
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.localdesktop.dao.ArtistDao
+import com.github.enteraname74.localdesktop.dbQuery
+import com.github.enteraname74.localdesktop.tables.ArtistTable
+import com.github.enteraname74.localdesktop.utils.ExposedUtils
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
 /**
@@ -11,19 +21,38 @@ import java.util.UUID
  */
 class ExposedArtistDaoImpl: ArtistDao {
     override suspend fun insertArtist(artist: Artist) {
-        TODO("Not yet implemented")
+        dbQuery { 
+            ArtistTable.upsert {
+                it[artistId] = artist.artistId.toString()
+                it[artistName] = artist.artistName
+                it[coverId] = artist.coverId?.toString()
+                it[addedDate] = artist.addedDate
+                it[nbPlayed] = artist.nbPlayed
+                it[isInQuickAccess] = artist.isInQuickAccess
+            }
+        }
     }
 
     override suspend fun deleteArtist(artist: Artist) {
-        TODO("Not yet implemented")
+        dbQuery { 
+            ArtistTable.deleteWhere { artistId eq artist.artistId.toString() }
+        }
     }
 
-    override suspend fun getArtistFromId(artistId: UUID): Artist? {
-        TODO("Not yet implemented")
+    override suspend fun getArtistFromId(artistId: UUID): Artist? = dbQuery { 
+        ArtistTable
+            .selectAll()
+            .where { ArtistTable.artistId eq artistId.toString() }
+            .map(ExposedUtils::resultRowToArtist)
+            .singleOrNull()
     }
 
-    override fun getAllArtistsSortByNameAscAsFlow(): Flow<List<Artist>> {
-        TODO("Not yet implemented")
+    override fun getAllArtistsSortByNameAscAsFlow(): Flow<List<Artist>> = transaction { 
+        flowOf(
+            ArtistTable
+                .selectAll()
+                .map(ExposedUtils::resultRowToArtist)
+        )
     }
 
     override fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<ArtistWithMusics>> {
@@ -57,8 +86,12 @@ class ExposedArtistDaoImpl: ArtistDao {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArtistFromInfo(artistName: String): Artist? {
-        TODO("Not yet implemented")
+    override suspend fun getArtistFromInfo(artistName: String): Artist? = dbQuery { 
+        ArtistTable
+            .selectAll()
+            .where { ArtistTable.artistName eq artistName }
+            .map(ExposedUtils::resultRowToArtist)
+            .singleOrNull()
     }
 
     override fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?> {
@@ -74,22 +107,43 @@ class ExposedArtistDaoImpl: ArtistDao {
     }
 
     override suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID) {
-        TODO("Not yet implemented")
+        dbQuery {
+            ArtistTable.update({ArtistTable.artistId eq artistId.toString()}) {
+                it[coverId] = newCoverId.toString()
+            }
+        }
     }
 
-    override suspend fun getNumberOfArtistsWithCoverId(coverId: UUID): Int {
-        TODO("Not yet implemented")
+    override suspend fun getNumberOfArtistsWithCoverId(coverId: UUID): Int = dbQuery {
+        ArtistTable
+            .selectAll()
+            .where { ArtistTable.coverId eq coverId.toString() }
+            .count()
+            .toInt()
     }
 
     override suspend fun updateQuickAccessState(newQuickAccessState: Boolean, artistId: UUID) {
-        TODO("Not yet implemented")
+        dbQuery {
+            ArtistTable.update({ArtistTable.artistId eq artistId.toString()}) {
+                it[isInQuickAccess] = newQuickAccessState
+            }
+        }
     }
 
-    override suspend fun getNbPlayedOfArtist(artistId: UUID): Int {
-        TODO("Not yet implemented")
+    override suspend fun getNbPlayedOfArtist(artistId: UUID): Int = dbQuery {
+        val artists = ArtistTable
+            .select(ArtistTable.nbPlayed)
+            .where { ArtistTable.artistId eq artistId.toString() }
+            .map{ it[ArtistTable.nbPlayed] }
+
+        if (artists.isEmpty()) 0 else artists[0]
     }
 
     override suspend fun updateNbPlayed(newNbPlayed: Int, artistId: UUID) {
-        TODO("Not yet implemented")
+        dbQuery {
+            ArtistTable.update({ArtistTable.artistId eq artistId.toString()}) {
+                it[nbPlayed] = newNbPlayed
+            }
+        }
     }
 }
