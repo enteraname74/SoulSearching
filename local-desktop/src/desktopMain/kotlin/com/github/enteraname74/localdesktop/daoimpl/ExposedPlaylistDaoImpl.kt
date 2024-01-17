@@ -51,31 +51,31 @@ class ExposedPlaylistDaoImpl: PlaylistDao {
     }
 
     override fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistWithMusicsSortByNameDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllPlaylistsFromQuickAccessAsFlow(): Flow<List<PlaylistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override suspend fun getFavoritePlaylist(): Playlist = dbQuery {
@@ -95,11 +95,11 @@ class ExposedPlaylistDaoImpl: PlaylistDao {
     }
 
     override fun getPlaylistWithMusicsAsFlow(playlistId: UUID): Flow<PlaylistWithMusics?> {
-        TODO("Not yet implemented")
+        return flowOf(null)
     }
 
     override suspend fun getAllPlaylistsWithMusics(): List<PlaylistWithMusics> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getNumberOfPlaylistsWithCoverId(coverId: UUID): Int = dbQuery {

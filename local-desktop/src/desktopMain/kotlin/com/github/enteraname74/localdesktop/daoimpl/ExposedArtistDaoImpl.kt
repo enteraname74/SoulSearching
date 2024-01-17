@@ -56,34 +56,34 @@ class ExposedArtistDaoImpl: ArtistDao {
     }
 
     override fun getAllArtistsWithMusicsSortByNameAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllArtistWithMusicsSortByNameDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllArtistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllArtistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllArtistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllArtistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override suspend fun getPossibleDuplicatedArtist(
         artistId: UUID,
         artistName: String
     ): ArtistWithMusics? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override suspend fun getArtistFromInfo(artistName: String): Artist? = dbQuery { 
@@ -95,15 +95,15 @@ class ExposedArtistDaoImpl: ArtistDao {
     }
 
     override fun getArtistWithMusicsAsFlow(artistId: UUID): Flow<ArtistWithMusics?> {
-        TODO("Not yet implemented")
+        return flowOf(null)
     }
 
     override fun getAllArtistWithMusicsFromQuickAccessAsFlow(): Flow<List<ArtistWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
-    override suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics? {
-        TODO("Not yet implemented")
+    override suspend fun getArtistWithMusics(artistId: UUID): ArtistWithMusics? = dbQuery {
+        null
     }
 
     override suspend fun updateArtistCover(newCoverId: UUID, artistId: UUID) {

@@ -15,16 +15,12 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun SoulSearchingDesktop() {
+    AppDatabase.connectToDatabase()
     KoinApplication(
         application = {
-            modules(appModule, domainModule, localDesktopModule)
+            modules(domainModule, localDesktopModule, appModule)
         }
     ) {
-
-        LaunchedEffect(key1 = "DATABASE") {
-            AppDatabase.connectToDatabase()
-        }
-
         val colorThemeManager: ColorThemeManager = injectElement()
         SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 

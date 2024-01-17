@@ -63,11 +63,11 @@ class ExposedAlbumDaoImpl: AlbumDao {
     }
 
     override fun getAlbumWithMusicsAsFlow(albumId: UUID): Flow<AlbumWithMusics?> {
-        TODO()
+        return flowOf(null)
     }
 
     override suspend fun getAlbumWithMusics(albumId: UUID): AlbumWithMusics {
-        TODO("Not yet implemented")
+        return AlbumWithMusics()
     }
 
     override fun getAllAlbumsSortByNameAscAsFlow(): Flow<List<Album>> = transaction {
@@ -75,39 +75,39 @@ class ExposedAlbumDaoImpl: AlbumDao {
     }
 
     override fun getAllAlbumsWithMusicsSortByNameAscAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllAlbumsWithMusicsSortByNameDescAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllAlbumsWithMusicsSortByAddedDateAscAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllAlbumsWithMusicsSortByAddedDateDescAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllAlbumsWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override fun getAllAlbumsWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<AlbumWithMusics>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override suspend fun getAllAlbumsWithMusics(): List<AlbumWithMusics> {
-        TODO("Not yet implemented")
+        return emptyList()
     }
 
     override fun getAllAlbumWithArtistFromQuickAccessAsFlow(): Flow<List<AlbumWithArtist>> {
-        TODO("Not yet implemented")
+        return flowOf(emptyList())
     }
 
     override suspend fun getCorrespondingAlbum(albumName: String, artistId: UUID): Album? = dbQuery {

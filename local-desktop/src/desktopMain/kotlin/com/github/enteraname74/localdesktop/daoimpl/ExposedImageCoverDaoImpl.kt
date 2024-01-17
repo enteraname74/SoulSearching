@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.upsert
+import java.lang.Exception
 import java.util.UUID
 
 /**
@@ -49,10 +50,15 @@ class ExposedImageCoverDaoImpl: ImageCoverDao {
     }
 
     override fun getAllCoversAsFlow(): Flow<List<ImageCover>> = transaction {
-        flowOf(
-            ImageCoverTable
-                .selectAll()
-                .map(ExposedUtils::resultRowToImageCover)
-        )
+        try {
+            flowOf(
+                ImageCoverTable
+                    .selectAll()
+                    .map(ExposedUtils::resultRowToImageCover)
+            )
+        } catch (_: Exception) {
+            flowOf(emptyList())
+        }
+
     }
 }

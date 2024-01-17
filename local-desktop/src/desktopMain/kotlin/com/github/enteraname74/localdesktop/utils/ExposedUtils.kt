@@ -4,7 +4,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
@@ -12,6 +15,7 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.PlayerWithMusicItem
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.localdesktop.tables.AlbumTable
 import com.github.enteraname74.localdesktop.tables.ArtistTable
 import com.github.enteraname74.localdesktop.tables.FolderTable
@@ -21,6 +25,7 @@ import com.github.enteraname74.localdesktop.tables.MusicTable
 import com.github.enteraname74.localdesktop.tables.PlayerMusicTable
 import com.github.enteraname74.localdesktop.tables.PlaylistTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Image
 import org.jetbrains.skiko.toBufferedImage
 import java.io.ByteArrayOutputStream
@@ -35,13 +40,30 @@ object ExposedUtils {
      * Builds an Album from a ResultRow.
      */
     fun resultRowToAlbum(row: ResultRow): Album = Album(
-            albumId = UUID.fromString(row[AlbumTable.albumId]),
-            albumName = row[AlbumTable.albumName],
-            coverId = if (row[AlbumTable.coverId] == null) null else UUID.fromString(row[AlbumTable.coverId]),
-            addedDate = row[AlbumTable.addedDate],
-            nbPlayed = row[AlbumTable.nbPlayed],
-            isInQuickAccess = row[AlbumTable.isInQuickAccess]
-        )
+        albumId = UUID.fromString(row[AlbumTable.albumId]),
+        albumName = row[AlbumTable.albumName],
+        coverId = if (row[AlbumTable.coverId] == null) null else UUID.fromString(row[AlbumTable.coverId]),
+        addedDate = row[AlbumTable.addedDate],
+        nbPlayed = row[AlbumTable.nbPlayed],
+        isInQuickAccess = row[AlbumTable.isInQuickAccess]
+    )
+
+    /**
+     * Builds an AlbumWithArtist from a ResultRow.
+     */
+    fun resultRowToAlbumWithArtist(row: ResultRow): AlbumWithArtist = AlbumWithArtist(
+        album = resultRowToAlbum(row),
+        artist = resultRowToArtist(row)
+    )
+
+    /**
+     * Builds an AlbumWithMusics from a ResultRow.
+     */
+    fun resultRowToAlbumWithMusics(row: ResultRow, musics: List<Music>): AlbumWithMusics = AlbumWithMusics(
+        album = resultRowToAlbum(row),
+        musics = musics,
+        artist = resultRowToArtist(row)
+    )
 
     /**
      * Builds an Artist from a ResultRow.
@@ -53,6 +75,14 @@ object ExposedUtils {
         addedDate = row[ArtistTable.addedDate],
         nbPlayed = row[ArtistTable.nbPlayed],
         isInQuickAccess = row[ArtistTable.isInQuickAccess]
+    )
+
+    /**
+     * Builds an ArtistWithMusics from a ResultRow.
+     */
+    fun resultRowToArtistWithMusics(row: ResultRow, musics: List<Music>): ArtistWithMusics = ArtistWithMusics(
+        artist = resultRowToArtist(row),
+        musics = musics
     )
 
     /**
@@ -80,7 +110,7 @@ object ExposedUtils {
         name = row[MusicTable.name],
         album = row[MusicTable.album],
         artist = row[MusicTable.artist],
-        coverId = if(row[MusicTable.coverId] == null) null else UUID.fromString(row[MusicTable.coverId]),
+        coverId = if (row[MusicTable.coverId] == null) null else UUID.fromString(row[MusicTable.coverId]),
         duration = row[MusicTable.duration],
         path = row[MusicTable.path],
         folder = row[MusicTable.folder],
@@ -110,6 +140,15 @@ object ExposedUtils {
         nbPlayed = row[PlaylistTable.nbPlayed],
         isInQuickAccess = row[PlaylistTable.isInQuickAccess]
     )
+
+    /**
+     * Builds a PlaylistWithMusics from a ResultRow.
+     */
+    fun resultRowToPlaylistWithMusics(row: ResultRow, musics: List<Music>): PlaylistWithMusics =
+        PlaylistWithMusics(
+            musics = musics,
+            playlist = resultRowToPlaylist(row)
+        )
 
     /**
      * Builds a MusicPlaylist from a ResultRow.
@@ -143,7 +182,6 @@ object ExposedUtils {
      */
     fun imageBitmapToString(imageBitmap: ImageBitmap?): String? {
         if (imageBitmap == null) return null
-
         imageBitmap.asSkiaBitmap().readPixels()?.let {
             return Base64.getEncoder().encodeToString(it)
         }
