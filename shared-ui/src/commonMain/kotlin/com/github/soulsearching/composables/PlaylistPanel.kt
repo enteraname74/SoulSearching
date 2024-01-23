@@ -47,7 +47,7 @@ fun PlaylistPanel(
         Row(modifier = Modifier
             .fillMaxWidth()
             .background(primaryColor)
-            .padding(bottom = Constants.Spacing.large),
+            .padding(bottom = Constants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {

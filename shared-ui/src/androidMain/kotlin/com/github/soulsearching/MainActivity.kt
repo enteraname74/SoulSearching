@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.core.view.WindowCompat
 import com.github.soulsearching.classes.utils.AndroidUtils
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
@@ -154,6 +155,8 @@ class MainActivity : AppCompatActivity() {
                         isFromSavedList = false
                     )
                 }
+
+                WindowCompat.setDecorFitsSystemWindows(window, false)
 
                 SoulSearchingApplication(
                     allMusicsViewModel = allMusicsViewModel,

@@ -224,11 +224,11 @@ fun PlayerDraggableView(
         false
     }
 
-    SoulSearchingContext.setSystemBarsColor(
-        statusBarColor = statusBarColor,
-        navigationBarColor = navigationBarColor,
-        isUsingDarkIcons = isUsingDarkIcons
-    )
+//    SoulSearchingContext.setSystemBarsColor(
+//        statusBarColor = statusBarColor,
+//        navigationBarColor = navigationBarColor,
+//        isUsingDarkIcons = isUsingDarkIcons
+//    )
 
     SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {

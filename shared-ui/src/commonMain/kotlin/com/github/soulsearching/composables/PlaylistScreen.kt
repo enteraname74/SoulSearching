@@ -3,15 +3,20 @@ package com.github.soulsearching.composables
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -25,8 +30,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
@@ -96,7 +107,10 @@ fun PlaylistScreen(
             playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
-                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                    playerDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }
                 .invokeOnCompletion {
                     PlayerUtils.playerViewModel.handler.playShuffle(
@@ -131,9 +145,26 @@ fun PlaylistScreen(
         val searchAction = {
             coroutineScope
                 .launch {
-                    searchDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                    searchDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }
         }
+
+        val isUsingDarkIcons = if (colorThemeManager.currentColorPalette == null
+            || !colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
+        ) {
+            !isSystemInDarkTheme()
+        } else {
+            false
+        }
+
+        SoulSearchingContext.setSystemBarsColor(
+            statusBarColor = Color.Transparent,
+            navigationBarColor = SoulSearchingColorTheme.colorScheme.primary,
+            isUsingDarkIcons = isUsingDarkIcons
+        )
 
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
@@ -203,94 +234,134 @@ fun PlaylistScreen(
                     playerMusicListViewModel = playerMusicListViewModel,
                     playerDraggableState = playerDraggableState,
                 )
-
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(color = SoulSearchingColorTheme.colorScheme.primary)
                 ) {
-                    AppHeaderBar(
-                        title = title,
-                        leftAction = navigateBack,
-                    )
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(Constants.Spacing.large),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AppImage(
-                                    bitmap = image,
-                                    size = Constants.ImageSize.huge,
-                                    roundedPercent = 5
+                    if (image != null) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .blur(
+                                    radiusX = 10.dp,
+                                    radiusY = 10.dp,
+                                    edgeTreatment = BlurredEdgeTreatment.Rectangle
+                                ),
+                            bitmap = image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Color.Transparent,
+                                            SoulSearchingColorTheme.colorScheme.primary
+                                        ),
+                                        0f,
+                                        650f,
+                                    )
                                 )
-                            }
-                        }
-                        stickyHeader {
-                            PlaylistPanel(
-                                editAction = navigateToModifyPlaylist,
-                                shuffleAction = {
-                                    playlistId?.let(updateNbPlayedAction)
-                                    shuffleAction()
-                                },
-                                searchAction = { searchAction() },
-                                isLandscapeMode = false,
-                                playlistType = playlistType,
-                            )
-                        }
-                        items(
-                            items = musicState.musics
-                        ) { elt ->
-                            MusicItemComposable(
-                                music = elt,
-                                onClick = { music ->
-                                    coroutineScope.launch {
-                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
-                                    }.invokeOnCompletion {
-                                        playlistId?.let {
-                                            updateNbPlayedAction(it)
-                                        }
-
-                                        if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
-                                                false,
-                                                playlistId
-                                            )
-                                        ) {
-                                            playerMusicListViewModel.handler.savePlayerMusicList(musicState.musics.map { it.musicId })
-                                        }
-                                        PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
-                                            music = music,
-                                            playlist = musicState.musics,
-                                            playlistId = playlistId,
-                                            isMainPlaylist = false
-                                        )
-                                    }
-                                },
-                                onLongClick = {
-                                    coroutineScope.launch {
-                                        onMusicEvent(
-                                            MusicEvent.SetSelectedMusic(
-                                                elt
-                                            )
-                                        )
-                                        onMusicEvent(
-                                            MusicEvent.BottomSheet(
-                                                isShown = true
-                                            )
-                                        )
-                                    }
-                                },
-                                musicCover = retrieveCoverMethod(elt.coverId),
-                                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                            )
-                        }
-                        item { PlayerSpacer() }
+                        ) {}
                     }
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                ) {
+                    stickyHeader {
+                        AppHeaderBar(
+                            title = title,
+                            leftAction = navigateBack,
+                            backgroundColor = Color.Transparent
+                        )
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(Constants.Spacing.large),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AppImage(
+                                bitmap = image,
+                                size = Constants.ImageSize.huge,
+                                roundedPercent = 5
+                            )
+                        }
+                    }
+                    stickyHeader {
+                        PlaylistPanel(
+                            editAction = navigateToModifyPlaylist,
+                            shuffleAction = {
+                                playlistId?.let(updateNbPlayedAction)
+                                shuffleAction()
+                            },
+                            searchAction = { searchAction() },
+                            isLandscapeMode = false,
+                            playlistType = playlistType,
+                        )
+                    }
+                    items(
+                        items = musicState.musics
+                    ) { elt ->
+                        MusicItemComposable(
+                            backgroundColor = SoulSearchingColorTheme.colorScheme.primary,
+                            music = elt,
+                            onClick = { music ->
+                                coroutineScope.launch {
+                                    playerDraggableState.animateTo(
+                                        BottomSheetStates.EXPANDED,
+                                        tween(Constants.AnimationDuration.normal)
+                                    )
+                                }.invokeOnCompletion {
+                                    playlistId?.let {
+                                        updateNbPlayedAction(it)
+                                    }
+
+                                    if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
+                                            false,
+                                            playlistId
+                                        )
+                                    ) {
+                                        playerMusicListViewModel.handler.savePlayerMusicList(
+                                            musicState.musics.map { it.musicId })
+                                    }
+                                    PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        playlist = musicState.musics,
+                                        playlistId = playlistId,
+                                        isMainPlaylist = false
+                                    )
+                                }
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    onMusicEvent(
+                                        MusicEvent.SetSelectedMusic(
+                                            elt
+                                        )
+                                    )
+                                    onMusicEvent(
+                                        MusicEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            musicCover = retrieveCoverMethod(elt.coverId),
+                            textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        )
+                    }
+                    item { PlayerSpacer() }
                 }
             }
         }

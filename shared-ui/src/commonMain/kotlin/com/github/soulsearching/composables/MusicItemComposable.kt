@@ -1,6 +1,7 @@
 package com.github.soulsearching.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,11 +36,13 @@ fun MusicItemComposable(
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
     musicCover: ImageBitmap? = null,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    backgroundColor: Color = Color.Transparent
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = backgroundColor)
             .combinedClickable(
                 onClick = { onClick(music) },
                 onLongClick = onLongClick
