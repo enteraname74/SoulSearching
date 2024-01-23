@@ -14,7 +14,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.Drawables
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.AppFeatureDotComposable
-import com.github.soulsearching.model.TabRowItem
+import com.github.soulsearching.model.PagerScreen
 import com.github.soulsearching.strings
 import com.github.soulsearching.types.ScreenOrientation
 import kotlinx.coroutines.launch
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
-    val tabRowItems = listOf(
-        TabRowItem(
+    val pagerScreens = listOf(
+        PagerScreen(
             title = strings.completeApplicationTitle,
             screen = {
                 AppFeatureComposable(
@@ -34,7 +34,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.quickAccessTitle,
             screen = {
                 AppFeatureComposable(
@@ -44,7 +44,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.modifyElementsTitle,
             screen = {
                 AppFeatureComposable(
@@ -54,7 +54,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.dynamicThemeFeatureTitle,
             screen = {
                 AppFeatureComposable(
@@ -64,7 +64,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.manageFoldersTitle,
             screen = {
                 AppFeatureComposable(
@@ -74,7 +74,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.addNewMusicsTitle,
             screen = {
                 AppFeatureComposable(
@@ -84,7 +84,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        TabRowItem(
+        PagerScreen(
             title = strings.personalizeMainPageTitle,
             screen = {
                 AppFeatureComposable(
@@ -97,7 +97,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     )
 
     val pagerState = rememberPagerState(
-        pageCount = { tabRowItems.size }
+        pageCount = { pagerScreens.size }
     )
 
     val coroutineScope = rememberCoroutineScope()
@@ -119,14 +119,14 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                     pageSpacing = Constants.Spacing.veryLarge,
                     contentPadding = PaddingValues(Constants.Spacing.veryLarge)
                 ) {
-                    tabRowItems[it].screen()
+                    pagerScreens[it].screen()
                 }
                 Column(
                     modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    tabRowItems.forEachIndexed { index, _ ->
+                    pagerScreens.forEachIndexed { index, _ ->
                         AppFeatureDotComposable(
                             isSelected = pagerState.currentPage == index,
                             onClick = {
@@ -156,14 +156,14 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                     pageSpacing = Constants.Spacing.veryLarge,
                     contentPadding = PaddingValues(Constants.Spacing.veryLarge)
                 ) {
-                    tabRowItems[it].screen()
+                    pagerScreens[it].screen()
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    tabRowItems.forEachIndexed { index, _ ->
+                    pagerScreens.forEachIndexed { index, _ ->
                         AppFeatureDotComposable(
                             isSelected = pagerState.currentPage == index,
                             onClick = {

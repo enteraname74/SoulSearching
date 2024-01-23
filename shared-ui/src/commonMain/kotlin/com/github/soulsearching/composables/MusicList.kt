@@ -84,7 +84,7 @@ fun MusicList(
                             )
                         ) {
                             playerMusicListViewModel.handler.savePlayerMusicList(
-                                musicState.musics.map { it.musicId } as ArrayList<UUID>
+                                musicState.musics.map { it.musicId }
                             )
                         }
                         PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(

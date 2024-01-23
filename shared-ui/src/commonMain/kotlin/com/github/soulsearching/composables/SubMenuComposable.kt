@@ -27,7 +27,7 @@ fun SubMenuComposable(
     sortByMostListenedAction: () -> Unit,
     sortByName: () -> Unit,
     setSortDirectionAction: () -> Unit,
-    rightComposable: @Composable (() -> Unit),
+    rightComposable: @Composable (() -> Unit) = {},
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortType: Int,
     sortDirection: Int,

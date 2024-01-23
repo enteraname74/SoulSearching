@@ -93,6 +93,12 @@ fun NavigationHandler(
                 screenRoute = RoutesNames.MAIN_PAGE_SCREEN,
                 screen = {
                     MainPageScreen(
+                        allMusicsViewModel = allMusicsViewModel,
+                        allPlaylistsViewModel = allPlaylistsViewModel,
+                        allAlbumsViewModel = allAlbumsViewModel,
+                        allArtistsViewModel = allArtistsViewModel,
+                        allImageCoversViewModel = allImageCoversViewModel,
+                        playerMusicListViewModel = playerMusicListViewModel,
                         navigateToPlaylist = {
                             navigationController.navigateTo(
                                 Route(
@@ -115,24 +121,6 @@ fun NavigationHandler(
                                     route = RoutesNames.SELECTED_ARTIST_SCREEN,
                                     arguments = mapOf(Pair("artistId", it))
                                 )
-                            )
-                        },
-                        navigateToMorePlaylist = {
-                            navigationController.navigateTo(
-                                Route(route = RoutesNames.MORE_PLAYLISTS_SCREEN)
-                            )
-                        },
-                        navigateToMoreArtists = {
-                            navigationController.navigateTo(
-                                Route(route = RoutesNames.MORE_ARTISTS_SCREEN)
-                            )
-                        },
-                        navigateToMoreShortcuts = {
-//                            navController.navigate("moreShortcuts")
-                        },
-                        navigateToMoreAlbums = {
-                            navigationController.navigateTo(
-                                Route(route = RoutesNames.MORE_ALBUMS_SCREEN)
                             )
                         },
                         navigateToModifyMusic = {
@@ -180,13 +168,7 @@ fun NavigationHandler(
                         playlistState = playlistState,
                         albumState = albumState,
                         artistState = artistState,
-                        quickAccessState = quickAccessState,
-                        allAlbumsViewModel = allAlbumsViewModel,
-                        allMusicsViewModel = allMusicsViewModel,
-                        allPlaylistsViewModel = allPlaylistsViewModel,
-                        allArtistsViewModel = allArtistsViewModel,
-                        allImageCoversViewModel = allImageCoversViewModel,
-                        playerMusicListViewModel = playerMusicListViewModel
+                        quickAccessState = quickAccessState
                     )
                 }
             ),

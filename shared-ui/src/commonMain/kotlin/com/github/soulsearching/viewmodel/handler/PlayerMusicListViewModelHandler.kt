@@ -103,7 +103,7 @@ class PlayerMusicListViewModelHandler(
     /**
      * Save the player music list to the database.
      */
-    fun savePlayerMusicList(musicList: ArrayList<UUID>) {
+    fun savePlayerMusicList(musicList: List<UUID>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO).launch {
             playerMusicRepository.deleteAllPlayerMusic()

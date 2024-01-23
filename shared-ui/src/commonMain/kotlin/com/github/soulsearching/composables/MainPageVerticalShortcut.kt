@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Album
@@ -18,8 +17,6 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,8 +26,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
-import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ElementEnum
@@ -38,14 +33,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainPageVerticalShortcut(
-    mainListState: LazyListState,
-    viewSettingsManager: ViewSettingsManager = injectElement()
+    currentPage: Int,
+    switchPageAction: (Int) -> Unit,
+    visibleElements: List<ElementEnum>
 ) {
-    val visibleElements = viewSettingsManager.getListOfVisibleElements()
-    val currentListItemPosition =
-        remember { derivedStateOf { mainListState.firstVisibleItemIndex } }
-    val coroutineScope = rememberCoroutineScope()
-
     LazyColumn(
         modifier = Modifier
             .fillMaxHeight(),
@@ -53,8 +44,8 @@ fun MainPageVerticalShortcut(
     ) {
         items(visibleElements) {
             val pos = visibleElements.indexOf(it)
-            val isCurrentPosition = pos == currentListItemPosition.value ||
-                    ((pos == visibleElements.size - 1) && (currentListItemPosition.value >= pos))
+            val isCurrentPosition = pos == currentPage ||
+                    ((pos == visibleElements.size - 1) && (currentPage >= pos))
 
             Row(
                 modifier = Modifier
@@ -65,11 +56,7 @@ fun MainPageVerticalShortcut(
                         end = Constants.Spacing.large
                     )
                     .clickable {
-                        coroutineScope.launch {
-                            if (pos != -1) {
-                                mainListState.animateScrollToItem(pos)
-                            }
-                        }
+                        switchPageAction(pos)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {

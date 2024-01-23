@@ -25,11 +25,12 @@ class ViewSettingsManager(
     /**
      * Retrieve a list of visible elements on the main page screen.
      */
-    fun getListOfVisibleElements(): ArrayList<ElementEnum> {
+    fun getListOfVisibleElements(): List<ElementEnum> {
         val list: ArrayList<ElementEnum> = ArrayList()
         if (isQuickAccessShown) {
             list.add(ElementEnum.QUICK_ACCESS)
         }
+        list.add(ElementEnum.MUSICS)
         if (isPlaylistsShown) {
             list.add(ElementEnum.PLAYLISTS)
         }
@@ -39,7 +40,6 @@ class ViewSettingsManager(
         if (isArtistsShown) {
             list.add(ElementEnum.ARTISTS)
         }
-        list.add(ElementEnum.MUSICS)
         return list
     }
 

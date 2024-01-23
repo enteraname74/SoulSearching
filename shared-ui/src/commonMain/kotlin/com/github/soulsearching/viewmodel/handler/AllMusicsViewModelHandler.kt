@@ -1,5 +1,8 @@
 package com.github.soulsearching.viewmodel.handler
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumArtist
@@ -25,6 +28,7 @@ import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.states.MusicState
+import com.github.soulsearching.types.ElementEnum
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +41,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
 import java.util.UUID
+import kotlin.math.max
 
 /**
  * Handler for managing the AllMusicsViewModel.
@@ -57,6 +62,7 @@ abstract class AllMusicsViewModelHandler(
     private val musicFetcher: MusicFetcher,
     playbackManager: PlaybackManager
 ): ViewModelHandler {
+    var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
@@ -125,6 +131,18 @@ abstract class AllMusicsViewModelHandler(
         settings = settings,
         playbackManager = playbackManager
     )
+
+    /**
+     * Retrieve the current page index.
+     * If nothing is set, it will return 0 by default.
+     */
+    fun getCurrentPage(visibleElements: List<ElementEnum>): Int {
+        return if (currentPage == null) {
+            0
+        } else {
+            max(0, visibleElements.indexOf(currentPage))
+        }
+    }
 
     /**
      * Persist a music and its cover.

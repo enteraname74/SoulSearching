@@ -20,7 +20,6 @@ import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +102,7 @@ actual fun MusicBottomSheet(
                         musicId = musicState.selectedMusic.musicId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
-                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId }
                     )
 
                     coroutineScope.launch {
@@ -140,7 +139,7 @@ actual fun MusicBottomSheet(
                         PlayerUtils.playerViewModel.handler.addMusicToPlayNext(
                             music = musicState.selectedMusic
                         )
-                        playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
+                        playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId })
                     }
                 }
             },

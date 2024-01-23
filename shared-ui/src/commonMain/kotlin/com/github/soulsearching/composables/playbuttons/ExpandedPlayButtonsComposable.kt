@@ -40,7 +40,6 @@ import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.Utils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -145,7 +144,7 @@ fun ExpandedPlayButtonsComposable(
                         .clickable {
                             PlayerUtils.playerViewModel.handler.changePlayerMode()
                             playerMusicListViewModel.handler.savePlayerMusicList(
-                                PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                                PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId }
                             )
                         },
                     colorFilter = ColorFilter.tint(color = mainColor)
