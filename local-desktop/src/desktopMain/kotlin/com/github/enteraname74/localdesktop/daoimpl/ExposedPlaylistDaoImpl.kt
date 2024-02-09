@@ -4,10 +4,13 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.localdesktop.dao.PlaylistDao
 import com.github.enteraname74.localdesktop.dbQuery
+import com.github.enteraname74.localdesktop.tables.MusicPlaylistTable
+import com.github.enteraname74.localdesktop.tables.MusicTable
 import com.github.enteraname74.localdesktop.tables.PlaylistTable
 import com.github.enteraname74.localdesktop.utils.ExposedUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -50,8 +53,10 @@ class ExposedPlaylistDaoImpl: PlaylistDao {
         )
     }
 
-    override fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return flowOf(emptyList())
+    override fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<PlaylistWithMusics>> = transaction {
+        flowOf(
+            emptyList()
+        )
     }
 
     override fun getAllPlaylistWithMusicsSortByNameDescAsFlow(): Flow<List<PlaylistWithMusics>> {

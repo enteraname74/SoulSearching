@@ -38,15 +38,6 @@ kotlin {
                 implementation(Dependencies.KOIN_CORE)
             }
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation("org.jetbrains.exposed:exposed-core:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-crypt:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-dao:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-jdbc:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-java-time:${Versions.EXPOSED}")
-            }
-        }
     }
 }
 

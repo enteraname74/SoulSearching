@@ -25,8 +25,6 @@ kotlin {
                 implementation(compose.desktop.common)
                 // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
                 implementation("net.jthink:jaudiotagger:3.0.1")
-//                implementation(Dependencies.AndroidX.RUNTIME_DESKTOP)
-//                implementation("org.jetbrains.compose.desktop:desktop:1.6.0-alpha01")
             }
         }
         commonMain {
@@ -40,14 +38,6 @@ kotlin {
                 implementation("org.jetbrains.compose.components:components-resources:1.5.11")
                 implementation("com.russhwolf:multiplatform-settings:1.1.1")
 
-                with(Dependencies.AndroidX) {
-//                    implementation(RUNTIME)
-//                    implementation(FOUNDATION)
-//                    implementation(UI)
-//                    implementation(MATERIAL)
-//                    implementation(MATERIAL3)
-//                    implementation(MATERIAL_ICON_EXTENDED)
-                }
                 implementation("androidx.annotation:annotation:1.7.1")
                 implementation(compose.ui)
                 implementation(compose.runtime)
