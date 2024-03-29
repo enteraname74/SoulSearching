@@ -1,0 +1,145 @@
+<resources>
+    <string name="app_name">Soul Searching</string>
+    <string name="musics">Şarkılar</string>
+    <string name="playlists">Oynatma listeleri</string>
+    <string name="albums">Albümler</string>
+    <string name="artists">Sanatçılar</string>
+    <string name="quick_access">Hızlı Erişim</string>
+    <string name="more">Daha fazla</string>
+    <string name="favorite">Favoriler</string>
+    <string name="no_elements">Öğe yok</string>
+    <string name="deleted_musics">%1$d şarkı artık cihazda bulunmadıkları için silindi</string>
+    <string name="deleted_music">Cihazda artık bulunmadığı için 1 şarkı silindi</string>
+    <string name="missing_permissions">Uygulamanın düzgün çalışması için gereken tüm izinleri kabul etmelisiniz.</string>
+    <string name="version_name_action_text">Soul Searching - Average White Band - 1976</string>
+    <string name="notification_name">Müzik bildirimi</string>
+    <string name="notification_channel_description">Çalınan müziği kontrol etmenizi sağlar.</string>
+    <!-- App features strings -->
+    <string name="complete_application_title">Müzik uygulamasını tamamlayın</string>
+    <string name="complete_application_text">Tüm şarkılarınızı, albümlerinizi, sanatçılarınızı, çalma listelerinizi dinleyin.</string>
+    <string name="quick_access_title">En çok sevdiğiniz şeyi yakınınızda tutun.</string>
+    <string name="quick_access_text">Hızlı erişim sayesinde en sevdiğiniz albüme veya örneğin tercih ettiğiniz şarkılara kolayca erişebilirsiniz.</string>
+    <string name="modify_elements_title">Müzikle ilgili öğelerinizi değiştirin</string>
+    <string name="modify_elements_text">Bir albüm, bir şarkı, bir sanatçı hakkındaki bilgileri değiştirebilirsiniz…</string>
+    <string name="dynamic_theme_feature_title">Dinamik tema</string>
+    <string name="dynamic_theme_feature_text">Soul Searching, mevcut çalınan şarkıya bağlı olarak dinamik bir temaya sahip olma imkanı sunar.</string>
+    <string name="manage_folders_title">Kullanılan klasörleri yönet</string>
+    <string name="manage_folders_text">Şarkıları almak için hangi klasörlerin kullanıldığını yönetin.</string>
+    <string name="add_new_musics_title">Yeni şarkı ekle</string>
+    <string name="add_new_musics_text">Cihazınızdan kolayca yeni şarkılar ekleyebilirsiniz.</string>
+    <string name="personalize_main_page_title">Gerçekten ne istediğinizi tanımlayın</string>
+    <string name="personalize_main_page_text">Hızlı erişim istemiyor musunuz veya ana sayfanın bölümlerine ulaşmanıza yardımcı olacak bir çubuğa mı sahip olmak istiyorsunuz? Dileklerinizi uygulamanın ayarlarından gerçekleştirebilirsiniz.</string>
+    <!-- Fetching musics strings -->
+    <string name="searching_songs_from_your_device">Cihazınızdan şarkılar aranıyor…</string>
+    <string name="saving_found_songs">Bulunan şarkılar kaydediliyor...</string>
+    <string name="cannot_retrieve_musics">Şarkılar alınamıyor!</string>
+    <!-- content description strings -->
+    <string name="navigation_drawer_desc">Gezinti çekmecesi düğmesi</string>
+    <string name="shuffle_button_desc">Karıştırma düğmesi</string>
+    <string name="back_button">Geri düğmesi</string>
+    <string name="header_bar_right_button">Üstbilgi çubuğu sağ düğmesi</string>
+    <string name="image">Resim</string>
+    <string name="search_button">Ara düğmesi</string>
+    <string name="more_button">Daha fazla düğmesi</string>
+    <string name="create_playlist_button">Çalma listesi oluştur düğmesi</string>
+    <string name="app_logo">Uygulamanın logosu</string>
+    <!-- Bottom sheets strings -->
+    <string name="add_to_playlist">Çalma listesine ekle</string>
+    <string name="add_to_quick_access">Hızlı erişime ekle</string>
+    <string name="remove_from_quick_access">Hızlı erişimden kaldır</string>
+    <string name="delete_music">Bu şarkıyı sil</string>
+    <string name="modify_music">Bu şarkıyı değiştir</string>
+    <string name="delete_playlist">Bu oynatma listesini sil</string>
+    <string name="modify_playlist">Bu oynatma listesini değiştir</string>
+    <string name="delete_album">Bu albümü sil</string>
+    <string name="modify_album">Bu albümü değiştir</string>
+    <string name="delete_artist">Bu sanatçıyı sil</string>
+    <string name="modify_artist">Bu sanatçıyı değiştir</string>
+    <string name="play_next">Sonrakini oyna</string>
+    <string name="remove_from_playlist">Oynatma listesinden kaldır</string>
+    <string name="remove_from_played_list">Çalma listesinden kaldır</string>
+    <string name="played_list">Oynatılan liste</string>
+    <!-- Modify music strings -->
+    <string name="music_information">Şarkının bilgileri</string>
+    <string name="album_cover">Albümün kapağı</string>
+    <string name="music_name">Şarkının adı</string>
+    <string name="artist_name">Sanatçının adı</string>
+    <string name="album_name">Albümün adı</string>
+    <!-- Dialog strings -->
+    <string name="delete_music_dialog_title">Bu şarkıyı silmek istediğinizden emin misiniz?</string>
+    <string name="delete_playlist_dialog_title">Bu oynatma listesini silmek istediğinizden emin misiniz?</string>
+    <string name="delete_album_dialog_title">Bu albümü silmek istediğinizden emin misiniz?</string>
+    <string name="delete_artist_dialog_title">Bu sanatçıyı silmek istediğinizden emin misiniz?</string>
+    <string name="remove_music_from_playlist_title">Bu şarkıyı bu çalma listesinden kaldırmak istediğinizden emin misiniz?</string>
+    <string name="delete_music_dialog_text">Uygulamadan kaldırılacaktır.</string>
+    <string name="remove_music_from_playlist_text">Bu şarkı bu çalma listesinden kaldırılacak, ancak uygulamadan silinmeyecek.</string>
+    <string name="create_playlist_dialog_title">Yeni bir oynatma listesi oluştur</string>
+    <string name="delete">Sil</string>
+    <string name="remove">Kaldır</string>
+    <string name="cancel">İptal</string>
+    <string name="create">Oluştur</string>
+    <!-- Modify playlist strings -->
+    <string name="playlist_information">Çalma listesi bilgileri</string>
+    <string name="playlist_cover">Çalma listesinin kapağı</string>
+    <string name="playlist_name">Çalma listesinin adı</string>
+    <!-- Modify album strings -->
+    <string name="album_information">Albümün bilgileri</string>
+    <!-- Modify artist strings -->
+    <string name="artist_information">Sanatçı bilgileri</string>
+    <string name="artist_cover">Sanatçının kapağı</string>
+    <!-- Sort strings -->
+    <string name="sort_by_date_added">Eklenme tarihine göre sırala</string>
+    <string name="sort_by_most_listened">En çok dinlenenlere göre sırala</string>
+    <string name="sort_by_name">Ada göre sırala</string>
+    <string name="sort_by_asc_or_dsc">artan veya azalan Sıralama</string>
+    <!-- Number of musics strings -->
+    <string name="multiple_musics">%1$d şarkı</string>
+    <string name="one_music">1 şarkı</string>
+    <!-- Search strings -->
+    <string name="search_all">Bir şarkı, bir sanatçı, bir albüm, bir çalma listesi arayın…</string>
+    <string name="search_for_musics">Şarkı ara</string>
+    <!-- Settings strings -->
+    <string name="settings">Ayarlar</string>
+    <string name="manage_musics_title">Şarkıları yönet</string>
+    <string name="manage_musics_text">Yeni şarkılar ekleyin ve kullanılan klasörleri yönetin</string>
+    <string name="color_theme_title">Renk teması</string>
+    <string name="color_theme_text">Dinamik tema, kişiselleştirilmiş tema</string>
+    <string name="personalization_title">Kişiselleştirme</string>
+    <string name="personalization_text">Ana sayfa görünümünü yönet</string>
+    <string name="about_title">Soul Searching Hakkında</string>
+    <string name="about_text">Geliştiriciler, uygulamanın sürüm adı</string>
+    <!-- Color theme strings -->
+    <string name="dynamic_theme_title">Dinamik tema</string>
+    <string name="dynamic_theme_text">Çalınan şarkının albüm kapağına göre genel renk teması</string>
+    <string name="system_theme_title">Sistem teması</string>
+    <string name="system_theme_text">Sisteminizin renk moduna göre genel renk teması</string>
+    <string name="personalized_theme_title">Kişiselleştirilmiş tema</string>
+    <string name="personalized_theme_text">Renk temanızı tam olarak tanımlayın</string>
+    <string name="dynamic_player_view">Oynatıcı görünümü için dinamik temayı kullan</string>
+    <string name="dynamic_playlist_view">Çalma listesi, albüm ve sanatçı görünümü için dinamik tema kullanın</string>
+    <string name="dynamic_other_views">Diğer görünümler için dinamik tema kullanın</string>
+    <!-- Personalization strings -->
+    <string name="main_page_title">Ana sayfa</string>
+    <string name="main_page_text">Ana sayfa görünümünü yönet</string>
+    <string name="show_quick_access">Hızlı erişimi göster</string>
+    <string name="show_playlists">Çalma listelerini göster</string>
+    <string name="show_albums">Albümleri göster</string>
+    <string name="show_artists">Sanatçıları göster</string>
+    <string name="show_vertical_access_bar_title">Dikey erişim çubuğunu göster</string>
+    <string name="show_vertical_access_bar_text">Ana sayfadaki tüm öğelere hızlı erişim sağlar</string>
+    <!-- Manage musics strings -->
+    <string name="used_folders_title">Kullanılan klasörler</string>
+    <string name="used_folders_text">Uygulamada kullanılan klasörleri tanımlayın</string>
+    <string name="add_musics_title">Şarkı ekle</string>
+    <string name="add_musics_text">Uygulamaya cihazınızdan yeni şarkılar ekleyin</string>
+    <string name="no_new_musics">Eklenecek yeni şarkı yok!</string>
+    <string name="saving_new_musics">Yeni şarkılar kaydediliyor...</string>
+    <string name="deleting_musics_from_unselected_folders">Seçilmemiş klasörlerden şarkılar siliniyor…</string>
+    <string name="fetching_folders">Klasörler alınıyor</string>
+    <!-- About Soul Searching strings -->
+    <string name="developers_title">Geliştiriciler</string>
+    <string name="developers_text">Soul Searching projesinin arkasındaki geliştiriciler</string>
+    <string name="version_name_title">Uygulamanın sürüm adı</string>
+    <!-- developers function strings -->
+    <string name="lead_developer">Baş geliştirici</string>
+</resources>
