@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import cafe.adriel.voyager.core.model.ScreenModel
 import com.github.soulsearching.viewmodel.handler.SettingsAddMusicsViewModelHandler
 import com.github.soulsearching.viewmodel.handler.AllAlbumsViewModeHandler
 import com.github.soulsearching.viewmodel.handler.AllArtistsViewModelHandler
@@ -31,7 +32,7 @@ import com.github.soulsearching.viewmodel.handler.ViewModelHandler
  * This handler can be an abstract class that implementations will need to specialize.
  * If the class is not abstract, it will make the ViewModel usable on any platform without specific implementation.
  */
-interface SoulSearchingViewModel<Handler: ViewModelHandler> {
+interface SoulSearchingViewModel<Handler: ViewModelHandler> : ScreenModel {
     val handler: Handler
 }
 

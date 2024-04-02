@@ -2,7 +2,6 @@ package com.github.soulsearching.viewmodel
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
@@ -37,7 +36,7 @@ class PlayerViewModelAndroidImpl(
     settings: SoulSearchingSettings,
     playbackManager: PlaybackManagerAndroidImpl,
     colorThemeManager: ColorThemeManager
-): ViewModel(), PlayerViewModel {
+): PlayerViewModel {
     override val handler: PlayerViewModelHandler = PlayerViewModelHandler(
         musicRepository = musicRepository,
         playlistRepository = playlistRepository,

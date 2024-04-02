@@ -46,6 +46,13 @@ kotlin {
 
                 // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
                 implementation("net.jthink:jaudiotagger:3.0.1")
+
+                with(Dependencies.Voyager) {
+                    implementation(NAVIGATOR)
+                    implementation(SCREEN_MODEL)
+                    implementation(TRANSITIONS)
+                    implementation(KOIN)
+                }
             }
         }
         androidMain {

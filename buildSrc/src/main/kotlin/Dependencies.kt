@@ -9,6 +9,13 @@ object Dependencies {
     const val KOIN_COMPOSE = "io.insert-koin:koin-compose:${Versions.KOIN_COMPOSE}"
     const val KMPALETTE_CORE = "com.kmpalette:kmpalette-core:${Versions.KMPALETTE}"
 
+    object Voyager {
+        const val NAVIGATOR = "cafe.adriel.voyager:voyager-navigator:${Versions.VOYAGER}"
+        const val SCREEN_MODEL = "cafe.adriel.voyager:voyager-screenmodel:${Versions.VOYAGER}"
+        const val TRANSITIONS = "cafe.adriel.voyager:voyager-transitions:${Versions.VOYAGER}"
+        const val KOIN = "cafe.adriel.voyager:voyager-koin:${Versions.VOYAGER}"
+    }
+
     object AndroidX {
         const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
         const val CORE = "androidx.core:core-ktx:${Versions.AndroidX.CORE}"

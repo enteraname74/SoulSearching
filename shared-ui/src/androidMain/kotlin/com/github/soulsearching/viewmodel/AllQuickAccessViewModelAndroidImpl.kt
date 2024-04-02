@@ -1,7 +1,6 @@
 package com.github.soulsearching.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -16,9 +15,9 @@ class AllQuickAccessViewModelAndroidImpl(
     playlistRepository: PlaylistRepository,
     albumRepository: AlbumRepository,
     artistRepository: ArtistRepository,
-) : ViewModel(), AllQuickAccessViewModel {
+) : AllQuickAccessViewModel {
     override val handler: AllQuickAccessViewModelHandler = AllQuickAccessViewModelHandler(
-        coroutineScope = viewModelScope,
+        coroutineScope = screenModelScope,
         musicRepository = musicRepository,
         playlistRepository = playlistRepository,
         albumRepository = albumRepository,

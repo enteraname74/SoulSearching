@@ -15,10 +15,7 @@ import com.github.soulsearching.screens.MainPageScreen
 import com.github.soulsearching.screens.ModifyAlbumScreen
 import com.github.soulsearching.screens.ModifyArtistScreen
 import com.github.soulsearching.screens.ModifyMusicScreen
-import com.github.soulsearching.screens.ModifyPlaylistScreen
-import com.github.soulsearching.screens.MoreAlbumsScreen
-import com.github.soulsearching.screens.MoreArtistsScreen
-import com.github.soulsearching.screens.MorePlaylistsScreen
+import com.github.soulsearching.screens.ModifyPlaylistScreenView
 import com.github.soulsearching.screens.SelectedAlbumScreen
 import com.github.soulsearching.screens.SelectedArtistScreen
 import com.github.soulsearching.screens.SelectedPlaylistScreen
@@ -292,7 +289,7 @@ fun NavigationHandler(
             Screen(
                 screenRoute = RoutesNames.MODIFY_PLAYLIST_SCREEN,
                 screen ={
-                    ModifyPlaylistScreen(
+                    ModifyPlaylistScreenView(
                         modifyPlaylistViewModel = modifyPlaylistViewModel,
                         selectedPlaylistId = navigationController.getArgument("playlistId") as String? ?: "",
                         finishAction = { navigationController.navigateBack() }
@@ -326,96 +323,6 @@ fun NavigationHandler(
                         selectedArtistId = navigationController.getArgument("artistId") as String? ?: "",
                         finishAction = { navigationController.navigateBack() },
                         modifyArtistViewModel = modifyArtistViewModel
-                    )
-                }
-            ),
-            Screen(
-                screenRoute = RoutesNames.MORE_PLAYLISTS_SCREEN,
-                screen = {
-                    MorePlaylistsScreen(
-                        navigateToSelectedPlaylist = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.SELECTED_PLAYLIST_SCREEN,
-                                    arguments = mapOf(Pair("playlistId", it))
-                                )
-                            )
-                        },
-                        finishAction = { navigationController.navigateBack() },
-                        navigateToModifyPlaylist = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.MODIFY_PLAYLIST_SCREEN,
-                                    arguments = mapOf(Pair("playlistId", it))
-                                )
-                            )
-                        },
-                        retrieveCoverMethod = {
-                            allImageCoversViewModel.handler.getImageCover(
-                                it
-                            )
-                        },
-                        allPlaylistsViewModel = allPlaylistsViewModel
-                    )
-                }
-            ),
-            Screen(
-                screenRoute = RoutesNames.MORE_ALBUMS_SCREEN,
-                screen = {
-                    MoreAlbumsScreen(
-                        navigateToSelectedAlbum = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.SELECTED_ALBUM_SCREEN,
-                                    arguments = mapOf(Pair("albumId", it))
-                                )
-                            )
-                        },
-                        finishAction = { navigationController.navigateBack() },
-                        navigateToModifyAlbum = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.MODIFY_ALBUM_SCREEN,
-                                    arguments = mapOf(Pair("albumId", it))
-                                )
-                            )
-                        },
-                        retrieveCoverMethod = {
-                            allImageCoversViewModel.handler.getImageCover(
-                                it
-                            )
-                        },
-                        allAlbumsViewModel = allAlbumsViewModel
-                    )
-                }
-            ),
-            Screen(
-                screenRoute = RoutesNames.MORE_ARTISTS_SCREEN,
-                screen = {
-                    MoreArtistsScreen(
-                        navigateToSelectedArtist = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.SELECTED_ARTIST_SCREEN,
-                                    arguments = mapOf(Pair("artistId", it))
-                                )
-                            )
-                        },
-                        finishAction = { navigationController.navigateBack() },
-                        navigateToModifyArtist = {
-                            navigationController.navigateTo(
-                                Route(
-                                    route = RoutesNames.MODIFY_ARTIST_SCREEN,
-                                    arguments = mapOf(Pair("artistId", it))
-                                )
-                            )
-                        },
-                        retrieveCoverMethod = {
-                            allImageCoversViewModel.handler.getImageCover(
-                                it
-                            )
-                        },
-                        allArtistsViewModel = allArtistsViewModel
                     )
                 }
             ),

@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
@@ -20,7 +21,7 @@ class AllAlbumsViewModelDesktopImpl(
     settings: SoulSearchingSettings
 ) : AllAlbumsViewModel {
     override val handler: AllAlbumsViewModeHandler = AllAlbumsViewModeHandler(
-        coroutineScope = CoroutineScope(Dispatchers.IO),
+        coroutineScope = screenModelScope,
         albumRepository = albumRepository,
         musicRepository = musicRepository,
         artistRepository = artistRepository,

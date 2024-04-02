@@ -1,7 +1,6 @@
 package com.github.soulsearching.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
@@ -16,9 +15,9 @@ class ModifyPlaylistViewModelAndroidImpl(
     musicPlaylistRepository: MusicPlaylistRepository,
     imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings
-) : ViewModel(), ModifyPlaylistViewModel {
+) : ModifyPlaylistViewModel {
     override val handler: ModifyPlaylistViewModelHandler = ModifyPlaylistViewModelHandler(
-        coroutineScope = viewModelScope,
+        coroutineScope = screenModelScope,
         playlistRepository = playlistRepository,
         musicPlaylistRepository = musicPlaylistRepository,
         imageCoverRepository = imageCoverRepository,

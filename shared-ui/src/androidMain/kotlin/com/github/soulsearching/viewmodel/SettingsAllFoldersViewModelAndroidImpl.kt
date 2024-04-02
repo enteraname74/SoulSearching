@@ -21,7 +21,7 @@ class SettingsAllFoldersViewModelAndroidImpl(
     albumArtistRepository: AlbumArtistRepository,
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
-) : ViewModel(), SettingsAllFoldersViewModel {
+) : SettingsAllFoldersViewModel {
     override val handler: SettingsAllFolderViewModelHandler = SettingsAllFolderViewModelHandler(
         folderRepository = folderRepository,
         musicRepository = musicRepository,

@@ -5,7 +5,7 @@ import com.github.soulsearching.composables.ModifyPlaylistComposable
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
 
 @Composable
-actual fun ModifyPlaylistScreen(
+actual fun ModifyPlaylistScreenView(
     modifyPlaylistViewModel: ModifyPlaylistViewModel,
     selectedPlaylistId: String,
     finishAction: () -> Unit

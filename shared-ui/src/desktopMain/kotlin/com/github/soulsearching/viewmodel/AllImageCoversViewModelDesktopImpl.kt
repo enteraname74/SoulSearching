@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
@@ -20,7 +21,7 @@ class AllImageCoversViewModelDesktopImpl(
     playlistRepository: PlaylistRepository
 ) : AllImageCoversViewModel {
     override val handler: AllImageCoversViewModelHandler = AllImageCoversViewModelHandler(
-        coroutineScope = CoroutineScope(Dispatchers.IO),
+        coroutineScope = screenModelScope,
         imageCoverRepository = imageCoverRepository,
         musicRepository = musicRepository,
         albumRepository = albumRepository,

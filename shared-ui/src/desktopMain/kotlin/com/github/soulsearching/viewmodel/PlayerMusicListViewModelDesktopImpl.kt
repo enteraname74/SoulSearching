@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
@@ -34,7 +35,7 @@ class PlayerMusicListViewModelDesktopImpl(
     playbackManager: PlaybackManagerDesktopImpl
 ) : PlayerMusicListViewModel {
     override val handler: PlayerMusicListViewModelHandler = PlayerMusicListViewModelHandler(
-        coroutineScope = CoroutineScope(Dispatchers.IO),
+        coroutineScope = screenModelScope,
         playerMusicRepository = playerMusicRepository,
         musicRepository = musicRepository,
         playlistRepository = playlistRepository,
