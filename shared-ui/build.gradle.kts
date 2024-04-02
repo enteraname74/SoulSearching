@@ -23,8 +23,6 @@ kotlin {
             dependencies {
                 implementation(project(":local-desktop"))
                 implementation(compose.desktop.common)
-                // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
-                implementation("net.jthink:jaudiotagger:3.0.1")
             }
         }
         commonMain {
@@ -45,6 +43,9 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
+
+                // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
+                implementation("net.jthink:jaudiotagger:3.0.1")
             }
         }
         androidMain {

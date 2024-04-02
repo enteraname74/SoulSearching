@@ -327,7 +327,6 @@ class SoulSearchingAndroidPlayerImpl(
                     settings.saveCurrentMusicInformation(
                         PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic(),
                         PlayerUtils.playerViewModel.handler.currentMusicPosition
-
                     )
                 }
 

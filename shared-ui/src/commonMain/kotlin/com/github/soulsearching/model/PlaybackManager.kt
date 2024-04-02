@@ -64,7 +64,7 @@ interface PlaybackManager {
 
     /**
      * Retrieve the current position in the current played music.
-     * Return 0 if the player if not defined.
+     * Return 0 if the player is not defined.
      */
     fun getCurrentMusicPosition(): Int
 

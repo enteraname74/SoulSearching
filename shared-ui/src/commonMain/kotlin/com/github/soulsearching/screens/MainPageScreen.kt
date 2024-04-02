@@ -158,7 +158,7 @@ fun MainPageScreen(
             val pagerScreens = ArrayList<PagerScreen>()
             visibleElements.forEach { element ->
                 pagerScreens.add(
-                    when(element) {
+                    when (element) {
                         ElementEnum.QUICK_ACCESS -> PagerScreen(
                             title = strings.quickAccess,
                             screen = {
@@ -227,7 +227,10 @@ fun MainPageScreen(
                                             )
                                         }.invokeOnCompletion {
                                             val musicListSingleton = arrayListOf(music)
-                                            if (!PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) {
+                                            if (!PlayerUtils.playerViewModel.handler.isSameMusic(
+                                                    music.musicId
+                                                )
+                                            ) {
                                                 playerMusicListViewModel.handler.savePlayerMusicList(
                                                     musicListSingleton.map { it.musicId }
                                                 )
@@ -258,6 +261,7 @@ fun MainPageScreen(
                                 )
                             }
                         )
+
                         ElementEnum.PLAYLISTS -> {
                             PagerScreen(
                                 title = strings.playlists,
@@ -336,6 +340,7 @@ fun MainPageScreen(
                                 }
                             )
                         }
+
                         ElementEnum.ALBUMS -> PagerScreen(
                             title = strings.albums,
                             screen = {
@@ -389,6 +394,7 @@ fun MainPageScreen(
                                 )
                             }
                         )
+
                         ElementEnum.ARTISTS -> PagerScreen(
                             title = strings.artists,
                             screen = {
@@ -442,11 +448,12 @@ fun MainPageScreen(
                                 )
                             }
                         )
+
                         ElementEnum.MUSICS -> PagerScreen(
                             title = strings.musics,
                             screen = {
                                 AllMusicsComposable(
-                                   allMusicsViewModel = allMusicsViewModel,
+                                    allMusicsViewModel = allMusicsViewModel,
                                     retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                     musicState = musicState,
                                     sortByDateAction = {

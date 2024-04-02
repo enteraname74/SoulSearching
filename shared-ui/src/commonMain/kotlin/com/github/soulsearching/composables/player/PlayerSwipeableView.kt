@@ -191,7 +191,7 @@ fun PlayerDraggableView(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
-                    MaterialTheme.colorScheme.primary
+                    SoulSearchingColorTheme.defaultTheme.primary
                 }
             }
         },
@@ -209,7 +209,7 @@ fun PlayerDraggableView(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
-                    MaterialTheme.colorScheme.secondary
+                    SoulSearchingColorTheme.defaultTheme.secondary
                 }
             }
         }, tween(Constants.AnimationDuration.normal),
@@ -224,11 +224,11 @@ fun PlayerDraggableView(
         false
     }
 
-//    SoulSearchingContext.setSystemBarsColor(
-//        statusBarColor = statusBarColor,
-//        navigationBarColor = navigationBarColor,
-//        isUsingDarkIcons = isUsingDarkIcons
-//    )
+    SoulSearchingContext.setSystemBarsColor(
+        statusBarColor = statusBarColor,
+        navigationBarColor = navigationBarColor,
+        isUsingDarkIcons = isUsingDarkIcons
+    )
 
     SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {

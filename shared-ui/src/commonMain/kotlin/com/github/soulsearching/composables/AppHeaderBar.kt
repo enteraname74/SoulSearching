@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,19 +26,23 @@ import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable
 fun AppHeaderBar(
-    title : String,
-    leftAction : () -> Unit,
-    leftIcon : ImageVector = Icons.Rounded.ArrowBack,
-    rightAction : () -> Unit = {},
-    rightIcon : ImageVector? = null,
+    modifier: Modifier = Modifier,
+    title: String,
+    leftAction: () -> Unit,
+    leftIcon: ImageVector = Icons.Rounded.ArrowBack,
+    rightAction: () -> Unit = {},
+    rightIcon: ImageVector? = null,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor),
+        modifier = modifier
+            .then(
+                Modifier
+                    .fillMaxWidth()
+                    .background(backgroundColor)
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
