@@ -15,7 +15,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.SelectableMusicItem
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey

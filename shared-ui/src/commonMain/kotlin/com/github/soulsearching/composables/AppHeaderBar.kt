@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable

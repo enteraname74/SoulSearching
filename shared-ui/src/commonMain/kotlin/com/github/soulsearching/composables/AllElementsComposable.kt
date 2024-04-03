@@ -20,7 +20,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
 import java.util.UUID

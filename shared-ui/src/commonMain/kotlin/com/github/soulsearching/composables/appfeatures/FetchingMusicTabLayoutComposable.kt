@@ -15,7 +15,7 @@ import com.github.soulsearching.Drawables
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.composables.AppFeatureDotComposable
 import com.github.soulsearching.model.PagerScreen
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.ScreenOrientation
 import kotlinx.coroutines.launch
 

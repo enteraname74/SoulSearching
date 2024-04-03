@@ -13,7 +13,7 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.model.settings.ViewSettingsManager
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable

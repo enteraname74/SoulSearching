@@ -25,7 +25,7 @@ import androidx.compose.ui.window.Dialog
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 @Composable

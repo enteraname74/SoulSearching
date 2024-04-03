@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.Constants
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType

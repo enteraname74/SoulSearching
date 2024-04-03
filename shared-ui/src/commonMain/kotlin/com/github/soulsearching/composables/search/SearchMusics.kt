@@ -17,7 +17,7 @@ import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.states.MusicState
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.utils.PlayerUtils

@@ -18,7 +18,7 @@ import com.github.soulsearching.composables.settings.SettingsElement
 import com.github.soulsearching.composables.settings.SettingsSwitchElement
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.model.settings.ViewSettingsManager
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 
 /**

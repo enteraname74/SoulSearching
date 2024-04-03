@@ -33,7 +33,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.settings.LoadingComposable
 import com.github.soulsearching.events.AddMusicsEvent
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.AddMusicsStateType
 import com.github.soulsearching.viewmodel.AllMusicsViewModel

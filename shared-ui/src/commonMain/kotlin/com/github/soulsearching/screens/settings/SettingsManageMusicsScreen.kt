@@ -17,7 +17,7 @@ import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.settings.SettingsElement
 import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.events.FolderEvent
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel

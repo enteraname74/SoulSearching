@@ -16,7 +16,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.settings.ColorThemeCard
 import com.github.soulsearching.composables.settings.PersonalizedColorThemeCard
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.strings
+import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.ColorThemeType
