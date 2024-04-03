@@ -22,111 +22,149 @@ import com.github.soulsearching.viewmodel.handler.SelectedArtistViewModelHandler
 import com.github.soulsearching.viewmodel.handler.SelectedPlaylistViewModelHandler
 import com.github.soulsearching.viewmodel.handler.ViewModelHandler
 
-/**
- * A ViewModel is represented by an Interface.
- * The benefits of it is that it can be used anywhere (Android, desktop) instead of
- * an abstract class (on android, we need to inherit from the ViewModel class, making it
- * inherit also from an abstract class).
- *
- * A ViewModel possess only an handler that is used for handling the logic of the ViewModel.
- * This handler can be an abstract class that implementations will need to specialize.
- * If the class is not abstract, it will make the ViewModel usable on any platform without specific implementation.
- */
-interface SoulSearchingViewModel<Handler: ViewModelHandler> : ScreenModel {
-    val handler: Handler
-}
+///**
+// * A ViewModel is represented by an Interface.
+// * The benefits of it is that it can be used anywhere (Android, desktop) instead of
+// * an abstract class (on android, we need to inherit from the ViewModel class, making it
+// * inherit also from an abstract class).
+// *
+// * A ViewModel possess only an handler that is used for handling the logic of the ViewModel.
+// * This handler can be an abstract class that implementations will need to specialize.
+// * If the class is not abstract, it will make the ViewModel usable on any platform without specific implementation.
+// */
+//interface SoulSearchingViewModel<Handler: ViewModelHandler> : ScreenModel {
+//    val handler: ViewModelHandler
+//}
 
 /**
  * ViewModel for adding new musics from the settings screen.
  */
-typealias SettingsAddMusicsViewModel = SoulSearchingViewModel<SettingsAddMusicsViewModelHandler>
+interface SettingsAddMusicsViewModel : ScreenModel {
+    val handler: SettingsAddMusicsViewModelHandler
+}
 
 /**
  * ViewModel for managing all albums.
  */
-typealias AllAlbumsViewModel = SoulSearchingViewModel<AllAlbumsViewModeHandler>
+interface AllAlbumsViewModel : ScreenModel {
+    val handler: AllAlbumsViewModeHandler
+}
 
 /**
  * ViewModel for managing all artists.
  */
-typealias AllArtistsViewModel = SoulSearchingViewModel<AllArtistsViewModelHandler>
+interface AllArtistsViewModel : ScreenModel {
+    val handler: AllArtistsViewModelHandler
+}
 
 /**
  * ViewModel for managing all folders.
  */
-typealias SettingsAllFoldersViewModel = SoulSearchingViewModel<SettingsAllFolderViewModelHandler>
+interface SettingsAllFoldersViewModel : ScreenModel {
+    val handler: SettingsAllFolderViewModelHandler
+}
 
 /**
  * ViewModel for managing all image covers.
  */
-typealias AllImageCoversViewModel = SoulSearchingViewModel<AllImageCoversViewModelHandler>
+interface AllImageCoversViewModel : ScreenModel {
+    val handler: AllImageCoversViewModelHandler
+}
 
 /**
  * ViewModel for the player.
  */
-typealias PlayerViewModel = SoulSearchingViewModel<PlayerViewModelHandler>
+interface PlayerViewModel : ScreenModel {
+    val handler: PlayerViewModelHandler
+}
 
 /**
  * ViewModel for managing all musics.
  */
-typealias AllMusicsViewModel = SoulSearchingViewModel<AllMusicsViewModelHandler>
+interface AllMusicsViewModel : ScreenModel {
+    val handler: AllMusicsViewModelHandler
+}
 
 /**
  * ViewModel for managing all playlists.
  */
-typealias AllPlaylistsViewModel = SoulSearchingViewModel<AllPlaylistsViewModelHandler>
+interface AllPlaylistsViewModel : ScreenModel {
+    val handler: AllPlaylistsViewModelHandler
+}
 
 /**
  * ViewModel for managing all quick access.
  */
-typealias AllQuickAccessViewModel = SoulSearchingViewModel<AllQuickAccessViewModelHandler>
+interface AllQuickAccessViewModel : ScreenModel {
+    val handler: AllQuickAccessViewModelHandler
+}
 
 /**
  * ViewModel for managing the main activity.
  */
-typealias MainActivityViewModel = SoulSearchingViewModel<MainActivityViewModelHandler>
+interface MainActivityViewModel : ScreenModel {
+    val handler: MainActivityViewModelHandler
+}
 
 /**
  * ViewModel for the modify album screen.
  */
-typealias ModifyAlbumViewModel = SoulSearchingViewModel<ModifyAlbumViewModelHandler>
+interface ModifyAlbumViewModel : ScreenModel {
+    val handler: ModifyAlbumViewModelHandler
+}
 
 /**
  * ViewModel for the modify artist screen.
  */
-typealias ModifyArtistViewModel = SoulSearchingViewModel<ModifyArtistViewModelHandler>
+interface ModifyArtistViewModel : ScreenModel {
+    val handler: ModifyArtistViewModelHandler
+}
 
 /**
  * ViewModel for the modify music screen.
  */
-typealias ModifyMusicViewModel = SoulSearchingViewModel<ModifyMusicViewModelHandler>
+interface ModifyMusicViewModel : ScreenModel {
+    val handler: ModifyMusicViewModelHandler
+}
 
 /**
  * ViewModel for the modify playlist screen.
  */
-typealias ModifyPlaylistViewModel = SoulSearchingViewModel<ModifyPlaylistViewModelHandler>
+interface ModifyPlaylistViewModel : ScreenModel {
+    val handler: ModifyPlaylistViewModelHandler
+}
 
 /**
  * ViewModel for the player music list view.
  */
-typealias PlayerMusicListViewModel = SoulSearchingViewModel<PlayerMusicListViewModelHandler>
+interface PlayerMusicListViewModel : ScreenModel {
+    val handler: PlayerMusicListViewModelHandler
+}
 
 /**
  * ViewModel for the selected album screen.
  */
-typealias SelectedAlbumViewModel = SoulSearchingViewModel<SelectedAlbumViewModelHandler>
+interface SelectedAlbumViewModel : ScreenModel {
+    val handler: SelectedAlbumViewModelHandler
+}
 
 /**
  * ViewModel for the selected artist screen.
  */
-typealias SelectedArtistViewModel = SoulSearchingViewModel<SelectedArtistViewModelHandler>
+interface SelectedArtistViewModel : ScreenModel {
+    val handler: SelectedArtistViewModelHandler
+}
 
 /**
  * ViewModel for the selected playlist screen.
  */
-typealias SelectedPlaylistViewModel = SoulSearchingViewModel<SelectedPlaylistViewModelHandler>
+interface SelectedPlaylistViewModel : ScreenModel {
+    val handler: SelectedPlaylistViewModelHandler
+}
 
 /**
  * ViewModel for the navigation.
  */
-typealias NavigationViewModel = SoulSearchingViewModel<NavigationViewModelHandler>
+interface NavigationViewModel : ScreenModel {
+    val handler: NavigationViewModelHandler
+}

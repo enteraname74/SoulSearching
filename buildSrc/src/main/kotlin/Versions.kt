@@ -9,7 +9,7 @@ object Versions {
     const val KOIN_COMPOSE = "1.1.2"
     const val KMPALETTE = "2.2.0"
     const val EXPOSED = "0.46.0"
-    const val VOYAGER = "1.0.0"
+    const val VOYAGER = "1.1.0-alpha03"
 
     object AndroidX {
         const val COMPOSE = "1.4.1"

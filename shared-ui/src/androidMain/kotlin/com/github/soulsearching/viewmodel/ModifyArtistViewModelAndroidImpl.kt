@@ -1,5 +1,7 @@
 package com.github.soulsearching.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
@@ -21,9 +23,9 @@ class ModifyArtistViewModelAndroidImpl(
     albumArtistRepository: AlbumArtistRepository,
     albumRepository: AlbumRepository,
     imageCoverRepository: ImageCoverRepository
-) : ModifyArtistViewModel {
+) : ModifyArtistViewModel, ViewModel() {
     override val handler: ModifyArtistViewModelHandler = ModifyArtistViewModelHandler(
-        coroutineScope = screenModelScope,
+        coroutineScope = viewModelScope,
         musicRepository = musicRepository,
         artistRepository = artistRepository,
         musicArtistRepository = musicArtistRepository,

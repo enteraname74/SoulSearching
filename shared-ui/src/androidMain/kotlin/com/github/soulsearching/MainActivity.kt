@@ -23,31 +23,28 @@ import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllQuickAccessViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.MainActivityViewModel
 import com.github.soulsearching.viewmodel.MainActivityViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.NavigationViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerViewModel
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelHandler
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private lateinit var allMusicsViewModel: AllMusicsViewModelAndroidImpl
+    private lateinit var allMusicsViewModel: AllMusicsViewModel
 
     private val colorThemeManager: ColorThemeManager by inject<ColorThemeManager>()
 
@@ -82,47 +79,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val a: AllPlaylistsViewModel by inject<AllPlaylistsViewModel>()
             SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
-
             // Main page view models
-            allMusicsViewModel = koinViewModel()
-            val allPlaylistsViewModel = koinViewModel<AllPlaylistsViewModelAndroidImpl>()
-            val allAlbumsViewModel = koinViewModel<AllAlbumsViewModelAndroidImpl>()
-            val allArtistsViewModel = koinViewModel<AllArtistsViewModelAndroidImpl>()
-            val allImageCoversViewModel = koinViewModel<AllImageCoversViewModelAndroidImpl>()
-            val allQuickAccessViewModel = koinViewModel<AllQuickAccessViewModelAndroidImpl>()
-
-            // Selected page view models
-            val selectedPlaylistViewModel = koinViewModel<SelectedPlaylistViewModelAndroidImpl>()
-            val selectedAlbumViewModel = koinViewModel<SelectedAlbumViewModelAndroidImpl>()
-            val selectedArtistsViewModel = koinViewModel<SelectedArtistViewModelAndroidImpl>()
-
-            // Modify page view models
-            val modifyPlaylistViewModel = koinViewModel<ModifyPlaylistViewModelAndroidImpl>()
-            val modifyAlbumViewModel = koinViewModel<ModifyAlbumViewModelAndroidImpl>()
-            val modifyArtistViewModel = koinViewModel<ModifyArtistViewModelAndroidImpl>()
-            val modifyMusicViewModel = koinViewModel<ModifyMusicViewModelAndroidImpl>()
+            allMusicsViewModel = koinInject()
 
             // Player view model :
-            val playerViewModel = koinViewModel<PlayerViewModelAndroidImpl>()
-            val playerMusicListViewModel = koinViewModel<PlayerMusicListViewModelAndroidImpl>()
+            val playerViewModel = injectElement<PlayerViewModel>()
 
-            // Settings view models:
-            val settingsAllFoldersViewModel =
-                koinViewModel<SettingsAllFoldersViewModelAndroidImpl>()
-            val settingsAddMusicsViewModel = koinViewModel<SettingsAddMusicsViewModelAndroidImpl>()
-
-
-            val mainActivityViewModel = koinViewModel<MainActivityViewModelAndroidImpl>()
+            val mainActivityViewModel: MainActivityViewModel = injectElement()
             mainActivityViewModel.handler.isReadPermissionGranted =
                 SoulSearchingContext.checkIfReadPermissionGranted()
             mainActivityViewModel.handler.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
-            val navigationViewModel = koinViewModel<NavigationViewModelAndroidImpl>()
             val playbackManager = injectElement<PlaybackManagerAndroidImpl>()
-
             PlayerUtils.playerViewModel = playerViewModel
             initializeBroadcastReceive()
 
@@ -155,27 +127,17 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
 
+
                 SoulSearchingApplication(
-                    allMusicsViewModel = allMusicsViewModel,
-                    allPlaylistsViewModel = allPlaylistsViewModel,
-                    allAlbumsViewModel = allAlbumsViewModel,
-                    allArtistsViewModel = allArtistsViewModel,
-                    allImageCoversViewModel = allImageCoversViewModel,
-                    playerMusicListViewModel = playerMusicListViewModel,
-                    allQuickAccessViewModel = allQuickAccessViewModel,
-                    settingsAllFoldersViewModel = settingsAllFoldersViewModel,
-                    mainActivityViewModel = mainActivityViewModel,
-                    selectedAlbumViewModel = selectedAlbumViewModel,
-                    selectedArtistViewModel = selectedArtistsViewModel,
-                    selectedPlaylistViewModel = selectedPlaylistViewModel,
-                    modifyAlbumViewModel = modifyAlbumViewModel,
-                    modifyArtistViewModel = modifyArtistViewModel,
-                    modifyMusicViewModel = modifyMusicViewModel,
-                    modifyPlaylistViewModel = modifyPlaylistViewModel,
-                    settingsAddMusicsViewModel = settingsAddMusicsViewModel,
-                    navigationViewModel = navigationViewModel,
-                    playerViewModel = playerViewModel,
-                    playbackManager = playbackManager
+                    playbackManager = playbackManager,
+//                    allAlbumsViewModel = injectElement(),
+//                    allArtistsViewModel = injectElement(),
+//                    allImageCoversViewModel = injectElement(),
+//                    allMusicsViewModel = allMusicsViewModel,
+//                    allPlaylistsViewModel = injectElement(),
+//                    playerMusicListViewModel = injectElement(),
+//                    allQuickAccessViewModel = injectElement(),
+//                    mainActivityViewModel = mainActivityViewModel
                 )
             }
         }

@@ -14,7 +14,7 @@ import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 
 @Composable
-actual fun ModifyMusicScreen(
+actual fun ModifyMusicScreenView(
     modifyMusicViewModel: ModifyMusicViewModel,
     selectedMusicId: String,
     finishAction: () -> Unit

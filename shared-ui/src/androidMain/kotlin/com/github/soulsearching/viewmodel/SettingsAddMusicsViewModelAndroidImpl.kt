@@ -13,7 +13,7 @@ class SettingsAddMusicsViewModelAndroidImpl(
     folderRepository: FolderRepository,
     musicRepository: MusicRepository,
     musicFetcher: MusicFetcherAndroidImpl
-) : SettingsAddMusicsViewModel {
+) : SettingsAddMusicsViewModel, ViewModel() {
     override val handler: SettingsAddMusicsViewModelHandler = SettingsAddMusicsViewModelHandler(
         folderRepository = folderRepository,
         musicRepository = musicRepository,

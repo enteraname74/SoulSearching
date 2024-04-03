@@ -15,7 +15,7 @@ import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 
 @Composable
-actual fun ModifyAlbumScreen(
+actual fun ModifyAlbumScreenView(
     modifyAlbumViewModel: ModifyAlbumViewModel,
     selectedAlbumId: String,
     finishAction: () -> Unit

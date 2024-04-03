@@ -11,7 +11,6 @@ import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
  * Represent the view for the modify playlist screen.
  */
 data class ModifyPlaylistScreen(private val selectedPlaylistId: String): Screen {
-
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<ModifyPlaylistViewModel>()
@@ -25,7 +24,6 @@ data class ModifyPlaylistScreen(private val selectedPlaylistId: String): Screen 
             }
         )
     }
-
 }
 
 @Composable

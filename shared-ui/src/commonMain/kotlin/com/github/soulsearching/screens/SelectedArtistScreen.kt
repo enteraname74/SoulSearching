@@ -9,20 +9,77 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.composables.PlaylistScreen
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.PlaylistEvent
 import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.PlaylistType
+import com.github.soulsearching.viewmodel.AllImageCoversViewModel
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import java.util.UUID
 
+/**
+ * Represent the view of the selected artist screen.
+ */
+@OptIn(ExperimentalMaterialApi::class)
+data class SelectedArtistScreen(
+    private val selectedArtistId: String,
+    private val playerDraggableState: SwipeableState<BottomSheetStates>
+): Screen {
+
+    @Composable
+    override fun Content() {
+        val screenModel = getScreenModel<SelectedArtistViewModel>()
+        val allPlaylistsViewModel = getScreenModel<AllPlaylistsViewModel>()
+        val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
+        val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
+
+        val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+        val colorThemeManager = injectElement<ColorThemeManager>()
+
+        SelectedArtistScreenView(
+            selectedArtistViewModel = screenModel,
+            navigateToModifyMusic = { musicId ->
+                navigator.push(
+                    ModifyMusicScreen(
+                        selectedMusicId = musicId
+                    )
+                )
+            },
+            selectedArtistId = selectedArtistId,
+            playlistState = playlistState,
+            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+            navigateToModifyArtist = {
+                navigator.push(
+                    ModifyArtistScreen(
+                        selectedArtistId = selectedArtistId
+                    )
+                )
+            },
+            navigateBack = {
+                colorThemeManager.removePlaylistTheme()
+                navigator.pop()
+            },
+            playerDraggableState = playerDraggableState,
+            playerMusicListViewModel = playerMusicListViewModel,
+            retrieveCoverMethod = allImagesViewModel.handler::getImageCover
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectedArtistScreen(
+fun SelectedArtistScreenView(
     onPlaylistEvent : (PlaylistEvent) -> Unit,
     playlistState : PlaylistState,
     selectedArtistViewModel: SelectedArtistViewModel,

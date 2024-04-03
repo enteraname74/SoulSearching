@@ -14,7 +14,7 @@ import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 
 @Composable
-actual fun ModifyArtistScreen(
+actual fun ModifyArtistScreenView(
     modifyArtistViewModel: ModifyArtistViewModel,
     selectedArtistId: String,
     finishAction: () -> Unit,

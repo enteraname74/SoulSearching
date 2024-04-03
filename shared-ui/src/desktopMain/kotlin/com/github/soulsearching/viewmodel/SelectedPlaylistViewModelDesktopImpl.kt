@@ -33,7 +33,7 @@ class SelectedPlaylistViewModelDesktopImpl(
     playbackManager: PlaybackManagerDesktopImpl
 ) : SelectedPlaylistViewModel {
     override val handler: SelectedPlaylistViewModelHandler = SelectedPlaylistViewModelHandler(
-        coroutineScope = screenModelScope),
+        coroutineScope = screenModelScope,
         playlistRepository = playlistRepository,
         musicRepository = musicRepository,
         artistRepository = artistRepository,

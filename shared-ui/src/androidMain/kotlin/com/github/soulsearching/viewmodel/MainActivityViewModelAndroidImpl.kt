@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import androidx.lifecycle.ViewModel
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.viewmodel.handler.MainActivityViewModelHandler
 
@@ -8,7 +9,7 @@ import com.github.soulsearching.viewmodel.handler.MainActivityViewModelHandler
  */
 class MainActivityViewModelAndroidImpl(
     settings: SoulSearchingSettings
-) : MainActivityViewModel {
+) : MainActivityViewModel, ViewModel() {
     override val handler: MainActivityViewModelHandler = MainActivityViewModelHandler(
         settings = settings
     )

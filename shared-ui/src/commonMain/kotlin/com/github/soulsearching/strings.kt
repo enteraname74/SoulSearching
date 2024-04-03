@@ -79,9 +79,12 @@ interface Strings {
     val albumInformation: String
 
     val deleteMusicDialogTitle: String
+    val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
     val deleteArtistDialogTitle: String
+    val removeMusicFromPlaylistTitle: String
+    val removeMusicFromPlaylistText: String
 
     val modifyAlbum: String
     val modifyArtist: String
@@ -217,9 +220,12 @@ object FrStrings : Strings {
     override val albumInformation = "Informations de l'album"
 
     override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
+    override val deleteMusicDialogText: String = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
+    override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
+    override val removeMusicFromPlaylistText = "Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
@@ -279,10 +285,10 @@ object FrStrings : Strings {
     override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
 
     override fun musics(total: Int): String {
-        return if (total == 1) {
-            "musique"
-        } else {
-            "musiques"
+        return when (total) {
+            1 -> "1 musique"
+            0 -> "Aucune musique"
+            else -> "$total musiques"
         }
     }
 }
@@ -357,10 +363,12 @@ object EnStrings : Strings {
     override val albumInformation = "Album's information"
 
     override val deleteMusicDialogTitle = "Are you sure to delete this song?"
+    override val deleteMusicDialogText = "It will be removed from the application."
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"
     override val deleteArtistDialogTitle = "Are you sure to delete this artist?"
-
+    override val removeMusicFromPlaylistTitle = "Are you sure to remove this song from this playlist?"
+    override val removeMusicFromPlaylistText = "This song will be removed from this playlist but not deleted from the application."
     override val modifyAlbum = "Modify this album"
     override val modifyArtist = "Modify this artist"
     override val modifyMusic = "Modify this song"
@@ -419,10 +427,10 @@ object EnStrings : Strings {
     override val savingNewMusics = "Saving new songs…"
 
     override fun musics(total: Int): String {
-        return if (total == 1) {
-            "song"
-        } else {
-            "songs"
+        return when(total) {
+            0 -> "No songs"
+            1 -> "1 song"
+            else -> "$total songs"
         }
     }
 }

@@ -8,25 +8,42 @@ import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.model.settings.ViewSettingsManager
 import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.theme.ColorThemeManager
-import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.viewmodel.AllQuickAccessViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.MainActivityViewModel
 import com.github.soulsearching.viewmodel.MainActivityViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.ModifyPlaylistViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.NavigationViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.PlayerViewModel
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SelectedPlaylistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
+import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
+import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModel
+import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -34,14 +51,14 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 actual val appModule = module {
-    viewModel {
+    single<SettingsAddMusicsViewModel> {
         SettingsAddMusicsViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
             musicFetcher = get()
         )
     }
-    viewModel {
+    single<AllAlbumsViewModel> {
         AllAlbumsViewModelAndroidImpl(
             albumRepository = get(),
             musicRepository = get(),
@@ -50,7 +67,7 @@ actual val appModule = module {
             settings = get()
         )
     }
-    viewModel {
+    single<AllArtistsViewModel> {
         AllArtistsViewModelAndroidImpl(
             artistRepository = get(),
             musicRepository = get(),
@@ -58,7 +75,7 @@ actual val appModule = module {
             settings = get()
         )
     }
-    viewModel {
+    single<SettingsAllFoldersViewModel> {
         SettingsAllFoldersViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
@@ -69,7 +86,7 @@ actual val appModule = module {
             musicArtistRepository = get()
         )
     }
-    viewModel {
+    single<AllImageCoversViewModel> {
         AllImageCoversViewModelAndroidImpl(
             imageCoverRepository = get(),
             musicRepository = get(),
@@ -78,7 +95,7 @@ actual val appModule = module {
             playlistRepository = get()
         )
     }
-    viewModel {
+    single<AllMusicsViewModel> {
         AllMusicsViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
@@ -96,7 +113,7 @@ actual val appModule = module {
             musicFetcher = get()
         )
     }
-    viewModel {
+    single<AllPlaylistsViewModel> {
         AllPlaylistsViewModelAndroidImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
@@ -104,7 +121,7 @@ actual val appModule = module {
             settings = get()
         )
     }
-    viewModel {
+    single<AllQuickAccessViewModel> {
         AllQuickAccessViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
@@ -112,12 +129,12 @@ actual val appModule = module {
             artistRepository = get()
         )
     }
-    viewModel {
+    single<MainActivityViewModel> {
         MainActivityViewModelAndroidImpl(
             settings = get()
         )
     }
-    viewModel {
+    single<ModifyAlbumViewModel> {
         ModifyAlbumViewModelAndroidImpl(
             musicRepository = get(),
             albumRepository = get(),
@@ -129,7 +146,7 @@ actual val appModule = module {
             playbackManager = get()
         )
     }
-    viewModel {
+    single<ModifyArtistViewModel> {
         ModifyArtistViewModelAndroidImpl(
             musicRepository = get(),
             artistRepository = get(),
@@ -140,7 +157,7 @@ actual val appModule = module {
             imageCoverRepository = get()
         )
     }
-    viewModel {
+    single<ModifyMusicViewModel> {
         ModifyMusicViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
@@ -155,7 +172,7 @@ actual val appModule = module {
             playbackManager = get()
         )
     }
-    viewModel {
+    single<ModifyPlaylistViewModel> {
         ModifyPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
@@ -163,7 +180,7 @@ actual val appModule = module {
             settings = get()
         )
     }
-    viewModel {
+    single<PlayerMusicListViewModel> {
         PlayerMusicListViewModelAndroidImpl(
             playerMusicRepository = get(),
             musicRepository = get(),
@@ -179,7 +196,7 @@ actual val appModule = module {
             playbackManager = get()
         )
     }
-    viewModel {
+    single<PlayerViewModel> {
         PlayerViewModelAndroidImpl(
             musicRepository = get(),
             playlistRepository = get(),
@@ -195,7 +212,7 @@ actual val appModule = module {
             colorThemeManager = get()
         )
     }
-    viewModel {
+    single<SelectedAlbumViewModel> {
         SelectedAlbumViewModelAndroidImpl(
             albumRepository = get(),
             artistRepository = get(),
@@ -210,7 +227,7 @@ actual val appModule = module {
             playbackManager = get()
         )
     }
-    viewModel {
+    single<SelectedArtistViewModel> {
         SelectedArtistViewModelAndroidImpl(
             artistRepository = get(),
             musicRepository = get(),
@@ -225,7 +242,7 @@ actual val appModule = module {
             playbackManager = get()
         )
     }
-    viewModel {
+    single<SelectedPlaylistViewModel> {
         SelectedPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             musicRepository = get(),
@@ -239,9 +256,6 @@ actual val appModule = module {
             settings = get(),
             playbackManager = get()
         )
-    }
-    viewModel {
-        NavigationViewModelAndroidImpl()
     }
     factory<MusicFetcher> {
         MusicFetcherAndroidImpl(

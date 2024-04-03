@@ -1,7 +1,6 @@
 package com.github.soulsearching
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdesktop.AppDatabase
 import com.github.enteraname74.localdesktop.localDesktopModule
@@ -68,19 +67,7 @@ fun SoulSearchingDesktop() {
             allArtistsViewModel = allArtistsViewModel,
             allImageCoversViewModel = allImageCoversViewModel,
             playerMusicListViewModel = playerMusicListViewModel,
-            allQuickAccessViewModel = allQuickAccessViewModel,
-            settingsAllFoldersViewModel = settingsAllFoldersViewModel,
             mainActivityViewModel = mainActivityViewModel,
-            selectedAlbumViewModel = selectedAlbumViewModel,
-            selectedArtistViewModel = selectedArtistsViewModel,
-            selectedPlaylistViewModel = selectedPlaylistViewModel,
-            modifyAlbumViewModel = modifyAlbumViewModel,
-            modifyArtistViewModel = modifyArtistViewModel,
-            modifyMusicViewModel = modifyMusicViewModel,
-            modifyPlaylistViewModel = modifyPlaylistViewModel,
-            settingsAddMusicsViewModel = settingsAddMusicsViewModel,
-            navigationViewModel = navigationViewModel,
-            playerViewModel = playerViewModel,
             playbackManager = playbackManager
         )
     }

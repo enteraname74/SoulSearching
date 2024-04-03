@@ -5,7 +5,7 @@ import com.github.soulsearching.composables.ModifyMusicComposable
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
 
 @Composable
-actual fun ModifyMusicScreen(
+actual fun ModifyMusicScreenView(
     modifyMusicViewModel: ModifyMusicViewModel,
     selectedMusicId: String,
     finishAction: () -> Unit

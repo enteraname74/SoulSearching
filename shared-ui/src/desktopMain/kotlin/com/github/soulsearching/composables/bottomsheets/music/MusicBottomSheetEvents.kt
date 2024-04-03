@@ -60,7 +60,7 @@ actual fun MusicBottomSheetEvents(
     if (musicState.isDeleteDialogShown) {
         SoulSearchingDialog(
             title = strings.deleteMusicDialogTitle,
-            text = stringResource(id = R.string.delete_music_dialog_text),
+            text = strings.deleteMusicDialogText,
             confirmAction = {
                 onMusicEvent(MusicEvent.DeleteMusic)
                 onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
@@ -95,8 +95,8 @@ actual fun MusicBottomSheetEvents(
 
     if (musicState.isRemoveFromPlaylistDialogShown) {
         SoulSearchingDialog(
-            title = stringResource(id = R.string.remove_music_from_playlist_title),
-            text = stringResource(id = R.string.remove_music_from_playlist_text),
+            title = strings.removeMusicFromPlaylistTitle,
+            text = strings.removeMusicFromPlaylistText,
             confirmAction = {
                 onPlaylistsEvent(PlaylistEvent.RemoveMusicFromPlaylist(musicId = musicState.selectedMusic.musicId))
                 onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))

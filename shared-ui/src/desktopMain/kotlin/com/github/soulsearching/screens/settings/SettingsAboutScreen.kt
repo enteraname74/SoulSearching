@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.github.soulsearching.composables.settings.SettingsAboutComposable
 
 @Composable
-actual fun SettingsAboutScreen(
+actual fun SettingsAboutScreenView(
     finishAction: () -> Unit,
     navigateToDevelopers: () -> Unit,
 ) {

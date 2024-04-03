@@ -5,7 +5,7 @@ import com.github.soulsearching.composables.ModifyAlbumComposable
 import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 
 @Composable
-actual fun ModifyAlbumScreen(
+actual fun ModifyAlbumScreenView(
     modifyAlbumViewModel: ModifyAlbumViewModel,
     selectedAlbumId: String,
     finishAction: () -> Unit

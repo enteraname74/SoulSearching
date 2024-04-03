@@ -8,7 +8,7 @@ import com.github.soulsearching.composables.settings.SettingsAboutComposable
 import com.github.soulsearching.strings
 
 @Composable
-actual fun SettingsAboutScreen(
+actual fun SettingsAboutScreenView(
     finishAction: () -> Unit,
     navigateToDevelopers: () -> Unit,
 ) {

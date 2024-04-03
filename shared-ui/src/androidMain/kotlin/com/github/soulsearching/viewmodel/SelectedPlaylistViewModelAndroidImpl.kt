@@ -31,9 +31,9 @@ class SelectedPlaylistViewModelAndroidImpl(
     imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings,
     playbackManager: PlaybackManagerAndroidImpl
-) : SelectedPlaylistViewModel {
+) : SelectedPlaylistViewModel, ViewModel() {
     override val handler: SelectedPlaylistViewModelHandler = SelectedPlaylistViewModelHandler(
-        coroutineScope = screenModelScope,
+        coroutineScope = viewModelScope,
         playlistRepository = playlistRepository,
         musicRepository = musicRepository,
         artistRepository = artistRepository,
