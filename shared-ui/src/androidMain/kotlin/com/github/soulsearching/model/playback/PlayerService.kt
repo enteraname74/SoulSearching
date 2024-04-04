@@ -1,12 +1,12 @@
-package com.github.soulsearching.playback
+package com.github.soulsearching.model.playback
 
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.github.soulsearching.classes.notification.SoulSearchingNotification
-import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayer
-import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayerImpl
+import com.github.soulsearching.model.notification.SoulSearchingNotification
+import com.github.soulsearching.model.player.SoulSearchingAndroidPlayer
+import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope

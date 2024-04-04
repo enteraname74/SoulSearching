@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.player
+package com.github.soulsearching.model.player
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -18,10 +18,10 @@ import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.R
-import com.github.soulsearching.classes.notification.SoulSearchingNotification
-import com.github.soulsearching.classes.notification.SoulSearchingNotificationBuilder
+import com.github.soulsearching.model.notification.SoulSearchingNotification
+import com.github.soulsearching.model.notification.SoulSearchingNotificationBuilder
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.playback.PlayerService
+import com.github.soulsearching.model.playback.PlayerService
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.*
 import java.io.File

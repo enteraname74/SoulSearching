@@ -1,11 +1,11 @@
-package com.github.soulsearching.classes.notification.notificationImpl
+package com.github.soulsearching.model.notification.notificationImpl
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat.Token
 import android.util.Log
-import com.github.soulsearching.classes.notification.SoulSearchingNotification
+import com.github.soulsearching.model.notification.SoulSearchingNotification
 
 /**
  * Specification of a SoulSearchingNotification for Android 13 and above.

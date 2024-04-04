@@ -1,7 +1,7 @@
 package com.github.soulsearching
 
-import com.github.soulsearching.classes.MusicFetcherDesktopImpl
-import com.github.soulsearching.classes.PlaybackManagerDesktopImpl
+import com.github.soulsearching.model.MusicFetcherDesktopImpl
+import com.github.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl

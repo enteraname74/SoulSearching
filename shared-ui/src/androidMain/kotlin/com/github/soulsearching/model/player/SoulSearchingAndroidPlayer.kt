@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.player
+package com.github.soulsearching.model.player
 
 import android.app.Notification
 import com.github.soulsearching.model.SoulSearchingPlayer

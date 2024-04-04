@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.notification
+package com.github.soulsearching.model.notification
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -14,8 +14,8 @@ import androidx.core.app.NotificationCompat
 import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.classes.notification.receivers.DeletedNotificationIntentReceiver
-import com.github.soulsearching.classes.player.SoulSearchingAndroidPlayerImpl
+import com.github.soulsearching.model.notification.receivers.DeletedNotificationIntentReceiver
+import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 
 /**
  * Notification used for the playback by the service.

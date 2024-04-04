@@ -6,7 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
-import com.github.soulsearching.classes.notification.SoulSearchingNotification
+import com.github.soulsearching.model.notification.SoulSearchingNotification
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

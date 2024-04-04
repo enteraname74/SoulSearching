@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes
+package com.github.soulsearching.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
@@ -13,8 +13,6 @@ import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.model.MusicFetcher
-import com.github.soulsearching.model.SelectableMusicItem
 import com.github.soulsearching.strings.strings
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO

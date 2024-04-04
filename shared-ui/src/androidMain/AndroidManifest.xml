@@ -20,30 +20,30 @@
         android:theme="@style/Theme.SoulSearching"
         tools:targetApi="31">
         <service
-            android:name=".playback.PlayerService"
+            android:name=".model.playback.PlayerService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             />
 
         <receiver
-            android:name=".classes.notification.receivers.ChangeFavoriteStateNotificationReceiver"
+            android:name=".model.notification.receivers.ChangeFavoriteStateNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".classes.notification.receivers.DeletedNotificationIntentReceiver"
+            android:name=".model.notification.receivers.DeletedNotificationIntentReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".classes.notification.receivers.NextMusicNotificationReceiver"
+            android:name=".model.notification.receivers.NextMusicNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".classes.notification.receivers.PausePlayNotificationReceiver"
+            android:name=".model.notification.receivers.PausePlayNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".classes.notification.receivers.PreviousMusicNotificationReceiver"
+            android:name=".model.notification.receivers.PreviousMusicNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
 

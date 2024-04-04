@@ -10,7 +10,7 @@ import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.viewmodel.handler.ModifyAlbumViewModelHandler
 
 /**

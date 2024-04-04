@@ -8,7 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.soulsearching.classes.utils.AndroidUtils
+import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.composables.ModifyArtistComposable
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel

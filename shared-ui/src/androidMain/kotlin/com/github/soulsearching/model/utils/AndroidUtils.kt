@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.utils
+package com.github.soulsearching.model.utils
 
 import android.content.ContentResolver
 import android.content.Context
@@ -10,7 +10,7 @@ import android.provider.MediaStore
 import android.util.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import com.github.soulsearching.playback.PlayerService
+import com.github.soulsearching.model.playback.PlayerService
 import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

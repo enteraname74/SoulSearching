@@ -10,11 +10,9 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.classes.PlaybackManagerDesktopImpl
+import com.github.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.viewmodel.handler.ModifyMusicViewModelHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Implementation of the ModifyMusicViewModel.

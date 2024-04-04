@@ -1,4 +1,4 @@
-package com.github.soulsearching.classes.utils
+package com.github.soulsearching.model.utils
 
 import android.content.Context
 import android.database.Cursor

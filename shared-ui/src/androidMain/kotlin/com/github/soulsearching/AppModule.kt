@@ -1,12 +1,12 @@
 package com.github.soulsearching
 
 import android.content.Context
-import com.github.soulsearching.classes.utils.MusicFetcherAndroidImpl
+import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.model.settings.ViewSettingsManager
-import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
@@ -47,7 +47,6 @@ import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 actual val appModule = module {

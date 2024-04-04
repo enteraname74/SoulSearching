@@ -15,31 +15,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import com.github.soulsearching.classes.utils.AndroidUtils
+import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.playback.PlaybackManagerAndroidImpl
-import com.github.soulsearching.playback.PlayerService
+import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.model.playback.PlayerService
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.AllQuickAccessViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.MainActivityViewModel
-import com.github.soulsearching.viewmodel.MainActivityViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.PlayerViewModel
-import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
-import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelHandler
 import org.koin.android.ext.android.inject
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 class MainActivity : AppCompatActivity() {

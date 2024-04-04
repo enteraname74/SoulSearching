@@ -1,8 +1,8 @@
-package com.github.soulsearching.playback
+package com.github.soulsearching.model.playback
 
 import android.content.Context
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.classes.utils.AndroidUtils
+import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.utils.PlayerUtils
 
