@@ -357,7 +357,10 @@ class SoulSearchingAndroidPlayerImpl(
                 PlayerUtils.playerViewModel.handler.currentMusicPosition =
                     PlayerService.getCurrentMusicPosition()
                 if (player.isPlaying) {
-                    settings.setInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, PlayerUtils.playerViewModel.handler.currentMusicPosition)
+                    settings.setInt(
+                        SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY,
+                        PlayerUtils.playerViewModel.handler.currentMusicPosition
+                    )
                 }
             }
         }

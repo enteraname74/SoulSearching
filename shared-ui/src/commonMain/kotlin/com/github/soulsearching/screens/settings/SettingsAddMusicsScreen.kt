@@ -36,7 +36,6 @@ import com.github.soulsearching.events.AddMusicsEvent
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.AddMusicsStateType
-import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +49,6 @@ class SettingsAddMusicsScreen : Screen {
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<SettingsAddMusicsViewModel>()
-        val allMusicsViewModel = getScreenModel<AllMusicsViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         SettingsAddMusicsScreenView(
@@ -58,7 +56,7 @@ class SettingsAddMusicsScreen : Screen {
             finishAction = {
                 navigator.pop()
             },
-            saveMusicFunction = allMusicsViewModel.handler::addMusic
+            saveMusicFunction = screenModel.handler::addMusic
         )
     }
 

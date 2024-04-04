@@ -61,13 +61,6 @@ fun SoulSearchingDesktop() {
         }
 
         SoulSearchingApplication(
-            allMusicsViewModel = allMusicsViewModel,
-            allPlaylistsViewModel = allPlaylistsViewModel,
-            allAlbumsViewModel = allAlbumsViewModel,
-            allArtistsViewModel = allArtistsViewModel,
-            allImageCoversViewModel = allImageCoversViewModel,
-            playerMusicListViewModel = playerMusicListViewModel,
-            mainActivityViewModel = mainActivityViewModel,
             playbackManager = playbackManager
         )
     }

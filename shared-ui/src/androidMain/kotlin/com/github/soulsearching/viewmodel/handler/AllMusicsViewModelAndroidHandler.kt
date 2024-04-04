@@ -53,7 +53,6 @@ class AllMusicsViewModelAndroidHandler(
     musicArtistRepository = musicArtistRepository,
     albumArtistRepository = albumArtistRepository,
     imageCoverRepository = imageCoverRepository,
-    folderRepository = folderRepository,
     settings = settings,
     musicFetcher = musicFetcher,
     playbackManager = playbackManager

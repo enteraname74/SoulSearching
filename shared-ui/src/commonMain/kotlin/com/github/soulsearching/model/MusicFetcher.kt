@@ -52,7 +52,7 @@ abstract class MusicFetcher(
     /**
      * Persist a music and its cover.
      */
-    protected suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
+    suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
         // Si la musique a déjà été enregistrée, on ne fait rien :
         val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {

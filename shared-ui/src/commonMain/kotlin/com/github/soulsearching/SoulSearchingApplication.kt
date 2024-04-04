@@ -46,14 +46,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoulSearchingApplication(
-//    allMusicsViewModel: AllMusicsViewModel,
-//    allPlaylistsViewModel: AllPlaylistsViewModel,
-//    allAlbumsViewModel: AllAlbumsViewModel,
-//    allArtistsViewModel: AllArtistsViewModel,
-//    allImageCoversViewModel: AllImageCoversViewModel,
-//    playerMusicListViewModel: PlayerMusicListViewModel,
-//    allQuickAccessViewModel: AllQuickAccessViewModel,
-//    mainActivityViewModel: MainActivityViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager,
