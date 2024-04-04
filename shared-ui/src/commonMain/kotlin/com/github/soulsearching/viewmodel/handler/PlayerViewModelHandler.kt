@@ -49,11 +49,10 @@ class PlayerViewModelHandler(
     private val playbackManager: PlaybackManager,
     private val colorThemeManager: ColorThemeManager
 ): ViewModelHandler {
-    private val _state = MutableStateFlow(MusicState())
-    val state = _state.asStateFlow()
+    private val _musicState = MutableStateFlow(MusicState())
+    val musicState = _musicState.asStateFlow()
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
-    private var isCounting = false
     private var isChangingPlayMode = false
 
     private var initialPlaylist by mutableStateOf<ArrayList<Music>>(ArrayList())
@@ -77,8 +76,8 @@ class PlayerViewModelHandler(
     lateinit var updateNbPlayed: (UUID) -> Unit
 
     private val musicEventHandler = MusicEventHandler(
-        privateState = _state,
-        publicState = state,
+        privateState = _musicState,
+        publicState = musicState,
         musicRepository = musicRepository,
         playlistRepository = playlistRepository,
         albumRepository = albumRepository,
@@ -237,7 +236,6 @@ class PlayerViewModelHandler(
         isMainPlaylist = false
         isServiceLaunched = false
         shouldServiceBeLaunched = false
-        isCounting = false
     }
 
     /**
@@ -319,7 +317,7 @@ class PlayerViewModelHandler(
 
         // If no songs is left in the queue, stop playing :
         if (currentPlaylist.isEmpty()) {
-            playbackManager.stopMusic()
+            playbackManager.stopPlayback()
         } else {
             // If same music than the one played, play next song :
             currentMusic?.let {

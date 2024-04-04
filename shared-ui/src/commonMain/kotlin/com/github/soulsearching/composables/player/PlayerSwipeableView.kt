@@ -249,7 +249,7 @@ fun PlayerDraggableView(
         && PlayerUtils.playerViewModel.handler.isServiceLaunched
         && !draggableState.isAnimationRunning
     ) {
-        playbackManager.stopMusic()
+        playbackManager.stopPlayback()
         playerMusicListViewModel.handler.resetPlayerMusicList()
     }
 

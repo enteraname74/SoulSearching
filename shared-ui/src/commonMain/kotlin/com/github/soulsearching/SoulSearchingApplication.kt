@@ -36,7 +36,6 @@ import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.viewmodel.MainActivityViewModel
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -93,7 +92,7 @@ fun SoulSearchingApplication(
         val musicState by allMusicsViewModel.handler.state.collectAsState()
         val coversState by allImageCoversViewModel.handler.state.collectAsState()
         val playerMusicListState by playerMusicListViewModel.handler.state.collectAsState()
-        val playerMusicState by PlayerUtils.playerViewModel.handler.state.collectAsState()
+        val playerMusicState by PlayerUtils.playerViewModel.handler.musicState.collectAsState()
 
         val coroutineScope = rememberCoroutineScope()
 

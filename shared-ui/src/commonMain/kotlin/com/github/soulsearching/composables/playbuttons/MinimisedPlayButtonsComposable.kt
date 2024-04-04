@@ -42,7 +42,7 @@ fun MinimisedPlayButtonsComposable(
                 .size(40.dp)
                 .clickable {
                     if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
-                        playbackManager.playPrevious()
+                        playbackManager.previous()
                     }
                 },
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
@@ -81,7 +81,7 @@ fun MinimisedPlayButtonsComposable(
                 .size(40.dp)
                 .clickable {
                     if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
-                        playbackManager.playNext()
+                        playbackManager.next()
                     }
                 },
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)

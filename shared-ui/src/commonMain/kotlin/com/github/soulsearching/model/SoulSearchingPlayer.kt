@@ -28,19 +28,19 @@ interface SoulSearchingPlayer {
     fun togglePlayPause()
 
     /**
+     * Play the loaded music.
+     */
+    fun play()
+
+    /**
+     * Pause the current music.
+     */
+    fun pause()
+
+    /**
      * Seek to a given position in the current played music.
      */
     fun seekToPosition(position: Int)
-
-    /**
-     * Play the next song in the queue.
-     */
-    fun next()
-
-    /**
-     * Play the previous song in the queue.
-     */
-    fun previous()
 
     /**
      * Check if the player is playing.
@@ -56,4 +56,10 @@ interface SoulSearchingPlayer {
      * Retrieve the current position in the current played song.
      */
     fun getMusicPosition(): Int
+
+    /**
+     * Retrieve the current music duration.
+     * Returns 0 if no song is being played.
+     */
+    fun getMusicDuration(): Int
 }

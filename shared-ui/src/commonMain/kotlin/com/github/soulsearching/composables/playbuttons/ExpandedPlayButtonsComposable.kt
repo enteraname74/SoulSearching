@@ -83,7 +83,7 @@ fun ExpandedPlayButtonsComposable(
                 playbackManager.seekToPosition(it.toInt())
             },
             colors = sliderColors,
-            valueRange = 0f..playbackManager.getMusicDuration().toFloat(),
+            valueRange = 0f..playbackManager.currentMusicDuration.toFloat(),
             interactionSource = interactionSource,
             thumb = {
                 SliderDefaults.Thumb(
@@ -120,7 +120,7 @@ fun ExpandedPlayButtonsComposable(
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
-                    text = Utils.convertDuration(playbackManager.getMusicDuration()),
+                    text = Utils.convertDuration(playbackManager.currentMusicDuration),
                     color = mainColor,
                     style = MaterialTheme.typography.labelLarge,
                 )
@@ -154,7 +154,7 @@ fun ExpandedPlayButtonsComposable(
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
-                        .clickable { playbackManager.playPrevious() },
+                        .clickable { playbackManager.previous() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 if (PlayerUtils.playerViewModel.handler.isPlaying) {
@@ -181,7 +181,7 @@ fun ExpandedPlayButtonsComposable(
                     contentDescription = "",
                     modifier = Modifier
                         .size(Constants.ImageSize.large)
-                        .clickable { playbackManager.playNext() },
+                        .clickable { playbackManager.next() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
                 Image(

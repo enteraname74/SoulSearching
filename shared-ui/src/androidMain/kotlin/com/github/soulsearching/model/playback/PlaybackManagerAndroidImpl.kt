@@ -1,19 +1,82 @@
 package com.github.soulsearching.model.playback
 
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.model.PlaybackManager
+import com.github.soulsearching.model.SoulSearchingPlayer
+import com.github.soulsearching.model.player.MediaSessionManager
+import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.PlayerViewModel
 
 /**
  * Implementation of a MusicPlayerManager for Android.
- * It is primarily used in this Android implementation as a 
- * bridge for communicating with the PlayerService.
+ * It manages the player, foreground service, media sessions and notification.
  */
 class PlaybackManagerAndroidImpl(
     private val context: Context
-): PlaybackManager {
+): PlaybackManager() {
+    private var shouldLaunchService: Boolean = true
+    private var shouldInit: Boolean = true
+
+    private val mediaSessionManager = MediaSessionManager(
+        context = context,
+        playbackManager = this
+    )
+
+    override val player: SoulSearchingAndroidPlayerImpl = SoulSearchingAndroidPlayerImpl(
+        context = context,
+        playbackManager =  this
+    )
+
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.extras?.getBoolean(STOP_RECEIVE) != null) {
+                context.unregisterReceiver(this)
+            } else if (intent.extras?.getBoolean(NEXT) != null) {
+                next()
+            } else if (intent.extras?.getBoolean(PREVIOUS) != null) {
+                previous()
+            } else if(intent.extras?.getBoolean(TOGGLE_PLAY_PAUSE) != null) {
+                togglePlayPause()
+            }
+        }
+    }
+
+    init {
+        init()
+    }
+
+    /**
+     * Initialize the playback manager.
+     */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private fun init() {
+        if (Build.VERSION.SDK_INT >= 33) {
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(BROADCAST_NOTIFICATION),
+                Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(BROADCAST_NOTIFICATION)
+            )
+        }
+
+        player.init()
+        mediaSessionManager.init()
+        shouldLaunchService = true
+        shouldInit = false
+    }
+
 
     override fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
         PlayerUtils.playerViewModel.handler.setPlayerInformationFromSavedList(
@@ -31,28 +94,63 @@ class PlaybackManagerAndroidImpl(
         isFromSavedList = isFromSavedList
     )
 
-    override fun setAndPlayCurrentMusic() = PlayerService.setAndPlayCurrentMusic()
+    override fun setAndPlayMusic(music: Music) {
+        if (shouldInit) init()
 
-    override fun onlyLoadMusic() = PlayerService.onlyLoadMusic()
+        if (shouldLaunchService) {
+            val serviceIntent = Intent(context, PlayerService::class.java)
+            serviceIntent.putExtra(PlayerService.MEDIA_SESSION_TOKEN, mediaSessionManager.getToken())
+            context.startForegroundService(serviceIntent)
+            shouldLaunchService = false
+        }
 
-    override fun isPlayerPlaying(): Boolean = PlayerService.isPlayerPlaying()
+        _currentMusic = music
+        player.setMusic(music)
+        player.launchMusic()
+        update()
+    }
 
-    override fun togglePlayPause() = PlayerService.togglePlayPause()
+    override fun stopPlayback() {
+        if (shouldInit) return
 
-    override fun playNext() = PlayerService.playNext()
+        releaseDurationJob()
 
-    override fun playPrevious() = PlayerService.playPrevious()
+        context.unregisterReceiver(broadcastReceiver)
+        player.dismiss()
+        mediaSessionManager.release()
 
-    override fun seekToPosition(position: Int) = PlayerService.seekToPosition(position)
+        val serviceIntent = Intent(context, PlayerService::class.java)
+        context.stopService(serviceIntent)
 
-    override fun getMusicDuration(): Int = PlayerService.getMusicDuration()
+        shouldInit = true
+        _playedList = ArrayList()
+        _initialList = ArrayList()
+    }
 
-    override fun getCurrentMusicPosition(): Int = PlayerService.getCurrentMusicPosition()
+    override fun update() {
+        mediaSessionManager.updateMetadata()
+        mediaSessionManager.updateState()
 
-    override fun stopMusic() = PlayerService.stopMusic(context)
+        if (durationJob == null) {
+            launchDurationJob()
+        }
 
-    /**
-     * Force the update of the notification on Android devices.
-     */
-    override fun updateNotification() = PlayerService.updateNotification()
+        val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
+        intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
+        context.sendBroadcast(intentForUpdatingNotification)
+
+        playerViewModel?.handler?.let {
+            it.currentMusic = _currentMusic
+            it.isPlaying = isPlaying
+        }
+    }
+
+    companion object {
+        const val BROADCAST_NOTIFICATION = "BROADCAST_NOTIFICATION"
+
+        const val STOP_RECEIVE = "STOP RECEIVE"
+        const val NEXT = "NEXT"
+        const val PREVIOUS = "NEXT"
+        const val TOGGLE_PLAY_PAUSE = "TOGGLE PLAY PAUSE"
+    }
 }

@@ -30,11 +30,11 @@ class PlaybackManagerDesktopImpl: PlaybackManager {
 
     }
 
-    override fun playNext() {
+    override fun next() {
 
     }
 
-    override fun playPrevious() {
+    override fun previous() {
 
     }
 
@@ -50,7 +50,7 @@ class PlaybackManagerDesktopImpl: PlaybackManager {
         return 0
     }
 
-    override fun stopMusic() {
+    override fun stopPlayback() {
     }
 
     override fun updateNotification() {
