@@ -1,0 +1,71 @@
+[versions]
+accompanist = "0.28.0"
+accompanist-system-ui-controller = "0.30.1"
+agp = "8.2.1"
+android-version-name = "0.3.2"
+android-version-code = "11"
+android-target-sdk = "34"
+android-compile-sdk = "34"
+android-min-sdk = "26"
+androidx-activity-compose = "1.7.0"
+androidx-core = "1.10.0"
+androidx-lifecycle = "2.6.1"
+annotation = "1.7.1"
+appcompat = "1.6.1"
+components-resources = "1.5.12"
+compose = "1.5.12"
+compose-plugin = "1.5.12"
+coroutines-core = "1.7.3"
+desktop-version-name = "1.0.0"
+exposed = "0.46.0"
+gson = "2.10.1"
+jaudiotagger = "3.0.1"
+kmpalette = "2.2.0"
+kotlin = "1.9.22"
+koin = "3.5.3"
+koin-compose = "1.1.2"
+media = "1.7.0"
+multiplatform-settings = "1.1.1"
+org-jetbrains-kotlin-jvm = "1.9.22"
+room = "2.6.1"
+voyager = "1.1.0-alpha03"
+
+[libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
+accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-system-ui-controller" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "appcompat" }
+components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "components-resources" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines-core" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
+kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+media = { module = "androidx.media:media", version.ref = "media" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+room = { module = "androidx.room:room-ktx", version.ref = "room" }
+voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-screen-model = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
+voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
+
+[bundles]
+koin = ["koin-compose", "koin-core"]
+accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompanist-pager-indicators"]
+voyager = ["voyager-koin", "voyager-navigator", "voyager-screen-model", "voyager-transitions"]

@@ -33,10 +33,10 @@ kotlin {
                 implementation(Dependencies.KOIN_COMPOSE)
 
                 implementation(Dependencies.KMPALETTE_CORE)
-                implementation("org.jetbrains.compose.components:components-resources:1.5.11")
-                implementation("com.russhwolf:multiplatform-settings:1.1.1")
+                implementation(libs.components.resources)
+                implementation(libs.multiplatform.settings)
 
-                implementation("androidx.annotation:annotation:1.7.1")
+                implementation(libs.annotation)
                 implementation(compose.ui)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
@@ -45,7 +45,7 @@ kotlin {
                 implementation(compose.material3)
 
                 // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
-                implementation("net.jthink:jaudiotagger:3.0.1")
+                implementation(libs.jaudiotagger)
 
                 with(Dependencies.Voyager) {
                     implementation(NAVIGATOR)

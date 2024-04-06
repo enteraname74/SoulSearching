@@ -12,10 +12,11 @@ buildscript {
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     // Necessary plugins for compose multiplatform (android and desktop)
-    id("com.android.library") version "8.2.1" apply false
-    id("org.jetbrains.compose") version "1.5.11" apply false
-    id("org.jetbrains.kotlin.multiplatform") version "1.9.21" apply false
-    id("org.jetbrains.kotlin.jvm") version "1.9.21" apply false
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.jetbrainsCompose) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
 }
 repositories {
     google()

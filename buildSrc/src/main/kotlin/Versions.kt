@@ -12,15 +12,10 @@ object Versions {
     const val VOYAGER = "1.1.0-alpha03"
 
     object AndroidX {
-        const val COMPOSE = "1.4.1"
         const val UI = "1.4.1"
         const val CORE = "1.10.0"
-        const val FOUNDATION = "1.4.1"
-        const val RUNTIME = "1.4.1"
         const val LIFECYCLE = "2.6.1"
         const val ACTIVITY_COMPOSE = "1.7.0"
-        const val MATERIAL3 = "1.1.0"
-        const val MATERIAL = "1.5.0-alpha02"
         const val ROOM = "2.6.1"
         const val APPCOMPAT = "1.6.1"
         const val NAVIGATION_COMPOSE = "2.7.6"
