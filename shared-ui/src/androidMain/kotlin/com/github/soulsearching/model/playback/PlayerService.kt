@@ -34,7 +34,7 @@ class PlayerService : Service() {
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        Log.i("Player service", "ON START COMMAND")
         val token: MediaSessionCompat.Token? = intent?.extras?.get(MEDIA_SESSION_TOKEN) as MediaSessionCompat.Token?
 
         if (Build.VERSION.SDK_INT >= 33) {
@@ -80,7 +80,7 @@ class PlayerService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        println("ON TASK REMOVE")
+        Log.i("Player service", "ON TASK REMOVED")
         try {
             stopService()
         } catch (_: Exception) {
@@ -90,7 +90,7 @@ class PlayerService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        println("ON DESTROY")
+        Log.i("Player service", "ON DESTROY")
         try {
             stopService()
         } catch (_: Exception) {

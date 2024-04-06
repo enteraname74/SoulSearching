@@ -705,7 +705,7 @@ fun PlayerDraggableView(
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(150.dp),
+                            .weight(1f),
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(

@@ -20,7 +20,6 @@ object ColorPaletteUtils {
      * Tries to retrieve a palette from a potential image.
      */
     fun getPaletteFromAlbumArt(image: ImageBitmap?): Palette.Swatch? {
-        println("trying to get palette")
         if (image == null) {
             return null
         }
