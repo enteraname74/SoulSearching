@@ -6,17 +6,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import com.github.soulsearching.theme.Typography
-import com.github.soulsearching.theme.primaryColorDark
-import com.github.soulsearching.theme.primaryColorLight
-import com.github.soulsearching.theme.secondaryColorDark
-import com.github.soulsearching.theme.secondaryColorLight
-import com.github.soulsearching.theme.subTextColorDark
-import com.github.soulsearching.theme.subTextColorLight
-import com.github.soulsearching.theme.textColorDark
-import com.github.soulsearching.theme.textColorLight
-import com.github.soulsearching.theme.thirdColorDark
-import com.github.soulsearching.theme.thirdColorLight
+import com.github.soulsearching.domain.Typography
+import com.github.soulsearching.colortheme.domain.model.primaryColorDark
+import com.github.soulsearching.colortheme.domain.model.primaryColorLight
+import com.github.soulsearching.colortheme.domain.model.secondaryColorDark
+import com.github.soulsearching.colortheme.domain.model.secondaryColorLight
+import com.github.soulsearching.colortheme.domain.model.subTextColorDark
+import com.github.soulsearching.colortheme.domain.model.subTextColorLight
+import com.github.soulsearching.colortheme.domain.model.textColorDark
+import com.github.soulsearching.colortheme.domain.model.textColorLight
+import com.github.soulsearching.colortheme.domain.model.thirdColorDark
+import com.github.soulsearching.colortheme.domain.model.thirdColorLight
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(

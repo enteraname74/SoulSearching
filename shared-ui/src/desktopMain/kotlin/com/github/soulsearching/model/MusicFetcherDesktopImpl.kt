@@ -13,6 +13,8 @@ import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.domain.model.SelectableMusicItem
 import com.github.soulsearching.strings.strings
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO

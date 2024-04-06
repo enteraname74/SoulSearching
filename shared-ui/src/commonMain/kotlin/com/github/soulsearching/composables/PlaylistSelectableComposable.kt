@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Playlist
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @Composable
 fun PlaylistSelectableComposable(

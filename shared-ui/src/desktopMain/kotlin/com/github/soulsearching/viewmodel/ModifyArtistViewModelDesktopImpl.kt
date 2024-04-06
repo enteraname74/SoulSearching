@@ -8,9 +8,8 @@ import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.viewmodel.handler.ModifyArtistViewModelHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.soulsearching.domain.viewmodel.ModifyArtistViewModel
+import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistViewModelHandler
 
 /**
  * Implementation of the ModifyArtistViewModel.

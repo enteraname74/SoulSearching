@@ -14,26 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import com.github.soulsearching.composables.appfeatures.FetchingMusicsComposable
-import com.github.soulsearching.composables.player.PlayerDraggableView
-import com.github.soulsearching.composables.player.PlayerMusicListView
-import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.model.PlaybackManager
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.screens.MainPageScreen
-import com.github.soulsearching.screens.ModifyMusicScreen
-import com.github.soulsearching.screens.SelectedAlbumScreen
-import com.github.soulsearching.screens.SelectedArtistScreen
-import com.github.soulsearching.theme.ColorThemeManager
-import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.viewmodel.AllArtistsViewModel
-import com.github.soulsearching.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
-import com.github.soulsearching.viewmodel.MainActivityViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.appinit.presentation.FetchingMusicsComposable
+import com.github.soulsearching.player.presentation.PlayerDraggableView
+import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
+import com.github.soulsearching.domain.di.injectElement
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.presentation.MainPageScreen
+import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.domain.model.types.BottomSheetStates
+import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
+import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
+import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
+import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
+import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
+import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
+import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -148,7 +148,6 @@ fun SoulSearchingApplication(
                 searchDraggableState = searchDraggableState
             )
         ) { navigator ->
-            println("FORCED UPDATE IN THE NAVIGATOR VIEW")
             generalNavigator = navigator
 
             CrossfadeTransition(

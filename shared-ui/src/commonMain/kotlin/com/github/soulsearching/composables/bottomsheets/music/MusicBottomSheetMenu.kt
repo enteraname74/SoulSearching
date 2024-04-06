@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
-import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.model.settings.ViewSettingsManager
+import com.github.soulsearching.domain.di.injectElement
+import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.theme.SoulSearchingColorTheme
-import com.github.soulsearching.types.MusicBottomSheetState
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 
 @Composable
 fun MusicBottomSheetMenu(

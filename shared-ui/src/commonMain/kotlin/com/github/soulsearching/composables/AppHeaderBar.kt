@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @Composable
 fun AppHeaderBar(

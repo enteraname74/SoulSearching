@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

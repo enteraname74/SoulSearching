@@ -2,11 +2,11 @@ package com.github.soulsearching
 
 import com.github.soulsearching.model.MusicFetcherDesktopImpl
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.model.MusicFetcher
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
-import com.github.soulsearching.model.settings.ViewSettingsManager
-import com.github.soulsearching.theme.ColorThemeManager
+import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelDesktopImpl

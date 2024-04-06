@@ -7,7 +7,8 @@ import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.viewmodel.handler.SettingsAllFolderViewModelHandler
+import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
+import com.github.soulsearching.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
 
 /**
  * Implementation of the SettingsAllFoldersViewModel.

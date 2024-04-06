@@ -1,7 +1,8 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.viewmodel.handler.MainActivityViewModelHandler
+import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.MainActivityViewModelHandler
 
 /**
  * Implementation of the MainActivityViewModel.

@@ -12,9 +12,10 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
-import com.github.soulsearching.model.MusicFetcher
-import com.github.soulsearching.model.PlaybackManager
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
+import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

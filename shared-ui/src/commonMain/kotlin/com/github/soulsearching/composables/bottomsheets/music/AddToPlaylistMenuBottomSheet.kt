@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlaylistSelectableComposable
-import com.github.soulsearching.events.PlaylistEvent
-import com.github.soulsearching.states.PlaylistState
+import com.github.soulsearching.domain.events.PlaylistEvent
+import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(

@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.Drawables
 
 @Composable

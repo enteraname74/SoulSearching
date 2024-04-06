@@ -23,9 +23,11 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.theme.SoulSearchingColorTheme
-import com.github.soulsearching.types.SortDirection
-import com.github.soulsearching.types.SortType
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.mainpage.domain.model.SortDirection
+import com.github.soulsearching.mainpage.domain.model.SortType
+import com.github.soulsearching.mainpage.presentation.composable.NoElementView
+import com.github.soulsearching.mainpage.presentation.composable.SubMenuComposable
 import java.util.UUID
 
 @Composable

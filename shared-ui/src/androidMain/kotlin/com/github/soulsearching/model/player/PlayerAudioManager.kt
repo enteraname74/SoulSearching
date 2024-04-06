@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import com.github.soulsearching.model.SoulSearchingPlayer
+import com.github.soulsearching.player.domain.model.SoulSearchingPlayer
 
 /**
  * Manage the audio of the application.

@@ -1,9 +1,10 @@
 package com.github.soulsearching.viewmodel.handler
 
 import com.github.enteraname74.domain.repository.*
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.model.MusicFetcher
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import kotlinx.coroutines.CoroutineScope
 
 class AllMusicsViewModelDesktopHandler(

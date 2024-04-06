@@ -7,10 +7,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.model.PlaybackManager
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 
 /**
  * Implementation of a MusicPlayerManager for Android.

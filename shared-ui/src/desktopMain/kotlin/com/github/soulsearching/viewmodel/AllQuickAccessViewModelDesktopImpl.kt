@@ -5,9 +5,8 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.viewmodel.handler.AllQuickAccessViewModelHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.soulsearching.domain.viewmodel.AllQuickAccessViewModel
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllQuickAccessViewModelHandler
 
 /**
  * Implementation of the allQuickAccessViewModel.

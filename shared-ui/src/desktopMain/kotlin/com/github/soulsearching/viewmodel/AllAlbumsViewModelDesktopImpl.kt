@@ -5,10 +5,9 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.viewmodel.handler.AllAlbumsViewModeHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
 
 /**
  * Implementation of the AllAlbumsViewModel.

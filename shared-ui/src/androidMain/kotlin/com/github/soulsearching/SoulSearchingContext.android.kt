@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.core.content.ContextCompat
-import com.github.soulsearching.types.ScreenOrientation
+import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 

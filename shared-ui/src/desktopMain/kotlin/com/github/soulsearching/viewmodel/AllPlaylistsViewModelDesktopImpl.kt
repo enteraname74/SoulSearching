@@ -4,10 +4,9 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.viewmodel.handler.AllPlaylistsViewModelHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllPlaylistsViewModelHandler
 
 /**
  * Implementation of the allPlaylistsViewModel.

@@ -8,8 +8,9 @@ import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.soulsearching.domain.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.viewmodel.handler.ModifyAlbumViewModelHandler
+import com.github.soulsearching.modifyelement.modifyalbum.domain.ModifyAlbumViewModelHandler
 
 /**
  * Implementation of the ModifyAlbumViewModel.

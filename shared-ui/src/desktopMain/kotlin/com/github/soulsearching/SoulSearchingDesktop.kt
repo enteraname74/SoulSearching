@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdesktop.AppDatabase
 import com.github.enteraname74.localdesktop.localDesktopModule
-import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.theme.ColorThemeManager
-import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.viewmodel.MainActivityViewModelDesktopImpl
 import org.koin.compose.KoinApplication
 

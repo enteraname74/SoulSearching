@@ -11,9 +11,10 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.viewmodel.handler.PlayerMusicListViewModelHandler
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.playedlist.domain.PlayerMusicListViewModelHandler
 
 /**
  * Implementation of the PlayerMusicListViewModel.

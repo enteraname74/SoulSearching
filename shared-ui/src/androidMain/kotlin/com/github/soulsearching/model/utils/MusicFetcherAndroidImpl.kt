@@ -22,8 +22,8 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
-import com.github.soulsearching.model.MusicFetcher
-import com.github.soulsearching.model.SelectableMusicItem
+import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.domain.model.SelectableMusicItem
 import java.io.File
 import java.io.IOException
 import java.util.UUID

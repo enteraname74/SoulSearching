@@ -1,7 +1,8 @@
 package com.github.soulsearching.model
 
-import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.player.domain.model.SoulSearchingPlayer
 
 /**
  * Class managing playback on desktop.

@@ -5,8 +5,8 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.util.Log
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.model.PlaybackManager
-import com.github.soulsearching.model.SoulSearchingPlayer
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.player.domain.model.SoulSearchingPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

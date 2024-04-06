@@ -1,7 +1,7 @@
 package com.github.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
-import com.github.soulsearching.events.ArtistEvent
+import com.github.soulsearching.domain.events.ArtistEvent
 import com.github.soulsearching.strings.strings
 
 @Composable

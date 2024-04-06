@@ -12,11 +12,12 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.model.PlaybackManager
+import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
-import com.github.soulsearching.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelAndroidHandler
-import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelHandler
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 
 /**
  * Implementation of the AllMusicsViewModel.

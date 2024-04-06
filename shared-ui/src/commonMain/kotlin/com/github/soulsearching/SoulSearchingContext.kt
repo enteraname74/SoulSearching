@@ -3,7 +3,7 @@ package com.github.soulsearching
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.soulsearching.types.ScreenOrientation
+import com.github.soulsearching.domain.model.types.ScreenOrientation
 
 /**
  * Contains all elements related to a specific context of a SoulSearching application.
