@@ -3,8 +3,8 @@ package com.github.soulsearching.model.notification
 import android.content.Context
 import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
-import com.github.soulsearching.model.notification.notificationImpl.SoulSearchingNotificationAndroid13
-import com.github.soulsearching.model.notification.notificationImpl.SoulSearchingNotificationBelowAndroid13
+import com.github.soulsearching.model.notification.impl.SoulSearchingNotificationAndroid13
+import com.github.soulsearching.model.notification.impl.SoulSearchingNotificationBelowAndroid13
 
 /**
  * Utils for building the playback notification.

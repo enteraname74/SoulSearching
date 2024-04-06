@@ -36,59 +36,59 @@ class SettingsColorThemeScreen: Screen {
             }
         )
     }
+}
 
-    @Composable
-    private fun SettingsColorThemeScreenView(
-        finishAction: () -> Unit,
-        colorThemeManager: ColorThemeManager = injectElement(),
+@Composable
+fun SettingsColorThemeScreenView(
+    finishAction: () -> Unit,
+    colorThemeManager: ColorThemeManager = injectElement(),
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.colorThemeTitle,
-                leftAction = finishAction
-            )
-            LazyColumn {
-                item {
-                    ColorThemeCard(
-                        title = strings.dynamicThemeTitle,
-                        text = strings.dynamicThemeText,
-                        onClick = { colorThemeManager.updateColorTheme(ColorThemeType.DYNAMIC) },
-                        isSelected = colorThemeManager.colorThemeType == ColorThemeType.DYNAMIC,
-                        firstImagePath = Drawables.dynamicMain,
-                        secondImagePath = Drawables.dynamicPlayer
-                    )
-                }
-                item {
-                    ColorThemeCard(
-                        title = strings.systemThemeTitle,
-                        text = strings.systemThemeText,
-                        onClick = { colorThemeManager.updateColorTheme(ColorThemeType.SYSTEM) },
-                        isSelected = colorThemeManager.colorThemeType == ColorThemeType.SYSTEM,
-                        firstImagePath = if (isSystemInDarkTheme()) {
-                            Drawables.systemDarkThemeMain
-                        } else {
-                            Drawables.systemLightThemeMain
-                        },
-                        secondImagePath = if (isSystemInDarkTheme()) {
-                            Drawables.systemDarkThemePlayer
-                        } else {
-                            Drawables.systemLightThemePlayer
-                        }
-                    )
-                }
-                item {
-                    PersonalizedColorThemeCard(
-                        onClick = { colorThemeManager.updateColorTheme(ColorThemeType.PERSONALIZED) },
-                        isSelected = colorThemeManager.colorThemeType == ColorThemeType.PERSONALIZED
-                    )
-                }
-                item {
-                    PlayerSpacer()
-                }
+        AppHeaderBar(
+            title = strings.colorThemeTitle,
+            leftAction = finishAction
+        )
+        LazyColumn {
+            item {
+                ColorThemeCard(
+                    title = strings.dynamicThemeTitle,
+                    text = strings.dynamicThemeText,
+                    onClick = { colorThemeManager.updateColorTheme(ColorThemeType.DYNAMIC) },
+                    isSelected = colorThemeManager.colorThemeType == ColorThemeType.DYNAMIC,
+                    firstImagePath = Drawables.dynamicMain,
+                    secondImagePath = Drawables.dynamicPlayer
+                )
+            }
+            item {
+                ColorThemeCard(
+                    title = strings.systemThemeTitle,
+                    text = strings.systemThemeText,
+                    onClick = { colorThemeManager.updateColorTheme(ColorThemeType.SYSTEM) },
+                    isSelected = colorThemeManager.colorThemeType == ColorThemeType.SYSTEM,
+                    firstImagePath = if (isSystemInDarkTheme()) {
+                        Drawables.systemDarkThemeMain
+                    } else {
+                        Drawables.systemLightThemeMain
+                    },
+                    secondImagePath = if (isSystemInDarkTheme()) {
+                        Drawables.systemDarkThemePlayer
+                    } else {
+                        Drawables.systemLightThemePlayer
+                    }
+                )
+            }
+            item {
+                PersonalizedColorThemeCard(
+                    onClick = { colorThemeManager.updateColorTheme(ColorThemeType.PERSONALIZED) },
+                    isSelected = colorThemeManager.colorThemeType == ColorThemeType.PERSONALIZED
+                )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }

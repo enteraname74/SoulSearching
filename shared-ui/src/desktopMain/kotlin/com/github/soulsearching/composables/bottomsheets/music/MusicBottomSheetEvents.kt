@@ -11,12 +11,12 @@ import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.SoulSearchingDialog
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +37,8 @@ actual fun MusicBottomSheetEvents(
     primaryColor: Color,
     secondaryColor: Color,
     onPrimaryColor: Color,
-    onSecondaryColor: Color
+    onSecondaryColor: Color,
+    playbackManager: PlaybackManager
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -65,11 +66,11 @@ actual fun MusicBottomSheetEvents(
                 onMusicEvent(MusicEvent.DeleteMusic)
                 onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
                 CoroutineScope(Dispatchers.IO).launch {
-                    PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
+                    playbackManager.removeSongFromPlayedPlaylist(
                         musicId = musicState.selectedMusic.musicId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
-                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                        playbackManager.playedList.map { it.musicId } as ArrayList<UUID>
                     )
                 }
                 coroutineScope.launch { musicModalSheetState.hide() }
@@ -101,12 +102,12 @@ actual fun MusicBottomSheetEvents(
                 onPlaylistsEvent(PlaylistEvent.RemoveMusicFromPlaylist(musicId = musicState.selectedMusic.musicId))
                 onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
                 CoroutineScope(Dispatchers.IO).launch {
-                    PlayerUtils.playerViewModel.handler.removeMusicIfSamePlaylist(
+                    playbackManager.removeMusicIfSamePlaylist(
                         musicId = musicState.selectedMusic.musicId,
                         playlistId = playlistState.selectedPlaylist.playlistId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
-                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                        playbackManager.playedList.map { it.musicId } as ArrayList<UUID>
                     )
                 }
 

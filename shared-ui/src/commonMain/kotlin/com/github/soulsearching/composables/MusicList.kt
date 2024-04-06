@@ -12,14 +12,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -43,7 +44,8 @@ fun MusicList(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -78,7 +80,7 @@ fun MusicList(
                             updateNbPlayedAction(it)
                         }
 
-                        if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
+                        if (!playbackManager.isSamePlaylist(
                                 isMainPlaylist = isMainPlaylist,
                                 playlistId = playlistId
                             )
@@ -87,7 +89,7 @@ fun MusicList(
                                 musicState.musics.map { it.musicId }
                             )
                         }
-                        PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                        playbackManager.setCurrentPlaylistAndMusic(
                             music = music,
                             playlist = musicState.musics,
                             playlistId = playlistId,
@@ -102,7 +104,8 @@ fun MusicList(
                     }
                 },
                 musicCover = retrieveCoverMethod(music.coverId),
-                textColor = onPrimaryColor
+                textColor = onPrimaryColor,
+                isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
             )
         }
         item {

@@ -17,7 +17,6 @@ class AllMusicsViewModelDesktopHandler(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
-    folderRepository: FolderRepository,
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
     playbackManager: PlaybackManagerDesktopImpl
@@ -32,7 +31,6 @@ class AllMusicsViewModelDesktopHandler(
     musicArtistRepository = musicArtistRepository,
     albumArtistRepository = albumArtistRepository,
     imageCoverRepository = imageCoverRepository,
-    folderRepository = folderRepository,
     settings = settings,
     musicFetcher = musicFetcher,
     playbackManager = playbackManager

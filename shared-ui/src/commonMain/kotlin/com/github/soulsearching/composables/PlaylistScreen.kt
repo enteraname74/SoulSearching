@@ -35,6 +35,7 @@ import com.github.soulsearching.composables.search.SearchView
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings.strings
@@ -44,7 +45,6 @@ import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.PlaylistType
 import com.github.soulsearching.types.ScreenOrientation
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -68,6 +68,7 @@ fun PlaylistScreen(
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
     colorThemeManager: ColorThemeManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -99,7 +100,7 @@ fun PlaylistScreen(
                     playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
                 }
                 .invokeOnCompletion {
-                    PlayerUtils.playerViewModel.handler.playShuffle(
+                    playbackManager.playShuffle(
                         musicState.musics,
                         playerMusicListViewModel.handler::savePlayerMusicList
                     )
@@ -256,14 +257,14 @@ fun PlaylistScreen(
                                             updateNbPlayedAction(it)
                                         }
 
-                                        if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
+                                        if (!playbackManager.isSamePlaylist(
                                                 false,
                                                 playlistId
                                             )
                                         ) {
                                             playerMusicListViewModel.handler.savePlayerMusicList(musicState.musics.map { it.musicId })
                                         }
-                                        PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                                        playbackManager.setCurrentPlaylistAndMusic(
                                             music = music,
                                             playlist = musicState.musics,
                                             playlistId = playlistId,
@@ -287,6 +288,7 @@ fun PlaylistScreen(
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
                                 textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                             )
                         }
                         item { PlayerSpacer() }

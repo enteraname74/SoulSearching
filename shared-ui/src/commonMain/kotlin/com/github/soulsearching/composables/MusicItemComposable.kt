@@ -27,7 +27,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
-import com.github.soulsearching.utils.PlayerUtils
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -37,7 +36,8 @@ fun MusicItemComposable(
     onLongClick: () -> Unit,
     musicCover: ImageBitmap? = null,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    backgroundColor: Color = Color.Transparent
+    backgroundColor: Color = Color.Transparent,
+    isPlayedMusic: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -72,7 +72,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
                 )
                 Text(
                     text = "${music.artist} | ${music.album}",
@@ -80,7 +80,7 @@ fun MusicItemComposable(
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (PlayerUtils.playerViewModel.handler.isSameMusic(music.musicId)) FontWeight.Bold else FontWeight.Normal
+                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
                 )
 
             }

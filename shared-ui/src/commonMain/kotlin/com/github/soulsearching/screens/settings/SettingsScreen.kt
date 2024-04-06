@@ -54,60 +54,60 @@ class SettingsScreen : Screen {
             }
         )
     }
+}
 
-    @Composable
-    private fun SettingsScreenView(
-        finishAction: () -> Unit,
-        navigateToManageMusics: () -> Unit,
-        navigateToColorTheme: () -> Unit,
-        navigateToPersonalisation: () -> Unit,
-        navigateToAbout: () -> Unit
+@Composable
+fun SettingsScreenView(
+    finishAction: () -> Unit,
+    navigateToManageMusics: () -> Unit,
+    navigateToColorTheme: () -> Unit,
+    navigateToPersonalisation: () -> Unit,
+    navigateToAbout: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.settings,
-                leftAction = finishAction
-            )
-            LazyColumn {
-                item {
-                    SettingsElement(
-                        title = strings.manageMusicsTitle,
-                        text = strings.manageMusicsText,
-                        icon = Icons.Rounded.MusicNote,
-                        clickAction = navigateToManageMusics
-                    )
-                }
-                item {
-                    SettingsElement(
-                        title = strings.colorThemeTitle,
-                        text = strings.colorThemeText,
-                        icon = Icons.Rounded.Palette,
-                        clickAction = navigateToColorTheme
-                    )
-                }
-                item {
-                    SettingsElement(
-                        title = strings.personalizationTitle,
-                        text = strings.personalizationText,
-                        icon = Icons.Rounded.Edit,
-                        clickAction = navigateToPersonalisation
-                    )
-                }
-                item {
-                    SettingsElement(
-                        title = strings.aboutTitle,
-                        text = strings.aboutText,
-                        icon = Icons.Rounded.Info,
-                        clickAction = navigateToAbout
-                    )
-                }
-                item {
-                    PlayerSpacer()
-                }
+        AppHeaderBar(
+            title = strings.settings,
+            leftAction = finishAction
+        )
+        LazyColumn {
+            item {
+                SettingsElement(
+                    title = strings.manageMusicsTitle,
+                    text = strings.manageMusicsText,
+                    icon = Icons.Rounded.MusicNote,
+                    clickAction = navigateToManageMusics
+                )
+            }
+            item {
+                SettingsElement(
+                    title = strings.colorThemeTitle,
+                    text = strings.colorThemeText,
+                    icon = Icons.Rounded.Palette,
+                    clickAction = navigateToColorTheme
+                )
+            }
+            item {
+                SettingsElement(
+                    title = strings.personalizationTitle,
+                    text = strings.personalizationText,
+                    icon = Icons.Rounded.Edit,
+                    clickAction = navigateToPersonalisation
+                )
+            }
+            item {
+                SettingsElement(
+                    title = strings.aboutTitle,
+                    text = strings.aboutText,
+                    icon = Icons.Rounded.Info,
+                    clickAction = navigateToAbout
+                )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }

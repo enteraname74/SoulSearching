@@ -3,9 +3,32 @@ package com.github.soulsearching.composables
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.soulsearching.di.injectElement
+import com.github.soulsearching.events.AddMusicsEvent
+import com.github.soulsearching.events.FolderEvent
 import com.github.soulsearching.navigation.NavigationController
+import com.github.soulsearching.navigation.NavigationHost
+import com.github.soulsearching.navigation.Route
 import com.github.soulsearching.navigation.RoutesNames
+import com.github.soulsearching.navigation.Screen
+import com.github.soulsearching.screens.MainPageScreenView
+import com.github.soulsearching.screens.ModifyAlbumScreenView
+import com.github.soulsearching.screens.ModifyArtistScreenView
+import com.github.soulsearching.screens.ModifyMusicScreenView
+import com.github.soulsearching.screens.ModifyPlaylistScreenView
+import com.github.soulsearching.screens.SelectedAlbumScreenView
+import com.github.soulsearching.screens.SelectedArtistScreenView
+import com.github.soulsearching.screens.SelectedPlaylistScreenView
+import com.github.soulsearching.screens.settings.SettingsAboutScreenView
+import com.github.soulsearching.screens.settings.SettingsAddMusicsScreenView
+import com.github.soulsearching.screens.settings.SettingsColorThemeScreenView
+import com.github.soulsearching.screens.settings.SettingsDevelopersScreenView
+import com.github.soulsearching.screens.settings.SettingsManageMusicsScreenView
+import com.github.soulsearching.screens.settings.SettingsPersonalisationScreenView
+import com.github.soulsearching.screens.settings.SettingsScreenView
+import com.github.soulsearching.screens.settings.SettingsUsedFoldersScreenView
 import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
@@ -18,6 +41,7 @@ import com.github.soulsearching.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
+import com.github.soulsearching.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.viewmodel.ModifyAlbumViewModel
 import com.github.soulsearching.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModel
@@ -36,379 +60,382 @@ fun NavigationHandler(
     playerDraggableState: SwipeableState<BottomSheetStates>,
     playerMusicListDraggableState: SwipeableState<BottomSheetStates>,
     searchDraggableState: SwipeableState<BottomSheetStates>,
-    musicState: MusicState,
-    playlistState: PlaylistState,
-    albumState: AlbumState,
-    artistState: ArtistState,
-    quickAccessState: QuickAccessState,
-    allPlaylistsViewModel: AllPlaylistsViewModel,
-    allImageCoversViewModel: AllImageCoversViewModel,
-    modifyPlaylistViewModel: ModifyPlaylistViewModel,
-    allFoldersViewModel: SettingsAllFoldersViewModel,
-    addMusicsViewModel: SettingsAddMusicsViewModel,
-    allMusicsViewModel: AllMusicsViewModel,
-    allAlbumsViewModel: AllAlbumsViewModel,
-    allArtistsViewModel: AllArtistsViewModel,
-    selectedArtistViewModel: SelectedArtistViewModel,
-    selectedAlbumViewModel: SelectedAlbumViewModel,
-    selectedPlaylistViewModel: SelectedPlaylistViewModel,
-    modifyMusicViewModel: ModifyMusicViewModel,
-    modifyAlbumViewModel: ModifyAlbumViewModel,
-    modifyArtistViewModel: ModifyArtistViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
-    settingsAllFoldersViewModel: SettingsAllFoldersViewModel,
+    allQuickAccessViewModel: AllQuickAccessViewModel = injectElement(),
+    allPlaylistsViewModel: AllPlaylistsViewModel = injectElement(),
+    allImageCoversViewModel: AllImageCoversViewModel = injectElement(),
+    modifyPlaylistViewModel: ModifyPlaylistViewModel = injectElement(),
+    allFoldersViewModel: SettingsAllFoldersViewModel = injectElement(),
+    addMusicsViewModel: SettingsAddMusicsViewModel = injectElement(),
+    allMusicsViewModel: AllMusicsViewModel = injectElement(),
+    allAlbumsViewModel: AllAlbumsViewModel = injectElement(),
+    allArtistsViewModel: AllArtistsViewModel = injectElement(),
+    selectedArtistViewModel: SelectedArtistViewModel = injectElement(),
+    selectedAlbumViewModel: SelectedAlbumViewModel = injectElement(),
+    selectedPlaylistViewModel: SelectedPlaylistViewModel = injectElement(),
+    modifyMusicViewModel: ModifyMusicViewModel = injectElement(),
+    modifyAlbumViewModel: ModifyAlbumViewModel = injectElement(),
+    modifyArtistViewModel: ModifyArtistViewModel = injectElement(),
+    playerMusicListViewModel: PlayerMusicListViewModel = injectElement(),
+    settingsAllFoldersViewModel: SettingsAllFoldersViewModel = injectElement(),
     navigationController: NavigationController<RoutesNames>
 ) {
 
-//    NavigationHost(
-//        playerDraggableState = playerDraggableState,
-//        playerMusicListDraggableState =  playerMusicListDraggableState,
-//        navigationController = navigationController,
-//        screens = listOf(
-//            Screen(
-//                screenRoute = RoutesNames.MAIN_PAGE_SCREEN,
-//                screen = {
-//                    MainPageScreenView(
-//                        allMusicsViewModel = allMusicsViewModel,
-//                        allPlaylistsViewModel = allPlaylistsViewModel,
-//                        allAlbumsViewModel = allAlbumsViewModel,
-//                        allArtistsViewModel = allArtistsViewModel,
-//                        allImageCoversViewModel = allImageCoversViewModel,
-//                        playerMusicListViewModel = playerMusicListViewModel,
-//                        navigateToPlaylist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.SELECTED_PLAYLIST_SCREEN,
-//                                    arguments = mapOf(Pair("playlistId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToAlbum = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.SELECTED_ALBUM_SCREEN,
-//                                    arguments = mapOf(Pair("albumId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToArtist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.SELECTED_ARTIST_SCREEN,
-//                                    arguments = mapOf(Pair("artistId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToModifyMusic = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
-//                                    arguments = mapOf(Pair("musicId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToModifyPlaylist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_PLAYLIST_SCREEN,
-//                                    arguments = mapOf(Pair("playlistId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToModifyAlbum = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_ALBUM_SCREEN,
-//                                    arguments = mapOf(Pair("albumId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToModifyArtist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_ARTIST_SCREEN,
-//                                    arguments = mapOf(Pair("artistId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateToSettings = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.SETTINGS_SCREEN
-//                                )
-//                            )
-//                        },
-//                        playerDraggableState = playerDraggableState,
-//                        searchDraggableState = searchDraggableState,
-//                        musicState = musicState,
-//                        playlistState = playlistState,
-//                        albumState = albumState,
-//                        artistState = artistState,
-//                        quickAccessState = quickAccessState
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SELECTED_PLAYLIST_SCREEN,
-//                screen = {
-//                    SelectedPlaylistScreenView(
-//                        navigateToModifyPlaylist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_PLAYLIST_SCREEN,
-//                                    arguments = mapOf(Pair("playlistId", it))
-//                                )
-//                            )
-//                        },
-//                        selectedPlaylistId = navigationController.getArgument("playlistId") as String?
-//                            ?: "",
-//                        playlistState = playlistState,
-//                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-//                        navigateToModifyMusic = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
-//                                    arguments = mapOf(Pair("musicId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateBack = {
-//                            colorThemeManager.removePlaylistTheme()
-//                            navigationController.navigateBack()
-//                        },
-//                        retrieveCoverMethod = {
-//                            allImageCoversViewModel.handler.getImageCover(
-//                                it
-//                            )
-//                        },
-//                        playerDraggableState = playerDraggableState,
-//                        selectedPlaylistViewModel = selectedPlaylistViewModel,
-//                        playerMusicListViewModel = playerMusicListViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SELECTED_ALBUM_SCREEN,
-//                screen = {
-//                    SelectedAlbumScreenView(
-//                        navigateToModifyAlbum = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_ALBUM_SCREEN,
-//                                    arguments = mapOf(Pair("albumId", it))
-//                                )
-//                            )
-//                        },
-//                        selectedAlbumId = navigationController.getArgument("albumId") as String?
-//                            ?: "",
-//                        playlistState = playlistState,
-//                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-//                        navigateToModifyMusic = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
-//                                    arguments = mapOf(Pair("musicId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateBack = {
-//                            colorThemeManager.removePlaylistTheme()
-//                            navigationController.navigateBack()
-//                        },
-//                        retrieveCoverMethod = {
-//                            allImageCoversViewModel.handler.getImageCover(
-//                                it
-//                            )
-//                        },
-//                        playerDraggableState = playerDraggableState,
-//                        playerMusicListViewModel = playerMusicListViewModel,
-//                        selectedAlbumViewModel = selectedAlbumViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SELECTED_ARTIST_SCREEN,
-//                screen = {
-//                    SelectedArtistScreenView(
-//                        navigateToModifyArtist = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_ARTIST_SCREEN,
-//                                    arguments = mapOf(Pair("artistId", it))
-//                                )
-//                            )
-//                        },
-//                        selectedArtistId = navigationController.getArgument("artistId") as String?
-//                            ?: "",
-//                        playlistState = playlistState,
-//                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-//                        navigateToModifyMusic = {
-//                            navigationController.navigateTo(
-//                                Route(
-//                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
-//                                    arguments = mapOf(Pair("musicId", it))
-//                                )
-//                            )
-//                        },
-//                        navigateBack = {
-//                            colorThemeManager.removePlaylistTheme()
-//                            navigationController.navigateBack()
-//                        },
-//                        retrieveCoverMethod = {
-//                            allImageCoversViewModel.handler.getImageCover(
-//                                it
-//                            )
-//                        },
-//                        playerDraggableState = playerDraggableState,
-//                        playerMusicListViewModel = playerMusicListViewModel,
-//                        selectedArtistViewModel = selectedArtistViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.MODIFY_PLAYLIST_SCREEN,
-//                screen ={
-//                    ModifyPlaylistScreenView(
-//                        modifyPlaylistViewModel = modifyPlaylistViewModel,
-//                        selectedPlaylistId = navigationController.getArgument("playlistId") as String? ?: "",
-//                        finishAction = { navigationController.navigateBack() }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.MODIFY_MUSIC_SCREEN,
-//                screen = {
-//                    ModifyMusicScreenView(
-//                        selectedMusicId = navigationController.getArgument("musicId") as String? ?: "",
-//                        finishAction = { navigationController.navigateBack() },
-//                        modifyMusicViewModel = modifyMusicViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.MODIFY_ALBUM_SCREEN,
-//                screen = {
-//                    ModifyAlbumScreenView(
-//                        selectedAlbumId = navigationController.getArgument("albumId") as String? ?: "",
-//                        finishAction = { navigationController.navigateBack() },
-//                        modifyAlbumViewModel = modifyAlbumViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.MODIFY_ARTIST_SCREEN,
-//                screen = {
-//                    ModifyArtistScreenView(
-//                        selectedArtistId = navigationController.getArgument("artistId") as String? ?: "",
-//                        finishAction = { navigationController.navigateBack() },
-//                        modifyArtistViewModel = modifyArtistViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_SCREEN,
-//                screen = {
-//                    SettingsScreenView(
-//                        finishAction = { navigationController.navigateBack() },
-//                        navigateToColorTheme = {
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_COLOR_THEME_SCREEN)
-//                            )
-//                        },
-//                        navigateToManageMusics = {
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_MANAGE_MUSICS_SCREEN)
-//                            )
-//                        },
-//                        navigateToPersonalisation = {
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_PERSONALISATION_SCREEN)
-//                            )
-//                        },
-//                        navigateToAbout = {
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_ABOUT_SCREEN)
-//                            )
-//                        }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_PERSONALISATION_SCREEN,
-//                screen = {
-//                    SettingsPersonalisationScreenView(
-//                        finishAction = { navigationController.navigateBack() }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_MANAGE_MUSICS_SCREEN,
-//                screen = {
-//                    SettingsManageMusicsScreenView(
-//                        finishAction = { navigationController.navigateBack() },
-//                        navigateToFolders = {
-//                            allFoldersViewModel.handler.onFolderEvent(
-//                                FolderEvent.FetchFolders
-//                            )
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_USED_FOLDERS_SCREEN)
-//                            )
-//                        },
-//                        navigateToAddMusics = {
-//                            addMusicsViewModel.handler.onAddMusicEvent(AddMusicsEvent.ResetState)
-//                            navigationController.navigateTo(
-//                                Route(route = RoutesNames.SETTINGS_ADD_MUSICS_SCREEN)
-//                            )
-//                        }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_USED_FOLDERS_SCREEN,
-//                screen = {
-//                    SettingsUsedFoldersScreenView(
-//                        finishAction = { navigationController.navigateBack() },
-//                        settingsAllFoldersViewModel = settingsAllFoldersViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_ADD_MUSICS_SCREEN,
-//                screen = {
-//                    SettingsAddMusicsScreenView(
-//                        finishAction = { navigationController.navigateBack() },
-//                        saveMusicFunction = allMusicsViewModel.handler::addMusic,
-//                        addMusicsViewModel = addMusicsViewModel
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_COLOR_THEME_SCREEN,
-//                screen = {
-//                    SettingsColorThemeScreenView(
-//                        finishAction = { navigationController.navigateBack() }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_ABOUT_SCREEN,
-//                screen = {
-//                    SettingsAboutScreenView(
-//                        finishAction = { navigationController.navigateBack() },
-//                        navigateToDevelopers = { navigationController.navigateBack() }
-//                    )
-//                }
-//            ),
-//            Screen(
-//                screenRoute = RoutesNames.SETTINGS_DEVELOPERS_SCREEN,
-//                screen = {
-//                    SettingsDevelopersScreenView(
-//                        finishAction = { navigationController.navigateBack() }
-//                    )
-//                }
-//            )
-//        )
-//    )
+    val musicState by allMusicsViewModel.handler.state.collectAsState()
+    val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
+    val albumState by allAlbumsViewModel.handler.state.collectAsState()
+    val artistState by allArtistsViewModel.handler.state.collectAsState()
+    val quickAccessState by allQuickAccessViewModel.handler.state.collectAsState()
+
+
+    NavigationHost(
+        playerDraggableState = playerDraggableState,
+        playerMusicListDraggableState =  playerMusicListDraggableState,
+        navigationController = navigationController,
+        screens = listOf(
+            Screen(
+                screenRoute = RoutesNames.MAIN_PAGE_SCREEN,
+                screen = {
+                    MainPageScreenView(
+                        allMusicsViewModel = allMusicsViewModel,
+                        allPlaylistsViewModel = allPlaylistsViewModel,
+                        allAlbumsViewModel = allAlbumsViewModel,
+                        allArtistsViewModel = allArtistsViewModel,
+                        allImageCoversViewModel = allImageCoversViewModel,
+                        playerMusicListViewModel = playerMusicListViewModel,
+                        navigateToPlaylist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.SELECTED_PLAYLIST_SCREEN,
+                                    arguments = mapOf(Pair("playlistId", it))
+                                )
+                            )
+                        },
+                        navigateToAlbum = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.SELECTED_ALBUM_SCREEN,
+                                    arguments = mapOf(Pair("albumId", it))
+                                )
+                            )
+                        },
+                        navigateToArtist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.SELECTED_ARTIST_SCREEN,
+                                    arguments = mapOf(Pair("artistId", it))
+                                )
+                            )
+                        },
+                        navigateToModifyMusic = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
+                        },
+                        navigateToModifyPlaylist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_PLAYLIST_SCREEN,
+                                    arguments = mapOf(Pair("playlistId", it))
+                                )
+                            )
+                        },
+                        navigateToModifyAlbum = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_ALBUM_SCREEN,
+                                    arguments = mapOf(Pair("albumId", it))
+                                )
+                            )
+                        },
+                        navigateToModifyArtist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_ARTIST_SCREEN,
+                                    arguments = mapOf(Pair("artistId", it))
+                                )
+                            )
+                        },
+                        navigateToSettings = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.SETTINGS_SCREEN
+                                )
+                            )
+                        },
+                        playerDraggableState = playerDraggableState,
+                        searchDraggableState = searchDraggableState,
+                        musicState = musicState,
+                        playlistState = playlistState,
+                        albumState = albumState,
+                        artistState = artistState,
+                        quickAccessState = quickAccessState
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SELECTED_PLAYLIST_SCREEN,
+                screen = {
+                    SelectedPlaylistScreenView(
+                        navigateToModifyPlaylist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_PLAYLIST_SCREEN,
+                                    arguments = mapOf(Pair("playlistId", it))
+                                )
+                            )
+                        },
+                        selectedPlaylistId = navigationController.getArgument("playlistId") as String?
+                            ?: "",
+                        playlistState = playlistState,
+                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+                        navigateToModifyMusic = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
+                        },
+                        navigateBack = {
+                            colorThemeManager.removePlaylistTheme()
+                            navigationController.navigateBack()
+                        },
+                        retrieveCoverMethod = {
+                            allImageCoversViewModel.handler.getImageCover(
+                                it
+                            )
+                        },
+                        playerDraggableState = playerDraggableState,
+                        selectedPlaylistViewModel = selectedPlaylistViewModel,
+                        playerMusicListViewModel = playerMusicListViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SELECTED_ALBUM_SCREEN,
+                screen = {
+                    SelectedAlbumScreenView(
+                        navigateToModifyAlbum = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_ALBUM_SCREEN,
+                                    arguments = mapOf(Pair("albumId", it))
+                                )
+                            )
+                        },
+                        selectedAlbumId = navigationController.getArgument("albumId") as String?
+                            ?: "",
+                        playlistState = playlistState,
+                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+                        navigateToModifyMusic = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
+                        },
+                        navigateBack = {
+                            colorThemeManager.removePlaylistTheme()
+                            navigationController.navigateBack()
+                        },
+                        retrieveCoverMethod = {
+                            allImageCoversViewModel.handler.getImageCover(
+                                it
+                            )
+                        },
+                        playerDraggableState = playerDraggableState,
+                        playerMusicListViewModel = playerMusicListViewModel,
+                        selectedAlbumViewModel = selectedAlbumViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SELECTED_ARTIST_SCREEN,
+                screen = {
+                    SelectedArtistScreenView(
+                        navigateToModifyArtist = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_ARTIST_SCREEN,
+                                    arguments = mapOf(Pair("artistId", it))
+                                )
+                            )
+                        },
+                        selectedArtistId = navigationController.getArgument("artistId") as String?
+                            ?: "",
+                        playlistState = playlistState,
+                        onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+                        navigateToModifyMusic = {
+                            navigationController.navigateTo(
+                                Route(
+                                    route = RoutesNames.MODIFY_MUSIC_SCREEN,
+                                    arguments = mapOf(Pair("musicId", it))
+                                )
+                            )
+                        },
+                        navigateBack = {
+                            colorThemeManager.removePlaylistTheme()
+                            navigationController.navigateBack()
+                        },
+                        retrieveCoverMethod = {
+                            allImageCoversViewModel.handler.getImageCover(
+                                it
+                            )
+                        },
+                        playerDraggableState = playerDraggableState,
+                        playerMusicListViewModel = playerMusicListViewModel,
+                        selectedArtistViewModel = selectedArtistViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.MODIFY_PLAYLIST_SCREEN,
+                screen ={
+                    ModifyPlaylistScreenView(
+                        modifyPlaylistViewModel = modifyPlaylistViewModel,
+                        selectedPlaylistId = navigationController.getArgument("playlistId") as String? ?: "",
+                        finishAction = { navigationController.navigateBack() }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.MODIFY_MUSIC_SCREEN,
+                screen = {
+                    ModifyMusicScreenView(
+                        selectedMusicId = navigationController.getArgument("musicId") as String? ?: "",
+                        finishAction = { navigationController.navigateBack() },
+                        modifyMusicViewModel = modifyMusicViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.MODIFY_ALBUM_SCREEN,
+                screen = {
+                    ModifyAlbumScreenView(
+                        selectedAlbumId = navigationController.getArgument("albumId") as String? ?: "",
+                        finishAction = { navigationController.navigateBack() },
+                        modifyAlbumViewModel = modifyAlbumViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.MODIFY_ARTIST_SCREEN,
+                screen = {
+                    ModifyArtistScreenView(
+                        selectedArtistId = navigationController.getArgument("artistId") as String? ?: "",
+                        finishAction = { navigationController.navigateBack() },
+                        modifyArtistViewModel = modifyArtistViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_SCREEN,
+                screen = {
+                    SettingsScreenView(
+                        finishAction = { navigationController.navigateBack() },
+                        navigateToColorTheme = {
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_COLOR_THEME_SCREEN)
+                            )
+                        },
+                        navigateToManageMusics = {
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_MANAGE_MUSICS_SCREEN)
+                            )
+                        },
+                        navigateToPersonalisation = {
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_PERSONALISATION_SCREEN)
+                            )
+                        },
+                        navigateToAbout = {
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_ABOUT_SCREEN)
+                            )
+                        }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_PERSONALISATION_SCREEN,
+                screen = {
+                    SettingsPersonalisationScreenView(
+                        finishAction = { navigationController.navigateBack() }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_MANAGE_MUSICS_SCREEN,
+                screen = {
+                    SettingsManageMusicsScreenView(
+                        finishAction = { navigationController.navigateBack() },
+                        navigateToFolders = {
+                            allFoldersViewModel.handler.onFolderEvent(
+                                FolderEvent.FetchFolders
+                            )
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_USED_FOLDERS_SCREEN)
+                            )
+                        },
+                        navigateToAddMusics = {
+                            addMusicsViewModel.handler.onAddMusicEvent(AddMusicsEvent.ResetState)
+                            navigationController.navigateTo(
+                                Route(route = RoutesNames.SETTINGS_ADD_MUSICS_SCREEN)
+                            )
+                        }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_USED_FOLDERS_SCREEN,
+                screen = {
+                    SettingsUsedFoldersScreenView(
+                        finishAction = { navigationController.navigateBack() },
+                        settingsAllFoldersViewModel = settingsAllFoldersViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_ADD_MUSICS_SCREEN,
+                screen = {
+                    SettingsAddMusicsScreenView(
+                        finishAction = { navigationController.navigateBack() },
+                        saveMusicFunction = addMusicsViewModel.handler::addMusic,
+                        addMusicsViewModel = addMusicsViewModel
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_COLOR_THEME_SCREEN,
+                screen = {
+                    SettingsColorThemeScreenView(
+                        finishAction = { navigationController.navigateBack() }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_ABOUT_SCREEN,
+                screen = {
+                    SettingsAboutScreenView(
+                        finishAction = { navigationController.navigateBack() },
+                        navigateToDevelopers = { navigationController.navigateBack() }
+                    )
+                }
+            ),
+            Screen(
+                screenRoute = RoutesNames.SETTINGS_DEVELOPERS_SCREEN,
+                screen = {
+                    SettingsDevelopersScreenView(
+                        finishAction = { navigationController.navigateBack() }
+                    )
+                }
+            )
+        )
+    )
 
 //    NavHost(
 //        modifier = Modifier.fillMaxSize(),

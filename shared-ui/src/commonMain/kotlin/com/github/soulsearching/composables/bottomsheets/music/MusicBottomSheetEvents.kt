@@ -4,8 +4,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.theme.SoulSearchingColorTheme
@@ -27,5 +29,6 @@ expect fun MusicBottomSheetEvents(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    playbackManager: PlaybackManager = injectElement()
 )

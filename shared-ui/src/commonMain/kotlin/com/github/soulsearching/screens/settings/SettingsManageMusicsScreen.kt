@@ -53,39 +53,39 @@ class SettingsManageMusicsScreen : Screen {
             }
         )
     }
+}
 
-    @Composable
-    private fun SettingsManageMusicsScreenView(
-        finishAction: () -> Unit,
-        navigateToFolders: () -> Unit,
-        navigateToAddMusics: () -> Unit,
+@Composable
+fun SettingsManageMusicsScreenView(
+    finishAction: () -> Unit,
+    navigateToFolders: () -> Unit,
+    navigateToAddMusics: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.manageMusicsTitle,
-                leftAction = finishAction
-            )
-            LazyColumn {
-                item {
-                    SettingsElement(
-                        title = strings.usedFoldersTitle,
-                        text = strings.usedFoldersText,
-                        icon = Icons.Rounded.Folder,
-                        clickAction = navigateToFolders
-                    )
-                }
-                item {
-                    SettingsElement(
-                        title = strings.addMusicsTitle,
-                        text = strings.addMusicsText,
-                        icon = Icons.Rounded.MusicNote,
-                        clickAction = navigateToAddMusics
-                    )
-                }
+        AppHeaderBar(
+            title = strings.manageMusicsTitle,
+            leftAction = finishAction
+        )
+        LazyColumn {
+            item {
+                SettingsElement(
+                    title = strings.usedFoldersTitle,
+                    text = strings.usedFoldersText,
+                    icon = Icons.Rounded.Folder,
+                    clickAction = navigateToFolders
+                )
+            }
+            item {
+                SettingsElement(
+                    title = strings.addMusicsTitle,
+                    text = strings.addMusicsText,
+                    icon = Icons.Rounded.MusicNote,
+                    clickAction = navigateToAddMusics
+                )
             }
         }
     }

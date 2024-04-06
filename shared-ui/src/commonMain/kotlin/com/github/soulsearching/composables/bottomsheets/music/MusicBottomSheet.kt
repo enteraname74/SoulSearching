@@ -6,8 +6,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
@@ -28,5 +30,6 @@ expect fun MusicBottomSheet(
     playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    playbackManager: PlaybackManager = injectElement()
 )

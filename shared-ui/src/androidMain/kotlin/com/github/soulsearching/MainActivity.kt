@@ -14,35 +14,56 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import com.github.soulsearching.model.utils.AndroidUtils
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Music
+import com.github.soulsearching.composables.MissingPermissionsComposable
 import com.github.soulsearching.di.injectElement
-import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.playback.PlayerService
+import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.theme.ColorThemeManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.github.soulsearching.types.PlayerMode
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
-import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.utils.ColorPaletteUtils
+import com.github.soulsearching.viewmodel.AllAlbumsViewModel
+import com.github.soulsearching.viewmodel.AllArtistsViewModel
+import com.github.soulsearching.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.viewmodel.MainActivityViewModel
 import com.github.soulsearching.viewmodel.PlayerViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.compose.koinInject
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private lateinit var allMusicsViewModel: AllMusicsViewModel
+    private val allMusicsViewModel: AllMusicsViewModel by inject()
+    private val allPlaylistsViewModel: AllPlaylistsViewModel by inject()
+    private val allAlbumsViewModel: AllAlbumsViewModel by inject()
+    private val allArtistsViewModel: AllArtistsViewModel by inject()
+    private val allImageCoversViewModel: AllImageCoversViewModel by inject()
+    private val colorThemeManager: ColorThemeManager by inject()
+    private val settings: SoulSearchingSettings by inject()
+    private val mainActivityViewModel: MainActivityViewModel by inject()
+    private val playerViewModel: PlayerViewModel by inject()
 
-    private val colorThemeManager: ColorThemeManager by inject<ColorThemeManager>()
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("MAIN ACTIVITY", "BROADCAST RECEIVE INFO TO RELAUNCH SERVICE")
-            AndroidUtils.launchService(
-                context = context,
-                isFromSavedList = false
-            )
+//            AndroidUtils.launchService(
+//                context = context,
+//                isFromSavedList = false
+//            )
         }
     }
 
@@ -66,24 +87,64 @@ class MainActivity : AppCompatActivity() {
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val playbackManager by inject<PlaybackManager>()
+        playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
+            override fun onPlayedListUpdated(playedList: List<Music>) {
+                super.onPlayedListUpdated(playedList)
+                playerViewModel.handler.currentPlaylist = playedList
+            }
+
+            override fun onPlayerModeChanged(playerMode: PlayerMode) {
+                super.onPlayerModeChanged(playerMode)
+                playerViewModel.handler.playerMode = playerMode
+            }
+
+            override fun onCurrentPlayedMusicChanged(music: Music?) {
+                super.onCurrentPlayedMusicChanged(music)
+                playerViewModel.handler.currentMusic = music
+            }
+
+            override fun onCurrentMusicPositionChanged(position: Int) {
+                super.onCurrentMusicPositionChanged(position)
+                playerViewModel.handler.currentMusicPosition = position
+            }
+
+            override fun onPlayingStateChanged(isPlaying: Boolean) {
+                super.onPlayingStateChanged(isPlaying)
+                playerViewModel.handler.isPlaying = isPlaying
+            }
+
+            override fun onCurrentMusicCoverChanged(cover: ImageBitmap?) {
+                super.onCurrentMusicCoverChanged(cover)
+                println("New cover to set: $cover")
+                if (playerViewModel.handler.currentMusicCover?.equals(cover) == true) return
+
+                playerViewModel.handler.currentMusicCover = cover
+                colorThemeManager.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
+                    image = cover
+                )
+            }
+        })
+
+        settings.initializeSorts(
+            onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
+            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+            onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
+            onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent
+        )
+
+        with(playbackManager) {
+            retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
+            updateNbPlayed = { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
+        }
+
         setContent {
-            val a: AllPlaylistsViewModel by inject<AllPlaylistsViewModel>()
             SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
-
-            // Main page view models
-            allMusicsViewModel = koinInject()
-
-            // Player view model :
-            val playerViewModel = injectElement<PlayerViewModel>()
-
-            val mainActivityViewModel: MainActivityViewModel = injectElement()
             mainActivityViewModel.handler.isReadPermissionGranted =
                 SoulSearchingContext.checkIfReadPermissionGranted()
             mainActivityViewModel.handler.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
-            val playbackManager = injectElement<PlaybackManagerAndroidImpl>()
-            PlayerUtils.playerViewModel = playerViewModel
             initializeBroadcastReceive()
 
             SoulSearchingTheme {
@@ -96,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (!mainActivityViewModel.handler.isReadPermissionGranted || !mainActivityViewModel.handler.isPostNotificationGranted) {
+                    MissingPermissionsComposable()
                     SideEffect {
                         checkAndAskMissingPermissions(
                             isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
@@ -104,29 +166,10 @@ class MainActivity : AppCompatActivity() {
                             postNotificationLauncher = postNotificationLauncher
                         )
                     }
+                    return@SoulSearchingTheme
                 }
 
-
-                // launch the service for the playback if its needed.
-                if (PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched && !PlayerUtils.playerViewModel.handler.isServiceLaunched) {
-                    AndroidUtils.launchService(
-                        context = this@MainActivity,
-                        isFromSavedList = false
-                    )
-                }
-
-
-                SoulSearchingApplication(
-                    playbackManager = playbackManager,
-//                    allAlbumsViewModel = injectElement(),
-//                    allArtistsViewModel = injectElement(),
-//                    allImageCoversViewModel = injectElement(),
-//                    allMusicsViewModel = allMusicsViewModel,
-//                    allPlaylistsViewModel = injectElement(),
-//                    playerMusicListViewModel = injectElement(),
-//                    allQuickAccessViewModel = injectElement(),
-//                    mainActivityViewModel = mainActivityViewModel
-                )
+                SoulSearchingApplication()
             }
         }
     }

@@ -48,75 +48,75 @@ class SettingsUsedFoldersScreen : Screen {
             settingsAllFoldersViewModel = screenModel
         )
     }
+}
 
-    @Composable
-    private fun SettingsUsedFoldersScreenView(
-        finishAction: () -> Unit,
-        settingsAllFoldersViewModel: SettingsAllFoldersViewModel
+@Composable
+fun SettingsUsedFoldersScreenView(
+    finishAction: () -> Unit,
+    settingsAllFoldersViewModel: SettingsAllFoldersViewModel
+) {
+    val folderState by settingsAllFoldersViewModel.handler.state.collectAsState()
+
+    var savingProgress by rememberSaveable {
+        mutableFloatStateOf(0F)
+    }
+    val savingAnimatedProgress by animateFloatAsState(
+        targetValue = savingProgress,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+        label = "SAVING_FOLDERS_SETTINGS_USED_FOLDERS_VIEW"
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        val folderState by settingsAllFoldersViewModel.handler.state.collectAsState()
-
-        var savingProgress by rememberSaveable {
-            mutableFloatStateOf(0F)
-        }
-        val savingAnimatedProgress by animateFloatAsState(
-            targetValue = savingProgress,
-            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-            label = "SAVING_FOLDERS_SETTINGS_USED_FOLDERS_VIEW"
+        AppHeaderBar(
+            title = strings.usedFoldersTitle,
+            leftAction = finishAction,
+            rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
+            rightAction = {
+                settingsAllFoldersViewModel.handler.onFolderEvent(
+                    FolderEvent.SaveSelection(
+                        updateProgress = {
+                            savingProgress = it
+                        }
+                    )
+                )
+            }
         )
+        when (folderState.state) {
+            FolderStateType.FETCHING_FOLDERS -> {
+                FolderStateComposable(
+                    stateTitle = strings.fetchingFolders
+                )
+            }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.usedFoldersTitle,
-                leftAction = finishAction,
-                rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
-                rightAction = {
-                    settingsAllFoldersViewModel.handler.onFolderEvent(
-                        FolderEvent.SaveSelection(
-                            updateProgress = {
-                                savingProgress = it
-                            }
-                        )
-                    )
-                }
-            )
-            when (folderState.state) {
-                FolderStateType.FETCHING_FOLDERS -> {
-                    FolderStateComposable(
-                        stateTitle = strings.fetchingFolders
-                    )
-                }
+            FolderStateType.SAVING_SELECTION -> {
+                LoadingComposable(
+                    progressIndicator = savingAnimatedProgress,
+                    progressMessage = strings.deletingMusicsFromUnselectedFolders
+                )
+            }
 
-                FolderStateType.SAVING_SELECTION -> {
-                    LoadingComposable(
-                        progressIndicator = savingAnimatedProgress,
-                        progressMessage = strings.deletingMusicsFromUnselectedFolders
-                    )
-                }
-
-                FolderStateType.WAITING_FOR_USER_ACTION -> {
-                    LazyColumn {
-                        items(folderState.folders) {
-                            SettingsSwitchElement(
-                                title = it.folderPath,
-                                toggleAction = {
-                                    settingsAllFoldersViewModel.handler.onFolderEvent(
-                                        FolderEvent.SetSelectedFolder(
-                                            folder = it,
-                                            isSelected = !it.isSelected
-                                        )
+            FolderStateType.WAITING_FOR_USER_ACTION -> {
+                LazyColumn {
+                    items(folderState.folders) {
+                        SettingsSwitchElement(
+                            title = it.folderPath,
+                            toggleAction = {
+                                settingsAllFoldersViewModel.handler.onFolderEvent(
+                                    FolderEvent.SetSelectedFolder(
+                                        folder = it,
+                                        isSelected = !it.isSelected
                                     )
-                                },
-                                isChecked = it.isSelected
-                            )
-                        }
-                        item {
-                            PlayerSpacer()
-                        }
+                                )
+                            },
+                            isChecked = it.isSelected
+                        )
+                    }
+                    item {
+                        PlayerSpacer()
                     }
                 }
             }

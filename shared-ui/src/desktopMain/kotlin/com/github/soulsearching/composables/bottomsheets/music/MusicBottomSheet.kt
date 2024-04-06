@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,8 @@ actual fun MusicBottomSheet(
     playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color,
-    textColor: Color
+    textColor: Color,
+    playbackManager: PlaybackManager
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -100,11 +101,11 @@ actual fun MusicBottomSheet(
             },
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
+                    playbackManager.removeSongFromPlayedPlaylist(
                         musicId = musicState.selectedMusic.musicId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
-                        PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>
+                        playbackManager.playedList.map { it.musicId } as ArrayList<UUID>
                     )
 
                     coroutineScope.launch {
@@ -140,15 +141,15 @@ actual fun MusicBottomSheet(
                             )
                         }
                     }.invokeOnCompletion {
-                        PlayerUtils.playerViewModel.handler.addMusicToPlayNext(
+                        playbackManager.addMusicToPlayNext(
                             music = musicState.selectedMusic
                         )
-                        playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId } as ArrayList<UUID>)
+                        playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId } as ArrayList<UUID>)
                     }
                 }
             },
             isInQuickAccess = musicState.selectedMusic.isInQuickAccess,
-            isCurrentlyPlaying = PlayerUtils.playerViewModel.handler.isSameMusic(musicState.selectedMusic.musicId)
+            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(musicState.selectedMusic.musicId)
         )
     }
 }

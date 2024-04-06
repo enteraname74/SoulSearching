@@ -12,7 +12,6 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.SelectedAlbumState
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -164,12 +163,13 @@ class ModifyAlbumViewModelHandler(
                             newArtistId = currentArtist!!.artistId
                         )
 
-                        PlayerUtils.playerViewModel.handler.updateMusic(newMusic)
+                        playbackManager.updateMusic(newMusic)
 
-                        PlayerUtils.playerViewModel.handler.currentMusic?.let {
+                        playbackManager.currentMusic?.let {
                             if (it.musicId.compareTo(music.musicId) == 0) {
-                                PlayerUtils.playerViewModel.handler.currentMusicCover = state.value.albumCover
-                                playbackManager.updateNotification()
+                                playbackManager.updateCover(
+                                    cover = state.value.albumCover
+                                )
                             }
                         }
                     }

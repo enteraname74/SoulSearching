@@ -20,14 +20,23 @@ class MediaSessionManager(
     private val context: Context,
     private val playbackManager: PlaybackManagerAndroidImpl
 ) {
-    private val mediaSession: MediaSessionCompat =
+    private var mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
+
+    /**
+     * The token of the media session.
+     */
+    val token: MediaSessionCompat.Token
+        get() = mediaSession.sessionToken
 
     /**
      * Initialize the media session used by the player.
      */
     @Suppress("DEPRECATION")
     fun init() {
+        mediaSession =
+            MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
+
         mediaSession.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
                 playbackManager.seekToPosition(pos.toInt())
@@ -45,12 +54,12 @@ class MediaSessionManager(
 
             override fun onPlay() {
                 super.onPlay()
-                playbackManager.togglePlayPause()
+                playbackManager.play()
             }
 
             override fun onPause() {
                 super.onPause()
-                playbackManager.togglePlayPause()
+                playbackManager.pause()
             }
 
             override fun onSkipToNext() {
@@ -77,8 +86,8 @@ class MediaSessionManager(
      * Update media session data with information the current played song in the player view model.
      */
     fun updateMetadata() {
-        val bitmap = if (playbackManager.playerViewModel?.handler?.currentMusicCover != null) {
-            playbackManager.playerViewModel?.handler?.currentMusicCover?.asAndroidBitmap()
+        val bitmap = if (playbackManager.currentMusicCover != null) {
+            playbackManager.currentMusicCover!!.asAndroidBitmap()
         } else {
             BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
         }
@@ -151,9 +160,4 @@ class MediaSessionManager(
                 .build()
         )
     }
-
-    /**
-     * Retrieve the token of the media session.
-     */
-    fun getToken(): MediaSessionCompat.Token = mediaSession.sessionToken
 }

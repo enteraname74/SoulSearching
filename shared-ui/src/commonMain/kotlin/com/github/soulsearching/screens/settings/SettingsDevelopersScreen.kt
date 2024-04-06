@@ -31,37 +31,37 @@ class SettingsDevelopersScreen : Screen {
             }
         )
     }
+}
 
-    @Composable
-    private fun SettingsDevelopersScreenView(
-        finishAction: () -> Unit
-    ) {
-        val developers = listOf(
-            Developer(
-                name = "Noah Penin",
-                function = strings.leadDeveloper
-            )
+@Composable
+fun SettingsDevelopersScreenView(
+    finishAction: () -> Unit
+) {
+    val developers = listOf(
+        Developer(
+            name = "Noah Penin",
+            function = strings.leadDeveloper
         )
+    )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.developersTitle,
-                leftAction = finishAction
-            )
-            LazyColumn {
-                items(developers) {developer ->
-                    SettingsElement(
-                        title = developer.name,
-                        text = developer.function
-                    )
-                }
-                item {
-                    PlayerSpacer()
-                }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
+    ) {
+        AppHeaderBar(
+            title = strings.developersTitle,
+            leftAction = finishAction
+        )
+        LazyColumn {
+            items(developers) {developer ->
+                SettingsElement(
+                    title = developer.name,
+                    text = developer.function
+                )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }

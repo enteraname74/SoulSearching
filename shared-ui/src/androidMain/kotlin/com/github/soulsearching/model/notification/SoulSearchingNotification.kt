@@ -4,18 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.MainActivity
 import com.github.soulsearching.R
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.model.notification.receivers.DeletedNotificationIntentReceiver
-import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 
 /**
  * Notification used for the playback by the service.
@@ -30,9 +26,10 @@ abstract class SoulSearchingNotification(
         context,
         MUSIC_NOTIFICATION_CHANNEL_ID
     )
-    protected lateinit var notification: Notification
+    protected lateinit var _notification: Notification
+    val notification: Notification
+        get() = _notification
 
-    protected abstract val broadcastReceiver: BroadcastReceiver
 
     private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
@@ -57,25 +54,11 @@ abstract class SoulSearchingNotification(
      * It will show the information of the current played song if there is one.
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    fun initializeNotification() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            context.registerReceiver(
-                broadcastReceiver,
-                IntentFilter(SoulSearchingAndroidPlayerImpl.BROADCAST_NOTIFICATION),
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(
-                broadcastReceiver,
-                IntentFilter(SoulSearchingAndroidPlayerImpl.BROADCAST_NOTIFICATION)
-            )
-
-        }
-
+    fun init(currentMusic: Music?) {
         notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)
-            .setContentTitle(if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic?.name else "")
-            .setContentText(if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic?.artist else "")
+            .setContentTitle(currentMusic?.name ?: "")
+            .setContentText(currentMusic?.artist ?: "")
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setSilent(true)
@@ -86,30 +69,22 @@ abstract class SoulSearchingNotification(
                 priority = NotificationCompat.PRIORITY_LOW
             }
 
-        notification = notificationBuilder.build()
+        _notification = notificationBuilder.build()
     }
 
     /**
      * Abstract method for updating the notification.
      */
-    abstract fun updateNotification()
-
-    /**
-     * Return the instance of the Notification for the app notification.
-     */
-    fun getPlayerNotification(): Notification {
-        return notification
-    }
+    abstract fun update(isPlaying: Boolean)
 
     /**
      * Dismiss the notification.
      * It will cancel the notification and unregister the broadcast receiver linked to it.
      */
-    fun dismissNotification() {
+    fun release() {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(CHANNEL_ID)
-        context.unregisterReceiver(broadcastReceiver)
     }
 
     companion object {

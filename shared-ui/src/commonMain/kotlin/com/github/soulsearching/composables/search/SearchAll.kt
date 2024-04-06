@@ -15,17 +15,18 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.AlbumEvent
 import com.github.soulsearching.events.ArtistEvent
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.AlbumState
 import com.github.soulsearching.states.ArtistState
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -49,7 +50,8 @@ fun SearchAll(
     playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     isMainPlaylist: Boolean,
-    focusManager: FocusManager
+    focusManager: FocusManager,
+    playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -188,14 +190,14 @@ fun SearchAll(
                                 tween(Constants.AnimationDuration.normal)
                             )
                         }.invokeOnCompletion {
-                            PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                            playbackManager.setCurrentPlaylistAndMusic(
                                 music = music,
                                 playlist = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
-                            playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId })
+                            playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
                         }
                     },
                     onLongClick = {
@@ -212,7 +214,8 @@ fun SearchAll(
                             )
                         }
                     },
-                    musicCover = retrieveCoverMethod(music.coverId)
+                    musicCover = retrieveCoverMethod(music.coverId),
+                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
                 )
             }
         }

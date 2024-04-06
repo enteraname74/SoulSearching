@@ -82,7 +82,6 @@ class MusicFetcherDesktopImpl(
                     )
                     val musicCover = fetchMusicCoverFromMetadata(tag)
                     addMusic(musicToAdd, musicCover)
-                    println("Music added: ${musicToAdd.name}")
                 } catch (_: Exception) {
                     println("Failed to access information about the following file: ${file.path}")
                 }
@@ -97,7 +96,6 @@ class MusicFetcherDesktopImpl(
 
     override suspend fun fetchMusics(updateProgress: (Float) -> Unit, finishAction: () -> Unit) {
         val root = File("/home")
-        println("Will fetch")
         extractMusicsFromCurrentDirectory(root)
         playlistRepository.insertPlaylist(
             Playlist(
@@ -106,7 +104,6 @@ class MusicFetcherDesktopImpl(
                 isFavorite = true
             )
         )
-        println("FINISHED")
         finishAction()
     }
 

@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -72,8 +72,8 @@ import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.types.ScreenOrientation
 import com.github.soulsearching.utils.ColorPaletteUtils
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -102,7 +102,8 @@ fun PlayerDraggableView(
     playlistState: PlaylistState,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    playbackManager: PlaybackManager,
+    playerViewModel: PlayerViewModel,
+    playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -111,7 +112,7 @@ fun PlayerDraggableView(
     }
 
     if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
-        PlayerUtils.playerViewModel.handler.currentMusic?.let {
+        playerViewModel.handler.currentMusic?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
             }
@@ -246,7 +247,6 @@ fun PlayerDraggableView(
     }
 
     if (draggableState.currentValue == BottomSheetStates.COLLAPSED
-        && PlayerUtils.playerViewModel.handler.isServiceLaunched
         && !draggableState.isAnimationRunning
     ) {
         playbackManager.stopPlayback()
@@ -426,7 +426,7 @@ fun PlayerDraggableView(
                 val imageModifier = if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
-                            PlayerUtils.playerViewModel.handler.currentMusic?.let { currentMusic ->
+                            playbackManager.currentMusic?.let { currentMusic ->
                                 coroutineScope.launch {
                                     onMusicEvent(
                                         MusicEvent.SetSelectedMusic(
@@ -459,7 +459,7 @@ fun PlayerDraggableView(
                     AppImage(
                         modifier = imageModifier,
                         bitmap =
-                        retrieveCoverMethod(PlayerUtils.playerViewModel.handler.currentMusic?.coverId),
+                        retrieveCoverMethod(playbackManager.currentMusic?.coverId),
                         size = imageSize,
                         roundedPercent = (draggableState.offset.value / 100).roundToInt()
                             .coerceIn(3, 10)
@@ -538,7 +538,7 @@ fun PlayerDraggableView(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
-                                text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.name else "",
+                                text = playerViewModel.handler.currentMusic?.name ?: "",
                                 color = textColor,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
@@ -551,7 +551,7 @@ fun PlayerDraggableView(
                             val clickableArtistModifier =
                                 if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
-                                        PlayerUtils.playerViewModel.handler.currentMusic?.let {
+                                        playbackManager.currentMusic?.let {
                                             coroutineScope.launch {
                                                 val artistId = withContext(Dispatchers.IO) {
                                                     retrieveArtistIdMethod(it.musicId)
@@ -577,7 +577,7 @@ fun PlayerDraggableView(
                             val clickableAlbumModifier =
                                 if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                                     Modifier.clickable {
-                                        PlayerUtils.playerViewModel.handler.currentMusic?.let {
+                                        playbackManager.currentMusic?.let {
                                             coroutineScope.launch {
                                                 val albumId = withContext(Dispatchers.IO) {
                                                     retrieveAlbumIdMethod(it.musicId)
@@ -606,8 +606,8 @@ fun PlayerDraggableView(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
-                                        PlayerUtils.playerViewModel.handler.currentMusic!!.artist,
+                                    text = if (playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
+                                        playerViewModel.handler.currentMusic!!.artist,
                                         SoulSearchingContext.orientation
                                     )
                                     else "",
@@ -627,8 +627,8 @@ fun PlayerDraggableView(
                                     fontSize = 15.sp,
                                 )
                                 Text(
-                                    text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
-                                        PlayerUtils.playerViewModel.handler.currentMusic!!.album,
+                                    text = if (playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
+                                        playerViewModel.handler.currentMusic!!.album,
                                         SoulSearchingContext.orientation
                                     ) else "",
                                     color = subTextColor,
@@ -672,7 +672,7 @@ fun PlayerDraggableView(
                                     onMusicEvent = onMusicEvent,
                                     isMusicInFavorite = isMusicInFavorite,
                                     playerMusicListViewModel = playerMusicListViewModel,
-                                    playbackManager = playbackManager
+                                    playerViewModel = playerViewModel
                                 )
                             }
                         }
@@ -684,7 +684,7 @@ fun PlayerDraggableView(
                                 onMusicEvent = onMusicEvent,
                                 isMusicInFavorite = isMusicInFavorite,
                                 playerMusicListViewModel = playerMusicListViewModel,
-                                playbackManager = playbackManager
+                                playerViewModel = playerViewModel
                             )
                         }
                     }
@@ -709,7 +709,7 @@ fun PlayerDraggableView(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.name else "",
+                            text = if (playerViewModel.handler.currentMusic != null) playerViewModel.handler.currentMusic!!.name else "",
                             color = textColor,
                             maxLines = 1,
                             textAlign = TextAlign.Start,
@@ -717,7 +717,7 @@ fun PlayerDraggableView(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (PlayerUtils.playerViewModel.handler.currentMusic != null) PlayerUtils.playerViewModel.handler.currentMusic!!.artist else "",
+                            text = if (playerViewModel.handler.currentMusic != null) playerViewModel.handler.currentMusic!!.artist else "",
                             color = textColor,
                             fontSize = 12.sp,
                             maxLines = 1,
@@ -727,7 +727,7 @@ fun PlayerDraggableView(
                     }
                     MinimisedPlayButtonsComposable(
                         playerViewDraggableState = draggableState,
-                        playbackManager = playbackManager
+                        playerViewModel = playerViewModel
                     )
                 }
             }

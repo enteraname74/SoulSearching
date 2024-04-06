@@ -12,9 +12,9 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelAndroidHandler
 import com.github.soulsearching.viewmodel.handler.AllMusicsViewModelHandler
 
@@ -34,7 +34,7 @@ class AllMusicsViewModelAndroidImpl(
     imageCoverRepository: ImageCoverRepository,
     folderRepository: FolderRepository,
     settings: SoulSearchingSettings,
-    playbackManager: PlaybackManagerAndroidImpl,
+    playbackManager: PlaybackManager,
     musicFetcher: MusicFetcherAndroidImpl
 ) : AllMusicsViewModel {
     override val handler: AllMusicsViewModelHandler = AllMusicsViewModelAndroidHandler(
@@ -49,9 +49,8 @@ class AllMusicsViewModelAndroidImpl(
         musicArtistRepository = musicArtistRepository,
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
-        folderRepository = folderRepository,
         settings = settings,
-        playbackManager = playbackManager,
-        musicFetcher = musicFetcher
+        musicFetcher = musicFetcher,
+        playbackManager = playbackManager
     )
 }

@@ -9,27 +9,21 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import com.github.soulsearching.model.notification.SoulSearchingNotification
 import com.github.soulsearching.model.notification.SoulSearchingNotificationBuilder
-import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
-import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.utils.PlayerUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 /**
  * Service used for the playback.
  */
 class PlayerService : Service() {
-    private var notification: SoulSearchingNotification? = null
+    private var musicNotification: SoulSearchingNotification? = null
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.extras?.getBoolean(UPDATE_WITH_PLAYING_STATE) != null) {
                 val isPlaying = intent.extras!!.getBoolean(UPDATE_WITH_PLAYING_STATE)
-                notification?.update(isPlaying)
+                musicNotification?.update(isPlaying)
             }
         }
     }
@@ -57,28 +51,51 @@ class PlayerService : Service() {
         }
 
         token?.let {
-            notification = SoulSearchingNotificationBuilder.buildNotification(
+            musicNotification = SoulSearchingNotificationBuilder.buildNotification(
                 context = this,
                 mediaSessionToken = token
             )
-            notification!!.init(null)
-            startForeground(SoulSearchingNotification.CHANNEL_ID, notification!!.getPlayerNotification())
+            musicNotification!!.init(null)
+            startForeground(SoulSearchingNotification.CHANNEL_ID, musicNotification!!.notification)
         }
 
         return START_STICKY
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        notification?.dismissNotification()
+    /**
+     * Stop the service and remove its notification.
+     */
+    private fun stopService() {
+        musicNotification?.release()
+        musicNotification = null
 
         val serviceIntent = Intent(this, PlayerService::class.java)
-        this.unregisterReceiver(broadcastReceiver)
         stopService(serviceIntent)
+        try {
+            this.unregisterReceiver(broadcastReceiver)
+        } catch (_: Exception) {
+            Log.e("Player Service", "Tried to unregister the broadcast receiver, but couldn't.")
+        }
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        println("ON TASK REMOVE")
+        try {
+            stopService()
+        } catch (_: Exception) {
+            Log.e("Player Service", "Failed to stop service in onTaskRemoved")
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        println("ON DESTROY")
+        try {
+            stopService()
+        } catch (_: Exception) {
+            Log.e("Player Service", "Failed to stop service in onDestroy")
+        }
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 

@@ -16,13 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.soulsearching.Constants
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.AllMusicsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -41,7 +42,8 @@ fun AllMusicsComposable(
     sortDirection: Int = SortDirection.DESC,
     isUsingSort: Boolean = true,
     playerDraggableState: SwipeableState<BottomSheetStates>,
-    savePlayerMusicListMethod: (List<UUID>) -> Unit
+    savePlayerMusicListMethod: (List<UUID>) -> Unit,
+    playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -79,7 +81,7 @@ fun AllMusicsComposable(
                                     tween(Constants.AnimationDuration.normal)
                                 )
                             }.invokeOnCompletion {
-                                if (!PlayerUtils.playerViewModel.handler.isSamePlaylist(
+                                if (!playbackManager.isSamePlaylist(
                                         true,
                                         null
                                     )
@@ -88,7 +90,7 @@ fun AllMusicsComposable(
                                         musicState.musics.map { it.musicId }
                                     )
                                 }
-                                PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                                playbackManager.setCurrentPlaylistAndMusic(
                                     music = music,
                                     playlist = musicState.musics,
                                     isMainPlaylist = true,
@@ -111,6 +113,7 @@ fun AllMusicsComposable(
                             }
                         },
                         musicCover = retrieveCoverMethod(elt.coverId),
+                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                     )
                 }
                 item {

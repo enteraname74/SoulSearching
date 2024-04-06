@@ -46,9 +46,8 @@ class AllMusicsViewModelDesktopImpl(
         musicArtistRepository = musicArtistRepository,
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
-        folderRepository = folderRepository,
         settings = settings,
-        playbackManager = playbackManager,
-        musicFetcher = musicFetcher
+        musicFetcher = musicFetcher,
+        playbackManager = playbackManager
     )
 }

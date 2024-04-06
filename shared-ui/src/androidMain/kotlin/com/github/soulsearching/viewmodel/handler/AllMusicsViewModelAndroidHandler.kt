@@ -5,7 +5,6 @@ import android.widget.Toast
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
@@ -16,7 +15,6 @@ import com.github.soulsearching.R
 import com.github.soulsearching.model.MusicFetcher
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
-import com.github.soulsearching.utils.PlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,10 +36,9 @@ class AllMusicsViewModelAndroidHandler(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
-    folderRepository: FolderRepository,
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
-    playbackManager: PlaybackManager
+    private val playbackManager: PlaybackManager
 ) : AllMusicsViewModelHandler(
     coroutineScope = coroutineScope,
     musicRepository = musicRepository,
@@ -65,7 +62,7 @@ class AllMusicsViewModelAndroidHandler(
             var deleteCount = 0
             for (music in state.value.musics) {
                 if (!File(music.path).exists()) {
-                    PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
+                    playbackManager.removeSongFromPlayedPlaylist(
                         music.musicId
                     )
                     musicRepository.deleteMusic(music)

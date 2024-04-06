@@ -6,7 +6,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -35,6 +44,7 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
 import com.github.soulsearching.events.PlaylistEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.states.PlaylistState
 import com.github.soulsearching.strings.strings
@@ -43,8 +53,8 @@ import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
 import com.github.soulsearching.types.MusicBottomSheetState
 import com.github.soulsearching.utils.ColorPaletteUtils
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.viewmodel.PlayerViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -61,7 +71,9 @@ fun PlayerMusicListView(
     musicListDraggableState: SwipeableState<BottomSheetStates>,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    colorThemeManager: ColorThemeManager = injectElement()
+    colorThemeManager: ColorThemeManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewModel: PlayerViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -211,11 +223,9 @@ fun PlayerMusicListView(
                         .size(Constants.ImageSize.medium)
                         .clickable {
                             coroutineScope.launch {
-                                val currentIndex =
-                                    PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic()
-                                if (currentIndex != -1) {
+                                if (playbackManager.currentMusicIndex != -1) {
                                     playerListState.animateScrollToItem(
-                                        currentIndex
+                                        playbackManager.currentMusicIndex
                                     )
                                 }
                             }
@@ -228,7 +238,7 @@ fun PlayerMusicListView(
                 state = playerListState
             ) {
                 items(
-                    items = PlayerUtils.playerViewModel.handler.currentPlaylist,
+                    items = playerViewModel.handler.currentPlaylist,
                 ) { elt ->
                     MusicItemComposable(
                         music = elt,
@@ -239,11 +249,11 @@ fun PlayerMusicListView(
                                     tween(Constants.AnimationDuration.normal)
                                 )
                             }.invokeOnCompletion {
-                                PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                                playbackManager.setCurrentPlaylistAndMusic(
                                     music = music,
                                     playlist = musicState.musics,
-                                    playlistId = PlayerUtils.playerViewModel.handler.currentPlaylistId,
-                                    isMainPlaylist = PlayerUtils.playerViewModel.handler.isMainPlaylist
+                                    playlistId = playbackManager.playedListId,
+                                    isMainPlaylist = playbackManager.isMainPlaylist
                                 )
                             }
                         },
@@ -262,7 +272,8 @@ fun PlayerMusicListView(
                             }
                         },
                         musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
-                        textColor = textColor
+                        textColor = textColor,
+                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                     )
                 }
             }

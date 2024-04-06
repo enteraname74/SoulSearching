@@ -7,21 +7,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.model.PlaybackManager
-import com.github.soulsearching.model.SoulSearchingPlayer
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
-import com.github.soulsearching.utils.PlayerUtils
-import com.github.soulsearching.viewmodel.PlayerViewModel
+import com.github.soulsearching.model.settings.SoulSearchingSettings
 
 /**
  * Implementation of a MusicPlayerManager for Android.
  * It manages the player, foreground service, media sessions and notification.
  */
 class PlaybackManagerAndroidImpl(
-    private val context: Context
-): PlaybackManager() {
+    private val context: Context,
+    settings: SoulSearchingSettings
+): PlaybackManager(
+    settings = settings
+) {
     private var shouldLaunchService: Boolean = true
     private var shouldInit: Boolean = true
 
@@ -49,8 +49,23 @@ class PlaybackManagerAndroidImpl(
         }
     }
 
-    init {
-        init()
+    /**
+     * Launch the foreground service used to handle the notification.
+     * It gives the token of the media session manager to start the notification.
+     */
+    private fun launchService() {
+        val serviceIntent = Intent(context, PlayerService::class.java)
+        serviceIntent.putExtra(PlayerService.MEDIA_SESSION_TOKEN, mediaSessionManager.token)
+        context.startForegroundService(serviceIntent)
+        shouldLaunchService = false
+    }
+
+    /**
+     * Stop the service used to emit the music notification.
+     */
+    private fun stopService() {
+        val serviceIntent = Intent(context, PlayerService::class.java)
+        context.stopService(serviceIntent)
     }
 
     /**
@@ -79,70 +94,40 @@ class PlaybackManagerAndroidImpl(
 
 
     override fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
-        PlayerUtils.playerViewModel.handler.setPlayerInformationFromSavedList(
-            savedMusicList
-        )
-        AndroidUtils.launchService(
-            context = context,
-            isFromSavedList = true
-        )
-        PlayerUtils.playerViewModel.handler.shouldServiceBeLaunched = true
+        super.initializePlayerFromSavedList(savedMusicList)
+        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
+        launchService()
     }
-
-    override fun initializeMusicPlayerManager(isFromSavedList: Boolean) = AndroidUtils.launchService(
-        context = context,
-        isFromSavedList = isFromSavedList
-    )
 
     override fun setAndPlayMusic(music: Music) {
         if (shouldInit) init()
+        if (shouldLaunchService) launchService()
 
-        if (shouldLaunchService) {
-            val serviceIntent = Intent(context, PlayerService::class.java)
-            serviceIntent.putExtra(PlayerService.MEDIA_SESSION_TOKEN, mediaSessionManager.getToken())
-            context.startForegroundService(serviceIntent)
-            shouldLaunchService = false
-        }
-
-        _currentMusic = music
-        player.setMusic(music)
-        player.launchMusic()
-        update()
+        super.setAndPlayMusic(music)
     }
 
     override fun stopPlayback() {
         if (shouldInit) return
 
-        releaseDurationJob()
-
         context.unregisterReceiver(broadcastReceiver)
         player.dismiss()
         mediaSessionManager.release()
 
-        val serviceIntent = Intent(context, PlayerService::class.java)
-        context.stopService(serviceIntent)
+        if (!shouldLaunchService) stopService()
 
         shouldInit = true
-        _playedList = ArrayList()
-        _initialList = ArrayList()
+        super.stopPlayback()
     }
 
     override fun update() {
+        super.update()
+
         mediaSessionManager.updateMetadata()
         mediaSessionManager.updateState()
-
-        if (durationJob == null) {
-            launchDurationJob()
-        }
 
         val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
         intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
         context.sendBroadcast(intentForUpdatingNotification)
-
-        playerViewModel?.handler?.let {
-            it.currentMusic = _currentMusic
-            it.isPlaying = isPlaying
-        }
     }
 
     companion object {

@@ -3,6 +3,7 @@ package com.github.soulsearching
 import android.content.Context
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.model.MusicFetcher
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.model.settings.ViewSettingsManager
@@ -280,9 +281,10 @@ actual val appModule = module {
             )
         )
     }
-    single<PlaybackManagerAndroidImpl> {
+    single<PlaybackManager> {
         PlaybackManagerAndroidImpl(
-            context = androidContext()
+            context = androidContext(),
+            settings = get()
         )
     }
     single<MusicFetcherAndroidImpl> {

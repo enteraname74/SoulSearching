@@ -35,103 +35,103 @@ class SettingsPersonalisationScreen: Screen {
             }
         )
     }
+}
 
-    @Composable
-    private fun SettingsPersonalisationScreenView(
-        finishAction: () -> Unit,
-        viewSettingsManager: ViewSettingsManager = injectElement()
+@Composable
+fun SettingsPersonalisationScreenView(
+    finishAction: () -> Unit,
+    viewSettingsManager: ViewSettingsManager = injectElement()
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
-        ) {
-            AppHeaderBar(
-                title = strings.personalizationTitle,
-                leftAction = finishAction
-            )
-            LazyColumn {
-                item {
-                    SettingsElement(
-                        title = strings.mainPageTitle,
-                        text = strings.mainPageText,
-                        padding = PaddingValues(Constants.Spacing.large)
+        AppHeaderBar(
+            title = strings.personalizationTitle,
+            leftAction = finishAction
+        )
+        LazyColumn {
+            item {
+                SettingsElement(
+                    title = strings.mainPageTitle,
+                    text = strings.mainPageText,
+                    padding = PaddingValues(Constants.Spacing.large)
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.showQuickAccess,
+                    toggleAction = { viewSettingsManager.toggleQuickAccessVisibility() },
+                    isChecked = viewSettingsManager.isQuickAccessShown,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
                     )
-                }
-                item {
-                    SettingsSwitchElement(
-                        title = strings.showQuickAccess,
-                        toggleAction = { viewSettingsManager.toggleQuickAccessVisibility() },
-                        isChecked = viewSettingsManager.isQuickAccessShown,
-                        titleFontSize = 16.sp,
-                        padding = PaddingValues(
-                            start = Constants.Spacing.veryLarge,
-                            end = Constants.Spacing.veryLarge,
-                            top = Constants.Spacing.medium,
-                            bottom = Constants.Spacing.medium
-                        )
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.showPlaylists,
+                    toggleAction = { viewSettingsManager.togglePlaylistsVisibility() },
+                    isChecked = viewSettingsManager.isPlaylistsShown,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
                     )
-                }
-                item {
-                    SettingsSwitchElement(
-                        title = strings.showPlaylists,
-                        toggleAction = { viewSettingsManager.togglePlaylistsVisibility() },
-                        isChecked = viewSettingsManager.isPlaylistsShown,
-                        titleFontSize = 16.sp,
-                        padding = PaddingValues(
-                            start = Constants.Spacing.veryLarge,
-                            end = Constants.Spacing.veryLarge,
-                            top = Constants.Spacing.medium,
-                            bottom = Constants.Spacing.medium
-                        )
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.showAlbums,
+                    toggleAction = { viewSettingsManager.toggleAlbumsVisibility() },
+                    isChecked = viewSettingsManager.isAlbumsShown,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
                     )
-                }
-                item {
-                    SettingsSwitchElement(
-                        title = strings.showAlbums,
-                        toggleAction = { viewSettingsManager.toggleAlbumsVisibility() },
-                        isChecked = viewSettingsManager.isAlbumsShown,
-                        titleFontSize = 16.sp,
-                        padding = PaddingValues(
-                            start = Constants.Spacing.veryLarge,
-                            end = Constants.Spacing.veryLarge,
-                            top = Constants.Spacing.medium,
-                            bottom = Constants.Spacing.medium
-                        )
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.showArtists,
+                    toggleAction = { viewSettingsManager.toggleArtistsVisibility() },
+                    isChecked = viewSettingsManager.isArtistsShown,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
                     )
-                }
-                item {
-                    SettingsSwitchElement(
-                        title = strings.showArtists,
-                        toggleAction = { viewSettingsManager.toggleArtistsVisibility() },
-                        isChecked = viewSettingsManager.isArtistsShown,
-                        titleFontSize = 16.sp,
-                        padding = PaddingValues(
-                            start = Constants.Spacing.veryLarge,
-                            end = Constants.Spacing.veryLarge,
-                            top = Constants.Spacing.medium,
-                            bottom = Constants.Spacing.medium
-                        )
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.showVerticalAccessBarTitle,
+                    text = strings.showVerticalAccessBarText,
+                    toggleAction = { viewSettingsManager.toggleVerticalBarVisibility() },
+                    isChecked = viewSettingsManager.isVerticalBarShown,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
                     )
-                }
-                item {
-                    SettingsSwitchElement(
-                        title = strings.showVerticalAccessBarTitle,
-                        text = strings.showVerticalAccessBarText,
-                        toggleAction = { viewSettingsManager.toggleVerticalBarVisibility() },
-                        isChecked = viewSettingsManager.isVerticalBarShown,
-                        titleFontSize = 16.sp,
-                        padding = PaddingValues(
-                            start = Constants.Spacing.veryLarge,
-                            end = Constants.Spacing.veryLarge,
-                            top = Constants.Spacing.medium,
-                            bottom = Constants.Spacing.medium
-                        )
-                    )
-                }
-                item {
-                    PlayerSpacer()
-                }
+                )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }

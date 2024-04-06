@@ -18,7 +18,6 @@ import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.types.SortDirection
 import com.github.soulsearching.types.SortType
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -368,12 +367,13 @@ open class MusicEventHandler(
             musicRepository.insertMusic(newMusic)
 
             CoroutineScope(Dispatchers.IO).launch {
-                PlayerUtils.playerViewModel.handler.updateMusic(newMusic)
+                playbackManager.updateMusic(newMusic)
 
-                PlayerUtils.playerViewModel.handler.currentMusic?.let {
+                playbackManager.currentMusic?.let {
                     if (it.musicId.compareTo(newMusic.musicId) == 0) {
-                        PlayerUtils.playerViewModel.handler.currentMusicCover = publicState.value.cover
-                        playbackManager.updateNotification()
+                        playbackManager.updateCover(
+                            cover = publicState.value.cover
+                        )
                     }
                 }
             }

@@ -53,7 +53,7 @@ class AllImageCoversViewModelHandler(
     /**
      * Delete an image if it's not used by a song, an album, an artist or a playlist.
      */
-    suspend fun deleteImageIsNotUsed(cover: ImageCover) {
+    suspend fun deleteImageIfNotUsed(cover: ImageCover) {
         if (
             musicRepository.getNumberOfMusicsWithCoverId(cover.coverId) == 0
             && albumRepository.getNumberOfAlbumsWithCoverId(cover.coverId) == 0

@@ -18,17 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.utils.PlayerUtils
+import com.github.soulsearching.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
     playerViewDraggableState: SwipeableState<BottomSheetStates>,
-    playbackManager: PlaybackManager
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewModel: PlayerViewModel
 ) {
     Row(
         modifier = modifier,
@@ -47,7 +49,7 @@ fun MinimisedPlayButtonsComposable(
                 },
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
         )
-        if (PlayerUtils.playerViewModel.handler.isPlaying) {
+        if (playerViewModel.handler.isPlaying) {
             Image(
                 imageVector = Icons.Rounded.Pause,
                 contentDescription = "",
@@ -55,7 +57,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.handler.togglePlayPause()
+                            playbackManager.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
@@ -68,7 +70,7 @@ fun MinimisedPlayButtonsComposable(
                     .size(40.dp)
                     .clickable {
                         if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
-                            PlayerUtils.playerViewModel.handler.togglePlayPause()
+                            playbackManager.togglePlayPause()
                         }
                     },
                 colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)

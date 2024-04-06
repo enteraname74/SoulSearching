@@ -11,6 +11,7 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.model.settings.SoulSearchingSettings
 import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.theme.ColorThemeManager
@@ -31,7 +32,7 @@ class PlayerViewModelAndroidImpl(
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings,
-    playbackManager: PlaybackManagerAndroidImpl,
+    playbackManager: PlaybackManager,
     colorThemeManager: ColorThemeManager
 ): PlayerViewModel, ViewModel() {
     override val handler: PlayerViewModelHandler = PlayerViewModelHandler(

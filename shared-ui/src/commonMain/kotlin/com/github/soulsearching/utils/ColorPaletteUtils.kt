@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.palette.graphics.Palette
 import com.github.soulsearching.theme.SoulSearchingColorTheme
+import com.kmpalette.PaletteState
+import com.kmpalette.loader.ImageBitmapLoader
 import com.kmpalette.rememberPaletteState
 import kotlinx.coroutines.runBlocking
 
@@ -18,12 +20,17 @@ object ColorPaletteUtils {
     /**
      * Tries to retrieve a palette from a potential image.
      */
-    @Composable
     fun getPaletteFromAlbumArt(image: ImageBitmap?): Palette.Swatch? {
+        println("trying to get palette")
         if (image == null) {
             return null
         }
-        val paletteState = rememberPaletteState()
+        val paletteState = object : PaletteState<ImageBitmap>() {
+            override val loader: ImageBitmapLoader<ImageBitmap>
+                get() = object : ImageBitmapLoader<ImageBitmap> {
+                    override suspend fun load(input: ImageBitmap): ImageBitmap = input
+                }
+        }
         runBlocking {
             paletteState.generate(image)
         }

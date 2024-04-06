@@ -15,12 +15,13 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.di.injectElement
 import com.github.soulsearching.events.MusicEvent
+import com.github.soulsearching.model.PlaybackManager
 import com.github.soulsearching.states.MusicState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.theme.SoulSearchingColorTheme
 import com.github.soulsearching.types.BottomSheetStates
-import com.github.soulsearching.utils.PlayerUtils
 import com.github.soulsearching.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -37,7 +38,8 @@ fun SearchMusics(
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -68,14 +70,14 @@ fun SearchMusics(
                                 tween(Constants.AnimationDuration.normal)
                             )
                         }.invokeOnCompletion { _ ->
-                            PlayerUtils.playerViewModel.handler.setCurrentPlaylistAndMusic(
+                            playbackManager.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
                                 playlist = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
-                            playerMusicListViewModel.handler.savePlayerMusicList(PlayerUtils.playerViewModel.handler.currentPlaylist.map { it.musicId })
+                            playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
                         }
                     },
                     onLongClick = {
@@ -93,7 +95,8 @@ fun SearchMusics(
                         }
                     },
                     musicCover = retrieveCoverMethod(music.coverId),
-                    textColor = textColor
+                    textColor = textColor,
+                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
                 )
             }
         }
