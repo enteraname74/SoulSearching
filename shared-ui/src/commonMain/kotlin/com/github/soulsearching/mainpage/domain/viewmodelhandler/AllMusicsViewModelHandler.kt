@@ -1,5 +1,9 @@
 package com.github.soulsearching.mainpage.domain.viewmodelhandler
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +22,7 @@ import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.SortDirection
@@ -56,6 +61,13 @@ abstract class AllMusicsViewModelHandler(
     var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+
+    @OptIn(ExperimentalMaterialApi::class)
+    val drag: SwipeableState<BottomSheetStates>
+    @Composable
+    get() = rememberSwipeableState(
+        initialValue = BottomSheetStates.COLLAPSED
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->

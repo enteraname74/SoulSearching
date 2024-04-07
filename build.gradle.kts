@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
+    kotlin("plugin.serialization") version "1.9.22"
 }
 repositories {
     google()

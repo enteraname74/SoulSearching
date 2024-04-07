@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     id("org.jetbrains.compose")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -29,6 +30,8 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
+
+                implementation(libs.kotlinx.serialization)
 
                 implementation(libs.kmpalette)
                 implementation(libs.components.resources)

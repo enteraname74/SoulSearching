@@ -31,44 +31,17 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.Constants
-import com.github.soulsearching.mainpage.presentation.composable.AllElementsComposable
-import com.github.soulsearching.mainpage.presentation.composable.AllMusicsComposable
-import com.github.soulsearching.mainpage.presentation.composable.MainMenuHeaderComposable
-import com.github.soulsearching.mainpage.presentation.composable.MainPageVerticalShortcut
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
-import com.github.soulsearching.mainpage.presentation.composable.CreatePlaylistDialog
-import com.github.soulsearching.search.presentation.SearchAll
-import com.github.soulsearching.search.presentation.SearchView
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.events.AlbumEvent
 import com.github.soulsearching.domain.events.ArtistEvent
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.model.PagerScreen
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
-import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
-import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
-import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.soulsearching.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
-import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
-import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
-import com.github.soulsearching.elementpage.playlistpage.presentation.SelectedPlaylistScreen
-import com.github.soulsearching.settings.presentation.SettingsScreen
-import com.github.soulsearching.mainpage.domain.state.AlbumState
-import com.github.soulsearching.mainpage.domain.state.ArtistState
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.mainpage.domain.state.QuickAccessState
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.mainpage.domain.model.ElementEnum
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
@@ -76,17 +49,46 @@ import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.soulsearching.elementpage.playlistpage.presentation.SelectedPlaylistScreen
+import com.github.soulsearching.mainpage.domain.MainPageSerializer
+import com.github.soulsearching.mainpage.domain.model.ElementEnum
+import com.github.soulsearching.mainpage.domain.model.PagerScreen
+import com.github.soulsearching.mainpage.domain.model.SortDirection
+import com.github.soulsearching.mainpage.domain.model.SortType
+import com.github.soulsearching.mainpage.domain.state.AlbumState
+import com.github.soulsearching.mainpage.domain.state.ArtistState
+import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.PlaylistState
+import com.github.soulsearching.mainpage.domain.state.QuickAccessState
+import com.github.soulsearching.mainpage.presentation.composable.AllElementsComposable
+import com.github.soulsearching.mainpage.presentation.composable.AllMusicsComposable
+import com.github.soulsearching.mainpage.presentation.composable.CreatePlaylistDialog
+import com.github.soulsearching.mainpage.presentation.composable.MainMenuHeaderComposable
+import com.github.soulsearching.mainpage.presentation.composable.MainPageVerticalShortcut
+import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
+import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
+import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.soulsearching.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.search.presentation.SearchAll
+import com.github.soulsearching.search.presentation.SearchView
+import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
+import com.github.soulsearching.settings.presentation.SettingsScreen
+import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
 /**
  * Represent the view of the main page screen.
  */
 @OptIn( ExperimentalMaterialApi::class)
+@Serializable(with = MainPageSerializer::class)
 data class MainPageScreen(
-    private val playerDraggableState: SwipeableState<BottomSheetStates>,
-    private val searchDraggableState: SwipeableState<BottomSheetStates>
-) : Screen, Serializable {
+    val playerDraggableState: SwipeableState<BottomSheetStates>,
+    val searchDraggableState: SwipeableState<BottomSheetStates>
+) : Screen {
 
     @Composable
     override fun Content() {
