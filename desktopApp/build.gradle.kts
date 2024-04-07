@@ -1,4 +1,3 @@
-import com.github.enteraname74.buildsrc.Versions
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {

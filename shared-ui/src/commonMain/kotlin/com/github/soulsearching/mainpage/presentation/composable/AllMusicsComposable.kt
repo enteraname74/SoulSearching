@@ -83,6 +83,7 @@ fun AllMusicsComposable(
                                     tween(Constants.AnimationDuration.normal)
                                 )
                             }.invokeOnCompletion {
+                                println("END OF ANIM")
                                 if (!playbackManager.isSamePlaylist(
                                         true,
                                         null

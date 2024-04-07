@@ -1,6 +1,3 @@
-import com.github.enteraname74.buildsrc.Config
-import com.github.enteraname74.buildsrc.Dependencies
-
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
@@ -15,13 +12,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(Dependencies.KOIN_CORE)
-
-                implementation(Dependencies.COROUTINES_CORE)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                with(Dependencies.AndroidX) {
-//                    implementation(UI)
-                }
+                implementation(libs.koin.core)
+                implementation(libs.coroutines.core)
+                implementation(libs.coroutines.core.jvm)
                 implementation(compose.ui)
             }
         }
@@ -29,11 +22,11 @@ kotlin {
 }
 
 android {
-    namespace = Config.DOMAIN_NAMESPACE
-    compileSdk = Config.COMPILE_SDK
+    namespace = "com.github.enteraname74.soulsearching"
+    compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {
-        minSdk = Config.MIN_SDK
+        minSdk = libs.versions.android.min.sdk.get().toInt()
     }
 
     compileOptions {

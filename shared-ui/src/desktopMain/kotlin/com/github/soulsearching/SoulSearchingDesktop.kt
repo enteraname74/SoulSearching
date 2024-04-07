@@ -16,7 +16,7 @@ fun SoulSearchingDesktop() {
     AppDatabase.connectToDatabase()
     KoinApplication(
         application = {
-            modules(domainModule, localDesktopModule, appModule)
+            modules(domainModule, localDesktopModule, appModule, commonModule)
         }
     ) {
         val colorThemeManager: ColorThemeManager = injectElement()

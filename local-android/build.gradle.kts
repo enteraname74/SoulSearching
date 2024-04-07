@@ -1,11 +1,9 @@
-import com.github.enteraname74.buildsrc.Config
-import com.github.enteraname74.buildsrc.Dependencies
-import com.github.enteraname74.buildsrc.Versions
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.compose")
     kotlin("kapt")
 }
 
@@ -16,37 +14,35 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
-                implementation("androidx.compose.ui:ui-graphics-android:1.5.4")
+                implementation(compose.ui)
+                implementation(libs.koin.androidx.compose)
+                implementation(libs.androidx.core)
+                implementation(libs.room)
 
-                with(Dependencies.AndroidX) {
-                    implementation(KOIN_COMPOSE)
-                    implementation(CORE)
-                    implementation(ROOM)
-                    configurations.getByName("kapt").dependencies.add(
-                        DefaultExternalModuleDependency(
-                            "androidx.room",
-                            "room-compiler",
-                            Versions.AndroidX.ROOM
-                        )
+                configurations.getByName("kapt").dependencies.add(
+                    DefaultExternalModuleDependency(
+                        "androidx.room",
+                        "room-compiler",
+                        libs.versions.room.get()
                     )
-                }
+                )
             }
         }
         commonMain {
             dependencies {
                 implementation(project(mapOf("path" to ":domain")))
-                implementation(Dependencies.KOIN_CORE)
+                implementation(libs.koin.core)
             }
         }
     }
 }
 
 android {
-    namespace = Config.DATA_NAMESPACE
-    compileSdk = Config.COMPILE_SDK
+    namespace = "com.github.enteraname74.soulsearching.data"
+    compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {
-        minSdk = Config.MIN_SDK
+        minSdk = libs.versions.android.min.sdk.get().toInt()
     }
 
     compileOptions {

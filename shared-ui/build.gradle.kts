@@ -1,5 +1,3 @@
-import com.github.enteraname74.buildsrc.Config
-import com.github.enteraname74.buildsrc.Dependencies
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -28,15 +26,14 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":domain"))
-                implementation(Dependencies.KOIN_CORE)
 
-                implementation(Dependencies.KOIN_COMPOSE)
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
 
-                implementation(Dependencies.KMPALETTE_CORE)
+                implementation(libs.kmpalette)
                 implementation(libs.components.resources)
                 implementation(libs.multiplatform.settings)
 
-                implementation(libs.annotation)
                 implementation(compose.ui)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
@@ -44,56 +41,36 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
 
-                // https://mvnrepository.com/artifact/net.jthink/jaudiotagger
                 implementation(libs.jaudiotagger)
-
-                with(Dependencies.Voyager) {
-                    implementation(NAVIGATOR)
-                    implementation(SCREEN_MODEL)
-                    implementation(TRANSITIONS)
-                    implementation(KOIN)
-                }
+                implementation(libs.androidx.annotation)
+                implementation(libs.bundles.voyager)
             }
         }
         androidMain {
             dependencies {
                 implementation(project(":local-android"))
 
-                with(Dependencies.AndroidX) {
-                    implementation(KOIN_COMPOSE)
-                    implementation(ACTIVITY_COMPOSE)
-                    implementation(CORE)
-                    implementation(LIFECYCLE)
-                    implementation(UI)
-                    implementation(UI_TOOLING)
-                    implementation(ROOM)
-                    implementation(APPCOMPAT_RESOURCES)
-                    implementation(APPCOMPAT)
-                    implementation(NAVIGATION_COMPOSE)
-                    implementation(MEDIA)
-                }
+                implementation(libs.koin.androidx.compose)
+                implementation(libs.bundles.androidx)
+                implementation(libs.room)
 
-                with(Dependencies.Google) {
-                    implementation(ACCOMPANIST_PAGER)
-                    implementation(ACCOMPANIST_PAGER_INDICATORS)
-                    implementation(GSON)
-                    implementation(ACCOMPANIST_SYSTEMUICONTROLLER)
-                }
+                implementation(libs.bundles.accompanist)
+                implementation(libs.gson)
             }
         }
     }
 }
 
 android {
-    namespace = Config.APP_NAMESPACE
-    compileSdk = Config.COMPILE_SDK
+    namespace = "com.github.soulsearching"
+    compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {
-        applicationId = Config.APP_ID
-        minSdk = Config.MIN_SDK
-        targetSdk = Config.TARGET_SDK
-        versionCode = Config.VERSION_CODE
-        versionName = Config.ANDROID_VERSION_NAME
+        applicationId = "com.github.enteraname74.soulsearching"
+        minSdk = libs.versions.android.min.sdk.get().toInt()
+        targetSdk = libs.versions.android.target.sdk.get().toInt()
+        versionCode = libs.versions.android.version.code.get().toInt()
+        versionName = libs.versions.android.version.name.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -101,7 +78,7 @@ android {
 
     this.buildOutputs.all {
         val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-        val name = "${Config.APP_ID}_${Config.ANDROID_VERSION_NAME}.apk"
+        val name = "com.github.enteraname74.soulsearching_${libs.versions.android.version.name.get()}.apk"
         variantOutputImpl.outputFileName = name
     }
 
@@ -110,7 +87,7 @@ android {
             buildConfigField(
                 "String",
                 "VERSION_NAME",
-                "\"" + Config.ANDROID_VERSION_NAME + "-dev" + "\""
+                "\"" + libs.versions.android.version.name.get() + "-dev" + "\""
             )
             manifestPlaceholders["appName"] = "Soul Searching Dev"
             versionNameSuffix = "-dev"
@@ -118,7 +95,11 @@ android {
         }
 
         release {
-            buildConfigField("String", "VERSION_NAME", "\"" + Config.ANDROID_VERSION_NAME + "\"")
+            buildConfigField(
+                "String",
+                "VERSION_NAME",
+                "\"" + libs.versions.android.version.name.get() + "\""
+            )
             manifestPlaceholders["appName"] = "Soul Searching"
             isMinifyEnabled = true
             proguardFiles(
@@ -155,7 +136,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "SoulSearching"
-            packageVersion = Config.DESKTOP_VERSION_NAME
+            packageVersion = "1.0.0"
         }
     }
 }

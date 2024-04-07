@@ -93,10 +93,10 @@ class PlayerService : Service() {
         Log.i("Player service", "ON DESTROY")
         try {
             stopService()
+            stopForeground(STOP_FOREGROUND_REMOVE)
         } catch (_: Exception) {
             Log.e("Player Service", "Failed to stop service in onDestroy")
         }
-        stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
     companion object {

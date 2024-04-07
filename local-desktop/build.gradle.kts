@@ -1,6 +1,3 @@
-import com.github.enteraname74.buildsrc.Dependencies
-import com.github.enteraname74.buildsrc.Versions
-
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.compose")
@@ -13,13 +10,9 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(project(mapOf("path" to ":domain")))
-                implementation(Dependencies.KOIN_CORE)
-                implementation("org.jetbrains.exposed:exposed-core:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-crypt:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-dao:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-jdbc:${Versions.EXPOSED}")
-                implementation("org.jetbrains.exposed:exposed-java-time:${Versions.EXPOSED}")
-                implementation("org.xerial:sqlite-jdbc:3.41.2.2")
+                implementation(libs.koin.core)
+                implementation(libs.bundles.exposed)
+                implementation(libs.sqlite.jdbc)
                 implementation(compose.ui)
             }
         }

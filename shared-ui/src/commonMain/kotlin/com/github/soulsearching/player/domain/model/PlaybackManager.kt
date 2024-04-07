@@ -25,36 +25,29 @@ abstract class PlaybackManager(
     /**
      * The initial list, used by the playback manager.
      */
-    protected var _initialList: ArrayList<Music> = ArrayList()
+    private var initialList: ArrayList<Music> = ArrayList()
 
     /**
      * The played list, used by the player and modified by the user (adding song...).
      */
-    protected var _playedList: ArrayList<Music> = ArrayList()
-    val playedList: List<Music>
-        get() = _playedList
+    var playedList: ArrayList<Music> = ArrayList()
+        protected set
 
     /**
      * The id of the current played list.
      */
-    private var _playedListId: UUID? = null
-    val playedListId: UUID?
-        get() = _playedListId
-
+    var playedListId: UUID? = null
+        private set
     /**
      * If the played list is the main one with all songs.
      */
-    private var _isMainPlaylist: Boolean = false
-    val isMainPlaylist: Boolean
-        get() = _isMainPlaylist
-
+    var isMainPlaylist: Boolean = false
+        private set
     /**
      * The currently played music.
      */
-    protected var _currentMusic: Music? = null
-    val currentMusic: Music?
-        get() = _currentMusic
-
+    var currentMusic: Music? = null
+        private set
     /**
      * Retrieve the current music duration.
      * Returns 0 if no music is playing
@@ -75,7 +68,7 @@ abstract class PlaybackManager(
      */
     val currentMusicIndex: Int
         get() = if (currentMusic == null) -1
-            else _playedList.indexOf(_playedList.find { it.musicId == currentMusic!!.musicId })
+            else playedList.indexOf(playedList.find { it.musicId == currentMusic!!.musicId })
 
 
     /**
@@ -105,23 +98,23 @@ abstract class PlaybackManager(
     /**
      * Reset all information related to the playback.
      */
-    protected fun releasePlaybackManagerInformation() {
-        _initialList = arrayListOf()
-        _playedList = arrayListOf()
-        _currentMusic = null
+    private fun releasePlaybackManagerInformation() {
+        initialList = arrayListOf()
+        playedList = arrayListOf()
+        currentMusic = null
         _currentMusicCover = null
-        _playedListId = null
-        _isMainPlaylist = false
+        playedListId = null
+        isMainPlaylist = false
     }
 
     /**
      * Set the lists used by the player (played and initial list).
      */
     private fun setPlayerLists(musics: List<Music>) {
-        _initialList = ArrayList(musics)
-        _playedList = ArrayList(musics)
+        initialList = ArrayList(musics)
+        playedList = ArrayList(musics)
         callback.onPlayedListUpdated(
-            playedList = _playedList
+            playedList = playedList
         )
     }
 
@@ -154,14 +147,14 @@ abstract class PlaybackManager(
      * Used if there is a problem with the playback of the current song.
      */
     fun skipAndRemoveCurrentSong() {
-        if (_currentMusic == null) return
+        if (currentMusic == null) return
 
         val nextMusic = getNextMusic(currentMusicIndex)
 
-        _playedList.removeIf { it.musicId == _currentMusic!!.musicId }
-        _initialList.removeIf { it.musicId == _currentMusic!!.musicId }
+        playedList.removeIf { it.musicId == currentMusic!!.musicId }
+        initialList.removeIf { it.musicId == currentMusic!!.musicId }
 
-        if (_playedList.isEmpty()) stopPlayback()
+        if (playedList.isEmpty()) stopPlayback()
         else {
             nextMusic?.let {
                 setAndPlayMusic(it)
@@ -174,17 +167,17 @@ abstract class PlaybackManager(
      * If no songs are left in the played list, the playback will stop.
      */
     fun removeSongFromPlayedPlaylist(musicId: UUID) {
-        _playedList.removeIf { it.musicId == musicId }
+        playedList.removeIf { it.musicId == musicId }
 
         // If no songs is left in the queue, stop playing :
-        if (_playedList.isEmpty()) {
+        if (playedList.isEmpty()) {
             stopPlayback()
         } else {
             // If same music than the one played, play next song :
             currentMusic?.let {
                 if (it.musicId.compareTo(musicId) == 0) {
                     // We place ourself in the previous music :
-                    _currentMusic = _playedList[(currentMusicIndex) % _playedList.size]
+                    currentMusic = playedList[(currentMusicIndex) % playedList.size]
                     next()
                 }
             }
@@ -216,7 +209,7 @@ abstract class PlaybackManager(
     /**
      * Release the duration job.
      */
-    protected fun releaseDurationJob() {
+    private fun releaseDurationJob() {
         if (durationJob != null) {
             durationJob?.cancel()
             durationJob = null
@@ -229,7 +222,7 @@ abstract class PlaybackManager(
      * Return the first music if we are at the end of the playlist.
      */
     private fun getNextMusic(currentIndex: Int): Music? {
-        return if (_playedList.isNotEmpty()) _playedList[(currentIndex + 1) % _playedList.size] else null
+        return if (playedList.isNotEmpty()) playedList[(currentIndex + 1) % playedList.size] else null
     }
 
     /**
@@ -238,11 +231,11 @@ abstract class PlaybackManager(
      * Return the last music if we are at the start of the playlist.
      */
     private fun getPreviousMusic(currentIndex: Int): Music? {
-        return if (_playedList.isNotEmpty()) {
+        return if (playedList.isNotEmpty()) {
             if (currentIndex == 0) {
-                _playedList.last()
+                playedList.last()
             } else {
-                _playedList[currentIndex - 1]
+                playedList[currentIndex - 1]
             }
         } else {
             null
@@ -285,7 +278,7 @@ abstract class PlaybackManager(
      * Load the current music of the player view model.
      * The music will not be played.
      */
-    fun onlyLoadMusic() {
+    private fun onlyLoadMusic() {
         player.onlyLoadMusic()
         update()
     }
@@ -294,20 +287,20 @@ abstract class PlaybackManager(
      * Update information of a song in the initial list, current list and the current music if it's the same.
      */
     fun updateMusic(music: Music) {
-        _currentMusic?.let {
+        currentMusic?.let {
             if (it.musicId.compareTo(music.musicId) == 0) {
-                _currentMusic = music
+                currentMusic = music
             }
         }
 
-        val indexCurrent = _playedList.indexOfFirst { it.musicId == music.musicId }
+        val indexCurrent = playedList.indexOfFirst { it.musicId == music.musicId }
         if (indexCurrent != -1) {
-            _playedList[indexCurrent] = music
+            playedList[indexCurrent] = music
         }
 
-        val indexInitial = _initialList.indexOfFirst { it.musicId == music.musicId }
+        val indexInitial = initialList.indexOfFirst { it.musicId == music.musicId }
         if (indexInitial != -1) {
-            _initialList[indexInitial] = music
+            initialList[indexInitial] = music
         }
         update()
     }
@@ -336,9 +329,9 @@ abstract class PlaybackManager(
      * Define the current music.
      */
     private fun setNewCurrentMusicInformation(music: Music?) {
-        _currentMusic = music
+        currentMusic = music
         callback.onCurrentPlayedMusicChanged(
-            music = _currentMusic
+            music = currentMusic
         )
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
     }
@@ -357,20 +350,20 @@ abstract class PlaybackManager(
             }
         }
         // If the current playlist is empty, we load the music :
-        if (_playedList.isEmpty()) {
-            _playedList.add(music)
+        if (playedList.isEmpty()) {
+            playedList.add(music)
             setNewCurrentMusicInformation(music)
             onlyLoadMusic()
         }
 
         // We make sure to remove the music if it's already in the playlist :
-        _playedList.removeIf { it.musicId == music.musicId }
+        playedList.removeIf { it.musicId == music.musicId }
 
         // Finally, we add the new next music :
-        _playedList.add(currentMusicIndex + 1, music)
+        playedList.add(currentMusicIndex + 1, music)
 
         callback.onPlayedListUpdated(
-            playedList = _playedList
+            playedList = playedList
         )
 
         settings.saveCurrentMusicInformation(
@@ -384,15 +377,15 @@ abstract class PlaybackManager(
      * If the index is out of bound, the current music will be the first one of the playlist.
      */
     private fun setMusicFromIndex(index: Int) {
-        if (_playedList.isNotEmpty()) {
-            _currentMusic = if (index <= _playedList.lastIndex) {
-                _playedList[Integer.max(0, index)]
+        if (playedList.isNotEmpty()) {
+            currentMusic = if (index <= playedList.lastIndex) {
+                playedList[Integer.max(0, index)]
             } else {
-                _playedList[0]
+                playedList[0]
             }
         }
         callback.onCurrentPlayedMusicChanged(
-            music = _currentMusic
+            music = currentMusic
         )
     }
 
@@ -414,7 +407,7 @@ abstract class PlaybackManager(
     private fun shuffleCurrentList(listToShuffle: java.util.ArrayList<Music>) {
         val tmpList = listToShuffle.map { it.copy() } as ArrayList<Music>
         tmpList.shuffle()
-        _currentMusic?.let { music ->
+        currentMusic?.let { music ->
             tmpList.removeIf { it.musicId == music.musicId }
             tmpList.add(0, music)
         }
@@ -427,10 +420,10 @@ abstract class PlaybackManager(
      * a UUID).
      */
     fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
-        if (playlistId == null && this._playedListId == null) {
-            return isMainPlaylist == this._isMainPlaylist
-        } else if (playlistId != null && this._playedListId != null) {
-            return (playlistId.compareTo(_playedListId) == 0) && (isMainPlaylist == this._isMainPlaylist)
+        if (playlistId == null && this.playedListId == null) {
+            return isMainPlaylist == this.isMainPlaylist
+        } else if (playlistId != null && this.playedListId != null) {
+            return (playlistId.compareTo(playedListId) == 0) && (isMainPlaylist == this.isMainPlaylist)
         }
         return false
     }
@@ -449,9 +442,9 @@ abstract class PlaybackManager(
      * Define the current played list.
      */
     private fun setCurrentPlayedList(playedList: ArrayList<Music>){
-        _playedList = playedList
+        this.playedList = playedList
         callback.onPlayedListUpdated(
-            playedList = _playedList
+            playedList = this.playedList
         )
     }
 
@@ -476,7 +469,7 @@ abstract class PlaybackManager(
      * Set and play a Music.
      */
     open fun setAndPlayMusic(music: Music) {
-        _currentMusic = music
+        currentMusic = music
         player.setMusic(music)
         player.launchMusic()
         updateNbPlayed(music.musicId)
@@ -510,24 +503,24 @@ abstract class PlaybackManager(
             when (_playerMode) {
                 PlayerMode.NORMAL -> {
                     // to shuffle mode :
-                    shuffleCurrentList(_playedList)
+                    shuffleCurrentList(playedList)
                     setPlayerMode(playerMode =  PlayerMode.SHUFFLE)
                 }
                 PlayerMode.SHUFFLE -> {
                     // to loop mode :
-                    _playedList = if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
-                    _playedListId = null
+                    playedList = if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
+                    playedListId = null
                     callback.onPlayedListUpdated(
-                        playedList = _playedList
+                        playedList = playedList
                     )
                     setPlayerMode(playerMode =  PlayerMode.LOOP)
                 }
                 PlayerMode.LOOP -> {
                     // to normal mode :
-                    _playedList = _initialList.map { it.copy() } as java.util.ArrayList<Music>
-                    _playedListId = null
+                    playedList = initialList.map { it.copy() } as java.util.ArrayList<Music>
+                    playedListId = null
                     callback.onPlayedListUpdated(
-                        playedList = _playedList
+                        playedList = playedList
                     )
                     setPlayerMode(playerMode =  PlayerMode.NORMAL)
                 }
@@ -571,8 +564,8 @@ abstract class PlaybackManager(
         val notSameMusic = !isSameMusicAsCurrentPlayedOne(music.musicId)
 
         if (shouldForcePlaylistOrNewPlaylist) {
-            setPlayerLists(_playedList)
-            this@PlaybackManager._isMainPlaylist = isMainPlaylist
+            setPlayerLists(playedList)
+            this@PlaybackManager.isMainPlaylist = isMainPlaylist
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = currentMusicIndex,
                 currentMusicPosition = currentMusicPosition
@@ -590,10 +583,10 @@ abstract class PlaybackManager(
      * Remove a music from the playlist if the playlist is the same as a specified one.
      */
     fun removeMusicIfSamePlaylist(musicId: UUID, playlistId: UUID?) {
-        if (playlistId == null && _playedListId == null) {
+        if (playlistId == null && playedListId == null) {
             removeSongFromPlayedPlaylist(musicId)
-        } else if (playlistId != null && _playedListId != null) {
-            if (playlistId.compareTo(_playedListId) == 0) {
+        } else if (playlistId != null && playedListId != null) {
+            if (playlistId.compareTo(playedListId) == 0) {
                 removeSongFromPlayedPlaylist(musicId)
             }
         }
@@ -603,11 +596,11 @@ abstract class PlaybackManager(
      * Play a playlist in shuffle and save it.
      */
     fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
-        _playedListId = null
-        _isMainPlaylist = false
+        playedListId = null
+        isMainPlaylist = false
 
         setPlayerLists(playlist.shuffled())
-        savePlayerListMethod(_playedList.map { it.musicId } as ArrayList<UUID>)
+        savePlayerListMethod(playedList.map { it.musicId } as ArrayList<UUID>)
 
         setPlayerMode(PlayerMode.NORMAL)
         settings.setPlayerMode(
@@ -619,8 +612,8 @@ abstract class PlaybackManager(
             currentMusicPosition = currentMusicPosition
         )
 
-        setNewCurrentMusicInformation(_playedList[0])
-        setAndPlayMusic(_playedList[0])
+        setNewCurrentMusicInformation(playedList[0])
+        setAndPlayMusic(playedList[0])
     }
 
     /**
@@ -647,10 +640,10 @@ abstract class PlaybackManager(
         if (durationJob == null && isPlaying) {
             launchDurationJob()
         }
-        defineCoverAndPaletteFromCoverId(_currentMusic?.coverId)
-        callback.onCurrentPlayedMusicChanged(music = _currentMusic)
+        defineCoverAndPaletteFromCoverId(currentMusic?.coverId)
+        callback.onCurrentPlayedMusicChanged(music = currentMusic)
         callback.onPlayingStateChanged(isPlaying = isPlaying)
-        callback.onPlayedListUpdated(playedList = _playedList)
+        callback.onPlayedListUpdated(playedList = playedList)
         callback.onCurrentMusicPositionChanged(position = currentMusicPosition)
     }
 

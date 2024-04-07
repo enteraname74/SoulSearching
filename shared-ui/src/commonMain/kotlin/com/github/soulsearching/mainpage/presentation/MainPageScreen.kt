@@ -77,15 +77,17 @@ import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 /**
  * Represent the view of the main page screen.
  */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn( ExperimentalMaterialApi::class)
 data class MainPageScreen(
     private val playerDraggableState: SwipeableState<BottomSheetStates>,
     private val searchDraggableState: SwipeableState<BottomSheetStates>
-) : Screen {
+) : Screen, Serializable {
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -677,3 +679,4 @@ fun MainPageScreenView(
         }
     }
 }
+
