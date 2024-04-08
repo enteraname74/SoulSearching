@@ -16,11 +16,7 @@ import kotlinx.coroutines.launch
  */
 class PlayerDraggableState {
     @OptIn(ExperimentalMaterialApi::class)
-    val state: SwipeableState<BottomSheetStates>
-        @Composable
-        get() = rememberSwipeableState(
-            initialValue = BottomSheetStates.COLLAPSED
-        )
+    val state: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalMaterialApi::class)
     val currentValue: BottomSheetStates
