@@ -2,20 +2,9 @@ package com.github.soulsearching.elementpage.playlistpage.domain
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.domain.events.handlers.MusicEventHandler
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import kotlinx.coroutines.CoroutineScope
@@ -34,17 +23,7 @@ import java.util.UUID
  */
 class SelectedPlaylistViewModelHandler(
     private val coroutineScope: CoroutineScope,
-    private val playlistRepository: PlaylistRepository,
-    musicRepository: MusicRepository,
-    artistRepository: ArtistRepository,
-    albumRepository: AlbumRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    musicArtistRepository: MusicArtistRepository,
-    imageCoverRepository: ImageCoverRepository,
-    settings: SoulSearchingSettings,
-    playbackManager: PlaybackManager
+    private val playlistRepository: PlaylistRepository
 ) : ViewModelHandler {
     private var _selectedPlaylistMusics: StateFlow<PlaylistWithMusics?> = MutableStateFlow(
         PlaylistWithMusics()
@@ -56,21 +35,20 @@ class SelectedPlaylistViewModelHandler(
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
-    private val musicEventHandler = MusicEventHandler(
-        privateState = _musicState,
-        publicState = musicState,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
-    )
+//    private val musicEventHandler = MusicEventHandler(
+//        privateState = _musicState,
+//        publicState = musicState,
+//        musicRepository = musicRepository,
+//        playlistRepository = playlistRepository,
+//        albumRepository = albumRepository,
+//        artistRepository = artistRepository,
+//        musicPlaylistRepository = musicPlaylistRepository,
+//        musicAlbumRepository = musicAlbumRepository,
+//        musicArtistRepository = musicArtistRepository,
+//        albumArtistRepository = albumArtistRepository,
+//        settings = settings,
+//        playbackManager = playbackManager
+//    )
 
     /**
      * Set the selected playlist.
@@ -146,6 +124,6 @@ class SelectedPlaylistViewModelHandler(
      * Manage music events.
      */
     fun onMusicEvent(event : MusicEvent) {
-        musicEventHandler.handleEvent(event)
+//        musicEventHandler.handleEvent(event)
     }
 }

@@ -24,17 +24,10 @@ class AllMusicsViewModelDesktopHandler(
 ) : AllMusicsViewModelHandler(
     coroutineScope = coroutineScope,
     musicRepository = musicRepository,
-    playlistRepository = playlistRepository,
-    musicPlaylistRepository = musicPlaylistRepository,
-    albumRepository = albumRepository,
-    artistRepository = artistRepository,
     musicAlbumRepository = musicAlbumRepository,
     musicArtistRepository = musicArtistRepository,
-    albumArtistRepository = albumArtistRepository,
-    imageCoverRepository = imageCoverRepository,
     settings = settings,
-    musicFetcher = musicFetcher,
-    playbackManager = playbackManager
+    musicFetcher = musicFetcher
 ) {
     override fun checkAndDeleteMusicIfNotExist() {}
 }

@@ -34,16 +34,6 @@ class SelectedArtistViewModelDesktopImpl(
 ) : SelectedArtistViewModel {
     override val handler: SelectedArtistViewModelHandler = SelectedArtistViewModelHandler(
         coroutineScope = CoroutineScope(Dispatchers.IO),
-        artistRepository = artistRepository,
-        musicRepository = musicRepository,
-        albumRepository = albumRepository,
-        playlistRepository = playlistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        albumArtistRepository = albumArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
+        artistRepository = artistRepository
     )
 }

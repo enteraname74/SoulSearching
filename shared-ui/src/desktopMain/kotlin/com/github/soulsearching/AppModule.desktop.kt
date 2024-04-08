@@ -42,9 +42,7 @@ actual val appModule: Module = module {
     single {
         AllAlbumsViewModelDesktopImpl(
             albumRepository = get(),
-            musicRepository = get(),
-            artistRepository = get(),
-            musicArtistRepository = get(),
+            albumService = get(),
             settings = get()
         )
     }
@@ -60,11 +58,7 @@ actual val appModule: Module = module {
         SettingsAllFoldersViewModelDesktopImpl(
             folderRepository = get(),
             musicRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            albumArtistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get()
+            musicService = get()
         )
     }
     single {

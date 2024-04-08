@@ -1,12 +1,8 @@
 package com.github.soulsearching.viewmodel
 
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
 import com.github.soulsearching.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
 
@@ -16,19 +12,11 @@ import com.github.soulsearching.settings.managemusics.managefolders.domain.Setti
 class SettingsAllFoldersViewModelDesktopImpl(
     folderRepository: FolderRepository,
     musicRepository: MusicRepository,
-    albumRepository: AlbumRepository,
-    artistRepository: ArtistRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    musicArtistRepository: MusicArtistRepository,
+    musicService: MusicService
 ) : SettingsAllFoldersViewModel {
     override val handler: SettingsAllFolderViewModelHandler = SettingsAllFolderViewModelHandler(
         folderRepository = folderRepository,
         musicRepository = musicRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        albumArtistRepository = albumArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository
+        musicService = musicService
     )
 }

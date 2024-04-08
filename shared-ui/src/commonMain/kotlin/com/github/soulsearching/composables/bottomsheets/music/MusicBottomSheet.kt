@@ -71,7 +71,9 @@ fun MusicBottomSheet(
                     }
             },
             quickAccessAction = {
-                onMusicEvent(MusicEvent.UpdateQuickAccessState)
+                onMusicEvent(MusicEvent.UpdateQuickAccessState(
+                    musicId = musicState.selectedMusic.musicId
+                ))
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!musicModalSheetState.isVisible) {

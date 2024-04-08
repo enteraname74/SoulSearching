@@ -1,14 +1,10 @@
 package com.github.soulsearching.modifyelement.modifymusic.domain
 
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.domain.service.ImageCoverService
+import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -30,38 +26,17 @@ import java.util.UUID
 class ModifyMusicViewModelHandler(
     coroutineScope: CoroutineScope,
     private val musicRepository: MusicRepository,
-    playlistRepository: PlaylistRepository,
-    artistRepository: ArtistRepository,
-    albumRepository: AlbumRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    musicArtistRepository: MusicArtistRepository,
     private val imageCoverRepository: ImageCoverRepository,
+    private val musicService: MusicService,
+    private val imageCoverService: ImageCoverService,
     settings: SoulSearchingSettings,
-    playbackManager: PlaybackManager
+    private val playbackManager: PlaybackManager
 ) : ViewModelHandler {
-    private val _state = MutableStateFlow(MusicState())
+    private val _state = MutableStateFlow(ModifyMusicState())
     val state = _state.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(5000),
-        MusicState()
-    )
-
-    private val musicEventHandler = MusicEventHandler(
-        privateState = _state,
-        publicState = state,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
+        ModifyMusicState()
     )
 
     /**
@@ -79,9 +54,8 @@ class ModifyMusicViewModelHandler(
             _state.update {
                 it.copy(
                     selectedMusic = music,
-                    name = music.name,
-                    album = music.album,
-                    artist = music.artist,
+                    modifiedMusicInformation = music.copy(),
+                    isSelectedMusicFetched = true,
                     hasCoverBeenChanged = false,
                     cover = cover?.cover
                 )
@@ -92,7 +66,94 @@ class ModifyMusicViewModelHandler(
     /**
      * Manage music events.
      */
-    fun onMusicEvent(event: MusicEvent) {
-        musicEventHandler.handleEvent(event)
+    fun onEvent(event: ModifyMusicEvent) {
+        when(event) {
+            is ModifyMusicEvent.SetAlbum -> setAlbum(albumName = event.album)
+            is ModifyMusicEvent.SetArtist -> setArtist(artistName = event.artist)
+            is ModifyMusicEvent.SetCover -> setCover(cover = event.cover)
+            is ModifyMusicEvent.SetName -> setName(name = event.name)
+            ModifyMusicEvent.UpdateMusic -> updateMusic()
+        }
+    }
+
+    /**
+     * Set the cover of the modified music.
+     */
+    private fun setCover(cover: ImageBitmap) {
+        _state.update {
+            it.copy(
+                cover = cover,
+                hasCoverBeenChanged = true
+            )
+        }
+    }
+
+    /**
+     * Set the name of the modified music.
+     */
+    private fun setName(name: String) {
+        _state.update {
+            it.copy(
+                modifiedMusicInformation = it.modifiedMusicInformation.copy(
+                    name = name
+                )
+            )
+        }
+    }
+    /**
+     * Set the artist of the modified music.
+     */
+    private fun setArtist(artistName: String) {
+        _state.update {
+            it.copy(
+                modifiedMusicInformation = it.modifiedMusicInformation.copy(
+                    artist = artistName
+                )
+            )
+        }
+    }
+
+    /**
+     * Set the album of the modified music.
+     */
+    private fun setAlbum(albumName: String) {
+        _state.update {
+            it.copy(
+                modifiedMusicInformation = it.modifiedMusicInformation.copy(
+                    album = albumName
+                )
+            )
+        }
+    }
+
+    /**
+     * Update selected music information.
+     */
+    private fun updateMusic() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val coverId = if (_state.value.hasCoverBeenChanged && _state.value.cover != null) {
+                imageCoverService.save(cover = _state.value.cover!!)
+            } else {
+                _state.value.selectedMusic.coverId
+            }
+
+            val newMusicInformation = _state.value.modifiedMusicInformation.copy(
+                coverId = coverId
+            )
+
+            musicService.update(
+                legacyMusic = _state.value.selectedMusic,
+                newMusicInformation = newMusicInformation
+            )
+
+            playbackManager.updateMusic(newMusicInformation)
+            playbackManager.currentMusic?.let {
+                if (it.musicId.compareTo(newMusicInformation.musicId) == 0) {
+                    playbackManager.updateCover(
+                        cover = _state.value.cover
+                    )
+                }
+            }
+        }
     }
 }

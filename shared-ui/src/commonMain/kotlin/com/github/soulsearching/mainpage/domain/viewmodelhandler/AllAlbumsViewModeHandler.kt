@@ -4,13 +4,13 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.service.AlbumService
 import com.github.soulsearching.domain.events.AlbumEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.domain.state.AlbumState
+import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.domain.utils.Utils
-import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.mainpage.domain.state.AlbumState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,10 +28,8 @@ import kotlinx.coroutines.launch
 open class AllAlbumsViewModeHandler(
     coroutineScope: CoroutineScope,
     private val albumRepository: AlbumRepository,
-    private val musicRepository: MusicRepository,
-    private val artistRepository: ArtistRepository,
-    private val musicArtistRepository: MusicArtistRepository,
-    private val settings: SoulSearchingSettings
+    private val settings: SoulSearchingSettings,
+    private val albumService: AlbumService
 ) : ViewModelHandler {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -91,20 +89,7 @@ open class AllAlbumsViewModeHandler(
         when (event) {
             AlbumEvent.DeleteAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    // On supprime d'abord les musiques de l'album :
-                    musicRepository.deleteMusicFromAlbum(
-                        album = state.value.selectedAlbumWithArtist.album.albumName,
-                        artist = state.value.selectedAlbumWithArtist.artist!!.artistName
-                    )
-                    // On supprime ensuite l'album :
-                    albumRepository.deleteAlbum(state.value.selectedAlbumWithArtist.album)
-
-                    // On vérifie si on peut supprimer l'artiste :
-                    Utils.checkAndDeleteArtist(
-                        artistToCheck = state.value.selectedAlbumWithArtist.artist!!,
-                        musicArtistRepository = musicArtistRepository,
-                        artistRepository = artistRepository
-                    )
+                    albumService.delete(albumId = state.value.selectedAlbumWithArtist.album.albumId)
                 }
             }
             is AlbumEvent.SetSelectedAlbum -> {

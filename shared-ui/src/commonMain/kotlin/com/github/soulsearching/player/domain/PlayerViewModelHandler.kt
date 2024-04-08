@@ -62,29 +62,28 @@ class PlayerViewModelHandler(
     @OptIn(ExperimentalMaterialApi::class)
     val playerDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
-    private val musicEventHandler = MusicEventHandler(
-        privateState = _musicState,
-        publicState = musicState,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        sortDirection = _sortDirection,
-        sortType = _sortType,
-        settings = settings,
-        playbackManager = playbackManager
-    )
+//    private val musicEventHandler = MusicEventHandler(
+//        privateState = _musicState,
+//        publicState = musicState,
+//        musicRepository = musicRepository,
+//        playlistRepository = playlistRepository,
+//        albumRepository = albumRepository,
+//        artistRepository = artistRepository,
+//        musicPlaylistRepository = musicPlaylistRepository,
+//        musicAlbumRepository = musicAlbumRepository,
+//        musicArtistRepository = musicArtistRepository,
+//        albumArtistRepository = albumArtistRepository,
+//        sortType = _sortType,
+//        sortDirection = _sortDirection,
+//        settings = settings,
+//        playbackManager = playbackManager
+//    )
 
 
     /**
      * Manage music events.
      */
     fun onMusicEvent(event: MusicEvent) {
-        musicEventHandler.handleEvent(event)
+//        musicEventHandler.handleEvent(event)
     }
 }

@@ -1,16 +1,11 @@
 package com.github.soulsearching.settings.managemusics.managefolders.domain
 
 import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.settings.managemusics.managefolders.domain.model.FolderStateType
-import com.github.soulsearching.domain.utils.Utils
+import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.settings.managemusics.managefolders.domain.model.FolderStateType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,11 +20,7 @@ import kotlinx.coroutines.runBlocking
 open class SettingsAllFolderViewModelHandler(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
-    private val albumRepository: AlbumRepository,
-    private val artistRepository: ArtistRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val musicArtistRepository: MusicArtistRepository,
+    private val musicService: MusicService
 ): ViewModelHandler {
     private val _state = MutableStateFlow(FolderState())
     val state = _state.asStateFlow()
@@ -97,14 +88,8 @@ open class SettingsAllFolderViewModelHandler(
                             }
                             var count = 0
                             musicsFromFolder.forEach { music ->
-                                Utils.removeMusicFromApp(
-                                    musicRepository = musicRepository,
-                                    albumRepository = albumRepository,
-                                    artistRepository = artistRepository,
-                                    albumArtistRepository = albumArtistRepository,
-                                    musicAlbumRepository = musicAlbumRepository,
-                                    musicArtistRepository = musicArtistRepository,
-                                    musicToRemove = music
+                                musicService.delete(
+                                    musicId = music.musicId
                                 )
                                 count++
                                 event.updateProgress((count * 1F) / musicsFromFolder.size)

@@ -2,19 +2,10 @@ package com.github.soulsearching.elementpage.albumpage.domain
 
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.AlbumEvent
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
-import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
@@ -35,16 +26,7 @@ import java.util.UUID
 class SelectedAlbumViewModelHandler(
     private val coroutineScope: CoroutineScope,
     private val albumRepository: AlbumRepository,
-    artistRepository: ArtistRepository,
-    musicRepository: MusicRepository,
-    playlistRepository: PlaylistRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    musicArtistRepository: MusicArtistRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    imageCoverRepository: ImageCoverRepository,
-    settings: SoulSearchingSettings,
-    playbackManager: PlaybackManager
+    settings: SoulSearchingSettings
 ) : ViewModelHandler {
     private var _selectedAlbumWithMusics : StateFlow<AlbumWithMusics?> = MutableStateFlow(
         AlbumWithMusics()
@@ -56,21 +38,11 @@ class SelectedAlbumViewModelHandler(
     private val _musicState = MutableStateFlow(MusicState())
     var musicState: StateFlow<MusicState> = _musicState
 
-    private val musicEventHandler = MusicEventHandler(
-        privateState = _musicState,
-        publicState = musicState,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
-    )
+//    private val musicEventHandler = MusicEventHandler(
+//        privateState = _musicState,
+//        publicState = musicState,
+//        settings = settings,
+//    )
 
     /**
      * Set the selected album.
@@ -152,6 +124,6 @@ class SelectedAlbumViewModelHandler(
      * Manage music event.
      */
     fun onMusicEvent(event: MusicEvent) {
-        musicEventHandler.handleEvent(event)
+//        musicEventHandler.handleEvent(event)
     }
 }

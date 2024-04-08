@@ -80,23 +80,22 @@ class PlayerMusicListViewModelHandler(
         MusicState()
     )
 
-    private val musicEventHandler = MusicEventHandler(
-        privateState = _state,
-        publicState = state,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        albumArtistRepository = albumArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        sortDirection = _sortDirection,
-        sortType = _sortType,
-        settings = settings,
-        playbackManager = playbackManager
-    )
+//    private val musicEventHandler = MusicEventHandler(
+//        privateState = _state,
+//        publicState = state,
+//        musicRepository = musicRepository,
+//        playlistRepository = playlistRepository,
+//        albumRepository = albumRepository,
+//        artistRepository = artistRepository,
+//        musicPlaylistRepository = musicPlaylistRepository,
+//        musicAlbumRepository = musicAlbumRepository,
+//        musicArtistRepository = musicArtistRepository,
+//        albumArtistRepository = albumArtistRepository,
+//        sortType = _sortType,
+//        sortDirection = _sortDirection,
+//        settings = settings,
+//        playbackManager = playbackManager
+//    )
 
     /**
      * Retrieve the player music list from the database.
@@ -141,6 +140,6 @@ class PlayerMusicListViewModelHandler(
      * Manage music events.
      */
     fun onMusicEvent(event: MusicEvent) {
-        musicEventHandler.handleEvent(event)
+//        musicEventHandler.handleEvent(event)
     }
 }

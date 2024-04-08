@@ -61,9 +61,7 @@ actual val appModule = module {
     single<AllAlbumsViewModel> {
         AllAlbumsViewModelAndroidImpl(
             albumRepository = get(),
-            musicRepository = get(),
-            artistRepository = get(),
-            musicArtistRepository = get(),
+            albumService = get(),
             settings = get()
         )
     }
@@ -79,11 +77,7 @@ actual val appModule = module {
         SettingsAllFoldersViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            albumArtistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get()
+            musicService = get()
         )
     }
     single<AllImageCoversViewModel> {
@@ -98,19 +92,13 @@ actual val appModule = module {
     single<AllMusicsViewModel> {
         AllMusicsViewModelAndroidImpl(
             musicRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            folderRepository = get(),
             settings = get(),
             context = androidContext(),
             playbackManager = get(),
-            musicFetcher = get()
+            musicFetcher = get(),
+            musicService = get()
         )
     }
     single<AllPlaylistsViewModel> {
@@ -160,16 +148,11 @@ actual val appModule = module {
     single<ModifyMusicViewModel> {
         ModifyMusicViewModelAndroidImpl(
             musicRepository = get(),
-            playlistRepository = get(),
-            artistRepository = get(),
-            albumRepository = get(),
-            musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
-            musicArtistRepository = get(),
             imageCoverRepository = get(),
             settings = get(),
-            playbackManager = get()
+            playbackManager = get(),
+            musicService = get(),
+            imageCoverService = get()
         )
     }
     single<ModifyPlaylistViewModel> {

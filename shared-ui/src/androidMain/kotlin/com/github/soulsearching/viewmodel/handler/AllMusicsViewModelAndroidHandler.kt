@@ -2,15 +2,10 @@ package com.github.soulsearching.viewmodel.handler
 
 import android.content.Context
 import android.widget.Toast
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.R
 import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 import com.github.soulsearching.domain.model.MusicFetcher
@@ -29,31 +24,20 @@ class AllMusicsViewModelAndroidHandler(
     private val context: Context,
     coroutineScope: CoroutineScope,
     private val musicRepository: MusicRepository,
-    playlistRepository: PlaylistRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
-    albumRepository: AlbumRepository,
-    artistRepository: ArtistRepository,
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
-    private val playbackManager: PlaybackManager
+    private val playbackManager: PlaybackManager,
+    musicService: MusicService
 ) : AllMusicsViewModelHandler(
     coroutineScope = coroutineScope,
     musicRepository = musicRepository,
-    playlistRepository = playlistRepository,
-    musicPlaylistRepository = musicPlaylistRepository,
-    albumRepository = albumRepository,
-    artistRepository = artistRepository,
     musicAlbumRepository = musicAlbumRepository,
     musicArtistRepository = musicArtistRepository,
-    albumArtistRepository = albumArtistRepository,
-    imageCoverRepository = imageCoverRepository,
     settings = settings,
     musicFetcher = musicFetcher,
-    playbackManager = playbackManager
+    musicService = musicService
 ) {
     /**
      * Check all musics and delete the one that does not exists (if the path of the music is not valid).

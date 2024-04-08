@@ -18,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,15 +27,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
+import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicEvent
+import com.github.soulsearching.strings.strings
 import java.util.UUID
 
 @Composable
@@ -48,17 +44,11 @@ fun ModifyMusicComposable(
     finishAction: () -> Unit,
     selectImage: () -> Unit
 ) {
-    var isMusicFetched by rememberSaveable {
-        mutableStateOf(false)
-    }
+    val state by modifyMusicViewModel.handler.state.collectAsState()
 
-    if (!isMusicFetched) {
-        modifyMusicViewModel.handler.getMusicFromId(UUID.fromString(selectedMusicId))
-        isMusicFetched = true
-    }
+    if (!state.isSelectedMusicFetched) modifyMusicViewModel.handler.getMusicFromId(UUID.fromString(selectedMusicId))
 
     val focusManager = LocalFocusManager.current
-    val musicState by modifyMusicViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -67,7 +57,7 @@ fun ModifyMusicComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyMusicViewModel.handler.onMusicEvent(MusicEvent.UpdateMusic)
+                    modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
                     finishAction()
                 }
             )
@@ -99,7 +89,7 @@ fun ModifyMusicComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = musicState.cover,
+                                bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -110,19 +100,21 @@ fun ModifyMusicComposable(
                                 .weight(2F)
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            state = musicState,
+                            name = state.modifiedMusicInformation.name,
+                            album = state.modifiedMusicInformation.album,
+                            artist = state.modifiedMusicInformation.artist,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.handler.onMusicEvent(MusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.handler.onMusicEvent(
-                                    MusicEvent.SetAlbum(
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.handler.onMusicEvent(
-                                    MusicEvent.SetArtist(
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetArtist(
                                         it
                                     )
                                 )
@@ -156,7 +148,7 @@ fun ModifyMusicComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = musicState.cover,
+                                bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -168,19 +160,21 @@ fun ModifyMusicComposable(
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            state = musicState,
+                            name = state.modifiedMusicInformation.name,
+                            album = state.modifiedMusicInformation.album,
+                            artist = state.modifiedMusicInformation.artist,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.handler.onMusicEvent(MusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.handler.onMusicEvent(
-                                    MusicEvent.SetAlbum(
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.handler.onMusicEvent(
-                                    MusicEvent.SetArtist(
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetArtist(
                                         it
                                     )
                                 )
@@ -196,7 +190,9 @@ fun ModifyMusicComposable(
 @Composable
 fun ModifyMusicTextFields(
     modifier: Modifier,
-    state: MusicState,
+    name: String,
+    album: String,
+    artist: String,
     focusManager: FocusManager,
     setName: (String) -> Unit,
     setAlbum: (String) -> Unit,
@@ -217,19 +213,19 @@ fun ModifyMusicTextFields(
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             AppTextField(
-                value = state.name,
+                value = name,
                 onValueChange = { setName(it) },
                 labelName = strings.musicName,
                 focusManager = focusManager
             )
             AppTextField(
-                value = state.album,
+                value = album,
                 onValueChange = { setAlbum(it) },
                 labelName = strings.albumName,
                 focusManager = focusManager
             )
             AppTextField(
-                value = state.artist,
+                value = artist,
                 onValueChange = { setArtist(it) },
                 labelName = strings.artistName,
                 focusManager = focusManager

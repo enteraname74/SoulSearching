@@ -34,16 +34,6 @@ class SelectedArtistViewModelAndroidImpl(
 ) : SelectedArtistViewModel, ViewModel() {
     override val handler: SelectedArtistViewModelHandler = SelectedArtistViewModelHandler(
         coroutineScope = viewModelScope,
-        artistRepository = artistRepository,
-        musicRepository = musicRepository,
-        albumRepository = albumRepository,
-        playlistRepository = playlistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
-        albumArtistRepository = albumArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
+        artistRepository = artistRepository
     )
 }

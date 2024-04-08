@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.service.AlbumService
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
@@ -15,17 +16,13 @@ import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllAlbumsViewMo
  */
 class AllAlbumsViewModelAndroidImpl(
     albumRepository: AlbumRepository,
-    musicRepository: MusicRepository,
-    artistRepository: ArtistRepository,
-    musicArtistRepository: MusicArtistRepository,
+    albumService: AlbumService,
     settings: SoulSearchingSettings
 ) : AllAlbumsViewModel, ViewModel() {
     override val handler: AllAlbumsViewModeHandler = AllAlbumsViewModeHandler(
         coroutineScope = viewModelScope,
         albumRepository = albumRepository,
-        musicRepository = musicRepository,
-        artistRepository = artistRepository,
-        musicArtistRepository = musicArtistRepository,
-        settings = settings
+        settings = settings,
+        albumService = albumService
     )
 }
