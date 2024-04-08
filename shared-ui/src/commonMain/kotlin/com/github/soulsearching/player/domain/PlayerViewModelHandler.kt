@@ -1,5 +1,7 @@
 package com.github.soulsearching.player.domain
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +22,7 @@ import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.player.domain.model.PlayerMode
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
@@ -41,9 +43,8 @@ class PlayerViewModelHandler(
     musicArtistRepository: MusicArtistRepository,
     albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
-    private val settings: SoulSearchingSettings,
-    private val playbackManager: PlaybackManager,
-    private val colorThemeManager: ColorThemeManager
+    settings: SoulSearchingSettings,
+    playbackManager: PlaybackManager
 ): ViewModelHandler {
     private val _musicState = MutableStateFlow(MusicState())
     val musicState = _musicState.asStateFlow()
@@ -57,6 +58,9 @@ class PlayerViewModelHandler(
     var currentPlaylist by mutableStateOf<List<Music>>(emptyList())
     var isPlaying by mutableStateOf(false)
     var playerMode by mutableStateOf(PlayerMode.NORMAL)
+
+    @OptIn(ExperimentalMaterialApi::class)
+    val playerDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     private val musicEventHandler = MusicEventHandler(
         privateState = _musicState,

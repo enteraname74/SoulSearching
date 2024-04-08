@@ -1,6 +1,7 @@
 package com.github.soulsearching
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -14,17 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
+import cafe.adriel.voyager.transitions.FadeTransition
+import cafe.adriel.voyager.transitions.ScaleTransition
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.github.soulsearching.appinit.presentation.FetchingMusicsComposable
-import com.github.soulsearching.player.presentation.PlayerDraggableView
-import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.presentation.MainPageScreen
-import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
-import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.domain.di.injectElement
+import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
@@ -34,6 +32,13 @@ import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
+import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.soulsearching.mainpage.presentation.MainPageScreen
+import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.player.presentation.PlayerDraggableView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,15 +50,15 @@ fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
 ) {
-    val playerDraggableState = rememberSwipeableState(
-        initialValue = BottomSheetStates.COLLAPSED
-    )
-    val musicListDraggableState = rememberSwipeableState(
-        initialValue = BottomSheetStates.COLLAPSED
-    )
-    val searchDraggableState = rememberSwipeableState(
-        initialValue = BottomSheetStates.COLLAPSED
-    )
+//    val playerDraggableState = rememberSwipeableState(
+//        initialValue = BottomSheetStates.COLLAPSED
+//    )
+//    val musicListDraggableState = rememberSwipeableState(
+//        initialValue = BottomSheetStates.COLLAPSED
+//    )
+//    val searchDraggableState = rememberSwipeableState(
+//        initialValue = BottomSheetStates.COLLAPSED
+//    )
 
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
     val allPlaylistsViewModel = injectElement<AllPlaylistsViewModel>()
@@ -70,6 +75,9 @@ fun SoulSearchingApplication(
     val playerMusicState by playerViewModel.handler.musicState.collectAsState()
 
     val coversState by allImageCoversViewModel.handler.state.collectAsState()
+
+    val playerDraggableState = playerViewModel.handler.playerDraggableState
+    val musicListDraggableState = playerMusicListViewModel.handler.musicListDraggableState
 
     if (coversState.covers.isNotEmpty() && !mainActivityViewModel.handler.cleanImagesLaunched) {
         LaunchedEffect("Covers check") {
@@ -119,6 +127,9 @@ fun SoulSearchingApplication(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                color = SoulSearchingColorTheme.colorScheme.primary
+            )
     ) {
         val constraintsScope = this
         val maxHeight = with(LocalDensity.current) {
@@ -142,12 +153,7 @@ fun SoulSearchingApplication(
             }
         }
 
-        Navigator(
-            MainPageScreen(
-                playerDraggableState = playerDraggableState,
-                searchDraggableState = searchDraggableState
-            )
-        ) { navigator ->
+        Navigator(MainPageScreen) { navigator ->
             generalNavigator = navigator
 
             CrossfadeTransition(

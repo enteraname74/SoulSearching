@@ -63,11 +63,7 @@ abstract class AllMusicsViewModelHandler(
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
     @OptIn(ExperimentalMaterialApi::class)
-    val drag: SwipeableState<BottomSheetStates>
-    @Composable
-    get() = rememberSwipeableState(
-        initialValue = BottomSheetStates.COLLAPSED
-    )
+    val searchDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->

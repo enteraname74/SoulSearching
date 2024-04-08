@@ -1,5 +1,7 @@
 package com.github.soulsearching.playedlist.domain
 
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.PlayerWithMusicItem
@@ -17,6 +19,7 @@ import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
@@ -53,6 +56,9 @@ class PlayerMusicListViewModelHandler(
     private var job: Job? = null
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+
+    @OptIn(ExperimentalMaterialApi::class)
+    val musicListDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     private var _playerMusicList: StateFlow<List<PlayerWithMusicItem>> =
         playerMusicRepository.getAllPlayerMusicsAsFlow()

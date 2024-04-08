@@ -46,7 +46,6 @@ class PlayerViewModelAndroidImpl(
         albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         settings = settings,
-        playbackManager = playbackManager,
-        colorThemeManager = colorThemeManager
+        playbackManager = playbackManager
     )
 }

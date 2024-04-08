@@ -49,10 +49,10 @@ import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllQuickAccessViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.soulsearching.elementpage.playlistpage.presentation.SelectedPlaylistScreen
-import com.github.soulsearching.mainpage.domain.MainPageSerializer
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.PagerScreen
 import com.github.soulsearching.mainpage.domain.model.SortDirection
@@ -78,17 +78,12 @@ import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSett
 import com.github.soulsearching.settings.presentation.SettingsScreen
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
 /**
  * Represent the view of the main page screen.
  */
 @OptIn( ExperimentalMaterialApi::class)
-@Serializable(with = MainPageSerializer::class)
-data class MainPageScreen(
-    val playerDraggableState: SwipeableState<BottomSheetStates>,
-    val searchDraggableState: SwipeableState<BottomSheetStates>
-) : Screen {
+data object MainPageScreen: Screen {
 
     @Composable
     override fun Content() {
@@ -101,12 +96,16 @@ data class MainPageScreen(
         val allImageCoversViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
         val allQuickAccessViewModel = getScreenModel<AllQuickAccessViewModel>()
+        val playerViewModel = getScreenModel<PlayerViewModel>()
 
         val musicState by allMusicsViewModel.handler.state.collectAsState()
         val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
         val albumState by allAlbumsViewModel.handler.state.collectAsState()
         val artistState by allArtistsViewModel.handler.state.collectAsState()
         val quickAccessState by allQuickAccessViewModel.handler.state.collectAsState()
+
+        val searchDraggableState = allMusicsViewModel.handler.searchDraggableState
+        val playerDraggableState = playerViewModel.handler.playerDraggableState
 
         MainPageScreenView(
             allMusicsViewModel = allMusicsViewModel,
