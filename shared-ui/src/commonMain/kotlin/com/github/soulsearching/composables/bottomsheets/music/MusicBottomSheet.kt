@@ -9,16 +9,16 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,10 +28,12 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun MusicBottomSheet(
-    onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
+//    onMusicEvent: (MusicEvent) -> Unit,
+//    onPlaylistEvent: (PlaylistEvent) -> Unit,
     musicModalSheetState: SheetState,
-    musicState: MusicState,
+//    musicState: MusicState,
+    selectedMusic: Music,
+    onDismiss: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
@@ -43,13 +45,7 @@ fun MusicBottomSheet(
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        onDismissRequest = {
-            onMusicEvent(
-                MusicEvent.BottomSheet(
-                    isShown = false
-                )
-            )
-        },
+        onDismissRequest = onDismiss,
         sheetState = musicModalSheetState,
         dragHandle = {}
     ) {
@@ -61,28 +57,20 @@ fun MusicBottomSheet(
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                            navigateToModifyMusic(musicState.selectedMusic.musicId.toString())
+                            onDismiss()
+                            navigateToModifyMusic(selectedMusicId.toString())
                         }
                     }
             },
             quickAccessAction = {
-                onMusicEvent(MusicEvent.UpdateQuickAccessState(
-                    musicId = musicState.selectedMusic.musicId
-                ))
+                onMusicEvent(
+                    MusicEvent.UpdateQuickAccessState(
+                        musicId = selectedMusic.musicId
+                    )
+                )
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
+                        if (!musicModalSheetState.isVisible) onDismiss()
                     }
             },
             removeAction = {
@@ -91,7 +79,7 @@ fun MusicBottomSheet(
             addToPlaylistAction = {
                 onPlaylistEvent(
                     PlaylistEvent.PlaylistsSelection(
-                        musicId = musicState.selectedMusic.musicId
+                        musicId = selectedMusic.musicId
                     )
                 )
                 onMusicEvent(
@@ -106,7 +94,7 @@ fun MusicBottomSheet(
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.removeSongFromPlayedPlaylist(
-                        musicId = musicState.selectedMusic.musicId
+                        musicId = selectedMusic.musicId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
                         playbackManager.playedList.map { it.musicId }
@@ -115,13 +103,7 @@ fun MusicBottomSheet(
                     coroutineScope.launch {
                         musicModalSheetState.hide()
                     }.invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
+                        if (!musicModalSheetState.isVisible) onDismiss()
                     }
                 }
             },
@@ -130,30 +112,26 @@ fun MusicBottomSheet(
                     coroutineScope.launch {
                         musicModalSheetState.hide()
                     }.invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
-                    }
-                    coroutineScope.launch {
-                        if (playerDraggableState.currentValue == BottomSheetStates.COLLAPSED) {
-                            playerDraggableState.animateTo(BottomSheetStates.MINIMISED, tween(
-                                Constants.AnimationDuration.normal)
-                            )
-                        }
-                    }.invokeOnCompletion {
-                        playbackManager.addMusicToPlayNext(
-                            music = musicState.selectedMusic
-                        )
-                        playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
+                        if (!musicModalSheetState.isVisible) onDismiss()
                     }
                 }
+                coroutineScope.launch {
+                    if (playerDraggableState.currentValue == BottomSheetStates.COLLAPSED) {
+                        playerDraggableState.animateTo(
+                            BottomSheetStates.MINIMISED, tween(
+                                Constants.AnimationDuration.normal
+                            )
+                        )
+                    }
+                }.invokeOnCompletion {
+                    playbackManager.addMusicToPlayNext(
+                        music = selectedMusic
+                    )
+                    playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
+                }
             },
-            isInQuickAccess = musicState.selectedMusic.isInQuickAccess,
-            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(musicState.selectedMusic.musicId)
+            isInQuickAccess = selectedMusic.isInQuickAccess,
+            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId)
         )
     }
 }
