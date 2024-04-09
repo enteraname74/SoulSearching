@@ -24,12 +24,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
@@ -82,8 +84,8 @@ import kotlinx.coroutines.launch
 /**
  * Represent the view of the main page screen.
  */
-@OptIn( ExperimentalMaterialApi::class)
-data object MainPageScreen: Screen {
+@OptIn(ExperimentalMaterialApi::class)
+data object MainPageScreen : Screen {
 
     @Composable
     override fun Content() {
@@ -201,15 +203,57 @@ fun MainPageScreenView(
     playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    MusicBottomSheetEvents(
-        musicState = musicState,
-        playlistState = playlistState,
-        onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
-        onPlaylistsEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-        navigateToModifyMusic = navigateToModifyMusic,
-        playerMusicListViewModel = playerMusicListViewModel,
-        playerDraggableState = playerDraggableState
-    )
+
+    var selectedMusic by rememberSaveable {
+        mutableStateOf<Music?>(null)
+    }
+
+    selectedMusic?.let { music ->
+        MusicBottomSheetEvents(
+            navigateToModifyMusic = navigateToModifyMusic,
+            playerMusicListViewModel = playerMusicListViewModel,
+            playerDraggableState = playerDraggableState,
+            selectedMusic = music,
+            playlistsWithMusics = playlistState.playlistsWithMusics,
+            isDeleteMusicDialogShown = musicState.isDeleteDialogShown,
+            isBottomSheetShown = musicState.isBottomSheetShown,
+            isAddToPlaylistBottomSheetShown = musicState.isAddToPlaylistBottomSheetShown,
+            isRemoveFromPlaylistDialogShown = musicState.isRemoveFromPlaylistDialogShown,
+            onSetDeleteMusicDialogVisibility = { isShown ->
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.DeleteDialog(isShown = isShown)
+                )
+            },
+            onDismiss = {
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.BottomSheet(isShown = false)
+                )
+            },
+            onSetAddToPlaylistBottomSheetVisibility = { isShown ->
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.AddToPlaylistBottomSheet(isShown = isShown)
+                )
+            },
+            onDeleteMusic = {
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.DeleteMusic(musicId = music.musicId)
+                )
+            },
+            onToggleQuickAccessState = {
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.ToggleQuickAccessState(musicId = music.musicId)
+                )
+            },
+            onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                allPlaylistsViewModel.handler.onPlaylistEvent(
+                    PlaylistEvent.AddMusicToPlaylists(
+                        musicId = music.musicId,
+                        selectedPlaylistsIds = selectedPlaylistsIds
+                    )
+                )
+            }
+        )
+    }
 
     PlaylistBottomSheetEvents(
         playlistState = playlistState,
@@ -345,20 +389,16 @@ fun MainPageScreenView(
                                             }
                                             playbackManager.setCurrentPlaylistAndMusic(
                                                 music = music,
-                                                playlist = musicListSingleton,
+                                                musicList = musicListSingleton,
                                                 isMainPlaylist = false,
                                                 playlistId = null,
                                                 isForcingNewPlaylist = true
                                             )
                                         }
                                     },
-                                    musicBottomSheetAction = {
+                                    musicBottomSheetAction = { music ->
                                         coroutineScope.launch {
-                                            allMusicsViewModel.handler.onMusicEvent(
-                                                MusicEvent.SetSelectedMusic(
-                                                    it
-                                                )
-                                            )
+                                            selectedMusic = music
                                             allMusicsViewModel.handler.onMusicEvent(
                                                 MusicEvent.BottomSheet(
                                                     isShown = true
@@ -561,9 +601,14 @@ fun MainPageScreenView(
                             title = strings.musics,
                             screen = {
                                 AllMusicsComposable(
-                                    allMusicsViewModel = allMusicsViewModel,
                                     retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
                                     musicState = musicState,
+                                    sortByName = {
+                                        allMusicsViewModel.handler.onMusicEvent(
+                                            MusicEvent.SetSortType(SortType.NAME)
+                                        )
+
+                                    },
                                     sortByDateAction = {
                                         allMusicsViewModel.handler.onMusicEvent(
                                             MusicEvent.SetSortType(SortType.ADDED_DATE)
@@ -572,12 +617,6 @@ fun MainPageScreenView(
                                     sortByMostListenedAction = {
                                         allMusicsViewModel.handler.onMusicEvent(
                                             MusicEvent.SetSortType(SortType.NB_PLAYED)
-                                        )
-
-                                    },
-                                    sortByName = {
-                                        allMusicsViewModel.handler.onMusicEvent(
-                                            MusicEvent.SetSortType(SortType.NAME)
                                         )
 
                                     },
@@ -592,11 +631,19 @@ fun MainPageScreenView(
                                             MusicEvent.SetSortDirection(newDirection)
                                         )
                                     },
-                                    playerDraggableState = playerDraggableState,
                                     sortType = musicState.sortType,
                                     sortDirection = musicState.sortDirection,
+                                    playerDraggableState = playerDraggableState,
                                     savePlayerMusicListMethod = {
                                         playerMusicListViewModel.handler.savePlayerMusicList(it)
+                                    },
+                                    onLongMusicClick = { music ->
+                                        selectedMusic = music
+                                        allMusicsViewModel.handler.onMusicEvent(
+                                            MusicEvent.BottomSheet(
+                                                isShown = true
+                                            )
+                                        )
                                     }
                                 )
                             }

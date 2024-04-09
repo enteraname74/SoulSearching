@@ -6,12 +6,14 @@ import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.compose.getKoin
+import org.koin.compose.koinInject
 import java.util.UUID
 
 /**
@@ -19,11 +21,11 @@ import java.util.UUID
  */
 open class MusicEventHandler(
     private val privateState: MutableStateFlow<MusicState>,
-    private val publicState: StateFlow<MusicState>,
     private val musicRepository: MusicRepository,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
-    private val settings: SoulSearchingSettings
+    private val settings: SoulSearchingSettings,
+    private val playbackManager: PlaybackManager
 ) {
 
     /**
@@ -31,16 +33,16 @@ open class MusicEventHandler(
      */
     fun handleEvent(event: MusicEvent) {
         when(event) {
-            is MusicEvent.DeleteDialog -> showOrHideDeleteDialog(event)
+            is MusicEvent.DeleteDialog -> showOrHideDeleteDialog(isShown = event.isShown)
             is MusicEvent.RemoveFromPlaylistDialog -> showOrHideRemoveFromPlaylistDialog(event)
             is MusicEvent.BottomSheet -> showOrHideMusicBottomSheet(event)
             is MusicEvent.AddToPlaylistBottomSheet -> showOrHideAddToPlaylistBottomSheet(event)
             is MusicEvent.SetSelectedMusic -> setSelectedMusic(event)
-            is MusicEvent.DeleteMusic -> deleteMusicFromApp()
+            is MusicEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
             is MusicEvent.SetSortType -> setSortType(newSortType = event.type)
             is MusicEvent.SetSortDirection -> setSortDirection(newSortDirection = event.direction)
             is MusicEvent.SetFavorite -> toggleFavoriteState(musicId = event.musicId)
-            is MusicEvent.UpdateQuickAccessState -> updateQuickAccessState(musicId = event.musicId)
+            is MusicEvent.ToggleQuickAccessState -> toggleQuickAccessState(musicId = event.musicId)
             is MusicEvent.AddNbPlayed -> incrementNbPlayedOfMusic(musicId = event.musicId)
         }
     }
@@ -48,10 +50,10 @@ open class MusicEventHandler(
     /**
      * Show or hide the delete dialog.
      */
-    private fun showOrHideDeleteDialog(event: MusicEvent.DeleteDialog) {
+    private fun showOrHideDeleteDialog(isShown: Boolean) {
         privateState.update {
             it.copy(
-                isDeleteDialogShown = event.isShown
+                isDeleteDialogShown = isShown
             )
         }
     }
@@ -70,9 +72,10 @@ open class MusicEventHandler(
     /**
      * Remove the selected music, from the MusicState, from the application
      */
-    private fun deleteMusicFromApp() {
+    private fun deleteMusicFromApp(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            musicRepository.delete(musicId = publicState.value.selectedMusic.musicId)
+            musicRepository.delete(musicId = musicId)
+            playbackManager.removeSongFromLists(musicId = musicId)
         }
     }
 
@@ -151,9 +154,9 @@ open class MusicEventHandler(
     }
 
     /**
-     * Update the quick access state of the selected music.
+     * Toggle the quick access state of the selected music.
      */
-    private fun updateQuickAccessState(musicId: UUID) {
+    private fun toggleQuickAccessState(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             musicRepository.toggleQuickAccessState(musicId = musicId)
         }

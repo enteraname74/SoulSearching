@@ -43,10 +43,8 @@ import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -64,9 +62,7 @@ fun PlayerMusicListView(
     maxHeight: Float,
     coverList: ArrayList<ImageCover>,
     musicState: MusicState,
-    playlistState: PlaylistState,
     onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
     playerDraggableState: SwipeableState<BottomSheetStates>,
@@ -140,36 +136,33 @@ fun PlayerMusicListView(
         label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
 
-    MusicBottomSheetEvents(
-        musicState = musicState,
-        playlistState = playlistState,
-        onMusicEvent = onMusicEvent,
-        onPlaylistsEvent = onPlaylistEvent,
-        navigateToModifyMusic = { path ->
-            coroutineScope.launch {
-                musicListDraggableState.animateTo(
-                    BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationDuration.normal)
-                )
-            }.invokeOnCompletion {
-                coroutineScope.launch {
-                    playerDraggableState.animateTo(
-                        BottomSheetStates.MINIMISED,
-                        tween(Constants.AnimationDuration.normal)
-                    )
-                }.invokeOnCompletion {
-                    navigateToModifyMusic(path)
-                }
-            }
-        },
-        musicBottomSheetState = MusicBottomSheetState.PLAYER,
-        playerMusicListViewModel = playerMusicListViewModel,
-        playerDraggableState = playerDraggableState,
-        primaryColor = primaryColor,
-        onPrimaryColor = textColor,
-        secondaryColor = secondaryColor,
-        onSecondaryColor = textColor
-    )
+//    MusicBottomSheetEvents(
+//        navigateToModifyMusic = { path ->
+//            coroutineScope.launch {
+//                musicListDraggableState.animateTo(
+//                    BottomSheetStates.COLLAPSED,
+//                    tween(Constants.AnimationDuration.normal)
+//                )
+//            }.invokeOnCompletion {
+//                coroutineScope.launch {
+//                    playerDraggableState.animateTo(
+//                        BottomSheetStates.MINIMISED,
+//                        tween(Constants.AnimationDuration.normal)
+//                    )
+//                }.invokeOnCompletion {
+//                    navigateToModifyMusic(path)
+//                }
+//            }
+//        },
+//        musicBottomSheetState = MusicBottomSheetState.PLAYER,
+//        playerMusicListViewModel = playerMusicListViewModel,
+//        playerDraggableState = playerDraggableState,
+//        primaryColor = primaryColor,
+//        onPrimaryColor = textColor,
+//        secondaryColor = secondaryColor,
+//        onSecondaryColor = textColor,
+//
+//    )
 
     Box(
         modifier = Modifier
@@ -251,7 +244,7 @@ fun PlayerMusicListView(
                             }.invokeOnCompletion {
                                 playbackManager.setCurrentPlaylistAndMusic(
                                     music = music,
-                                    playlist = musicState.musics,
+                                    musicList = musicState.musics,
                                     playlistId = playbackManager.playedListId,
                                     isMainPlaylist = playbackManager.isMainPlaylist
                                 )

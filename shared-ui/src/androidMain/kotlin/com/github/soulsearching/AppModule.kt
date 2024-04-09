@@ -164,15 +164,6 @@ actual val appModule = module {
     single<PlayerViewModel> {
         PlayerViewModelAndroidImpl(
             musicRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get(),
             colorThemeManager = get()
         )

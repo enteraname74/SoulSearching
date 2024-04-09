@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.domain.events.PlaylistEvent
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -16,8 +16,9 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddToPlaylistBottomSheet(
-    selectedMusicId: UUID,
+    playlistsWithMusics: List<PlaylistWithMusics>,
     onDismiss: () -> Unit,
+    onConfirm: (selectedPlaylistsIds: List<UUID>) -> Unit,
     addToPlaylistModalSheetState: SheetState,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
@@ -34,23 +35,21 @@ fun AddToPlaylistBottomSheet(
         AddToPlaylistMenuBottomSheet(
             primaryColor = primaryColor,
             textColor = textColor,
-            playlistState = playlistState,
-            onPlaylistEvent = onPlaylistsEvent,
             onDismiss = {
                 coroutineScope.launch { addToPlaylistModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!addToPlaylistModalSheetState.isVisible) onDismiss()
                     }
             },
-            validationAction = {
+            onConfirm = { selectedPlaylistsIds ->
                 coroutineScope.launch { addToPlaylistModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!addToPlaylistModalSheetState.isVisible) {
-                            onPlaylistsEvent(PlaylistEvent.AddMusicToPlaylists(musicId = selectedMusicId))
-                            onDismiss()
+                            onConfirm(selectedPlaylistsIds)
                         }
                     }
-            }
+            },
+            playlistsWithMusics = playlistsWithMusics
         )
     }
 }

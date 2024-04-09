@@ -1,6 +1,5 @@
 package com.github.soulsearching.domain.events
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import java.util.UUID
 
@@ -8,8 +7,8 @@ import java.util.UUID
  * Events related to musics.
  */
 sealed interface MusicEvent {
-    data object DeleteMusic : MusicEvent
-    data class UpdateQuickAccessState(val musicId: UUID): MusicEvent
+    data class DeleteMusic(val musicId: UUID) : MusicEvent
+    data class ToggleQuickAccessState(val musicId: UUID): MusicEvent
     data class SetSortDirection(val direction: Int) : MusicEvent
     data class SetSortType(val type: Int) : MusicEvent
     data class DeleteDialog(val isShown: Boolean) : MusicEvent

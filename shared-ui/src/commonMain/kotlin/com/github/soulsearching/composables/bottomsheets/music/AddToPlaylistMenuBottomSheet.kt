@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -28,17 +27,13 @@ import java.util.UUID
 fun AddToPlaylistMenuBottomSheet(
     playlistsWithMusics: List<PlaylistWithMusics>,
     onDismiss: () -> Unit,
-    validationAction: (selectedPlaylists: List<UUID>) -> Unit,
+    onConfirm: (selectedPlaylists: List<UUID>) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
 
     val selectedPlaylistIds = rememberSaveable {
         mutableStateListOf<UUID>()
-    }
-
-    LaunchedEffect(null) {
-        selectedPlaylistIds.clear()
     }
 
     Scaffold {
@@ -51,8 +46,14 @@ fun AddToPlaylistMenuBottomSheet(
         ) {
             AppHeaderBar(
                 title = strings.addToPlaylist,
-                leftAction = onDismiss,
-                rightAction = { validationAction(selectedPlaylistIds) },
+                leftAction = {
+                    onDismiss()
+                    selectedPlaylistIds.clear()
+                },
+                rightAction = {
+                    onConfirm(selectedPlaylistIds)
+                    selectedPlaylistIds.clear()
+                },
                 rightIcon = Icons.Rounded.Done,
                 backgroundColor = Color.Transparent,
                 contentColor = textColor

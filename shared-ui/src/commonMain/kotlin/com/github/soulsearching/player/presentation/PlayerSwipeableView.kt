@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
@@ -33,11 +32,9 @@ import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -55,26 +52,22 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
-import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
-import com.github.soulsearching.player.presentation.composable.MinimisedPlayButtonsComposable
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
-import kotlinx.coroutines.CoroutineScope
+import com.github.soulsearching.player.domain.PlayerEvent
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
+import com.github.soulsearching.player.presentation.composable.MinimisedPlayButtonsComposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -82,7 +75,6 @@ import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
-import kotlin.reflect.KSuspendFunction1
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -91,33 +83,18 @@ fun PlayerDraggableView(
     draggableState: SwipeableState<BottomSheetStates>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    onMusicEvent: (MusicEvent) -> Unit,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
-    isMusicInFavoriteMethod: KSuspendFunction1<UUID, Boolean>,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     retrieveArtistIdMethod: (UUID) -> UUID?,
     retrieveAlbumIdMethod: (UUID) -> UUID?,
-    musicState: MusicState,
-    playlistState: PlaylistState,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     playerViewModel: PlayerViewModel,
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var isMusicInFavorite by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
-        playerViewModel.handler.currentMusic?.let {
-            CoroutineScope(Dispatchers.IO).launch {
-                isMusicInFavorite = isMusicInFavoriteMethod(it.musicId)
-            }
-        }
-    }
+    val state by playerViewModel.handler.state.collectAsState()
 
     val backgroundColor: Color by animateColorAsState(
         targetValue = when (draggableState.currentValue) {
@@ -254,33 +231,35 @@ fun PlayerDraggableView(
     }
 
     val orientation = SoulSearchingContext.orientation
-    val alphaTransition = if (draggableState.currentValue == BottomSheetStates.MINIMISED && draggableState.offset.value == 0f) {
-        0f
-    } else {
-        when (orientation) {
-            ScreenOrientation.HORIZONTAL -> {
-                if ((1f / (abs(draggableState.offset.value) / 70)) > 0.1) {
-                    (1f / (abs(draggableState.offset.value) / 70)).coerceAtMost(1f)
-                } else {
-                    0f
+    val alphaTransition =
+        if (draggableState.currentValue == BottomSheetStates.MINIMISED && draggableState.offset.value == 0f) {
+            0f
+        } else {
+            when (orientation) {
+                ScreenOrientation.HORIZONTAL -> {
+                    if ((1f / (abs(draggableState.offset.value) / 70)) > 0.1) {
+                        (1f / (abs(draggableState.offset.value) / 70)).coerceAtMost(1f)
+                    } else {
+                        0f
+                    }
                 }
-            }
-            else -> {
-                if ((1f / (abs(
-                        max(
-                            draggableState.offset.value.roundToInt(),
-                            0
-                        )
-                    ) / 100)) > 0.1
-                ) {
-                    (1f / (abs(max(draggableState.offset.value.roundToInt(), 0)) / 100))
-                        .coerceAtMost(1f)
-                } else {
-                    0f
+
+                else -> {
+                    if ((1f / (abs(
+                            max(
+                                draggableState.offset.value.roundToInt(),
+                                0
+                            )
+                        ) / 100)) > 0.1
+                    ) {
+                        (1f / (abs(max(draggableState.offset.value.roundToInt(), 0)) / 100))
+                            .coerceAtMost(1f)
+                    } else {
+                        0f
+                    }
                 }
             }
         }
-    }
 
     Box(
         modifier = Modifier
@@ -325,27 +304,69 @@ fun PlayerDraggableView(
                 }
             }
 
-        MusicBottomSheetEvents(
-            musicState = musicState,
-            playlistState = playlistState,
-            onMusicEvent = onMusicEvent,
-            onPlaylistsEvent = onPlaylistEvent,
-            navigateToModifyMusic = { path ->
-                coroutineScope.launch {
-                    draggableState.animateTo(
-                        BottomSheetStates.MINIMISED,
-                        tween(Constants.AnimationDuration.normal)
+        state.currentMusic?.let { music ->
+            MusicBottomSheetEvents(
+                selectedMusic = music,
+                navigateToModifyMusic = { path ->
+                    coroutineScope.launch {
+                        draggableState.animateTo(
+                            BottomSheetStates.MINIMISED,
+                            tween(Constants.AnimationDuration.normal)
+                        )
+                    }.invokeOnCompletion {
+                        navigateToModifyMusic(path)
+                    }
+                },
+                musicBottomSheetState = MusicBottomSheetState.PLAYER,
+                playerMusicListViewModel = playerMusicListViewModel,
+                playerDraggableState = draggableState,
+                secondaryColor = navigationBarColor,
+                onSecondaryColor = textColor,
+                isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
+                isBottomSheetShown = state.isMusicBottomSheetShown,
+                isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
+                onDismiss = {
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.SetMusicBottomSheetVisibility(
+                            isShown = false
+                        )
                     )
-                }.invokeOnCompletion {
-                    navigateToModifyMusic(path)
-                }
-            },
-            musicBottomSheetState = MusicBottomSheetState.PLAYER,
-            playerMusicListViewModel = playerMusicListViewModel,
-            playerDraggableState = draggableState,
-            secondaryColor = navigationBarColor,
-            onSecondaryColor = textColor
-        )
+                },
+                onSetDeleteMusicDialogVisibility = { isShown ->
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.SetDeleteMusicDialogVisibility(
+                            isShown = isShown
+                        )
+                    )
+                },
+                onSetAddToPlaylistBottomSheetVisibility = { isShown ->
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.SetAddToPlaylistBottomSheetVisibility(
+                            isShown = isShown
+                        )
+                    )
+                },
+                onDeleteMusic = {
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.DeleteMusic(musicId = music.musicId)
+                    )
+                },
+                onToggleQuickAccessState = {
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.ToggleQuickAccessState(musicId = music.musicId)
+                    )
+                },
+                onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.AddMusicToPlaylists(
+                            musicId = music.musicId,
+                            selectedPlaylistsIds = selectedPlaylistsIds
+                        )
+                    )
+                },
+                playlistsWithMusics = state.playlistsWithMusics
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -426,17 +447,10 @@ fun PlayerDraggableView(
                 val imageModifier = if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
                     Modifier.combinedClickable(
                         onLongClick = {
-                            playbackManager.currentMusic?.let { currentMusic ->
+                            if (state.currentMusic != null) {
                                 coroutineScope.launch {
-                                    onMusicEvent(
-                                        MusicEvent.SetSelectedMusic(
-                                            currentMusic
-                                        )
-                                    )
-                                    onMusicEvent(
-                                        MusicEvent.BottomSheet(
-                                            isShown = true
-                                        )
+                                    playerViewModel.handler.onEvent(
+                                        PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
                                     )
                                 }
                             }
@@ -538,7 +552,7 @@ fun PlayerDraggableView(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
-                                text = playerViewModel.handler.currentMusic?.name ?: "",
+                                text = state.currentMusic?.name ?: "",
                                 color = textColor,
                                 maxLines = 1,
                                 textAlign = TextAlign.Center,
@@ -606,8 +620,8 @@ fun PlayerDraggableView(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    text = if (playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
-                                        playerViewModel.handler.currentMusic!!.artist,
+                                    text = if (state.currentMusic != null) formatTextForEllipsis(
+                                        state.currentMusic!!.artist,
                                         SoulSearchingContext.orientation
                                     )
                                     else "",
@@ -627,8 +641,8 @@ fun PlayerDraggableView(
                                     fontSize = 15.sp,
                                 )
                                 Text(
-                                    text = if (playerViewModel.handler.currentMusic != null) formatTextForEllipsis(
-                                        playerViewModel.handler.currentMusic!!.album,
+                                    text = if (state.currentMusic != null) formatTextForEllipsis(
+                                        state.currentMusic!!.album,
                                         SoulSearchingContext.orientation
                                     ) else "",
                                     color = subTextColor,
@@ -669,10 +683,16 @@ fun PlayerDraggableView(
                                     paddingBottom = 0.dp,
                                     mainColor = textColor,
                                     sliderInactiveBarColor = contentColor,
-                                    onMusicEvent = onMusicEvent,
-                                    isMusicInFavorite = isMusicInFavorite,
+                                    isMusicInFavorite = state.isCurrentMusicInFavorite,
                                     playerMusicListViewModel = playerMusicListViewModel,
-                                    playerViewModel = playerViewModel
+                                    onSetFavoriteState = {
+                                        playerViewModel.handler.onEvent(
+                                            PlayerEvent.ToggleFavoriteState
+                                        )
+                                    },
+                                    currentMusicPosition = state.currentMusicPosition,
+                                    playerMode = state.playerMode,
+                                    isPlaying = state.isPlaying
                                 )
                             }
                         }
@@ -681,10 +701,16 @@ fun PlayerDraggableView(
                             ExpandedPlayButtonsComposable(
                                 mainColor = textColor,
                                 sliderInactiveBarColor = contentColor,
-                                onMusicEvent = onMusicEvent,
-                                isMusicInFavorite = isMusicInFavorite,
+                                isMusicInFavorite = state.isCurrentMusicInFavorite,
                                 playerMusicListViewModel = playerMusicListViewModel,
-                                playerViewModel = playerViewModel
+                                onSetFavoriteState = {
+                                    playerViewModel.handler.onEvent(
+                                        PlayerEvent.ToggleFavoriteState
+                                    )
+                                },
+                                currentMusicPosition = state.currentMusicPosition,
+                                playerMode = state.playerMode,
+                                isPlaying = state.isPlaying
                             )
                         }
                     }
@@ -709,7 +735,7 @@ fun PlayerDraggableView(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = if (playerViewModel.handler.currentMusic != null) playerViewModel.handler.currentMusic!!.name else "",
+                            text = if (state.currentMusic != null) state.currentMusic!!.name else "",
                             color = textColor,
                             maxLines = 1,
                             textAlign = TextAlign.Start,
@@ -717,7 +743,7 @@ fun PlayerDraggableView(
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = if (playerViewModel.handler.currentMusic != null) playerViewModel.handler.currentMusic!!.artist else "",
+                            text = if (state.currentMusic != null) state.currentMusic!!.artist else "",
                             color = textColor,
                             fontSize = 12.sp,
                             maxLines = 1,
@@ -727,7 +753,7 @@ fun PlayerDraggableView(
                     }
                     MinimisedPlayButtonsComposable(
                         playerViewDraggableState = draggableState,
-                        playerViewModel = playerViewModel
+                        isPlaying = state.isPlaying
                     )
                 }
             }

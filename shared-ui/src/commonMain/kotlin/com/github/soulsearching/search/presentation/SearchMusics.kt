@@ -13,17 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.composable.SearchType
+import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -32,12 +30,12 @@ import java.util.UUID
 fun SearchMusics(
     playerDraggableState: SwipeableState<BottomSheetStates>,
     searchText: String,
-    musicState: MusicState,
-    onMusicEvent: (MusicEvent) -> Unit,
+    allMusics: List<Music>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
+    onSelectedMusicForBottomSheet: (Music) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     playbackManager: PlaybackManager = injectElement()
@@ -45,7 +43,7 @@ fun SearchMusics(
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn {
-        val foundedMusics = musicState.musics.filter {
+        val foundedMusics = allMusics.filter {
             it.name.lowercase().contains(searchText.lowercase())
                     || it.artist.lowercase().contains(searchText.lowercase())
                     || it.album.lowercase().contains(searchText.lowercase())
@@ -73,7 +71,7 @@ fun SearchMusics(
                         }.invokeOnCompletion { _ ->
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
-                                playlist = foundedMusics as ArrayList<Music>,
+                                musicList = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
@@ -83,16 +81,7 @@ fun SearchMusics(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onMusicEvent(
-                                MusicEvent.SetSelectedMusic(
-                                    music
-                                )
-                            )
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = true
-                                )
-                            )
+                            onSelectedMusicForBottomSheet(music)
                         }
                     },
                     musicCover = retrieveCoverMethod(music.coverId),

@@ -22,23 +22,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
-import com.github.soulsearching.search.presentation.SearchMusics
-import com.github.soulsearching.search.presentation.SearchView
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
@@ -46,32 +39,48 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.search.presentation.SearchMusics
+import com.github.soulsearching.search.presentation.SearchView
+import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PlaylistScreen(
-    musicState: MusicState,
-    playlistState: PlaylistState,
-    onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
+    playlistId: UUID?,
+    playlistWithMusics: List<PlaylistWithMusics>,
     playerMusicListViewModel: PlayerMusicListViewModel,
     title: String,
     image: ImageBitmap?,
+    musics: List<Music>,
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>,
-    playlistId: UUID?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
+    isDeleteMusicDialogShown: Boolean,
+    isBottomSheetShown: Boolean,
+    isAddToPlaylistBottomSheetShown: Boolean,
+    isRemoveFromPlaylistDialogShown: Boolean = false,
+    onSetBottomSheetVisibility: (Boolean) -> Unit,
+    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
+    onSetRemoveMusicFromPlaylistDialogVisibility: (Boolean) -> Unit = {},
+    onSetAddToPlaylistBottomSheetVisibility: (Boolean) -> Unit = {},
+    onDeleteMusic: (Music) -> Unit,
+    onToggleQuickAccessState: (Music) -> Unit,
+    onRemoveFromPlaylist: (Music) -> Unit = {},
+    onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement()
 ) {
@@ -98,16 +107,19 @@ fun PlaylistScreen(
     }
 
     val shuffleAction = {
-        if (musicState.musics.isNotEmpty()) {
+        if (musics.isNotEmpty()) {
             playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
-                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                    playerDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }
                 .invokeOnCompletion {
                     playbackManager.playShuffle(
-                        musicState.musics,
-                        playerMusicListViewModel.handler::savePlayerMusicList
+                        musicList = musics,
+                        savePlayerListMethod = playerMusicListViewModel.handler::savePlayerMusicList
                     )
                 }
         }
@@ -137,8 +149,15 @@ fun PlaylistScreen(
         val searchAction = {
             coroutineScope
                 .launch {
-                    searchDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                    searchDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(Constants.AnimationDuration.normal)
+                    )
                 }
+        }
+
+        var selectedMusic by rememberSaveable {
+            mutableStateOf<Music?>(null)
         }
 
         when (SoulSearchingContext.orientation) {
@@ -180,10 +199,10 @@ fun PlaylistScreen(
                         playlistType = playlistType,
                     )
                     MusicList(
-                        musicState = musicState,
-                        playlistState = playlistState,
-                        onMusicEvent = onMusicEvent,
-                        onPlaylistEvent = onPlaylistEvent,
+                        selectedMusic = selectedMusic,
+                        onSelectMusic = {
+                            selectedMusic = it
+                        },
                         playerMusicListViewModel = playerMusicListViewModel,
                         navigateToModifyMusic = navigateToModifyMusic,
                         modifier = Modifier
@@ -194,21 +213,51 @@ fun PlaylistScreen(
                         musicBottomSheetState = musicBottomSheetState,
                         playerDraggableState = playerDraggableState,
                         updateNbPlayedAction = updateNbPlayedAction,
+                        musics = musics,
+                        playlistsWithMusics = playlistWithMusics,
+                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
+                        isBottomSheetShown = isBottomSheetShown,
+                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
+                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
+                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                        onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
+                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
+                        onSetBottomSheetVisibility = onSetBottomSheetVisibility,
+                        onDeleteMusic = onDeleteMusic,
+                        onToggleQuickAccessState = onToggleQuickAccessState,
+                        onRemoveFromPlaylist = onRemoveFromPlaylist
                     )
                 }
             }
 
             else -> {
-                MusicBottomSheetEvents(
-                    musicState = musicState,
-                    playlistState = playlistState,
-                    onMusicEvent = onMusicEvent,
-                    onPlaylistsEvent = onPlaylistEvent,
-                    navigateToModifyMusic = navigateToModifyMusic,
-                    musicBottomSheetState = musicBottomSheetState,
-                    playerMusicListViewModel = playerMusicListViewModel,
-                    playerDraggableState = playerDraggableState,
-                )
+                selectedMusic?.let { music ->
+                    MusicBottomSheetEvents(
+                        selectedMusic = music,
+                        navigateToModifyMusic = navigateToModifyMusic,
+                        musicBottomSheetState = musicBottomSheetState,
+                        playerMusicListViewModel = playerMusicListViewModel,
+                        playerDraggableState = playerDraggableState,
+                        playlistsWithMusics = playlistWithMusics,
+                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
+                        isBottomSheetShown = isBottomSheetShown,
+                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
+                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
+                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
+                        },
+                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
+                        onDismiss = {
+                            onSetBottomSheetVisibility(false)
+                        },
+                        onDeleteMusic = { onDeleteMusic(music) },
+                        onToggleQuickAccessState = { onToggleQuickAccessState(music) },
+                        onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
+                    )
+                }
 
                 Column(
                     modifier = Modifier
@@ -250,13 +299,16 @@ fun PlaylistScreen(
                             )
                         }
                         items(
-                            items = musicState.musics
+                            items = musics
                         ) { elt ->
                             MusicItemComposable(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                                        playerDraggableState.animateTo(
+                                            BottomSheetStates.EXPANDED,
+                                            tween(Constants.AnimationDuration.normal)
+                                        )
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)
@@ -267,11 +319,12 @@ fun PlaylistScreen(
                                                 playlistId
                                             )
                                         ) {
-                                            playerMusicListViewModel.handler.savePlayerMusicList(musicState.musics.map { it.musicId })
+                                            playerMusicListViewModel.handler.savePlayerMusicList(
+                                                musics.map { it.musicId })
                                         }
                                         playbackManager.setCurrentPlaylistAndMusic(
                                             music = music,
-                                            playlist = musicState.musics,
+                                            musicList = musics,
                                             playlistId = playlistId,
                                             isMainPlaylist = false
                                         )
@@ -279,16 +332,8 @@ fun PlaylistScreen(
                                 },
                                 onLongClick = {
                                     coroutineScope.launch {
-                                        onMusicEvent(
-                                            MusicEvent.SetSelectedMusic(
-                                                elt
-                                            )
-                                        )
-                                        onMusicEvent(
-                                            MusicEvent.BottomSheet(
-                                                isShown = true
-                                            )
-                                        )
+                                        selectedMusic = elt
+                                        onSetBottomSheetVisibility(true)
                                     }
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
@@ -311,12 +356,15 @@ fun PlaylistScreen(
             SearchMusics(
                 playerDraggableState = playerDraggableState,
                 searchText = searchText,
-                musicState = musicState,
-                onMusicEvent = onMusicEvent,
                 playerMusicListViewModel = playerMusicListViewModel,
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
+                allMusics = musics,
+                onSelectedMusicForBottomSheet = {
+                    selectedMusic = it
+                    onSetBottomSheetVisibility(true)
+                }
             )
         }
     }

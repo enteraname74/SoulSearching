@@ -193,7 +193,7 @@ fun SearchAll(
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = music,
-                                playlist = foundedMusics as ArrayList<Music>,
+                                musicList = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true

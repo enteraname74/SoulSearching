@@ -59,10 +59,8 @@ fun SoulSearchingApplication(
     val playerMusicListViewModel = injectElement<PlayerMusicListViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
-    val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
     val musicState by allMusicsViewModel.handler.state.collectAsState()
     val playerMusicListState by playerMusicListViewModel.handler.state.collectAsState()
-    val playerMusicState by playerViewModel.handler.musicState.collectAsState()
 
     val coversState by allImageCoversViewModel.handler.state.collectAsState()
 
@@ -158,30 +156,25 @@ fun SoulSearchingApplication(
         PlayerDraggableView(
             maxHeight = maxHeight,
             draggableState = playerDraggableState,
+            playerMusicListViewModel = playerMusicListViewModel,
             retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
             musicListDraggableState = musicListDraggableState,
-            playerMusicListViewModel = playerMusicListViewModel,
-            onMusicEvent = playerViewModel.handler::onMusicEvent,
-            isMusicInFavoriteMethod = allMusicsViewModel.handler::isMusicInFavorite,
-            navigateToArtist = { artistId ->
-                generalNavigator?.push(
-                    SelectedArtistScreen(selectedArtistId = artistId)
-                )
-            },
             navigateToAlbum = { albumId ->
                 generalNavigator?.push(
                     SelectedAlbumScreen(selectedAlbumId = albumId)
                 )
             },
-            retrieveAlbumIdMethod = {
-                allMusicsViewModel.handler.getAlbumIdFromMusicId(it)
+            navigateToArtist = { artistId ->
+                generalNavigator?.push(
+                    SelectedArtistScreen(selectedArtistId = artistId)
+                )
             },
             retrieveArtistIdMethod = {
                 allMusicsViewModel.handler.getArtistIdFromMusicId(it)
             },
-            musicState = playerMusicState,
-            playlistState = playlistState,
-            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
+            retrieveAlbumIdMethod = {
+                allMusicsViewModel.handler.getAlbumIdFromMusicId(it)
+            },
             navigateToModifyMusic = { musicId ->
                 generalNavigator?.push(
                     ModifyMusicScreen(
@@ -193,11 +186,10 @@ fun SoulSearchingApplication(
         )
 
         PlayerMusicListView(
+            maxHeight = maxHeight,
             coverList = coversState.covers,
             musicState = playerMusicListState,
-            playlistState = playlistState,
             onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
-            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
             navigateToModifyMusic = { musicId ->
                 generalNavigator?.push(
                     ModifyMusicScreen(
@@ -208,7 +200,6 @@ fun SoulSearchingApplication(
             musicListDraggableState = musicListDraggableState,
             playerDraggableState = playerDraggableState,
             playerMusicListViewModel = playerMusicListViewModel,
-            maxHeight = maxHeight,
             playerViewModel = playerViewModel
         )
     }

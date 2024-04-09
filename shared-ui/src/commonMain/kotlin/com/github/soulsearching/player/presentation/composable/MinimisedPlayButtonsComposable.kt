@@ -18,11 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.viewmodel.PlayerViewModel
+import com.github.soulsearching.player.domain.model.PlaybackManager
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -30,7 +29,7 @@ fun MinimisedPlayButtonsComposable(
     modifier: Modifier = Modifier,
     playerViewDraggableState: SwipeableState<BottomSheetStates>,
     playbackManager: PlaybackManager = injectElement(),
-    playerViewModel: PlayerViewModel
+    isPlaying: Boolean
 ) {
     Row(
         modifier = modifier,
@@ -49,7 +48,7 @@ fun MinimisedPlayButtonsComposable(
                 },
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onSecondary)
         )
-        if (playerViewModel.handler.isPlaying) {
+        if (isPlaying) {
             Image(
                 imageVector = Icons.Rounded.Pause,
                 contentDescription = "",

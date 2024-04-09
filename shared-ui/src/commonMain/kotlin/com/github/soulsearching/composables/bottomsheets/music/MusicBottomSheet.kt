@@ -32,7 +32,7 @@ fun MusicBottomSheet(
     onShowDeleteMusicDialog: () -> Unit,
     onShowRemoveFromPlaylistDialog: () -> Unit,
     onToggleQuickAccessState: () -> Unit,
-    onAddToPlaylist: () -> Unit,
+    showAddToPlaylistBottomSheet: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
@@ -80,7 +80,7 @@ fun MusicBottomSheet(
 //                        isShown = true
 //                    )
 //                )
-                onAddToPlaylist()
+                showAddToPlaylistBottomSheet()
             },
             removeFromPlaylistAction = onShowRemoveFromPlaylistDialog,
             removeFromPlayedListAction = {

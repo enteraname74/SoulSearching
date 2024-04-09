@@ -19,6 +19,7 @@ import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,6 +41,7 @@ abstract class AllMusicsViewModelHandler(
     private val musicAlbumRepository: MusicAlbumRepository,
     private val musicArtistRepository: MusicArtistRepository,
     settings: SoulSearchingSettings,
+    playbackManager: PlaybackManager,
     private val musicFetcher: MusicFetcher,
 ): ViewModelHandler {
     var currentPage by mutableStateOf<ElementEnum?>(null)
@@ -99,11 +101,11 @@ abstract class AllMusicsViewModelHandler(
 
     private val musicEventHandler = MusicEventHandler(
         privateState = _state,
-        publicState = state,
+        musicRepository = musicRepository,
         sortType = _sortType,
         sortDirection = _sortDirection,
         settings = settings,
-        musicRepository = musicRepository
+        playbackManager = playbackManager
     )
 
     /**

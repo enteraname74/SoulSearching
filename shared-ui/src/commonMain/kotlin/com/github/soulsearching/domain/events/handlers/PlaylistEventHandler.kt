@@ -41,7 +41,10 @@ class PlaylistEventHandler(
             is PlaylistEvent.DeleteDialog -> showOrHideDeleteDialog(event)
             is PlaylistEvent.CreatePlaylistDialog -> showOrHideCreatePlaylistDialog(event)
             is PlaylistEvent.AddPlaylist -> addPlaylist(event)
-            is PlaylistEvent.AddMusicToPlaylists -> addMusicToPlaylists(event)
+            is PlaylistEvent.AddMusicToPlaylists -> addMusicToPlaylists(
+                musicId = event.musicId,
+                selectedPlaylistsIds = event.selectedPlaylistsIds
+            )
             is PlaylistEvent.RemoveMusicFromPlaylist -> removeMusicFromSelectedPlaylist(event)
             is PlaylistEvent.DeletePlaylist -> deleteSelectedPlaylist()
             is PlaylistEvent.SetSelectedPlaylist -> setSelectedPlaylist(event)
@@ -105,12 +108,12 @@ class PlaylistEventHandler(
     /**
      * Add a music to multiple playlists.
      */
-    private fun addMusicToPlaylists(event: PlaylistEvent.AddMusicToPlaylists) {
+    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylistsIds: List<UUID>) {
         CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in publicState.value.multiplePlaylistSelected) {
+            for (selectedPlaylistId in selectedPlaylistsIds) {
                 musicPlaylistRepository.insertMusicIntoPlaylist(
                     MusicPlaylist(
-                        musicId = event.musicId,
+                        musicId = musicId,
                         playlistId = selectedPlaylistId
                     )
                 )

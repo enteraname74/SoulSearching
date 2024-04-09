@@ -15,25 +15,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AllMusicsComposable(
-    allMusicsViewModel: AllMusicsViewModel,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     musicState: MusicState,
     sortByName: () -> Unit = {},
@@ -45,6 +43,7 @@ fun AllMusicsComposable(
     isUsingSort: Boolean = true,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     savePlayerMusicListMethod: (List<UUID>) -> Unit,
+    onLongMusicClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -95,7 +94,7 @@ fun AllMusicsComposable(
                                 }
                                 playbackManager.setCurrentPlaylistAndMusic(
                                     music = music,
-                                    playlist = musicState.musics,
+                                    musicList = musicState.musics,
                                     isMainPlaylist = true,
                                     playlistId = null,
                                 )
@@ -103,16 +102,7 @@ fun AllMusicsComposable(
                         },
                         onLongClick = {
                             coroutineScope.launch {
-                                allMusicsViewModel.handler.onMusicEvent(
-                                    MusicEvent.SetSelectedMusic(
-                                        elt
-                                    )
-                                )
-                                allMusicsViewModel.handler.onMusicEvent(
-                                    MusicEvent.BottomSheet(
-                                        isShown = true
-                                    )
-                                )
+                                onLongMusicClick(elt)
                             }
                         },
                         musicCover = retrieveCoverMethod(elt.coverId),

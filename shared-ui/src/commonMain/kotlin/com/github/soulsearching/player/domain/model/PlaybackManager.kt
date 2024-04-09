@@ -163,6 +163,14 @@ abstract class PlaybackManager(
     }
 
     /**
+     * Remove a song from all the lists used by the playback manager.
+     */
+    fun removeSongFromLists(musicId: UUID) {
+        initialList.removeIf { it.musicId == musicId }
+        removeSongFromPlayedPlaylist(musicId = musicId)
+    }
+
+    /**
      * Remove a song from the current playlist.
      * If no songs are left in the played list, the playback will stop.
      */
@@ -480,7 +488,7 @@ abstract class PlaybackManager(
      * Force the player mode the normal.
      * The current playlist will be reset to be like the music list passed in parameter.
      */
-    private fun forcePlayerModeToNormal(musicList: java.util.ArrayList<Music>) {
+    private fun forcePlayerModeToNormal(musicList: List<Music>) {
         if (!isChangingPlayerMode) {
             isChangingPlayerMode = true
             setPlayerMode(PlayerMode.NORMAL)
@@ -543,13 +551,13 @@ abstract class PlaybackManager(
      */
     fun setCurrentPlaylistAndMusic(
         music: Music,
-        playlist: ArrayList<Music>,
+        musicList: List<Music>,
         playlistId: UUID?,
         isMainPlaylist: Boolean = false,
         isForcingNewPlaylist: Boolean = false
     ) {
         // When selecting a music manually, we force the player mode to normal:
-        forcePlayerModeToNormal(playlist)
+        forcePlayerModeToNormal(musicList)
 
         // If it's the same music of the same playlist, does nothing
         if (isSameMusicAsCurrentPlayedOne(music.musicId) && isSamePlaylist(
@@ -595,11 +603,11 @@ abstract class PlaybackManager(
     /**
      * Play a playlist in shuffle and save it.
      */
-    fun playShuffle(playlist: ArrayList<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
+    fun playShuffle(musicList: List<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
         playedListId = null
         isMainPlaylist = false
 
-        setPlayerLists(playlist.shuffled())
+        setPlayerLists(musicList.shuffled())
         savePlayerListMethod(playedList.map { it.musicId } as ArrayList<UUID>)
 
         setPlayerMode(PlayerMode.NORMAL)
