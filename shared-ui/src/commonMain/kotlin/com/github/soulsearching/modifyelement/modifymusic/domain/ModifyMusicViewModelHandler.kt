@@ -1,16 +1,11 @@
 package com.github.soulsearching.modifyelement.modifymusic.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.ImageCoverService
-import com.github.enteraname74.domain.service.MusicService
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.handlers.MusicEventHandler
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.domain.state.MusicState
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,9 +22,6 @@ class ModifyMusicViewModelHandler(
     coroutineScope: CoroutineScope,
     private val musicRepository: MusicRepository,
     private val imageCoverRepository: ImageCoverRepository,
-    private val musicService: MusicService,
-    private val imageCoverService: ImageCoverService,
-    settings: SoulSearchingSettings,
     private val playbackManager: PlaybackManager
 ) : ViewModelHandler {
     private val _state = MutableStateFlow(ModifyMusicState())
@@ -127,21 +119,30 @@ class ModifyMusicViewModelHandler(
     }
 
     /**
+     * Utility function for removing leading and trailing whitespaces in a Music when modifying its information.
+     */
+    private fun Music.trim(): Music = this.copy(
+        name = this.name.trim(),
+        album = this.album.trim(),
+        artist = this.artist.trim()
+    )
+
+    /**
      * Update selected music information.
      */
     private fun updateMusic() {
         CoroutineScope(Dispatchers.IO).launch {
             val coverId = if (_state.value.hasCoverBeenChanged && _state.value.cover != null) {
-                imageCoverService.save(cover = _state.value.cover!!)
+                imageCoverRepository.save(cover = _state.value.cover!!)
             } else {
                 _state.value.selectedMusic.coverId
             }
 
-            val newMusicInformation = _state.value.modifiedMusicInformation.copy(
+            val newMusicInformation = _state.value.modifiedMusicInformation.trim().copy(
                 coverId = coverId
             )
 
-            musicService.update(
+            musicRepository.update(
                 legacyMusic = _state.value.selectedMusic,
                 newMusicInformation = newMusicInformation
             )

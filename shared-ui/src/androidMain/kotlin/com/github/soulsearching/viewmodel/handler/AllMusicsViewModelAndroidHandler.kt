@@ -5,12 +5,11 @@ import android.widget.Toast
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.R
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 import com.github.soulsearching.domain.model.MusicFetcher
-import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +28,6 @@ class AllMusicsViewModelAndroidHandler(
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
     private val playbackManager: PlaybackManager,
-    musicService: MusicService
 ) : AllMusicsViewModelHandler(
     coroutineScope = coroutineScope,
     musicRepository = musicRepository,
@@ -37,7 +35,6 @@ class AllMusicsViewModelAndroidHandler(
     musicArtistRepository = musicArtistRepository,
     settings = settings,
     musicFetcher = musicFetcher,
-    musicService = musicService
 ) {
     /**
      * Check all musics and delete the one that does not exists (if the path of the music is not valid).

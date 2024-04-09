@@ -3,7 +3,6 @@ package com.github.soulsearching.settings.managemusics.managefolders.domain
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.soulsearching.settings.managemusics.managefolders.domain.model.FolderStateType
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +19,6 @@ import kotlinx.coroutines.runBlocking
 open class SettingsAllFolderViewModelHandler(
     private val folderRepository: FolderRepository,
     private val musicRepository: MusicRepository,
-    private val musicService: MusicService
 ): ViewModelHandler {
     private val _state = MutableStateFlow(FolderState())
     val state = _state.asStateFlow()
@@ -88,7 +86,7 @@ open class SettingsAllFolderViewModelHandler(
                             }
                             var count = 0
                             musicsFromFolder.forEach { music ->
-                                musicService.delete(
+                                musicRepository.delete(
                                     musicId = music.musicId
                                 )
                                 count++

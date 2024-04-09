@@ -1,4 +1,5 @@
 package com.github.enteraname74.domain.repository
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.datasource.ImageCoverDataSource
 import com.github.enteraname74.domain.model.ImageCover
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +11,24 @@ import java.util.UUID
 class ImageCoverRepository(
     private val imageCoverDataSource: ImageCoverDataSource
 ) {
+
+    /**
+     * Save a cover.
+     *
+     * @param cover the cover to save.
+     * @return the id of the saved cover.
+     */
+    suspend fun save(cover: ImageBitmap): UUID {
+        val id = UUID.randomUUID()
+        imageCoverDataSource.insertImageCover(
+            ImageCover(
+                coverId = id,
+                cover = cover
+            )
+        )
+        return id
+    }
+
     /**
      * Inserts or updates an ImageCover
      */

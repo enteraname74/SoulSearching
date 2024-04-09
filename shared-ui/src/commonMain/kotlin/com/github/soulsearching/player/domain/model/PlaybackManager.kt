@@ -284,7 +284,7 @@ abstract class PlaybackManager(
     }
 
     /**
-     * Update information of a song in the initial list, current list and the current music if it's the same.
+     * Update information of a song in the initial list, current list and the current music if it's the same (id comparison).
      */
     fun updateMusic(music: Music) {
         currentMusic?.let {

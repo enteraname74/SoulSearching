@@ -5,7 +5,6 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
@@ -24,7 +23,6 @@ class AllMusicsViewModelAndroidImpl(
     settings: SoulSearchingSettings,
     playbackManager: PlaybackManager,
     musicFetcher: MusicFetcherAndroidImpl,
-    musicService: MusicService
 ) : AllMusicsViewModel {
     override val handler: AllMusicsViewModelHandler = AllMusicsViewModelAndroidHandler(
         context = context,
@@ -35,6 +33,5 @@ class AllMusicsViewModelAndroidImpl(
         settings = settings,
         musicFetcher = musicFetcher,
         playbackManager = playbackManager,
-        musicService = musicService
     )
 }

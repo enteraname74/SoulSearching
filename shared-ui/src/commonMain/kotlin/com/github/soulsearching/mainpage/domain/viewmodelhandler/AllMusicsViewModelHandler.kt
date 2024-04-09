@@ -9,8 +9,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.ImageCoverService
-import com.github.enteraname74.domain.service.MusicService
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.domain.model.MusicFetcher
@@ -43,7 +41,6 @@ abstract class AllMusicsViewModelHandler(
     private val musicArtistRepository: MusicArtistRepository,
     settings: SoulSearchingSettings,
     private val musicFetcher: MusicFetcher,
-    musicService: MusicService
 ): ViewModelHandler {
     var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
@@ -106,7 +103,7 @@ abstract class AllMusicsViewModelHandler(
         sortType = _sortType,
         sortDirection = _sortDirection,
         settings = settings,
-        musicService = musicService
+        musicRepository = musicRepository
     )
 
     /**

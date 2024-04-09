@@ -1,5 +1,7 @@
 package com.github.soulsearching.modifyelement.modifyalbum.domain
 
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
@@ -45,6 +47,18 @@ class ModifyAlbumViewModelHandler(
     )
 
     /**
+     * Utility method for removing leading and trailing whitespaces in a AlbumWithArtist when modifying its information.
+     */
+    private fun AlbumWithArtist.trim() = this.copy(
+        album = this.album.copy(
+            albumName = this.album.albumName.trim()
+        ),
+        artist = this.artist?.copy(
+            artistName = this.artist!!.artistName.trim()
+        )
+    )
+
+    /**
      * Manage album events.
      */
     fun onAlbumEvent(event: AlbumEvent) {
@@ -52,150 +66,30 @@ class ModifyAlbumViewModelHandler(
             AlbumEvent.UpdateAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
 
-                    val initialAlbum = albumRepository.getAlbumFromId(
-                        albumId = state.value.albumWithMusics.album.albumId
-                    )!!
-
-                    val initialArtist = artistRepository.getArtistFromId(
-                        artistId = state.value.albumWithMusics.artist!!.artistId
-                    )
-                    var currentArtist = initialArtist
-
                     // Si on a changé l'image de l'album, il faut changer l'id de la couverture :
-                    val coverId = if (state.value.hasSetNewCover) {
-                        val newCoverId = UUID.randomUUID()
-                        imageCoverRepository.insertImageCover(
-                            ImageCover(
-                                coverId = newCoverId,
-                                cover = state.value.albumCover
-                            )
-                        )
-                        newCoverId
+                    val coverId = if (state.value.hasSetNewCover && state.value.albumCover != null) {
+                        imageCoverRepository.save(cover = state.value.albumCover!!)
                     } else {
                         state.value.albumWithMusics.album.coverId
                     }
 
-                    if (state.value.albumWithMusics.artist!!.artistName.trim() != initialArtist!!.artistName) {
-                        // On cherche le nouvel artiste correspondant :
-                        var newArtist = artistRepository.getArtistFromInfo(
-                            artistName = state.value.albumWithMusics.artist!!.artistName.trim()
-                        )
-                        // Si ce nouvel artiste n'existe pas, on le crée :
-                        if (newArtist == null) {
-                            newArtist = Artist(
-                                artistName = state.value.albumWithMusics.artist!!.artistName.trim(),
-                                coverId = coverId
-                            )
-                            artistRepository.insertArtist(
-                                artist = newArtist
-                            )
-                        }
-                        // On met à jour le lien vers l'artiste :
-                        albumArtistRepository.updateArtistOfAlbum(
-                            albumId = state.value.albumWithMusics.album.albumId,
-                            newArtistId = newArtist.artistId
-                        )
-
-                        val duplicateAlbum = albumRepository.getPossibleDuplicateAlbum(
-                            albumId = state.value.albumWithMusics.album.albumId,
-                            albumName = state.value.albumWithMusics.album.albumName.trim(),
-                            artistId = newArtist.artistId
-                        )
-
-                        if (duplicateAlbum != null) {
-                            /*
-                             Un album a le même nom d'album et d'artiste !
-                             On redirige les musiques de l'album dupliqué :
-                             */
-                            musicAlbumRepository.updateMusicsAlbum(
-                                newAlbumId = state.value.albumWithMusics.album.albumId,
-                                legacyAlbumId = duplicateAlbum.albumId
-                            )
-                            // On supprime l'ancien album :
-                            albumArtistRepository.deleteAlbumFromArtist(
-                                albumId = duplicateAlbum.albumId
-                            )
-                            albumRepository.deleteAlbum(
-                                album = duplicateAlbum
-                            )
-                        }
-                        currentArtist = newArtist
-                    } else if (state.value.albumWithMusics.album.albumName.trim() != initialAlbum.albumName) {
-                        val duplicateAlbum = albumRepository.getPossibleDuplicateAlbum(
-                            albumId = state.value.albumWithMusics.album.albumId,
-                            albumName = state.value.albumWithMusics.album.albumName.trim(),
-                            artistId = state.value.albumWithMusics.artist!!.artistId
-                        )
-
-                        if (duplicateAlbum != null) {
-                            /*
-                             Un album a le même nom d'album et d'artiste !
-                             On redirige les musiques de l'album dupliqué :
-                             */
-                            musicAlbumRepository.updateMusicsAlbum(
-                                newAlbumId = state.value.albumWithMusics.album.albumId,
-                                legacyAlbumId = duplicateAlbum.albumId
-                            )
-                            // On supprime l'ancien album :
-                            albumArtistRepository.deleteAlbumFromArtist(
-                                albumId = duplicateAlbum.albumId
-                            )
-                            albumRepository.deleteAlbum(
-                                album = duplicateAlbum
-                            )
-                        }
-                    }
-
-                    // On met à jour les musiques de l'album :
-                    val musicsFromAlbum = musicRepository.getAllMusicFromAlbum(
-                        albumId = state.value.albumWithMusics.album.albumId
-                    )
-                    for (music in musicsFromAlbum) {
-                        // On modifie les infos de chaque musique
-                        val newMusic = music.copy(
-                            album = state.value.albumWithMusics.album.albumName.trim(),
-                            coverId = coverId,
-                            artist = state.value.albumWithMusics.artist!!.artistName.trim()
-                        )
-                        musicRepository.insertMusic(newMusic)
-                        // Ainsi que leur liens :
-                        musicArtistRepository.updateArtistOfMusic(
-                            musicId = music.musicId,
-                            newArtistId = currentArtist!!.artistId
-                        )
-
-                        playbackManager.updateMusic(newMusic)
-
-                        playbackManager.currentMusic?.let {
-                            if (it.musicId.compareTo(music.musicId) == 0) {
-                                playbackManager.updateCover(
-                                    cover = state.value.albumCover
-                                )
-                            }
-                        }
-                    }
-
-                    // On modifie notre album :
-                    albumRepository.insertAlbum(
-                        state.value.albumWithMusics.album.copy(
-                            albumName = state.value.albumWithMusics.album.albumName.trim(),
+                    val albumWithArtist = _state.value.albumWithMusics.toAlbumWithArtist().trim()
+                    val newAlbumWithArtistInformation = albumWithArtist.copy(
+                        album = albumWithArtist.album.copy(
                             coverId = coverId
                         )
                     )
 
-                    // On vérifie si l'ancien artiste possède encore des musiques :
-                    Utils.checkAndDeleteArtist(
-                        artistToCheck = initialArtist,
-                        musicArtistRepository = musicArtistRepository,
-                        artistRepository = artistRepository,
-                    )
+                    albumRepository.update(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+
                 }
             }
+
             is AlbumEvent.AlbumFromID -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     val albumWithMusics = albumRepository.getAlbumWithMusics(event.albumId)
                     val cover = if (albumWithMusics.album.coverId != null) {
-                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId !!)?.cover
+                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId!!)?.cover
                     } else {
                         null
                     }
@@ -208,6 +102,7 @@ class ModifyAlbumViewModelHandler(
                     }
                 }
             }
+
             is AlbumEvent.SetName -> {
                 _state.update {
                     it.copy(
@@ -219,6 +114,7 @@ class ModifyAlbumViewModelHandler(
                     )
                 }
             }
+
             is AlbumEvent.SetCover -> {
                 _state.update {
                     it.copy(
@@ -227,6 +123,7 @@ class ModifyAlbumViewModelHandler(
                     )
                 }
             }
+
             is AlbumEvent.SetArtist -> {
                 _state.update {
                     it.copy(
@@ -238,6 +135,7 @@ class ModifyAlbumViewModelHandler(
                     )
                 }
             }
+
             else -> {}
         }
     }

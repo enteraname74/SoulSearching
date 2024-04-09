@@ -1,10 +1,6 @@
 package com.github.soulsearching.mainpage.domain.viewmodelhandler
 
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.service.AlbumService
 import com.github.soulsearching.domain.events.AlbumEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
@@ -29,7 +25,6 @@ open class AllAlbumsViewModeHandler(
     coroutineScope: CoroutineScope,
     private val albumRepository: AlbumRepository,
     private val settings: SoulSearchingSettings,
-    private val albumService: AlbumService
 ) : ViewModelHandler {
     private val _sortType = MutableStateFlow(SortType.NAME)
     private val _sortDirection = MutableStateFlow(SortDirection.ASC)
@@ -89,7 +84,7 @@ open class AllAlbumsViewModeHandler(
         when (event) {
             AlbumEvent.DeleteAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    albumService.delete(albumId = state.value.selectedAlbumWithArtist.album.albumId)
+                    albumRepository.delete(albumId = state.value.selectedAlbumWithArtist.album.albumId)
                 }
             }
             is AlbumEvent.SetSelectedAlbum -> {

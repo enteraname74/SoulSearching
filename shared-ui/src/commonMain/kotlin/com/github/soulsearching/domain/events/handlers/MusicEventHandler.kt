@@ -1,6 +1,6 @@
 package com.github.soulsearching.domain.events.handlers
 
-import com.github.enteraname74.domain.service.MusicService
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
@@ -20,7 +20,7 @@ import java.util.UUID
 open class MusicEventHandler(
     private val privateState: MutableStateFlow<MusicState>,
     private val publicState: StateFlow<MusicState>,
-    private val musicService: MusicService,
+    private val musicRepository: MusicRepository,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
     private val settings: SoulSearchingSettings
@@ -72,7 +72,7 @@ open class MusicEventHandler(
      */
     private fun deleteMusicFromApp() {
         CoroutineScope(Dispatchers.IO).launch {
-            musicService.delete(musicId = publicState.value.selectedMusic.musicId)
+            musicRepository.delete(musicId = publicState.value.selectedMusic.musicId)
         }
     }
 
@@ -146,7 +146,7 @@ open class MusicEventHandler(
      */
     private fun toggleFavoriteState(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            musicService.toggleFavoriteState(musicId = musicId)
+            musicRepository.toggleFavoriteState(musicId = musicId)
         }
     }
 
@@ -155,7 +155,7 @@ open class MusicEventHandler(
      */
     private fun updateQuickAccessState(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            musicService.toggleQuickAccessState(musicId = musicId)
+            musicRepository.toggleQuickAccessState(musicId = musicId)
         }
     }
 
@@ -164,7 +164,7 @@ open class MusicEventHandler(
      */
     private fun incrementNbPlayedOfMusic(musicId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            musicService.updateNbPlayed(musicId = musicId)
+            musicRepository.updateNbPlayed(musicId = musicId)
         }
     }
 }

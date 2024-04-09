@@ -149,9 +149,7 @@ actual val appModule = module {
         ModifyMusicViewModelAndroidImpl(
             musicRepository = get(),
             imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get(),
-            musicService = get(),
             imageCoverService = get()
         )
     }

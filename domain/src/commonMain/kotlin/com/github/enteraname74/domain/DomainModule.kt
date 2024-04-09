@@ -11,12 +11,6 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.enteraname74.domain.service.AlbumService
-import com.github.enteraname74.domain.service.ImageCoverService
-import com.github.enteraname74.domain.service.MusicService
-import com.github.enteraname74.domain.serviceimpl.AlbumServiceImpl
-import com.github.enteraname74.domain.serviceimpl.ImageCoverServiceImpl
-import com.github.enteraname74.domain.serviceimpl.MusicServiceImpl
 import com.github.enteraname74.domain.util.CheckAndDeleteVerification
 import org.koin.dsl.module
 
@@ -25,14 +19,34 @@ import org.koin.dsl.module
  */
 val domainModule = module {
     factory { AlbumArtistRepository(get()) }
-    factory { AlbumRepository(get()) }
+    factory {
+        AlbumRepository(
+            albumDataSource = get(),
+            musicRepository = get(),
+            checkAndDeleteVerification = get()
+        )
+    }
     factory { ArtistRepository(get()) }
     factory { FolderRepository(get()) }
     factory { ImageCoverRepository(get()) }
     factory { MusicAlbumRepository(get()) }
     factory { MusicArtistRepository(get()) }
     factory { MusicPlaylistRepository(get()) }
-    factory { MusicRepository(get()) }
+    factory {
+        MusicRepository(
+            musicAlbumDataSource = get(),
+            musicArtistDataSource = get(),
+            musicDataSource = get(),
+            albumArtistDataSource = get(),
+            albumDataSource = get(),
+            artistDataSource = get(),
+            imageCoverDataSource = get(),
+            folderDataSource = get(),
+            playlistDataSource = get(),
+            musicPlaylistDataSource = get(),
+            checkAndDeleteVerification = get()
+        )
+    }
     factory { PlayerMusicRepository(get()) }
     factory { PlaylistRepository(get()) }
 
@@ -43,36 +57,6 @@ val domainModule = module {
             musicArtistRepository = get(),
             musicAlbumRepository = get(),
             albumArtistRepository = get()
-        )
-    }
-
-    factory<MusicService> {
-        MusicServiceImpl(
-            musicRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            albumArtistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            folderRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            checkAndDeleteVerification = get()
-        )
-    }
-
-    factory<ImageCoverService> {
-        ImageCoverServiceImpl(
-            imageCoverRepository = get()
-        )
-    }
-
-    factory<AlbumService> {
-        AlbumServiceImpl(
-            musicRepository = get(),
-            albumRepository = get(),
-            checkAndDeleteVerification = get()
         )
     }
 }
