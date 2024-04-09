@@ -13,13 +13,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
-import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
@@ -27,6 +23,10 @@ import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
+import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
+import com.github.soulsearching.mainpage.domain.state.PlaylistState
+import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.soulsearching.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
 import java.util.UUID
 
 /**
@@ -65,8 +65,8 @@ data class SelectedPlaylistScreen(
             onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
             navigateToModifyPlaylist = {
                 navigator.push(
-                    ModifyArtistScreen(
-                        selectedArtistId = selectedPlaylistId
+                    ModifyPlaylistScreen(
+                        selectedPlaylistId = selectedPlaylistId
                     )
                 )
             },

@@ -25,7 +25,7 @@ actual fun ModifyArtistScreenView(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyArtistViewModel.handler.onArtistEvent(
+                modifyArtistViewModel.handler.onEvent(
                     ModifyArtistEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )

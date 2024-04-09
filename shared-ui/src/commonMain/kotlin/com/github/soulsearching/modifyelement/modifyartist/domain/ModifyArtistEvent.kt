@@ -6,7 +6,7 @@ import java.util.UUID
 /**
  * Events for the modify artist screen.
  */
-interface ModifyArtistEvent {
+sealed interface ModifyArtistEvent {
     data object UpdateArtist : ModifyArtistEvent
     data class ArtistFromId(val artistId : UUID) : ModifyArtistEvent
     data class SetName(val name: String) : ModifyArtistEvent

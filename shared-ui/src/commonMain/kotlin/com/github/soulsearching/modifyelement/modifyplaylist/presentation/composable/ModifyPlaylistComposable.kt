@@ -30,15 +30,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyPlaylistViewModel
+import com.github.soulsearching.modifyelement.modifyplaylist.domain.ModifyPlaylistEvent
+import com.github.soulsearching.strings.strings
 import java.util.UUID
 
 @Composable
@@ -53,8 +52,8 @@ fun ModifyPlaylistComposable(
     }
 
     if (!isPlaylistFetched) {
-        modifyPlaylistViewModel.handler.onPlaylistEvent(
-            PlaylistEvent.PlaylistFromId(
+        modifyPlaylistViewModel.handler.onEvent(
+            ModifyPlaylistEvent.PlaylistFromId(
                 playlistId = UUID.fromString(selectedPlaylistId)
             )
         )
@@ -71,7 +70,7 @@ fun ModifyPlaylistComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.UpdatePlaylist)
+                    modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.UpdatePlaylist)
                     finishAction()
                 }
             )
@@ -103,7 +102,7 @@ fun ModifyPlaylistComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = state.cover,
+                                bitmap = state.playlistCover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -114,10 +113,10 @@ fun ModifyPlaylistComposable(
                                 .weight(2F)
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            state = state,
+                            playlistName = state.selectedPlaylist.name,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.SetName(it))
                             }
                         )
                     }
@@ -148,7 +147,7 @@ fun ModifyPlaylistComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = state.cover,
+                                bitmap = state.playlistCover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -160,10 +159,10 @@ fun ModifyPlaylistComposable(
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            state = state,
+                            playlistName = state.selectedPlaylist.name,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.SetName(it))
                             }
                         )
                     }
@@ -176,7 +175,7 @@ fun ModifyPlaylistComposable(
 @Composable
 fun ModifyPlaylistTextFields(
     modifier: Modifier,
-    state: PlaylistState,
+    playlistName: String,
     focusManager: FocusManager,
     setName: (String) -> Unit
 ) {
@@ -195,7 +194,7 @@ fun ModifyPlaylistTextFields(
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             AppTextField(
-                value = state.name,
+                value = playlistName,
                 onValueChange = { setName(it) },
                 labelName = strings.playlistName,
                 focusManager = focusManager

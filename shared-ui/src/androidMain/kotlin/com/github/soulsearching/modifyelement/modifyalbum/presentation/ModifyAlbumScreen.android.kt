@@ -25,7 +25,7 @@ actual fun ModifyAlbumScreenView(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyAlbumViewModel.handler.onAlbumEvent(
+                modifyAlbumViewModel.handler.onEvent(
                     ModifyAlbumEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )

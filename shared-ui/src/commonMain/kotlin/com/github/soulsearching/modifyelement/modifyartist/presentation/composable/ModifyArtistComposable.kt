@@ -54,7 +54,7 @@ fun ModifyArtistComposable(
     }
 
     if (!isSelectedAlbumFetched) {
-        modifyArtistViewModel.handler.onArtistEvent(
+        modifyArtistViewModel.handler.onEvent(
             ModifyArtistEvent.ArtistFromId(
                 artistId = UUID.fromString(selectedArtistId)
             )
@@ -71,7 +71,7 @@ fun ModifyArtistComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyArtistViewModel.handler.onArtistEvent(ModifyArtistEvent.UpdateArtist)
+                    modifyArtistViewModel.handler.onEvent(ModifyArtistEvent.UpdateArtist)
                     finishAction()
                 }
             )
@@ -117,7 +117,7 @@ fun ModifyArtistComposable(
                             artistName = state.artistWithMusics.artist.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyArtistViewModel.handler.onArtistEvent(
+                                modifyArtistViewModel.handler.onEvent(
                                     ModifyArtistEvent.SetName(
                                         it
                                     )
@@ -167,7 +167,7 @@ fun ModifyArtistComposable(
                             artistName = state.artistWithMusics.artist.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyArtistViewModel.handler.onArtistEvent(
+                                modifyArtistViewModel.handler.onEvent(
                                     ModifyArtistEvent.SetName(
                                         it
                                     )

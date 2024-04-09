@@ -1,15 +1,14 @@
 package com.github.soulsearching.domain.events.handlers
 
-import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,10 +47,6 @@ class PlaylistEventHandler(
             is PlaylistEvent.SetSelectedPlaylist -> setSelectedPlaylist(event)
             is PlaylistEvent.TogglePlaylistSelectedState -> togglePlaylistSelectedState(event)
             is PlaylistEvent.PlaylistsSelection -> setSelectablePlaylistsForMusic(event)
-            is PlaylistEvent.UpdatePlaylist -> updatePlaylist()
-            is PlaylistEvent.PlaylistFromId -> setPlaylistInformation(event)
-            is PlaylistEvent.SetName -> setSelectedPlaylistName(event)
-            is PlaylistEvent.SetCover -> setSelectedPlaylistCover(event)
             is PlaylistEvent.SetSortDirection -> setSortDirection(event)
             is PlaylistEvent.SetSortType -> setSortType(event)
             is PlaylistEvent.CreateFavoritePlaylist -> createFavoritePlaylist(event)
@@ -190,79 +185,6 @@ class PlaylistEventHandler(
                     playlistsWithMusics = playlists
                 )
             }
-        }
-    }
-
-    /**
-     * Update selected playlist information.
-     */
-    private fun updatePlaylist() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val coverId = if (publicState.value.hasSetNewCover) {
-                val id = UUID.randomUUID()
-                imageCoverRepository.insertImageCover(
-                    ImageCover(
-                        coverId = id,
-                        cover = publicState.value.cover
-                    )
-                )
-                id
-            } else {
-                publicState.value.selectedPlaylist.coverId
-            }
-            playlistRepository.insertPlaylist(
-                publicState.value.selectedPlaylist.copy(
-                    name = publicState.value.name.trim(),
-                    coverId = coverId
-                )
-            )
-        }
-    }
-
-    /**
-     * Set information about the selected playlist and other fields.
-     */
-    private fun setPlaylistInformation(event: PlaylistEvent.PlaylistFromId) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val playlist = playlistRepository.getPlaylistFromId(event.playlistId)
-            val cover = if (playlist.coverId != null) {
-                imageCoverRepository.getCoverOfElement(playlist.coverId!!)?.cover
-            } else {
-                null
-            }
-            privateState.update {
-                it.copy(
-                    selectedPlaylist = playlist,
-                    name = playlist.name,
-                    cover = cover,
-                    hasSetNewCover = false
-                )
-            }
-        }
-    }
-
-    /**
-     * Set the name of the selected playlist.
-     * Primarily used when changing the name of the selected playlist.
-     */
-    private fun setSelectedPlaylistName(event: PlaylistEvent.SetName) {
-        privateState.update {
-            it.copy(
-                name = event.name
-            )
-        }
-    }
-
-    /**
-     * Set the cover of the selected playlist.
-     * Primarily used when changing the cover of the selected playlist.
-     */
-    private fun setSelectedPlaylistCover(event: PlaylistEvent.SetCover) {
-        privateState.update {
-            it.copy(
-                cover = event.cover,
-                hasSetNewCover = true
-            )
         }
     }
 

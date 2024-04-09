@@ -46,7 +46,7 @@ class ModifyAlbumViewModelHandler(
     /**
      * Manage album events.
      */
-    fun onAlbumEvent(event: ModifyAlbumEvent) {
+    fun onEvent(event: ModifyAlbumEvent) {
         when (event) {
             ModifyAlbumEvent.UpdateAlbum -> update()
             is ModifyAlbumEvent.AlbumFromID -> setSelectedAlbum(albumId = event.albumId)

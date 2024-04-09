@@ -142,9 +142,7 @@ actual val appModule = module {
     single<ModifyPlaylistViewModel> {
         ModifyPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
-            musicPlaylistRepository = get(),
             imageCoverRepository = get(),
-            settings = get()
         )
     }
     single<PlayerMusicListViewModel> {

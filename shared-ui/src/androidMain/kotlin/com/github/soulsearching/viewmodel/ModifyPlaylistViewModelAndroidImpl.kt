@@ -14,15 +14,11 @@ import com.github.soulsearching.modifyelement.modifyplaylist.domain.ModifyPlayli
  */
 class ModifyPlaylistViewModelAndroidImpl(
     playlistRepository : PlaylistRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
     imageCoverRepository: ImageCoverRepository,
-    settings: SoulSearchingSettings
 ) : ModifyPlaylistViewModel, ViewModel() {
     override val handler: ModifyPlaylistViewModelHandler = ModifyPlaylistViewModelHandler(
         coroutineScope = viewModelScope,
         playlistRepository = playlistRepository,
-        musicPlaylistRepository = musicPlaylistRepository,
         imageCoverRepository = imageCoverRepository,
-        settings = settings
     )
 }

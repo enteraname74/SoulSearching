@@ -55,7 +55,7 @@ fun ModifyAlbumComposable(
     }
 
     if (!isSelectedAlbumFetched) {
-        modifyAlbumViewModel.handler.onAlbumEvent(
+        modifyAlbumViewModel.handler.onEvent(
             ModifyAlbumEvent.AlbumFromID(
                 albumId = UUID.fromString(selectedAlbumId)
             )
@@ -72,7 +72,7 @@ fun ModifyAlbumComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyAlbumViewModel.handler.onAlbumEvent(ModifyAlbumEvent.UpdateAlbum)
+                    modifyAlbumViewModel.handler.onEvent(ModifyAlbumEvent.UpdateAlbum)
                     finishAction()
                 }
             )
@@ -119,14 +119,14 @@ fun ModifyAlbumComposable(
                             artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onEvent(
                                     ModifyAlbumEvent.SetName(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onEvent(
                                     ModifyAlbumEvent.SetArtist(
                                         it
                                     )
@@ -178,14 +178,14 @@ fun ModifyAlbumComposable(
                             artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onEvent(
                                     ModifyAlbumEvent.SetName(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                modifyAlbumViewModel.handler.onEvent(
                                     ModifyAlbumEvent.SetArtist(
                                         it
                                     )
