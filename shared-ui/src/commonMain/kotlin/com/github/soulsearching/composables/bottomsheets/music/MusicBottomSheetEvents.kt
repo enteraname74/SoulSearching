@@ -7,17 +7,15 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.SoulSearchingDialog
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.CoroutineScope
@@ -27,14 +25,20 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 fun MusicBottomSheetEvents(
-    musicState: MusicState,
-    playlistState: PlaylistState,
-    onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistsEvent: (PlaylistEvent) -> Unit,
+    selectedMusic: Music,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
+    isDeleteMusicDialogShown: Boolean,
+    isBottomSheetShown: Boolean,
+    isAddToPlaylistBottomSheetShown: Boolean,
+    onDismiss: () -> Unit,
+    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
+    onSetRemoveMusicFromPlaylistVisibility: (Boolean) -> Unit,
+    onDeleteMusic: () -> Unit,
+    onToggleQuickAccessState: () -> Unit,
+    onAddToPlaylist: () -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -59,16 +63,16 @@ fun MusicBottomSheetEvents(
         coroutineScope.launch { musicModalSheetState.hide() }
     }
 
-    if (musicState.isDeleteDialogShown) {
+    if (isDeleteMusicDialogShown) {
         SoulSearchingDialog(
             title = strings.deleteMusicDialogTitle,
             text = strings.deleteMusicDialogText,
             confirmAction = {
-                onMusicEvent(MusicEvent.DeleteMusic)
-                onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
+                onDeleteMusic()
+                onSetDeleteMusicDialogVisibility(false)
                 CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.removeSongFromPlayedPlaylist(
-                        musicId = musicState.selectedMusic.musicId
+                        musicId = selectedMusic.musicId
                     )
                     playerMusicListViewModel.handler.savePlayerMusicList(
                         playbackManager.playedList.map { it.musicId }
@@ -76,18 +80,10 @@ fun MusicBottomSheetEvents(
                 }
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
+                        if (!musicModalSheetState.isVisible) onDismiss()
                     }
             },
-            dismissAction = {
-                onMusicEvent(MusicEvent.DeleteDialog(isShown = false))
-            },
+            dismissAction = { onSetDeleteMusicDialogVisibility(false) },
             confirmText = strings.delete,
             dismissText = strings.cancel,
             backgroundColor = primaryColor,
@@ -100,8 +96,8 @@ fun MusicBottomSheetEvents(
             title = strings.removeMusicFromPlaylistTitle,
             text = strings.removeMusicFromPlaylistText,
             confirmAction = {
-                onPlaylistsEvent(PlaylistEvent.RemoveMusicFromPlaylist(musicId = musicState.selectedMusic.musicId))
-                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
+                onPlaylistsEvent(PlaylistEvent.RemoveMusicFromPlaylist(musicId = selectedMusic.musicId))
+                onSetRemoveMusicFromPlaylistVisibility(false)
                 CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.removeMusicIfSamePlaylist(
                         musicId = musicState.selectedMusic.musicId,
@@ -114,17 +110,11 @@ fun MusicBottomSheetEvents(
 
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
+                        if (!musicModalSheetState.isVisible) onDismiss()
                     }
             },
             dismissAction = {
-                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = false))
+                onSetRemoveMusicFromPlaylistVisibility(false)
             },
             confirmText = strings.delete,
             dismissText = strings.cancel,
@@ -133,24 +123,28 @@ fun MusicBottomSheetEvents(
         )
     }
 
-    if (musicState.isBottomSheetShown) {
+    if (isBottomSheetShown) {
         MusicBottomSheet(
             musicBottomSheetState = musicBottomSheetState,
-            onMusicEvent = onMusicEvent,
-            onPlaylistEvent = onPlaylistsEvent,
             musicModalSheetState = musicModalSheetState,
-            musicState = musicState,
             navigateToModifyMusic = navigateToModifyMusic,
             playerMusicListViewModel = playerMusicListViewModel,
             playerDraggableState = playerDraggableState,
             primaryColor = secondaryColor,
-            textColor = onSecondaryColor
+            textColor = onSecondaryColor,
+            selectedMusic = selectedMusic,
+            onDismiss = onDismiss,
+            onShowRemoveFromPlaylistDialog = { onSetRemoveMusicFromPlaylistVisibility(true) },
+            onShowDeleteMusicDialog = { onSetDeleteMusicDialogVisibility(true) },
+            onToggleQuickAccessState = onToggleQuickAccessState,
+            onAddToPlaylist = onAddToPlaylist,
+            playbackManager = playbackManager
         )
     }
 
-    if (musicState.isAddToPlaylistBottomSheetShown) {
+    if (isAddToPlaylistBottomSheetShown) {
         AddToPlaylistBottomSheet(
-            selectedMusicId = musicState.selectedMusic.musicId,
+            selectedMusicId = selectedMusic.musicId,
             onMusicEvent = onMusicEvent,
             onPlaylistsEvent = onPlaylistsEvent,
             addToPlaylistModalSheetState = addToPlaylistModalSheetState,

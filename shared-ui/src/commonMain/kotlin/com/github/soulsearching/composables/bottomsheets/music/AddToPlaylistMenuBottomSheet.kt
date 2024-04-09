@@ -11,25 +11,36 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.Constants
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.PlaylistSelectableComposable
-import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import java.util.UUID
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(
-    playlistState: PlaylistState,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
-    cancelAction: () -> Unit,
-    validationAction: () -> Unit,
+    playlistsWithMusics: List<PlaylistWithMusics>,
+    onDismiss: () -> Unit,
+    validationAction: (selectedPlaylists: List<UUID>) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
+
+    val selectedPlaylistIds = rememberSaveable {
+        mutableStateListOf<UUID>()
+    }
+
+    LaunchedEffect(null) {
+        selectedPlaylistIds.clear()
+    }
+
     Scaffold {
         Column(
             modifier = Modifier
@@ -40,8 +51,8 @@ fun AddToPlaylistMenuBottomSheet(
         ) {
             AppHeaderBar(
                 title = strings.addToPlaylist,
-                leftAction = cancelAction,
-                rightAction = validationAction,
+                leftAction = onDismiss,
+                rightAction = { validationAction(selectedPlaylistIds) },
                 rightIcon = Icons.Rounded.Done,
                 backgroundColor = Color.Transparent,
                 contentColor = textColor
@@ -50,34 +61,18 @@ fun AddToPlaylistMenuBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                items(playlistState.playlistsWithMusics) { playlistWithMusics ->
-                    if (playlistWithMusics.playlist.playlistId in playlistState.multiplePlaylistSelected) {
-                        PlaylistSelectableComposable(
-                            playlist = playlistWithMusics.playlist,
-                            onClick = {
-                                onPlaylistEvent(
-                                    PlaylistEvent.TogglePlaylistSelectedState(
-                                        playlistWithMusics.playlist.playlistId
-                                    )
-                                )
-                            },
-                            isSelected = true,
-                            textColor = textColor
-                        )
-                    } else {
-                        PlaylistSelectableComposable(
-                            playlist = playlistWithMusics.playlist,
-                            onClick = {
-                                onPlaylistEvent(
-                                    PlaylistEvent.TogglePlaylistSelectedState(
-                                        playlistWithMusics.playlist.playlistId
-                                    )
-                                )
-                            },
-                            isSelected = false,
-                            textColor = textColor
-                        )
-                    }
+                items(playlistsWithMusics) { playlistWithMusics ->
+                    PlaylistSelectableComposable(
+                        playlist = playlistWithMusics.playlist,
+                        onClick = {
+                            if (playlistWithMusics.playlist.playlistId in selectedPlaylistIds)
+                                selectedPlaylistIds.remove(playlistWithMusics.playlist.playlistId)
+                            else
+                                selectedPlaylistIds.add(playlistWithMusics.playlist.playlistId)
+                        },
+                        isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
+                        textColor = textColor
+                    )
                 }
             }
         }

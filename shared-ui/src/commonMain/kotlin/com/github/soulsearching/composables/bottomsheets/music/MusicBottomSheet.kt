@@ -13,8 +13,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
@@ -28,12 +26,13 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun MusicBottomSheet(
-//    onMusicEvent: (MusicEvent) -> Unit,
-//    onPlaylistEvent: (PlaylistEvent) -> Unit,
     musicModalSheetState: SheetState,
-//    musicState: MusicState,
     selectedMusic: Music,
     onDismiss: () -> Unit,
+    onShowDeleteMusicDialog: () -> Unit,
+    onShowRemoveFromPlaylistDialog: () -> Unit,
+    onToggleQuickAccessState: () -> Unit,
+    onAddToPlaylist: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     playerMusicListViewModel: PlayerMusicListViewModel,
@@ -58,39 +57,32 @@ fun MusicBottomSheet(
                     .invokeOnCompletion {
                         if (!musicModalSheetState.isVisible) {
                             onDismiss()
-                            navigateToModifyMusic(selectedMusicId.toString())
+                            navigateToModifyMusic(selectedMusic.musicId.toString())
                         }
                     }
             },
             quickAccessAction = {
-                onMusicEvent(
-                    MusicEvent.UpdateQuickAccessState(
-                        musicId = selectedMusic.musicId
-                    )
-                )
+                onToggleQuickAccessState()
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!musicModalSheetState.isVisible) onDismiss()
                     }
             },
-            removeAction = {
-                onMusicEvent(MusicEvent.DeleteDialog(isShown = true))
-            },
+            removeAction = onShowDeleteMusicDialog,
             addToPlaylistAction = {
-                onPlaylistEvent(
-                    PlaylistEvent.PlaylistsSelection(
-                        musicId = selectedMusic.musicId
-                    )
-                )
-                onMusicEvent(
-                    MusicEvent.AddToPlaylistBottomSheet(
-                        isShown = true
-                    )
-                )
+//                onPlaylistEvent(
+//                    PlaylistEvent.PlaylistsSelection(
+//                        musicId = selectedMusic.musicId
+//                    )
+//                )
+//                onMusicEvent(
+//                    MusicEvent.AddToPlaylistBottomSheet(
+//                        isShown = true
+//                    )
+//                )
+                onAddToPlaylist()
             },
-            removeFromPlaylistAction = {
-                onMusicEvent(MusicEvent.RemoveFromPlaylistDialog(isShown = true))
-            },
+            removeFromPlaylistAction = onShowRemoveFromPlaylistDialog,
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.removeSongFromPlayedPlaylist(

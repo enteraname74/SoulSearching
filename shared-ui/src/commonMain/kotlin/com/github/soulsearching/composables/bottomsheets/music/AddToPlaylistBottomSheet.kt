@@ -8,9 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -19,10 +17,8 @@ import java.util.UUID
 @Composable
 fun AddToPlaylistBottomSheet(
     selectedMusicId: UUID,
-    onMusicEvent: (MusicEvent) -> Unit,
-    onPlaylistsEvent: (PlaylistEvent) -> Unit,
+    onDismiss: () -> Unit,
     addToPlaylistModalSheetState: SheetState,
-    playlistState: PlaylistState,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
@@ -31,13 +27,7 @@ fun AddToPlaylistBottomSheet(
     ModalBottomSheet(
         modifier = Modifier
             .fillMaxSize(),
-        onDismissRequest = {
-            onMusicEvent(
-                MusicEvent.AddToPlaylistBottomSheet(
-                    isShown = false
-                )
-            )
-        },
+        onDismissRequest = onDismiss,
         sheetState = addToPlaylistModalSheetState,
         dragHandle = {}
     ) {
@@ -46,16 +36,10 @@ fun AddToPlaylistBottomSheet(
             textColor = textColor,
             playlistState = playlistState,
             onPlaylistEvent = onPlaylistsEvent,
-            cancelAction = {
+            onDismiss = {
                 coroutineScope.launch { addToPlaylistModalSheetState.hide() }
                     .invokeOnCompletion {
-                        if (!addToPlaylistModalSheetState.isVisible) {
-                            onMusicEvent(
-                                MusicEvent.AddToPlaylistBottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
+                        if (!addToPlaylistModalSheetState.isVisible) onDismiss()
                     }
             },
             validationAction = {
@@ -63,11 +47,7 @@ fun AddToPlaylistBottomSheet(
                     .invokeOnCompletion {
                         if (!addToPlaylistModalSheetState.isVisible) {
                             onPlaylistsEvent(PlaylistEvent.AddMusicToPlaylists(musicId = selectedMusicId))
-                            onMusicEvent(
-                                MusicEvent.AddToPlaylistBottomSheet(
-                                    isShown = false
-                                )
-                            )
+                            onDismiss()
                         }
                     }
             }
