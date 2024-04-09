@@ -53,10 +53,12 @@ class ModifyAlbumViewModelHandler(
             is ModifyAlbumEvent.SetName -> setAlbum(newAlbumName = event.name)
             is ModifyAlbumEvent.SetCover -> setAlbumCover(cover = event.cover)
             is ModifyAlbumEvent.SetArtist -> setArtist(newArtistName = event.artist)
-            else -> {}
         }
     }
 
+    /**
+     * Set the selected album for the modify screen information.
+     */
     private fun setSelectedAlbum(albumId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             val albumWithMusics = albumRepository.getAlbumWithMusics(albumId)
@@ -71,8 +73,7 @@ class ModifyAlbumViewModelHandler(
                 it.copy(
                     albumWithMusics = albumWithMusics,
                     albumCover = cover,
-                    hasSetNewCover = false,
-                    isSelectedAlbumFetched = true
+                    hasSetNewCover = false
                 )
             }
         }
@@ -126,10 +127,10 @@ class ModifyAlbumViewModelHandler(
     private fun update() {
         CoroutineScope(Dispatchers.IO).launch {
             // If the image has changed, we need to save it and retrieve its id.
-            val coverId = if (state.value.hasSetNewCover && state.value.albumCover != null) {
-                imageCoverRepository.save(cover = state.value.albumCover!!)
+            val coverId = if (_state.value.hasSetNewCover && _state.value.albumCover != null) {
+                imageCoverRepository.save(cover = _state.value.albumCover!!)
             } else {
-                state.value.albumWithMusics.album.coverId
+                _state.value.albumWithMusics.album.coverId
             }
 
             val albumWithArtist = _state.value.albumWithMusics.toAlbumWithArtist().trim()

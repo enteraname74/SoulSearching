@@ -8,10 +8,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.soulsearching.modifyelement.modifyartist.presentation.composable.ModifyArtistComposable
-import com.github.soulsearching.domain.events.ArtistEvent
 import com.github.soulsearching.domain.viewmodel.ModifyArtistViewModel
 import com.github.soulsearching.model.utils.AndroidUtils
+import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistEvent
+import com.github.soulsearching.modifyelement.modifyartist.presentation.composable.ModifyArtistComposable
 
 @Composable
 actual fun ModifyArtistScreenView(
@@ -26,7 +26,7 @@ actual fun ModifyArtistScreenView(
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
                 modifyArtistViewModel.handler.onArtistEvent(
-                    ArtistEvent.SetCover(
+                    ModifyArtistEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
                 )

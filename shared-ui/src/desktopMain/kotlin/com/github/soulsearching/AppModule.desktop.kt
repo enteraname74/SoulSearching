@@ -122,12 +122,7 @@ actual val appModule: Module = module {
     }
     single {
         ModifyArtistViewModelDesktopImpl(
-            musicRepository = get(),
             artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
-            albumRepository = get(),
             imageCoverRepository = get()
         )
     }

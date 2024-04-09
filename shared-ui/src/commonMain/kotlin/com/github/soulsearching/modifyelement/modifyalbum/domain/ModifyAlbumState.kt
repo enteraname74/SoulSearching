@@ -8,7 +8,6 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
  * UI state of the modify album screen.
  */
 data class ModifyAlbumState(
-    val isSelectedAlbumFetched: Boolean = false,
     val albumWithMusics: AlbumWithMusics = AlbumWithMusics(),
     val hasSetNewCover: Boolean = false,
     val albumCover: ImageBitmap? = null

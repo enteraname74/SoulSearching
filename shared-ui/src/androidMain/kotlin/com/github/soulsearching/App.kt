@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.github.commonModule
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
 import com.github.soulsearching.model.notification.SoulSearchingNotification

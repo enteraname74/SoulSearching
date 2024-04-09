@@ -46,7 +46,10 @@ class AlbumRepository(
             album = from
         )
     }
-    
+
+    /**
+     * Update an album with new infomation.
+     */
     suspend fun update(
         newAlbumWithArtistInformation: AlbumWithArtist
     ) {

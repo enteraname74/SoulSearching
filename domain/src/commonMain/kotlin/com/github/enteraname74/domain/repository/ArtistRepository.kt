@@ -1,17 +1,144 @@
 package com.github.enteraname74.domain.repository
 
+import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
+import com.github.enteraname74.domain.datasource.AlbumDataSource
 import com.github.enteraname74.domain.datasource.ArtistDataSource
+import com.github.enteraname74.domain.datasource.MusicAlbumDataSource
+import com.github.enteraname74.domain.datasource.MusicArtistDataSource
+import com.github.enteraname74.domain.datasource.MusicDataSource
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 /**
- * Repository of a Artist.
+ * DataSource of a Artist.
  */
 class ArtistRepository(
-    private val artistDataSource: ArtistDataSource
+    private val artistDataSource: ArtistDataSource,
+    private val albumDataSource: AlbumDataSource,
+    private val musicDataSource: MusicDataSource,
+    private val musicArtistDataSource: MusicArtistDataSource,
+    private val musicAlbumDataSource: MusicAlbumDataSource,
+    private val albumArtistDataSource: AlbumArtistDataSource
 ) {
+
+    /**
+     * Merge two artist together.
+     * @param from the artist to put to the "to" artist.
+     * @param to the artist that will receive the merge ("from" param)/
+     */
+    private suspend fun mergeArtists(from: ArtistWithMusics, to: Artist) {
+        for (music in from.musics) {
+            musicArtistDataSource.updateArtistOfMusic(
+                musicId = music.musicId,
+                newArtistId = to.artistId
+            )
+        }
+
+        // On supprime l'ancien artiste :
+        artistDataSource.deleteArtist(
+            from.artist
+        )
+    }
+
+    /**
+     * Update the artist name of the artist songs.
+     */
+    private suspend fun updateArtistNameOfArtistSongs(
+        newArtistName: String,
+        artistMusics: List<Music>
+    ) {
+        for (music in artistMusics) {
+            musicDataSource.insertMusic(
+                music.copy(
+                    artist = newArtistName
+                )
+            )
+        }
+    }
+
+    /**
+     * Redirect the albums of an artist with the same name to the correct artist id.
+     */
+    private suspend fun redirectAlbumsToCorrectArtist(artist: Artist) {
+        val legacyAlbumsOfArtist = albumDataSource.getAllAlbumsWithMusics().filter {
+            it.artist!!.artistName == artist.artistName
+        }
+
+        /*
+         If, once the artist name was changed,
+         we have two albums with the same album and artist name,
+         we redirect the album's musics that do not have the same artist's id as the actual one:
+         */
+        val albumsOrderedByAppearance =
+            legacyAlbumsOfArtist.groupingBy { it.album.albumName }.eachCount()
+
+        for (entry in albumsOrderedByAppearance.entries) {
+            val albumWithMusicToUpdate = legacyAlbumsOfArtist.find {
+                (it.album.albumName == entry.key)
+                        && (it.artist!!.artistId != artist.artistId)
+            }
+            if (entry.value == 2) {
+                // The album has a duplicate!
+                // We redirect the album's songs to the one with the actual artist id.
+                for (music in albumWithMusicToUpdate!!.musics) {
+                    musicAlbumDataSource.updateAlbumOfMusic(
+                        musicId = music.musicId,
+                        newAlbumId = legacyAlbumsOfArtist.find {
+                            (it.album.albumName == entry.key)
+                                    && (it.artist!!.artistId == artist.artistId)
+                        }!!.album.albumId
+                    )
+                }
+                // We delete the previous album
+                albumDataSource.deleteAlbum(
+                    albumWithMusicToUpdate.album
+                )
+            } else if (albumWithMusicToUpdate != null) {
+                // Sinon, on met à jour l'id de l'artiste
+                albumArtistDataSource.updateArtistOfAlbum(
+                    albumId = albumWithMusicToUpdate.album.albumId,
+                    newArtistId = artist.artistId
+                )
+            }
+        }
+    }
+
+    /**
+     * Update an artist with new information.
+     */
+    suspend fun update(newArtistWithMusicsInformation: ArtistWithMusics) {
+        artistDataSource.insertArtist(
+            newArtistWithMusicsInformation.artist.copy(
+                artistName = newArtistWithMusicsInformation.artist.artistName,
+                coverId = newArtistWithMusicsInformation.artist.coverId
+            )
+        )
+
+        // We redirect the possible artists albums that do not share the same artist id.
+        redirectAlbumsToCorrectArtist(artist = newArtistWithMusicsInformation.artist)
+
+        // We check if there is not two times the artist name.
+        val possibleDuplicatedArtist: ArtistWithMusics? =
+            artistDataSource.getPossibleDuplicatedArtist(
+                artistName = newArtistWithMusicsInformation.artist.artistName,
+                artistId = newArtistWithMusicsInformation.artist.artistId
+            )
+
+        // If so, we merge the duplicate one to the current artist.
+        if (possibleDuplicatedArtist != null) mergeArtists(
+            from = possibleDuplicatedArtist,
+            to = newArtistWithMusicsInformation.artist
+        )
+
+        updateArtistNameOfArtistSongs(
+            newArtistName = newArtistWithMusicsInformation.artist.artistName,
+            artistMusics = newArtistWithMusicsInformation.musics
+        )
+    }
+
     /**
      * Inserts or updates an artist.
      */

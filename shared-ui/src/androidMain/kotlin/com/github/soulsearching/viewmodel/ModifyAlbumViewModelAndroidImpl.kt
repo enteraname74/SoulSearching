@@ -17,12 +17,7 @@ import com.github.soulsearching.modifyelement.modifyalbum.domain.ModifyAlbumView
  * Implementation of the ModifyAlbumViewModel.
  */
 class ModifyAlbumViewModelAndroidImpl(
-    musicRepository: MusicRepository,
     albumRepository: AlbumRepository,
-    artistRepository: ArtistRepository,
-    musicArtistRepository: MusicArtistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    albumArtistRepository: AlbumArtistRepository,
     imageCoverRepository: ImageCoverRepository,
     playbackManager: PlaybackManager
 ) : ModifyAlbumViewModel, ViewModel() {

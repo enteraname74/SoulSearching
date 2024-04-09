@@ -16,22 +16,12 @@ import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistVi
  * Implementation of the ModifyArtistViewModel.
  */
 class ModifyArtistViewModelAndroidImpl(
-    musicRepository: MusicRepository,
     artistRepository: ArtistRepository,
-    musicArtistRepository: MusicArtistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    albumRepository: AlbumRepository,
     imageCoverRepository: ImageCoverRepository
 ) : ModifyArtistViewModel, ViewModel() {
     override val handler: ModifyArtistViewModelHandler = ModifyArtistViewModelHandler(
         coroutineScope = viewModelScope,
-        musicRepository = musicRepository,
         artistRepository = artistRepository,
-        musicArtistRepository = musicArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        albumArtistRepository = albumArtistRepository,
-        albumRepository = albumRepository,
         imageCoverRepository = imageCoverRepository
     )
 }

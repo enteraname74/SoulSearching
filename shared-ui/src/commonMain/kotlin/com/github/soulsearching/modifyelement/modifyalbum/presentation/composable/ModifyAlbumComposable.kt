@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,11 +50,18 @@ fun ModifyAlbumComposable(
 
     val state by modifyAlbumViewModel.handler.state.collectAsState()
 
-    if (!state.isSelectedAlbumFetched) modifyAlbumViewModel.handler.onAlbumEvent(
-        ModifyAlbumEvent.AlbumFromID(
-            albumId = UUID.fromString(selectedAlbumId)
+    var isSelectedAlbumFetched by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (!isSelectedAlbumFetched) {
+        modifyAlbumViewModel.handler.onAlbumEvent(
+            ModifyAlbumEvent.AlbumFromID(
+                albumId = UUID.fromString(selectedAlbumId)
+            )
         )
-    )
+        isSelectedAlbumFetched = true
+    }
 
     val focusManager = LocalFocusManager.current
 

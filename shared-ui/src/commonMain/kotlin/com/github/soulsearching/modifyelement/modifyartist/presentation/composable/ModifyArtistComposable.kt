@@ -30,15 +30,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyArtistViewModel
+import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistEvent
+import com.github.soulsearching.strings.strings
 import java.util.UUID
 
 @Composable
@@ -48,21 +47,22 @@ fun ModifyArtistComposable(
     finishAction: () -> Unit,
     selectImage: () -> Unit
 ) {
-    var isArtistFetched by rememberSaveable {
+    val state by modifyArtistViewModel.handler.state.collectAsState()
+
+    var isSelectedAlbumFetched by rememberSaveable {
         mutableStateOf(false)
     }
 
-    if (!isArtistFetched) {
+    if (!isSelectedAlbumFetched) {
         modifyArtistViewModel.handler.onArtistEvent(
-            ArtistEvent.ArtistFromId(
+            ModifyArtistEvent.ArtistFromId(
                 artistId = UUID.fromString(selectedArtistId)
             )
         )
-        isArtistFetched = true
+        isSelectedAlbumFetched = true
     }
 
     val focusManager = LocalFocusManager.current
-    val artistState by modifyArtistViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -71,7 +71,7 @@ fun ModifyArtistComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyArtistViewModel.handler.onArtistEvent(ArtistEvent.UpdateArtist)
+                    modifyArtistViewModel.handler.onArtistEvent(ModifyArtistEvent.UpdateArtist)
                     finishAction()
                 }
             )
@@ -103,7 +103,7 @@ fun ModifyArtistComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = artistState.cover,
+                                bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -114,11 +114,11 @@ fun ModifyArtistComposable(
                                 .weight(2F)
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            selectedArtistState = artistState,
+                            artistName = state.artistWithMusics.artist.artistName,
                             focusManager = focusManager,
                             setName = {
                                 modifyArtistViewModel.handler.onArtistEvent(
-                                    ArtistEvent.SetName(
+                                    ModifyArtistEvent.SetName(
                                         it
                                     )
                                 )
@@ -152,7 +152,7 @@ fun ModifyArtistComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = artistState.cover,
+                                bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -164,11 +164,11 @@ fun ModifyArtistComposable(
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            selectedArtistState = artistState,
+                            artistName = state.artistWithMusics.artist.artistName,
                             focusManager = focusManager,
                             setName = {
                                 modifyArtistViewModel.handler.onArtistEvent(
-                                    ArtistEvent.SetName(
+                                    ModifyArtistEvent.SetName(
                                         it
                                     )
                                 )
@@ -184,7 +184,7 @@ fun ModifyArtistComposable(
 @Composable
 fun ModifyArtistTextFields(
     modifier: Modifier,
-    selectedArtistState: SelectedArtistState,
+    artistName: String,
     focusManager: FocusManager,
     setName: (String) -> Unit
 ) {
@@ -203,8 +203,8 @@ fun ModifyArtistTextFields(
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             AppTextField(
-                value = selectedArtistState.artistWithMusics.artist.artistName,
-                onValueChange = { setName(it) },
+                value = artistName,
+                onValueChange = setName,
                 labelName = strings.artistName,
                 focusManager = focusManager
             )

@@ -30,7 +30,16 @@ val domainModule = module {
             musicAlbumDataSource = get()
         )
     }
-    single { ArtistRepository(get()) }
+    single {
+        ArtistRepository(
+            artistDataSource = get(),
+            albumDataSource = get(),
+            musicAlbumDataSource = get(),
+            musicArtistDataSource = get(),
+            musicDataSource = get(),
+            albumArtistDataSource = get()
+        )
+    }
     single { FolderRepository(get()) }
     single { ImageCoverRepository(get()) }
     single { MusicAlbumRepository(get()) }

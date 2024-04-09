@@ -47,7 +47,6 @@ class ModifyMusicViewModelHandler(
                 it.copy(
                     selectedMusic = music,
                     modifiedMusicInformation = music.copy(),
-                    isSelectedMusicFetched = true,
                     hasCoverBeenChanged = false,
                     cover = cover?.cover
                 )

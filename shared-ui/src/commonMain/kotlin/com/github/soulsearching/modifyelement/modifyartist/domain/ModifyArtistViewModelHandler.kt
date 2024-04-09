@@ -1,16 +1,13 @@
 package com.github.soulsearching.modifyelement.modifyartist.domain
 
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistState
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,164 +23,105 @@ import java.util.UUID
  */
 class ModifyArtistViewModelHandler(
     coroutineScope: CoroutineScope,
-    private val musicRepository: MusicRepository,
     private val artistRepository: ArtistRepository,
-    private val musicArtistRepository: MusicArtistRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
-    private val albumRepository: AlbumRepository,
     private val imageCoverRepository: ImageCoverRepository
 ) : ViewModelHandler {
-    private val _state = MutableStateFlow(SelectedArtistState())
+    private val _state = MutableStateFlow(ModifyArtistState())
     val state = _state.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(5000),
-        SelectedArtistState()
+        ModifyArtistState()
+    )
+
+    /**
+     * Utility method to trim values of an Artist when saving modification to it.
+     */
+    private fun ArtistWithMusics.trim() = this.copy(
+        artist = this.artist.copy(
+            artistName = this.artist.artistName.trim()
+        )
     )
 
     /**
      * Manage artist events.
      */
-    fun onArtistEvent(event: ArtistEvent) {
+    fun onArtistEvent(event: ModifyArtistEvent) {
         when (event) {
-            ArtistEvent.UpdateArtist -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val coverId = if (state.value.hasCoverBeenChanged) {
-                        val id = UUID.randomUUID()
-                        imageCoverRepository.insertImageCover(
-                            ImageCover(
-                                coverId = id,
-                                cover = state.value.cover
-                            )
-                        )
-                        id
-                    } else {
-                        state.value.artistWithMusics.artist.coverId
-                    }
+            ModifyArtistEvent.UpdateArtist -> update()
+            is ModifyArtistEvent.ArtistFromId -> setSelectedArtist(artistId = event.artistId)
+            is ModifyArtistEvent.SetName -> setArtist(newArtistName = event.name)
+            is ModifyArtistEvent.SetCover -> setArtistCover(cover = event.cover)
+        }
+    }
 
-                    artistRepository.insertArtist(
-                        state.value.artistWithMusics.artist.copy(
-                            artistName = state.value.artistWithMusics.artist.artistName.trim(),
-                            coverId = coverId
-                        )
+    /**
+     * Set the new cover name to show to the user.
+     */
+    private fun setArtistCover(cover: ImageBitmap) {
+        _state.update {
+            it.copy(
+                cover = cover,
+                hasCoverBeenChanged = true
+            )
+        }
+    }
+
+    /**
+     * Set the new artist name to show to the user.
+     */
+    private fun setArtist(newArtistName: String) {
+        _state.update {
+            println(newArtistName)
+            it.copy(
+                artistWithMusics = it.artistWithMusics.copy(
+                    artist = it.artistWithMusics.artist.copy(
+                        artistName = newArtistName
                     )
+                )
+            )
+        }
+    }
 
-                    // On redirige les potentiels albums de l'artiste :
-                    val legacyArtistOfAlbums = albumRepository.getAllAlbumsWithMusics().filter {
-                        (it.artist!!.artistName == state.value.artistWithMusics.artist.artistName.trim())
-                    }
-
-                    /*
-                     Si, une fois le nom de l'artiste changé,
-                     on a deux albums ayant les mêmes noms d'album et d'artiste,
-                     on redirige les musiques de l'album n'ayant pas le même id d'artiste que
-                     celui actuel vers l'artiste actuel :
-                     */
-                    val albumsOrderedByAppearance =
-                        legacyArtistOfAlbums.groupingBy { it.album.albumName }.eachCount()
-
-                    for (entry in albumsOrderedByAppearance.entries) {
-                        val albumWithMusicToUpdate = legacyArtistOfAlbums.find {
-                            (it.album.albumName == entry.key)
-                                    && (it.artist!!.artistId != state.value.artistWithMusics.artist.artistId)
-                        }
-                        if (entry.value == 2) {
-                            // Il y a deux fois le même album !
-                            // On redirige les musiques de l'album vers le nouvel album avec le bon id d'artiste
-                            for (music in albumWithMusicToUpdate!!.musics) {
-                                musicAlbumRepository.updateAlbumOfMusic(
-                                    musicId = music.musicId,
-                                    newAlbumId = legacyArtistOfAlbums.find {
-                                        (it.album.albumName == entry.key)
-                                                && (it.artist!!.artistId == state.value.artistWithMusics.artist.artistId)
-                                    }!!.album.albumId
-                                )
-                            }
-                            // On supprime l'ancien album
-                            albumRepository.deleteAlbum(
-                                albumWithMusicToUpdate.album
-                            )
-                        } else if (albumWithMusicToUpdate != null) {
-                            // Sinon, on met à jour l'id de l'artiste
-                            albumArtistRepository.updateArtistOfAlbum(
-                                albumId = albumWithMusicToUpdate.album.albumId,
-                                newArtistId = state.value.artistWithMusics.artist.artistId
-                            )
-                        }
-                    }
-
-                    // Vérifions si il n'y a pas deux fois le même nom d'artiste :
-                    val possibleDuplicatedArtist: ArtistWithMusics? =
-                        artistRepository.getPossibleDuplicatedArtist(
-                            artistName = state.value.artistWithMusics.artist.artistName.trim(),
-                            artistId = state.value.artistWithMusics.artist.artistId
-                        )
-                    if (possibleDuplicatedArtist != null) {
-                        /*
-                        Il y a un doublon !
-                        Il faut rediriger l'id des musiques du doublon vers l'id de l'artiste actuel.
-                         */
-                        for (music in possibleDuplicatedArtist.musics) {
-                            musicArtistRepository.updateArtistOfMusic(
-                                musicId = music.musicId,
-                                newArtistId = state.value.artistWithMusics.artist.artistId
-                            )
-                        }
-
-                        // On supprime l'ancien artiste :
-                        artistRepository.deleteArtist(
-                            possibleDuplicatedArtist.artist
-                        )
-                    }
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    // On met à jour les musiques de l'artiste :
-                    for (music in state.value.artistWithMusics.musics) {
-                        musicRepository.insertMusic(
-                            music.copy(
-                                artist = state.value.artistWithMusics.artist.artistName.trim()
-                            )
-                        )
-                    }
-                }
+    /**
+     * Set the selected artist for the modify screen information.
+     */
+    private fun setSelectedArtist(artistId: UUID) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val artistWithMusics = artistRepository.getArtistWithMusics(artistId) ?: return@launch
+            val cover = if (artistWithMusics.artist.coverId != null) {
+                imageCoverRepository.getCoverOfElement(artistWithMusics.artist.coverId!!)?.cover
+            } else {
+                null
             }
-            is ArtistEvent.ArtistFromId -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val artistWithMusics = artistRepository.getArtistWithMusics(event.artistId) ?: return@launch
-                    val cover = if (artistWithMusics.artist.coverId != null) {
-                        imageCoverRepository.getCoverOfElement(artistWithMusics.artist.coverId!!)?.cover
-                    } else {
-                        null
-                    }
-                    _state.update {
-                        it.copy(
-                            artistWithMusics = artistWithMusics,
-                            cover = cover,
-                            hasCoverBeenChanged = false
-                        )
-                    }
-                }
+            _state.update {
+                it.copy(
+                    artistWithMusics = artistWithMusics,
+                    cover = cover,
+                    hasCoverBeenChanged = false
+                )
             }
-            is ArtistEvent.SetName -> {
-                _state.update {
-                    it.copy(
-                        artistWithMusics = it.artistWithMusics.copy(
-                            artist = it.artistWithMusics.artist.copy(
-                                artistName = event.name
-                            )
-                        )
-                    )
+        }
+    }
+
+    /**
+     * Update the artist information.
+     */
+    private fun update() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val coverId =
+                if (_state.value.hasCoverBeenChanged && _state.value.cover != null) {
+                    imageCoverRepository.save(cover = _state.value.cover!!)
+                } else {
+                    _state.value.artistWithMusics.artist.coverId
                 }
-            }
-            is ArtistEvent.SetCover -> {
-                _state.update {
-                    it.copy(
-                        cover = event.cover,
-                        hasCoverBeenChanged = true
-                    )
-                }
-            }
-            else -> {}
+
+            val newArtistInformation = _state.value.artistWithMusics.trim().copy(
+                artist = _state.value.artistWithMusics.artist.copy(
+                    coverId = coverId
+                )
+            )
+
+            artistRepository.update(newArtistWithMusicsInformation = newArtistInformation)
         }
     }
 }

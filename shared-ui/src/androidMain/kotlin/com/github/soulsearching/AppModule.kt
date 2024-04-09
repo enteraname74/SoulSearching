@@ -121,24 +121,14 @@ actual val appModule = module {
     }
     single<ModifyAlbumViewModel> {
         ModifyAlbumViewModelAndroidImpl(
-            musicRepository = get(),
             albumRepository = get(),
-            artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
             imageCoverRepository = get(),
             playbackManager = get()
         )
     }
     single<ModifyArtistViewModel> {
         ModifyArtistViewModelAndroidImpl(
-            musicRepository = get(),
             artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
-            albumRepository = get(),
             imageCoverRepository = get()
         )
     }
