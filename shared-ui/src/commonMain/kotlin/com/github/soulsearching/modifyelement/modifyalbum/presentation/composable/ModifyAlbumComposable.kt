@@ -18,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,15 +27,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyAlbumViewModel
+import com.github.soulsearching.modifyelement.modifyalbum.domain.ModifyAlbumEvent
+import com.github.soulsearching.strings.strings
 import java.util.UUID
 
 @Composable
@@ -49,21 +45,15 @@ fun ModifyAlbumComposable(
     selectImage: () -> Unit
 ) {
 
-    var isAlbumFetched by rememberSaveable {
-        mutableStateOf(false)
-    }
+    val state by modifyAlbumViewModel.handler.state.collectAsState()
 
-    if (!isAlbumFetched) {
-        modifyAlbumViewModel.handler.onAlbumEvent(
-            AlbumEvent.AlbumFromID(
-                albumId = UUID.fromString(selectedAlbumId)
-            )
+    if (!state.isSelectedAlbumFetched) modifyAlbumViewModel.handler.onAlbumEvent(
+        ModifyAlbumEvent.AlbumFromID(
+            albumId = UUID.fromString(selectedAlbumId)
         )
-        isAlbumFetched = true
-    }
+    )
 
     val focusManager = LocalFocusManager.current
-    val albumState by modifyAlbumViewModel.handler.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -72,7 +62,7 @@ fun ModifyAlbumComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.UpdateAlbum)
+                    modifyAlbumViewModel.handler.onAlbumEvent(ModifyAlbumEvent.UpdateAlbum)
                     finishAction()
                 }
             )
@@ -104,7 +94,7 @@ fun ModifyAlbumComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = albumState.albumCover,
+                                bitmap = state.albumCover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -115,12 +105,19 @@ fun ModifyAlbumComposable(
                                 .weight(2F)
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            selectedAlbumState = albumState,
+                            albumName = state.albumWithMusics.album.albumName,
+                            artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
-                            setName = { modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.SetName(it)) },
+                            setName = {
+                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                    ModifyAlbumEvent.SetName(
+                                        it
+                                    )
+                                )
+                            },
                             setArtist = {
                                 modifyAlbumViewModel.handler.onAlbumEvent(
-                                    AlbumEvent.SetArtist(
+                                    ModifyAlbumEvent.SetArtist(
                                         it
                                     )
                                 )
@@ -128,6 +125,7 @@ fun ModifyAlbumComposable(
                         )
                     }
                 }
+
                 else -> {
                     Column(
                         modifier = Modifier
@@ -154,7 +152,7 @@ fun ModifyAlbumComposable(
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
                             AppImage(
-                                bitmap = albumState.albumCover,
+                                bitmap = state.albumCover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
                             )
@@ -166,12 +164,19 @@ fun ModifyAlbumComposable(
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
                                 .padding(Constants.Spacing.medium),
-                            selectedAlbumState = albumState,
+                            albumName = state.albumWithMusics.album.albumName,
+                            artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
-                            setName = { modifyAlbumViewModel.handler.onAlbumEvent(AlbumEvent.SetName(it)) },
+                            setName = {
+                                modifyAlbumViewModel.handler.onAlbumEvent(
+                                    ModifyAlbumEvent.SetName(
+                                        it
+                                    )
+                                )
+                            },
                             setArtist = {
                                 modifyAlbumViewModel.handler.onAlbumEvent(
-                                    AlbumEvent.SetArtist(
+                                    ModifyAlbumEvent.SetArtist(
                                         it
                                     )
                                 )
@@ -187,7 +192,8 @@ fun ModifyAlbumComposable(
 @Composable
 fun ModifyAlbumTextFields(
     modifier: Modifier,
-    selectedAlbumState: SelectedAlbumState,
+    albumName: String,
+    artistName: String,
     focusManager: FocusManager,
     setName: (String) -> Unit,
     setArtist: (String) -> Unit
@@ -207,13 +213,13 @@ fun ModifyAlbumTextFields(
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
             AppTextField(
-                value = selectedAlbumState.albumWithMusics.album.albumName,
+                value = albumName,
                 onValueChange = { setName(it) },
                 labelName = strings.albumName,
                 focusManager = focusManager
             )
             AppTextField(
-                value = selectedAlbumState.albumWithMusics.artist!!.artistName,
+                value = artistName,
                 onValueChange = { setArtist(it) },
                 labelName = strings.artistName,
                 focusManager = focusManager

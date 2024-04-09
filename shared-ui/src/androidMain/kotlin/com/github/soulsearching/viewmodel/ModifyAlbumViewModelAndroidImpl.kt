@@ -28,12 +28,7 @@ class ModifyAlbumViewModelAndroidImpl(
 ) : ModifyAlbumViewModel, ViewModel() {
     override val handler: ModifyAlbumViewModelHandler = ModifyAlbumViewModelHandler(
         coroutineScope = viewModelScope,
-        musicRepository = musicRepository,
         albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicArtistRepository = musicArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         playbackManager = playbackManager
     )

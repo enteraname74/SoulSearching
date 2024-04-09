@@ -26,6 +26,7 @@ import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
+import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
 import java.util.UUID
 
@@ -34,8 +35,7 @@ import java.util.UUID
  */
 @OptIn(ExperimentalMaterialApi::class)
 data class SelectedArtistScreen(
-    private val selectedArtistId: String,
-    private val playerDraggableState: SwipeableState<BottomSheetStates>
+    private val selectedArtistId: String
 ): Screen {
 
     @Composable
@@ -44,6 +44,9 @@ data class SelectedArtistScreen(
         val allPlaylistsViewModel = getScreenModel<AllPlaylistsViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
+
+        val playerViewModel = getScreenModel<PlayerViewModel>()
+        val playerDraggableState = playerViewModel.handler.playerDraggableState
 
         val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow

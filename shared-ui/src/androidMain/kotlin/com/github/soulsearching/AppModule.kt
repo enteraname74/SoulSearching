@@ -61,7 +61,6 @@ actual val appModule = module {
     single<AllAlbumsViewModel> {
         AllAlbumsViewModelAndroidImpl(
             albumRepository = get(),
-            albumService = get(),
             settings = get()
         )
     }
@@ -76,8 +75,7 @@ actual val appModule = module {
     single<SettingsAllFoldersViewModel> {
         SettingsAllFoldersViewModelAndroidImpl(
             folderRepository = get(),
-            musicRepository = get(),
-            musicService = get()
+            musicRepository = get()
         )
     }
     single<AllImageCoversViewModel> {
@@ -97,8 +95,7 @@ actual val appModule = module {
             settings = get(),
             context = androidContext(),
             playbackManager = get(),
-            musicFetcher = get(),
-            musicService = get()
+            musicFetcher = get()
         )
     }
     single<AllPlaylistsViewModel> {
@@ -149,8 +146,7 @@ actual val appModule = module {
         ModifyMusicViewModelAndroidImpl(
             musicRepository = get(),
             imageCoverRepository = get(),
-            playbackManager = get(),
-            imageCoverService = get()
+            playbackManager = get()
         )
     }
     single<ModifyPlaylistViewModel> {

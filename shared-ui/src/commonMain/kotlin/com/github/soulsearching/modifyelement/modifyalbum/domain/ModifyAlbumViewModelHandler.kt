@@ -1,21 +1,11 @@
 package com.github.soulsearching.modifyelement.modifyalbum.domain
 
-import com.github.enteraname74.domain.model.Album
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumState
-import com.github.soulsearching.domain.utils.Utils
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,20 +20,15 @@ import java.util.UUID
  */
 class ModifyAlbumViewModelHandler(
     coroutineScope: CoroutineScope,
-    private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,
-    private val artistRepository: ArtistRepository,
-    private val musicArtistRepository: MusicArtistRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
     private val imageCoverRepository: ImageCoverRepository,
     private val playbackManager: PlaybackManager
 ) : ViewModelHandler {
-    private val _state = MutableStateFlow(SelectedAlbumState())
+    private val _state = MutableStateFlow(ModifyAlbumState())
     val state = _state.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(5000),
-        SelectedAlbumState()
+        ModifyAlbumState()
     )
 
     /**
@@ -61,82 +46,109 @@ class ModifyAlbumViewModelHandler(
     /**
      * Manage album events.
      */
-    fun onAlbumEvent(event: AlbumEvent) {
+    fun onAlbumEvent(event: ModifyAlbumEvent) {
         when (event) {
-            AlbumEvent.UpdateAlbum -> {
-                CoroutineScope(Dispatchers.IO).launch {
-
-                    // Si on a changé l'image de l'album, il faut changer l'id de la couverture :
-                    val coverId = if (state.value.hasSetNewCover && state.value.albumCover != null) {
-                        imageCoverRepository.save(cover = state.value.albumCover!!)
-                    } else {
-                        state.value.albumWithMusics.album.coverId
-                    }
-
-                    val albumWithArtist = _state.value.albumWithMusics.toAlbumWithArtist().trim()
-                    val newAlbumWithArtistInformation = albumWithArtist.copy(
-                        album = albumWithArtist.album.copy(
-                            coverId = coverId
-                        )
-                    )
-
-                    albumRepository.update(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
-
-                }
-            }
-
-            is AlbumEvent.AlbumFromID -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val albumWithMusics = albumRepository.getAlbumWithMusics(event.albumId)
-                    val cover = if (albumWithMusics.album.coverId != null) {
-                        imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId!!)?.cover
-                    } else {
-                        null
-                    }
-                    _state.update {
-                        it.copy(
-                            albumWithMusics = albumWithMusics,
-                            albumCover = cover,
-                            hasSetNewCover = false
-                        )
-                    }
-                }
-            }
-
-            is AlbumEvent.SetName -> {
-                _state.update {
-                    it.copy(
-                        albumWithMusics = it.albumWithMusics.copy(
-                            album = it.albumWithMusics.album.copy(
-                                albumName = event.name
-                            )
-                        )
-                    )
-                }
-            }
-
-            is AlbumEvent.SetCover -> {
-                _state.update {
-                    it.copy(
-                        albumCover = event.cover,
-                        hasSetNewCover = true
-                    )
-                }
-            }
-
-            is AlbumEvent.SetArtist -> {
-                _state.update {
-                    it.copy(
-                        albumWithMusics = it.albumWithMusics.copy(
-                            artist = it.albumWithMusics.artist!!.copy(
-                                artistName = event.artist
-                            )
-                        )
-                    )
-                }
-            }
-
+            ModifyAlbumEvent.UpdateAlbum -> update()
+            is ModifyAlbumEvent.AlbumFromID -> setSelectedAlbum(albumId = event.albumId)
+            is ModifyAlbumEvent.SetName -> setAlbum(newAlbumName = event.name)
+            is ModifyAlbumEvent.SetCover -> setAlbumCover(cover = event.cover)
+            is ModifyAlbumEvent.SetArtist -> setArtist(newArtistName = event.artist)
             else -> {}
+        }
+    }
+
+    private fun setSelectedAlbum(albumId: UUID) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val albumWithMusics = albumRepository.getAlbumWithMusics(albumId)
+
+            val cover = if (albumWithMusics.album.coverId != null) {
+                imageCoverRepository.getCoverOfElement(albumWithMusics.album.coverId!!)?.cover
+            } else {
+                null
+            }
+
+            _state.update {
+                it.copy(
+                    albumWithMusics = albumWithMusics,
+                    albumCover = cover,
+                    hasSetNewCover = false,
+                    isSelectedAlbumFetched = true
+                )
+            }
+        }
+    }
+
+    /**
+     * Set the new cover name to show to the user.
+     */
+    private fun setAlbumCover(cover: ImageBitmap) {
+        _state.update {
+            it.copy(
+                albumCover = cover,
+                hasSetNewCover = true
+            )
+        }
+    }
+
+    /**
+     * Set the new album name to show to the user.
+     */
+    private fun setAlbum(newAlbumName: String) {
+        _state.update {
+            it.copy(
+                albumWithMusics = it.albumWithMusics.copy(
+                    album = it.albumWithMusics.album.copy(
+                        albumName = newAlbumName
+                    )
+                )
+            )
+        }
+    }
+
+    /**
+     * Set the new artist name to show to the user.
+     */
+    private fun setArtist(newArtistName: String) {
+        _state.update {
+            it.copy(
+                albumWithMusics = it.albumWithMusics.copy(
+                    artist = it.albumWithMusics.artist!!.copy(
+                        artistName = newArtistName
+                    )
+                )
+            )
+        }
+    }
+
+    /**
+     * Update the information of the selected album.
+     */
+    private fun update() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // If the image has changed, we need to save it and retrieve its id.
+            val coverId = if (state.value.hasSetNewCover && state.value.albumCover != null) {
+                imageCoverRepository.save(cover = state.value.albumCover!!)
+            } else {
+                state.value.albumWithMusics.album.coverId
+            }
+
+            val albumWithArtist = _state.value.albumWithMusics.toAlbumWithArtist().trim()
+            val newAlbumWithArtistInformation = albumWithArtist.copy(
+                album = albumWithArtist.album.copy(
+                    coverId = coverId
+                )
+            )
+
+            // We update the information of the album.
+            albumRepository.update(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+
+            // We retrieve the updated album.
+            val newAlbumWithMusics = albumRepository.getAlbumWithMusics(
+                albumId = newAlbumWithArtistInformation.album.albumId
+            )
+
+            // We need to update the album's songs that are in the played list.
+            for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
         }
     }
 }

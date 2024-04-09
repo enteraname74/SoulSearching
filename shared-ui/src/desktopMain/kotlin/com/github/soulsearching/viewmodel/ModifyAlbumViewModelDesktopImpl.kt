@@ -27,12 +27,7 @@ class ModifyAlbumViewModelDesktopImpl(
 ) : ModifyAlbumViewModel {
     override val handler: ModifyAlbumViewModelHandler = ModifyAlbumViewModelHandler(
         coroutineScope = screenModelScope,
-        musicRepository = musicRepository,
         albumRepository = albumRepository,
-        artistRepository = artistRepository,
-        musicArtistRepository = musicArtistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        albumArtistRepository = albumArtistRepository,
         imageCoverRepository = imageCoverRepository,
         playbackManager = playbackManager
     )

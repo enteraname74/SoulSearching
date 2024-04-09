@@ -10,8 +10,6 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.util.CheckAndDeleteVerification
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -28,25 +26,42 @@ class AlbumRepository(
     private val musicArtistDataSource: MusicArtistDataSource,
     private val checkAndDeleteVerification: CheckAndDeleteVerification
 ) {
+
+    /**
+     * Merge two albums together.
+     * @param from the album to put to the "to" album.
+     * @param to the album that will receive the merge ("from" param)/
+     */
+    private suspend fun mergeAlbums(from: Album, to: Album) {
+        // We update the link of the musics of the duplicated album to the new album id.
+        musicAlbumDataSource.updateMusicsAlbum(
+            newAlbumId = to.albumId,
+            legacyAlbumId = from.albumId
+        )
+        // We remove the previous album.
+        albumArtistDataSource.deleteAlbumFromArtist(
+            albumId = from.albumId
+        )
+        albumDataSource.deleteAlbum(
+            album = from
+        )
+    }
     
     suspend fun update(
         newAlbumWithArtistInformation: AlbumWithArtist
     ) {
-        val initialAlbum = albumDataSource.getAlbumFromId(
-            albumId = state.value.albumWithMusics.album.albumId
-        )!!
-
         val initialArtist = artistDataSource.getArtistFromId(
-            artistId = state.value.albumWithMusics.artist!!.artistId
-        )
-        var currentArtist = initialArtist
+            artistId = newAlbumWithArtistInformation.artist!!.artistId
+        ) ?: return
 
-        if (newAlbumWithArtistInformation.artist!!.artistName != initialArtist!!.artistName) {
-            // On cherche le nouvel artiste correspondant :
+
+        var albumArtistToSave = initialArtist
+        if (newAlbumWithArtistInformation.artist.artistName != initialArtist.artistName) {
+            // We first try to find if there is an existing artist with the new artist name.
             var newArtist = artistDataSource.getArtistFromInfo(
                 artistName = newAlbumWithArtistInformation.artist.artistName
             )
-            // Si ce nouvel artiste n'existe pas, on le crée :
+            // If this artist doesn't exist, we create it.
             if (newArtist == null) {
                 newArtist = Artist(
                     artistName = newAlbumWithArtistInformation.artist.artistName,
@@ -56,95 +71,45 @@ class AlbumRepository(
                     artist = newArtist
                 )
             }
-            // On met à jour le lien vers l'artiste :
+            // We update the link between the album and its artist.
             albumArtistDataSource.updateArtistOfAlbum(
                 albumId = newAlbumWithArtistInformation.album.albumId,
                 newArtistId = newArtist.artistId
             )
-
-            val duplicateAlbum = albumDataSource.getPossibleDuplicateAlbum(
-                albumId = newAlbumWithArtistInformation.album.albumId,
-                albumName = newAlbumWithArtistInformation.album.albumName,
-                artistId = newArtist.artistId
-            )
-
-            if (duplicateAlbum != null) {
-                /*
-                 Un album a le même nom d'album et d'artiste !
-                 On redirige les musiques de l'album dupliqué :
-                 */
-                musicAlbumDataSource.updateMusicsAlbum(
-                    newAlbumId = newAlbumWithArtistInformation.album.albumId,
-                    legacyAlbumId = duplicateAlbum.albumId
-                )
-                // On supprime l'ancien album :
-                albumArtistDataSource.deleteAlbumFromArtist(
-                    albumId = duplicateAlbum.albumId
-                )
-                albumDataSource.deleteAlbum(
-                    album = duplicateAlbum
-                )
-            }
-            currentArtist = newArtist
-        } else if (newAlbumWithArtistInformation.album.albumName != initialAlbum.albumName) {
-            val duplicateAlbum = albumDataSource.getPossibleDuplicateAlbum(
-                albumId = newAlbumWithArtistInformation.album.albumId,
-                albumName = newAlbumWithArtistInformation.album.albumName,
-                artistId = newAlbumWithArtistInformation.artist.artistId
-            )
-
-            if (duplicateAlbum != null) {
-                /*
-                 Un album a le même nom d'album et d'artiste !
-                 On redirige les musiques de l'album dupliqué :
-                 */
-                musicAlbumDataSource.updateMusicsAlbum(
-                    newAlbumId = newAlbumWithArtistInformation.album.albumId,
-                    legacyAlbumId = duplicateAlbum.albumId
-                )
-                // On supprime l'ancien album :
-                albumArtistDataSource.deleteAlbumFromArtist(
-                    albumId = duplicateAlbum.albumId
-                )
-                albumDataSource.deleteAlbum(
-                    album = duplicateAlbum
-                )
-            }
+            albumArtistToSave = newArtist
         }
 
-        // On met à jour les musiques de l'album :
+        // We then check if there is an album with the same name and artist that already exist.
+        val duplicateAlbum = albumDataSource.getPossibleDuplicateAlbum(
+            albumId = newAlbumWithArtistInformation.album.albumId,
+            albumName = newAlbumWithArtistInformation.album.albumName,
+            artistId = albumArtistToSave.artistId
+        )
+
+        // If so, we need to merge the two album.
+        if (duplicateAlbum != null) mergeAlbums(from = duplicateAlbum, to = newAlbumWithArtistInformation.album)
+
+        // We then need to update the musics of the album (new artist, album name and cover).
         val musicsFromAlbum = musicDataSource.getAllMusicFromAlbum(
             albumId = newAlbumWithArtistInformation.album.albumId
         )
         for (music in musicsFromAlbum) {
-            // On modifie les infos de chaque musique
             val newMusic = music.copy(
                 album = newAlbumWithArtistInformation.album.albumName,
                 coverId = newAlbumWithArtistInformation.album.coverId,
                 artist = newAlbumWithArtistInformation.artist.artistName
             )
             musicDataSource.insertMusic(newMusic)
-            // Ainsi que leur liens :
             musicArtistDataSource.updateArtistOfMusic(
                 musicId = music.musicId,
-                newArtistId = currentArtist!!.artistId
+                newArtistId = albumArtistToSave.artistId
             )
-
-            playbackManager.updateMusic(newMusic)
-
-            playbackManager.currentMusic?.let {
-                if (it.musicId.compareTo(music.musicId) == 0) {
-                    playbackManager.updateCover(
-                        cover = state.value.albumCover
-                    )
-                }
-            }
         }
 
-        // On modifie notre album :
+        // Finally, we can update the information of the album.
         albumDataSource.insertAlbum(newAlbumWithArtistInformation.album)
 
-        // On vérifie si l'ancien artiste possède encore des musiques :
+        // We check and delete the initial artist if it no longer possess songs.
         checkAndDeleteVerification.checkAndDeleteArtist(artistToCheck = initialArtist)
     }
 

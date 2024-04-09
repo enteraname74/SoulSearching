@@ -116,26 +116,17 @@ data object MainPageScreen: Screen {
             playerMusicListViewModel = playerMusicListViewModel,
             navigateToPlaylist = { playlistId ->
                 navigator.push(
-                    SelectedPlaylistScreen(
-                        selectedPlaylistId = playlistId,
-                        playerDraggableState = playerDraggableState
-                    )
+                    SelectedPlaylistScreen(selectedPlaylistId = playlistId)
                 )
             },
             navigateToAlbum = { albumId ->
                 navigator.push(
-                    SelectedAlbumScreen(
-                        selectedAlbumId = albumId,
-                        playerDraggableState = playerDraggableState
-                    )
+                    SelectedAlbumScreen(selectedAlbumId = albumId)
                 )
             },
             navigateToArtist = { artistId ->
                 navigator.push(
-                    SelectedArtistScreen(
-                        selectedArtistId = artistId,
-                        playerDraggableState = playerDraggableState
-                    )
+                    SelectedArtistScreen(selectedArtistId = artistId)
                 )
             },
             navigateToModifyMusic = { musicId ->

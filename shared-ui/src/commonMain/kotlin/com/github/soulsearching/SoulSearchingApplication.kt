@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,17 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import cafe.adriel.voyager.transitions.FadeTransition
-import cafe.adriel.voyager.transitions.ScaleTransition
-import cafe.adriel.voyager.transitions.SlideTransition
 import com.github.soulsearching.appinit.presentation.FetchingMusicsComposable
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
@@ -46,7 +39,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoulSearchingApplication(
-    colorThemeManager: ColorThemeManager = injectElement(),
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
 ) {
@@ -62,8 +54,6 @@ fun SoulSearchingApplication(
 
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
     val allPlaylistsViewModel = injectElement<AllPlaylistsViewModel>()
-    val allArtistsViewModel = injectElement<AllArtistsViewModel>()
-    val allAlbumsViewModel = injectElement<AllAlbumsViewModel>()
     val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
     val playerViewModel = injectElement<PlayerViewModel>()
     val playerMusicListViewModel = injectElement<PlayerMusicListViewModel>()
@@ -175,18 +165,12 @@ fun SoulSearchingApplication(
             isMusicInFavoriteMethod = allMusicsViewModel.handler::isMusicInFavorite,
             navigateToArtist = { artistId ->
                 generalNavigator?.push(
-                    SelectedArtistScreen(
-                        selectedArtistId = artistId,
-                        playerDraggableState = playerDraggableState
-                    )
+                    SelectedArtistScreen(selectedArtistId = artistId)
                 )
             },
             navigateToAlbum = { albumId ->
                 generalNavigator?.push(
-                    SelectedAlbumScreen(
-                        selectedAlbumId = albumId,
-                        playerDraggableState = playerDraggableState
-                    )
+                    SelectedAlbumScreen(selectedAlbumId = albumId)
                 )
             },
             retrieveAlbumIdMethod = {

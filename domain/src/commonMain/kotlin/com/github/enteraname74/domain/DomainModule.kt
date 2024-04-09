@@ -18,21 +18,25 @@ import org.koin.dsl.module
  * Module for the domain.
  */
 val domainModule = module {
-    factory { AlbumArtistRepository(get()) }
-    factory {
+    single { AlbumArtistRepository(get()) }
+    single {
         AlbumRepository(
             albumDataSource = get(),
-            musicRepository = get(),
-            checkAndDeleteVerification = get()
+            checkAndDeleteVerification = get(),
+            musicDataSource = get(),
+            artistDataSource = get(),
+            albumArtistDataSource = get(),
+            musicArtistDataSource = get(),
+            musicAlbumDataSource = get()
         )
     }
-    factory { ArtistRepository(get()) }
-    factory { FolderRepository(get()) }
-    factory { ImageCoverRepository(get()) }
-    factory { MusicAlbumRepository(get()) }
-    factory { MusicArtistRepository(get()) }
-    factory { MusicPlaylistRepository(get()) }
-    factory {
+    single { ArtistRepository(get()) }
+    single { FolderRepository(get()) }
+    single { ImageCoverRepository(get()) }
+    single { MusicAlbumRepository(get()) }
+    single { MusicArtistRepository(get()) }
+    single { MusicPlaylistRepository(get()) }
+    single {
         MusicRepository(
             musicAlbumDataSource = get(),
             musicArtistDataSource = get(),
@@ -47,16 +51,18 @@ val domainModule = module {
             checkAndDeleteVerification = get()
         )
     }
-    factory { PlayerMusicRepository(get()) }
-    factory { PlaylistRepository(get()) }
+    single { PlayerMusicRepository(get()) }
+    single {
+        PlaylistRepository(get())
+    }
 
-    factory {
+    single {
         CheckAndDeleteVerification(
-            albumRepository = get(),
-            artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get()
+            albumArtistDataSource = get(),
+            artistDataSource = get(),
+            musicArtistDataSource = get(),
+            musicAlbumDataSource = get(),
+            albumDataSource = get()
         )
     }
 }
