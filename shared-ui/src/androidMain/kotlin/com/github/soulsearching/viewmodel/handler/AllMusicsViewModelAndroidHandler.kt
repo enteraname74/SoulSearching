@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
@@ -25,6 +26,7 @@ class AllMusicsViewModelAndroidHandler(
     private val musicRepository: MusicRepository,
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
+    playlistRepository: PlaylistRepository,
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
     private val playbackManager: PlaybackManager,
@@ -35,6 +37,8 @@ class AllMusicsViewModelAndroidHandler(
     musicArtistRepository = musicArtistRepository,
     settings = settings,
     musicFetcher = musicFetcher,
+    playbackManager = playbackManager,
+    playlistRepository = playlistRepository
 ) {
     /**
      * Check all musics and delete the one that does not exists (if the path of the music is not valid).

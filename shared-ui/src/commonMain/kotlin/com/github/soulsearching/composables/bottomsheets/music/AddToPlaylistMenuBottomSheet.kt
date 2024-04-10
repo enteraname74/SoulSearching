@@ -2,9 +2,15 @@ package com.github.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -12,9 +18,10 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.LayoutDirection
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -32,17 +39,18 @@ fun AddToPlaylistMenuBottomSheet(
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
 
-    val selectedPlaylistIds = rememberSaveable {
+    val selectedPlaylistIds = remember {
         mutableStateListOf<UUID>()
     }
 
-    Scaffold {
+    Scaffold{
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(primaryColor)
                 .padding(it)
                 .padding(Constants.Spacing.medium)
+                .padding(top = WindowInsets.safeContent.asPaddingValues().calculateLeftPadding(LayoutDirection.Rtl))
         ) {
             AppHeaderBar(
                 title = strings.addToPlaylist,
@@ -51,7 +59,7 @@ fun AddToPlaylistMenuBottomSheet(
                     selectedPlaylistIds.clear()
                 },
                 rightAction = {
-                    onConfirm(selectedPlaylistIds)
+                    onConfirm(selectedPlaylistIds.toList())
                     selectedPlaylistIds.clear()
                 },
                 rightIcon = Icons.Rounded.Done,

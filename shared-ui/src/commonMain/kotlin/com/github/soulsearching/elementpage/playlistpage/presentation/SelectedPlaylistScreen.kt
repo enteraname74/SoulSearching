@@ -15,16 +15,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
+import com.github.soulsearching.elementpage.playlistpage.domain.SelectedPlaylistEvent
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.soulsearching.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
 import java.util.UUID
@@ -35,19 +33,17 @@ import java.util.UUID
 @OptIn(ExperimentalMaterialApi::class)
 data class SelectedPlaylistScreen(
     private val selectedPlaylistId: String
-): Screen {
+) : Screen {
 
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<SelectedPlaylistViewModel>()
-        val allPlaylistsViewModel = getScreenModel<AllPlaylistsViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
 
         val playerViewModel = getScreenModel<PlayerViewModel>()
         val playerDraggableState = playerViewModel.handler.playerDraggableState
 
-        val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
@@ -61,8 +57,6 @@ data class SelectedPlaylistScreen(
                 )
             },
             selectedPlaylistId = selectedPlaylistId,
-            playlistState = playlistState,
-            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
             navigateToModifyPlaylist = {
                 navigator.push(
                     ModifyPlaylistScreen(
@@ -85,46 +79,115 @@ data class SelectedPlaylistScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectedPlaylistScreenView(
-    onPlaylistEvent : (PlaylistEvent) -> Unit,
-    playlistState : PlaylistState,
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    navigateToModifyPlaylist : (String) -> Unit,
-    selectedPlaylistId : String,
-    navigateToModifyMusic : (String) -> Unit,
-    navigateBack : () -> Unit,
+    navigateToModifyPlaylist: (String) -> Unit,
+    selectedPlaylistId: String,
+    navigateToModifyMusic: (String) -> Unit,
+    navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
-){
+) {
     var isPlaylistFetched by remember {
         mutableStateOf(false)
     }
 
     if (!isPlaylistFetched) {
-        selectedPlaylistViewModel.handler.setSelectedPlaylist(UUID.fromString(selectedPlaylistId))
+        selectedPlaylistViewModel.handler.onEvent(
+            SelectedPlaylistEvent.SetSelectedPlaylist(
+                playlistId = UUID.fromString(selectedPlaylistId)
+            )
+        )
         isPlaylistFetched = true
     }
 
-    val selectedPlaylistState by selectedPlaylistViewModel.handler.selectedPlaylistState.collectAsState()
-    val musicState by selectedPlaylistViewModel.handler.musicState.collectAsState()
+    val state by selectedPlaylistViewModel.handler.state.collectAsState()
 
     PlaylistScreen(
         navigateBack = navigateBack,
-        onMusicEvent = selectedPlaylistViewModel.handler::onMusicEvent,
-        playlistState = playlistState,
-        onPlaylistEvent = onPlaylistEvent,
-        musicState = musicState,
-        title = if (selectedPlaylistState.playlistWithMusics != null) selectedPlaylistState.playlistWithMusics!!.playlist.name else "",
-        image = retrieveCoverMethod(selectedPlaylistState.playlistWithMusics?.playlist?.coverId),
+        title = state.playlistWithMusics?.playlist?.name ?: "",
+        image = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
-        playlistId = selectedPlaylistState.playlistWithMusics?.playlist?.playlistId,
+        playlistId = state.playlistWithMusics?.playlist?.playlistId,
         playerMusicListViewModel = playerMusicListViewModel,
-        updateNbPlayedAction = { selectedPlaylistViewModel.handler.onPlaylistEvent(PlaylistEvent.AddNbPlayed(it)) },
-        playlistType = PlaylistType.PLAYLIST
+        updateNbPlayedAction = {
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.AddNbPlayed(
+                    it
+                )
+            )
+        },
+        playlistType = PlaylistType.PLAYLIST,
+        playlistWithMusics = state.allPlaylists,
+        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
+        isBottomSheetShown = state.isMusicBottomSheetShown,
+        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
+        isRemoveFromPlaylistDialogShown = state.isRemoveFromPlaylistDialogShown,
+        onSetBottomSheetVisibility = { isShown ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.SetMusicBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetDeleteMusicDialogVisibility = { isShown ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.SetDeleteMusicDialogVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetRemoveMusicFromPlaylistDialogVisibility = { isShown ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.SetRemoveFromPlaylistDialogVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.SetAddToPlaylistBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onDeleteMusic = { music ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.DeleteMusic(
+                    musicId = music.musicId
+                )
+            )
+        },
+        onToggleQuickAccessState = { music ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.ToggleQuickAccessState(
+                    musicId = music.musicId
+                )
+            )
+        },
+        onRemoveFromPlaylist = { music ->
+            state.playlistWithMusics?.playlist?.playlistId?.let { playlistId ->
+                selectedPlaylistViewModel.handler.onEvent(
+                    SelectedPlaylistEvent.RemoveMusicFromPlaylist(
+                        musicId = music.musicId,
+                        playlistId = playlistId
+                    )
+                )
+            }
+        },
+        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
+            selectedPlaylistViewModel.handler.onEvent(
+                SelectedPlaylistEvent.AddMusicToPlaylists(
+                    musicId = selectedMusic.musicId,
+                    selectedPlaylistsIds = selectedPlaylistsIds
+                )
+            )
+        },
+        musics = state.playlistWithMusics?.musics ?: emptyList()
     )
 }

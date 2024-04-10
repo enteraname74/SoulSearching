@@ -9,12 +9,13 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
@@ -40,6 +41,7 @@ abstract class AllMusicsViewModelHandler(
     private val musicRepository: MusicRepository,
     private val musicAlbumRepository: MusicAlbumRepository,
     private val musicArtistRepository: MusicArtistRepository,
+    playlistRepository: PlaylistRepository,
     settings: SoulSearchingSettings,
     playbackManager: PlaybackManager,
     private val musicFetcher: MusicFetcher,
@@ -80,23 +82,33 @@ abstract class AllMusicsViewModelHandler(
         ArrayList()
     )
 
-    private val _state = MutableStateFlow(MusicState())
+    private val _playlists = playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
+        .stateIn(
+            coroutineScope,
+            SharingStarted.WhileSubscribed(),
+            emptyList()
+        )
+
+
+    private val _state = MutableStateFlow(MainPageState())
 
     val state = combine(
         _state,
         _musics,
         _sortType,
-        _sortDirection
-    ) { state, musics, sortType, sortDirection ->
+        _sortDirection,
+        _playlists
+    ) { state, musics, sortType, sortDirection, playlists ->
         state.copy(
             musics = musics as ArrayList<Music>,
             sortType = sortType,
-            sortDirection = sortDirection
+            sortDirection = sortDirection,
+            allPlaylists = playlists
         )
     }.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(5000),
-        MusicState()
+        MainPageState()
     )
 
     private val musicEventHandler = MusicEventHandler(

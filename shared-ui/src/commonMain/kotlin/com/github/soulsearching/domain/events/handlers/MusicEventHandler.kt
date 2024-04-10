@@ -5,22 +5,20 @@ import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.compose.getKoin
-import org.koin.compose.koinInject
 import java.util.UUID
 
 /**
  * Handle music events.
  */
 open class MusicEventHandler(
-    private val privateState: MutableStateFlow<MusicState>,
+    private val privateState: MutableStateFlow<MainPageState>,
     private val musicRepository: MusicRepository,
     private val sortType: MutableStateFlow<Int> = MutableStateFlow(SortType.NAME),
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),

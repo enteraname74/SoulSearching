@@ -21,7 +21,7 @@ import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.mainpage.domain.model.SortDirection
@@ -33,7 +33,7 @@ import java.util.UUID
 @Composable
 fun AllMusicsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    musicState: MusicState,
+    musicState: MainPageState,
     sortByName: () -> Unit = {},
     sortByDateAction: () -> Unit = {},
     sortByMostListenedAction: () -> Unit = {},

@@ -94,6 +94,7 @@ class AllPlaylistsViewModelHandler(
      * Manage playlist events.
      */
     fun onPlaylistEvent(event: PlaylistEvent) {
+        println("THERE")
         playlistEventHandler.handleEvent(event)
     }
 }

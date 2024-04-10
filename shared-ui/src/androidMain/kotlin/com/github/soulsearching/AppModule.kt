@@ -95,7 +95,8 @@ actual val appModule = module {
             settings = get(),
             context = androidContext(),
             playbackManager = get(),
-            musicFetcher = get()
+            musicFetcher = get(),
+            playlistRepository = get()
         )
     }
     single<AllPlaylistsViewModel> {
@@ -165,7 +166,9 @@ actual val appModule = module {
         PlayerViewModelAndroidImpl(
             musicRepository = get(),
             playbackManager = get(),
-            colorThemeManager = get()
+            colorThemeManager = get(),
+            musicPlaylistRepository = get(),
+            playlistRepository = get()
         )
     }
     single<SelectedAlbumViewModel> {

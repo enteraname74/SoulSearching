@@ -23,7 +23,7 @@ import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.mainpage.domain.state.AlbumState
 import com.github.soulsearching.mainpage.domain.state.ArtistState
-import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
@@ -37,7 +37,7 @@ import java.util.UUID
 fun SearchAll(
     searchText: String,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    musicState: MusicState,
+    musicState: MainPageState,
     albumState: AlbumState,
     artistState: ArtistState,
     playlistState: PlaylistState,

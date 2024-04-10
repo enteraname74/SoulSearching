@@ -21,7 +21,6 @@ import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
@@ -42,18 +41,7 @@ fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
 ) {
-//    val playerDraggableState = rememberSwipeableState(
-//        initialValue = BottomSheetStates.COLLAPSED
-//    )
-//    val musicListDraggableState = rememberSwipeableState(
-//        initialValue = BottomSheetStates.COLLAPSED
-//    )
-//    val searchDraggableState = rememberSwipeableState(
-//        initialValue = BottomSheetStates.COLLAPSED
-//    )
-
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
-    val allPlaylistsViewModel = injectElement<AllPlaylistsViewModel>()
     val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
     val playerViewModel = injectElement<PlayerViewModel>()
     val playerMusicListViewModel = injectElement<PlayerMusicListViewModel>()
@@ -65,6 +53,7 @@ fun SoulSearchingApplication(
     val coversState by allImageCoversViewModel.handler.state.collectAsState()
 
     val playerDraggableState = playerViewModel.handler.playerDraggableState
+    val playerState by playerViewModel.handler.state.collectAsState()
     val musicListDraggableState = playerMusicListViewModel.handler.musicListDraggableState
 
     if (coversState.covers.isNotEmpty() && !mainActivityViewModel.handler.cleanImagesLaunched) {
@@ -141,7 +130,7 @@ fun SoulSearchingApplication(
             }
         }
 
-        Navigator(MainPageScreen) { navigator ->
+        Navigator(MainPageScreen()) { navigator ->
             generalNavigator = navigator
 
             CrossfadeTransition(
@@ -193,14 +182,14 @@ fun SoulSearchingApplication(
             navigateToModifyMusic = { musicId ->
                 generalNavigator?.push(
                     ModifyMusicScreen(
-                        selectedMusicId = musicId
+                        selectedMusicId = musicId.toString()
                     )
                 )
             },
             musicListDraggableState = musicListDraggableState,
             playerDraggableState = playerDraggableState,
-            playerMusicListViewModel = playerMusicListViewModel,
-            playerViewModel = playerViewModel
+//            playerMusicListViewModel = playerMusicListViewModel,
+            playedList = playerState.playedList
         )
     }
 }

@@ -156,8 +156,8 @@ fun PlaylistScreen(
                 }
         }
 
-        var selectedMusic by rememberSaveable {
-            mutableStateOf<Music?>(null)
+        var selectedMusicId by rememberSaveable {
+            mutableStateOf<UUID?>(null)
         }
 
         when (SoulSearchingContext.orientation) {
@@ -199,9 +199,9 @@ fun PlaylistScreen(
                         playlistType = playlistType,
                     )
                     MusicList(
-                        selectedMusic = selectedMusic,
+                        selectedMusic = musics.find { it.musicId == selectedMusicId },
                         onSelectMusic = {
-                            selectedMusic = it
+                            selectedMusicId = it.musicId
                         },
                         playerMusicListViewModel = playerMusicListViewModel,
                         navigateToModifyMusic = navigateToModifyMusic,
@@ -232,7 +232,7 @@ fun PlaylistScreen(
             }
 
             else -> {
-                selectedMusic?.let { music ->
+                musics.find { it.musicId == selectedMusicId }?.let { music ->
                     MusicBottomSheetEvents(
                         selectedMusic = music,
                         navigateToModifyMusic = navigateToModifyMusic,
@@ -332,7 +332,7 @@ fun PlaylistScreen(
                                 },
                                 onLongClick = {
                                     coroutineScope.launch {
-                                        selectedMusic = elt
+                                        selectedMusicId = elt.musicId
                                         onSetBottomSheetVisibility(true)
                                     }
                                 },
@@ -362,7 +362,7 @@ fun PlaylistScreen(
                 retrieveCoverMethod = retrieveCoverMethod,
                 allMusics = musics,
                 onSelectedMusicForBottomSheet = {
-                    selectedMusic = it
+                    selectedMusicId = it.musicId
                     onSetBottomSheetVisibility(true)
                 }
             )

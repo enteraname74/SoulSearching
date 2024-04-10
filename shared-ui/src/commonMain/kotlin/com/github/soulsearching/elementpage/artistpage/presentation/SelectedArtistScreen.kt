@@ -13,14 +13,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
-import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
@@ -28,6 +22,10 @@ import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
+import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistEvent
+import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
+import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
+import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.UUID
 
 /**
@@ -36,19 +34,17 @@ import java.util.UUID
 @OptIn(ExperimentalMaterialApi::class)
 data class SelectedArtistScreen(
     private val selectedArtistId: String
-): Screen {
+) : Screen {
 
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<SelectedArtistViewModel>()
-        val allPlaylistsViewModel = getScreenModel<AllPlaylistsViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
 
         val playerViewModel = getScreenModel<PlayerViewModel>()
         val playerDraggableState = playerViewModel.handler.playerDraggableState
 
-        val playlistState by allPlaylistsViewModel.handler.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
@@ -62,8 +58,6 @@ data class SelectedArtistScreen(
                 )
             },
             selectedArtistId = selectedArtistId,
-            playlistState = playlistState,
-            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
             navigateToModifyArtist = {
                 navigator.push(
                     ModifyArtistScreen(
@@ -85,12 +79,10 @@ data class SelectedArtistScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectedArtistScreenView(
-    onPlaylistEvent : (PlaylistEvent) -> Unit,
-    playlistState : PlaylistState,
     selectedArtistViewModel: SelectedArtistViewModel,
     playerMusicListViewModel: PlayerMusicListViewModel,
-    selectedArtistId : String,
-    navigateToModifyArtist : (String) -> Unit,
+    selectedArtistId: String,
+    navigateToModifyArtist: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -101,12 +93,15 @@ fun SelectedArtistScreenView(
     }
 
     if (!isArtistFetched) {
-        selectedArtistViewModel.handler.setSelectedArtist(UUID.fromString(selectedArtistId))
+        selectedArtistViewModel.handler.onEvent(
+            SelectedArtistEvent.SetSelectedArtist(
+                artistId = UUID.fromString(selectedArtistId)
+            )
+        )
         isArtistFetched = true
     }
 
-    val artistWithMusicsState by selectedArtistViewModel.handler.selectedArtistState.collectAsState()
-    val musicState by selectedArtistViewModel.handler.musicState.collectAsState()
+    val state by selectedArtistViewModel.handler.state.collectAsState()
 
 //    if (musicState.musics.isEmpty()) {
 //        SideEffect {
@@ -122,21 +117,71 @@ fun SelectedArtistScreenView(
 
     PlaylistScreen(
         navigateBack = navigateBack,
-        playlistState = playlistState,
-        onPlaylistEvent = onPlaylistEvent,
-        onMusicEvent = selectedArtistViewModel.handler::onMusicEvent,
-        musicState = musicState,
-        title = artistWithMusicsState.artistWithMusics.artist.artistName,
-        image = retrieveCoverMethod(artistWithMusicsState.artistWithMusics.artist.coverId),
+        title = state.artistWithMusics.artist.artistName,
+        image = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
         navigateToModifyPlaylist = {
             navigateToModifyArtist(selectedArtistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
-        playlistId = artistWithMusicsState.artistWithMusics.artist.artistId,
+        playlistId = state.artistWithMusics.artist.artistId,
         playerMusicListViewModel = playerMusicListViewModel,
-        updateNbPlayedAction = { selectedArtistViewModel.handler.onArtistEvent(ArtistEvent.AddNbPlayed(it)) },
-        playlistType = PlaylistType.ARTIST
+        updateNbPlayedAction = {
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.AddNbPlayed(
+                    it
+                )
+            )
+        },
+        playlistType = PlaylistType.ARTIST,
+        playlistWithMusics = state.allPlaylists,
+        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
+        isBottomSheetShown = state.isMusicBottomSheetShown,
+        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
+        onSetBottomSheetVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetMusicBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetDeleteMusicDialogVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetDeleteMusicDialogVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetAddToPlaylistBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onDeleteMusic = { music ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.DeleteMusic(
+                    musicId = music.musicId
+                )
+            )
+        },
+        onToggleQuickAccessState = { music ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.ToggleQuickAccessState(
+                    musicId = music.musicId
+                )
+            )
+        },
+        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.AddMusicToPlaylists(
+                    musicId = selectedMusic.musicId,
+                    selectedPlaylistsIds = selectedPlaylistsIds
+                )
+            )
+        },
+        musics = state.artistWithMusics.musics
     )
 }

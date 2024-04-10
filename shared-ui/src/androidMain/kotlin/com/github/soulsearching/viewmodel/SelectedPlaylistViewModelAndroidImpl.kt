@@ -11,10 +11,10 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
-import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
 import com.github.soulsearching.elementpage.playlistpage.domain.SelectedPlaylistViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 
 /**
  * Implementation of the SelectedPlaylistViewModel.
@@ -34,6 +34,9 @@ class SelectedPlaylistViewModelAndroidImpl(
 ) : SelectedPlaylistViewModel, ViewModel() {
     override val handler: SelectedPlaylistViewModelHandler = SelectedPlaylistViewModelHandler(
         coroutineScope = viewModelScope,
-        playlistRepository = playlistRepository
+        playlistRepository = playlistRepository,
+        musicPlaylistRepository = musicPlaylistRepository,
+        musicRepository = musicRepository,
+        playbackManager = playbackManager
     )
 }

@@ -31,7 +31,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
@@ -61,7 +60,7 @@ import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.mainpage.domain.state.AlbumState
 import com.github.soulsearching.mainpage.domain.state.ArtistState
-import com.github.soulsearching.mainpage.domain.state.MusicState
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.mainpage.domain.state.QuickAccessState
 import com.github.soulsearching.mainpage.presentation.composable.AllElementsComposable
@@ -80,12 +79,13 @@ import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSett
 import com.github.soulsearching.settings.presentation.SettingsScreen
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 /**
  * Represent the view of the main page screen.
  */
 @OptIn(ExperimentalMaterialApi::class)
-data object MainPageScreen : Screen {
+class MainPageScreen : Screen {
 
     @Composable
     override fun Content() {
@@ -194,7 +194,7 @@ fun MainPageScreenView(
     navigateToSettings: () -> Unit,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     searchDraggableState: SwipeableState<BottomSheetStates>,
-    musicState: MusicState,
+    musicState: MainPageState,
     playlistState: PlaylistState,
     albumState: AlbumState,
     artistState: ArtistState,
@@ -204,17 +204,17 @@ fun MainPageScreenView(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedMusic by rememberSaveable {
-        mutableStateOf<Music?>(null)
+    var selectedMusicId by rememberSaveable {
+        mutableStateOf<UUID?>(null)
     }
 
-    selectedMusic?.let { music ->
+    musicState.musics.find { it.musicId == selectedMusicId }?.let { music ->
         MusicBottomSheetEvents(
             navigateToModifyMusic = navigateToModifyMusic,
             playerMusicListViewModel = playerMusicListViewModel,
             playerDraggableState = playerDraggableState,
             selectedMusic = music,
-            playlistsWithMusics = playlistState.playlistsWithMusics,
+            playlistsWithMusics = musicState.allPlaylists,
             isDeleteMusicDialogShown = musicState.isDeleteDialogShown,
             isBottomSheetShown = musicState.isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = musicState.isAddToPlaylistBottomSheetShown,
@@ -251,7 +251,7 @@ fun MainPageScreenView(
                         selectedPlaylistsIds = selectedPlaylistsIds
                     )
                 )
-            }
+            },
         )
     }
 
@@ -398,7 +398,7 @@ fun MainPageScreenView(
                                     },
                                     musicBottomSheetAction = { music ->
                                         coroutineScope.launch {
-                                            selectedMusic = music
+                                            selectedMusicId = music.musicId
                                             allMusicsViewModel.handler.onMusicEvent(
                                                 MusicEvent.BottomSheet(
                                                     isShown = true
@@ -638,7 +638,7 @@ fun MainPageScreenView(
                                         playerMusicListViewModel.handler.savePlayerMusicList(it)
                                     },
                                     onLongMusicClick = { music ->
-                                        selectedMusic = music
+                                        selectedMusicId = music.musicId
                                         allMusicsViewModel.handler.onMusicEvent(
                                             MusicEvent.BottomSheet(
                                                 isShown = true

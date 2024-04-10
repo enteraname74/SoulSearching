@@ -16,13 +16,10 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,8 +51,6 @@ class PlayerMusicListViewModelHandler(
     playbackManager: PlaybackManager
 ) : ViewModelHandler {
     private var job: Job? = null
-    private val _sortType = MutableStateFlow(SortType.NAME)
-    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
 
     @OptIn(ExperimentalMaterialApi::class)
     val musicListDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
@@ -63,9 +58,9 @@ class PlayerMusicListViewModelHandler(
     private var _playerMusicList: StateFlow<List<PlayerWithMusicItem>> =
         playerMusicRepository.getAllPlayerMusicsAsFlow()
             .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), ArrayList())
-    private val _state = MutableStateFlow(MusicState())
+    private val _state = MutableStateFlow(MainPageState())
 
-    var state: StateFlow<MusicState> = combine(
+    var state: StateFlow<MainPageState> = combine(
         _state,
         _playerMusicList
     ) { state, playerMusicList ->
@@ -77,7 +72,7 @@ class PlayerMusicListViewModelHandler(
     }.stateIn(
         coroutineScope,
         SharingStarted.WhileSubscribed(5000),
-        MusicState()
+        MainPageState()
     )
 
 //    private val musicEventHandler = MusicEventHandler(

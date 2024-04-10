@@ -37,22 +37,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
-import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MusicState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.composables.MusicItemComposable
+import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.soulsearching.domain.di.injectElement
+import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerViewModel
+import com.github.soulsearching.mainpage.domain.state.MainPageState
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -61,15 +58,14 @@ import kotlin.math.roundToInt
 fun PlayerMusicListView(
     maxHeight: Float,
     coverList: ArrayList<ImageCover>,
-    musicState: MusicState,
+    navigateToModifyMusic: (Music) -> Unit,
+    musicState: MainPageState,
     onMusicEvent: (MusicEvent) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
     playerDraggableState: SwipeableState<BottomSheetStates>,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
-    playerViewModel: PlayerViewModel
+    playedList: List<Music>
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -231,7 +227,7 @@ fun PlayerMusicListView(
                 state = playerListState
             ) {
                 items(
-                    items = playerViewModel.handler.currentPlaylist,
+                    items = playedList,
                 ) { elt ->
                     MusicItemComposable(
                         music = elt,

@@ -1,13 +1,15 @@
 package com.github.soulsearching.elementpage.artistpage.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 
 /**
-     * State for managing a selected artist.
+ * State for managing a selected artist.
  */
 data class SelectedArtistState(
-    val artistWithMusics : ArtistWithMusics = ArtistWithMusics(),
-    val hasCoverBeenChanged : Boolean = false,
-    val cover : ImageBitmap? = null
+    val artistWithMusics: ArtistWithMusics = ArtistWithMusics(),
+    val allPlaylists: List<PlaylistWithMusics> = emptyList(),
+    val isDeleteMusicDialogShown: Boolean = false,
+    val isMusicBottomSheetShown: Boolean = false,
+    val isAddToPlaylistBottomSheetShown: Boolean = false
 )
