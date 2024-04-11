@@ -51,6 +51,7 @@ import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -166,7 +167,7 @@ fun PlayerMusicListView(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = musicListDraggableState.offset.value.roundToInt()
+                    y = max(musicListDraggableState.offset.value.roundToInt(), 0)
                 )
             }
             .swipeable(
