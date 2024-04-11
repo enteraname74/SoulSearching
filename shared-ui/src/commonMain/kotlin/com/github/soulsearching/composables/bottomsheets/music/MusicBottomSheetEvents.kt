@@ -1,10 +1,7 @@
 package com.github.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
@@ -22,7 +19,6 @@ import com.github.soulsearching.composables.dialog.SoulSearchingDialog
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +34,6 @@ fun MusicBottomSheetEvents(
     playlistsWithMusics: List<PlaylistWithMusics>,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     isDeleteMusicDialogShown: Boolean,
     isBottomSheetShown: Boolean,
@@ -87,9 +82,6 @@ fun MusicBottomSheetEvents(
                     playbackManager.removeSongFromPlayedPlaylist(
                         musicId = selectedMusic.musicId
                     )
-                    playerMusicListViewModel.handler.savePlayerMusicList(
-                        playbackManager.playedList.map { it.musicId }
-                    )
                 }
                 coroutineScope.launch { musicModalSheetState.hide() }
                     .invokeOnCompletion {
@@ -116,9 +108,6 @@ fun MusicBottomSheetEvents(
                         musicId = selectedMusic.musicId,
                         playlistId = currentPlaylistId
                     )
-                    playerMusicListViewModel.handler.savePlayerMusicList(
-                        playbackManager.playedList.map { it.musicId }
-                    )
                 }
 
                 coroutineScope.launch { musicModalSheetState.hide() }
@@ -138,19 +127,18 @@ fun MusicBottomSheetEvents(
 
     if (isBottomSheetShown) {
         MusicBottomSheet(
-            musicBottomSheetState = musicBottomSheetState,
             musicModalSheetState = musicModalSheetState,
+            selectedMusic = selectedMusic,
+            onDismiss = onDismiss,
+            onShowDeleteMusicDialog = { onSetDeleteMusicDialogVisibility(true) },
+            onShowRemoveFromPlaylistDialog = { onSetRemoveMusicFromPlaylistDialogVisibility(true) },
+            onToggleQuickAccessState = onToggleQuickAccessState,
+            showAddToPlaylistBottomSheet = { onSetAddToPlaylistBottomSheetVisibility(true) },
             navigateToModifyMusic = navigateToModifyMusic,
-            playerMusicListViewModel = playerMusicListViewModel,
+            musicBottomSheetState = musicBottomSheetState,
             playerDraggableState = playerDraggableState,
             primaryColor = secondaryColor,
             textColor = onSecondaryColor,
-            selectedMusic = selectedMusic,
-            onDismiss = onDismiss,
-            onShowRemoveFromPlaylistDialog = { onSetRemoveMusicFromPlaylistDialogVisibility(true) },
-            onShowDeleteMusicDialog = { onSetDeleteMusicDialogVisibility(true) },
-            onToggleQuickAccessState = onToggleQuickAccessState,
-            showAddToPlaylistBottomSheet = { onSetAddToPlaylistBottomSheetVisibility(true) },
             playbackManager = playbackManager
         )
     }

@@ -210,23 +210,22 @@ fun MainPageScreenView(
 
     musicState.musics.find { it.musicId == selectedMusicId }?.let { music ->
         MusicBottomSheetEvents(
-            navigateToModifyMusic = navigateToModifyMusic,
-            playerMusicListViewModel = playerMusicListViewModel,
-            playerDraggableState = playerDraggableState,
             selectedMusic = music,
             playlistsWithMusics = musicState.allPlaylists,
+            navigateToModifyMusic = navigateToModifyMusic,
+            playerDraggableState = playerDraggableState,
             isDeleteMusicDialogShown = musicState.isDeleteDialogShown,
             isBottomSheetShown = musicState.isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = musicState.isAddToPlaylistBottomSheetShown,
             isRemoveFromPlaylistDialogShown = musicState.isRemoveFromPlaylistDialogShown,
-            onSetDeleteMusicDialogVisibility = { isShown ->
-                allMusicsViewModel.handler.onMusicEvent(
-                    MusicEvent.DeleteDialog(isShown = isShown)
-                )
-            },
             onDismiss = {
                 allMusicsViewModel.handler.onMusicEvent(
                     MusicEvent.BottomSheet(isShown = false)
+                )
+            },
+            onSetDeleteMusicDialogVisibility = { isShown ->
+                allMusicsViewModel.handler.onMusicEvent(
+                    MusicEvent.DeleteDialog(isShown = isShown)
                 )
             },
             onSetAddToPlaylistBottomSheetVisibility = { isShown ->
@@ -379,14 +378,6 @@ fun MainPageScreenView(
                                             )
                                         }.invokeOnCompletion {
                                             val musicListSingleton = arrayListOf(music)
-                                            if (!playbackManager.isSameMusicAsCurrentPlayedOne(
-                                                    music.musicId
-                                                )
-                                            ) {
-                                                playerMusicListViewModel.handler.savePlayerMusicList(
-                                                    musicListSingleton.map { it.musicId }
-                                                )
-                                            }
                                             playbackManager.setCurrentPlaylistAndMusic(
                                                 music = music,
                                                 musicList = musicListSingleton,
@@ -634,9 +625,6 @@ fun MainPageScreenView(
                                     sortType = musicState.sortType,
                                     sortDirection = musicState.sortDirection,
                                     playerDraggableState = playerDraggableState,
-                                    savePlayerMusicListMethod = {
-                                        playerMusicListViewModel.handler.savePlayerMusicList(it)
-                                    },
                                     onLongMusicClick = { music ->
                                         selectedMusicId = music.musicId
                                         allMusicsViewModel.handler.onMusicEvent(
@@ -710,7 +698,6 @@ fun MainPageScreenView(
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
-                playerMusicListViewModel = playerMusicListViewModel,
                 playerDraggableState = playerDraggableState,
                 isMainPlaylist = false,
                 focusManager = focusManager

@@ -33,11 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.utils.Utils
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 
@@ -52,7 +50,6 @@ fun ExpandedPlayButtonsComposable(
     sliderInactiveBarColor: Color,
     onSetFavoriteState: () -> Unit,
     isMusicInFavorite: Boolean,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     currentMusicPosition: Int,
     playerMode: PlayerMode,
     isPlaying: Boolean,
@@ -145,9 +142,6 @@ fun ExpandedPlayButtonsComposable(
                         .size(Constants.ImageSize.medium)
                         .clickable {
                             playbackManager.changePlayerMode()
-                            playerMusicListViewModel.handler.savePlayerMusicList(
-                                playbackManager.playedList.map { it.musicId }
-                            )
                         },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )

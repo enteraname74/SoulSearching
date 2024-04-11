@@ -8,14 +8,20 @@ import com.github.enteraname74.domain.model.Music
 interface SoulSearchingPlayer {
 
     /**
+     * Initialize the player.
+     */
+    fun init()
+
+    /**
      * Set a song to the player.
      */
     fun setMusic(music: Music)
 
     /**
      * Load the current music without playing it.
+     * @param seekTo the initial position to go when loading a song.
      */
-    fun onlyLoadMusic()
+    fun onlyLoadMusic(seekTo: Int)
 
     /**
      * Launch the loaded music of the player.

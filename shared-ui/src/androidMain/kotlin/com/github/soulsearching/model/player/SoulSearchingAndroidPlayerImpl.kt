@@ -25,32 +25,12 @@ class SoulSearchingAndroidPlayerImpl(
     MediaPlayer.OnErrorListener {
 
     private var player: MediaPlayer = MediaPlayer()
-
-//    private val notificationService: SoulSearchingNotification =
-//        SoulSearchingNotificationBuilder.buildNotification(
-//            context = context,
-//            mediaSessionToken = mediaSession.sessionToken
-//        )
-//    private var currentDurationJob: Job? = null
     private var isOnlyLoadingMusic: Boolean = false
-
+    private var positionToReachWhenLoadingMusic: Int = 0
     private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
 
-//    /**
-//     * Broadcast receiver used to control the player from the notification.
-//     */
-//    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-//        override fun onReceive(context: Context, intent: Intent) {
-//            if (intent.extras?.getBoolean("STOP") != null) {
-//                when (intent.extras?.getBoolean("STOP") as Boolean) {
-//                    true -> pause()
-//                    false -> play()
-//                }
-//            }
-//        }
-//    }
-
-    fun init() {
+    override fun init() {
+        println("MEDIA PLAYER INITIALIZED")
         audioManager.init()
         player = MediaPlayer()
         player.apply {
@@ -61,14 +41,6 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-//    init {
-//        init()
-//        initializeMediaSession()
-//        initializeBroadcastReceiver()
-//        notificationService.initializeNotification()
-//        manageAudioBecomingNoisy()
-//    }
-
     override fun setMusic(music: Music) {
         player.stop()
         player.reset()
@@ -77,8 +49,9 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-    override fun onlyLoadMusic() {
+    override fun onlyLoadMusic(seekTo: Int) {
         isOnlyLoadingMusic = true
+        positionToReachWhenLoadingMusic = seekTo
         launchMusic()
     }
 
@@ -105,10 +78,6 @@ class SoulSearchingAndroidPlayerImpl(
         when (audioManager.requestAudioFocus()) {
             AudioManager.AUDIOFOCUS_GAIN -> {
                 try {
-//                    PlayerUtils.playerViewModel.handler.isPlaying = true
-//                    player.start()
-//                    updateMediaSessionState()
-//                    notificationService.updateNotification()
                     player.start()
                     playbackManager.update()
                 } catch (_: IllegalStateException) {
@@ -125,14 +94,6 @@ class SoulSearchingAndroidPlayerImpl(
      * Release the audio focus and pause the current music.
      */
     override fun pause() {
-//        try {
-//            PlayerUtils.playerViewModel.handler.isPlaying = false
-//            audioManager.abandonAudioFocusRequest(audioFocusRequest)
-//            player.pause()
-//            updateMediaSessionState()
-//            notificationService.updateNotification()
-//        } catch (_: IllegalStateException) {
-//        }
         try {
             audioManager.abandonAudioFocusRequest()
             player.pause()
@@ -142,14 +103,13 @@ class SoulSearchingAndroidPlayerImpl(
     }
 
     override fun togglePlayPause() {
-        if (player.isPlaying) pause()
-        else play()
+        try {
+            if (player.isPlaying) pause()
+            else play()
+        } catch (_: Exception) {}
     }
 
     override fun seekToPosition(position: Int) {
-//        player.seekTo(position)
-//        PlayerUtils.playerViewModel.handler.currentMusicPosition = position
-//        notificationService.updateNotification()
         try {
             player.seekTo(position)
             playbackManager.update()
@@ -158,33 +118,7 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-//    override fun next() {
-//        pause()
-//        PlayerUtils.playerViewModel.handler.setNextMusic()
-//        PlayerUtils.playerViewModel.handler.currentMusic?.let {
-//            setMusic(it)
-//            launchMusic()
-//        }
-//    }
-//
-//    override fun previous() {
-//        pause()
-//        PlayerUtils.playerViewModel.handler.setPreviousMusic()
-//        PlayerUtils.playerViewModel.handler.currentMusic?.let {
-//            setMusic(it)
-//            launchMusic()
-//        }
-//    }
-
     override fun dismiss() {
-//        releaseDurationJob()
-//
-//        player.release()
-//        mediaSession.release()
-//        context.unregisterReceiver(broadcastReceiver)
-//        notificationService.dismissNotification()
-//        audioManager.abandonAudioFocusRequest(audioFocusRequest)
-//        releaseAudioBecomingNoisyReceiver()
         player.release()
         audioManager.release()
     }
@@ -204,32 +138,6 @@ class SoulSearchingAndroidPlayerImpl(
             0
         }
     }
-
-//    override fun updateNotification() {
-//        updateMediaSessionMetadata()
-//        updateMediaSessionState()
-//        notificationService.updateNotification()
-//    }
-//
-//    override fun getNotification(): Notification {
-//        return this.notificationService.getPlayerNotification()
-//    }
-
-
-//    /**
-//     * Initialize the broadcast receiver used by the player.
-//     */
-//    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-//    private fun initializeBroadcastReceiver() {
-//        if (Build.VERSION.SDK_INT >= 33) {
-//            context.registerReceiver(
-//                broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION),
-//                Context.RECEIVER_NOT_EXPORTED
-//            )
-//        } else {
-//            context.registerReceiver(broadcastReceiver, IntentFilter(BROADCAST_NOTIFICATION))
-//        }
-//    }
 
     override fun onCompletion(mp: MediaPlayer?) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -253,12 +161,13 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPrepared(mp: MediaPlayer?) {
         if (isOnlyLoadingMusic) {
-//            if (PlayerUtils.playerViewModel.handler.currentMusicPosition <= player.duration) {
-//                player.seekTo(PlayerUtils.playerViewModel.handler.currentMusicPosition)
-//                releaseDurationJob()
-//                launchDurationJob()
-//            }
-//            isOnlyLoadingMusic = false
+            /*
+             * When only loading the music, we try to seek to the last music position
+             * (when loading a previous song which was at a given position)
+             */
+            seekToPosition(positionToReachWhenLoadingMusic)
+            isOnlyLoadingMusic = false
+            positionToReachWhenLoadingMusic = 0
         } else {
             when (audioManager.requestAudioFocus()) {
                 AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {

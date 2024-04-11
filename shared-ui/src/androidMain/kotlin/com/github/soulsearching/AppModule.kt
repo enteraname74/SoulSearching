@@ -174,15 +174,9 @@ actual val appModule = module {
     single<SelectedAlbumViewModel> {
         SelectedAlbumViewModelAndroidImpl(
             albumRepository = get(),
-            artistRepository = get(),
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }
@@ -190,14 +184,8 @@ actual val appModule = module {
         SelectedArtistViewModelAndroidImpl(
             artistRepository = get(),
             musicRepository = get(),
-            albumRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            albumArtistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }
@@ -205,14 +193,7 @@ actual val appModule = module {
         SelectedPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             musicRepository = get(),
-            artistRepository = get(),
-            albumRepository = get(),
-            albumArtistRepository = get(),
             musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }
@@ -243,7 +224,9 @@ actual val appModule = module {
     single<PlaybackManager> {
         PlaybackManagerAndroidImpl(
             context = androidContext(),
-            settings = get()
+            settings = get(),
+            playerMusicRepository = get(),
+            musicRepository = get()
         )
     }
     single<MusicFetcherAndroidImpl> {

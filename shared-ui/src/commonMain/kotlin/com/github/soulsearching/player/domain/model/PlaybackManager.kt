@@ -2,6 +2,9 @@ package com.github.soulsearching.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,18 +12,26 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
-import kotlin.reflect.KFunction1
 
 /**
  * Used to manage the music playback of the application.
  */
 abstract class PlaybackManager(
-    protected val settings: SoulSearchingSettings
+    protected val settings: SoulSearchingSettings,
+    private val playerMusicRepository: PlayerMusicRepository,
+    private val musicRepository: MusicRepository
 ) {
+    /**
+     * Callback for letting other elements of the application listen to playback changes.
+     */
     private var callback: Callback = object : Callback {}
 
-    var retrieveCoverMethod: (UUID?) -> ImageBitmap? = {_ -> null}
-    var updateNbPlayed: (UUID) -> Unit = {_ -> }
+    /**
+     * Define if the playback manager should be in the init state or not.
+     */
+    protected var shouldInit: Boolean = true
+
+    var retrieveCoverMethod: (UUID?) -> ImageBitmap? = { _ -> null }
 
     /**
      * The initial list, used by the playback manager.
@@ -38,16 +49,19 @@ abstract class PlaybackManager(
      */
     var playedListId: UUID? = null
         private set
+
     /**
      * If the played list is the main one with all songs.
      */
     var isMainPlaylist: Boolean = false
         private set
+
     /**
      * The currently played music.
      */
     var currentMusic: Music? = null
         private set
+
     /**
      * Retrieve the current music duration.
      * Returns 0 if no music is playing
@@ -68,7 +82,7 @@ abstract class PlaybackManager(
      */
     val currentMusicIndex: Int
         get() = if (currentMusic == null) -1
-            else playedList.indexOf(playedList.find { it.musicId == currentMusic!!.musicId })
+        else playedList.indexOf(playedList.find { it.musicId == currentMusic!!.musicId })
 
 
     /**
@@ -88,6 +102,12 @@ abstract class PlaybackManager(
      * of the played music.
      */
     private var durationJob: Job? = null
+
+    /**
+     * Used to save the currently played list in the database for future uses after a relaunch
+     * of the app.
+     */
+    private var playedListSavingJob: Job? = null
 
     private var _playerMode = PlayerMode.NORMAL
     private var isChangingPlayerMode = false
@@ -116,6 +136,14 @@ abstract class PlaybackManager(
         callback.onPlayedListUpdated(
             playedList = playedList
         )
+    }
+
+    /**
+     * Initialize the playback manager.
+     */
+    protected open fun init() {
+        player.init()
+        shouldInit = false
     }
 
     /**
@@ -194,6 +222,8 @@ abstract class PlaybackManager(
             currentMusicIndex = currentMusicIndex,
             currentMusicPosition = currentMusicPosition
         )
+
+        savePlayedList()
         update()
     }
 
@@ -207,6 +237,10 @@ abstract class PlaybackManager(
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1000)
                 }
+                settings.setInt(
+                    key = SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY,
+                    value = player.getMusicPosition()
+                )
                 callback.onCurrentMusicPositionChanged(
                     position = currentMusicPosition
                 )
@@ -251,6 +285,23 @@ abstract class PlaybackManager(
     }
 
     /**
+     * Save the played list to the database.
+     */
+    private fun savePlayedList() {
+        playedListSavingJob?.cancel()
+        playedListSavingJob = CoroutineScope(Dispatchers.IO).launch {
+            playerMusicRepository.deleteAllPlayerMusic()
+            for (id in playedList.map { it.musicId }) {
+                playerMusicRepository.insertPlayerMusic(
+                    playerMusic = PlayerMusic(
+                        playerMusicId = id
+                    )
+                )
+            }
+        }
+    }
+
+    /**
      * Play the next song in queue.
      */
     fun next() {
@@ -286,9 +337,13 @@ abstract class PlaybackManager(
      * Load the current music of the player view model.
      * The music will not be played.
      */
-    private fun onlyLoadMusic() {
-        player.onlyLoadMusic()
-        update()
+    private fun onlyLoadMusic(seekTo: Int = 0) {
+        currentMusic?.let {
+            player.setMusic(music = it)
+            player.onlyLoadMusic(seekTo = seekTo)
+            update()
+        }
+
     }
 
     /**
@@ -345,6 +400,19 @@ abstract class PlaybackManager(
     }
 
     /**
+     * Reset the saved played list in the db.
+     */
+    private fun resetSavePlayedListInDb() {
+        CoroutineScope(Dispatchers.IO).launch {
+            playerMusicRepository.deleteAllPlayerMusic()
+        }
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = -1,
+            currentMusicPosition = 0
+        )
+    }
+
+    /**
      * Add a music to play next.
      * Does nothing if we try to add the current music.
      * If the playlist is empty (nothing is playing), we load the music.
@@ -374,6 +442,7 @@ abstract class PlaybackManager(
             playedList = playedList
         )
 
+        savePlayedList()
         settings.saveCurrentMusicInformation(
             currentMusicIndex = currentMusicIndex,
             currentMusicPosition = currentMusicPosition
@@ -427,7 +496,7 @@ abstract class PlaybackManager(
      * We can also check with a isMainPlaylist value (the main playlist, with all songs, does not have
      * a UUID).
      */
-    fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
+    private fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean {
         if (playlistId == null && this.playedListId == null) {
             return isMainPlaylist == this.isMainPlaylist
         } else if (playlistId != null && this.playedListId != null) {
@@ -439,7 +508,7 @@ abstract class PlaybackManager(
     /**
      * Define the player mode to use for the current playlist.
      */
-    private fun setPlayerMode(playerMode: PlayerMode){
+    private fun setPlayerMode(playerMode: PlayerMode) {
         _playerMode = playerMode
         callback.onPlayerModeChanged(
             playerMode = _playerMode
@@ -449,7 +518,7 @@ abstract class PlaybackManager(
     /**
      * Define the current played list.
      */
-    private fun setCurrentPlayedList(playedList: ArrayList<Music>){
+    private fun setCurrentPlayedList(playedList: ArrayList<Music>) {
         this.playedList = playedList
         callback.onPlayedListUpdated(
             playedList = this.playedList
@@ -460,6 +529,7 @@ abstract class PlaybackManager(
      * Initialize the player and the view from a saved music list (from the last app session).
      */
     open fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
+        init()
         setPlayerLists(savedMusicList)
 
         val index = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY, -1)
@@ -467,10 +537,9 @@ abstract class PlaybackManager(
 
         setMusicFromIndex(index)
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
-        seekToPosition(position)
 
         setPlayerMode(settings.getPlayerMode())
-        onlyLoadMusic()
+        onlyLoadMusic(seekTo = position)
     }
 
     /**
@@ -480,7 +549,9 @@ abstract class PlaybackManager(
         currentMusic = music
         player.setMusic(music)
         player.launchMusic()
-        updateNbPlayed(music.musicId)
+        CoroutineScope(Dispatchers.IO).launch {
+            musicRepository.updateNbPlayed(music.musicId)
+        }
         update()
     }
 
@@ -512,17 +583,20 @@ abstract class PlaybackManager(
                 PlayerMode.NORMAL -> {
                     // to shuffle mode :
                     shuffleCurrentList(playedList)
-                    setPlayerMode(playerMode =  PlayerMode.SHUFFLE)
+                    setPlayerMode(playerMode = PlayerMode.SHUFFLE)
                 }
+
                 PlayerMode.SHUFFLE -> {
                     // to loop mode :
-                    playedList = if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
+                    playedList =
+                        if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
                     playedListId = null
                     callback.onPlayedListUpdated(
                         playedList = playedList
                     )
-                    setPlayerMode(playerMode =  PlayerMode.LOOP)
+                    setPlayerMode(playerMode = PlayerMode.LOOP)
                 }
+
                 PlayerMode.LOOP -> {
                     // to normal mode :
                     playedList = initialList.map { it.copy() } as java.util.ArrayList<Music>
@@ -530,7 +604,7 @@ abstract class PlaybackManager(
                     callback.onPlayedListUpdated(
                         playedList = playedList
                     )
-                    setPlayerMode(playerMode =  PlayerMode.NORMAL)
+                    setPlayerMode(playerMode = PlayerMode.NORMAL)
                 }
             }
             settings.setPlayerMode(
@@ -541,6 +615,7 @@ abstract class PlaybackManager(
                 currentMusicIndex = currentMusicIndex,
                 currentMusicPosition = currentMusicPosition
             )
+            savePlayedList()
             isChangingPlayerMode = false
         }
     }
@@ -559,6 +634,8 @@ abstract class PlaybackManager(
         // When selecting a music manually, we force the player mode to normal:
         forcePlayerModeToNormal(musicList)
 
+        val shouldSaveNewPlayedList = isSamePlaylist(isMainPlaylist, playlistId)
+
         // If it's the same music of the same playlist, does nothing
         if (isSameMusicAsCurrentPlayedOne(music.musicId) && isSamePlaylist(
                 isMainPlaylist,
@@ -568,7 +645,8 @@ abstract class PlaybackManager(
             return
         }
 
-        val shouldForcePlaylistOrNewPlaylist = !isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist
+        val shouldForcePlaylistOrNewPlaylist =
+            !isSamePlaylist(isMainPlaylist, playlistId) || isForcingNewPlaylist
         val notSameMusic = !isSameMusicAsCurrentPlayedOne(music.musicId)
 
         if (shouldForcePlaylistOrNewPlaylist) {
@@ -585,6 +663,7 @@ abstract class PlaybackManager(
         }
 
         setAndPlayMusic(music)
+        if (shouldSaveNewPlayedList) savePlayedList()
     }
 
     /**
@@ -603,12 +682,12 @@ abstract class PlaybackManager(
     /**
      * Play a playlist in shuffle and save it.
      */
-    fun playShuffle(musicList: List<Music>, savePlayerListMethod: KFunction1<ArrayList<UUID>, Unit>) {
+    fun playShuffle(musicList: List<Music>) {
         playedListId = null
         isMainPlaylist = false
 
         setPlayerLists(musicList.shuffled())
-        savePlayerListMethod(playedList.map { it.musicId } as ArrayList<UUID>)
+        savePlayedList()
 
         setPlayerMode(PlayerMode.NORMAL)
         settings.setPlayerMode(
@@ -635,9 +714,10 @@ abstract class PlaybackManager(
      * Stop the playback.
      * If will stop the service, dismiss the player and reset the player view model data.
      */
-    open fun stopPlayback() {
+    open fun stopPlayback(resetPlayedList: Boolean = true) {
         releaseDurationJob()
         releasePlaybackManagerInformation()
+        if (resetPlayedList) resetSavePlayedListInDb()
         update()
     }
 

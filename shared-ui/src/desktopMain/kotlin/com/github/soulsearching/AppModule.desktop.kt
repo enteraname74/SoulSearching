@@ -257,7 +257,8 @@ actual val appModule: Module = module {
     }
     single<PlaybackManagerDesktopImpl> {
         PlaybackManagerDesktopImpl(
-            settings = get()
+            settings = get(),
+            playerMusicRepository = get()
         )
     }
     single<MusicFetcherDesktopImpl> {

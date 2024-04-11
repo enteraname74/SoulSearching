@@ -18,7 +18,6 @@ import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.composable.SearchType
 import com.github.soulsearching.strings.strings
@@ -31,7 +30,6 @@ fun SearchMusics(
     playerDraggableState: SwipeableState<BottomSheetStates>,
     searchText: String,
     allMusics: List<Music>,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -76,7 +74,6 @@ fun SearchMusics(
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
-                            playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
                         }
                     },
                     onLongClick = {

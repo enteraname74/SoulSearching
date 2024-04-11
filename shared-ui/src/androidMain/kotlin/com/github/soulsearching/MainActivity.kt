@@ -20,7 +20,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
@@ -47,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private val settings: SoulSearchingSettings by inject()
     private val mainActivityViewModel: MainActivityViewModel by inject()
     private val playerViewModel: PlayerViewModel by inject()
+    private val playbackManager: PlaybackManager by inject()
 
 
     private val serviceReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -145,7 +145,6 @@ class MainActivity : AppCompatActivity() {
 
         with(playbackManager) {
             retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
-            updateNbPlayed = { allMusicsViewModel.handler.onMusicEvent(MusicEvent.AddNbPlayed(it)) }
         }
 
         setContent {
@@ -229,5 +228,10 @@ class MainActivity : AppCompatActivity() {
         } catch (_: RuntimeException) {
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        playbackManager.stopPlayback(resetPlayedList = false)
     }
 }

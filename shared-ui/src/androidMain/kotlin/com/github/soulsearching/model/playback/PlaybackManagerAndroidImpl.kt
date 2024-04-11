@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
@@ -18,12 +20,15 @@ import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
  */
 class PlaybackManagerAndroidImpl(
     private val context: Context,
-    settings: SoulSearchingSettings
+    settings: SoulSearchingSettings,
+    playerMusicRepository: PlayerMusicRepository,
+    musicRepository: MusicRepository
 ): PlaybackManager(
-    settings = settings
+    settings = settings,
+    playerMusicRepository = playerMusicRepository,
+    musicRepository = musicRepository
 ) {
     private var shouldLaunchService: Boolean = true
-    private var shouldInit: Boolean = true
 
     private val mediaSessionManager = MediaSessionManager(
         context = context,
@@ -72,7 +77,8 @@ class PlaybackManagerAndroidImpl(
      * Initialize the playback manager.
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    private fun init() {
+    override fun init() {
+        super.init()
         if (Build.VERSION.SDK_INT >= 33) {
             context.registerReceiver(
                 broadcastReceiver,
@@ -85,11 +91,8 @@ class PlaybackManagerAndroidImpl(
                 IntentFilter(BROADCAST_NOTIFICATION)
             )
         }
-
-        player.init()
         mediaSessionManager.init()
         shouldLaunchService = true
-        shouldInit = false
     }
 
 
@@ -106,7 +109,7 @@ class PlaybackManagerAndroidImpl(
         super.setAndPlayMusic(music)
     }
 
-    override fun stopPlayback() {
+    override fun stopPlayback(resetPlayedList: Boolean) {
         if (shouldInit) return
 
         context.unregisterReceiver(broadcastReceiver)
@@ -116,7 +119,7 @@ class PlaybackManagerAndroidImpl(
         if (!shouldLaunchService) stopService()
 
         shouldInit = true
-        super.stopPlayback()
+        super.stopPlayback(resetPlayedList)
     }
 
     override fun update() {

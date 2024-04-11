@@ -15,7 +15,6 @@ import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +34,6 @@ fun MusicBottomSheet(
     showAddToPlaylistBottomSheet: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -88,10 +86,6 @@ fun MusicBottomSheet(
                     playbackManager.removeSongFromPlayedPlaylist(
                         musicId = selectedMusic.musicId
                     )
-                    playerMusicListViewModel.handler.savePlayerMusicList(
-                        playbackManager.playedList.map { it.musicId }
-                    )
-
                     coroutineScope.launch {
                         musicModalSheetState.hide()
                     }.invokeOnCompletion {
@@ -119,7 +113,6 @@ fun MusicBottomSheet(
                     playbackManager.addMusicToPlayNext(
                         music = selectedMusic
                     )
-                    playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
                 }
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,

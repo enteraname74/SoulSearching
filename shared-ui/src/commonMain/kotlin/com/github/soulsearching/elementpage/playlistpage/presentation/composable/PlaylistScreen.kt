@@ -117,10 +117,7 @@ fun PlaylistScreen(
                     )
                 }
                 .invokeOnCompletion {
-                    playbackManager.playShuffle(
-                        musicList = musics,
-                        savePlayerListMethod = playerMusicListViewModel.handler::savePlayerMusicList
-                    )
+                    playbackManager.playShuffle(musicList = musics)
                 }
         }
     }
@@ -235,27 +232,26 @@ fun PlaylistScreen(
                 musics.find { it.musicId == selectedMusicId }?.let { music ->
                     MusicBottomSheetEvents(
                         selectedMusic = music,
+                        playlistsWithMusics = playlistWithMusics,
                         navigateToModifyMusic = navigateToModifyMusic,
                         musicBottomSheetState = musicBottomSheetState,
-                        playerMusicListViewModel = playerMusicListViewModel,
                         playerDraggableState = playerDraggableState,
-                        playlistsWithMusics = playlistWithMusics,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,
                         isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
                         isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        },
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
                         onDismiss = {
                             onSetBottomSheetVisibility(false)
                         },
+                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
                         onDeleteMusic = { onDeleteMusic(music) },
                         onToggleQuickAccessState = { onToggleQuickAccessState(music) },
                         onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
+                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
+                        },
                     )
                 }
 
@@ -313,15 +309,6 @@ fun PlaylistScreen(
                                         playlistId?.let {
                                             updateNbPlayedAction(it)
                                         }
-
-                                        if (!playbackManager.isSamePlaylist(
-                                                false,
-                                                playlistId
-                                            )
-                                        ) {
-                                            playerMusicListViewModel.handler.savePlayerMusicList(
-                                                musics.map { it.musicId })
-                                        }
                                         playbackManager.setCurrentPlaylistAndMusic(
                                             music = music,
                                             musicList = musics,
@@ -356,11 +343,10 @@ fun PlaylistScreen(
             SearchMusics(
                 playerDraggableState = playerDraggableState,
                 searchText = searchText,
-                playerMusicListViewModel = playerMusicListViewModel,
+                allMusics = musics,
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
-                allMusics = musics,
                 onSelectedMusicForBottomSheet = {
                     selectedMusicId = it.musicId
                     onSetBottomSheetVisibility(true)

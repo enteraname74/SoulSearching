@@ -27,7 +27,6 @@ import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.search.presentation.composable.SearchType
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -48,7 +47,6 @@ fun SearchAll(
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
@@ -198,7 +196,6 @@ fun SearchAll(
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
-                            playerMusicListViewModel.handler.savePlayerMusicList(playbackManager.playedList.map { it.musicId })
                         }
                     },
                     onLongClick = {

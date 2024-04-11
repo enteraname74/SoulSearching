@@ -63,31 +63,30 @@ fun MusicList(
 
     selectedMusic?.let { music ->
         MusicBottomSheetEvents(
-            navigateToModifyMusic = navigateToModifyMusic,
-            musicBottomSheetState = musicBottomSheetState,
-            playerMusicListViewModel = playerMusicListViewModel,
-            playerDraggableState = playerDraggableState,
-            secondaryColor = secondaryColor,
-            onSecondaryColor = onSecondaryColor,
-            primaryColor = primaryColor,
-            onPrimaryColor = onPrimaryColor,
             selectedMusic = music,
             currentPlaylistId = playlistId,
             playlistsWithMusics = playlistsWithMusics,
+            navigateToModifyMusic = navigateToModifyMusic,
+            musicBottomSheetState = musicBottomSheetState,
+            playerDraggableState = playerDraggableState,
             isDeleteMusicDialogShown = isDeleteMusicDialogShown,
             isBottomSheetShown = isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
             isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
             onDismiss = { onSetBottomSheetVisibility(false) },
-            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
             onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
             onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
             onDeleteMusic = { onDeleteMusic(music) },
             onToggleQuickAccessState = { onToggleQuickAccessState(music) },
             onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
             onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                 onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-            }
+            },
+            primaryColor = primaryColor,
+            secondaryColor = secondaryColor,
+            onPrimaryColor = onPrimaryColor,
+            onSecondaryColor = onSecondaryColor
         )
     }
 
@@ -108,15 +107,6 @@ fun MusicList(
                             updateNbPlayedAction(it)
                         }
 
-                        if (!playbackManager.isSamePlaylist(
-                                isMainPlaylist = isMainPlaylist,
-                                playlistId = playlistId
-                            )
-                        ) {
-                            playerMusicListViewModel.handler.savePlayerMusicList(
-                                musics.map { it.musicId }
-                            )
-                        }
                         playbackManager.setCurrentPlaylistAndMusic(
                             music = music,
                             musicList = musics,

@@ -9,7 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
@@ -113,10 +116,16 @@ fun SoulSearchingApplication(
             constraintsScope.maxHeight.toPx()
         }
 
-        if (!mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched) {
+        var hasLastPlayedMusicsBeenFetched by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        println("Has last played musics been fetched ? $hasLastPlayedMusicsBeenFetched")
+        if (!hasLastPlayedMusicsBeenFetched) {
             LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
                 val playerSavedMusics =
                     playerMusicListViewModel.handler.getPlayerMusicList()
+                println("GOT PREVIOUS LIST: ${playerSavedMusics.size}")
                 if (playerSavedMusics.isNotEmpty()) {
                     playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                     coroutineScope.launch {
@@ -126,7 +135,7 @@ fun SoulSearchingApplication(
                         )
                     }
                 }
-                mainActivityViewModel.handler.hasLastPlayedMusicsBeenFetched = true
+               hasLastPlayedMusicsBeenFetched = true
             }
         }
 

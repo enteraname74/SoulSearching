@@ -22,14 +22,8 @@ import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
 class SelectedArtistViewModelAndroidImpl(
     artistRepository: ArtistRepository,
     musicRepository: MusicRepository,
-    albumRepository: AlbumRepository,
     playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    musicArtistRepository: MusicArtistRepository,
-    imageCoverRepository: ImageCoverRepository,
-    settings: SoulSearchingSettings,
     playbackManager: PlaybackManager
 ) : SelectedArtistViewModel, ViewModel() {
     override val handler: SelectedArtistViewModelHandler = SelectedArtistViewModelHandler(

@@ -102,33 +102,10 @@ class PlayerMusicListViewModelHandler(
     }
 
     /**
-     * Save the player music list to the database.
-     */
-    fun savePlayerMusicList(musicList: List<UUID>) {
-        job?.cancel()
-        job = CoroutineScope(Dispatchers.IO).launch {
-            playerMusicRepository.deleteAllPlayerMusic()
-            for (id in musicList) {
-                playerMusicRepository.insertPlayerMusic(
-                    playerMusic = PlayerMusic(
-                        playerMusicId = id
-                    )
-                )
-            }
-        }
-    }
-
-    /**
      * Reset the player music list to the database.
      */
     fun resetPlayerMusicList() {
-        CoroutineScope(Dispatchers.IO).launch {
-            playerMusicRepository.deleteAllPlayerMusic()
-        }
-        settings.saveCurrentMusicInformation(
-            currentMusicIndex = -1,
-            currentMusicPosition = 0
-        )
+
     }
 
     /**

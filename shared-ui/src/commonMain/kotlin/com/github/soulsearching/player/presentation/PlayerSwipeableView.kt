@@ -307,6 +307,7 @@ fun PlayerDraggableView(
         state.currentMusic?.let { music ->
             MusicBottomSheetEvents(
                 selectedMusic = music,
+                playlistsWithMusics = state.playlistsWithMusics,
                 navigateToModifyMusic = { path ->
                     coroutineScope.launch {
                         draggableState.animateTo(
@@ -318,10 +319,7 @@ fun PlayerDraggableView(
                     }
                 },
                 musicBottomSheetState = MusicBottomSheetState.PLAYER,
-                playerMusicListViewModel = playerMusicListViewModel,
                 playerDraggableState = draggableState,
-                secondaryColor = navigationBarColor,
-                onSecondaryColor = textColor,
                 isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
                 isBottomSheetShown = state.isMusicBottomSheetShown,
                 isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
@@ -364,7 +362,8 @@ fun PlayerDraggableView(
                         )
                     )
                 },
-                playlistsWithMusics = state.playlistsWithMusics
+                secondaryColor = navigationBarColor,
+                onSecondaryColor = textColor
             )
         }
 
@@ -683,13 +682,12 @@ fun PlayerDraggableView(
                                     paddingBottom = 0.dp,
                                     mainColor = textColor,
                                     sliderInactiveBarColor = contentColor,
-                                    isMusicInFavorite = state.isCurrentMusicInFavorite,
-                                    playerMusicListViewModel = playerMusicListViewModel,
                                     onSetFavoriteState = {
                                         playerViewModel.handler.onEvent(
                                             PlayerEvent.ToggleFavoriteState
                                         )
                                     },
+                                    isMusicInFavorite = state.isCurrentMusicInFavorite,
                                     currentMusicPosition = state.currentMusicPosition,
                                     playerMode = state.playerMode,
                                     isPlaying = state.isPlaying
@@ -701,13 +699,12 @@ fun PlayerDraggableView(
                             ExpandedPlayButtonsComposable(
                                 mainColor = textColor,
                                 sliderInactiveBarColor = contentColor,
-                                isMusicInFavorite = state.isCurrentMusicInFavorite,
-                                playerMusicListViewModel = playerMusicListViewModel,
                                 onSetFavoriteState = {
                                     playerViewModel.handler.onEvent(
                                         PlayerEvent.ToggleFavoriteState
                                     )
                                 },
+                                isMusicInFavorite = state.isCurrentMusicInFavorite,
                                 currentMusicPosition = state.currentMusicPosition,
                                 playerMode = state.playerMode,
                                 isPlaying = state.isPlaying
