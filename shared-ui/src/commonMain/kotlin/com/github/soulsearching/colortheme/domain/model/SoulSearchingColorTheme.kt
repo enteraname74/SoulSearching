@@ -2,12 +2,15 @@ package com.github.soulsearching.colortheme.domain.model
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 /**
  * Dynamic colors used in the application.
  */
 object SoulSearchingColorTheme {
-    var colorScheme = SoulSearchingPalette()
+    var colorScheme by mutableStateOf(SoulSearchingPalette())
 
     private val darkTheme = SoulSearchingPalette()
     private val lightTheme = SoulSearchingPalette(

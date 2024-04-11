@@ -252,7 +252,7 @@ class ColorThemeManager(
      * - App color theme is on personalized
      * - The dynamic theme for other views is selected
      */
-    fun isPersonalizedDynamicOtherViewsThemeOn(): Boolean {
+    private fun isPersonalizedDynamicOtherViewsThemeOn(): Boolean {
         return colorThemeType == ColorThemeType.PERSONALIZED && isDynamicOtherViewsThemeSelected
     }
 
