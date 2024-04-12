@@ -16,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.localdb.localAndroidModule
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -34,6 +36,7 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import org.koin.android.ext.android.inject
+import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
@@ -233,5 +236,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         playbackManager.stopPlayback(resetPlayedList = false)
+        unloadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
     }
 }

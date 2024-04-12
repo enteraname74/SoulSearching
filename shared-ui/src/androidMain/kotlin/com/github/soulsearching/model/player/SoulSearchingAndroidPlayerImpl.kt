@@ -30,7 +30,6 @@ class SoulSearchingAndroidPlayerImpl(
     private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
 
     override fun init() {
-        println("MEDIA PLAYER INITIALIZED")
         audioManager.init()
         player = MediaPlayer()
         player.apply {

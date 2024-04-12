@@ -120,12 +120,10 @@ fun SoulSearchingApplication(
             mutableStateOf(false)
         }
 
-        println("Has last played musics been fetched ? $hasLastPlayedMusicsBeenFetched")
         if (!hasLastPlayedMusicsBeenFetched) {
             LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
                 val playerSavedMusics =
                     playerMusicListViewModel.handler.getPlayerMusicList()
-                println("GOT PREVIOUS LIST: ${playerSavedMusics.size}")
                 if (playerSavedMusics.isNotEmpty()) {
                     playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                     coroutineScope.launch {
