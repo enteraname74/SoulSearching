@@ -67,7 +67,6 @@ class ModifyArtistViewModelHandler(
      */
     private fun setArtist(newArtistName: String) {
         _state.update {
-            println(newArtistName)
             it.copy(
                 artistWithMusics = it.artistWithMusics.copy(
                     artist = it.artistWithMusics.artist.copy(

@@ -191,7 +191,7 @@ class AlbumRepository(
      * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
      */
     fun getAllAlbumsWithMusicsSortByNameAscAsFlow(): Flow<List<AlbumWithMusics>> =
-        albumDataSource.getAllAlbumsWithMusicsSortByNameDescAsFlow()
+        albumDataSource.getAllAlbumsWithMusicsSortByNameAscAsFlow()
 
     /**
      * Retrieves a flow of all AlbumsWithMusics, sorted by name desc.

@@ -125,6 +125,12 @@ abstract class PlaybackManager(
         _currentMusicCover = null
         playedListId = null
         isMainPlaylist = false
+
+        callback.onCurrentMusicCoverChanged(cover = null)
+        callback.onCurrentPlayedMusicChanged(music = null)
+        callback.onPlayedListUpdated(playedList = emptyList())
+        callback.onPlayingStateChanged(isPlaying = false)
+        callback.onCurrentMusicPositionChanged(position = 0)
     }
 
     /**
