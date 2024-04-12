@@ -67,7 +67,6 @@ fun ModifyMusicComposable(
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
                     finishAction()
                 }
             )

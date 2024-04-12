@@ -35,6 +35,7 @@ import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
+import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.core.context.unloadKoinModules
 
@@ -81,6 +82,9 @@ class MainActivity : AppCompatActivity() {
     override
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // For JAudiotagger to work on android.
+        TagOptionSingleton.getInstance().isAndroid = true
 
         val playbackManager by inject<PlaybackManager>()
         playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {

@@ -16,6 +16,7 @@ kotlin {
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)
                 implementation(compose.ui)
+                implementation(libs.jaudiotagger)
             }
         }
     }

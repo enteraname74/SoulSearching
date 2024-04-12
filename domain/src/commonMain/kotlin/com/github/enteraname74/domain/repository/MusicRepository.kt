@@ -22,6 +22,7 @@ import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.MusicWithCover
 import com.github.enteraname74.domain.util.CheckAndDeleteVerification
+import com.github.enteraname74.domain.util.MusicFileUpdater
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -41,6 +42,8 @@ class MusicRepository(
     private val musicPlaylistDataSource: MusicPlaylistDataSource,
     private val checkAndDeleteVerification: CheckAndDeleteVerification
 ) {
+    private val musicFileUpdater = MusicFileUpdater()
+
     /**
      * Tries to retrieve the corresponding album of a music and its artist.
      */
@@ -264,7 +267,7 @@ class MusicRepository(
                 )
             }
 
-            // On met les infos de la musique à jour :
+            // We update the link between the artist and the music.
             musicArtistDataSource.updateArtistOfMusic(
                 musicId = legacyMusic.musicId,
                 newArtistId = newArtist.artistId
@@ -289,7 +292,7 @@ class MusicRepository(
                 )
             }
         }
-        // On mets à jour la cover pour l'album et l'artiste :
+        // We update the cover of the artist and album of the music.
         val artist = artistDataSource.getArtistFromInfo(
             newMusicInformation.artist
         )
@@ -297,19 +300,32 @@ class MusicRepository(
             albumName = newMusicInformation.album,
             artistId = artist!!.artistId
         )
-        // Si l'artiste n'a pas d'image, on lui donne la nouvelle cover
+        // If the artist does not have a cover, we give him the one of the music if it has one.
         if (artist.coverId == null) {
             newMusicInformation.coverId?.let { musicCoverId ->
                 artistDataSource.updateArtistCover(musicCoverId, artist.artistId)
             }
         }
-        // Faison de même pour l'album :
+        // We do the same for the album.
         if (album!!.coverId == null) {
             newMusicInformation.coverId?.let { musicCoverId ->
                 albumDataSource.updateAlbumCover(musicCoverId, album.albumId)
             }
         }
         musicDataSource.insertMusic(newMusicInformation)
+
+        var musicCover: ImageBitmap? = null
+        newMusicInformation.coverId?.let { coverId ->
+            musicCover = imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
+        }
+
+        println("Will set cover ?: ${(legacyMusic.coverId != newMusicInformation.coverId)}")
+
+        // We only set a new cover if the previous one has been changed.
+        musicFileUpdater.updateMusic(
+            music = newMusicInformation,
+            cover = if (legacyMusic.coverId != newMusicInformation.coverId) musicCover else null
+        )
     }
 
     /**
