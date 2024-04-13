@@ -319,8 +319,6 @@ class MusicRepository(
             musicCover = imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
         }
 
-        println("Will set cover ?: ${(legacyMusic.coverId != newMusicInformation.coverId)}")
-
         // We only set a new cover if the previous one has been changed.
         musicFileUpdater.updateMusic(
             music = newMusicInformation,

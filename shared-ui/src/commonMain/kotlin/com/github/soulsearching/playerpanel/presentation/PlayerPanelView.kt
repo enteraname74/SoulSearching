@@ -1,6 +1,5 @@
 package com.github.soulsearching.playerpanel.presentation
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -34,12 +33,9 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.mainpage.domain.model.PagerScreen
 import com.github.soulsearching.player.domain.PlayerState
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -56,12 +52,14 @@ import kotlin.math.roundToInt
 fun PlayerPanelView(
     maxHeight: Float,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
-    colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
     coverList: ArrayList<ImageCover>,
     onRetrieveLyrics: () -> Unit,
+    secondaryColor: Color,
+    contentColor: Color,
+    subTextColor: Color
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -79,42 +77,6 @@ fun PlayerPanelView(
             )
         }
     }
-
-    val secondaryColor: Color by animateColorAsState(
-        targetValue =
-        if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            ColorPaletteUtils.getDynamicSecondaryColor(
-                baseColor = colorThemeManager.currentColorPalette?.rgb
-            )
-        } else {
-            SoulSearchingColorTheme.defaultTheme.secondary
-        },
-        tween(Constants.AnimationDuration.normal),
-        label = "SECONDARY_COLOR_PLAYER_MUSIC_LIST_VIEW"
-    )
-
-    val contentColor: Color by animateColorAsState(
-        targetValue =
-        if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
-        ) {
-            Color.White
-        } else {
-            SoulSearchingColorTheme.defaultTheme.onPrimary
-        },
-        tween(Constants.AnimationDuration.normal),
-        label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
-    )
-
-    val subTextColor: Color by animateColorAsState(
-        targetValue = if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
-            Color.LightGray
-        } else {
-            SoulSearchingColorTheme.defaultTheme.subText
-        },
-        tween(Constants.AnimationDuration.normal),
-        label = "SUB_TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
-    )
 
     Box(
         modifier = Modifier

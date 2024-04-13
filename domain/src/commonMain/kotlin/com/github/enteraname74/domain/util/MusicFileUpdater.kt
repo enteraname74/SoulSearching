@@ -15,26 +15,17 @@ class MusicFileUpdater {
         try {
             val musicFile = File(music.path)
 
-            println("Got music file: ${musicFile.isFile} ${musicFile.path}")
-
             val audioFile = AudioFileIO.read(musicFile)
 
             val tag = audioFile.tag
-
-            println("NAME: ${tag.getFirst(FieldKey.TITLE)}")
-            println("ALBUM: ${tag.getFirst(FieldKey.ALBUM)}")
-            println("ARTIST: ${tag.getFirst(FieldKey.ARTIST)}")
 
             tag.setField(FieldKey.TITLE, music.name)
             tag.setField(FieldKey.ALBUM, music.album)
             tag.setField(FieldKey.ARTIST, music.artist)
 
-            println("Cover: $cover")
             cover?.let { currentArtwork ->
                 try {
                     val artwork = ArtworkFactory.getNew()
-                    println("Got artwork! $artwork")
-                    println("Bytes of artwork: ${currentArtwork.toBytes()}")
                     tag.deleteArtworkField();
                     artwork.binaryData = currentArtwork.toBytes()
                     tag.setField(artwork)
@@ -42,8 +33,6 @@ class MusicFileUpdater {
                     println("MUSIC FILE UPDATER: Exception while writing cover: ${e.localizedMessage}")
                 }
             }
-
-            println("New name: ${tag.getFirst(FieldKey.TITLE)}")
 
             audioFile.commit()
 

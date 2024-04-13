@@ -21,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -78,7 +79,7 @@ fun AllMusicsComposable(
                     Icon(
                         modifier = Modifier
                             .padding(start = Constants.Spacing.medium)
-                            .size(Constants.ImageSize.medium)
+                            .size(30.dp)
                             .clickable {
                                 if (musicState.musics.isNotEmpty()) {
                                     coroutineScope

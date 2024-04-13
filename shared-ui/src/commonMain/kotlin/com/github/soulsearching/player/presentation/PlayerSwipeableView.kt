@@ -734,8 +734,8 @@ fun PlayerDraggableView(
 
             PlayerPanelView(
                 maxHeight = maxHeight,
-                coverList = coverList,
                 musicListDraggableState = musicListDraggableState,
+                playerState = state,
                 onSelectedMusic = { selectedMusic ->
                     coroutineScope.launch {
                         selectedMusicId = selectedMusic.musicId
@@ -746,12 +746,15 @@ fun PlayerDraggableView(
                         )
                     }
                 },
-                playerState = state,
+                coverList = coverList,
                 onRetrieveLyrics = {
                     playerViewModel.handler.onEvent(
                         PlayerEvent.GetLyrics
                     )
-                }
+                },
+                secondaryColor = contentColor,
+                contentColor = textColor,
+                subTextColor = subTextColor
             )
         }
     }

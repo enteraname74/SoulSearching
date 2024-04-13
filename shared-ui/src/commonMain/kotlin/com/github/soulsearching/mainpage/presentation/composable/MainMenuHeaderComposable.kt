@@ -10,12 +10,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.github.soulsearching.Constants
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -37,31 +39,31 @@ fun MainMenuHeaderComposable(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = Modifier
-                .size(Constants.ImageSize.medium)
-                .clickable {
-                    settingsAction()
-                },
-            imageVector = Icons.Rounded.Settings,
-            contentDescription = strings.settingsAccessButton,
-            tint = SoulSearchingColorTheme.colorScheme.onPrimary
-        )
+        IconButton(
+            onClick = settingsAction
+        ) {
+            Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = Icons.Rounded.Settings,
+                contentDescription = strings.settingsAccessButton,
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary
+            )
+        }
         Text(
             text = strings.appName,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
-        Icon(
-            modifier = Modifier
-                .size(Constants.ImageSize.medium)
-                .clickable {
-                    searchAction()
-                },
-            imageVector = Icons.Rounded.Search,
-            contentDescription = strings.shuffleButton,
-            tint = SoulSearchingColorTheme.colorScheme.onPrimary
-        )
+        IconButton(
+            onClick = searchAction
+        ) {
+            Icon(
+                modifier = Modifier.size(30.dp),
+                imageVector = Icons.Rounded.Search,
+                contentDescription = strings.shuffleButton,
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary
+            )
+        }
     }
 }

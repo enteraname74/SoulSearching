@@ -180,11 +180,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            println("START FINISH")
             playbackManager.stopPlayback(resetPlayedList = false)
             unloadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
             loadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
-            println("END FINISH")
         }
     }
 }

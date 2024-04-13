@@ -42,8 +42,7 @@ actual fun ModifyMusicScreenView(
         }
 
     val resultWriteFileLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            println("GOT RESULT FROM INTENT: ${result.resultCode}")
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ ->
             /*
                We accept the finish action even if the user doesn't want to write the file modification on the device (it will
                just not do it then)
@@ -90,13 +89,10 @@ actual fun ModifyMusicScreenView(
     fun acceptWriteFile() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val mediaId = musicPathToMediaId(musicPath = state.modifiedMusicInformation.path)
-            println("MEDIA ID: $mediaId")
             val musicFileUri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.getContentUri("external"),
                 mediaId
             )
-
-            println("Music uri: $musicFileUri")
 
             val intent = MediaStore.createWriteRequest(
                 context.contentResolver,
@@ -105,7 +101,6 @@ actual fun ModifyMusicScreenView(
             val intentSenderRequest = IntentSenderRequest.Builder(intent.intentSender).build()
             resultWriteFileLauncher.launch(intentSenderRequest)
         } else {
-            println("ELSE")
             modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
             finishAction()
         }
