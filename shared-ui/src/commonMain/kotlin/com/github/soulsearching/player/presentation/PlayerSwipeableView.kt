@@ -66,7 +66,7 @@ import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
+import com.github.soulsearching.playerpanel.presentation.PlayerPanelView
 import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
@@ -732,21 +732,22 @@ fun PlayerDraggableView(
                 }
             }
 
-            PlayerMusicListView(
+            PlayerPanelView(
                 maxHeight = maxHeight,
                 coverList = coverList,
                 musicListDraggableState = musicListDraggableState,
-                playedList = state.playedList
-            ) { selectedMusic ->
-                coroutineScope.launch {
-                    selectedMusicId = selectedMusic.musicId
-                    playerViewModel.handler.onEvent(
-                        PlayerEvent.SetMusicBottomSheetVisibility(
-                            isShown = true
+                playedList = state.playedList,
+                onSelectedMusic = { selectedMusic ->
+                    coroutineScope.launch {
+                        selectedMusicId = selectedMusic.musicId
+                        playerViewModel.handler.onEvent(
+                            PlayerEvent.SetMusicBottomSheetVisibility(
+                                isShown = true
+                            )
                         )
-                    )
+                    }
                 }
-            }
+            )
         }
     }
 }

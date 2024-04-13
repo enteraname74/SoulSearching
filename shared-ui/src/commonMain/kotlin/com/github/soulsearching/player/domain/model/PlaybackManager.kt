@@ -563,6 +563,12 @@ abstract class PlaybackManager(
      */
     open fun setAndPlayMusic(music: Music) {
         currentMusic = music
+
+        settings.setInt(
+            key = SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY,
+            value = playedList.indexOfFirst { it.musicId == music.musicId }
+        )
+
         player.setMusic(music)
         player.launchMusic()
         CoroutineScope(Dispatchers.IO).launch {

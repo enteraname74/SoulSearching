@@ -17,6 +17,8 @@ object EnStrings : Strings {
     override val favorite = "Favorites"
     override val missingPermissions = "You must accept all permissions required by the application for it to work properly."
     override val playedList = "Played list"
+    override val currentSong = "Current song"
+    override val lyrics = "Lyrics"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."

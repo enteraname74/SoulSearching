@@ -15,7 +15,6 @@ import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistVi
 import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicViewModelHandler
 import com.github.soulsearching.modifyelement.modifyplaylist.domain.ModifyPlaylistViewModelHandler
 import com.github.soulsearching.domain.viewmodel.handler.NavigationViewModelHandler
-import com.github.soulsearching.playedlist.domain.PlayerMusicListViewModelHandler
 import com.github.soulsearching.player.domain.PlayerViewModelHandler
 import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumViewModelHandler
 import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistViewModelHandler

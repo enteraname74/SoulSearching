@@ -17,6 +17,8 @@ object FrStrings : Strings {
     override val favorite = "Favoris"
     override val missingPermissions = "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
     override val playedList = "Liste jouée"
+    override val currentSong = "Musique courante"
+    override val lyrics = "Paroles"
 
     override val completeApplicationTitle = "Une application de musique complète"
     override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."

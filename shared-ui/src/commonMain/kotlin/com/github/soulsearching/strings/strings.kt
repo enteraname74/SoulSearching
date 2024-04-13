@@ -30,6 +30,8 @@ interface Strings {
     val quickAccess: String
     val missingPermissions: String
     val playedList: String
+    val currentSong: String
+    val lyrics: String
 
     val completeApplicationTitle: String
     val completeApplicationText: String
