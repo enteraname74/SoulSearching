@@ -13,6 +13,7 @@ import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.player.domain.model.LyricsFetchState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +65,8 @@ class PlayerViewModelHandler(
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalMaterialApi::class)
-    val musicListDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
+    val musicListDraggableState: SwipeableState<BottomSheetStates> =
+        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     init {
         playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
@@ -160,7 +162,15 @@ class PlayerViewModelHandler(
             CoroutineScope(Dispatchers.IO).launch {
                 _state.update {
                     it.copy(
-                        currentMusicLyrics = lyricsProvider.getLyricsOfSong(music = currentMusic)
+                        currentMusicLyrics = LyricsFetchState.FetchingLyrics
+                    )
+                }
+                val lyrics = lyricsProvider.getLyricsOfSong(music = currentMusic)
+                _state.update {
+                    it.copy(
+                        currentMusicLyrics = if (lyrics == null) LyricsFetchState.NoLyricsFound else LyricsFetchState.FoundLyrics(
+                            lyrics = lyrics
+                        )
                     )
                 }
             }

@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -156,7 +155,7 @@ fun PlayerPanelView(
                     MusicLyricsView(
                         contentColor = contentColor,
                         noLyricsColor = subTextColor,
-                        lyrics = playerState.currentMusicLyrics,
+                        lyricsState = playerState.currentMusicLyrics,
                         currentMusic = playerState.currentMusic,
                         onRetrieveLyrics = onRetrieveLyrics
                     )
@@ -173,24 +172,30 @@ fun PlayerPanelView(
          * If the panel is expanded and we click on the current tab,
          * it will close the panel.
          */
-        suspend fun onTabClicked(tabPos: Int) {
+        fun onTabClicked(tabPos: Int) {
             val currentFocusedTab = pagerState.currentPage
             val isSameTab = tabPos == currentFocusedTab
             if (isSameTab && isExpanded) {
-                musicListDraggableState.animateTo(
-                    BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationDuration.normal)
-                )
-            } else {
-                if (!isExpanded) {
+                coroutineScope.launch {
                     musicListDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
+                        BottomSheetStates.COLLAPSED,
                         tween(Constants.AnimationDuration.normal)
                     )
                 }
-                pagerState.animateScrollToPage(
-                    page = tabPos
-                )
+            } else {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(
+                        page = tabPos
+                    )
+                }
+                if (!isExpanded) {
+                    coroutineScope.launch {
+                        musicListDraggableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(Constants.AnimationDuration.normal)
+                        )
+                    }
+                }
             }
         }
 
@@ -242,9 +247,7 @@ fun PlayerPanelView(
                         contentColor = if (isSelected && isExpanded) contentColor else subTextColor,
                         isSelected = isExpanded && isSelected,
                         onSelected = {
-                            coroutineScope.launch {
-                                onTabClicked(tabPos = index)
-                            }
+                            onTabClicked(tabPos = index)
                         }
                     )
                 }

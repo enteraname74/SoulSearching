@@ -3,6 +3,7 @@ package com.github.soulsearching.player.domain
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.soulsearching.player.domain.model.LyricsFetchState
 import com.github.soulsearching.player.domain.model.PlayerMode
 
 /**
@@ -20,5 +21,5 @@ data class PlayerState(
     val isAddToPlaylistBottomSheetShown: Boolean = false,
     val isMusicBottomSheetShown: Boolean = false,
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
-    val currentMusicLyrics: String? = null
+    val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound
 )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,17 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
+import com.github.soulsearching.player.domain.model.LyricsFetchState
 import com.github.soulsearching.strings.strings
 
 @Composable
 fun MusicLyricsView(
     noLyricsColor: Color,
     contentColor: Color,
-    lyrics: String?,
+    lyricsState: LyricsFetchState,
     onRetrieveLyrics: () -> Unit,
     currentMusic: Music?
 ) {
@@ -34,15 +35,33 @@ fun MusicLyricsView(
         onRetrieveLyrics()
     }
 
-    if (lyrics != null) {
-        LyricsView(
+    when (lyricsState) {
+        LyricsFetchState.FetchingLyrics -> FetchingLyricsView(
+            contentColor = contentColor
+        )
+
+        is LyricsFetchState.FoundLyrics -> LyricsView(
             contentColor = contentColor,
             subTextColor = noLyricsColor,
-            lyrics = lyrics
+            lyrics = lyricsState.lyrics
         )
-    } else {
-        NoLyricsFoundView(
+
+        LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
             contentColor = noLyricsColor
+        )
+    }
+}
+
+@Composable
+fun FetchingLyricsView(
+    contentColor: Color
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = contentColor
         )
     }
 }
