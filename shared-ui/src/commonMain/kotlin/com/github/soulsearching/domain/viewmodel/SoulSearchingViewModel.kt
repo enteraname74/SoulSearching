@@ -134,13 +134,6 @@ interface ModifyPlaylistViewModel : ScreenModel {
 }
 
 /**
- * ViewModel for the player music list view.
- */
-interface PlayerMusicListViewModel : ScreenModel {
-    val handler: PlayerMusicListViewModelHandler
-}
-
-/**
  * ViewModel for the selected album screen.
  */
 interface SelectedAlbumViewModel : ScreenModel {

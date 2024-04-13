@@ -19,7 +19,6 @@ import com.github.soulsearching.viewmodel.ModifyArtistViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.NavigationViewModelDesktopImpl
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelDesktopImpl
@@ -150,22 +149,6 @@ actual val appModule: Module = module {
         )
     }
     single {
-        PlayerMusicListViewModelDesktopImpl(
-            playerMusicRepository = get(),
-            musicRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
-            playbackManager = get()
-        )
-    }
-    single {
         PlayerViewModelDesktopImpl(
             musicRepository = get(),
             playbackManager = get(),
@@ -258,7 +241,8 @@ actual val appModule: Module = module {
     single<PlaybackManagerDesktopImpl> {
         PlaybackManagerDesktopImpl(
             settings = get(),
-            playerMusicRepository = get()
+            playerMusicRepository = get(),
+            musicRepository = get()
         )
     }
     single<MusicFetcherDesktopImpl> {

@@ -18,7 +18,6 @@ import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumEvent
@@ -38,7 +37,6 @@ data class SelectedAlbumScreen(
     override fun Content() {
         val screenModel = getScreenModel<SelectedAlbumViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
-        val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
         val playerViewModel = getScreenModel<PlayerViewModel>()
 
         val playerDraggableState = playerViewModel.handler.playerDraggableState
@@ -48,6 +46,7 @@ data class SelectedAlbumScreen(
 
         SelectedAlbumScreenView(
             selectedAlbumViewModel = screenModel,
+            selectedAlbumId = selectedAlbumId,
             navigateToModifyAlbum = {
                 navigator.push(
                     ModifyAlbumScreen(
@@ -55,7 +54,6 @@ data class SelectedAlbumScreen(
                     )
                 )
             },
-            selectedAlbumId = selectedAlbumId,
             navigateToModifyMusic = { musicId ->
                 navigator.push(
                     ModifyMusicScreen(
@@ -68,7 +66,6 @@ data class SelectedAlbumScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
-            playerMusicListViewModel = playerMusicListViewModel,
             playerDraggableState = playerDraggableState
         )
     }
@@ -78,11 +75,10 @@ data class SelectedAlbumScreen(
 @Composable
 fun SelectedAlbumScreenView(
     selectedAlbumViewModel: SelectedAlbumViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     selectedAlbumId: String,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
-    navigateBack : () -> Unit,
+    navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
@@ -112,20 +108,20 @@ fun SelectedAlbumScreenView(
 //        }
 //    }
     PlaylistScreen(
-        navigateBack = navigateBack,
+        playlistId = state.albumWithMusics.album.albumId,
+        playlistWithMusics = state.allPlaylists,
         title = state.albumWithMusics.album.albumName,
         image = retrieveCoverMethod(state.albumWithMusics.album.coverId),
+        musics = state.albumWithMusics.musics,
         navigateToModifyPlaylist = {
             navigateToModifyAlbum(selectedAlbumId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
+        navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
-        playlistId = state.albumWithMusics.album.albumId,
-        playerMusicListViewModel = playerMusicListViewModel,
         updateNbPlayedAction = { selectedAlbumViewModel.handler.onEvent(SelectedAlbumEvent.AddNbPlayed(it)) },
         playlistType = PlaylistType.ALBUM,
-        playlistWithMusics = state.allPlaylists,
         isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
         isBottomSheetShown = state.isMusicBottomSheetShown,
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
@@ -171,7 +167,6 @@ fun SelectedAlbumScreenView(
                     selectedPlaylistsIds = selectedPlaylistsIds
                 )
             )
-        },
-        musics = state.albumWithMusics.musics
+        }
     )
 }

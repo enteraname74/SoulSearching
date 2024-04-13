@@ -18,7 +18,6 @@ import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
 import com.github.soulsearching.elementpage.playlistpage.domain.SelectedPlaylistEvent
@@ -39,7 +38,6 @@ data class SelectedPlaylistScreen(
     override fun Content() {
         val screenModel = getScreenModel<SelectedPlaylistViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
-        val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
 
         val playerViewModel = getScreenModel<PlayerViewModel>()
         val playerDraggableState = playerViewModel.handler.playerDraggableState
@@ -49,14 +47,6 @@ data class SelectedPlaylistScreen(
 
         SelectedPlaylistScreenView(
             selectedPlaylistViewModel = screenModel,
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
-                    )
-                )
-            },
-            selectedPlaylistId = selectedPlaylistId,
             navigateToModifyPlaylist = {
                 navigator.push(
                     ModifyPlaylistScreen(
@@ -64,13 +54,20 @@ data class SelectedPlaylistScreen(
                     )
                 )
             },
+            selectedPlaylistId = selectedPlaylistId,
+            navigateToModifyMusic = { musicId ->
+                navigator.push(
+                    ModifyMusicScreen(
+                        selectedMusicId = musicId
+                    )
+                )
+            },
             navigateBack = {
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
             },
-            playerDraggableState = playerDraggableState,
-            playerMusicListViewModel = playerMusicListViewModel,
-            retrieveCoverMethod = allImagesViewModel.handler::getImageCover
+            retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
+            playerDraggableState = playerDraggableState
         )
     }
 
@@ -80,7 +77,6 @@ data class SelectedPlaylistScreen(
 @Composable
 fun SelectedPlaylistScreenView(
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyPlaylist: (String) -> Unit,
     selectedPlaylistId: String,
     navigateToModifyMusic: (String) -> Unit,
@@ -104,17 +100,18 @@ fun SelectedPlaylistScreenView(
     val state by selectedPlaylistViewModel.handler.state.collectAsState()
 
     PlaylistScreen(
-        navigateBack = navigateBack,
+        playlistId = state.playlistWithMusics?.playlist?.playlistId,
+        playlistWithMusics = state.allPlaylists,
         title = state.playlistWithMusics?.playlist?.name ?: "",
         image = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
+        musics = state.playlistWithMusics?.musics ?: emptyList(),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
+        navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
-        playlistId = state.playlistWithMusics?.playlist?.playlistId,
-        playerMusicListViewModel = playerMusicListViewModel,
         updateNbPlayedAction = {
             selectedPlaylistViewModel.handler.onEvent(
                 SelectedPlaylistEvent.AddNbPlayed(
@@ -123,7 +120,6 @@ fun SelectedPlaylistScreenView(
             )
         },
         playlistType = PlaylistType.PLAYLIST,
-        playlistWithMusics = state.allPlaylists,
         isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
         isBottomSheetShown = state.isMusicBottomSheetShown,
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
@@ -187,7 +183,6 @@ fun SelectedPlaylistScreenView(
                     selectedPlaylistsIds = selectedPlaylistsIds
                 )
             )
-        },
-        musics = state.playlistWithMusics?.musics ?: emptyList()
+        }
     )
 }

@@ -31,8 +31,6 @@ import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.viewmodel.ModifyMusicViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.ModifyPlaylistViewModel
 import com.github.soulsearching.viewmodel.ModifyPlaylistViewModelAndroidImpl
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
-import com.github.soulsearching.viewmodel.PlayerMusicListViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SelectedAlbumViewModel
@@ -144,22 +142,6 @@ actual val appModule = module {
         ModifyPlaylistViewModelAndroidImpl(
             playlistRepository = get(),
             imageCoverRepository = get(),
-        )
-    }
-    single<PlayerMusicListViewModel> {
-        PlayerMusicListViewModelAndroidImpl(
-            playerMusicRepository = get(),
-            musicRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
-            playbackManager = get()
         )
     }
     single<PlayerViewModel> {

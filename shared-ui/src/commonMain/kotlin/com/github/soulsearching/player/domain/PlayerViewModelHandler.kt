@@ -61,6 +61,9 @@ class PlayerViewModelHandler(
     val playerDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
+    @OptIn(ExperimentalMaterialApi::class)
+    val musicListDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
+
     init {
         playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
             override fun onPlayedListUpdated(playedList: List<Music>) {

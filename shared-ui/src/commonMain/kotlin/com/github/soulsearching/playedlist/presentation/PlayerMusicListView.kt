@@ -45,10 +45,8 @@ import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
-import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
@@ -60,14 +58,11 @@ import kotlin.math.roundToInt
 fun PlayerMusicListView(
     maxHeight: Float,
     coverList: ArrayList<ImageCover>,
-    navigateToModifyMusic: (Music) -> Unit,
-    musicState: MainPageState,
-    onMusicEvent: (MusicEvent) -> Unit,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
-    playedList: List<Music>
+    playedList: List<Music>,
+    onSelectedMusic: (Music) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
@@ -128,34 +123,6 @@ fun PlayerMusicListView(
         tween(Constants.AnimationDuration.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_MUSIC_LIST_VIEW"
     )
-
-//    MusicBottomSheetEvents(
-//        navigateToModifyMusic = { path ->
-//            coroutineScope.launch {
-//                musicListDraggableState.animateTo(
-//                    BottomSheetStates.COLLAPSED,
-//                    tween(Constants.AnimationDuration.normal)
-//                )
-//            }.invokeOnCompletion {
-//                coroutineScope.launch {
-//                    playerDraggableState.animateTo(
-//                        BottomSheetStates.MINIMISED,
-//                        tween(Constants.AnimationDuration.normal)
-//                    )
-//                }.invokeOnCompletion {
-//                    navigateToModifyMusic(path)
-//                }
-//            }
-//        },
-//        musicBottomSheetState = MusicBottomSheetState.PLAYER,
-//        playerMusicListViewModel = playerMusicListViewModel,
-//        playerDraggableState = playerDraggableState,
-//        primaryColor = primaryColor,
-//        onPrimaryColor = textColor,
-//        secondaryColor = secondaryColor,
-//        onSecondaryColor = textColor,
-//
-//    )
 
     Box(
         modifier = Modifier
@@ -238,7 +205,7 @@ fun PlayerMusicListView(
                                 }.invokeOnCompletion {
                                     playbackManager.setCurrentPlaylistAndMusic(
                                         music = music,
-                                        musicList = musicState.musics,
+                                        musicList = playedList,
                                         playlistId = playbackManager.playedListId,
                                         isMainPlaylist = playbackManager.isMainPlaylist
                                     )
@@ -246,16 +213,7 @@ fun PlayerMusicListView(
                             },
                             onLongClick = {
                                 coroutineScope.launch {
-                                    onMusicEvent(
-                                        MusicEvent.SetSelectedMusic(
-                                            elt
-                                        )
-                                    )
-                                    onMusicEvent(
-                                        MusicEvent.BottomSheet(
-                                            isShown = true
-                                        )
-                                    )
+                                    onSelectedMusic(elt)
                                 }
                             },
                             musicCover = coverList.find { it.coverId == elt.coverId }?.cover,

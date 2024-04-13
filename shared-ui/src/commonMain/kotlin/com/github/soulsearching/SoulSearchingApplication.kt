@@ -25,7 +25,6 @@ import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
@@ -46,17 +45,14 @@ fun SoulSearchingApplication(
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
     val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
     val playerViewModel = injectElement<PlayerViewModel>()
-    val playerMusicListViewModel = injectElement<PlayerMusicListViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val musicState by allMusicsViewModel.handler.state.collectAsState()
-    val playerMusicListState by playerMusicListViewModel.handler.state.collectAsState()
 
     val coversState by allImageCoversViewModel.handler.state.collectAsState()
 
     val playerDraggableState = playerViewModel.handler.playerDraggableState
-    val playerState by playerViewModel.handler.state.collectAsState()
-    val musicListDraggableState = playerMusicListViewModel.handler.musicListDraggableState
+    val musicListDraggableState = playerViewModel.handler.musicListDraggableState
 
     if (coversState.covers.isNotEmpty() && !mainActivityViewModel.handler.cleanImagesLaunched) {
         LaunchedEffect("Covers check") {
@@ -121,8 +117,7 @@ fun SoulSearchingApplication(
 
         if (!hasLastPlayedMusicsBeenFetched) {
             LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                val playerSavedMusics =
-                    playerMusicListViewModel.handler.getPlayerMusicList()
+                val playerSavedMusics = playbackManager.getSavedPlayedList()
                 if (playerSavedMusics.isNotEmpty()) {
                     playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                     coroutineScope.launch {
@@ -151,7 +146,6 @@ fun SoulSearchingApplication(
         PlayerDraggableView(
             maxHeight = maxHeight,
             draggableState = playerDraggableState,
-            playerMusicListViewModel = playerMusicListViewModel,
             retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover,
             musicListDraggableState = musicListDraggableState,
             navigateToAlbum = { albumId ->
@@ -178,8 +172,7 @@ fun SoulSearchingApplication(
                 )
             },
             playerViewModel = playerViewModel,
-            coverList = coversState.covers,
-            musicState = playerMusicListState
+            coverList = coversState.covers
         )
     }
 }

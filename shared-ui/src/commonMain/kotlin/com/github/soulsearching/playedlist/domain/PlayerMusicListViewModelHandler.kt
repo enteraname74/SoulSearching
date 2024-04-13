@@ -50,10 +50,6 @@ class PlayerMusicListViewModelHandler(
     private val settings: SoulSearchingSettings,
     playbackManager: PlaybackManager
 ) : ViewModelHandler {
-    private var job: Job? = null
-
-    @OptIn(ExperimentalMaterialApi::class)
-    val musicListDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     private var _playerMusicList: StateFlow<List<PlayerWithMusicItem>> =
         playerMusicRepository.getAllPlayerMusicsAsFlow()
@@ -74,44 +70,4 @@ class PlayerMusicListViewModelHandler(
         SharingStarted.WhileSubscribed(5000),
         MainPageState()
     )
-
-//    private val musicEventHandler = MusicEventHandler(
-//        privateState = _state,
-//        publicState = state,
-//        musicRepository = musicRepository,
-//        playlistRepository = playlistRepository,
-//        albumRepository = albumRepository,
-//        artistRepository = artistRepository,
-//        musicPlaylistRepository = musicPlaylistRepository,
-//        musicAlbumRepository = musicAlbumRepository,
-//        musicArtistRepository = musicArtistRepository,
-//        albumArtistRepository = albumArtistRepository,
-//        sortType = _sortType,
-//        sortDirection = _sortDirection,
-//        settings = settings,
-//        playbackManager = playbackManager
-//    )
-
-    /**
-     * Retrieve the player music list from the database.
-     */
-    suspend fun getPlayerMusicList(): ArrayList<Music> {
-        val playerWithMusics = playerMusicRepository.getAllPlayerMusics()
-
-        return playerWithMusics.filter { it.music != null }.map { it.music!! } as ArrayList<Music>
-    }
-
-    /**
-     * Reset the player music list to the database.
-     */
-    fun resetPlayerMusicList() {
-
-    }
-
-    /**
-     * Manage music events.
-     */
-    fun onMusicEvent(event: MusicEvent) {
-//        musicEventHandler.handleEvent(event)
-    }
 }

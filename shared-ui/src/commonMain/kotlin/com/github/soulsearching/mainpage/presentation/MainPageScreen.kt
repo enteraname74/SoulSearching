@@ -49,7 +49,6 @@ import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllQuickAccessViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
@@ -96,7 +95,6 @@ class MainPageScreen : Screen {
         val allAlbumsViewModel = getScreenModel<AllAlbumsViewModel>()
         val allArtistsViewModel = getScreenModel<AllArtistsViewModel>()
         val allImageCoversViewModel = getScreenModel<AllImageCoversViewModel>()
-        val playerMusicListViewModel = getScreenModel<PlayerMusicListViewModel>()
         val allQuickAccessViewModel = getScreenModel<AllQuickAccessViewModel>()
         val playerViewModel = getScreenModel<PlayerViewModel>()
 
@@ -115,7 +113,6 @@ class MainPageScreen : Screen {
             allAlbumsViewModel = allAlbumsViewModel,
             allArtistsViewModel = allArtistsViewModel,
             allImageCoversViewModel = allImageCoversViewModel,
-            playerMusicListViewModel = playerMusicListViewModel,
             navigateToPlaylist = { playlistId ->
                 navigator.push(
                     SelectedPlaylistScreen(selectedPlaylistId = playlistId)
@@ -183,7 +180,6 @@ fun MainPageScreenView(
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
     allImageCoversViewModel: AllImageCoversViewModel,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,

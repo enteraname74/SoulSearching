@@ -45,7 +45,6 @@ import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
@@ -58,7 +57,6 @@ import java.util.UUID
 fun PlaylistScreen(
     playlistId: UUID?,
     playlistWithMusics: List<PlaylistWithMusics>,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     title: String,
     image: ImageBitmap?,
     musics: List<Music>,
@@ -196,34 +194,33 @@ fun PlaylistScreen(
                         playlistType = playlistType,
                     )
                     MusicList(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f),
                         selectedMusic = musics.find { it.musicId == selectedMusicId },
                         onSelectMusic = {
                             selectedMusicId = it.musicId
                         },
-                        playerMusicListViewModel = playerMusicListViewModel,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        retrieveCoverMethod = { retrieveCoverMethod(it) },
-                        playlistId = playlistId,
-                        musicBottomSheetState = musicBottomSheetState,
-                        playerDraggableState = playerDraggableState,
-                        updateNbPlayedAction = updateNbPlayedAction,
                         musics = musics,
                         playlistsWithMusics = playlistWithMusics,
+                        playlistId = playlistId,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,
                         isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
                         isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                        onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
                         onSetBottomSheetVisibility = onSetBottomSheetVisibility,
+                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
                         onDeleteMusic = onDeleteMusic,
                         onToggleQuickAccessState = onToggleQuickAccessState,
-                        onRemoveFromPlaylist = onRemoveFromPlaylist
+                        onRemoveFromPlaylist = onRemoveFromPlaylist,
+                        onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
+                        navigateToModifyMusic = navigateToModifyMusic,
+                        retrieveCoverMethod = { retrieveCoverMethod(it) },
+                        updateNbPlayedAction = updateNbPlayedAction,
+                        musicBottomSheetState = musicBottomSheetState,
+                        playerDraggableState = playerDraggableState
                     )
                 }
             }

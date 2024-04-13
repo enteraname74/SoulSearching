@@ -20,7 +20,6 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -34,7 +33,7 @@ fun MusicList(
     musics: List<Music>,
     playlistsWithMusics: List<PlaylistWithMusics>,
     playlistId: UUID?,
-    isDeleteMusicDialogShown : Boolean,
+    isDeleteMusicDialogShown: Boolean,
     isBottomSheetShown: Boolean,
     isAddToPlaylistBottomSheetShown: Boolean,
     isRemoveFromPlaylistDialogShown: Boolean = false,
@@ -46,7 +45,6 @@ fun MusicList(
     onToggleQuickAccessState: (Music) -> Unit,
     onRemoveFromPlaylist: (Music) -> Unit = {},
     onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     navigateToModifyMusic: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     isMainPlaylist: Boolean = false,

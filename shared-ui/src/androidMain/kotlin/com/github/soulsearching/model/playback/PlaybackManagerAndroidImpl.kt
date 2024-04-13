@@ -96,8 +96,8 @@ class PlaybackManagerAndroidImpl(
     }
 
 
-    override fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
-        super.initializePlayerFromSavedList(savedMusicList)
+    override suspend fun initializePlayerFromSavedList(savedList: List<Music>) {
+        super.initializePlayerFromSavedList(savedList)
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
         launchService()
     }

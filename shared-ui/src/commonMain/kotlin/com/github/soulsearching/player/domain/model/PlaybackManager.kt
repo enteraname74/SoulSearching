@@ -532,11 +532,21 @@ abstract class PlaybackManager(
     }
 
     /**
+     * Retrieve the player music list from the database.
+     */
+    suspend fun getSavedPlayedList(): List<Music> {
+        val playerWithMusics = playerMusicRepository.getAllPlayerMusics()
+
+        return playerWithMusics.filter { it.music != null }.map { it.music!! }
+    }
+
+    /**
      * Initialize the player and the view from a saved music list (from the last app session).
      */
-    open fun initializePlayerFromSavedList(savedMusicList: ArrayList<Music>) {
+    open suspend fun initializePlayerFromSavedList(savedList: List<Music>) {
         init()
-        setPlayerLists(savedMusicList)
+
+        setPlayerLists(savedList)
 
         val index = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY, -1)
         val position = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, 0)

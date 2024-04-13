@@ -33,7 +33,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -62,9 +65,7 @@ import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
-import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
 import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -83,7 +84,6 @@ import kotlin.math.roundToInt
 fun PlayerDraggableView(
     maxHeight: Float,
     draggableState: SwipeableState<BottomSheetStates>,
-    playerMusicListViewModel: PlayerMusicListViewModel,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
     navigateToAlbum: (String) -> Unit,
@@ -93,7 +93,6 @@ fun PlayerDraggableView(
     navigateToModifyMusic: (String) -> Unit,
     playerViewModel: PlayerViewModel,
     coverList: ArrayList<ImageCover>,
-    musicState: MainPageState,
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
@@ -231,7 +230,6 @@ fun PlayerDraggableView(
         && !draggableState.isAnimationRunning
     ) {
         playbackManager.stopPlayback()
-        playerMusicListViewModel.handler.resetPlayerMusicList()
     }
 
     val orientation = SoulSearchingContext.orientation
@@ -308,12 +306,22 @@ fun PlayerDraggableView(
                 }
             }
 
-        state.currentMusic?.let { music ->
+        var selectedMusicId by rememberSaveable {
+            mutableStateOf<UUID?>(null)
+        }
+
+        state.playedList.find { it.musicId == selectedMusicId }?.let { music ->
             MusicBottomSheetEvents(
                 selectedMusic = music,
                 playlistsWithMusics = state.playlistsWithMusics,
                 navigateToModifyMusic = { path ->
                     coroutineScope.launch {
+                        if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
+                            musicListDraggableState.animateTo(
+                                BottomSheetStates.COLLAPSED,
+                                tween(Constants.AnimationDuration.normal)
+                            )
+                        }
                         draggableState.animateTo(
                             BottomSheetStates.MINIMISED,
                             tween(Constants.AnimationDuration.normal)
@@ -448,6 +456,7 @@ fun PlayerDraggableView(
                     onLongClick = {
                         if (state.currentMusic != null) {
                             coroutineScope.launch {
+                                selectedMusicId = state.currentMusic?.musicId
                                 playerViewModel.handler.onEvent(
                                     PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
                                 )
@@ -726,16 +735,18 @@ fun PlayerDraggableView(
             PlayerMusicListView(
                 maxHeight = maxHeight,
                 coverList = coverList,
-                musicState = musicState,
-                onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
-                navigateToModifyMusic = { selectedMusic ->
-                    navigateToModifyMusic(selectedMusic.musicId.toString())
-                },
                 musicListDraggableState = musicListDraggableState,
-                playerDraggableState = draggableState,
-//            playerMusicListViewModel = playerMusicListViewModel,
                 playedList = state.playedList
-            )
+            ) { selectedMusic ->
+                coroutineScope.launch {
+                    selectedMusicId = selectedMusic.musicId
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.SetMusicBottomSheetVisibility(
+                            isShown = true
+                        )
+                    )
+                }
+            }
         }
     }
 }
