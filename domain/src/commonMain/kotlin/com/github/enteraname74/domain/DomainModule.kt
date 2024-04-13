@@ -12,6 +12,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.CheckAndDeleteVerification
+import com.github.enteraname74.domain.util.LyricsProvider
 import org.koin.dsl.module
 
 /**
@@ -64,7 +65,6 @@ val domainModule = module {
     single {
         PlaylistRepository(get())
     }
-
     single {
         CheckAndDeleteVerification(
             albumArtistDataSource = get(),
@@ -73,5 +73,8 @@ val domainModule = module {
             musicAlbumDataSource = get(),
             albumDataSource = get()
         )
+    }
+    single {
+        LyricsProvider()
     }
 }

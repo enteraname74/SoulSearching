@@ -42,6 +42,7 @@ import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.mainpage.domain.model.PagerScreen
+import com.github.soulsearching.player.domain.PlayerState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.playerpanel.presentation.composable.MusicLyricsView
 import com.github.soulsearching.playerpanel.presentation.composable.PlayerListView
@@ -58,10 +59,10 @@ fun PlayerPanelView(
     musicListDraggableState: SwipeableState<BottomSheetStates>,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
-    playedList: List<Music>,
+    playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
-    coverList: ArrayList<ImageCover>
-
+    coverList: ArrayList<ImageCover>,
+    onRetrieveLyrics: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -130,7 +131,7 @@ fun PlayerPanelView(
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     0f to BottomSheetStates.EXPANDED,
-                    (maxHeight - 200f) to BottomSheetStates.COLLAPSED,
+                    (maxHeight - 210f) to BottomSheetStates.COLLAPSED,
                 )
             )
     ) {
@@ -142,7 +143,7 @@ fun PlayerPanelView(
                     PlayerListView(
                         playbackManager = playbackManager,
                         musicListDraggableState = musicListDraggableState,
-                        playedList = playedList,
+                        playedList = playerState.playedList,
                         onSelectedMusic = onSelectedMusic,
                         coverList = coverList,
                         contentColor = contentColor
@@ -152,7 +153,13 @@ fun PlayerPanelView(
             PagerScreen(
                 title = strings.lyrics,
                 screen = {
-                    MusicLyricsView()
+                    MusicLyricsView(
+                        contentColor = contentColor,
+                        noLyricsColor = subTextColor,
+                        lyrics = playerState.currentMusicLyrics,
+                        currentMusic = playerState.currentMusic,
+                        onRetrieveLyrics = onRetrieveLyrics
+                    )
                 }
             )
         )

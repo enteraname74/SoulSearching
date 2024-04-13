@@ -25,6 +25,7 @@ kotlin = "1.9.22"
 kotlinx-serialization = "1.6.3"
 koin = "3.5.3"
 koin-compose = "1.1.2"
+ktor = "2.3.10"
 media = "1.7.0"
 multiplatform-settings = "1.1.1"
 org-jetbrains-kotlin-jvm = "1.9.22"
@@ -58,6 +59,12 @@ koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", versi
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
@@ -79,3 +86,4 @@ accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompan
 voyager = ["voyager-koin", "voyager-navigator", "voyager-screen-model", "voyager-transitions"]
 exposed = ["exposed-core", "exposed-crypt", "exposed-dao", "exposed-java-time", "exposed-jdbc"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
+ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-serialization-kotlinx-json"]

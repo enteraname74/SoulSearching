@@ -2,6 +2,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 kotlin {
@@ -17,6 +18,8 @@ kotlin {
                 implementation(libs.coroutines.core.jvm)
                 implementation(compose.ui)
                 implementation(libs.jaudiotagger)
+
+                implementation(libs.bundles.ktor)
             }
         }
     }

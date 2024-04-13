@@ -150,7 +150,8 @@ actual val appModule = module {
             playbackManager = get(),
             colorThemeManager = get(),
             musicPlaylistRepository = get(),
-            playlistRepository = get()
+            playlistRepository = get(),
+            lyricsProvider = get()
         )
     }
     single<SelectedAlbumViewModel> {

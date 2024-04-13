@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.domain.util.LyricsProvider
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.player.domain.PlayerViewModelHandler
@@ -20,7 +21,8 @@ class PlayerViewModelAndroidImpl(
     playbackManager: PlaybackManager,
     musicPlaylistRepository: MusicPlaylistRepository,
     playlistRepository: PlaylistRepository,
-    colorThemeManager: ColorThemeManager
+    colorThemeManager: ColorThemeManager,
+    lyricsProvider: LyricsProvider
 ): PlayerViewModel, ViewModel() {
     override val handler: PlayerViewModelHandler = PlayerViewModelHandler(
         musicRepository = musicRepository,
@@ -28,6 +30,7 @@ class PlayerViewModelAndroidImpl(
         colorThemeManager = colorThemeManager,
         musicPlaylistRepository = musicPlaylistRepository,
         playlistRepository = playlistRepository,
-        coroutineScope = viewModelScope
+        coroutineScope = viewModelScope,
+        lyricsProvider = lyricsProvider
     )
 }

@@ -19,6 +19,8 @@ object EnStrings : Strings {
     override val playedList = "Played list"
     override val currentSong = "Current song"
     override val lyrics = "Lyrics"
+    override val noLyricsFound = "No lyrics found for this song"
+    override val lyricsProvider = "Lyrics proposed by Lyrist"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."

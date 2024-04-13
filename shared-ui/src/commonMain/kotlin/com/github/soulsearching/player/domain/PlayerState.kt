@@ -19,5 +19,6 @@ data class PlayerState(
     val isDeleteMusicDialogShown: Boolean = false,
     val isAddToPlaylistBottomSheetShown: Boolean = false,
     val isMusicBottomSheetShown: Boolean = false,
-    val playlistsWithMusics: List<PlaylistWithMusics> = emptyList()
+    val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
+    val currentMusicLyrics: String? = null
 )

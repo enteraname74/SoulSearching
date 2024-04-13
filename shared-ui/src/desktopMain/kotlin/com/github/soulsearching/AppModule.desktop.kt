@@ -152,7 +152,10 @@ actual val appModule: Module = module {
         PlayerViewModelDesktopImpl(
             musicRepository = get(),
             playbackManager = get(),
-            colorThemeManager = get()
+            colorThemeManager = get(),
+            musicPlaylistRepository = get(),
+            playlistRepository = get(),
+            lyricsProvider = get()
         )
     }
     single {

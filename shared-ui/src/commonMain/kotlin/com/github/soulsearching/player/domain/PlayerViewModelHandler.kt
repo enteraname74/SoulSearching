@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.domain.util.LyricsProvider
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
@@ -30,9 +31,10 @@ import java.util.UUID
 class PlayerViewModelHandler(
     private val musicRepository: MusicRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
-    private val playlistRepository: PlaylistRepository,
+    playlistRepository: PlaylistRepository,
     private val playbackManager: PlaybackManager,
     private val colorThemeManager: ColorThemeManager,
+    private val lyricsProvider: LyricsProvider,
     coroutineScope: CoroutineScope
 ) : ViewModelHandler {
     private val _state = MutableStateFlow(PlayerState())
@@ -128,6 +130,7 @@ class PlayerViewModelHandler(
     fun onEvent(event: PlayerEvent) {
         when (event) {
             PlayerEvent.ToggleFavoriteState -> toggleFavoriteState()
+            PlayerEvent.GetLyrics -> setLyricsOfCurrentMusic()
             is PlayerEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
             is PlayerEvent.SetAddToPlaylistBottomSheetVisibility -> showOrHideAddToPlaylistBottomSheet(
                 isShown = event.isShown
@@ -146,6 +149,21 @@ class PlayerViewModelHandler(
                 musicId = event.musicId,
                 selectedPlaylistsIds = event.selectedPlaylistsIds
             )
+        }
+    }
+
+    /**
+     * Set the lyrics of the current music.
+     */
+    private fun setLyricsOfCurrentMusic() {
+        _state.value.currentMusic?.let { currentMusic ->
+            CoroutineScope(Dispatchers.IO).launch {
+                _state.update {
+                    it.copy(
+                        currentMusicLyrics = lyricsProvider.getLyricsOfSong(music = currentMusic)
+                    )
+                }
+            }
         }
     }
 

@@ -32,6 +32,8 @@ interface Strings {
     val playedList: String
     val currentSong: String
     val lyrics: String
+    val noLyricsFound: String
+    val lyricsProvider: String
 
     val completeApplicationTitle: String
     val completeApplicationText: String

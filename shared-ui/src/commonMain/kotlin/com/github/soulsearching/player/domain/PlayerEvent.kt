@@ -29,4 +29,6 @@ sealed interface PlayerEvent {
     data class SetIsPlaying(val isPlaying: Boolean): PlayerEvent
 
     data class SetCurrentMusicCover(val cover: ImageBitmap?): PlayerEvent
+
+    data object GetLyrics: PlayerEvent
 }

@@ -736,7 +736,6 @@ fun PlayerDraggableView(
                 maxHeight = maxHeight,
                 coverList = coverList,
                 musicListDraggableState = musicListDraggableState,
-                playedList = state.playedList,
                 onSelectedMusic = { selectedMusic ->
                     coroutineScope.launch {
                         selectedMusicId = selectedMusic.musicId
@@ -746,6 +745,12 @@ fun PlayerDraggableView(
                             )
                         )
                     }
+                },
+                playerState = state,
+                onRetrieveLyrics = {
+                    playerViewModel.handler.onEvent(
+                        PlayerEvent.GetLyrics
+                    )
                 }
             )
         }
