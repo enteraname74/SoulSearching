@@ -12,18 +12,13 @@ import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.mainpage.domain.state.QuickAccessState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -65,6 +60,64 @@ class PlayerViewModelHandler(
     @OptIn(ExperimentalMaterialApi::class)
     val playerDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
+
+    init {
+        playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
+            override fun onPlayedListUpdated(playedList: List<Music>) {
+                super.onPlayedListUpdated(playedList)
+                onEvent(
+                    PlayerEvent.SetPlayedList(
+                        playedList = playedList
+                    )
+                )
+            }
+
+            override fun onPlayerModeChanged(playerMode: PlayerMode) {
+                super.onPlayerModeChanged(playerMode)
+                onEvent(
+                    PlayerEvent.SetPlayerMode(
+                        playerMode = playerMode
+                    )
+                )
+            }
+
+            override fun onCurrentPlayedMusicChanged(music: Music?) {
+                super.onCurrentPlayedMusicChanged(music)
+                onEvent(
+                    PlayerEvent.SetCurrentMusic(
+                        currentMusic = music
+                    )
+                )
+            }
+
+            override fun onCurrentMusicPositionChanged(position: Int) {
+                super.onCurrentMusicPositionChanged(position)
+                onEvent(
+                    PlayerEvent.SetCurrentMusicPosition(
+                        position = position
+                    )
+                )
+            }
+
+            override fun onPlayingStateChanged(isPlaying: Boolean) {
+                super.onPlayingStateChanged(isPlaying)
+                onEvent(
+                    PlayerEvent.SetIsPlaying(
+                        isPlaying = isPlaying
+                    )
+                )
+            }
+
+            override fun onCurrentMusicCoverChanged(cover: ImageBitmap?) {
+                super.onCurrentMusicCoverChanged(cover)
+                onEvent(
+                    PlayerEvent.SetCurrentMusicCover(
+                        cover = cover
+                    )
+                )
+            }
+        })
+    }
 
     /**
      * Manage music events.

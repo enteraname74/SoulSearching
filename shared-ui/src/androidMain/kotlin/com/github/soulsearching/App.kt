@@ -12,12 +12,12 @@ import org.koin.core.context.startKoin
 
 class App : Application() {
     override fun onCreate() {
-        super.onCreate()
         createNotificationChannel()
         startKoin {
             androidContext(applicationContext)
             modules(domainModule, appModule, localAndroidModule, commonModule)
         }
+        super.onCreate()
     }
 
     /**

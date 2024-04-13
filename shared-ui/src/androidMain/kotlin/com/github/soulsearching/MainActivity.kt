@@ -15,9 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.domainModule
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.localAndroidModule
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
@@ -31,12 +29,11 @@ import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.model.playback.PlayerService
-import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.player.domain.model.PlayerMode
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
+import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
@@ -49,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     private val colorThemeManager: ColorThemeManager by inject()
     private val settings: SoulSearchingSettings by inject()
     private val mainActivityViewModel: MainActivityViewModel by inject()
-    private val playerViewModel: PlayerViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
 
@@ -87,61 +83,6 @@ class MainActivity : AppCompatActivity() {
         TagOptionSingleton.getInstance().isAndroid = true
 
         val playbackManager by inject<PlaybackManager>()
-        playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
-            override fun onPlayedListUpdated(playedList: List<Music>) {
-                super.onPlayedListUpdated(playedList)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetPlayedList(
-                        playedList = playedList
-                    )
-                )
-            }
-
-            override fun onPlayerModeChanged(playerMode: PlayerMode) {
-                super.onPlayerModeChanged(playerMode)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetPlayerMode(
-                        playerMode = playerMode
-                    )
-                )
-            }
-
-            override fun onCurrentPlayedMusicChanged(music: Music?) {
-                super.onCurrentPlayedMusicChanged(music)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetCurrentMusic(
-                        currentMusic = music
-                    )
-                )
-            }
-
-            override fun onCurrentMusicPositionChanged(position: Int) {
-                super.onCurrentMusicPositionChanged(position)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetCurrentMusicPosition(
-                        position = position
-                    )
-                )
-            }
-
-            override fun onPlayingStateChanged(isPlaying: Boolean) {
-                super.onPlayingStateChanged(isPlaying)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetIsPlaying(
-                        isPlaying = isPlaying
-                    )
-                )
-            }
-
-            override fun onCurrentMusicCoverChanged(cover: ImageBitmap?) {
-                super.onCurrentMusicCoverChanged(cover)
-                playerViewModel.handler.onEvent(
-                    PlayerEvent.SetCurrentMusicCover(
-                        cover = cover
-                    )
-                )
-            }
-        })
 
         settings.initializeSorts(
             onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
@@ -153,6 +94,7 @@ class MainActivity : AppCompatActivity() {
         with(playbackManager) {
             retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
         }
+        initializeBroadcastReceive()
 
         setContent {
             SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
@@ -160,8 +102,6 @@ class MainActivity : AppCompatActivity() {
                 SoulSearchingContext.checkIfReadPermissionGranted()
             mainActivityViewModel.handler.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
-
-            initializeBroadcastReceive()
 
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
@@ -239,7 +179,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        playbackManager.stopPlayback(resetPlayedList = false)
-        unloadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
+        if (isFinishing) {
+            println("START FINISH")
+            playbackManager.stopPlayback(resetPlayedList = false)
+            unloadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
+            loadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
+            println("END FINISH")
+        }
     }
 }
