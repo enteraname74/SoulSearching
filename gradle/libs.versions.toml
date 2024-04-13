@@ -2,7 +2,7 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.2.1"
-android-version-name = "0.3.2"
+android-version-name = "0.4.0"
 android-version-code = "11"
 android-target-sdk = "34"
 android-compile-sdk = "34"
