@@ -27,7 +27,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material.swipeable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
@@ -64,6 +64,8 @@ import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.PlayerMusicListViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
+import com.github.soulsearching.mainpage.domain.state.MainPageState
+import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
 import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
@@ -90,6 +92,8 @@ fun PlayerDraggableView(
     retrieveAlbumIdMethod: (UUID) -> UUID?,
     navigateToModifyMusic: (String) -> Unit,
     playerViewModel: PlayerViewModel,
+    coverList: ArrayList<ImageCover>,
+    musicState: MainPageState,
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
@@ -367,99 +371,120 @@ fun PlayerDraggableView(
             )
         }
 
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = backgroundColor)
                 .composed {
                     mainBoxClickableModifier
-                },
+                }
+                .align(Alignment.TopStart)
         ) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .padding(Constants.Spacing.small)
-                    .align(Alignment.TopStart)
-            ) {
-                val constraintsScope = this
-                val maxWidth = with(LocalDensity.current) {
-                    constraintsScope.maxWidth.toPx()
-                }
+            val constraintsScope = this
+            val maxWidth = with(LocalDensity.current) {
+                constraintsScope.maxWidth.toPx()
+            }
 
-                val imagePaddingStart =
-                    when (SoulSearchingContext.orientation) {
-                        ScreenOrientation.HORIZONTAL -> max(
-                            (((maxWidth * 1.5) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 15)).roundToInt().dp,
-                            Constants.Spacing.small
-                        )
-
-                        else -> max(
-                            (((maxWidth * 3.5) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 40)).roundToInt().dp,
-                            Constants.Spacing.small
-                        )
-                    }
-
-                val imagePaddingTop =
-                    when (SoulSearchingContext.orientation) {
-                        ScreenOrientation.HORIZONTAL -> max(
-                            (((maxHeight * 7) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 5)).roundToInt().dp,
-                            Constants.Spacing.small
-                        )
-
-                        else -> max(
-                            (((maxHeight * 5) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 15)).roundToInt().dp,
-                            Constants.Spacing.small
-                        )
-                    }
-
-
-                val imageSize =
-                    when (SoulSearchingContext.orientation) {
-                        ScreenOrientation.HORIZONTAL -> max(
-                            (((maxWidth * 10) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 2)).dp,
-                            55.dp
-                        )
-
-                        else -> max(
-                            (((maxWidth * 30) / 100) - (max(
-                                draggableState.offset.value.roundToInt(),
-                                0
-                            ) / 7)).dp,
-                            55.dp
-                        )
-                    }
-
-                val imageModifier = if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
-                    Modifier.combinedClickable(
-                        onLongClick = {
-                            if (state.currentMusic != null) {
-                                coroutineScope.launch {
-                                    playerViewModel.handler.onEvent(
-                                        PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
-                                    )
-                                }
-                            }
-                        },
-                        onClick = { }
+            val imagePaddingStart =
+                when (SoulSearchingContext.orientation) {
+                    ScreenOrientation.HORIZONTAL -> max(
+                        (((maxWidth * 1.5) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 15)).roundToInt().dp,
+                        Constants.Spacing.small
                     )
-                } else {
-                    Modifier
+
+                    else -> max(
+                        (((maxWidth * 3.5) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 40)).roundToInt().dp,
+                        Constants.Spacing.small
+                    )
                 }
 
+            val imagePaddingTop =
+                when (SoulSearchingContext.orientation) {
+                    ScreenOrientation.HORIZONTAL -> max(
+                        (((maxHeight * 7) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 5)).roundToInt().dp,
+                        Constants.Spacing.small
+                    )
+
+                    else -> max(
+                        (((maxHeight * 5) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 15)).roundToInt().dp,
+                        Constants.Spacing.small
+                    )
+                }
+
+
+            val imageSize =
+                when (SoulSearchingContext.orientation) {
+                    ScreenOrientation.HORIZONTAL -> max(
+                        (((maxWidth * 10) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 2)).dp,
+                        55.dp
+                    )
+
+                    else -> max(
+                        (((maxWidth * 30) / 100) - (max(
+                            draggableState.offset.value.roundToInt(),
+                            0
+                        ) / 7)).dp,
+                        55.dp
+                    )
+                }
+
+            val imageModifier = if (draggableState.currentValue == BottomSheetStates.EXPANDED) {
+                Modifier.combinedClickable(
+                    onLongClick = {
+                        if (state.currentMusic != null) {
+                            coroutineScope.launch {
+                                playerViewModel.handler.onEvent(
+                                    PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
+                                )
+                            }
+                        }
+                    },
+                    onClick = { }
+                )
+            } else {
+                Modifier
+            }
+
+            val backImageClickableModifier =
+                if (draggableState.currentValue != BottomSheetStates.EXPANDED) {
+                    Modifier
+                } else {
+                    Modifier.clickable {
+                        coroutineScope.launch {
+                            if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
+                                musicListDraggableState.animateTo(
+                                    BottomSheetStates.COLLAPSED,
+                                    tween(Constants.AnimationDuration.normal)
+                                )
+                            }
+                            draggableState.animateTo(
+                                BottomSheetStates.MINIMISED,
+                                tween(Constants.AnimationDuration.normal)
+                            )
+                        }
+                    }
+                }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Constants.Spacing.small)
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -479,47 +504,6 @@ fun PlayerDraggableView(
                     )
                 }
 
-                val backImageClickableModifier =
-                    if (draggableState.currentValue != BottomSheetStates.EXPANDED) {
-                        Modifier
-                    } else {
-                        Modifier.clickable {
-                            coroutineScope.launch {
-                                if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
-                                    musicListDraggableState.animateTo(
-                                        BottomSheetStates.COLLAPSED,
-                                        tween(Constants.AnimationDuration.normal)
-                                    )
-                                }
-                                draggableState.animateTo(
-                                    BottomSheetStates.MINIMISED,
-                                    tween(Constants.AnimationDuration.normal)
-                                )
-                            }
-                        }
-                    }
-
-                val showMusicListModifier =
-                    if (draggableState.currentValue != BottomSheetStates.EXPANDED) {
-                        Modifier
-                    } else {
-                        Modifier.clickable {
-                            coroutineScope.launch {
-                                if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
-                                    musicListDraggableState.animateTo(
-                                        BottomSheetStates.COLLAPSED,
-                                        tween(Constants.AnimationDuration.normal)
-                                    )
-                                } else {
-                                    musicListDraggableState.animateTo(
-                                        BottomSheetStates.EXPANDED,
-                                        tween(Constants.AnimationDuration.normal)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -527,27 +511,22 @@ fun PlayerDraggableView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Image(
                             imageVector = Icons.Rounded.KeyboardArrowDown,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(Constants.ImageSize.medium)
-                                .composed { backImageClickableModifier },
+                                .composed { backImageClickableModifier }
+                                .align(Alignment.CenterStart),
                             colorFilter = ColorFilter.tint(textColor),
                             alpha = alphaTransition
                         )
                         Column(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(
-                                    start = Constants.Spacing.small,
-                                    end = Constants.Spacing.small
-                                ),
+                                .align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
@@ -656,17 +635,6 @@ fun PlayerDraggableView(
                                 )
                             }
                         }
-                        Image(
-                            imageVector = Icons.Rounded.QueueMusic,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(Constants.ImageSize.medium)
-                                .composed {
-                                    showMusicListModifier
-                                },
-                            colorFilter = ColorFilter.tint(textColor),
-                            alpha = alphaTransition
-                        )
                     }
 
                     when (SoulSearchingContext.orientation) {
@@ -754,6 +722,20 @@ fun PlayerDraggableView(
                     )
                 }
             }
+
+            PlayerMusicListView(
+                maxHeight = maxHeight,
+                coverList = coverList,
+                musicState = musicState,
+                onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
+                navigateToModifyMusic = { selectedMusic ->
+                    navigateToModifyMusic(selectedMusic.musicId.toString())
+                },
+                musicListDraggableState = musicListDraggableState,
+                playerDraggableState = draggableState,
+//            playerMusicListViewModel = playerMusicListViewModel,
+                playedList = state.playedList
+            )
         }
     }
 }

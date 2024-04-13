@@ -31,7 +31,6 @@ import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbum
 import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.soulsearching.mainpage.presentation.MainPageScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.soulsearching.playedlist.presentation.PlayerMusicListView
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.PlayerDraggableView
 import kotlinx.coroutines.CoroutineScope
@@ -178,25 +177,9 @@ fun SoulSearchingApplication(
                     )
                 )
             },
-            playerViewModel = playerViewModel
-        )
-
-        PlayerMusicListView(
-            maxHeight = maxHeight,
+            playerViewModel = playerViewModel,
             coverList = coversState.covers,
-            musicState = playerMusicListState,
-            onMusicEvent = playerMusicListViewModel.handler::onMusicEvent,
-            navigateToModifyMusic = { musicId ->
-                generalNavigator?.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId.toString()
-                    )
-                )
-            },
-            musicListDraggableState = musicListDraggableState,
-            playerDraggableState = playerDraggableState,
-//            playerMusicListViewModel = playerMusicListViewModel,
-            playedList = playerState.playedList
+            musicState = playerMusicListState
         )
     }
 }

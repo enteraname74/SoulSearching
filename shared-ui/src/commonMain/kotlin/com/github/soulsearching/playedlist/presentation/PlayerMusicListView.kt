@@ -25,6 +25,7 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material.swipeable
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -80,19 +81,14 @@ fun PlayerMusicListView(
         }
     }
 
-    val mainBoxClickableModifier =
-        if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
-            Modifier.clickable {
-                coroutineScope.launch {
-                    musicListDraggableState.animateTo(
-                        BottomSheetStates.COLLAPSED,
-                        tween(Constants.AnimationDuration.normal)
-                    )
-                }
-            }
-        } else {
-            Modifier
+    val mainBoxClickableModifier = Modifier.clickable {
+        coroutineScope.launch {
+            musicListDraggableState.animateTo(
+                if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) BottomSheetStates.COLLAPSED else BottomSheetStates.EXPANDED,
+                tween(Constants.AnimationDuration.normal)
+            )
         }
+    }
 
     val primaryColor: Color by animateColorAsState(
         targetValue =
@@ -175,7 +171,7 @@ fun PlayerMusicListView(
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     0f to BottomSheetStates.EXPANDED,
-                    maxHeight to BottomSheetStates.COLLAPSED,
+                    (maxHeight - 140f) to BottomSheetStates.COLLAPSED,
                 )
             )
     ) {
@@ -224,46 +220,57 @@ fun PlayerMusicListView(
                 )
             }
 
-            LazyColumn(
-                state = playerListState
-            ) {
-                items(
-                    items = playedList,
-                ) { elt ->
-                    MusicItemComposable(
-                        music = elt,
-                        onClick = { music ->
-                            coroutineScope.launch {
-                                musicListDraggableState.animateTo(
-                                    BottomSheetStates.COLLAPSED,
-                                    tween(Constants.AnimationDuration.normal)
-                                )
-                            }.invokeOnCompletion {
-                                playbackManager.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    musicList = musicState.musics,
-                                    playlistId = playbackManager.playedListId,
-                                    isMainPlaylist = playbackManager.isMainPlaylist
-                                )
-                            }
-                        },
-                        onLongClick = {
-                            coroutineScope.launch {
-                                onMusicEvent(
-                                    MusicEvent.SetSelectedMusic(
-                                        elt
+            if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
+                LazyColumn(
+                    state = playerListState
+                ) {
+                    items(
+                        items = playedList,
+                    ) { elt ->
+                        MusicItemComposable(
+                            music = elt,
+                            onClick = { music ->
+                                coroutineScope.launch {
+                                    musicListDraggableState.animateTo(
+                                        BottomSheetStates.COLLAPSED,
+                                        tween(Constants.AnimationDuration.normal)
                                     )
-                                )
-                                onMusicEvent(
-                                    MusicEvent.BottomSheet(
-                                        isShown = true
+                                }.invokeOnCompletion {
+                                    playbackManager.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        musicList = musicState.musics,
+                                        playlistId = playbackManager.playedListId,
+                                        isMainPlaylist = playbackManager.isMainPlaylist
                                     )
-                                )
-                            }
-                        },
-                        musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
-                        textColor = textColor,
-                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                                }
+                            },
+                            onLongClick = {
+                                coroutineScope.launch {
+                                    onMusicEvent(
+                                        MusicEvent.SetSelectedMusic(
+                                            elt
+                                        )
+                                    )
+                                    onMusicEvent(
+                                        MusicEvent.BottomSheet(
+                                            isShown = true
+                                        )
+                                    )
+                                }
+                            },
+                            musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
+                            textColor = textColor,
+                            isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                        )
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = textColor
                     )
                 }
             }
