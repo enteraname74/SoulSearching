@@ -26,7 +26,8 @@ class MusicFileUpdater {
             cover?.let { currentArtwork ->
                 try {
                     val artwork = ArtworkFactory.getNew()
-                    tag.deleteArtworkField();
+                    tag.deleteArtworkField()
+                    println("bytes: ${currentArtwork.toBytes()}")
                     artwork.binaryData = currentArtwork.toBytes()
                     tag.setField(artwork)
                 } catch (e: Exception) {

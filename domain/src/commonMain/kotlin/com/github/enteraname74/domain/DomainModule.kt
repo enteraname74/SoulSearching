@@ -28,7 +28,8 @@ val domainModule = module {
             artistDataSource = get(),
             albumArtistDataSource = get(),
             musicArtistDataSource = get(),
-            musicAlbumDataSource = get()
+            musicAlbumDataSource = get(),
+            imageCoverDataSource = get()
         )
     }
     single {

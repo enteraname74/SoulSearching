@@ -1,8 +1,10 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
 import com.github.enteraname74.domain.datasource.AlbumDataSource
 import com.github.enteraname74.domain.datasource.ArtistDataSource
+import com.github.enteraname74.domain.datasource.ImageCoverDataSource
 import com.github.enteraname74.domain.datasource.MusicAlbumDataSource
 import com.github.enteraname74.domain.datasource.MusicArtistDataSource
 import com.github.enteraname74.domain.datasource.MusicDataSource
@@ -11,6 +13,7 @@ import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.util.CheckAndDeleteVerification
+import com.github.enteraname74.domain.util.MusicFileUpdater
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -24,8 +27,11 @@ class AlbumRepository(
     private val albumArtistDataSource: AlbumArtistDataSource,
     private val musicAlbumDataSource: MusicAlbumDataSource,
     private val musicArtistDataSource: MusicArtistDataSource,
-    private val checkAndDeleteVerification: CheckAndDeleteVerification
+    private val imageCoverDataSource: ImageCoverDataSource,
+    private val checkAndDeleteVerification: CheckAndDeleteVerification,
 ) {
+
+    private val musicFileUpdater: MusicFileUpdater = MusicFileUpdater()
 
     /**
      * Merge two albums together.
@@ -96,6 +102,12 @@ class AlbumRepository(
         val musicsFromAlbum = musicDataSource.getAllMusicFromAlbum(
             albumId = newAlbumWithArtistInformation.album.albumId
         )
+
+        var albumCover: ImageBitmap? = null
+        newAlbumWithArtistInformation.album.coverId?.let { coverId ->
+            albumCover = imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
+        }
+
         for (music in musicsFromAlbum) {
             val newMusic = music.copy(
                 album = newAlbumWithArtistInformation.album.albumName,
@@ -103,6 +115,10 @@ class AlbumRepository(
                 artist = newAlbumWithArtistInformation.artist.artistName
             )
             musicDataSource.insertMusic(newMusic)
+            musicFileUpdater.updateMusic(
+                music = newMusic,
+                cover = albumCover
+            )
             musicArtistDataSource.updateArtistOfMusic(
                 musicId = music.musicId,
                 newArtistId = albumArtistToSave.artistId

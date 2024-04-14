@@ -27,7 +27,9 @@ class AllMusicsViewModelDesktopHandler(
     musicAlbumRepository = musicAlbumRepository,
     musicArtistRepository = musicArtistRepository,
     settings = settings,
-    musicFetcher = musicFetcher
+    musicFetcher = musicFetcher,
+    playlistRepository = playlistRepository,
+    playbackManager = playbackManager
 ) {
     override fun checkAndDeleteMusicIfNotExist() {}
 }

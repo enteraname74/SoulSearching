@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.datasource.MusicDataSource
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.MusicFileUpdater
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -24,6 +25,8 @@ class ArtistRepository(
     private val albumArtistDataSource: AlbumArtistDataSource
 ) {
 
+    private val musicFileUpdater: MusicFileUpdater = MusicFileUpdater()
+
     /**
      * Merge two artist together.
      * @param from the artist to put to the "to" artist.
@@ -37,7 +40,7 @@ class ArtistRepository(
             )
         }
 
-        // On supprime l'ancien artiste :
+        // We delete the previous artist.
         artistDataSource.deleteArtist(
             from.artist
         )
@@ -51,10 +54,15 @@ class ArtistRepository(
         artistMusics: List<Music>
     ) {
         for (music in artistMusics) {
+            val newMusicInformation = music.copy(
+                artist = newArtistName
+            )
             musicDataSource.insertMusic(
-                music.copy(
-                    artist = newArtistName
-                )
+                newMusicInformation
+            )
+            musicFileUpdater.updateMusic(
+                music = newMusicInformation,
+                cover = null
             )
         }
     }

@@ -17,7 +17,6 @@ import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicEvent
 import com.github.soulsearching.modifyelement.modifymusic.presentation.composable.ModifyMusicComposable
-import java.io.File
 
 @Composable
 actual fun ModifyMusicScreenView(
@@ -57,38 +56,13 @@ actual fun ModifyMusicScreenView(
         resultImageLauncher.launch(intent)
     }
 
-    /**
-     * Retrieve the media id from the media store of a music path.
-     */
-    fun musicPathToMediaId(musicPath: String): Long {
-        var id: Long = 0
-
-        val uri = MediaStore.Files.getContentUri("external")
-        val selection = MediaStore.Audio.Media.DATA
-        val selectionArgs = arrayOf(musicPath)
-        val projection = arrayOf(MediaStore.Audio.Media._ID)
-
-        context.contentResolver.query(
-            uri,
-            projection,
-            "$selection=?",
-            selectionArgs,
-            null
-        )?.let { cursor ->
-            while (cursor.moveToNext()) {
-                val idIndex = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
-                id = cursor.getString(idIndex).toLong()
-            }
-            cursor.close()
-        }
-
-        return id
-    }
-
 
     fun acceptWriteFile() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val mediaId = musicPathToMediaId(musicPath = state.modifiedMusicInformation.path)
+            val mediaId = AndroidUtils.musicPathToMediaId(
+                context = context,
+                musicPath = state.modifiedMusicInformation.path
+            )
             val musicFileUri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.getContentUri("external"),
                 mediaId

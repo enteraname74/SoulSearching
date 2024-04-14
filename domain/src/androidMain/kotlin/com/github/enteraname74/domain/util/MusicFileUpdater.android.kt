@@ -12,6 +12,6 @@ actual fun ImageBitmap?.toBytes(): ByteArray {
     if (this == null) return byteArrayOf()
 
     val outputStream = ByteArrayOutputStream()
-    this.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 0, outputStream)
+    this.asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
     return outputStream.toByteArray()
 }
