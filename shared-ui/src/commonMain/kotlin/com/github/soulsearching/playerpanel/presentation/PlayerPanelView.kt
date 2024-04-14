@@ -72,6 +72,7 @@ fun PlayerPanelView(
 
     SoulSearchingBackHandler(isExpanded) {
         coroutineScope.launch {
+            println("THERE")
             musicListDraggableState.animateTo(
                 BottomSheetStates.COLLAPSED,
                 tween(Constants.AnimationDuration.normal)
@@ -137,6 +138,7 @@ fun PlayerPanelView(
          * it will close the panel.
          */
         fun onTabClicked(tabPos: Int) {
+            println("CLICKED")
             val currentFocusedTab = pagerState.currentPage
             val isSameTab = tabPos == currentFocusedTab
             if (isSameTab && isExpanded) {
