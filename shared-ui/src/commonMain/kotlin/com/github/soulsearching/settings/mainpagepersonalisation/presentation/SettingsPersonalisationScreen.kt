@@ -17,7 +17,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.settings.presentation.composable.SettingsElement
 import com.github.soulsearching.settings.presentation.composable.SettingsSwitchElement
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 

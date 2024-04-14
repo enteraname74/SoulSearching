@@ -5,7 +5,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 
 /**
  * Represent the view of the modify music screen.
@@ -30,5 +32,6 @@ data class ModifyMusicScreen(private val selectedMusicId: String): Screen {
 expect fun ModifyMusicScreenView(
     modifyMusicViewModel: ModifyMusicViewModel,
     selectedMusicId: String,
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 )

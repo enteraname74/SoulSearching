@@ -1,4 +1,4 @@
-package com.github.soulsearching.settings.mainpagepersonalisation.domain
+package com.github.soulsearching.settings.domain
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,9 +13,16 @@ class ViewSettingsManager(
     private val settings: SoulSearchingSettings
 ) {
     var isQuickAccessShown by mutableStateOf(true)
+        private set
     var isPlaylistsShown by mutableStateOf(true)
+        private set
     var isAlbumsShown by mutableStateOf(true)
+        private set
     var isArtistsShown by mutableStateOf(true)
+        private set
+
+    var isMusicFileModificationOn by mutableStateOf(true)
+        private set
 
     init {
         initializeManager()
@@ -58,6 +65,10 @@ class ViewSettingsManager(
             )
             isArtistsShown = getBoolean(
                 SoulSearchingSettings.IS_ARTISTS_SHOWN, true
+            )
+            isMusicFileModificationOn = getBoolean(
+                SoulSearchingSettings.IS_MUSIC_FILE_MODIFICATION_ON,
+                true
             )
         }
     }
@@ -103,6 +114,17 @@ class ViewSettingsManager(
         settings.setBoolean(
             key = SoulSearchingSettings.IS_ARTISTS_SHOWN,
             value = isArtistsShown
+        )
+    }
+
+    /**
+     * Active or deactivate the music file modification.
+     */
+    fun toggleMusicFileModification() {
+        isMusicFileModificationOn = !isMusicFileModificationOn
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_MUSIC_FILE_MODIFICATION_ON,
+            value = isMusicFileModificationOn
         )
     }
 }

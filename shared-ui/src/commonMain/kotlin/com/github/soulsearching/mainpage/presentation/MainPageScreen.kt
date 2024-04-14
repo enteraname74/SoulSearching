@@ -74,7 +74,7 @@ import com.github.soulsearching.modifyelement.modifyplaylist.presentation.Modify
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchAll
 import com.github.soulsearching.search.presentation.SearchView
-import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.settings.presentation.SettingsScreen
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch

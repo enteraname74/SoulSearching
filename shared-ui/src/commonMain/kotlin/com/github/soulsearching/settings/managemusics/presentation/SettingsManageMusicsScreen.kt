@@ -19,10 +19,13 @@ import com.github.soulsearching.settings.managemusics.addmusics.domain.AddMusics
 import com.github.soulsearching.settings.managemusics.managefolders.domain.FolderEvent
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
 import com.github.soulsearching.settings.managemusics.managefolders.presentation.SettingsUsedFoldersScreen
+import com.github.soulsearching.settings.presentation.composable.SettingsSwitchElement
 
 /**
  * Represent the view for managing musics and folders in the settings.
@@ -62,6 +65,7 @@ fun SettingsManageMusicsScreenView(
     finishAction: () -> Unit,
     navigateToFolders: () -> Unit,
     navigateToAddMusics: () -> Unit,
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     Column(
         modifier = Modifier
@@ -87,6 +91,16 @@ fun SettingsManageMusicsScreenView(
                     text = strings.addMusicsText,
                     icon = Icons.Rounded.MusicNote,
                     clickAction = navigateToAddMusics
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.modifyMusicFileTitle,
+                    text = strings.modifyMusicFileText,
+                    toggleAction = {
+                        viewSettingsManager.toggleMusicFileModification()
+                    },
+                    isChecked = viewSettingsManager.isMusicFileModificationOn
                 )
             }
         }

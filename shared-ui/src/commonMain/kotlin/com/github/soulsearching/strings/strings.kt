@@ -111,6 +111,8 @@ interface Strings {
     val settings: String
     val manageMusicsTitle: String
     val manageMusicsText: String
+    val modifyMusicFileTitle: String
+    val modifyMusicFileText: String
     val colorThemeTitle: String
     val colorThemeText: String
     val personalizationTitle: String

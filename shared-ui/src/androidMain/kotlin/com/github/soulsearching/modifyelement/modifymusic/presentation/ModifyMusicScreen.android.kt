@@ -17,12 +17,14 @@ import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.model.utils.AndroidUtils
 import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicEvent
 import com.github.soulsearching.modifyelement.modifymusic.presentation.composable.ModifyMusicComposable
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 
 @Composable
 actual fun ModifyMusicScreenView(
     modifyMusicViewModel: ModifyMusicViewModel,
     selectedMusicId: String,
-    finishAction: () -> Unit
+    finishAction: () -> Unit,
+    viewSettingsManager: ViewSettingsManager
 ) {
     val context = LocalContext.current
 
@@ -58,7 +60,7 @@ actual fun ModifyMusicScreenView(
 
 
     fun acceptWriteFile() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && viewSettingsManager.isMusicFileModificationOn) {
             val mediaId = AndroidUtils.musicPathToMediaId(
                 context = context,
                 musicPath = state.modifiedMusicInformation.path

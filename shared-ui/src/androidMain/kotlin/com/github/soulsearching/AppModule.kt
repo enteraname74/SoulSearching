@@ -6,7 +6,7 @@ import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
-import com.github.soulsearching.settings.mainpagepersonalisation.domain.ViewSettingsManager
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel

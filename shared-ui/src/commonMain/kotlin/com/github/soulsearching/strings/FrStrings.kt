@@ -102,6 +102,8 @@ object FrStrings : Strings {
     override val settings = "Paramètres"
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
+    override val modifyMusicFileTitle = "Modifier les fichiers sur l'appareil"
+    override val modifyMusicFileText = "Modifier les informations d'une musique modifiera les métadonnées du fichier sur votre appareil."
     override val colorThemeTitle = "Thème de couleur"
     override val colorThemeText = "Thème dynamique, personnalisé"
     override val personalizationTitle = "Personnalisation"
