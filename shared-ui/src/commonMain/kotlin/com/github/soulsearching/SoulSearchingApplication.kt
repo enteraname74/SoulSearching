@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import com.github.soulsearching.appinit.presentation.FetchingMusicsComposable
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
+    colorThemeManager: ColorThemeManager = injectElement()
 ) {
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
     val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
@@ -48,8 +50,16 @@ fun SoulSearchingApplication(
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val musicState by allMusicsViewModel.handler.state.collectAsState()
-
     val coversState by allImageCoversViewModel.handler.state.collectAsState()
+
+    SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
+
+    mainActivityViewModel.handler.isReadPermissionGranted =
+        SoulSearchingContext.checkIfReadPermissionGranted()
+    mainActivityViewModel.handler.isPostNotificationGranted =
+        SoulSearchingContext.checkIfPostNotificationGranted()
+
+    playbackManager.retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
 
     val playerDraggableState = playerViewModel.handler.playerDraggableState
     val musicListDraggableState = playerViewModel.handler.musicListDraggableState
@@ -76,7 +86,6 @@ fun SoulSearchingApplication(
 
     val coroutineScope = rememberCoroutineScope()
 
-
     if (!mainActivityViewModel.handler.hasMusicsBeenFetched) {
         FetchingMusicsComposable(
             finishAddingMusicsAction = {
@@ -91,13 +100,14 @@ fun SoulSearchingApplication(
         return
     }
 
-
     if (musicState.musics.isNotEmpty() && !mainActivityViewModel.handler.cleanMusicsLaunched) {
         allMusicsViewModel.handler.checkAndDeleteMusicIfNotExist()
         mainActivityViewModel.handler.cleanMusicsLaunched = true
     }
 
     var generalNavigator: Navigator? = null
+
+    println("THERE")
 
     BoxWithConstraints(
         modifier = Modifier

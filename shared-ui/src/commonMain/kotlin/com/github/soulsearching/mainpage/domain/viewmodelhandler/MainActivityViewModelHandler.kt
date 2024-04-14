@@ -12,7 +12,6 @@ import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 class MainActivityViewModelHandler(
     settings: SoulSearchingSettings
 ) : ViewModelHandler {
-    var hasLastPlayedMusicsBeenFetched by mutableStateOf(false)
     var cleanImagesLaunched by mutableStateOf(false)
     var cleanMusicsLaunched by mutableStateOf(false)
     var hasMusicsBeenFetched by mutableStateOf(
@@ -22,8 +21,7 @@ class MainActivityViewModelHandler(
         )
     )
 
-    var isReadPermissionGranted by mutableStateOf(false)
-    var isPostNotificationGranted by mutableStateOf(false)
+    var isReadPermissionGranted by mutableStateOf(true)
+    var isPostNotificationGranted by mutableStateOf(true)
 
-    var hasSetDraggableStates by mutableStateOf(false)
 }

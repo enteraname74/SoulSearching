@@ -18,16 +18,9 @@ import androidx.compose.runtime.SideEffect
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
-import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
-import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
-import com.github.soulsearching.domain.viewmodel.AllPlaylistsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
-import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.model.playback.PlayerService
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.ui.theme.SoulSearchingTheme
@@ -39,12 +32,7 @@ import org.koin.core.context.unloadKoinModules
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private val allMusicsViewModel: AllMusicsViewModel by inject()
-    private val allPlaylistsViewModel: AllPlaylistsViewModel by inject()
-    private val allAlbumsViewModel: AllAlbumsViewModel by inject()
-    private val allArtistsViewModel: AllArtistsViewModel by inject()
     private val allImageCoversViewModel: AllImageCoversViewModel by inject()
-    private val colorThemeManager: ColorThemeManager by inject()
-    private val settings: SoulSearchingSettings by inject()
     private val mainActivityViewModel: MainActivityViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
@@ -81,28 +69,9 @@ class MainActivity : AppCompatActivity() {
 
         // For JAudiotagger to work on android.
         TagOptionSingleton.getInstance().isAndroid = true
-
-        val playbackManager by inject<PlaybackManager>()
-
-        settings.initializeSorts(
-            onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
-            onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
-            onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
-            onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent
-        )
-
-        with(playbackManager) {
-            retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
-        }
         initializeBroadcastReceive()
 
         setContent {
-            SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
-            mainActivityViewModel.handler.isReadPermissionGranted =
-                SoulSearchingContext.checkIfReadPermissionGranted()
-            mainActivityViewModel.handler.isPostNotificationGranted =
-                SoulSearchingContext.checkIfPostNotificationGranted()
-
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
                     mainActivityViewModel.handler.isReadPermissionGranted = isGranted

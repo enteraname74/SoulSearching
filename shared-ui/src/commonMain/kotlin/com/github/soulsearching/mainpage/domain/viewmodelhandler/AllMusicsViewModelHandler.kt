@@ -47,8 +47,16 @@ abstract class AllMusicsViewModelHandler(
     private val musicFetcher: MusicFetcher,
 ): ViewModelHandler {
     var currentPage by mutableStateOf<ElementEnum?>(null)
-    private val _sortType = MutableStateFlow(SortType.ADDED_DATE)
-    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private val _sortType = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_MUSICS_TYPE_KEY, SortType.NAME
+        )
+    )
+    private val _sortDirection = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_MUSICS_DIRECTION_KEY, SortDirection.ASC
+        )
+    )
 
     @OptIn(ExperimentalMaterialApi::class)
     val searchDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)

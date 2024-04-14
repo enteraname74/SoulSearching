@@ -26,8 +26,16 @@ open class AllAlbumsViewModeHandler(
     private val albumRepository: AlbumRepository,
     private val settings: SoulSearchingSettings,
 ) : ViewModelHandler {
-    private val _sortType = MutableStateFlow(SortType.NAME)
-    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private val _sortType = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_ALBUMS_TYPE_KEY, SortType.NAME
+        )
+    )
+    private val _sortDirection = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_ALBUMS_DIRECTION_KEY, SortDirection.ASC
+        )
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _albums = _sortDirection.flatMapLatest { sortDirection ->

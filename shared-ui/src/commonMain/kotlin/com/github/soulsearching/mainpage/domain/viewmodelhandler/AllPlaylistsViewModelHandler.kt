@@ -28,8 +28,16 @@ class AllPlaylistsViewModelHandler(
     imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings
 ): ViewModelHandler {
-    private val _sortType = MutableStateFlow(SortType.NAME)
-    private val _sortDirection = MutableStateFlow(SortDirection.ASC)
+    private val _sortType = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_PLAYLISTS_TYPE_KEY, SortType.NAME
+        )
+    )
+    private val _sortDirection = MutableStateFlow(
+        settings.getInt(
+            SoulSearchingSettings.SORT_PLAYLISTS_DIRECTION_KEY, SortDirection.ASC
+        )
+    )
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _playlists = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->

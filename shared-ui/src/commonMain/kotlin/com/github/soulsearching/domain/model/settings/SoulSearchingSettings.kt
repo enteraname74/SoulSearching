@@ -58,16 +58,6 @@ interface SoulSearchingSettings {
         currentMusicPosition: Int
     )
 
-    /**
-     * Initialize the sorts used by the application.
-     */
-    fun initializeSorts(
-        onMusicEvent: (MusicEvent) -> Unit,
-        onPlaylistEvent: (PlaylistEvent) -> Unit,
-        onAlbumEvent: (AlbumEvent) -> Unit,
-        onArtistEvent: (ArtistEvent) -> Unit
-    )
-
     companion object {
         const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"
 
