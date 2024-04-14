@@ -158,7 +158,6 @@ class PlayerViewModelHandler(
      * Set the lyrics of the current music.
      */
     private fun setLyricsOfCurrentMusic() {
-        println("WILL RETRIEVE LYRICS!")
         _state.value.currentMusic?.let { currentMusic ->
             CoroutineScope(Dispatchers.IO).launch {
                 _state.update {

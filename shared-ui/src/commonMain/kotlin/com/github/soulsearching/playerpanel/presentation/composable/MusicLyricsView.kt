@@ -11,7 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +24,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.player.domain.model.LyricsFetchState
 import com.github.soulsearching.strings.strings
+import java.util.UUID
 
 @Composable
 fun MusicLyricsView(
@@ -31,9 +35,15 @@ fun MusicLyricsView(
     currentMusic: Music?
 ) {
 
-    LaunchedEffect(currentMusic) {
+    var currentMusicId by rememberSaveable {
+        mutableStateOf<UUID?>(null)
+    }
+
+    if (currentMusicId != currentMusic?.musicId) {
         onRetrieveLyrics()
     }
+
+    currentMusicId = currentMusic?.musicId
 
     when (lyricsState) {
         LyricsFetchState.FetchingLyrics -> FetchingLyricsView(
