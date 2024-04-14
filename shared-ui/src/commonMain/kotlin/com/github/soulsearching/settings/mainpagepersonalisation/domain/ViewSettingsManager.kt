@@ -17,8 +17,6 @@ class ViewSettingsManager(
     var isAlbumsShown by mutableStateOf(true)
     var isArtistsShown by mutableStateOf(true)
 
-    var isVerticalBarShown by mutableStateOf(false)
-
     init {
         initializeManager()
     }
@@ -60,9 +58,6 @@ class ViewSettingsManager(
             )
             isArtistsShown = getBoolean(
                 SoulSearchingSettings.IS_ARTISTS_SHOWN, true
-            )
-            isVerticalBarShown = getBoolean(
-                SoulSearchingSettings.IS_VERTICAL_BAR_SHOWN, false
             )
         }
     }
@@ -108,17 +103,6 @@ class ViewSettingsManager(
         settings.setBoolean(
             key = SoulSearchingSettings.IS_ARTISTS_SHOWN,
             value = isArtistsShown
-        )
-    }
-
-    /**
-     * Activate or deactivate the vertical bar on the main page screen.
-     */
-    fun toggleVerticalBarVisibility() {
-        isVerticalBarShown = !isVerticalBarShown
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_VERTICAL_BAR_SHOWN,
-            value = isVerticalBarShown
         )
     }
 }

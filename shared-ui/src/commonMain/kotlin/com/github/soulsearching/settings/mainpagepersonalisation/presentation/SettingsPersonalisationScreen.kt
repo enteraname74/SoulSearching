@@ -116,21 +116,6 @@ fun SettingsPersonalisationScreenView(
                 )
             }
             item {
-                SettingsSwitchElement(
-                    title = strings.showVerticalAccessBarTitle,
-                    text = strings.showVerticalAccessBarText,
-                    toggleAction = { viewSettingsManager.toggleVerticalBarVisibility() },
-                    isChecked = viewSettingsManager.isVerticalBarShown,
-                    titleFontSize = 16.sp,
-                    padding = PaddingValues(
-                        start = Constants.Spacing.veryLarge,
-                        end = Constants.Spacing.veryLarge,
-                        top = Constants.Spacing.medium,
-                        bottom = Constants.Spacing.medium
-                    )
-                )
-            }
-            item {
                 PlayerSpacer()
             }
         }

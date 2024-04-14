@@ -101,7 +101,7 @@ object FrStrings : Strings {
 
     override val settings = "Paramètres"
     override val manageMusicsTitle = "Gérer les musiques"
-    override val manageMusicsText = "Ajouter de nouvelles musiques et gérer les dossiers utilisés"
+    override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
     override val colorThemeTitle = "Thème de couleur"
     override val colorThemeText = "Thème dynamique, personnalisé"
     override val personalizationTitle = "Personnalisation"

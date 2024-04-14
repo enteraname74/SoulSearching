@@ -100,7 +100,7 @@ object EnStrings : Strings {
 
     override val settings = "Settings"
     override val manageMusicsTitle = "Manage songs"
-    override val manageMusicsText = "Add new songs and manage used folders"
+    override val manageMusicsText = "Modify and add new songs, manage used folders"
     override val colorThemeTitle = "Color theme"
     override val colorThemeText = "Dynamic theme, personalized theme"
     override val personalizationTitle = "Personalization"
