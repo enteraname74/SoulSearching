@@ -89,7 +89,8 @@ actual fun ModifyAlbumScreenView(
     ModifyAlbumComposable(
         modifyAlbumViewModel = modifyAlbumViewModel,
         selectedAlbumId = selectedAlbumId,
-        finishAction = { acceptWriteFile() },
-        selectImage = { selectImage() }
+        onModifyAlbum = { acceptWriteFile() },
+        selectImage = { selectImage() },
+        onCancel = finishAction
     )
 }

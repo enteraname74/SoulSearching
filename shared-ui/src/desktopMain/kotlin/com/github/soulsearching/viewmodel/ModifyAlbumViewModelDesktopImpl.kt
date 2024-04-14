@@ -29,6 +29,7 @@ class ModifyAlbumViewModelDesktopImpl(
         coroutineScope = screenModelScope,
         albumRepository = albumRepository,
         imageCoverRepository = imageCoverRepository,
-        playbackManager = playbackManager
+        playbackManager = playbackManager,
+        artistRepository = artistRepository
     )
 }

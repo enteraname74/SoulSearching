@@ -9,6 +9,12 @@ import java.util.UUID
  * Data source of an Artist.
  */
 interface ArtistDataSource {
+
+    /**
+     * Retrieve all artists.
+     */
+    suspend fun getAllArtists(): List<Artist>
+
     /**
      * Inserts or updates an artist.
      */

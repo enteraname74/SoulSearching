@@ -9,5 +9,6 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 data class ModifyArtistState(
     val artistWithMusics : ArtistWithMusics = ArtistWithMusics(),
     val hasCoverBeenChanged : Boolean = false,
-    val cover : ImageBitmap? = null
+    val cover : ImageBitmap? = null,
+    val matchingArtistsNames: List<String> = emptyList()
 )

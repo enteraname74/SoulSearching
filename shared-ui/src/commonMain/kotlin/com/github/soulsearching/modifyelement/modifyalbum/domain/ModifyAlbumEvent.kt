@@ -12,5 +12,7 @@ sealed interface ModifyAlbumEvent {
     data class SetName(val name: String) : ModifyAlbumEvent
     data class SetArtist(val artist: String) : ModifyAlbumEvent
     data class SetCover(val cover: ImageBitmap) : ModifyAlbumEvent
+    data class SetMatchingAlbums(val search: String) : ModifyAlbumEvent
+    data class SetMatchingArtists(val search: String) : ModifyAlbumEvent
 
 }

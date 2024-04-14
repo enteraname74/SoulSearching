@@ -34,6 +34,17 @@ class AlbumRepository(
     private val musicFileUpdater: MusicFileUpdater = MusicFileUpdater()
 
     /**
+     * Retrieve a list of albums names from a given search name.
+     */
+    suspend fun getAlbumsNameFromSearch(search: String): List<String> {
+        if (search.isBlank()) return emptyList()
+
+        val allAlbums = albumDataSource.getAllAlbumsWithArtist()
+
+        return allAlbums.filter { it.album.albumName.contains(search) }.map { it.album.albumName }
+    }
+
+    /**
      * Merge two albums together.
      * @param from the album to put to the "to" album.
      * @param to the album that will receive the merge ("from" param)/
@@ -54,7 +65,7 @@ class AlbumRepository(
     }
 
     /**
-     * Update an album with new infomation.
+     * Update an album with new information.
      */
     suspend fun update(
         newAlbumWithArtistInformation: AlbumWithArtist

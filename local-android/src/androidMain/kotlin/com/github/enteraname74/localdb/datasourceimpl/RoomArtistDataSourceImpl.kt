@@ -17,6 +17,9 @@ import java.util.UUID
 internal class RoomArtistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : ArtistDataSource {
+
+    override suspend fun getAllArtists(): List<Artist> = appDatabase.artistDao.getAllArtists().map { it.toArtist() }
+
     override suspend fun insertArtist(artist: Artist) {
         appDatabase.artistDao.insertArtist(
             roomArtist = artist.toRoomArtist()

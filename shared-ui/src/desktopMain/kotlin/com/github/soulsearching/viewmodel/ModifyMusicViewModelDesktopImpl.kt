@@ -35,7 +35,8 @@ class ModifyMusicViewModelDesktopImpl(
         coroutineScope = screenModelScope,
         musicRepository = musicRepository,
         imageCoverRepository = imageCoverRepository,
-        settings = settings,
-        playbackManager = playbackManager
+        playbackManager = playbackManager,
+        albumRepository = albumRepository,
+        artistRepository = artistRepository
     )
 }

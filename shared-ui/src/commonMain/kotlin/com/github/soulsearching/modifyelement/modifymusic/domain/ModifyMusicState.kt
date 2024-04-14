@@ -10,5 +10,7 @@ data class ModifyMusicState(
     val selectedMusic: Music = Music(),
     val modifiedMusicInformation: Music = Music(),
     val hasCoverBeenChanged: Boolean = false,
-    val cover: ImageBitmap? = null
+    val cover: ImageBitmap? = null,
+    val matchingAlbumsNames: List<String> = emptyList(),
+    val matchingArtistsNames: List<String> = emptyList()
 )

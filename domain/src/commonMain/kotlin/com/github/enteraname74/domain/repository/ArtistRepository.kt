@@ -28,6 +28,17 @@ class ArtistRepository(
     private val musicFileUpdater: MusicFileUpdater = MusicFileUpdater()
 
     /**
+     * Retrieve a list of artists names from a given search name.
+     */
+    suspend fun getArtistsNameFromSearch(search: String): List<String> {
+        if (search.isBlank()) return emptyList()
+
+        val allArtists = artistDataSource.getAllArtists()
+
+        return allArtists.filter { it.artistName.contains(search) }.map { it.artistName }
+    }
+
+    /**
      * Merge two artist together.
      * @param from the artist to put to the "to" artist.
      * @param to the artist that will receive the merge ("from" param)/

@@ -10,5 +10,7 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 data class ModifyAlbumState(
     val albumWithMusics: AlbumWithMusics = AlbumWithMusics(),
     val hasSetNewCover: Boolean = false,
-    val albumCover: ImageBitmap? = null
+    val albumCover: ImageBitmap? = null,
+    val matchingAlbumsNames: List<String> = emptyList(),
+    val matchingArtistsNames: List<String> = emptyList()
 )

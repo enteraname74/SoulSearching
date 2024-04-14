@@ -16,10 +16,11 @@ actual fun ModifyMusicScreenView(
     ModifyMusicComposable(
         modifyMusicViewModel = modifyMusicViewModel,
         selectedMusicId = selectedMusicId,
-        finishAction = {
+        onModifyMusic = {
             modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
             finishAction()
         },
-        selectImage = {}
+        selectImage = {},
+        onCancel = finishAction
     )
 }

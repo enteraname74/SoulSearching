@@ -90,7 +90,8 @@ actual fun ModifyArtistScreenView(
     ModifyArtistComposable(
         modifyArtistViewModel = modifyArtistViewModel,
         selectedArtistId = selectedArtistId,
-        finishAction = { acceptWriteFile() },
-        selectImage = { selectImage() }
+        onModifyArtist = { acceptWriteFile() },
+        selectImage = { selectImage() },
+        onCancel = finishAction
     )
 }

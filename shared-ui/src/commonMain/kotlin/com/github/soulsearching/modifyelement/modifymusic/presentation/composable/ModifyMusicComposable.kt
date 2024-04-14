@@ -36,6 +36,7 @@ import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
+import com.github.soulsearching.modifyelement.composable.DropdownTextField
 import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicEvent
 import com.github.soulsearching.strings.strings
 import java.util.UUID
@@ -44,7 +45,8 @@ import java.util.UUID
 fun ModifyMusicComposable(
     modifyMusicViewModel: ModifyMusicViewModel,
     selectedMusicId: String,
-    finishAction: () -> Unit,
+    onModifyMusic: () -> Unit,
+    onCancel: () -> Unit,
     selectImage: () -> Unit
 ) {
     val state by modifyMusicViewModel.handler.state.collectAsState()
@@ -64,10 +66,10 @@ fun ModifyMusicComposable(
         topBar = {
             AppHeaderBar(
                 title = strings.musicInformation,
-                leftAction = finishAction,
+                leftAction = onCancel,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    finishAction()
+                    onModifyMusic()
                 }
             )
         },
@@ -127,6 +129,23 @@ fun ModifyMusicComposable(
                                         it
                                     )
                                 )
+                            },
+                            albumsNames = state.matchingAlbumsNames,
+                            updateAlbumsNames = { albumSearch ->
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetMatchingAlbums(
+                                        search = albumSearch
+                                    )
+                                )
+                            },
+                            artistsNames = state.matchingArtistsNames,
+                            updateArtistsNames = { artistSearch ->
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetMatchingArtists(
+                                        search = artistSearch
+                                    )
+                                )
+
                             }
                         )
                     }
@@ -187,6 +206,23 @@ fun ModifyMusicComposable(
                                         it
                                     )
                                 )
+                            },
+                            albumsNames = state.matchingAlbumsNames,
+                            updateAlbumsNames = { albumSearch ->
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetMatchingAlbums(
+                                        search = albumSearch
+                                    )
+                                )
+                            },
+                            artistsNames = state.matchingArtistsNames,
+                            updateArtistsNames = { artistSearch ->
+                                modifyMusicViewModel.handler.onEvent(
+                                    ModifyMusicEvent.SetMatchingArtists(
+                                        search = artistSearch
+                                    )
+                                )
+
                             }
                         )
                     }
@@ -205,7 +241,11 @@ fun ModifyMusicTextFields(
     focusManager: FocusManager,
     setName: (String) -> Unit,
     setAlbum: (String) -> Unit,
-    setArtist: (String) -> Unit
+    setArtist: (String) -> Unit,
+    albumsNames: List<String>,
+    artistsNames: List<String>,
+    updateAlbumsNames: (String) -> Unit,
+    updateArtistsNames: (String) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -227,17 +267,25 @@ fun ModifyMusicTextFields(
                 labelName = strings.musicName,
                 focusManager = focusManager
             )
-            AppTextField(
+            DropdownTextField(
+                values = albumsNames,
                 value = album,
-                onValueChange = { setAlbum(it) },
-                labelName = strings.albumName,
-                focusManager = focusManager
+                onValueChange = {
+                    setAlbum(it)
+                    updateAlbumsNames(it)
+                },
+                focusManager = focusManager,
+                labelName = strings.albumName
             )
-            AppTextField(
+            DropdownTextField(
+                values = artistsNames,
                 value = artist,
-                onValueChange = { setArtist(it) },
-                labelName = strings.artistName,
-                focusManager = focusManager
+                onValueChange = {
+                    setArtist(it)
+                    updateArtistsNames(it)
+                },
+                focusManager = focusManager,
+                labelName = strings.artistName
             )
         }
         Spacer(

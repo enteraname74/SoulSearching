@@ -85,7 +85,8 @@ actual fun ModifyMusicScreenView(
     ModifyMusicComposable(
         modifyMusicViewModel = modifyMusicViewModel,
         selectedMusicId = selectedMusicId,
-        finishAction = { acceptWriteFile() },
-        selectImage = { selectImage() }
+        onModifyMusic = { acceptWriteFile() },
+        selectImage = { selectImage() },
+        onCancel = finishAction
     )
 }

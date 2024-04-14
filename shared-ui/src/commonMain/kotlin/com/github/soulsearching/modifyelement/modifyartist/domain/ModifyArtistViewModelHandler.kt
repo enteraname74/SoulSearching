@@ -47,6 +47,20 @@ class ModifyArtistViewModelHandler(
             is ModifyArtistEvent.ArtistFromId -> setSelectedArtist(artistId = event.artistId)
             is ModifyArtistEvent.SetName -> setArtist(newArtistName = event.name)
             is ModifyArtistEvent.SetCover -> setArtistCover(cover = event.cover)
+            is ModifyArtistEvent.SetMatchingArtists -> setMatchingArtists(search = event.search)
+        }
+    }
+
+    /**
+     * Set a list of matching artists names to use when modifying the artist field of an album.
+     */
+    private fun setMatchingArtists(search: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _state.update {
+                it.copy(
+                    matchingArtistsNames = artistRepository.getArtistsNameFromSearch(search = search)
+                )
+            }
         }
     }
 

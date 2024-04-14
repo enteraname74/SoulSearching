@@ -2,6 +2,8 @@ package com.github.soulsearching.modifyelement.modifymusic.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
@@ -21,6 +23,8 @@ import java.util.UUID
 class ModifyMusicViewModelHandler(
     coroutineScope: CoroutineScope,
     private val musicRepository: MusicRepository,
+    private val albumRepository: AlbumRepository,
+    private val artistRepository: ArtistRepository,
     private val imageCoverRepository: ImageCoverRepository,
     private val playbackManager: PlaybackManager
 ) : ViewModelHandler {
@@ -63,7 +67,35 @@ class ModifyMusicViewModelHandler(
             is ModifyMusicEvent.SetArtist -> setArtist(artistName = event.artist)
             is ModifyMusicEvent.SetCover -> setCover(cover = event.cover)
             is ModifyMusicEvent.SetName -> setName(name = event.name)
+            is ModifyMusicEvent.SetMatchingAlbums -> setMatchingAlbums(search = event.search)
+            is ModifyMusicEvent.SetMatchingArtists -> setMatchingArtists(search = event.search)
             ModifyMusicEvent.UpdateMusic -> updateMusic()
+        }
+    }
+
+    /**
+     * Set a list of matching albums names to use when modifying the album field of a music.
+     */
+    private fun setMatchingAlbums(search: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _state.update {
+                it.copy(
+                    matchingAlbumsNames = albumRepository.getAlbumsNameFromSearch(search = search)
+                )
+            }
+        }
+    }
+
+    /**
+     * Set a list of matching artists names to use when modifying the artist field of a music.
+     */
+    private fun setMatchingArtists(search: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _state.update {
+                it.copy(
+                    matchingArtistsNames = artistRepository.getArtistsNameFromSearch(search = search)
+                )
+            }
         }
     }
 

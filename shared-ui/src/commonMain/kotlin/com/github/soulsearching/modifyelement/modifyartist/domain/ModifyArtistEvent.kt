@@ -11,4 +11,5 @@ sealed interface ModifyArtistEvent {
     data class ArtistFromId(val artistId : UUID) : ModifyArtistEvent
     data class SetName(val name: String) : ModifyArtistEvent
     data class SetCover(val cover : ImageBitmap) : ModifyArtistEvent
+    data class SetMatchingArtists(val search: String) : ModifyArtistEvent
 }

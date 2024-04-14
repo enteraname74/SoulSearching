@@ -33,9 +33,9 @@ import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.composables.AppTextField
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyArtistViewModel
+import com.github.soulsearching.modifyelement.composable.DropdownTextField
 import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistEvent
 import com.github.soulsearching.strings.strings
 import java.util.UUID
@@ -44,7 +44,8 @@ import java.util.UUID
 fun ModifyArtistComposable(
     modifyArtistViewModel: ModifyArtistViewModel,
     selectedArtistId: String,
-    finishAction: () -> Unit,
+    onModifyArtist: () -> Unit,
+    onCancel: () -> Unit,
     selectImage: () -> Unit
 ) {
     val state by modifyArtistViewModel.handler.state.collectAsState()
@@ -68,11 +69,10 @@ fun ModifyArtistComposable(
         topBar = {
             AppHeaderBar(
                 title = strings.artistInformation,
-                leftAction = finishAction,
+                leftAction = onCancel,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyArtistViewModel.handler.onEvent(ModifyArtistEvent.UpdateArtist)
-                    finishAction()
+                    onModifyArtist()
                 }
             )
         },
@@ -120,6 +120,14 @@ fun ModifyArtistComposable(
                                 modifyArtistViewModel.handler.onEvent(
                                     ModifyArtistEvent.SetName(
                                         it
+                                    )
+                                )
+                            },
+                            artistsNames = state.matchingArtistsNames,
+                            updateArtistsNames = { artistSearch ->
+                                modifyArtistViewModel.handler.onEvent(
+                                    ModifyArtistEvent.SetMatchingArtists(
+                                        search = artistSearch
                                     )
                                 )
                             }
@@ -172,6 +180,14 @@ fun ModifyArtistComposable(
                                         it
                                     )
                                 )
+                            },
+                            artistsNames = state.matchingArtistsNames,
+                            updateArtistsNames = { artistSearch ->
+                                modifyArtistViewModel.handler.onEvent(
+                                    ModifyArtistEvent.SetMatchingArtists(
+                                        search = artistSearch
+                                    )
+                                )
                             }
                         )
                     }
@@ -186,7 +202,9 @@ fun ModifyArtistTextFields(
     modifier: Modifier,
     artistName: String,
     focusManager: FocusManager,
-    setName: (String) -> Unit
+    setName: (String) -> Unit,
+    artistsNames: List<String>,
+    updateArtistsNames: (String) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -202,11 +220,15 @@ fun ModifyArtistTextFields(
                 .weight(4F),
             verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
         ) {
-            AppTextField(
+            DropdownTextField(
+                values = artistsNames,
                 value = artistName,
-                onValueChange = setName,
-                labelName = strings.artistName,
-                focusManager = focusManager
+                onValueChange = {
+                    setName(it)
+                    updateArtistsNames(it)
+                },
+                focusManager = focusManager,
+                labelName = strings.artistName
             )
         }
         Spacer(

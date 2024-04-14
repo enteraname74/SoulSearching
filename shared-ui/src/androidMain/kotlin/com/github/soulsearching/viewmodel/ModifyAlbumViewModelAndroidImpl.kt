@@ -19,12 +19,14 @@ import com.github.soulsearching.modifyelement.modifyalbum.domain.ModifyAlbumView
 class ModifyAlbumViewModelAndroidImpl(
     albumRepository: AlbumRepository,
     imageCoverRepository: ImageCoverRepository,
+    artistRepository: ArtistRepository,
     playbackManager: PlaybackManager
 ) : ModifyAlbumViewModel, ViewModel() {
     override val handler: ModifyAlbumViewModelHandler = ModifyAlbumViewModelHandler(
         coroutineScope = viewModelScope,
         albumRepository = albumRepository,
         imageCoverRepository = imageCoverRepository,
-        playbackManager = playbackManager
+        playbackManager = playbackManager,
+        artistRepository = artistRepository
     )
 }

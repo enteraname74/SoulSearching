@@ -18,6 +18,9 @@ internal interface ArtistDao {
     @Delete
     suspend fun deleteArtist(roomArtist: RoomArtist)
 
+    @Query("SELECT * FROM RoomArtist")
+    suspend fun getAllArtists(): List<RoomArtist>
+
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     suspend fun getArtistFromId(artistId: UUID): RoomArtist?
 

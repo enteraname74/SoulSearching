@@ -314,15 +314,18 @@ class MusicRepository(
         }
         musicDataSource.insertMusic(newMusicInformation)
 
-        var musicCover: ImageBitmap? = null
-        newMusicInformation.coverId?.let { coverId ->
-            musicCover = imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
+        // We only set a new cover if the previous one has been changed.
+        val musicCover: ImageBitmap? = if (legacyMusic.coverId != newMusicInformation.coverId) {
+            newMusicInformation.coverId?.let { coverId ->
+                imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
+            }
+        } else {
+            null
         }
 
-        // We only set a new cover if the previous one has been changed.
         musicFileUpdater.updateMusic(
             music = newMusicInformation,
-            cover = if (legacyMusic.coverId != newMusicInformation.coverId) musicCover else null
+            cover = musicCover
         )
     }
 
