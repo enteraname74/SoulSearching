@@ -47,13 +47,13 @@ abstract class MusicFetcher(
         updateProgress: (Float) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ) : ArrayList<SelectableMusicItem>
+    ): ArrayList<SelectableMusicItem>
 
     /**
      * Persist a music and its cover.
      */
     suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
-        // Si la musique a déjà été enregistrée, on ne fait rien :
+        // If the song has already been saved once, we do nothing.
         val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
         if (existingMusic != null) {
             return
@@ -62,7 +62,8 @@ abstract class MusicFetcher(
         val correspondingArtist = artistRepository.getArtistFromInfo(
             artistName = musicToAdd.artist
         )
-        // Si l'artiste existe, on regarde si on trouve un album correspondant :
+
+        // If we can found a corresponding artist, we check if we can found a corresponding album.
         val correspondingAlbum = if (correspondingArtist == null) {
             null
         } else {
@@ -92,9 +93,13 @@ abstract class MusicFetcher(
                     albumName = musicToAdd.album
                 )
             )
+
+            val artistCoverId = if (correspondingArtist != null) correspondingArtist.coverId
+            else if (musicCover != null) coverId else null
+
             artistRepository.insertArtist(
                 Artist(
-                    coverId = if (musicCover != null) coverId else null,
+                    coverId = artistCoverId,
                     artistId = artistId,
                     artistName = musicToAdd.artist
                 )
@@ -106,7 +111,7 @@ abstract class MusicFetcher(
                 )
             )
         } else {
-            // On ajoute si possible la couverture de l'album de la musique :
+            // We add, if possible, the cover art of the album of the music to the music.
             val albumCover = if (correspondingAlbum.coverId != null) {
                 imageCoverRepository.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
             } else {
@@ -127,7 +132,7 @@ abstract class MusicFetcher(
                         cover = musicCover
                     )
                 )
-                // Dans ce cas, l'album n'a pas d'image, on lui en ajoute une :
+                // In this case, the album has no cover, so we add the one from the music.
                 albumRepository.updateAlbumCover(
                     newCoverId = coverId,
                     albumId = correspondingAlbum.albumId
