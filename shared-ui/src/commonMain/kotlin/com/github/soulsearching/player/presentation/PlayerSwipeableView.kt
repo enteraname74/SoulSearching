@@ -753,6 +753,7 @@ fun PlayerDraggableView(
                     )
                 },
                 secondaryColor = contentColor,
+                primaryColor = backgroundColor,
                 contentColor = textColor,
                 subTextColor = subTextColor
             )

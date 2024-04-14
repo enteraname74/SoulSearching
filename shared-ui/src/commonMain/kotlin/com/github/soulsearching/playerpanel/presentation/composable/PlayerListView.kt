@@ -1,14 +1,10 @@
 package com.github.soulsearching.playerpanel.presentation.composable
 
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,8 +13,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MyLocation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,13 +20,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingApplication
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.domain.di.injectElement
@@ -49,7 +41,8 @@ fun PlayerListView(
     playedList: List<Music>,
     onSelectedMusic: (Music) -> Unit,
     coverList: ArrayList<ImageCover>,
-    contentColor: Color
+    secondaryColor: Color,
+    primaryColor: Color
 ) {
     
     val coroutineScope = rememberCoroutineScope()
@@ -69,7 +62,7 @@ fun PlayerListView(
                     .align(Alignment.CenterEnd),
                 shape = RoundedCornerShape(percent = 50),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = SoulSearchingColorTheme.colorScheme.primary
+                    backgroundColor = primaryColor
                 ),
                 onClick = {
                     coroutineScope.launch {
@@ -85,7 +78,7 @@ fun PlayerListView(
                     text = strings.currentSong,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    color = contentColor,
+                    color = secondaryColor,
                     fontSize = 12.sp
                 )
             }
@@ -109,7 +102,7 @@ fun PlayerListView(
                             }
                         },
                         musicCover = coverList.find { it.coverId == elt.coverId }?.cover,
-                        textColor = contentColor,
+                        textColor = secondaryColor,
                         isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                     )
                 }
@@ -120,7 +113,7 @@ fun PlayerListView(
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
-                    color = contentColor
+                    color = secondaryColor
                 )
             }
         }

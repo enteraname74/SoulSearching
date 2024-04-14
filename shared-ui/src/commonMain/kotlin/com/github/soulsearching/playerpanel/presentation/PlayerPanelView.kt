@@ -57,6 +57,7 @@ fun PlayerPanelView(
     onSelectedMusic: (Music) -> Unit,
     coverList: ArrayList<ImageCover>,
     onRetrieveLyrics: () -> Unit,
+    primaryColor: Color,
     secondaryColor: Color,
     contentColor: Color,
     subTextColor: Color
@@ -107,7 +108,8 @@ fun PlayerPanelView(
                         playedList = playerState.playedList,
                         onSelectedMusic = onSelectedMusic,
                         coverList = coverList,
-                        contentColor = contentColor
+                        secondaryColor = contentColor,
+                        primaryColor = primaryColor
                     )
                 }
             ),
