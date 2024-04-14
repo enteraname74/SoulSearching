@@ -47,14 +47,12 @@ abstract class PlaybackManager(
     /**
      * The id of the current played list.
      */
-    var playedListId: UUID? = null
-        private set
+    private var playedListId: UUID? = null
 
     /**
      * If the played list is the main one with all songs.
      */
-    var isMainPlaylist: Boolean = false
-        private set
+    private var isMainPlaylist: Boolean = false
 
     /**
      * The currently played music.
@@ -656,8 +654,6 @@ abstract class PlaybackManager(
         // When selecting a music manually, we force the player mode to normal:
         forcePlayerModeToNormal(musicList)
 
-        val shouldSaveNewPlayedList = isSamePlaylist(isMainPlaylist, playlistId)
-
         // If it's the same music of the same playlist, does nothing
         if (isSameMusicAsCurrentPlayedOne(music.musicId) && isSamePlaylist(
                 isMainPlaylist,
@@ -685,7 +681,7 @@ abstract class PlaybackManager(
         }
 
         setAndPlayMusic(music)
-        if (shouldSaveNewPlayedList) savePlayedList()
+        savePlayedList()
     }
 
     /**
