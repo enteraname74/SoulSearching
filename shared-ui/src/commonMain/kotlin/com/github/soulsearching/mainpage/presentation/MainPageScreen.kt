@@ -299,9 +299,7 @@ fun MainPageScreenView(
                 }
             )
 
-            val visibleElements by rememberSaveable {
-                mutableStateOf(viewSettingsManager.getListOfVisibleElements())
-            }
+            val visibleElements = viewSettingsManager.getListOfVisibleElements()
             val pagerScreens = ArrayList<PagerScreen>()
             visibleElements.forEach { element ->
                 pagerScreens.add(
@@ -636,12 +634,7 @@ fun MainPageScreenView(
                 )
             }
 
-            val currentEnumPage = allMusicsViewModel.handler.getCurrentPage(
-                visibleElements = visibleElements
-            )
-
             val pagerState = rememberPagerState(
-                initialPage = currentEnumPage,
                 pageCount = { pagerScreens.size }
             )
 
@@ -651,18 +644,21 @@ fun MainPageScreenView(
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                MainPageVerticalShortcut(
-                    currentPage = currentPage,
-                    visibleElements = visibleElements,
-                    switchPageAction = {
-                        coroutineScope.launch {
-                            if (it != -1) {
-                                pagerState.animateScrollToPage(it)
-                                allMusicsViewModel.handler.currentPage = visibleElements[it]
-                            }
-                        }
-                    }
-                )
+                // We only show the vertical shortcut if there is more than one panel to access.
+               if (visibleElements.size > 1) {
+                   MainPageVerticalShortcut(
+                       currentPage = currentPage,
+                       visibleElements = visibleElements,
+                       switchPageAction = {
+                           coroutineScope.launch {
+                               if (it != -1) {
+                                   pagerState.animateScrollToPage(it)
+                                   allMusicsViewModel.handler.currentPage = visibleElements[it]
+                               }
+                           }
+                       }
+                   )
+               }
 
                 VerticalPager(
                     state = pagerState,
