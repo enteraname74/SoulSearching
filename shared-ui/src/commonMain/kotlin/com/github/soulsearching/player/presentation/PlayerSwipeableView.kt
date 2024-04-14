@@ -434,7 +434,7 @@ fun PlayerDraggableView(
                     )
 
                     else -> max(
-                        (((maxWidth * 30) / 100) - (max(
+                        (((maxWidth * 29) / 100) - (max(
                             draggableState.offset.value.roundToInt(),
                             0
                         ) / 7)).dp,
