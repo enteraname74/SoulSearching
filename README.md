@@ -1,6 +1,8 @@
 # Soul Searching
 
-Soul Searching is an offline music application for Android 8 and above.
+Soul Searching is an **offline music application** for Android 8 and above.
+
+The application is **KMP ready** and a **Desktop version** of it is currently being worked on.
 
 ## Functionalities:
 
@@ -22,34 +24,30 @@ You can have a theme that depends on your system settings or the current music c
 
 - Listen all the songs on your device
 
-- Multiple playing modes:
-  
-  - normal
-  
-  - shuffled
-  
-  - looped on one song
+- See **lyrics** of songs
 
-- Modify a song's name, artist, album
+- Multiple **playing modes**
 
-- Create and manage playlists
+- Modify songs, albums and artists on app and on the **device**
 
-- Add an album, artist, playlist or even a song in a quick access
+- Create and manage **playlists**
+
+- Add an album, artist, playlist or even a song in a **quick access**
 
 - Smart system for managing albums and musics without covers
 
 - Manage current played music list
 
-- Current played music list and current played music are saved between sessions
+- Current played music list and current played music are saved when closing the app
 
 - Search throughout all your elements
 
-- A music notification and an audio manager are used to improve the user's experience
+- A **music notification** and an **audio manager** are used to improve the user's experience
 
 <div align="center">
     <img title="" src="screenshots/modify_album.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/notification_example.png" alt="" data-align="center" width="290">
     <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="290">
 </div>
 
 ### III. Settings:
@@ -102,7 +100,7 @@ The color palette used for the application is based on the theme of your device 
 
 ##### 3. Personalized theme:
 
-The default theme used is the system one, but you can choose to use a dynamic theme for the player view or for the playlist/album/artist view.
+The default theme used is the system one, but you can choose to use a dynamic theme for the player view, the playlist/album/artist view and for all the other views of the app.
 
 <div align="center">
     <img title="" src="screenshots/theme_settings_perso.png" alt="" data-align="center" width="290">
@@ -113,8 +111,6 @@ The default theme used is the system one, but you can choose to use a dynamic th
 Currently, you can customize the elements shown on the main screen.
 
 Thus, you can choose what parts of the main page are shown (playlists, albums, artists, quick access).
-
-You can also add a vertical bar that let you rapidly access elements on the main screen.
 
 Examples of what you can achieve:
 

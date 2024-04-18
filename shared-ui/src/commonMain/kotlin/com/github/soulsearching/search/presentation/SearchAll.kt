@@ -40,7 +40,7 @@ fun SearchAll(
     albumState: AlbumState,
     artistState: ArtistState,
     playlistState: PlaylistState,
-    onMusicEvent: (MusicEvent) -> Unit,
+    onSelectedMusicForBottomSheet: (Music) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     onArtistEvent: (ArtistEvent) -> Unit,
     onAlbumEvent: (AlbumEvent) -> Unit,
@@ -200,16 +200,7 @@ fun SearchAll(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onMusicEvent(
-                                MusicEvent.SetSelectedMusic(
-                                    music
-                                )
-                            )
-                            onMusicEvent(
-                                MusicEvent.BottomSheet(
-                                    isShown = true
-                                )
-                            )
+                            onSelectedMusicForBottomSheet(music)
                         }
                     },
                     musicCover = retrieveCoverMethod(music.coverId),

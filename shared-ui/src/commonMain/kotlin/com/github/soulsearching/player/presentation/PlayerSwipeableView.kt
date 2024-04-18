@@ -155,7 +155,7 @@ fun PlayerDraggableView(
                         baseColor = colorThemeManager.currentColorPalette?.rgb
                     )
                 } else {
-                    MaterialTheme.colorScheme.secondary
+                    SoulSearchingColorTheme.defaultTheme.secondary
                 }
             }
         },
