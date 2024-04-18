@@ -61,7 +61,6 @@ object AndroidUtils {
             }
             cursor.close()
         }
-
         return id
     }
 }

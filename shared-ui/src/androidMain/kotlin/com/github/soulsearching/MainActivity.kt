@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +19,6 @@ import androidx.compose.runtime.SideEffect
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
-import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
 import com.github.soulsearching.model.playback.PlayerService
@@ -28,11 +28,11 @@ import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private val allMusicsViewModel: AllMusicsViewModel by inject()
-    private val allImageCoversViewModel: AllImageCoversViewModel by inject()
     private val mainActivityViewModel: MainActivityViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
@@ -67,11 +67,16 @@ class MainActivity : AppCompatActivity() {
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // For JAudiotagger to work on android.
+//        // For JAudiotagger to work on android.
         TagOptionSingleton.getInstance().isAndroid = true
         initializeBroadcastReceive()
 
         setContent {
+            mainActivityViewModel.handler.isReadPermissionGranted =
+                SoulSearchingContext.checkIfReadPermissionGranted()
+            mainActivityViewModel.handler.isPostNotificationGranted =
+                SoulSearchingContext.checkIfPostNotificationGranted()
+
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
                     mainActivityViewModel.handler.isReadPermissionGranted = isGranted
@@ -81,14 +86,17 @@ class MainActivity : AppCompatActivity() {
                     mainActivityViewModel.handler.isPostNotificationGranted = isGranted
                 }
 
-                if (!mainActivityViewModel.handler.isReadPermissionGranted || !mainActivityViewModel.handler.isPostNotificationGranted) {
+                if (
+                    !mainActivityViewModel.handler.isReadPermissionGranted ||
+                    !mainActivityViewModel.handler.isPostNotificationGranted
+                ) {
                     MissingPermissionsComposable()
                     SideEffect {
                         checkAndAskMissingPermissions(
                             isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
                             isPostNotificationGranted = mainActivityViewModel.handler.isPostNotificationGranted,
                             readPermissionLauncher = readPermissionLauncher,
-                            postNotificationLauncher = postNotificationLauncher
+                            postNotificationLauncher = postNotificationLauncher,
                         )
                     }
                     return@SoulSearchingTheme
@@ -120,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         isReadPermissionGranted: Boolean,
         isPostNotificationGranted: Boolean,
         readPermissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
-        postNotificationLauncher: ManagedActivityResultLauncher<String, Boolean>
+        postNotificationLauncher: ManagedActivityResultLauncher<String, Boolean>,
     ) {
         if (!isReadPermissionGranted) {
             readPermissionLauncher.launch(

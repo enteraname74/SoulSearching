@@ -43,14 +43,15 @@ actual fun ModifyMusicScreenView(
         }
 
     val resultWriteFileLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ ->
-            /*
-               We accept the finish action even if the user doesn't want to write the file modification on the device (it will
-               just not do it then)
-            */
-            modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
-            finishAction()
-
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                /*
+                We accept the finish action even if the user doesn't want to write the file modification on the device (it will
+                just not do it then)
+                */
+                modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
+                finishAction()
+            }
         }
 
     fun selectImage() {
@@ -69,7 +70,6 @@ actual fun ModifyMusicScreenView(
                 MediaStore.Audio.Media.getContentUri("external"),
                 mediaId
             )
-
             val intent = MediaStore.createWriteRequest(
                 context.contentResolver,
                 mutableListOf(musicFileUri)

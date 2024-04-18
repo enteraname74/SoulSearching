@@ -21,7 +21,7 @@ class MainActivityViewModelHandler(
         )
     )
 
-    var isReadPermissionGranted by mutableStateOf(true)
-    var isPostNotificationGranted by mutableStateOf(true)
+    var isReadPermissionGranted by mutableStateOf(false)
+    var isPostNotificationGranted by mutableStateOf(false)
 
 }

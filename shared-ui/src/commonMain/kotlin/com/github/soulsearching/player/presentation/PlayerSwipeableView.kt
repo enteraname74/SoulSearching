@@ -214,7 +214,6 @@ fun PlayerDraggableView(
     SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
-                println("TWO")
                 musicListDraggableState.animateTo(
                     BottomSheetStates.COLLAPSED,
                     tween(Constants.AnimationDuration.normal)
@@ -307,7 +306,6 @@ fun PlayerDraggableView(
                 navigateToModifyMusic = { path ->
                     coroutineScope.launch {
                         if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
-                            println("THREE")
                             musicListDraggableState.animateTo(
                                 BottomSheetStates.COLLAPSED,
                                 tween(Constants.AnimationDuration.normal)
@@ -467,7 +465,6 @@ fun PlayerDraggableView(
                     Modifier.clickable {
                         coroutineScope.launch {
                             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
-                                println("FOUR")
                                 musicListDraggableState.animateTo(
                                     BottomSheetStates.COLLAPSED,
                                     tween(Constants.AnimationDuration.normal)

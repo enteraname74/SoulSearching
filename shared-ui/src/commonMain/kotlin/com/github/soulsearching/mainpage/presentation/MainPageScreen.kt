@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -282,6 +283,8 @@ fun MainPageScreenView(
             constraintsScope.maxHeight.toPx()
         }
 
+        val searchBarFocusRequester = remember { FocusRequester() }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -295,6 +298,8 @@ fun MainPageScreenView(
                             BottomSheetStates.EXPANDED,
                             tween(Constants.AnimationDuration.normal)
                         )
+                    }.invokeOnCompletion {
+                        searchBarFocusRequester.requestFocus()
                     }
                 }
             )
@@ -674,7 +679,8 @@ fun MainPageScreenView(
             draggableState = searchDraggableState,
             playerDraggableState = playerDraggableState,
             placeholder = strings.searchAll,
-            maxHeight = maxHeight
+            maxHeight = maxHeight,
+            focusRequester = searchBarFocusRequester
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,

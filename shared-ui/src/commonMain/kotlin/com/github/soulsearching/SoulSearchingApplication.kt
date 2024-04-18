@@ -54,11 +54,6 @@ fun SoulSearchingApplication(
 
     SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
-    mainActivityViewModel.handler.isReadPermissionGranted =
-        SoulSearchingContext.checkIfReadPermissionGranted()
-    mainActivityViewModel.handler.isPostNotificationGranted =
-        SoulSearchingContext.checkIfPostNotificationGranted()
-
     playbackManager.retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
 
     val playerDraggableState = playerViewModel.handler.playerDraggableState
@@ -106,8 +101,6 @@ fun SoulSearchingApplication(
     }
 
     var generalNavigator: Navigator? = null
-
-    println("THERE")
 
     BoxWithConstraints(
         modifier = Modifier

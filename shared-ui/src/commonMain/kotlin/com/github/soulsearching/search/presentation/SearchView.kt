@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -34,8 +35,8 @@ fun SearchView(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    searchResult: @Composable (String, FocusManager) -> Unit
-
+    focusRequester: FocusRequester,
+    searchResult: @Composable (String, FocusManager) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
@@ -44,6 +45,8 @@ fun SearchView(
         draggableState.currentValue == BottomSheetStates.EXPANDED
                 && playerDraggableState.currentValue != BottomSheetStates.EXPANDED
     ) {
+        focusRequester.freeFocus()
+        focusManager.clearFocus()
         coroutineScope.launch {
             draggableState.animateTo(
                 BottomSheetStates.COLLAPSED,
@@ -97,7 +100,8 @@ fun SearchView(
                 },
                 focusManager = focusManager,
                 primaryColor = secondaryColor,
-                textColor = textColor
+                textColor = textColor,
+                focusRequester = focusRequester
             )
 
             if (searchText.isNotBlank()) {

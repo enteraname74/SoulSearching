@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
@@ -141,13 +142,16 @@ fun PlaylistScreen(
             constraintsScope.maxHeight.toPx()
         }
 
+        val searchBarFocusRequester = remember { FocusRequester() }
+
         val searchAction = {
-            coroutineScope
-                .launch {
+            coroutineScope.launch {
                     searchDraggableState.animateTo(
                         BottomSheetStates.EXPANDED,
                         tween(Constants.AnimationDuration.normal)
                     )
+                }.invokeOnCompletion {
+                    searchBarFocusRequester.requestFocus()
                 }
         }
 
@@ -335,7 +339,8 @@ fun PlaylistScreen(
             draggableState = searchDraggableState,
             playerDraggableState = playerDraggableState,
             placeholder = strings.searchForMusics,
-            maxHeight = maxHeight
+            maxHeight = maxHeight,
+            focusRequester = searchBarFocusRequester
         ) { searchText, focusManager ->
             SearchMusics(
                 playerDraggableState = playerDraggableState,
