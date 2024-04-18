@@ -1,18 +1,36 @@
-import com.github.enteraname74.buildsrc.AndroidConfig
-import com.github.enteraname74.buildsrc.Dependencies
-
 plugins {
+    id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("kotlin-android")
-    kotlin("kapt")
+    id("org.jetbrains.compose")
+    kotlin("plugin.serialization") version "1.9.22"
+}
+
+kotlin {
+    androidTarget()
+    jvm("desktop")
+    jvmToolchain(17)
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.koin.core)
+                implementation(libs.coroutines.core)
+                implementation(libs.coroutines.core.jvm)
+                implementation(compose.ui)
+                implementation(libs.jaudiotagger)
+
+                implementation(libs.bundles.ktor)
+            }
+        }
+    }
 }
 
 android {
-    namespace = AndroidConfig.DOMAIN_NAMESPACE
-    compileSdk = AndroidConfig.COMPILE_SDK
+    namespace = "com.github.enteraname74.soulsearching"
+    compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {
-        minSdk = AndroidConfig.MIN_SDK
+        minSdk = libs.versions.android.min.sdk.get().toInt()
     }
 
     compileOptions {
@@ -28,10 +46,4 @@ android {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-dependencies {
-    implementation(Dependencies.COROUTINES_CORE)
-    implementation(Dependencies.Google.HILT_ANDROID)
-    kapt(Dependencies.Google.HILT_COMPILER)
 }
