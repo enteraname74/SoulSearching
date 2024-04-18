@@ -689,7 +689,6 @@ fun MainPageScreenView(
                 albumState = albumState,
                 artistState = artistState,
                 playlistState = playlistState,
-                onMusicEvent = allMusicsViewModel.handler::onMusicEvent,
                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                 onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
                 onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
@@ -698,7 +697,17 @@ fun MainPageScreenView(
                 navigateToAlbum = navigateToAlbum,
                 playerDraggableState = playerDraggableState,
                 isMainPlaylist = false,
-                focusManager = focusManager
+                focusManager = focusManager,
+                onSelectedMusicForBottomSheet = { music ->
+                    coroutineScope.launch {
+                        selectedMusicId = music.musicId
+                        allMusicsViewModel.handler.onMusicEvent(
+                            MusicEvent.BottomSheet(
+                                isShown = true
+                            )
+                        )
+                    }
+                }
             )
         }
     }
