@@ -1,0 +1,27 @@
+package com.github.enteraname74.localdesktop.datasourceimpl
+
+import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
+import com.github.enteraname74.domain.model.AlbumArtist
+import com.github.enteraname74.localdesktop.dao.AlbumArtistDao
+import java.util.UUID
+
+/**
+ * Implementation of the AlbumArtistDataSource with Exposed.
+ */
+internal class ExposedAlbumArtistDataSourceImpl(
+    private val albumArtistDao: AlbumArtistDao
+) : AlbumArtistDataSource {
+    override suspend fun insertAlbumIntoArtist(albumArtist: AlbumArtist) =
+        albumArtistDao.insertAlbumIntoArtist(
+            albumArtist = albumArtist
+        )
+
+    override suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID) =
+        albumArtistDao.updateArtistOfAlbum(
+            albumId = albumId,
+            newArtistId = newArtistId
+        )
+
+    override suspend fun deleteAlbumFromArtist(albumId: UUID) =
+        albumArtistDao.deleteAlbumFromArtist(albumId = albumId)
+}
