@@ -39,7 +39,13 @@ class ExposedArtistDaoImpl: ArtistDao {
         }
     }
 
-    override suspend fun getArtistFromId(artistId: UUID): Artist? = dbQuery { 
+    override suspend fun getAllArtists(): List<Artist> = dbQuery {
+        ArtistTable
+            .selectAll()
+            .map(ExposedUtils::resultRowToArtist)
+    }
+
+    override suspend fun getArtistFromId(artistId: UUID): Artist? = dbQuery {
         ArtistTable
             .selectAll()
             .where { ArtistTable.artistId eq artistId.toString() }
@@ -47,7 +53,7 @@ class ExposedArtistDaoImpl: ArtistDao {
             .singleOrNull()
     }
 
-    override fun getAllArtistsSortByNameAscAsFlow(): Flow<List<Artist>> = transaction { 
+    override fun getAllArtistsSortByNameAscAsFlow(): Flow<List<Artist>> = transaction {
         flowOf(
             ArtistTable
                 .selectAll()
