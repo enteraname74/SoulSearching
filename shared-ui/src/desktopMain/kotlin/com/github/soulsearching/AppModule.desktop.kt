@@ -78,7 +78,6 @@ actual val appModule: Module = module {
             musicArtistRepository = get(),
             albumArtistRepository = get(),
             imageCoverRepository = get(),
-            folderRepository = get(),
             settings = get(),
             playbackManager = get(),
             musicFetcher = get()
@@ -107,12 +106,8 @@ actual val appModule: Module = module {
     }
     single {
         ModifyAlbumViewModelDesktopImpl(
-            musicRepository = get(),
             albumRepository = get(),
             artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
             imageCoverRepository = get(),
             playbackManager = get()
         )
@@ -126,15 +121,9 @@ actual val appModule: Module = module {
     single {
         ModifyMusicViewModelDesktopImpl(
             musicRepository = get(),
-            playlistRepository = get(),
             artistRepository = get(),
             albumRepository = get(),
-            musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
-            musicArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }

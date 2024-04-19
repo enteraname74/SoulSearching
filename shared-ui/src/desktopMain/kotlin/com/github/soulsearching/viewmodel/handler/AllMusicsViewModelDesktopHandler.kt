@@ -1,23 +1,21 @@
 package com.github.soulsearching.viewmodel.handler
 
-import com.github.enteraname74.domain.repository.*
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
-import com.github.soulsearching.model.PlaybackManagerDesktopImpl
+import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
+import com.github.soulsearching.model.PlaybackManagerDesktopImpl
 import kotlinx.coroutines.CoroutineScope
 
 class AllMusicsViewModelDesktopHandler(
     coroutineScope: CoroutineScope,
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
-    musicPlaylistRepository: MusicPlaylistRepository,
-    albumRepository: AlbumRepository,
-    artistRepository: ArtistRepository,
     musicAlbumRepository: MusicAlbumRepository,
     musicArtistRepository: MusicArtistRepository,
-    albumArtistRepository: AlbumArtistRepository,
-    imageCoverRepository: ImageCoverRepository,
     settings: SoulSearchingSettings,
     musicFetcher: MusicFetcher,
     playbackManager: PlaybackManagerDesktopImpl

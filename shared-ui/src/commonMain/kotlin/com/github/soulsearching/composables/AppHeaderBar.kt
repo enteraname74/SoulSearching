@@ -11,7 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun AppHeaderBar(
     modifier: Modifier = Modifier,
     title: String,
     leftAction: () -> Unit,
-    leftIcon: ImageVector = Icons.Rounded.ArrowBack,
+    leftIcon: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack,
     rightAction: () -> Unit = {},
     rightIcon: ImageVector? = null,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
