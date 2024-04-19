@@ -20,9 +20,9 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
-    implementation("org.jetbrains.compose.material3:material3-desktop:1.5.11")
-    implementation("org.jetbrains.compose.material:material-desktop:1.5.11")
-    implementation("org.jetbrains.compose.foundation:foundation-desktop:1.5.11")
+    implementation(libs.material3.desktop)
+    implementation(libs.material.desktop)
+    implementation(libs.foundation.desktop)
     implementation(project(":shared-ui"))
 }
 

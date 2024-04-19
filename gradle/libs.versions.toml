@@ -18,6 +18,8 @@ compose-plugin = "1.6.2"
 coroutines-core = "1.8.0"
 desktop-version-name = "1.0.0"
 exposed = "0.46.0"
+foundation-desktop = "1.6.2"
+gradle = "8.2.1"
 gson = "2.10.1"
 jaudiotagger = "3.0.1"
 kmpalette = "2.2.0"
@@ -26,6 +28,8 @@ kotlinx-serialization = "1.6.3"
 koin = "3.5.3"
 koin-compose = "1.1.2"
 ktor = "2.3.10"
+material-desktop = "1.6.2"
+material3-desktop = "1.6.2"
 media = "1.7.0"
 multiplatform-settings = "1.1.1"
 org-jetbrains-kotlin-jvm = "1.9.22"
@@ -52,6 +56,8 @@ exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = 
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "foundation-desktop" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
@@ -65,6 +71,8 @@ ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negot
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
+material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "material-desktop" }
+material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "material3-desktop" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
