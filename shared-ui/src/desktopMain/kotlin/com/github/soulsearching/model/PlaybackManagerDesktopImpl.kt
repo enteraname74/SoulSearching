@@ -21,7 +21,7 @@ class PlaybackManagerDesktopImpl(
     override val player: SoulSearchingPlayer
         get() = TODO("Not yet implemented")
 
-    override fun stopPlayback() {
+    override fun stopPlayback(resetPlayedList: Boolean) {
         TODO("Not yet implemented")
     }
 
