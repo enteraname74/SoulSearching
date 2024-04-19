@@ -59,6 +59,6 @@ actual object SoulSearchingContext {
     @OptIn(ExperimentalResourceApi::class)
     @Composable
     actual fun appPainterResource(resourcePath: String): Painter {
-        return painterResource(resourcePath)
+        return androidx.compose.ui.res.painterResource(resourcePath)
     }
 }
