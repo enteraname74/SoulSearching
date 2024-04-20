@@ -184,7 +184,7 @@ fun PlaylistScreen(
                         ) {
                             AppImage(
                                 bitmap = image,
-                                size = Constants.ImageSize.huge,
+                                size = Constants.ImageSize.veryHuge,
                                 roundedPercent = 5
                             )
                         }
@@ -282,7 +282,7 @@ fun PlaylistScreen(
                             ) {
                                 AppImage(
                                     bitmap = image,
-                                    size = Constants.ImageSize.huge,
+                                    size = Constants.ImageSize.veryHuge,
                                     roundedPercent = 5
                                 )
                             }
