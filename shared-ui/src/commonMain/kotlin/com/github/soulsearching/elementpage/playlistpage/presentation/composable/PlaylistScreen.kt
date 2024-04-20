@@ -180,7 +180,7 @@ fun PlaylistScreen(
                                 .fillMaxSize()
                                 .padding(Constants.Spacing.large),
                             horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.Top
                         ) {
                             AppImage(
                                 bitmap = image,
