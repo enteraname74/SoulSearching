@@ -129,12 +129,8 @@ fun SearchAll(
         }
 
         val foundedAlbums = albumState.albums.filter {
-            if (it.artist != null) {
-                it.artist!!.artistName.lowercase().contains(searchText.lowercase())
-                it.album.albumName.lowercase().contains(searchText.lowercase())
-            } else {
-                it.album.albumName.lowercase().contains(searchText.lowercase())
-            }
+            it.artist?.artistName?.lowercase()?.contains(searchText.lowercase()) == true ||
+                    it.album.albumName.lowercase().contains(searchText.lowercase())
         }
         if (foundedAlbums.isNotEmpty()) {
             stickyHeader {
