@@ -173,7 +173,8 @@ actual val appModule = module {
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            playbackManager = get()
+            playbackManager = get(),
+            albumRepository = get()
         )
     }
     single<SelectedPlaylistViewModel> {

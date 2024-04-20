@@ -1,9 +1,8 @@
-package com.github.soulsearching.elementpage.albumpage.presentation.composable
+package com.github.soulsearching.elementpage.artistpage.presentation.composable
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -15,13 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.SwipeableState
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,15 +30,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
@@ -66,16 +61,16 @@ import java.util.UUID
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Suppress("Deprecation")
 @Composable
-fun AlbumScreen(
+fun ArtistScreen(
     playlistId: UUID?,
     playlistWithMusics: List<PlaylistWithMusics>,
-    albumName: String,
-    artistName: String,
+    title: String,
     image: ImageBitmap?,
     musics: List<Music>,
+    albums: List<Album>,
+    navigateToAlbum: (String) -> Unit,
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
-    navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>,
@@ -183,19 +178,23 @@ fun AlbumScreen(
                             .fillMaxHeight()
                             .weight(1f)
                     ) {
-                        IconButton(onClick = navigateBack) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = strings.backButton,
-                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        AppHeaderBar(
+                            title = title,
+                            leftAction = navigateBack,
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(Constants.Spacing.large),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            AppImage(
+                                bitmap = image,
+                                size = Constants.ImageSize.veryHuge,
+                                roundedPercent = 5
                             )
                         }
-                        AlbumHeader(
-                            albumName = albumName,
-                            artistName = artistName,
-                            albumCover = image,
-                            onArtistClicked = navigateToArtist
-                        )
                     }
                     Column(
                         modifier = Modifier.weight(1f)
@@ -272,23 +271,50 @@ fun AlbumScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = strings.backButton,
-                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
-                        )
-                    }
+                    AppHeaderBar(
+                        title = title,
+                        leftAction = navigateBack,
+                    )
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
                         item {
-                            AlbumHeader(
-                                albumName = albumName,
-                                artistName = artistName,
-                                albumCover = image,
-                                onArtistClicked = navigateToArtist
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(Constants.Spacing.large),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                AppImage(
+                                    bitmap = image,
+                                    size = Constants.ImageSize.veryHuge,
+                                    roundedPercent = 5
+                                )
+                            }
+                        }
+                        item {
+                            ArtistAlbums(
+                                retrieveCoverMethod = retrieveCoverMethod,
+                                albums = albums,
+                                onAlbumClick = navigateToAlbum,
+                                onAlbumLongClick = {
+
+                                }
+                            )
+                        }
+                        item {
+                            Text(
+                                modifier = Modifier
+                                    .padding(
+                                        start = Constants.Spacing.medium,
+                                        bottom = Constants.Spacing.large
+                                    ),
+                                text = strings.musics,
+                                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp
                             )
                         }
                         stickyHeader {
@@ -361,99 +387,6 @@ fun AlbumScreen(
                     onSetBottomSheetVisibility(true)
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun AlbumHeader(
-    albumName: String,
-    artistName: String,
-    onArtistClicked: () -> Unit,
-    albumCover: ImageBitmap?
-) {
-    when (SoulSearchingContext.orientation) {
-        ScreenOrientation.HORIZONTAL -> {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Constants.Spacing.large),
-                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-            ) {
-                AppImage(
-                    bitmap = albumCover,
-                    size = Constants.ImageSize.huge,
-                    roundedPercent = 5
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
-                ) {
-                    Text(
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        text = albumName,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp
-                    )
-                    Text(
-                        modifier = Modifier.clickable {
-                            onArtistClicked()
-                        },
-                        color = SoulSearchingColorTheme.colorScheme.subText,
-                        text = artistName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
-            }
-        }
-        else -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = Constants.Spacing.large,
-                        end = Constants.Spacing.large,
-                        bottom = Constants.Spacing.large
-                    ),
-                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AppImage(
-                    bitmap = albumCover,
-                    size = Constants.ImageSize.veryHuge,
-                    roundedPercent = 5
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        text = albumName,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 26.sp
-                    )
-                    Text(
-                        modifier = Modifier.clickable {
-                            onArtistClicked()
-                        },
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.subText,
-                        text = artistName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
-            }
         }
     }
 }

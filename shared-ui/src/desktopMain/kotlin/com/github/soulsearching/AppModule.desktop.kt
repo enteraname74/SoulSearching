@@ -154,7 +154,8 @@ actual val appModule: Module = module {
             musicRepository = get(),
             artistRepository = get(),
             musicPlaylistRepository = get(),
-            playbackManager = get()
+            playbackManager = get(),
+            albumRepository = get()
         )
     }
     single {

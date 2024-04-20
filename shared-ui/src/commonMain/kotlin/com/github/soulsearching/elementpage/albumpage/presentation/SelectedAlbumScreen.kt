@@ -23,7 +23,6 @@ import com.github.soulsearching.domain.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumEvent
 import com.github.soulsearching.elementpage.albumpage.presentation.composable.AlbumScreen
 import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.UUID
@@ -87,6 +86,7 @@ data class SelectedAlbumScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+@Suppress("Deprecation")
 fun SelectedAlbumScreenView(
     selectedAlbumViewModel: SelectedAlbumViewModel,
     selectedAlbumId: String,

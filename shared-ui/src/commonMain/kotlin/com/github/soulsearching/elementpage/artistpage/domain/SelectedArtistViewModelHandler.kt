@@ -1,7 +1,9 @@
 package com.github.soulsearching.elementpage.artistpage.domain
 
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -25,6 +27,7 @@ import java.util.UUID
 class SelectedArtistViewModelHandler(
     private val coroutineScope: CoroutineScope,
     private val artistRepository: ArtistRepository,
+    private val albumRepository: AlbumRepository,
     private val playbackManager: PlaybackManager,
     private val musicRepository: MusicRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
@@ -33,6 +36,8 @@ class SelectedArtistViewModelHandler(
     private var _selectedArtistWithMusics: StateFlow<ArtistWithMusics?> = MutableStateFlow(
         ArtistWithMusics()
     )
+
+    private var artistAlbums: StateFlow<List<Album>> = MutableStateFlow(emptyList())
 
     private val _playlists = playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
         .stateIn(
@@ -84,15 +89,23 @@ class SelectedArtistViewModelHandler(
                 coroutineScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
             )
 
+        artistAlbums = albumRepository.getAlbumsOfArtistAsFlow(
+            artistId = artistId
+        ).stateIn(
+            coroutineScope, SharingStarted.WhileSubscribed(), emptyList()
+        )
+
         state =
             combine(
                 _state,
                 _selectedArtistWithMusics,
-                _playlists
-            ) { state, artist, playlists ->
+                _playlists,
+                artistAlbums
+            ) { state, artist, playlists, albums ->
                 state.copy(
                     artistWithMusics = artist ?: ArtistWithMusics(),
-                    allPlaylists = playlists
+                    allPlaylists = playlists,
+                    artistAlbums = albums
                 )
             }.stateIn(
                 coroutineScope,

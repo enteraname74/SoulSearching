@@ -1,5 +1,6 @@
 package com.github.soulsearching.viewmodel
 
+import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -18,7 +19,8 @@ class SelectedArtistViewModelDesktopImpl(
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
-    playbackManager: PlaybackManagerDesktopImpl
+    playbackManager: PlaybackManagerDesktopImpl,
+    albumRepository: AlbumRepository
 ) : SelectedArtistViewModel {
     override val handler: SelectedArtistViewModelHandler = SelectedArtistViewModelHandler(
         coroutineScope = CoroutineScope(Dispatchers.IO),
@@ -26,6 +28,7 @@ class SelectedArtistViewModelDesktopImpl(
         playbackManager = playbackManager,
         musicRepository = musicRepository,
         musicPlaylistRepository = musicPlaylistRepository,
-        playlistRepository = playlistRepository
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository
     )
 }

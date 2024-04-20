@@ -20,8 +20,9 @@ import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
+import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistEvent
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.composable.ArtistScreen
 import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.UUID
@@ -67,18 +68,27 @@ data class SelectedArtistScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
-            playerDraggableState = playerDraggableState
+            playerDraggableState = playerDraggableState,
+            navigateToAlbum = { albumId ->
+                navigator.push(
+                    SelectedAlbumScreen(
+                        selectedAlbumId = albumId
+                    )
+                )
+            }
         )
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+@Suppress("Deprecation")
 fun SelectedArtistScreenView(
     selectedArtistViewModel: SelectedArtistViewModel,
     selectedArtistId: String,
     navigateToModifyArtist: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
+    navigateToAlbum: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
@@ -110,7 +120,7 @@ fun SelectedArtistScreenView(
 //        }
 //    }
 
-    PlaylistScreen(
+    ArtistScreen(
         playlistId = state.artistWithMusics.artist.artistId,
         playlistWithMusics = state.allPlaylists,
         title = state.artistWithMusics.artist.artistName,
@@ -176,6 +186,8 @@ fun SelectedArtistScreenView(
                     selectedPlaylistsIds = selectedPlaylistsIds
                 )
             )
-        }
+        },
+        albums = state.artistAlbums,
+        navigateToAlbum = navigateToAlbum
     )
 }
