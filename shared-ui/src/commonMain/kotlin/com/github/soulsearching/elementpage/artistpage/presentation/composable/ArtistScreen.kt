@@ -13,8 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.SwipeableState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +57,7 @@ import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.MusicList
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistPanel
+import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
@@ -64,8 +71,8 @@ import java.util.UUID
 fun ArtistScreen(
     playlistId: UUID?,
     playlistWithMusics: List<PlaylistWithMusics>,
-    title: String,
-    image: ImageBitmap?,
+    artistName: String,
+    artistCover: ImageBitmap?,
     musics: List<Music>,
     albums: List<Album>,
     navigateToAlbum: (String) -> Unit,
@@ -97,7 +104,7 @@ fun ArtistScreen(
         mutableStateOf(false)
     }
 
-    image?.let {
+    artistCover?.let {
         if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
             colorThemeManager.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
@@ -167,6 +174,33 @@ fun ArtistScreen(
             mutableStateOf<UUID?>(null)
         }
 
+        musics.find { it.musicId == selectedMusicId }?.let { music ->
+            MusicBottomSheetEvents(
+                selectedMusic = music,
+                playlistsWithMusics = playlistWithMusics,
+                navigateToModifyMusic = navigateToModifyMusic,
+                musicBottomSheetState = musicBottomSheetState,
+                playerDraggableState = playerDraggableState,
+                isDeleteMusicDialogShown = isDeleteMusicDialogShown,
+                isBottomSheetShown = isBottomSheetShown,
+                isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
+                isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
+                onDismiss = {
+                    onSetBottomSheetVisibility(false)
+                },
+                onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
+                onDeleteMusic = { onDeleteMusic(music) },
+                onToggleQuickAccessState = { onToggleQuickAccessState(music) },
+                onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
+                onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                    onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
+                },
+                retrieveCoverMethod = retrieveCoverMethod
+            )
+        }
+
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
                 Row(
@@ -178,121 +212,122 @@ fun ArtistScreen(
                             .fillMaxHeight()
                             .weight(1f)
                     ) {
-                        AppHeaderBar(
-                            title = title,
-                            leftAction = navigateBack,
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(Constants.Spacing.large),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.Top
-                        ) {
-                            AppImage(
-                                bitmap = image,
-                                size = Constants.ImageSize.veryHuge,
-                                roundedPercent = 5
+                        IconButton(onClick = navigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = strings.backButton,
+                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
                             )
                         }
+                        PageHeader(
+                            title = artistName,
+                            cover = artistCover,
+                            text = strings.musics(musics.size)
+                        )
                     }
                     Column(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1.3f)
                     ) {
-                        PlaylistPanel(
-                            editAction = navigateToModifyPlaylist,
-                            shuffleAction = {
-                                shuffleAction()
-                            },
-                            searchAction = { searchAction() },
-                            playlistType = playlistType,
-                        )
-                        MusicList(
+                        LazyColumn(
                             modifier = Modifier
-                                .fillMaxHeight(),
-                            selectedMusic = musics.find { it.musicId == selectedMusicId },
-                            onSelectMusic = {
-                                selectedMusicId = it.musicId
-                            },
-                            musics = musics,
-                            playlistsWithMusics = playlistWithMusics,
-                            playlistId = playlistId,
-                            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                            isBottomSheetShown = isBottomSheetShown,
-                            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                            onSetBottomSheetVisibility = onSetBottomSheetVisibility,
-                            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                            onDeleteMusic = onDeleteMusic,
-                            onToggleQuickAccessState = onToggleQuickAccessState,
-                            onRemoveFromPlaylist = onRemoveFromPlaylist,
-                            onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                            navigateToModifyMusic = navigateToModifyMusic,
-                            retrieveCoverMethod = { retrieveCoverMethod(it) },
-                            updateNbPlayedAction = updateNbPlayedAction,
-                            musicBottomSheetState = musicBottomSheetState,
-                            playerDraggableState = playerDraggableState
-                        )
+                                .fillMaxSize()
+                        ) {
+                            item {
+                                ArtistAlbums(
+                                    retrieveCoverMethod = retrieveCoverMethod,
+                                    albums = albums,
+                                    onAlbumClick = navigateToAlbum,
+                                    onAlbumLongClick = {
+
+                                    }
+                                )
+                            }
+                            item {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(
+                                            start = Constants.Spacing.medium,
+                                            bottom = Constants.Spacing.large
+                                        ),
+                                    text = strings.musics,
+                                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp
+                                )
+                            }
+                            stickyHeader {
+                                PlaylistPanel(
+                                    editAction = navigateToModifyPlaylist,
+                                    shuffleAction = {
+                                        playlistId?.let(updateNbPlayedAction)
+                                        shuffleAction()
+                                    },
+                                    searchAction = { searchAction() },
+                                    playlistType = playlistType,
+                                )
+                            }
+                            items(
+                                items = musics
+                            ) { elt ->
+                                MusicItemComposable(
+                                    music = elt,
+                                    onClick = { music ->
+                                        coroutineScope.launch {
+                                            playerDraggableState.animateTo(
+                                                BottomSheetStates.EXPANDED,
+                                                tween(Constants.AnimationDuration.normal)
+                                            )
+                                        }.invokeOnCompletion {
+                                            playlistId?.let {
+                                                updateNbPlayedAction(it)
+                                            }
+                                            playbackManager.setCurrentPlaylistAndMusic(
+                                                music = music,
+                                                musicList = musics,
+                                                playlistId = playlistId,
+                                                isMainPlaylist = false
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        coroutineScope.launch {
+                                            selectedMusicId = elt.musicId
+                                            onSetBottomSheetVisibility(true)
+                                        }
+                                    },
+                                    musicCover = retrieveCoverMethod(elt.coverId),
+                                    textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                                )
+                            }
+                            item { PlayerSpacer() }
+                        }
                     }
                 }
             }
 
             else -> {
-                musics.find { it.musicId == selectedMusicId }?.let { music ->
-                    MusicBottomSheetEvents(
-                        selectedMusic = music,
-                        playlistsWithMusics = playlistWithMusics,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = musicBottomSheetState,
-                        playerDraggableState = playerDraggableState,
-                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                        isBottomSheetShown = isBottomSheetShown,
-                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onDismiss = {
-                            onSetBottomSheetVisibility(false)
-                        },
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onDeleteMusic = { onDeleteMusic(music) },
-                        onToggleQuickAccessState = { onToggleQuickAccessState(music) },
-                        onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
-                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        },
-                        retrieveCoverMethod = retrieveCoverMethod
-                    )
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    AppHeaderBar(
-                        title = title,
-                        leftAction = navigateBack,
-                    )
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = strings.backButton,
+                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
                         item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(Constants.Spacing.large),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AppImage(
-                                    bitmap = image,
-                                    size = Constants.ImageSize.veryHuge,
-                                    roundedPercent = 5
-                                )
-                            }
+                            PageHeader(
+                                title = artistName,
+                                cover = artistCover,
+                                text = strings.musics(musics.size)
+                            )
                         }
                         item {
                             ArtistAlbums(

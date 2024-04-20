@@ -123,8 +123,8 @@ fun SelectedArtistScreenView(
     ArtistScreen(
         playlistId = state.artistWithMusics.artist.artistId,
         playlistWithMusics = state.allPlaylists,
-        title = state.artistWithMusics.artist.artistName,
-        image = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
+        artistName = state.artistWithMusics.artist.artistName,
+        artistCover = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
         musics = state.artistWithMusics.musics,
         navigateToModifyPlaylist = {
             navigateToModifyArtist(selectedArtistId)
