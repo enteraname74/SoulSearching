@@ -56,6 +56,7 @@ import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.MusicList
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistPanel
+import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
@@ -190,11 +191,11 @@ fun AlbumScreen(
                                 tint = SoulSearchingColorTheme.colorScheme.onPrimary
                             )
                         }
-                        AlbumHeader(
-                            albumName = albumName,
-                            artistName = artistName,
-                            albumCover = image,
-                            onArtistClicked = navigateToArtist
+                        PageHeader(
+                            title = albumName,
+                            text = artistName,
+                            cover = image,
+                            onTextClicked = navigateToArtist
                         )
                     }
                     Column(
@@ -284,11 +285,11 @@ fun AlbumScreen(
                             .fillMaxSize()
                     ) {
                         item {
-                            AlbumHeader(
-                                albumName = albumName,
-                                artistName = artistName,
-                                albumCover = image,
-                                onArtistClicked = navigateToArtist
+                            PageHeader(
+                                title = albumName,
+                                text = artistName,
+                                cover = image,
+                                onTextClicked = navigateToArtist
                             )
                         }
                         stickyHeader {
@@ -361,99 +362,6 @@ fun AlbumScreen(
                     onSetBottomSheetVisibility(true)
                 }
             )
-        }
-    }
-}
-
-@Composable
-fun AlbumHeader(
-    albumName: String,
-    artistName: String,
-    onArtistClicked: () -> Unit,
-    albumCover: ImageBitmap?
-) {
-    when (SoulSearchingContext.orientation) {
-        ScreenOrientation.HORIZONTAL -> {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Constants.Spacing.large),
-                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-            ) {
-                AppImage(
-                    bitmap = albumCover,
-                    size = Constants.ImageSize.huge,
-                    roundedPercent = 5
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
-                ) {
-                    Text(
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        text = albumName,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 24.sp
-                    )
-                    Text(
-                        modifier = Modifier.clickable {
-                            onArtistClicked()
-                        },
-                        color = SoulSearchingColorTheme.colorScheme.subText,
-                        text = artistName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
-            }
-        }
-        else -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = Constants.Spacing.large,
-                        end = Constants.Spacing.large,
-                        bottom = Constants.Spacing.large
-                    ),
-                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AppImage(
-                    bitmap = albumCover,
-                    size = Constants.ImageSize.veryHuge,
-                    roundedPercent = 5
-                )
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        text = albumName,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 26.sp
-                    )
-                    Text(
-                        modifier = Modifier.clickable {
-                            onArtistClicked()
-                        },
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.subText,
-                        text = artistName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
-            }
         }
     }
 }
