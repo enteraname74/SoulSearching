@@ -102,8 +102,8 @@ fun SelectedPlaylistScreenView(
     PlaylistScreen(
         playlistId = state.playlistWithMusics?.playlist?.playlistId,
         playlistWithMusics = state.allPlaylists,
-        title = state.playlistWithMusics?.playlist?.name ?: "",
-        image = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
+        playlistName = state.playlistWithMusics?.playlist?.name ?: "",
+        playlistCover = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
         musics = state.playlistWithMusics?.musics ?: emptyList(),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)

@@ -15,7 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.SwipeableState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +50,7 @@ import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
@@ -59,8 +64,8 @@ import java.util.UUID
 fun PlaylistScreen(
     playlistId: UUID?,
     playlistWithMusics: List<PlaylistWithMusics>,
-    title: String,
-    image: ImageBitmap?,
+    playlistName: String,
+    playlistCover: ImageBitmap?,
     musics: List<Music>,
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
@@ -90,7 +95,7 @@ fun PlaylistScreen(
         mutableStateOf(false)
     }
 
-    image?.let {
+    playlistCover?.let {
         if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
             colorThemeManager.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
@@ -171,23 +176,18 @@ fun PlaylistScreen(
                             .fillMaxHeight()
                             .weight(1f)
                     ) {
-                        AppHeaderBar(
-                            title = title,
-                            leftAction = navigateBack,
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(Constants.Spacing.large),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.Top
-                        ) {
-                            AppImage(
-                                bitmap = image,
-                                size = Constants.ImageSize.veryHuge,
-                                roundedPercent = 5
+                        IconButton(onClick = navigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = strings.backButton,
+                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
                             )
                         }
+                        PageHeader(
+                            title = playlistName,
+                            cover = playlistCover,
+                            text = strings.musics(musics.size)
+                        )
                     }
                     Column(
                         modifier = Modifier.weight(1f)
@@ -264,28 +264,24 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    AppHeaderBar(
-                        title = title,
-                        leftAction = navigateBack,
-                    )
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = strings.backButton,
+                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
                         item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(Constants.Spacing.large),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AppImage(
-                                    bitmap = image,
-                                    size = Constants.ImageSize.veryHuge,
-                                    roundedPercent = 5
-                                )
-                            }
+                            PageHeader(
+                                title = playlistName,
+                                cover = playlistCover,
+                                text = strings.musics(musics.size)
+                            )
                         }
                         stickyHeader {
                             PlaylistPanel(
