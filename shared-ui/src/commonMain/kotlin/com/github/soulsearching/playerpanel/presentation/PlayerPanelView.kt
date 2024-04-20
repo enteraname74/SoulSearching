@@ -49,6 +49,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
+@Suppress("Deprecation")
 fun PlayerPanelView(
     maxHeight: Float,
     musicListDraggableState: SwipeableState<BottomSheetStates>,
@@ -93,7 +94,7 @@ fun PlayerPanelView(
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     0f to BottomSheetStates.EXPANDED,
-                    (maxHeight - 210f) to BottomSheetStates.COLLAPSED,
+                    (maxHeight - 208f) to BottomSheetStates.COLLAPSED,
                 )
             )
     ) {
