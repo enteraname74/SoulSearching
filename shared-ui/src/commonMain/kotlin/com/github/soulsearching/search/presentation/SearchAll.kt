@@ -10,15 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.search.presentation.composable.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.events.AlbumEvent
 import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.mainpage.domain.state.AlbumState
@@ -33,6 +32,7 @@ import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
+@Suppress("Deprecation")
 fun SearchAll(
     searchText: String,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -41,9 +41,9 @@ fun SearchAll(
     artistState: ArtistState,
     playlistState: PlaylistState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
+    onSelectedAlbumForBottomSheet: (Album) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     onArtistEvent: (ArtistEvent) -> Unit,
-    onAlbumEvent: (AlbumEvent) -> Unit,
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
@@ -136,29 +136,20 @@ fun SearchAll(
             stickyHeader {
                 SearchType(title = strings.albums)
             }
-            items(foundedAlbums) { album ->
+            items(foundedAlbums) { albumWithArtist ->
                 LinearPreviewComposable(
-                    title = album.album.albumName,
-                    text = if (album.artist != null) album.artist!!.artistName else "",
+                    title = albumWithArtist.album.albumName,
+                    text = if (albumWithArtist.artist != null) albumWithArtist.artist!!.artistName else "",
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToAlbum(album.album.albumId.toString())
+                        navigateToAlbum(albumWithArtist.album.albumId.toString())
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onAlbumEvent(
-                                AlbumEvent.SetSelectedAlbum(
-                                    album
-                                )
-                            )
-                            onAlbumEvent(
-                                AlbumEvent.BottomSheet(
-                                    isShown = true
-                                )
-                            )
+                            onSelectedAlbumForBottomSheet(albumWithArtist.album)
                         }
                     },
-                    cover = retrieveCoverMethod(album.album.coverId)
+                    cover = retrieveCoverMethod(albumWithArtist.album.coverId)
                 )
             }
         }

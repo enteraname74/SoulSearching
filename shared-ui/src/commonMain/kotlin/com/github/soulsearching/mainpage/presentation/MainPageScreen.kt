@@ -206,6 +206,10 @@ fun MainPageScreenView(
         mutableStateOf<UUID?>(null)
     }
 
+    var selectedAlbumId by rememberSaveable {
+        mutableStateOf<UUID?>(null)
+    }
+
     musicState.musics.find { it.musicId == selectedMusicId }?.let { music ->
         MusicBottomSheetEvents(
             selectedMusic = music,
@@ -259,12 +263,35 @@ fun MainPageScreenView(
         navigateToModifyPlaylist = navigateToModifyPlaylist
     )
 
-    AlbumBottomSheetEvents(
-        albumState = albumState,
-        onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
-        navigateToModifyAlbum = navigateToModifyAlbum
-    )
+    albumState.albums.find { it.album.albumId == selectedAlbumId }?.let { albumWithArtist ->
+        AlbumBottomSheetEvents(
+            selectedAlbum = albumWithArtist.album,
+            navigateToModifyAlbum = navigateToModifyAlbum,
+            isDeleteAlbumDialogShown = albumState.isDeleteDialogShown,
+            isBottomSheetShown = albumState.isBottomSheetShown,
+            onDeleteAlbum = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.DeleteAlbum(albumId = albumWithArtist.album.albumId)
+                )
+            },
+            onDismissBottomSheet = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.BottomSheet(isShown = false)
+                )
+            },
+            onSetDeleteAlbumDialogVisibility = { isShown ->
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.DeleteDialog(isShown = isShown)
+                )
+            },
+            onToggleQuickAccessState = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.UpdateQuickAccessState(album = albumWithArtist.album)
+                )
+            }
+        )
 
+    }
     ArtistBottomSheetEvents(
         artistState = artistState,
         onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
@@ -357,13 +384,9 @@ fun MainPageScreenView(
                                         }
                                     },
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = {
+                                    albumBottomSheetAction = { albumWithArtist ->
                                         coroutineScope.launch {
-                                            allAlbumsViewModel.handler.onAlbumEvent(
-                                                AlbumEvent.SetSelectedAlbum(
-                                                    it
-                                                )
-                                            )
+                                            selectedAlbumId = albumWithArtist.album.albumId
                                             allAlbumsViewModel.handler.onAlbumEvent(
                                                 AlbumEvent.BottomSheet(
                                                     isShown = true
@@ -489,13 +512,9 @@ fun MainPageScreenView(
                                     list = albumState.albums,
                                     title = strings.albums,
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = {
+                                    albumBottomSheetAction = { albumWithArtist ->
                                         coroutineScope.launch {
-                                            allAlbumsViewModel.handler.onAlbumEvent(
-                                                AlbumEvent.SetSelectedAlbum(
-                                                    it
-                                                )
-                                            )
+                                            selectedAlbumId = albumWithArtist.album.albumId
                                             allAlbumsViewModel.handler.onAlbumEvent(
                                                 AlbumEvent.BottomSheet(
                                                     isShown = true
@@ -693,7 +712,6 @@ fun MainPageScreenView(
                 playlistState = playlistState,
                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                 onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
-                onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
@@ -709,6 +727,14 @@ fun MainPageScreenView(
                             )
                         )
                     }
+                },
+                onSelectedAlbumForBottomSheet = { album ->
+                    selectedAlbumId = album.albumId
+                    allAlbumsViewModel.handler.onAlbumEvent(
+                        AlbumEvent.BottomSheet(
+                            isShown = true
+                        )
+                    )
                 }
             )
         }

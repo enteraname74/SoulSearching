@@ -5,28 +5,23 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.mainpage.domain.state.AlbumState
+import com.github.enteraname74.domain.model.Album
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumBottomSheet(
-    albumState: AlbumState,
-    onAlbumEvent: (AlbumEvent) -> Unit,
+    selectedAlbum: Album,
+    onDismiss: () -> Unit,
+    onShowDeleteAlbumDialog: () -> Unit,
+    onToggleQuickAccessState: () -> Unit,
     albumModalSheetState: SheetState,
     navigateToModifyAlbum: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
-        onDismissRequest = {
-            onAlbumEvent(
-                AlbumEvent.BottomSheet(
-                    isShown = false
-                )
-            )
-        },
+        onDismissRequest = onDismiss,
         sheetState = albumModalSheetState,
         dragHandle = {}
     ) {
@@ -35,32 +30,22 @@ fun AlbumBottomSheet(
                 coroutineScope.launch { albumModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!albumModalSheetState.isVisible) {
-                            onAlbumEvent(
-                                AlbumEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                            navigateToModifyAlbum(albumState.selectedAlbumWithArtist.album.albumId.toString())
+                            onDismiss()
+                            navigateToModifyAlbum(selectedAlbum.albumId.toString())
                         }
                     }
             },
-            deleteAction = {
-                onAlbumEvent(AlbumEvent.DeleteDialog(isShown = true))
-            },
+            deleteAction = onShowDeleteAlbumDialog,
             quickAccessAction = {
-                onAlbumEvent(AlbumEvent.UpdateQuickAccessState)
+                onToggleQuickAccessState()
                 coroutineScope.launch { albumModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!albumModalSheetState.isVisible) {
-                            onAlbumEvent(
-                                AlbumEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
+                            onDismiss()
                         }
                     }
             },
-            isInQuickAccess = albumState.selectedAlbumWithArtist.album.isInQuickAccess
+            isInQuickAccess = selectedAlbum.isInQuickAccess
         )
     }
 }

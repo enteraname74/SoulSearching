@@ -90,16 +90,9 @@ open class AllAlbumsViewModeHandler(
      */
     fun onAlbumEvent(event: AlbumEvent) {
         when (event) {
-            AlbumEvent.DeleteAlbum -> {
+            is AlbumEvent.DeleteAlbum -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    albumRepository.delete(albumId = state.value.selectedAlbumWithArtist.album.albumId)
-                }
-            }
-            is AlbumEvent.SetSelectedAlbum -> {
-                _state.update {
-                    it.copy(
-                        selectedAlbumWithArtist = event.albumWithArtist
-                    )
+                    albumRepository.delete(albumId = event.albumId)
                 }
             }
             is AlbumEvent.BottomSheet -> {
@@ -133,8 +126,8 @@ open class AllAlbumsViewModeHandler(
             is AlbumEvent.UpdateQuickAccessState -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     albumRepository.updateQuickAccessState(
-                        newQuickAccessState = !state.value.selectedAlbumWithArtist.album.isInQuickAccess,
-                        albumId = state.value.selectedAlbumWithArtist.album.albumId
+                        newQuickAccessState = !event.album.isInQuickAccess,
+                        albumId = event.album.albumId
                     )
                 }
             }
