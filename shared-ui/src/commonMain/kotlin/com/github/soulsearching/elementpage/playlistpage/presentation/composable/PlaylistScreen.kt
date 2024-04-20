@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Suppress("Deprecation")
 @Composable
 fun PlaylistScreen(
     playlistId: UUID?,

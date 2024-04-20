@@ -153,7 +153,9 @@ fun MusicBottomSheetEvents(
                 addToPlaylistModalSheetState = addToPlaylistModalSheetState,
                 primaryColor = secondaryColor,
                 textColor = onSecondaryColor,
-                playlistsWithMusics = playlistsWithMusics,
+                playlistsWithMusics = playlistsWithMusics.filter { playlist ->
+                    playlist.musics.none { it.musicId == selectedMusic.musicId }
+                },
                 onDismiss = { onSetAddToPlaylistBottomSheetVisibility(false) },
                 onConfirm = { selectedPlaylistsIds ->
                     onAddMusicToSelectedPlaylists(selectedPlaylistsIds)
