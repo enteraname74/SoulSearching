@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -509,22 +510,22 @@ fun PlayerDraggableView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             imageVector = Icons.Rounded.KeyboardArrowDown,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(Constants.ImageSize.medium)
-                                .composed { backImageClickableModifier }
-                                .align(Alignment.CenterStart),
+                                .composed { backImageClickableModifier },
                             colorFilter = ColorFilter.tint(textColor),
                             alpha = alphaTransition
                         )
                         Column(
                             modifier = Modifier
-                                .align(Alignment.Center),
+                                .weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
@@ -633,6 +634,9 @@ fun PlayerDraggableView(
                                 )
                             }
                         }
+                        Spacer(
+                            modifier = Modifier.size(Constants.ImageSize.medium)
+                        )
                     }
 
                     when (SoulSearchingContext.orientation) {
