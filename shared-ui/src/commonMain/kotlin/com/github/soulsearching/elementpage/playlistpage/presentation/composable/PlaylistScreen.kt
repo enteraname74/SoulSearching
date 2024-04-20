@@ -189,44 +189,46 @@ fun PlaylistScreen(
                             )
                         }
                     }
-                    PlaylistPanel(
-                        editAction = navigateToModifyPlaylist,
-                        shuffleAction = {
-                            shuffleAction()
-                        },
-                        searchAction = { searchAction() },
-                        isLandscapeMode = true,
-                        playlistType = playlistType,
-                    )
-                    MusicList(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        selectedMusic = musics.find { it.musicId == selectedMusicId },
-                        onSelectMusic = {
-                            selectedMusicId = it.musicId
-                        },
-                        musics = musics,
-                        playlistsWithMusics = playlistWithMusics,
-                        playlistId = playlistId,
-                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                        isBottomSheetShown = isBottomSheetShown,
-                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onSetBottomSheetVisibility = onSetBottomSheetVisibility,
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onDeleteMusic = onDeleteMusic,
-                        onToggleQuickAccessState = onToggleQuickAccessState,
-                        onRemoveFromPlaylist = onRemoveFromPlaylist,
-                        onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        retrieveCoverMethod = { retrieveCoverMethod(it) },
-                        updateNbPlayedAction = updateNbPlayedAction,
-                        musicBottomSheetState = musicBottomSheetState,
-                        playerDraggableState = playerDraggableState
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        PlaylistPanel(
+                            editAction = navigateToModifyPlaylist,
+                            shuffleAction = {
+                                shuffleAction()
+                            },
+                            searchAction = { searchAction() },
+                            playlistType = playlistType,
+                        )
+                        MusicList(
+                            modifier = Modifier
+                                .fillMaxHeight(),
+                            selectedMusic = musics.find { it.musicId == selectedMusicId },
+                            onSelectMusic = {
+                                selectedMusicId = it.musicId
+                            },
+                            musics = musics,
+                            playlistsWithMusics = playlistWithMusics,
+                            playlistId = playlistId,
+                            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
+                            isBottomSheetShown = isBottomSheetShown,
+                            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
+                            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
+                            onSetBottomSheetVisibility = onSetBottomSheetVisibility,
+                            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
+                            onDeleteMusic = onDeleteMusic,
+                            onToggleQuickAccessState = onToggleQuickAccessState,
+                            onRemoveFromPlaylist = onRemoveFromPlaylist,
+                            onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
+                            navigateToModifyMusic = navigateToModifyMusic,
+                            retrieveCoverMethod = { retrieveCoverMethod(it) },
+                            updateNbPlayedAction = updateNbPlayedAction,
+                            musicBottomSheetState = musicBottomSheetState,
+                            playerDraggableState = playerDraggableState
+                        )
+                    }
                 }
             }
 
@@ -293,7 +295,6 @@ fun PlaylistScreen(
                                     shuffleAction()
                                 },
                                 searchAction = { searchAction() },
-                                isLandscapeMode = false,
                                 playlistType = playlistType,
                             )
                         }

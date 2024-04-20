@@ -2,9 +2,7 @@ package com.github.soulsearching.elementpage.playlistpage.presentation.composabl
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -20,46 +18,26 @@ fun PlaylistPanel(
     editAction: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    isLandscapeMode: Boolean,
     playlistType: PlaylistType,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    if (isLandscapeMode) {
-        Column(modifier = Modifier
-            .fillMaxHeight()
-            .background(primaryColor)
-            .padding(end = Constants.Spacing.medium),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            ImagesButton(
-                editAction = editAction,
-                shuffleAction = shuffleAction,
-                searchAction = searchAction,
-                playlistType = playlistType,
-                tint = tint,
-                primaryColor = secondaryColor
-            )
-        }
-    } else {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .background(primaryColor)
-            .padding(bottom = Constants.Spacing.medium),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            ImagesButton(
-                editAction = editAction,
-                shuffleAction = shuffleAction,
-                searchAction = searchAction,
-                playlistType = playlistType,
-                tint = tint,
-                primaryColor = secondaryColor
-            )
-        }
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .background(primaryColor)
+        .padding(bottom = Constants.Spacing.medium),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        ImagesButton(
+            editAction = editAction,
+            shuffleAction = shuffleAction,
+            searchAction = searchAction,
+            playlistType = playlistType,
+            tint = tint,
+            primaryColor = secondaryColor
+        )
     }
 
 }
