@@ -2,14 +2,15 @@ package com.github.soulsearching.domain.events.handlers
 
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +29,9 @@ class PlaylistEventHandler(
     private val sortDirection: MutableStateFlow<Int> = MutableStateFlow(SortDirection.ASC),
     private val playlistRepository: PlaylistRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
-    private val imageCoverRepository: ImageCoverRepository,
-    private val settings: SoulSearchingSettings
+    private val settings: SoulSearchingSettings,
+    private val musicRepository: MusicRepository,
+    private val playbackManager: PlaybackManager
 ) {
 
     /**
@@ -118,6 +120,8 @@ class PlaylistEventHandler(
                     )
                 )
             }
+            val music = musicRepository.getMusicFromId(musicId = musicId)
+            playbackManager.updateMusic(music = music)
             privateState.update {
                 it.copy(
                     multiplePlaylistSelected = ArrayList()

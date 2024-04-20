@@ -82,8 +82,9 @@ actual val appModule: Module = module {
         AllPlaylistsViewModelDesktopImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            musicRepository = get(),
+            playbackManager = get()
         )
     }
     single {

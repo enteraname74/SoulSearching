@@ -129,25 +129,6 @@ abstract class AllMusicsViewModelHandler(
     )
 
     /**
-     * Retrieve the current page index.
-     * If nothing is set, it will return 0 by default.
-     */
-    fun getCurrentPage(visibleElements: List<ElementEnum>): Int {
-        return if (currentPage == null) {
-            0
-        } else {
-            max(0, visibleElements.indexOf(currentPage))
-        }
-    }
-
-    /**
-     * Check if a music is in the favorites.
-     */
-    suspend fun isMusicInFavorite(musicId: UUID): Boolean {
-        return musicRepository.getMusicFromFavoritePlaylist(musicId = musicId) != null
-    }
-
-    /**
      * Retrieve the artist id of a music.
      */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {

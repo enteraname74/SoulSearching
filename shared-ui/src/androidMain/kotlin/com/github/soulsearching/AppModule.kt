@@ -101,8 +101,9 @@ actual val appModule = module {
         AllPlaylistsViewModelAndroidImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            musicRepository = get(),
+            playbackManager = get()
         )
     }
     single<AllQuickAccessViewModel> {

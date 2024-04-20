@@ -1,7 +1,7 @@
 package com.github.soulsearching.mainpage.domain.viewmodelhandler
 
-import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.PlaylistEvent
 import com.github.soulsearching.domain.events.handlers.PlaylistEventHandler
@@ -10,6 +10,7 @@ import com.github.soulsearching.mainpage.domain.state.PlaylistState
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,8 @@ class AllPlaylistsViewModelHandler(
     coroutineScope: CoroutineScope,
     private val playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
-    imageCoverRepository: ImageCoverRepository,
+    musicRepository: MusicRepository,
+    playbackManager: PlaybackManager,
     settings: SoulSearchingSettings
 ): ViewModelHandler {
     private val _sortType = MutableStateFlow(
@@ -90,12 +92,13 @@ class AllPlaylistsViewModelHandler(
     private val playlistEventHandler = PlaylistEventHandler(
         privateState = _state,
         publicState = state,
+        sortType = _sortType,
+        sortDirection = _sortDirection,
         playlistRepository = playlistRepository,
         musicPlaylistRepository = musicPlaylistRepository,
-        imageCoverRepository = imageCoverRepository,
-        sortDirection = _sortDirection,
-        sortType = _sortType,
-        settings = settings
+        settings = settings,
+        musicRepository = musicRepository,
+        playbackManager = playbackManager
     )
 
     /**

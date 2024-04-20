@@ -138,7 +138,6 @@ class PlayerViewModelHandler(
             is PlayerEvent.SetAddToPlaylistBottomSheetVisibility -> showOrHideAddToPlaylistBottomSheet(
                 isShown = event.isShown
             )
-
             is PlayerEvent.SetDeleteMusicDialogVisibility -> showOrHideDeleteDialog(isShown = event.isShown)
             is PlayerEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(isShown = event.isShown)
             is PlayerEvent.ToggleQuickAccessState -> toggleQuickAccessState(musicId = event.musicId)
@@ -191,6 +190,8 @@ class PlayerViewModelHandler(
                     )
                 )
             }
+            val music = musicRepository.getMusicFromId(musicId = musicId)
+            playbackManager.updateMusic(music = music)
         }
     }
 
