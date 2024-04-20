@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
@@ -23,7 +24,8 @@ fun AddToPlaylistBottomSheet(
     onConfirm: (selectedPlaylistsIds: List<UUID>) -> Unit,
     addToPlaylistModalSheetState: SheetState,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -51,7 +53,8 @@ fun AddToPlaylistBottomSheet(
                         }
                     }
             },
-            playlistsWithMusics = playlistsWithMusics
+            playlistsWithMusics = playlistsWithMusics,
+            retrieveCoverMethod = retrieveCoverMethod
         )
     }
 }

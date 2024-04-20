@@ -175,6 +175,7 @@ class MainPageScreen : Screen {
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
+@Suppress("Deprecation")
 fun MainPageScreenView(
     allMusicsViewModel: AllMusicsViewModel,
     allPlaylistsViewModel: AllPlaylistsViewModel,
@@ -248,6 +249,7 @@ fun MainPageScreenView(
                     )
                 )
             },
+            retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
         )
     }
 

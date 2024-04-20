@@ -365,7 +365,8 @@ fun PlayerDraggableView(
                     )
                 },
                 secondaryColor = navigationBarColor,
-                onSecondaryColor = textColor
+                onSecondaryColor = textColor,
+                retrieveCoverMethod = retrieveCoverMethod
             )
         }
 

@@ -254,6 +254,7 @@ fun PlaylistScreen(
                         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                             onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
                         },
+                        retrieveCoverMethod = retrieveCoverMethod
                     )
                 }
 

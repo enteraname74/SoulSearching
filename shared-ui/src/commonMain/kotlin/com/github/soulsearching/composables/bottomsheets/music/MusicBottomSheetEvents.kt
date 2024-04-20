@@ -7,6 +7,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
+@Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 fun MusicBottomSheetEvents(
     selectedMusic: Music,
@@ -47,7 +49,8 @@ fun MusicBottomSheetEvents(
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -151,7 +154,8 @@ fun MusicBottomSheetEvents(
             onConfirm = { selectedPlaylistsIds ->
                 onAddMusicToSelectedPlaylists(selectedPlaylistsIds)
                 onSetAddToPlaylistBottomSheetVisibility(false)
-            }
+            },
+            retrieveCoverMethod = retrieveCoverMethod
         )
     }
 }
