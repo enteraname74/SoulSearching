@@ -29,6 +29,7 @@ import java.util.UUID
 /**
  * Handler for managing the PlayerViewModel.
  */
+@Suppress("Deprecation")
 class PlayerViewModelHandler(
     private val musicRepository: MusicRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,

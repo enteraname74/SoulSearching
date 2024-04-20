@@ -28,7 +28,6 @@ import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.swipeable
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -66,11 +65,11 @@ import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.soulsearching.playerpanel.presentation.PlayerPanelView
 import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
 import com.github.soulsearching.player.presentation.composable.MinimisedPlayButtonsComposable
+import com.github.soulsearching.playerpanel.presentation.PlayerPanelView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -79,6 +78,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
+@Suppress("Deprecation")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PlayerDraggableView(
@@ -119,7 +119,7 @@ fun PlayerDraggableView(
         targetValue = when (draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && colorThemeManager.currentColorPalette?.rgb != null) {
                     Color.White
                 } else {
                     SoulSearchingColorTheme.defaultTheme.onPrimary
@@ -134,7 +134,7 @@ fun PlayerDraggableView(
         targetValue = when (draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
             BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()  && colorThemeManager.currentColorPalette?.rgb != null) {
                     Color.LightGray
                 } else {
                     SoulSearchingColorTheme.defaultTheme.subText
