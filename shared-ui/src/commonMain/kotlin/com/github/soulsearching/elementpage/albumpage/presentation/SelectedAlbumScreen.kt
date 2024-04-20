@@ -21,6 +21,8 @@ import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumEvent
+import com.github.soulsearching.elementpage.albumpage.presentation.composable.AlbumScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
@@ -32,7 +34,7 @@ import java.util.UUID
 @OptIn(ExperimentalMaterialApi::class)
 data class SelectedAlbumScreen(
     private val selectedAlbumId: String,
-): Screen {
+) : Screen {
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<SelectedAlbumViewModel>()
@@ -43,6 +45,8 @@ data class SelectedAlbumScreen(
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
+
+        val state by screenModel.handler.state.collectAsState()
 
         SelectedAlbumScreenView(
             selectedAlbumViewModel = screenModel,
@@ -61,6 +65,16 @@ data class SelectedAlbumScreen(
                     )
                 )
             },
+            navigateToArtist = {
+                state.albumWithMusics.artist?.let { artist ->
+                    navigator.push(
+                        SelectedArtistScreen(
+                            selectedArtistId = artist.artistId.toString()
+                        )
+                    )
+                }
+
+            },
             navigateBack = {
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
@@ -78,6 +92,7 @@ fun SelectedAlbumScreenView(
     selectedAlbumId: String,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
+    navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
@@ -107,20 +122,28 @@ fun SelectedAlbumScreenView(
 //            }
 //        }
 //    }
-    PlaylistScreen(
+    AlbumScreen(
         playlistId = state.albumWithMusics.album.albumId,
         playlistWithMusics = state.allPlaylists,
-        title = state.albumWithMusics.album.albumName,
+        albumName = state.albumWithMusics.album.albumName,
+        artistName = state.albumWithMusics.artist?.artistName ?: "",
         image = retrieveCoverMethod(state.albumWithMusics.album.coverId),
         musics = state.albumWithMusics.musics,
         navigateToModifyPlaylist = {
             navigateToModifyAlbum(selectedAlbumId)
         },
+        navigateToArtist = navigateToArtist,
         navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
-        updateNbPlayedAction = { selectedAlbumViewModel.handler.onEvent(SelectedAlbumEvent.AddNbPlayed(it)) },
+        updateNbPlayedAction = {
+            selectedAlbumViewModel.handler.onEvent(
+                SelectedAlbumEvent.AddNbPlayed(
+                    it
+                )
+            )
+        },
         playlistType = PlaylistType.ALBUM,
         isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
         isBottomSheetShown = state.isMusicBottomSheetShown,

@@ -27,6 +27,11 @@ interface AlbumDataSource {
     suspend fun getAllAlbumsFromArtist(artistId: UUID) : List<Album>
 
     /**
+     * Retrieves all Albums from an Artist as a flow.
+     */
+    fun getAlbumsOfArtistAsFlow(artistId: UUID): Flow<List<Album>>
+
+    /**
      * Retrieves an Album from its id.
      */
     suspend fun getAlbumFromId(albumId: UUID): Album?

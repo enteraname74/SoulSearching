@@ -24,6 +24,10 @@ internal class ExposedAlbumDataSourceImpl(
             artistId = artistId
         )
 
+    override fun getAlbumsOfArtistAsFlow(artistId: UUID): Flow<List<Album>> {
+        return flowOf(emptyList())
+    }
+
     override suspend fun getAlbumFromId(albumId: UUID) =
         albumDao.getAlbumFromId(albumId = albumId)
 

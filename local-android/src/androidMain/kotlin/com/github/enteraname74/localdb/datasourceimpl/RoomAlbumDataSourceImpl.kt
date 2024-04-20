@@ -37,6 +37,16 @@ internal class RoomAlbumDataSourceImpl(
         ).map { it.toAlbum() }
     }
 
+    override fun getAlbumsOfArtistAsFlow(artistId: UUID): Flow<List<Album>> {
+        return appDatabase.albumDao.getAllAlbumsFromArtistAsFlow(
+            artistId = artistId
+        ).map { list ->
+            list.map {
+                it.toAlbum()
+            }
+        }
+    }
+
     override suspend fun getAlbumFromId(albumId: UUID): Album? {
         return appDatabase.albumDao.getAlbumFromId(
             albumId = albumId
