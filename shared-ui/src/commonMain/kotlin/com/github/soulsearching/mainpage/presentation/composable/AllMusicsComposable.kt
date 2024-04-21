@@ -1,6 +1,7 @@
 package com.github.soulsearching.mainpage.presentation.composable
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,16 +29,14 @@ import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.mainpage.domain.state.MainPageState
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
+import com.github.soulsearching.mainpage.domain.state.MainPageState
+import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AllMusicsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -46,8 +45,6 @@ fun AllMusicsComposable(
     sortByDateAction: () -> Unit = {},
     sortByMostListenedAction: () -> Unit = {},
     setSortDirectionAction: () -> Unit = {},
-    sortType: Int = SortType.NAME,
-    sortDirection: Int = SortDirection.DESC,
     isUsingSort: Boolean = true,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     onLongMusicClick: (Music) -> Unit,
@@ -60,46 +57,65 @@ fun AllMusicsComposable(
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SubMenuComposable(
-                title = strings.musics,
-                sortByDateAction = sortByDateAction,
-                sortByMostListenedAction = sortByMostListenedAction,
-                sortByName = sortByName,
-                setSortDirectionAction = setSortDirectionAction,
-                sortType = sortType,
-                sortDirection = sortDirection,
-                isUsingSort = isUsingSort,
-                rightComposable = {
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = Constants.Spacing.medium)
-                            .size(30.dp)
-                            .clickable {
-                                if (musicState.musics.isNotEmpty()) {
-                                    coroutineScope
-                                        .launch {
-                                            playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+
+        LazyColumn {
+            item {
+                MusicFoldersHorizontalList(
+                    retrieveCoverMethod = retrieveCoverMethod,
+                    folders = musicState.folderMusics,
+                    onFolderClicked = {},
+                    onFolderLongClicked = {}
+                )
+            }
+            item {
+                MusicMonthsHorizontalList(
+                    retrieveCoverMethod = retrieveCoverMethod,
+                    months = musicState.monthMusics,
+                    onMonthClicked = {},
+                    onMonthLongClicked = {}
+                )
+            }
+            stickyHeader {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SubMenuComposable(
+                        title = strings.musics,
+                        sortByDateAction = sortByDateAction,
+                        sortByMostListenedAction = sortByMostListenedAction,
+                        sortByName = sortByName,
+                        setSortDirectionAction = setSortDirectionAction,
+                        sortType = musicState.sortType,
+                        sortDirection = musicState.sortDirection,
+                        isUsingSort = isUsingSort,
+                        rightComposable = {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(start = Constants.Spacing.medium)
+                                    .size(30.dp)
+                                    .clickable {
+                                        if (musicState.musics.isNotEmpty()) {
+                                            coroutineScope
+                                                .launch {
+                                                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                                }
+                                                .invokeOnCompletion {
+                                                    playbackManager.playShuffle(musicList = musicState.musics)
+                                                }
                                         }
-                                        .invokeOnCompletion {
-                                            playbackManager.playShuffle(musicList = musicState.musics)
-                                        }
-                                }
-                            },
-                        imageVector = Icons.Rounded.Shuffle,
-                        contentDescription = strings.shuffleButton,
-                        tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                                    },
+                                imageVector = Icons.Rounded.Shuffle,
+                                contentDescription = strings.shuffleButton,
+                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                            )
+                        }
                     )
                 }
-            )
-        }
-        if (musicState.musics.isNotEmpty()) {
-            LazyColumn {
+            }
+            if (musicState.musics.isNotEmpty()) {
                 items(items = musicState.musics) { elt ->
                     MusicItemComposable(
                         music = elt,
@@ -130,9 +146,11 @@ fun AllMusicsComposable(
                 item {
                     PlayerSpacer()
                 }
+            } else {
+                item {
+                    NoElementView()
+                }
             }
-        } else {
-            NoElementView()
         }
     }
 }

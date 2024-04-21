@@ -43,6 +43,8 @@ object EnStrings : Strings {
 
     override val artists = "Artists"
     override val musics = "Songs"
+    override val byFolders = "By folders"
+    override val byMonths = "By months"
     override val quickAccess = "Quick Access"
 
     override val sortByDateAdded = "Sort by date added"

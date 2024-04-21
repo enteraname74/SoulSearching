@@ -43,6 +43,8 @@ object FrStrings : Strings {
 
     override val artists = "Artistes"
     override val musics = "Musiques"
+    override val byFolders = "Par dossiers"
+    override val byMonths = "Par mois"
     override val quickAccess = "Accès rapides"
 
     override val sortByDateAdded = "Trier par data d'ajout"

@@ -642,8 +642,6 @@ fun MainPageScreenView(
                                             MusicEvent.SetSortDirection(newDirection)
                                         )
                                     },
-                                    sortType = musicState.sortType,
-                                    sortDirection = musicState.sortDirection,
                                     playerDraggableState = playerDraggableState,
                                     onLongMusicClick = { music ->
                                         selectedMusicId = music.musicId
