@@ -128,6 +128,9 @@ interface Strings {
     val showPlaylists: String
     val showAlbums: String
     val showArtists: String
+    val manageMusicsViewText: String
+    val showMusicsByFolders: String
+    val showMusicsByMonths: String
     val showVerticalAccessBarTitle: String
     val showVerticalAccessBarText: String
 

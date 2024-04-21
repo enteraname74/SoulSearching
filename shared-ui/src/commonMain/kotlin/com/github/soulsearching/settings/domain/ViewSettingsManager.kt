@@ -24,6 +24,12 @@ class ViewSettingsManager(
     var isMusicFileModificationOn by mutableStateOf(true)
         private set
 
+    var areMusicsByFoldersShown by mutableStateOf(false)
+        private set
+
+    var areMusicsByMonthsShown by mutableStateOf(false)
+        private set
+
     init {
         initializeManager()
     }
@@ -69,6 +75,14 @@ class ViewSettingsManager(
             isMusicFileModificationOn = getBoolean(
                 SoulSearchingSettings.IS_MUSIC_FILE_MODIFICATION_ON,
                 true
+            )
+            areMusicsByMonthsShown = getBoolean(
+                SoulSearchingSettings.ARE_MUSICS_BY_MONTHS_SHOWN,
+                false
+            )
+            areMusicsByFoldersShown = getBoolean(
+                SoulSearchingSettings.ARE_MUSICS_BY_FOLDERS_SHOWN,
+                false
             )
         }
     }
@@ -125,6 +139,28 @@ class ViewSettingsManager(
         settings.setBoolean(
             key = SoulSearchingSettings.IS_MUSIC_FILE_MODIFICATION_ON,
             value = isMusicFileModificationOn
+        )
+    }
+
+    /**
+     * Show or hide the musics by months part in the musics tab.
+     */
+    fun toggleMusicsByMonthsVisibility() {
+        areMusicsByMonthsShown = !areMusicsByMonthsShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.ARE_MUSICS_BY_MONTHS_SHOWN,
+            value = areMusicsByMonthsShown
+        )
+    }
+
+    /**
+     * Show or hide the musics by folders part in the musics tab.
+     */
+    fun toggleMusicsByFoldersVisibility() {
+        areMusicsByFoldersShown = !areMusicsByFoldersShown
+        settings.setBoolean(
+            key = SoulSearchingSettings.ARE_MUSICS_BY_FOLDERS_SHOWN,
+            value = areMusicsByFoldersShown
         )
     }
 }

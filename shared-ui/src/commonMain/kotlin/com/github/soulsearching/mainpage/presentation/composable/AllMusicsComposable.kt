@@ -2,9 +2,9 @@ package com.github.soulsearching.mainpage.presentation.composable
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +32,7 @@ import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -48,17 +49,16 @@ fun AllMusicsComposable(
     isUsingSort: Boolean = true,
     playerDraggableState: SwipeableState<BottomSheetStates>,
     onLongMusicClick: (Music) -> Unit,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+            .fillMaxSize()
     ) {
-
-        LazyColumn {
+        if (viewSettingsManager.areMusicsByFoldersShown) {
             item {
                 MusicFoldersHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
@@ -67,6 +67,8 @@ fun AllMusicsComposable(
                     onFolderLongClicked = {}
                 )
             }
+        }
+        if (viewSettingsManager.areMusicsByMonthsShown) {
             item {
                 MusicMonthsHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
@@ -75,81 +77,83 @@ fun AllMusicsComposable(
                     onMonthLongClicked = {}
                 )
             }
-            stickyHeader {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SubMenuComposable(
-                        title = strings.musics,
-                        sortByDateAction = sortByDateAction,
-                        sortByMostListenedAction = sortByMostListenedAction,
-                        sortByName = sortByName,
-                        setSortDirectionAction = setSortDirectionAction,
-                        sortType = musicState.sortType,
-                        sortDirection = musicState.sortDirection,
-                        isUsingSort = isUsingSort,
-                        rightComposable = {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(start = Constants.Spacing.medium)
-                                    .size(30.dp)
-                                    .clickable {
-                                        if (musicState.musics.isNotEmpty()) {
-                                            coroutineScope
-                                                .launch {
-                                                    playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
-                                                }
-                                                .invokeOnCompletion {
-                                                    playbackManager.playShuffle(musicList = musicState.musics)
-                                                }
-                                        }
-                                    },
-                                imageVector = Icons.Rounded.Shuffle,
-                                contentDescription = strings.shuffleButton,
-                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
+        }
+        stickyHeader {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                    .padding(bottom = Constants.Spacing.large),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SubMenuComposable(
+                    title = strings.musics,
+                    sortByDateAction = sortByDateAction,
+                    sortByMostListenedAction = sortByMostListenedAction,
+                    sortByName = sortByName,
+                    setSortDirectionAction = setSortDirectionAction,
+                    sortType = musicState.sortType,
+                    sortDirection = musicState.sortDirection,
+                    isUsingSort = isUsingSort,
+                    rightComposable = {
+                        Icon(
+                            modifier = Modifier
+                                .padding(start = Constants.Spacing.medium)
+                                .size(30.dp)
+                                .clickable {
+                                    if (musicState.musics.isNotEmpty()) {
+                                        coroutineScope
+                                            .launch {
+                                                playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                            }
+                                            .invokeOnCompletion {
+                                                playbackManager.playShuffle(musicList = musicState.musics)
+                                            }
+                                    }
+                                },
+                            imageVector = Icons.Rounded.Shuffle,
+                            contentDescription = strings.shuffleButton,
+                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
+                )
+            }
+        }
+        if (musicState.musics.isNotEmpty()) {
+            items(items = musicState.musics) { elt ->
+                MusicItemComposable(
+                    music = elt,
+                    onClick = { music ->
+                        coroutineScope.launch {
+                            playerDraggableState.animateTo(
+                                BottomSheetStates.EXPANDED,
+                                tween(Constants.AnimationDuration.normal)
+                            )
+                        }.invokeOnCompletion {
+                            playbackManager.setCurrentPlaylistAndMusic(
+                                music = music,
+                                musicList = musicState.musics,
+                                isMainPlaylist = true,
+                                playlistId = null,
                             )
                         }
-                    )
-                }
+                    },
+                    onLongClick = {
+                        coroutineScope.launch {
+                            onLongMusicClick(elt)
+                        }
+                    },
+                    musicCover = retrieveCoverMethod(elt.coverId),
+                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                )
             }
-            if (musicState.musics.isNotEmpty()) {
-                items(items = musicState.musics) { elt ->
-                    MusicItemComposable(
-                        music = elt,
-                        onClick = { music ->
-                            coroutineScope.launch {
-                                playerDraggableState.animateTo(
-                                    BottomSheetStates.EXPANDED,
-                                    tween(Constants.AnimationDuration.normal)
-                                )
-                            }.invokeOnCompletion {
-                                playbackManager.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    musicList = musicState.musics,
-                                    isMainPlaylist = true,
-                                    playlistId = null,
-                                )
-                            }
-                        },
-                        onLongClick = {
-                            coroutineScope.launch {
-                                onLongMusicClick(elt)
-                            }
-                        },
-                        musicCover = retrieveCoverMethod(elt.coverId),
-                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
-                    )
-                }
-                item {
-                    PlayerSpacer()
-                }
-            } else {
-                item {
-                    NoElementView()
-                }
+            item {
+                PlayerSpacer()
+            }
+        } else {
+            item {
+                NoElementView()
             }
         }
     }

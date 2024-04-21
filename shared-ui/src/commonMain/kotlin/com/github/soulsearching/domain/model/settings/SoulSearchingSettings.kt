@@ -90,5 +90,8 @@ interface SoulSearchingSettings {
         const val IS_PLAYLISTS_SHOWN = "IS_PLAYLISTS_SHOWN"
         const val IS_ALBUMS_SHOWN = "IS_ALBUMS_SHOWN"
         const val IS_ARTISTS_SHOWN = "IS_ARTISTS_SHOWN"
+
+        const val ARE_MUSICS_BY_FOLDERS_SHOWN = "ARE_MUSICS_BY_FOLDERS_SHOWN"
+        const val ARE_MUSICS_BY_MONTHS_SHOWN = "ARE_MUSICS_BY_MONTHS_SHOWN"
     }
 }

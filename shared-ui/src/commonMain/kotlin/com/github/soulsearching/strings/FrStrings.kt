@@ -119,6 +119,9 @@ object FrStrings : Strings {
     override val showPlaylists = "Afficher les playlists"
     override val showAlbums = "Afficher les albums"
     override val showArtists = "Afficher les artistes"
+    override val manageMusicsViewText = "Gérer la vue des musiques"
+    override val showMusicsByFolders = "Afficher les musiques par dossiers"
+    override val showMusicsByMonths = "Afficher les musiques par mois"
     override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
     override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
 
