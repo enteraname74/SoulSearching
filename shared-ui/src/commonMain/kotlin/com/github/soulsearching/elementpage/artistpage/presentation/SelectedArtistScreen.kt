@@ -23,6 +23,7 @@ import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
 import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistEvent
 import com.github.soulsearching.elementpage.artistpage.presentation.composable.ArtistScreen
+import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.UUID
@@ -75,6 +76,13 @@ data class SelectedArtistScreen(
                         selectedAlbumId = albumId
                     )
                 )
+            },
+            navigateToModifyAlbum = { albumId ->
+                navigator.push(
+                    ModifyAlbumScreen(
+                        selectedAlbumId = albumId
+                    )
+                )
             }
         )
     }
@@ -90,6 +98,7 @@ fun SelectedArtistScreenView(
     navigateToModifyMusic: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateBack: () -> Unit,
+    navigateToModifyAlbum: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
@@ -126,7 +135,7 @@ fun SelectedArtistScreenView(
         artistName = state.artistWithMusics.artist.artistName,
         artistCover = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
         musics = state.artistWithMusics.musics,
-        navigateToModifyPlaylist = {
+        navigateToModifyArtist = {
             navigateToModifyArtist(selectedArtistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
@@ -188,6 +197,35 @@ fun SelectedArtistScreenView(
             )
         },
         albums = state.artistAlbums,
-        navigateToAlbum = navigateToAlbum
+        navigateToAlbum = navigateToAlbum,
+        isDeleteAlbumDialogShown = state.isDeleteAlbumDialogShown,
+        isAlbumBottomSheetShown = state.isAlbumBottomSheetShown,
+        navigateToModifyAlbum = navigateToModifyAlbum,
+        onSetAlbumBottomSheetVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetAlbumBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetDeleteAlbumDialogVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetDeleteAlbumDialogVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onToggleAlbumQuickAccessState = { album ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.ToggleAlbumQuickAccessState(
+                    album = album
+                )
+            )
+        },
+        onDeleteAlbum = { album ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.DeleteAlbum(albumId = album.albumId)
+            )
+        }
     )
 }

@@ -3,18 +3,14 @@ package com.github.soulsearching.elementpage.artistpage.presentation.composable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -30,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
@@ -44,18 +39,16 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.MusicList
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistPanel
 import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -76,7 +69,7 @@ fun ArtistScreen(
     musics: List<Music>,
     albums: List<Album>,
     navigateToAlbum: (String) -> Unit,
-    navigateToModifyPlaylist: () -> Unit = {},
+    navigateToModifyArtist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -94,6 +87,13 @@ fun ArtistScreen(
     onDeleteMusic: (Music) -> Unit,
     onToggleQuickAccessState: (Music) -> Unit,
     onRemoveFromPlaylist: (Music) -> Unit = {},
+    navigateToModifyAlbum: (String) -> Unit,
+    isDeleteAlbumDialogShown: Boolean,
+    isAlbumBottomSheetShown: Boolean,
+    onSetAlbumBottomSheetVisibility: (Boolean) -> Unit,
+    onSetDeleteAlbumDialogVisibility: (Boolean) -> Unit,
+    onToggleAlbumQuickAccessState: (Album) -> Unit,
+    onDeleteAlbum: (Album) -> Unit,
     onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement()
@@ -174,6 +174,10 @@ fun ArtistScreen(
             mutableStateOf<UUID?>(null)
         }
 
+        var selectedAlbumId by rememberSaveable {
+            mutableStateOf<UUID?>(null)
+        }
+
         musics.find { it.musicId == selectedMusicId }?.let { music ->
             MusicBottomSheetEvents(
                 selectedMusic = music,
@@ -198,6 +202,19 @@ fun ArtistScreen(
                     onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
                 },
                 retrieveCoverMethod = retrieveCoverMethod
+            )
+        }
+
+        albums.find { it.albumId == selectedAlbumId }?.let { album ->
+            AlbumBottomSheetEvents(
+                selectedAlbum = album,
+                navigateToModifyAlbum = navigateToModifyAlbum,
+                isDeleteAlbumDialogShown = isDeleteAlbumDialogShown,
+                isBottomSheetShown = isAlbumBottomSheetShown,
+                onDismissBottomSheet = { onSetAlbumBottomSheetVisibility(false) },
+                onSetDeleteAlbumDialogVisibility = onSetDeleteAlbumDialogVisibility,
+                onToggleQuickAccessState = { onToggleAlbumQuickAccessState(album) },
+                onDeleteAlbum = { onDeleteAlbum(album) }
             )
         }
 
@@ -237,8 +254,9 @@ fun ArtistScreen(
                                     retrieveCoverMethod = retrieveCoverMethod,
                                     albums = albums,
                                     onAlbumClick = navigateToAlbum,
-                                    onAlbumLongClick = {
-
+                                    onAlbumLongClick = { selectedAlbum ->
+                                        selectedAlbumId = selectedAlbum.albumId
+                                        onSetAlbumBottomSheetVisibility(true)
                                     }
                                 )
                             }
@@ -257,7 +275,7 @@ fun ArtistScreen(
                             }
                             stickyHeader {
                                 PlaylistPanel(
-                                    editAction = navigateToModifyPlaylist,
+                                    editAction = navigateToModifyArtist,
                                     shuffleAction = {
                                         playlistId?.let(updateNbPlayedAction)
                                         shuffleAction()
@@ -334,8 +352,9 @@ fun ArtistScreen(
                                 retrieveCoverMethod = retrieveCoverMethod,
                                 albums = albums,
                                 onAlbumClick = navigateToAlbum,
-                                onAlbumLongClick = {
-
+                                onAlbumLongClick = { selectedAlbum ->
+                                    selectedAlbumId = selectedAlbum.albumId
+                                    onSetAlbumBottomSheetVisibility(true)
                                 }
                             )
                         }
@@ -354,7 +373,7 @@ fun ArtistScreen(
                         }
                         stickyHeader {
                             PlaylistPanel(
-                                editAction = navigateToModifyPlaylist,
+                                editAction = navigateToModifyArtist,
                                 shuffleAction = {
                                     playlistId?.let(updateNbPlayedAction)
                                     shuffleAction()

@@ -76,6 +76,53 @@ class SelectedArtistViewModelHandler(
             is SelectedArtistEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(isShown = event.isShown)
             is SelectedArtistEvent.SetSelectedArtist -> setSelectedArtist(artistId = event.artistId)
             is SelectedArtistEvent.ToggleQuickAccessState -> toggleQuickAccessState(musicId = event.musicId)
+            is SelectedArtistEvent.DeleteAlbum -> deleteAlbum(albumId = event.albumId)
+            is SelectedArtistEvent.SetAlbumBottomSheetVisibility -> setAlbumBottomSheetVisibility(isShown = event.isShown)
+            is SelectedArtistEvent.SetDeleteAlbumDialogVisibility -> setDeleteAlbumDialogVisibility(isShown = event.isShown)
+            is SelectedArtistEvent.ToggleAlbumQuickAccessState -> toggleAlbumQuickAccessState(album = event.album)
+        }
+    }
+
+    /**
+     * Toggle the quick access state of an album.
+     */
+    private fun toggleAlbumQuickAccessState(album: Album) {
+        CoroutineScope(Dispatchers.IO).launch {
+            albumRepository.updateQuickAccessState(
+                newQuickAccessState = !album.isInQuickAccess,
+                albumId = album.albumId
+            )
+        }
+    }
+
+    /**
+     * Show or hide the delete album dialog.
+     */
+    private fun setDeleteAlbumDialogVisibility(isShown: Boolean) {
+        _state.update {
+            it.copy(
+                isDeleteAlbumDialogShown = isShown
+            )
+        }
+    }
+
+    /**
+     * Show or hide the album bottom sheet.
+     */
+    private fun setAlbumBottomSheetVisibility(isShown: Boolean) {
+        _state.update {
+            it.copy(
+                isAlbumBottomSheetShown = isShown
+            )
+        }
+    }
+
+    /**
+     * Delete an album from its id.
+     */
+    private fun deleteAlbum(albumId: UUID) {
+        CoroutineScope(Dispatchers.IO).launch {
+            albumRepository.delete(albumId = albumId)
         }
     }
 

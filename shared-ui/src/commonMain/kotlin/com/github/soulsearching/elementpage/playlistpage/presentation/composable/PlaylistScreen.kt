@@ -4,14 +4,11 @@ package com.github.soulsearching.elementpage.playlistpage.presentation.composabl
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -28,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
@@ -39,8 +35,6 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler

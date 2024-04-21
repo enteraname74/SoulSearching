@@ -14,5 +14,7 @@ data class SelectedArtistState(
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
     val isDeleteMusicDialogShown: Boolean = false,
     val isMusicBottomSheetShown: Boolean = false,
-    val isAddToPlaylistBottomSheetShown: Boolean = false
+    val isAddToPlaylistBottomSheetShown: Boolean = false,
+    val isAlbumBottomSheetShown: Boolean = false,
+    val isDeleteAlbumDialogShown: Boolean = false,
 )
