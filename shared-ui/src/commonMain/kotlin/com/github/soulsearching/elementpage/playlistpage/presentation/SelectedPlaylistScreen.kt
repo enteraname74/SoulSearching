@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel

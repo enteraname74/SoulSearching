@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @Suppress("UNUSED_PARAMETER")

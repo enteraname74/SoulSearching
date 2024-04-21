@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 
 @Composable
 fun PlaylistPanel(

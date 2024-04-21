@@ -42,7 +42,7 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
 import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager

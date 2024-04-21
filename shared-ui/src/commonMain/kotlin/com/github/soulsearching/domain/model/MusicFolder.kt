@@ -7,7 +7,7 @@ import java.util.UUID
  * Represent a list of musics from a folder.
  */
 data class MusicFolder(
-    val path: String,
-    val musics: List<Music>,
-    val coverId: UUID?
+    val path: String = "",
+    val musics: List<Music> = emptyList(),
+    val coverId: UUID? = null
 )
