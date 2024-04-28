@@ -109,6 +109,7 @@ class PlayerViewModelHandler(
 
             override fun onPlayingStateChanged(isPlaying: Boolean) {
                 super.onPlayingStateChanged(isPlaying)
+                println("WILL UPDATE PLAYING STATE: $isPlaying")
                 onEvent(
                     PlayerEvent.SetIsPlaying(
                         isPlaying = isPlaying

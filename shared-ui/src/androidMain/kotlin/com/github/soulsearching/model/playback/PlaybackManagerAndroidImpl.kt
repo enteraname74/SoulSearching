@@ -13,6 +13,9 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Implementation of a MusicPlayerManager for Android.
@@ -122,15 +125,15 @@ class PlaybackManagerAndroidImpl(
         super.stopPlayback(resetPlayedList)
     }
 
-    override fun update() {
-        super.update()
+    override fun updateNotification() {
+        CoroutineScope(Dispatchers.IO).launch {
+            mediaSessionManager.updateMetadata()
+            mediaSessionManager.updateState()
 
-        mediaSessionManager.updateMetadata()
-        mediaSessionManager.updateState()
-
-        val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
-        intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
-        context.sendBroadcast(intentForUpdatingNotification)
+            val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
+            intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
+            context.sendBroadcast(intentForUpdatingNotification)
+        }
     }
 
     companion object {
