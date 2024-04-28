@@ -212,6 +212,10 @@ fun PlayerDraggableView(
         isUsingDarkIcons = isUsingDarkIcons
     )
 
+    var selectedMusicId by rememberSaveable {
+        mutableStateOf<UUID?>(null)
+    }
+
     SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
@@ -222,6 +226,32 @@ fun PlayerDraggableView(
             }
             draggableState.animateTo(
                 BottomSheetStates.MINIMISED,
+                tween(Constants.AnimationDuration.normal)
+            )
+        }
+    }
+
+    // If no music is been played, and the player view is still shown, we need to hide it.
+    if (state.playedList.isEmpty() &&
+        draggableState.currentValue != BottomSheetStates.COLLAPSED &&
+        !draggableState.isAnimationRunning
+        ) {
+        coroutineScope.launch {
+            if (state.isMusicBottomSheetShown) {
+                playerViewModel.handler.onEvent(
+                    PlayerEvent.SetMusicBottomSheetVisibility(
+                        isShown = false
+                    )
+                )
+            }
+            if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
+                musicListDraggableState.animateTo(
+                    BottomSheetStates.COLLAPSED,
+                    tween(Constants.AnimationDuration.normal)
+                )
+            }
+            draggableState.animateTo(
+                BottomSheetStates.COLLAPSED,
                 tween(Constants.AnimationDuration.normal)
             )
         }
@@ -295,10 +325,6 @@ fun PlayerDraggableView(
             } else {
                 Modifier
             }
-
-        var selectedMusicId by rememberSaveable {
-            mutableStateOf<UUID?>(null)
-        }
 
         state.playedList.find { it.musicId == selectedMusicId }?.let { music ->
             MusicBottomSheetEvents(
