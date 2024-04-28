@@ -120,7 +120,7 @@ fun PlayerDraggableView(
         targetValue = when (draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && colorThemeManager.currentColorPalette?.rgb != null) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && state.currentMusicCover != null) {
                     Color.White
                 } else {
                     SoulSearchingColorTheme.defaultTheme.onPrimary
@@ -135,7 +135,7 @@ fun PlayerDraggableView(
         targetValue = when (draggableState.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
             BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()  && colorThemeManager.currentColorPalette?.rgb != null) {
+                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && state.currentMusicCover != null) {
                     Color.LightGray
                 } else {
                     SoulSearchingColorTheme.defaultTheme.subText
