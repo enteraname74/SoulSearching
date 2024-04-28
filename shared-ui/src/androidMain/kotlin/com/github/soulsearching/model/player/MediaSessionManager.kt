@@ -89,13 +89,11 @@ class MediaSessionManager(
      * Update media session data with information the current played song in the player view model.
      */
     fun updateMetadata() {
-        println("START")
         val bitmap = if (playbackManager.currentMusicCover != null) {
             playbackManager.currentMusicCover!!.asAndroidBitmap()
         } else {
             standardNotificationBitmap
         }
-        println("MID")
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
                 .putBitmap(
@@ -134,7 +132,6 @@ class MediaSessionManager(
                 )
                 .build()
         )
-        println("END")
     }
 
     /**

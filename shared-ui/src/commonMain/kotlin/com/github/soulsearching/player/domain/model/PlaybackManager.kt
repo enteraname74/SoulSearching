@@ -154,10 +154,8 @@ abstract class PlaybackManager(
      * Play or pause the player, depending on its current state.
      */
     fun togglePlayPause() {
-        println("PLAYBACK MANAGER: WILL TOGGLE PLAY PAUSE")
         player.togglePlayPause()
         launchDurationJobIfNecessary()
-        println("PLAYBACK MANAGER: WILL SEND INFO TO UPDATE FOR UI")
         callback.onPlayingStateChanged(isPlaying = isPlaying)
         updateNotification()
     }
