@@ -47,8 +47,8 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistPanel
 import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -136,13 +136,6 @@ fun ArtistScreen(
         }
     }
 
-
-    val musicBottomSheetState = when (playlistType) {
-        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
-        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
-        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -183,7 +176,7 @@ fun ArtistScreen(
                 selectedMusic = music,
                 playlistsWithMusics = playlistWithMusics,
                 navigateToModifyMusic = navigateToModifyMusic,
-                musicBottomSheetState = musicBottomSheetState,
+                musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
                 playerDraggableState = playerDraggableState,
                 isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                 isBottomSheetShown = isBottomSheetShown,

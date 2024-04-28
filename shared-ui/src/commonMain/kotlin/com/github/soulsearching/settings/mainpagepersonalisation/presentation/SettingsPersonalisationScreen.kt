@@ -63,7 +63,8 @@ fun SettingsPersonalisationScreenView(
                 SettingsElement(
                     title = strings.mainPageTitle,
                     text = strings.mainPageText,
-                    padding = PaddingValues(Constants.Spacing.large)
+                    padding = PaddingValues(Constants.Spacing.large),
+                    isClickable = false
                 )
             }
             item {
@@ -132,7 +133,8 @@ fun SettingsPersonalisationScreenView(
                 SettingsElement(
                     title = strings.musics,
                     text = strings.manageMusicsViewText,
-                    padding = PaddingValues(Constants.Spacing.large)
+                    padding = PaddingValues(Constants.Spacing.large),
+                    isClickable = false
                 )
             }
             item {

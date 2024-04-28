@@ -57,7 +57,8 @@ fun SettingsDevelopersScreenView(
             items(developers) {developer ->
                 SettingsElement(
                     title = developer.name,
-                    text = developer.function
+                    text = developer.function,
+                    isClickable = false
                 )
             }
             item {

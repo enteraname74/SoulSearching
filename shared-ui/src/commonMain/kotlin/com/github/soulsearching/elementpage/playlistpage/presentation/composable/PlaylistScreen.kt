@@ -42,8 +42,8 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
@@ -121,13 +121,6 @@ fun PlaylistScreen(
         }
     }
 
-
-    val musicBottomSheetState = when (playlistType) {
-        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
-        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
-        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -146,13 +139,13 @@ fun PlaylistScreen(
 
         val searchAction = {
             coroutineScope.launch {
-                    searchDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(Constants.AnimationDuration.normal)
-                    )
-                }.invokeOnCompletion {
-                    searchBarFocusRequester.requestFocus()
-                }
+                searchDraggableState.animateTo(
+                    BottomSheetStates.EXPANDED,
+                    tween(Constants.AnimationDuration.normal)
+                )
+            }.invokeOnCompletion {
+                searchBarFocusRequester.requestFocus()
+            }
         }
 
         var selectedMusicId by rememberSaveable {
@@ -219,7 +212,7 @@ fun PlaylistScreen(
                             navigateToModifyMusic = navigateToModifyMusic,
                             retrieveCoverMethod = { retrieveCoverMethod(it) },
                             updateNbPlayedAction = updateNbPlayedAction,
-                            musicBottomSheetState = musicBottomSheetState,
+                            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
                             playerDraggableState = playerDraggableState
                         )
                     }
@@ -232,7 +225,7 @@ fun PlaylistScreen(
                         selectedMusic = music,
                         playlistsWithMusics = playlistWithMusics,
                         navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = musicBottomSheetState,
+                        musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
                         playerDraggableState = playerDraggableState,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,
