@@ -211,6 +211,7 @@ abstract class PlaybackManager(
      * If no songs are left in the played list, the playback will stop.
      */
     fun removeSongFromPlayedPlaylist(musicId: UUID) {
+        val actualIndex = currentMusicIndex
         playedList.removeIf { it.musicId == musicId }
 
         // If no songs is left in the queue, stop playing :
@@ -221,7 +222,13 @@ abstract class PlaybackManager(
             currentMusic?.let {
                 if (it.musicId.compareTo(musicId) == 0) {
                     // We place ourself in the previous music :
-                    currentMusic = playedList[(currentMusicIndex) % playedList.size]
+                    println("Actual index: $actualIndex")
+                    currentMusic = if (actualIndex == 0) {
+                        playedList[playedList.lastIndex]
+                    } else {
+                        playedList[actualIndex - 1]
+                    }
+
                     next()
                 }
             }

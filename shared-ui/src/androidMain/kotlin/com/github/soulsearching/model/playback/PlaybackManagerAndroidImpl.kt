@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.util.Log
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
@@ -115,7 +116,11 @@ class PlaybackManagerAndroidImpl(
     override fun stopPlayback(resetPlayedList: Boolean) {
         if (shouldInit) return
 
-        context.unregisterReceiver(broadcastReceiver)
+        try {
+            context.unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            Log.e("PLAYBACK MANAGER", "EXCEPTION WHILE ON STOP PLAYBACK: $e")
+        }
         player.dismiss()
         mediaSessionManager.release()
 
