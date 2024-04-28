@@ -17,6 +17,7 @@ import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.strings.strings
 
@@ -34,7 +35,8 @@ fun MusicBottomSheetMenu(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     isCurrentlyPlaying: Boolean,
-    viewSettingsManager: ViewSettingsManager = injectElement()
+    viewSettingsManager: ViewSettingsManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement()
 ) {
     Column(
         modifier = Modifier
@@ -81,7 +83,7 @@ fun MusicBottomSheetMenu(
                 textColor = textColor
             )
         }
-        if (musicBottomSheetState == MusicBottomSheetState.PLAYER) {
+        if (playbackManager.playedList.isNotEmpty()) {
             BottomSheetRow(
                 icon = Icons.Rounded.Delete,
                 text = strings.removeFromPlayedList,
