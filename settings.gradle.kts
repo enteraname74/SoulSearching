@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
-rootProject.name = "Soul Searching"
+rootProject.name = "SoulSearching"
 include(":domain")
 include(":local-android")
 include(":shared-ui")

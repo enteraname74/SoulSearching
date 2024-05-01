@@ -26,6 +26,8 @@ interface Strings {
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
     val artists: String
+    val byFolders: String
+    val byMonths: String
     val musics: String
     val quickAccess: String
     val missingPermissions: String
@@ -126,6 +128,9 @@ interface Strings {
     val showPlaylists: String
     val showAlbums: String
     val showArtists: String
+    val manageMusicsViewText: String
+    val showMusicsByFolders: String
+    val showMusicsByMonths: String
     val showVerticalAccessBarTitle: String
     val showVerticalAccessBarText: String
 

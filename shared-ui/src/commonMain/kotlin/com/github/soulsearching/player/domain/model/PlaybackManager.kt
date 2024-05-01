@@ -155,7 +155,9 @@ abstract class PlaybackManager(
      */
     fun togglePlayPause() {
         player.togglePlayPause()
-        update()
+        launchDurationJobIfNecessary()
+        callback.onPlayingStateChanged(isPlaying = isPlaying)
+        updateNotification()
     }
 
     /**
@@ -164,6 +166,7 @@ abstract class PlaybackManager(
     fun play() {
         player.play()
         update()
+        updateNotification()
     }
 
     /**
@@ -172,6 +175,7 @@ abstract class PlaybackManager(
     fun pause() {
         player.pause()
         update()
+        updateNotification()
     }
 
     /**
@@ -207,6 +211,7 @@ abstract class PlaybackManager(
      * If no songs are left in the played list, the playback will stop.
      */
     fun removeSongFromPlayedPlaylist(musicId: UUID) {
+        val actualIndex = currentMusicIndex
         playedList.removeIf { it.musicId == musicId }
 
         // If no songs is left in the queue, stop playing :
@@ -217,7 +222,13 @@ abstract class PlaybackManager(
             currentMusic?.let {
                 if (it.musicId.compareTo(musicId) == 0) {
                     // We place ourself in the previous music :
-                    currentMusic = playedList[(currentMusicIndex) % playedList.size]
+                    println("Actual index: $actualIndex")
+                    currentMusic = if (actualIndex == 0) {
+                        playedList[playedList.lastIndex]
+                    } else {
+                        playedList[actualIndex - 1]
+                    }
+
                     next()
                 }
             }
@@ -229,13 +240,15 @@ abstract class PlaybackManager(
 
         savePlayedList()
         update()
+        updateNotification()
     }
 
     /**
      * Launch a duration job, used for updating the UI to indicate the current position
      * in the played music.
      */
-    private fun launchDurationJob() {
+    private fun launchDurationJobIfNecessary() {
+        if (durationJob != null || !isPlaying) return
         durationJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 withContext(Dispatchers.IO) {
@@ -334,7 +347,10 @@ abstract class PlaybackManager(
      */
     fun seekToPosition(position: Int) {
         player.seekToPosition(position)
-        update()
+
+        launchDurationJobIfNecessary()
+        callback.onCurrentMusicPositionChanged(position)
+        updateNotification()
     }
 
     /**
@@ -346,6 +362,7 @@ abstract class PlaybackManager(
             player.setMusic(music = it)
             player.onlyLoadMusic(seekTo = seekTo)
             update()
+            updateNotification()
         }
 
     }
@@ -370,6 +387,7 @@ abstract class PlaybackManager(
             initialList[indexInitial] = music
         }
         update()
+        updateNotification()
     }
 
     /**
@@ -573,6 +591,7 @@ abstract class PlaybackManager(
             musicRepository.updateNbPlayed(music.musicId)
         }
         update()
+        updateNotification()
     }
 
     /**
@@ -737,20 +756,25 @@ abstract class PlaybackManager(
         releasePlaybackManagerInformation()
         if (resetPlayedList) resetSavePlayedListInDb()
         update()
+        updateNotification()
     }
+
+    /**
+     * Used to update a potential notification linked to the playback.
+     */
+    abstract fun updateNotification()
 
     /**
      * Use to update itself.
      */
     open fun update() {
-        if (durationJob == null && isPlaying) {
-            launchDurationJob()
-        }
+        launchDurationJobIfNecessary()
         defineCoverAndPaletteFromCoverId(currentMusic?.coverId)
         callback.onCurrentPlayedMusicChanged(music = currentMusic)
         callback.onPlayingStateChanged(isPlaying = isPlaying)
         callback.onPlayedListUpdated(playedList = playedList)
         callback.onCurrentMusicPositionChanged(position = currentMusicPosition)
+        updateNotification()
     }
 
     companion object {

@@ -24,6 +24,7 @@ class SelectedArtistViewModelAndroidImpl(
     musicRepository: MusicRepository,
     playlistRepository: PlaylistRepository,
     musicPlaylistRepository: MusicPlaylistRepository,
+    albumRepository: AlbumRepository,
     playbackManager: PlaybackManager
 ) : SelectedArtistViewModel, ViewModel() {
     override val handler: SelectedArtistViewModelHandler = SelectedArtistViewModelHandler(
@@ -32,6 +33,7 @@ class SelectedArtistViewModelAndroidImpl(
         musicPlaylistRepository = musicPlaylistRepository,
         musicRepository = musicRepository,
         playbackManager = playbackManager,
-        playlistRepository = playlistRepository
+        playlistRepository = playlistRepository,
+        albumRepository = albumRepository
     )
 }

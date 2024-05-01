@@ -12,14 +12,17 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.domain.events.MusicEvent
 import com.github.soulsearching.domain.events.handlers.MusicEventHandler
+import com.github.soulsearching.domain.model.MonthMusicList
 import com.github.soulsearching.domain.model.MusicFetcher
+import com.github.soulsearching.domain.model.MusicFolder
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.mainpage.domain.state.MainPageState
+import com.github.soulsearching.domain.utils.Utils
+import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
+import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,12 +33,14 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
-import kotlin.math.max
 
 /**
  * Handler for managing the AllMusicsViewModel.
  */
+@Suppress("Deprecation")
 abstract class AllMusicsViewModelHandler(
     coroutineScope: CoroutineScope,
     private val musicRepository: MusicRepository,
@@ -45,7 +50,7 @@ abstract class AllMusicsViewModelHandler(
     settings: SoulSearchingSettings,
     playbackManager: PlaybackManager,
     private val musicFetcher: MusicFetcher,
-): ViewModelHandler {
+) : ViewModelHandler {
     var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(
         settings.getInt(
@@ -59,7 +64,8 @@ abstract class AllMusicsViewModelHandler(
     )
 
     @OptIn(ExperimentalMaterialApi::class)
-    val searchDraggableState: SwipeableState<BottomSheetStates> = SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
+    val searchDraggableState: SwipeableState<BottomSheetStates> =
+        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->
@@ -73,6 +79,7 @@ abstract class AllMusicsViewModelHandler(
                         else -> musicRepository.getAllMusicsSortByNameAscAsFlow()
                     }
                 }
+
                 SortDirection.DESC -> {
                     when (sortType) {
                         SortType.NAME -> musicRepository.getAllMusicsSortByNameDescAsFlow()
@@ -81,6 +88,7 @@ abstract class AllMusicsViewModelHandler(
                         else -> musicRepository.getAllMusicsSortByNameDescAsFlow()
                     }
                 }
+
                 else -> musicRepository.getAllMusicsSortByNameAscAsFlow()
             }
         }
@@ -111,7 +119,9 @@ abstract class AllMusicsViewModelHandler(
             musics = musics as ArrayList<Music>,
             sortType = sortType,
             sortDirection = sortDirection,
-            allPlaylists = playlists
+            allPlaylists = playlists,
+            monthMusics = buildMonthMusics(allMusics = musics),
+            folderMusics = buildMusicFolders(allMusics = musics)
         )
     }.stateIn(
         coroutineScope,
@@ -129,36 +139,53 @@ abstract class AllMusicsViewModelHandler(
     )
 
     /**
-     * Retrieve the current page index.
-     * If nothing is set, it will return 0 by default.
+     * Build a list of music folders.
      */
-    fun getCurrentPage(visibleElements: List<ElementEnum>): Int {
-        return if (currentPage == null) {
-            0
-        } else {
-            max(0, visibleElements.indexOf(currentPage))
+    private fun buildMusicFolders(allMusics: List<Music>): List<MusicFolder> {
+        return allMusics.groupBy { it.folder }.entries.map { (folder, musics) ->
+            MusicFolder(
+                path = folder,
+                musics = musics,
+                coverId = musics.firstOrNull { it.coverId != null }?.coverId
+            )
         }
     }
 
+
+
     /**
-     * Check if a music is in the favorites.
+     * Build a list of month musics.
      */
-    suspend fun isMusicInFavorite(musicId: UUID): Boolean {
-        return musicRepository.getMusicFromFavoritePlaylist(musicId = musicId) != null
+    private fun buildMonthMusics(allMusics: List<Music>): List<MonthMusicList> {
+        return allMusics.groupBy { Utils.getMonthAndYearOfDate(date = it.addedDate) }.entries.map { (date, musics) ->
+            MonthMusicList(
+                month = date,
+                musics = musics,
+                coverId = musics.firstOrNull { it.coverId != null }?.coverId
+            )
+        }
     }
 
     /**
      * Retrieve the artist id of a music.
      */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) { musicArtistRepository.getArtistIdFromMusicId(musicId) }
+        return runBlocking(context = Dispatchers.IO) {
+            musicArtistRepository.getArtistIdFromMusicId(
+                musicId
+            )
+        }
     }
 
     /**
      * Retrieve the album id of a music.
      */
     fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) { musicAlbumRepository.getAlbumIdFromMusicId(musicId) }
+        return runBlocking(context = Dispatchers.IO) {
+            musicAlbumRepository.getAlbumIdFromMusicId(
+                musicId
+            )
+        }
     }
 
     /**

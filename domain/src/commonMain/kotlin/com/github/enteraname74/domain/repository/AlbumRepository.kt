@@ -186,6 +186,13 @@ class AlbumRepository(
         )
 
     /**
+     * Retrieves all Albums from an Artist as a flow.
+     */
+    fun getAlbumsOfArtistAsFlow(artistId: UUID): Flow<List<Album>> = albumDataSource.getAlbumsOfArtistAsFlow(
+        artistId = artistId
+    )
+
+    /**
      * Retrieves an Album from its id.
      */
     suspend fun getAlbumFromId(albumId: UUID): Album? = albumDataSource.getAlbumFromId(

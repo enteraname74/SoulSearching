@@ -61,6 +61,10 @@ fun SearchView(
 
     if (draggableState.currentValue == BottomSheetStates.COLLAPSED) {
         searchText = ""
+        SideEffect {
+            focusRequester.freeFocus()
+            focusManager.clearFocus()
+        }
     }
 
     Box(

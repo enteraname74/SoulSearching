@@ -15,10 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
-@Suppress("UNUSED_PARAMETER")
 @Composable
 fun ImagesButton(
     editAction: () -> Unit,
@@ -28,21 +27,23 @@ fun ImagesButton(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    Image(
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = primaryColor,
-                shape = CircleShape
-            )
-            .clickable {
-                editAction()
-            }
-            .padding(10.dp),
-        imageVector = Icons.Rounded.Edit,
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(tint)
-    )
+    if (playlistType != PlaylistType.FOLDER && playlistType != PlaylistType.MONTH) {
+        Image(
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    color = primaryColor,
+                    shape = CircleShape
+                )
+                .clickable {
+                    editAction()
+                }
+                .padding(10.dp),
+            imageVector = Icons.Rounded.Edit,
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(tint)
+        )
+    }
 //    if (playlistType == PlaylistType.PLAYLIST) {
 //        Image(
 //            modifier = Modifier

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.util.Log
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
@@ -13,6 +14,9 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Implementation of a MusicPlayerManager for Android.
@@ -42,13 +46,13 @@ class PlaybackManagerAndroidImpl(
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.extras?.getBoolean(STOP_RECEIVE) != null) {
+            if (intent.extras?.getBoolean(STOP_RECEIVE) == true) {
                 context.unregisterReceiver(this)
-            } else if (intent.extras?.getBoolean(NEXT) != null) {
+            } else if (intent.extras?.getBoolean(NEXT) == true) {
                 next()
-            } else if (intent.extras?.getBoolean(PREVIOUS) != null) {
+            } else if (intent.extras?.getBoolean(PREVIOUS) == true) {
                 previous()
-            } else if(intent.extras?.getBoolean(TOGGLE_PLAY_PAUSE) != null) {
+            } else if(intent.extras?.getBoolean(TOGGLE_PLAY_PAUSE) == true) {
                 togglePlayPause()
             }
         }
@@ -112,7 +116,11 @@ class PlaybackManagerAndroidImpl(
     override fun stopPlayback(resetPlayedList: Boolean) {
         if (shouldInit) return
 
-        context.unregisterReceiver(broadcastReceiver)
+        try {
+            context.unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            Log.e("PLAYBACK MANAGER", "EXCEPTION WHILE ON STOP PLAYBACK: $e")
+        }
         player.dismiss()
         mediaSessionManager.release()
 
@@ -122,15 +130,15 @@ class PlaybackManagerAndroidImpl(
         super.stopPlayback(resetPlayedList)
     }
 
-    override fun update() {
-        super.update()
+    override fun updateNotification() {
+        CoroutineScope(Dispatchers.IO).launch {
+            mediaSessionManager.updateMetadata()
+            mediaSessionManager.updateState()
 
-        mediaSessionManager.updateMetadata()
-        mediaSessionManager.updateState()
-
-        val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
-        intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
-        context.sendBroadcast(intentForUpdatingNotification)
+            val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
+            intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
+            context.sendBroadcast(intentForUpdatingNotification)
+        }
     }
 
     companion object {
@@ -138,7 +146,7 @@ class PlaybackManagerAndroidImpl(
 
         const val STOP_RECEIVE = "STOP RECEIVE"
         const val NEXT = "NEXT"
-        const val PREVIOUS = "NEXT"
+        const val PREVIOUS = "PREVIOUS"
         const val TOGGLE_PLAY_PAUSE = "TOGGLE PLAY PAUSE"
     }
 }

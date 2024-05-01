@@ -4,18 +4,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.github.enteraname74.domain.model.Album
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.dialog.DeleteAlbumDialog
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.mainpage.domain.state.AlbumState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlbumBottomSheetEvents(
-    albumState: AlbumState,
-    onAlbumEvent: (AlbumEvent) -> Unit,
-    navigateToModifyAlbum: (String) -> Unit
+    selectedAlbum: Album,
+    navigateToModifyAlbum: (String) -> Unit,
+    isDeleteAlbumDialogShown: Boolean,
+    isBottomSheetShown: Boolean,
+    onDismissBottomSheet: () -> Unit,
+    onSetDeleteAlbumDialogVisibility: (Boolean) -> Unit,
+    onToggleQuickAccessState: () -> Unit,
+    onDeleteAlbum: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -27,30 +31,30 @@ fun AlbumBottomSheetEvents(
         coroutineScope.launch { albumModalSheetState.hide() }
     }
 
-    if (albumState.isDeleteDialogShown) {
+    if (isDeleteAlbumDialogShown) {
         DeleteAlbumDialog(
-            onAlbumEvent = onAlbumEvent,
-            confirmAction = {
+            onDeleteAlbum = {
+                onDeleteAlbum()
+                onSetDeleteAlbumDialogVisibility(false)
                 coroutineScope.launch { albumModalSheetState.hide() }
                     .invokeOnCompletion {
                         if (!albumModalSheetState.isVisible) {
-                            onAlbumEvent(
-                                AlbumEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
+                            onDismissBottomSheet()
                         }
                     }
-            }
+            },
+            onDismiss = { onSetDeleteAlbumDialogVisibility(false) }
         )
     }
 
-    if (albumState.isBottomSheetShown) {
+    if (isBottomSheetShown) {
         AlbumBottomSheet(
-            onAlbumEvent = onAlbumEvent,
             albumModalSheetState = albumModalSheetState,
             navigateToModifyAlbum = navigateToModifyAlbum,
-            albumState = albumState
+            selectedAlbum = selectedAlbum,
+            onDismiss = onDismissBottomSheet,
+            onShowDeleteAlbumDialog = { onSetDeleteAlbumDialogVisibility(true) },
+            onToggleQuickAccessState = onToggleQuickAccessState
         )
     }
 }

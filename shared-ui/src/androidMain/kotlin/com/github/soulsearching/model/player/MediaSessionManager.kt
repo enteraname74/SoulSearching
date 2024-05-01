@@ -2,6 +2,7 @@ package com.github.soulsearching.model.player
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadata
 import android.media.session.PlaybackState
@@ -22,6 +23,8 @@ class MediaSessionManager(
 ) {
     private var mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
+
+    private val standardNotificationBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
 
     /**
      * The token of the media session.
@@ -89,9 +92,8 @@ class MediaSessionManager(
         val bitmap = if (playbackManager.currentMusicCover != null) {
             playbackManager.currentMusicCover!!.asAndroidBitmap()
         } else {
-            BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
+            standardNotificationBitmap
         }
-
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
                 .putBitmap(

@@ -2,15 +2,9 @@ package com.github.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -21,7 +15,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -36,7 +30,8 @@ fun AddToPlaylistMenuBottomSheet(
     onDismiss: () -> Unit,
     onConfirm: (selectedPlaylists: List<UUID>) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
 
     val selectedPlaylistIds = remember {
@@ -50,7 +45,6 @@ fun AddToPlaylistMenuBottomSheet(
                 .background(primaryColor)
                 .padding(it)
                 .padding(Constants.Spacing.medium)
-                .padding(top = WindowInsets.safeContent.asPaddingValues().calculateLeftPadding(LayoutDirection.Rtl))
         ) {
             AppHeaderBar(
                 title = strings.addToPlaylist,
@@ -80,7 +74,8 @@ fun AddToPlaylistMenuBottomSheet(
                                 selectedPlaylistIds.add(playlistWithMusics.playlist.playlistId)
                         },
                         isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
-                        textColor = textColor
+                        textColor = textColor,
+                        cover = retrieveCoverMethod(playlistWithMusics.playlist.coverId)
                     )
                 }
             }

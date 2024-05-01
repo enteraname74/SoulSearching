@@ -16,12 +16,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
+import com.github.soulsearching.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistEvent
-import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistScreen
+import com.github.soulsearching.elementpage.artistpage.presentation.composable.ArtistScreen
+import com.github.soulsearching.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.soulsearching.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.soulsearching.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.UUID
@@ -67,19 +69,36 @@ data class SelectedArtistScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
-            playerDraggableState = playerDraggableState
+            playerDraggableState = playerDraggableState,
+            navigateToAlbum = { albumId ->
+                navigator.push(
+                    SelectedAlbumScreen(
+                        selectedAlbumId = albumId
+                    )
+                )
+            },
+            navigateToModifyAlbum = { albumId ->
+                navigator.push(
+                    ModifyAlbumScreen(
+                        selectedAlbumId = albumId
+                    )
+                )
+            }
         )
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+@Suppress("Deprecation")
 fun SelectedArtistScreenView(
     selectedArtistViewModel: SelectedArtistViewModel,
     selectedArtistId: String,
     navigateToModifyArtist: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
+    navigateToAlbum: (String) -> Unit,
     navigateBack: () -> Unit,
+    navigateToModifyAlbum: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
@@ -110,13 +129,13 @@ fun SelectedArtistScreenView(
 //        }
 //    }
 
-    PlaylistScreen(
+    ArtistScreen(
         playlistId = state.artistWithMusics.artist.artistId,
         playlistWithMusics = state.allPlaylists,
-        title = state.artistWithMusics.artist.artistName,
-        image = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
+        artistName = state.artistWithMusics.artist.artistName,
+        artistCover = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
         musics = state.artistWithMusics.musics,
-        navigateToModifyPlaylist = {
+        navigateToModifyArtist = {
             navigateToModifyArtist(selectedArtistId)
         },
         navigateToModifyMusic = navigateToModifyMusic,
@@ -175,6 +194,37 @@ fun SelectedArtistScreenView(
                     musicId = selectedMusic.musicId,
                     selectedPlaylistsIds = selectedPlaylistsIds
                 )
+            )
+        },
+        albums = state.artistAlbums,
+        navigateToAlbum = navigateToAlbum,
+        isDeleteAlbumDialogShown = state.isDeleteAlbumDialogShown,
+        isAlbumBottomSheetShown = state.isAlbumBottomSheetShown,
+        navigateToModifyAlbum = navigateToModifyAlbum,
+        onSetAlbumBottomSheetVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetAlbumBottomSheetVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onSetDeleteAlbumDialogVisibility = { isShown ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.SetDeleteAlbumDialogVisibility(
+                    isShown = isShown
+                )
+            )
+        },
+        onToggleAlbumQuickAccessState = { album ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.ToggleAlbumQuickAccessState(
+                    album = album
+                )
+            )
+        },
+        onDeleteAlbum = { album ->
+            selectedArtistViewModel.handler.onEvent(
+                SelectedArtistEvent.DeleteAlbum(albumId = album.albumId)
             )
         }
     )

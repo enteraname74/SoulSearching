@@ -1,16 +1,13 @@
 package com.github.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -27,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
+@Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 fun MusicBottomSheetEvents(
     selectedMusic: Music,
@@ -51,7 +49,8 @@ fun MusicBottomSheetEvents(
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -144,22 +143,19 @@ fun MusicBottomSheetEvents(
     }
 
     if (isAddToPlaylistBottomSheetShown) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
-        ) {
-            AddToPlaylistBottomSheet(
-                addToPlaylistModalSheetState = addToPlaylistModalSheetState,
-                primaryColor = secondaryColor,
-                textColor = onSecondaryColor,
-                playlistsWithMusics = playlistsWithMusics,
-                onDismiss = { onSetAddToPlaylistBottomSheetVisibility(false) },
-                onConfirm = { selectedPlaylistsIds ->
-                    onAddMusicToSelectedPlaylists(selectedPlaylistsIds)
-                    onSetAddToPlaylistBottomSheetVisibility(false)
-                }
-            )
-        }
+        AddToPlaylistBottomSheet(
+            addToPlaylistModalSheetState = addToPlaylistModalSheetState,
+            primaryColor = secondaryColor,
+            textColor = onSecondaryColor,
+            playlistsWithMusics = playlistsWithMusics.filter { playlist ->
+                playlist.musics.none { it.musicId == selectedMusic.musicId }
+            },
+            onDismiss = { onSetAddToPlaylistBottomSheetVisibility(false) },
+            onConfirm = { selectedPlaylistsIds ->
+                onAddMusicToSelectedPlaylists(selectedPlaylistsIds)
+                onSetAddToPlaylistBottomSheetVisibility(false)
+            },
+            retrieveCoverMethod = retrieveCoverMethod
+        )
     }
 }

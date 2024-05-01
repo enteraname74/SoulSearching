@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.model.types
+package com.github.soulsearching.elementpage.domain
 
 /**
  * Possibles types for a playlist.
@@ -6,5 +6,7 @@ package com.github.soulsearching.domain.model.types
 enum class PlaylistType {
     PLAYLIST,
     ALBUM,
-    ARTIST
+    ARTIST,
+    FOLDER,
+    MONTH
 }

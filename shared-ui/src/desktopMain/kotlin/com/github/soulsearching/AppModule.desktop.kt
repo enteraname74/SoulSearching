@@ -1,12 +1,12 @@
 package com.github.soulsearching
 
-import com.github.soulsearching.model.MusicFetcherDesktopImpl
-import com.github.soulsearching.model.PlaybackManagerDesktopImpl
+import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
+import com.github.soulsearching.model.MusicFetcherDesktopImpl
+import com.github.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.soulsearching.settings.domain.ViewSettingsManager
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.AllArtistsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.AllImageCoversViewModelDesktopImpl
@@ -22,6 +22,8 @@ import com.github.soulsearching.viewmodel.NavigationViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelDesktopImpl
+import com.github.soulsearching.viewmodel.SelectedFolderViewModelDesktopImpl
+import com.github.soulsearching.viewmodel.SelectedMonthViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelDesktopImpl
@@ -41,7 +43,6 @@ actual val appModule: Module = module {
     single {
         AllAlbumsViewModelDesktopImpl(
             albumRepository = get(),
-            albumService = get(),
             settings = get()
         )
     }
@@ -56,8 +57,7 @@ actual val appModule: Module = module {
     single {
         SettingsAllFoldersViewModelDesktopImpl(
             folderRepository = get(),
-            musicRepository = get(),
-            musicService = get()
+            musicRepository = get()
         )
     }
     single {
@@ -73,14 +73,8 @@ actual val appModule: Module = module {
         AllMusicsViewModelDesktopImpl(
             musicRepository = get(),
             playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
             musicAlbumRepository = get(),
             musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            folderRepository = get(),
             settings = get(),
             playbackManager = get(),
             musicFetcher = get()
@@ -90,8 +84,9 @@ actual val appModule: Module = module {
         AllPlaylistsViewModelDesktopImpl(
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get()
+            settings = get(),
+            musicRepository = get(),
+            playbackManager = get()
         )
     }
     single {
@@ -109,12 +104,8 @@ actual val appModule: Module = module {
     }
     single {
         ModifyAlbumViewModelDesktopImpl(
-            musicRepository = get(),
             albumRepository = get(),
             artistRepository = get(),
-            musicArtistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
             imageCoverRepository = get(),
             playbackManager = get()
         )
@@ -128,24 +119,16 @@ actual val appModule: Module = module {
     single {
         ModifyMusicViewModelDesktopImpl(
             musicRepository = get(),
-            playlistRepository = get(),
             artistRepository = get(),
             albumRepository = get(),
-            musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            albumArtistRepository = get(),
-            musicArtistRepository = get(),
             imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }
     single {
         ModifyPlaylistViewModelDesktopImpl(
             playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get()
+            imageCoverRepository = get()
         )
     }
     single {
@@ -161,30 +144,9 @@ actual val appModule: Module = module {
     single {
         SelectedAlbumViewModelDesktopImpl(
             albumRepository = get(),
-            artistRepository = get(),
             musicRepository = get(),
             playlistRepository = get(),
             musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            albumArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
-            playbackManager = get()
-        )
-    }
-    single {
-        SelectedArtistViewModelDesktopImpl(
-            artistRepository = get(),
-            musicRepository = get(),
-            albumRepository = get(),
-            playlistRepository = get(),
-            musicPlaylistRepository = get(),
-            albumArtistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
         )
     }
@@ -193,29 +155,33 @@ actual val appModule: Module = module {
             playlistRepository = get(),
             musicRepository = get(),
             artistRepository = get(),
-            albumRepository = get(),
-            albumArtistRepository = get(),
             musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
-            playbackManager = get()
+            playbackManager = get(),
+            albumRepository = get()
         )
     }
     single {
         SelectedPlaylistViewModelDesktopImpl(
             playlistRepository = get(),
             musicRepository = get(),
-            artistRepository = get(),
-            albumRepository = get(),
-            albumArtistRepository = get(),
             musicPlaylistRepository = get(),
-            musicAlbumRepository = get(),
-            musicArtistRepository = get(),
-            imageCoverRepository = get(),
-            settings = get(),
             playbackManager = get()
+        )
+    }
+    single {
+        SelectedFolderViewModelDesktopImpl(
+            playbackManager = get(),
+            playlistRepository = get(),
+            musicPlaylistRepository = get(),
+            musicRepository = get()
+        )
+    }
+    single {
+        SelectedMonthViewModelDesktopImpl(
+            playbackManager = get(),
+            playlistRepository = get(),
+            musicPlaylistRepository = get(),
+            musicRepository = get()
         )
     }
     single {

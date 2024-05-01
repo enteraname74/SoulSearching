@@ -1,5 +1,6 @@
 package com.github.soulsearching.elementpage.artistpage.domain
 
+import com.github.enteraname74.domain.model.Album
 import java.util.UUID
 
 /**
@@ -22,4 +23,11 @@ sealed interface SelectedArtistEvent {
         SelectedArtistEvent
 
     data class AddNbPlayed(val artistId: UUID): SelectedArtistEvent
+
+    data class DeleteAlbum(val albumId: UUID): SelectedArtistEvent
+
+    data class ToggleAlbumQuickAccessState(val album: Album): SelectedArtistEvent
+    data class SetDeleteAlbumDialogVisibility(val isShown: Boolean): SelectedArtistEvent
+
+    data class SetAlbumBottomSheetVisibility(val isShown: Boolean): SelectedArtistEvent
 }

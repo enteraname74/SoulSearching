@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,9 +52,9 @@ fun PlayerPanelTab(
             )
         }
         if (isSelected) {
-            Divider(
-                color = contentColor,
-                thickness = 2.dp
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = contentColor
             )
         }
     }

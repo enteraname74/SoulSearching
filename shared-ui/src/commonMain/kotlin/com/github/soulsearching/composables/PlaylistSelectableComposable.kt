@@ -13,17 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Playlist
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 
 @Composable
 fun PlaylistSelectableComposable(
+    cover: ImageBitmap?,
     playlist: Playlist,
     onClick: () -> Unit,
     isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
 ) {
     Row(
         modifier = Modifier
@@ -35,13 +38,25 @@ fun PlaylistSelectableComposable(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = playlist.name,
-            color = textColor,
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(
+            modifier = Modifier
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+        ) {
+            AppImage(
+                bitmap = cover,
+                size = 55.dp,
+                tint = textColor
+            )
+            Text(
+                text = playlist.name,
+                color = textColor,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Checkbox(
             checked = isSelected,
             onCheckedChange = {

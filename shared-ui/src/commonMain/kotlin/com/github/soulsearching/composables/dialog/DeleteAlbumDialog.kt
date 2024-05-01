@@ -6,18 +6,12 @@ import com.github.soulsearching.strings.strings
 
 @Composable
 fun DeleteAlbumDialog(
-    onAlbumEvent: (AlbumEvent) -> Unit,
-    confirmAction : () -> Unit
+    onDeleteAlbum: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     SoulSearchingDialog(
-        confirmAction = {
-            onAlbumEvent(AlbumEvent.DeleteAlbum)
-            onAlbumEvent(AlbumEvent.DeleteDialog(isShown = false))
-            confirmAction()
-        },
-        dismissAction =  {
-            onAlbumEvent(AlbumEvent.DeleteDialog(isShown = false))
-        },
+        confirmAction = onDeleteAlbum,
+        dismissAction =  onDismiss,
         confirmText = strings.delete,
         dismissText = strings.cancel,
         title = strings.deleteAlbumDialogTitle

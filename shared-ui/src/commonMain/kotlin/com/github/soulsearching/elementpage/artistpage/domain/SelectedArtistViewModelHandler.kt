@@ -1,7 +1,9 @@
 package com.github.soulsearching.elementpage.artistpage.domain
 
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -25,6 +27,7 @@ import java.util.UUID
 class SelectedArtistViewModelHandler(
     private val coroutineScope: CoroutineScope,
     private val artistRepository: ArtistRepository,
+    private val albumRepository: AlbumRepository,
     private val playbackManager: PlaybackManager,
     private val musicRepository: MusicRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
@@ -33,6 +36,8 @@ class SelectedArtistViewModelHandler(
     private var _selectedArtistWithMusics: StateFlow<ArtistWithMusics?> = MutableStateFlow(
         ArtistWithMusics()
     )
+
+    private var artistAlbums: StateFlow<List<Album>> = MutableStateFlow(emptyList())
 
     private val _playlists = playlistRepository.getAllPlaylistsWithMusicsSortByNameAscAsFlow()
         .stateIn(
@@ -71,6 +76,53 @@ class SelectedArtistViewModelHandler(
             is SelectedArtistEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(isShown = event.isShown)
             is SelectedArtistEvent.SetSelectedArtist -> setSelectedArtist(artistId = event.artistId)
             is SelectedArtistEvent.ToggleQuickAccessState -> toggleQuickAccessState(musicId = event.musicId)
+            is SelectedArtistEvent.DeleteAlbum -> deleteAlbum(albumId = event.albumId)
+            is SelectedArtistEvent.SetAlbumBottomSheetVisibility -> setAlbumBottomSheetVisibility(isShown = event.isShown)
+            is SelectedArtistEvent.SetDeleteAlbumDialogVisibility -> setDeleteAlbumDialogVisibility(isShown = event.isShown)
+            is SelectedArtistEvent.ToggleAlbumQuickAccessState -> toggleAlbumQuickAccessState(album = event.album)
+        }
+    }
+
+    /**
+     * Toggle the quick access state of an album.
+     */
+    private fun toggleAlbumQuickAccessState(album: Album) {
+        CoroutineScope(Dispatchers.IO).launch {
+            albumRepository.updateQuickAccessState(
+                newQuickAccessState = !album.isInQuickAccess,
+                albumId = album.albumId
+            )
+        }
+    }
+
+    /**
+     * Show or hide the delete album dialog.
+     */
+    private fun setDeleteAlbumDialogVisibility(isShown: Boolean) {
+        _state.update {
+            it.copy(
+                isDeleteAlbumDialogShown = isShown
+            )
+        }
+    }
+
+    /**
+     * Show or hide the album bottom sheet.
+     */
+    private fun setAlbumBottomSheetVisibility(isShown: Boolean) {
+        _state.update {
+            it.copy(
+                isAlbumBottomSheetShown = isShown
+            )
+        }
+    }
+
+    /**
+     * Delete an album from its id.
+     */
+    private fun deleteAlbum(albumId: UUID) {
+        CoroutineScope(Dispatchers.IO).launch {
+            albumRepository.delete(albumId = albumId)
         }
     }
 
@@ -84,15 +136,23 @@ class SelectedArtistViewModelHandler(
                 coroutineScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
             )
 
+        artistAlbums = albumRepository.getAlbumsOfArtistAsFlow(
+            artistId = artistId
+        ).stateIn(
+            coroutineScope, SharingStarted.WhileSubscribed(), emptyList()
+        )
+
         state =
             combine(
                 _state,
                 _selectedArtistWithMusics,
-                _playlists
-            ) { state, artist, playlists ->
+                _playlists,
+                artistAlbums
+            ) { state, artist, playlists, albums ->
                 state.copy(
                     artistWithMusics = artist ?: ArtistWithMusics(),
-                    allPlaylists = playlists
+                    allPlaylists = playlists,
+                    artistAlbums = albums
                 )
             }.stateIn(
                 coroutineScope,
@@ -120,6 +180,8 @@ class SelectedArtistViewModelHandler(
                     )
                 )
             }
+            val music = musicRepository.getMusicFromId(musicId = musicId)
+            playbackManager.updateMusic(music = music)
         }
     }
 

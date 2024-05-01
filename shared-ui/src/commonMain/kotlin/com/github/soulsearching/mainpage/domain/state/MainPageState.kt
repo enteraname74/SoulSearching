@@ -2,6 +2,8 @@ package com.github.soulsearching.mainpage.domain.state
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.soulsearching.domain.model.MonthMusicList
+import com.github.soulsearching.domain.model.MusicFolder
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 
@@ -18,5 +20,7 @@ data class MainPageState(
     val selectedMusic: Music = Music(),
     var sortType: Int = SortType.NAME,
     var sortDirection: Int = SortDirection.ASC,
-    var hasCoverBeenChanged: Boolean = false
+    var hasCoverBeenChanged: Boolean = false,
+    var monthMusics: List<MonthMusicList> = emptyList(),
+    var folderMusics: List<MusicFolder> = emptyList()
 )

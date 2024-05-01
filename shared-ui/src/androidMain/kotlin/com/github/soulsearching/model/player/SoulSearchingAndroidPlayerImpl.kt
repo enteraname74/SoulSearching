@@ -78,7 +78,7 @@ class SoulSearchingAndroidPlayerImpl(
             AudioManager.AUDIOFOCUS_GAIN -> {
                 try {
                     player.start()
-                    playbackManager.update()
+                    playbackManager.updateNotification()
                 } catch (_: IllegalStateException) {
                 }
             }
@@ -96,7 +96,6 @@ class SoulSearchingAndroidPlayerImpl(
         try {
             audioManager.abandonAudioFocusRequest()
             player.pause()
-            playbackManager.update()
         } catch (_: IllegalStateException) {
         }
     }
@@ -111,7 +110,6 @@ class SoulSearchingAndroidPlayerImpl(
     override fun seekToPosition(position: Int) {
         try {
             player.seekTo(position)
-            playbackManager.update()
         } catch (_: IllegalStateException) {
 
         }
@@ -140,7 +138,6 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onCompletion(mp: MediaPlayer?) {
         CoroutineScope(Dispatchers.IO).launch {
-//            next()
             playbackManager.next()
         }
     }
@@ -149,9 +146,6 @@ class SoulSearchingAndroidPlayerImpl(
         Log.d("MEDIA PLAYER", "ERROR CODE : $what, $extra")
         when (what) {
             MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
-//                PlayerUtils.playerViewModel.handler.removeMusicFromCurrentPlaylist(
-//                    musicId = PlayerUtils.playerViewModel.handler.currentMusic!!.musicId
-//                )
                 playbackManager.skipAndRemoveCurrentSong()
             }
         }
@@ -172,56 +166,10 @@ class SoulSearchingAndroidPlayerImpl(
                 AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> {
                     player.start()
                     playbackManager.update()
-//                    PlayerUtils.playerViewModel.handler.currentMusic?.let {
-//                        PlayerUtils.playerViewModel.handler.updateNbPlayed(it.musicId)
-//                    }
-//                    PlayerUtils.playerViewModel.handler.isPlaying = true
-//
-//                    releaseDurationJob()
-//                    launchDurationJob()
-//
-//                    updateNotification()
-//
-//                    settings.saveCurrentMusicInformation(
-//                        PlayerUtils.playerViewModel.handler.getIndexOfCurrentMusic(),
-//                        PlayerUtils.playerViewModel.handler.currentMusicPosition
-//                    )
+                    playbackManager.updateNotification()
                 }
-
                 else -> {}
             }
         }
     }
-
-//    /**
-//     * Launch a job that save the current music position to the shared preferences.
-//     * It is used to save the current music position between app sessions.
-//     */
-//    private fun launchDurationJob() {
-//        currentDurationJob = CoroutineScope(Dispatchers.IO).launch {
-//            while (true) {
-//                withContext(Dispatchers.IO) {
-//                    Thread.sleep(1000)
-//                }
-//                PlayerUtils.playerViewModel.handler.currentMusicPosition =
-//                    PlayerService.getCurrentMusicPosition()
-//                if (player.isPlaying) {
-//                    settings.setInt(
-//                        SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY,
-//                        PlayerUtils.playerViewModel.handler.currentMusicPosition
-//                    )
-//                }
-//            }
-//        }
-//    }
-
-//    /**
-//     * Release the duration job.
-//     */
-//    private fun releaseDurationJob() {
-//        if (currentDurationJob != null) {
-//            currentDurationJob!!.cancel()
-//            currentDurationJob = null
-//        }
-//    }
 }

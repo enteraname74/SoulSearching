@@ -175,6 +175,7 @@ class MainPageScreen : Screen {
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
+@Suppress("Deprecation")
 fun MainPageScreenView(
     allMusicsViewModel: AllMusicsViewModel,
     allPlaylistsViewModel: AllPlaylistsViewModel,
@@ -202,6 +203,10 @@ fun MainPageScreenView(
     val coroutineScope = rememberCoroutineScope()
 
     var selectedMusicId by rememberSaveable {
+        mutableStateOf<UUID?>(null)
+    }
+
+    var selectedAlbumId by rememberSaveable {
         mutableStateOf<UUID?>(null)
     }
 
@@ -248,6 +253,7 @@ fun MainPageScreenView(
                     )
                 )
             },
+            retrieveCoverMethod = allImageCoversViewModel.handler::getImageCover
         )
     }
 
@@ -257,12 +263,35 @@ fun MainPageScreenView(
         navigateToModifyPlaylist = navigateToModifyPlaylist
     )
 
-    AlbumBottomSheetEvents(
-        albumState = albumState,
-        onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
-        navigateToModifyAlbum = navigateToModifyAlbum
-    )
+    albumState.albums.find { it.album.albumId == selectedAlbumId }?.let { albumWithArtist ->
+        AlbumBottomSheetEvents(
+            selectedAlbum = albumWithArtist.album,
+            navigateToModifyAlbum = navigateToModifyAlbum,
+            isDeleteAlbumDialogShown = albumState.isDeleteDialogShown,
+            isBottomSheetShown = albumState.isBottomSheetShown,
+            onDeleteAlbum = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.DeleteAlbum(albumId = albumWithArtist.album.albumId)
+                )
+            },
+            onDismissBottomSheet = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.BottomSheet(isShown = false)
+                )
+            },
+            onSetDeleteAlbumDialogVisibility = { isShown ->
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.DeleteDialog(isShown = isShown)
+                )
+            },
+            onToggleQuickAccessState = {
+                allAlbumsViewModel.handler.onAlbumEvent(
+                    AlbumEvent.UpdateQuickAccessState(album = albumWithArtist.album)
+                )
+            }
+        )
 
+    }
     ArtistBottomSheetEvents(
         artistState = artistState,
         onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
@@ -355,13 +384,9 @@ fun MainPageScreenView(
                                         }
                                     },
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = {
+                                    albumBottomSheetAction = { albumWithArtist ->
                                         coroutineScope.launch {
-                                            allAlbumsViewModel.handler.onAlbumEvent(
-                                                AlbumEvent.SetSelectedAlbum(
-                                                    it
-                                                )
-                                            )
+                                            selectedAlbumId = albumWithArtist.album.albumId
                                             allAlbumsViewModel.handler.onAlbumEvent(
                                                 AlbumEvent.BottomSheet(
                                                     isShown = true
@@ -487,13 +512,9 @@ fun MainPageScreenView(
                                     list = albumState.albums,
                                     title = strings.albums,
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = {
+                                    albumBottomSheetAction = { albumWithArtist ->
                                         coroutineScope.launch {
-                                            allAlbumsViewModel.handler.onAlbumEvent(
-                                                AlbumEvent.SetSelectedAlbum(
-                                                    it
-                                                )
-                                            )
+                                            selectedAlbumId = albumWithArtist.album.albumId
                                             allAlbumsViewModel.handler.onAlbumEvent(
                                                 AlbumEvent.BottomSheet(
                                                     isShown = true
@@ -621,8 +642,6 @@ fun MainPageScreenView(
                                             MusicEvent.SetSortDirection(newDirection)
                                         )
                                     },
-                                    sortType = musicState.sortType,
-                                    sortDirection = musicState.sortDirection,
                                     playerDraggableState = playerDraggableState,
                                     onLongMusicClick = { music ->
                                         selectedMusicId = music.musicId
@@ -691,7 +710,6 @@ fun MainPageScreenView(
                 playlistState = playlistState,
                 onPlaylistEvent = allPlaylistsViewModel.handler::onPlaylistEvent,
                 onArtistEvent = allArtistsViewModel.handler::onArtistEvent,
-                onAlbumEvent = allAlbumsViewModel.handler::onAlbumEvent,
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
@@ -707,6 +725,14 @@ fun MainPageScreenView(
                             )
                         )
                     }
+                },
+                onSelectedAlbumForBottomSheet = { album ->
+                    selectedAlbumId = album.albumId
+                    allAlbumsViewModel.handler.onAlbumEvent(
+                        AlbumEvent.BottomSheet(
+                            isShown = true
+                        )
+                    )
                 }
             )
         }

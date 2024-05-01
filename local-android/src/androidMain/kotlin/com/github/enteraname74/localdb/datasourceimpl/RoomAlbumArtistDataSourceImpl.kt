@@ -1,9 +1,9 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
+import com.github.enteraname74.domain.model.AlbumArtist
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomAlbumArtist
-import com.github.enteraname74.domain.model.AlbumArtist
 import java.util.UUID
 
 /**

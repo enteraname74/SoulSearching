@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Album
 import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.QueueMusic
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,10 +25,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import com.github.soulsearching.Constants
-import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
+import com.github.soulsearching.strings.strings
 
 @Composable
 fun MainPageVerticalShortcut(
@@ -72,7 +72,7 @@ fun MainPageVerticalShortcut(
                     colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
                     imageVector = when (it) {
                         ElementEnum.QUICK_ACCESS -> Icons.Rounded.DoubleArrow
-                        ElementEnum.PLAYLISTS -> Icons.Rounded.QueueMusic
+                        ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Rounded.QueueMusic
                         ElementEnum.ALBUMS -> Icons.Rounded.Album
                         ElementEnum.ARTISTS -> Icons.Rounded.Person
                         ElementEnum.MUSICS -> Icons.Rounded.MusicNote

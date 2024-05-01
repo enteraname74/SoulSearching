@@ -4,21 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.PlaylistAdd
-import androidx.compose.material.icons.rounded.PlaylistPlay
+import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.soulsearching.Constants
+import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.domain.di.injectElement
+import com.github.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -34,7 +36,8 @@ fun MusicBottomSheetMenu(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     isCurrentlyPlaying: Boolean,
-    viewSettingsManager: ViewSettingsManager = injectElement()
+    viewSettingsManager: ViewSettingsManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement()
 ) {
     Column(
         modifier = Modifier
@@ -54,7 +57,7 @@ fun MusicBottomSheetMenu(
             )
         }
         BottomSheetRow(
-            icon = Icons.Rounded.PlaylistAdd,
+            icon = Icons.AutoMirrored.Rounded.PlaylistAdd,
             text = strings.addToPlaylist,
             onClick = addToPlaylistAction,
             textColor = textColor
@@ -67,7 +70,7 @@ fun MusicBottomSheetMenu(
         )
         if (!isCurrentlyPlaying) {
             BottomSheetRow(
-                icon = Icons.Rounded.PlaylistPlay,
+                icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
                 text = strings.playNext,
                 onClick = playNextAction,
                 textColor = textColor
@@ -81,9 +84,9 @@ fun MusicBottomSheetMenu(
                 textColor = textColor
             )
         }
-        if (musicBottomSheetState == MusicBottomSheetState.PLAYER) {
+        if (playbackManager.playedList.isNotEmpty()) {
             BottomSheetRow(
-                icon = Icons.Rounded.Delete,
+                icon = Icons.Rounded.PlaylistRemove,
                 text = strings.removeFromPlayedList,
                 onClick = removeFromPlayedListAction,
                 textColor = textColor

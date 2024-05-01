@@ -11,6 +11,8 @@ import java.util.UUID
 internal class ExposedArtistDataSourceImpl(
     private val artistDao: ArtistDao
 ) : ArtistDataSource {
+    override suspend fun getAllArtists(): List<Artist> = artistDao.getAllArtists()
+
     override suspend fun insertArtist(artist: Artist) = artistDao.insertArtist(artist = artist)
 
     override suspend fun deleteArtist(artist: Artist) = artistDao.deleteArtist(artist = artist)

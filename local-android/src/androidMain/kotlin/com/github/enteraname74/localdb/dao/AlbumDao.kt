@@ -1,11 +1,15 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomAlbumWithArtist
 import com.github.enteraname74.localdb.model.RoomAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of an Album.
@@ -21,6 +25,9 @@ internal interface AlbumDao {
 
     @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
     suspend fun getAllAlbumsFromArtist(artistId: UUID) : List<RoomAlbum>
+
+    @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
+    fun getAllAlbumsFromArtistAsFlow(artistId: UUID) : Flow<List<RoomAlbum>>
 
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAllAlbumsSortByNameAscAsFlow(): Flow<List<RoomAlbum>>

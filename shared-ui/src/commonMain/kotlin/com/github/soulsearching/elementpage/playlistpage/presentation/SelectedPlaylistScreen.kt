@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.model.types.PlaylistType
+import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
@@ -74,6 +74,7 @@ data class SelectedPlaylistScreen(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
+@Suppress("Deprecation")
 @Composable
 fun SelectedPlaylistScreenView(
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
@@ -102,8 +103,8 @@ fun SelectedPlaylistScreenView(
     PlaylistScreen(
         playlistId = state.playlistWithMusics?.playlist?.playlistId,
         playlistWithMusics = state.allPlaylists,
-        title = state.playlistWithMusics?.playlist?.name ?: "",
-        image = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
+        playlistName = state.playlistWithMusics?.playlist?.name ?: "",
+        playlistCover = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
         musics = state.playlistWithMusics?.musics ?: emptyList(),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)

@@ -2,11 +2,11 @@ package com.github.soulsearching.colortheme.domain.model
 
 import androidx.compose.ui.graphics.Color
 
-val primaryColorLight = Color(0xFFFAFAFB)
+val primaryColorLight = Color(0xFFFEFEFE)
 val secondaryColorLight = Color(0xFFF3F3F5)
 val thirdColorLight = Color(0xFFF9F9FB)
-val textColorLight = Color(0xFF767677)
-val subTextColorLight = Color(0xFF969697)
+val textColorLight = Color(0xFF212121)
+val subTextColorLight = Color(0xFF514141)
 
 val primaryColorDark = Color(0xFF100E2C)
 val secondaryColorDark = Color(0xFF1D1A48)

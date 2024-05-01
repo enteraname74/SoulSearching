@@ -21,15 +21,17 @@ fun SettingsElement(
     title: String,
     text: String,
     icon: ImageVector? = null,
+    isClickable: Boolean = true,
     clickAction: () -> Unit = {},
     padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge)
 ) {
+
+    val clickableModifier = if (isClickable) Modifier.clickable { clickAction() } else Modifier
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                clickAction()
-            }
+            .then(clickableModifier)
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)

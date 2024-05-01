@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalMaterialApi::class)
+@Suppress("Deprecation")
 @Composable
 fun MusicList(
     modifier: Modifier = Modifier,
@@ -84,7 +85,8 @@ fun MusicList(
             primaryColor = primaryColor,
             secondaryColor = secondaryColor,
             onPrimaryColor = onPrimaryColor,
-            onSecondaryColor = onSecondaryColor
+            onSecondaryColor = onSecondaryColor,
+            retrieveCoverMethod = retrieveCoverMethod
         )
     }
 

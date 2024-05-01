@@ -10,7 +10,6 @@ import com.github.soulsearching.mainpage.domain.model.SortType
  */
 data class AlbumState(
     val albums: List<AlbumWithArtist> = emptyList(),
-    val selectedAlbumWithArtist : AlbumWithArtist = AlbumWithArtist(),
     val cover : ImageBitmap? = null,
     val name : String = "",
     val artist : String = "",

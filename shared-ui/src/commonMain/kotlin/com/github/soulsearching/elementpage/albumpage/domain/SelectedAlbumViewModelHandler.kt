@@ -119,6 +119,8 @@ class SelectedAlbumViewModelHandler(
                     )
                 )
             }
+            val music = musicRepository.getMusicFromId(musicId = musicId)
+            playbackManager.updateMusic(music = music)
         }
     }
 

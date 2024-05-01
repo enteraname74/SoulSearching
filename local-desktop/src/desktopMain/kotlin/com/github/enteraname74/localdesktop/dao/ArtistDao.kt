@@ -15,6 +15,11 @@ internal interface ArtistDao {
     suspend fun insertArtist(artist: Artist)
 
     /**
+     * Retrieves all artists
+     */
+    suspend fun getAllArtists(): List<Artist>
+
+    /**
      * Deletes an Artist.
      */
     suspend fun deleteArtist(artist: Artist)

@@ -30,7 +30,7 @@ fun BigPreviewComposable(
     modifier : Modifier = Modifier,
     image : ImageBitmap?,
     title : String,
-    text : String,
+    text : String = "",
     onClick : () -> Unit,
     onLongClick : () -> Unit = {},
     imageSize : Dp = Constants.ImageSize.veryLarge,
@@ -79,13 +79,15 @@ fun BigPreviewComposable(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = text,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                    style = textStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (text.isNotBlank()) {
+                    Text(
+                        text = text,
+                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        style = textStyle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

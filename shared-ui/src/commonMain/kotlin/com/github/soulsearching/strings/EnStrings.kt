@@ -43,6 +43,8 @@ object EnStrings : Strings {
 
     override val artists = "Artists"
     override val musics = "Songs"
+    override val byFolders = "By folders"
+    override val byMonths = "By months"
     override val quickAccess = "Quick Access"
 
     override val sortByDateAdded = "Sort by date added"
@@ -116,6 +118,9 @@ object EnStrings : Strings {
     override val showPlaylists = "Show playlists"
     override val showAlbums = "Show albums"
     override val showArtists = "Show artists"
+    override val manageMusicsViewText = "Manage musics view"
+    override val showMusicsByFolders = "Show musics by folders"
+    override val showMusicsByMonths = "Show musics by months"
     override val showVerticalAccessBarTitle = "Show vertical access bar"
     override val showVerticalAccessBarText = "Gives quick access to all elements on the main page"
 

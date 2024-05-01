@@ -4,18 +4,19 @@ package com.github.soulsearching.elementpage.playlistpage.presentation.composabl
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.SwipeableState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
@@ -35,8 +35,6 @@ import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.AppImage
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
@@ -44,8 +42,9 @@ import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetE
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.model.types.PlaylistType
 import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.soulsearching.elementpage.domain.PlaylistType
+import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
@@ -54,12 +53,13 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Suppress("Deprecation")
 @Composable
 fun PlaylistScreen(
     playlistId: UUID?,
     playlistWithMusics: List<PlaylistWithMusics>,
-    title: String,
-    image: ImageBitmap?,
+    playlistName: String,
+    playlistCover: ImageBitmap?,
     musics: List<Music>,
     navigateToModifyPlaylist: () -> Unit = {},
     navigateToModifyMusic: (String) -> Unit,
@@ -89,7 +89,15 @@ fun PlaylistScreen(
         mutableStateOf(false)
     }
 
-    image?.let {
+    var musicBottomSheetStates = when(playlistType) {
+        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
+        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
+        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
+        PlaylistType.FOLDER -> MusicBottomSheetState.NORMAL
+        PlaylistType.MONTH -> MusicBottomSheetState.NORMAL
+    }
+
+    playlistCover?.let {
         if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
             colorThemeManager.setNewPlaylistCover(it)
             hasPlaylistPaletteBeenFetched = true
@@ -121,13 +129,6 @@ fun PlaylistScreen(
         }
     }
 
-
-    val musicBottomSheetState = when (playlistType) {
-        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
-        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
-        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -146,13 +147,13 @@ fun PlaylistScreen(
 
         val searchAction = {
             coroutineScope.launch {
-                    searchDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(Constants.AnimationDuration.normal)
-                    )
-                }.invokeOnCompletion {
-                    searchBarFocusRequester.requestFocus()
-                }
+                searchDraggableState.animateTo(
+                    BottomSheetStates.EXPANDED,
+                    tween(Constants.AnimationDuration.normal)
+                )
+            }.invokeOnCompletion {
+                searchBarFocusRequester.requestFocus()
+            }
         }
 
         var selectedMusicId by rememberSaveable {
@@ -170,62 +171,59 @@ fun PlaylistScreen(
                             .fillMaxHeight()
                             .weight(1f)
                     ) {
-                        AppHeaderBar(
-                            title = title,
-                            leftAction = navigateBack,
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(Constants.Spacing.large),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            AppImage(
-                                bitmap = image,
-                                size = Constants.ImageSize.huge,
-                                roundedPercent = 5
+                        IconButton(onClick = navigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = strings.backButton,
+                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
                             )
                         }
+                        PageHeader(
+                            title = playlistName,
+                            cover = playlistCover,
+                            text = strings.musics(musics.size)
+                        )
                     }
-                    PlaylistPanel(
-                        editAction = navigateToModifyPlaylist,
-                        shuffleAction = {
-                            shuffleAction()
-                        },
-                        searchAction = { searchAction() },
-                        isLandscapeMode = true,
-                        playlistType = playlistType,
-                    )
-                    MusicList(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        selectedMusic = musics.find { it.musicId == selectedMusicId },
-                        onSelectMusic = {
-                            selectedMusicId = it.musicId
-                        },
-                        musics = musics,
-                        playlistsWithMusics = playlistWithMusics,
-                        playlistId = playlistId,
-                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                        isBottomSheetShown = isBottomSheetShown,
-                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onSetBottomSheetVisibility = onSetBottomSheetVisibility,
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onDeleteMusic = onDeleteMusic,
-                        onToggleQuickAccessState = onToggleQuickAccessState,
-                        onRemoveFromPlaylist = onRemoveFromPlaylist,
-                        onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        retrieveCoverMethod = { retrieveCoverMethod(it) },
-                        updateNbPlayedAction = updateNbPlayedAction,
-                        musicBottomSheetState = musicBottomSheetState,
-                        playerDraggableState = playerDraggableState
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        PlaylistPanel(
+                            editAction = navigateToModifyPlaylist,
+                            shuffleAction = {
+                                shuffleAction()
+                            },
+                            searchAction = { searchAction() },
+                            playlistType = playlistType,
+                        )
+                        MusicList(
+                            modifier = Modifier
+                                .fillMaxHeight(),
+                            selectedMusic = musics.find { it.musicId == selectedMusicId },
+                            onSelectMusic = {
+                                selectedMusicId = it.musicId
+                            },
+                            musics = musics,
+                            playlistsWithMusics = playlistWithMusics,
+                            playlistId = playlistId,
+                            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
+                            isBottomSheetShown = isBottomSheetShown,
+                            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
+                            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
+                            onSetBottomSheetVisibility = onSetBottomSheetVisibility,
+                            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
+                            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
+                            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
+                            onDeleteMusic = onDeleteMusic,
+                            onToggleQuickAccessState = onToggleQuickAccessState,
+                            onRemoveFromPlaylist = onRemoveFromPlaylist,
+                            onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
+                            navigateToModifyMusic = navigateToModifyMusic,
+                            retrieveCoverMethod = { retrieveCoverMethod(it) },
+                            updateNbPlayedAction = updateNbPlayedAction,
+                            musicBottomSheetState = musicBottomSheetStates,
+                            playerDraggableState = playerDraggableState
+                        )
+                    }
                 }
             }
 
@@ -235,7 +233,7 @@ fun PlaylistScreen(
                         selectedMusic = music,
                         playlistsWithMusics = playlistWithMusics,
                         navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = musicBottomSheetState,
+                        musicBottomSheetState = musicBottomSheetStates,
                         playerDraggableState = playerDraggableState,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,
@@ -253,6 +251,7 @@ fun PlaylistScreen(
                         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                             onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
                         },
+                        retrieveCoverMethod = retrieveCoverMethod
                     )
                 }
 
@@ -260,28 +259,24 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    AppHeaderBar(
-                        title = title,
-                        leftAction = navigateBack,
-                    )
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = strings.backButton,
+                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        )
+                    }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
                         item {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(Constants.Spacing.large),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                AppImage(
-                                    bitmap = image,
-                                    size = Constants.ImageSize.huge,
-                                    roundedPercent = 5
-                                )
-                            }
+                            PageHeader(
+                                title = playlistName,
+                                cover = playlistCover,
+                                text = strings.musics(musics.size)
+                            )
                         }
                         stickyHeader {
                             PlaylistPanel(
@@ -291,7 +286,6 @@ fun PlaylistScreen(
                                     shuffleAction()
                                 },
                                 searchAction = { searchAction() },
-                                isLandscapeMode = false,
                                 playlistType = playlistType,
                             )
                         }
