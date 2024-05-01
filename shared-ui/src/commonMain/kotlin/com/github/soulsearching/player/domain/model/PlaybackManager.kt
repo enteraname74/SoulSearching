@@ -207,12 +207,23 @@ abstract class PlaybackManager(
     }
 
     /**
+     * Make the initial list the same as the played list.
+     * The match will only occurs if the player mode is set to NORMAL.
+     */
+    private fun matchInitialListToPlayedListIfNormalPlayerMode() {
+        if (_playerMode == PlayerMode.NORMAL) {
+            initialList = playedList.map { it.copy() } as ArrayList<Music>
+        }
+    }
+
+    /**
      * Remove a song from the current playlist.
      * If no songs are left in the played list, the playback will stop.
      */
     fun removeSongFromPlayedPlaylist(musicId: UUID) {
         val actualIndex = currentMusicIndex
         playedList.removeIf { it.musicId == musicId }
+        matchInitialListToPlayedListIfNormalPlayerMode()
 
         // If no songs is left in the queue, stop playing :
         if (playedList.isEmpty()) {
@@ -447,23 +458,28 @@ abstract class PlaybackManager(
                 return
             }
         }
-        // If the current playlist is empty, we load the music :
-        if (playedList.isEmpty()) {
-            playedList.add(music)
-            setNewCurrentMusicInformation(music)
-            onlyLoadMusic()
-        }
 
         // We make sure to remove the music if it's already in the playlist :
         playedList.removeIf { it.musicId == music.musicId }
 
-        // Finally, we add the new next music :
-        playedList.add(currentMusicIndex + 1, music)
+        // If the current playlist is empty, we load the music :
+        if (playedList.isEmpty()) {
+            playedList.add(music)
+            callback.onPlayedListUpdated(
+                playedList = playedList
+            )
+            init()
+            setNewCurrentMusicInformation(music)
+            onlyLoadMusic()
+        } else {
+            // Finally, we add the new next music :
+            playedList.add(currentMusicIndex + 1, music)
+            callback.onPlayedListUpdated(
+                playedList = playedList
+            )
+        }
 
-        callback.onPlayedListUpdated(
-            playedList = playedList
-        )
-
+        matchInitialListToPlayedListIfNormalPlayerMode()
         savePlayedList()
         settings.saveCurrentMusicInformation(
             currentMusicIndex = currentMusicIndex,
@@ -578,6 +594,8 @@ abstract class PlaybackManager(
      * Set and play a Music.
      */
     open fun setAndPlayMusic(music: Music) {
+        if (shouldInit) init()
+
         currentMusic = music
 
         settings.setInt(

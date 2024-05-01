@@ -41,8 +41,10 @@ class SoulSearchingAndroidPlayerImpl(
     }
 
     override fun setMusic(music: Music) {
-        player.stop()
-        player.reset()
+        try {
+            player.stop()
+            player.reset()
+        } catch (_: Exception) {}
         if (File(music.path).exists()) {
             player.setDataSource(music.path)
         }

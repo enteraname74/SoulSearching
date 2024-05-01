@@ -97,7 +97,7 @@ The color palette used for the application is based on the theme of your device 
 
 <div align="center">
     <img title="" src="screenshots/theme_settings_system.png" alt="" data-align="center" width="270">
-    <img title="" src="screenshots/main_dark_theme.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/main_dark_theme.png" alt="" data-align="center" width="270">
     <img title="" src="screenshots/main_light_theme.png" alt="" data-align="center" width="270">
 </div>
 
