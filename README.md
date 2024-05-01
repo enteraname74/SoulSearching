@@ -13,11 +13,12 @@ Soul Searching gives you multiple options regarding the color theme of the appli
 You can have a theme that depends on your system settings or the current music cover.
 
 <div align="center">
-    <img title="" src="screenshots/main_dynamic_theme.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/second_dynamic_example_main.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/dynamic_example_player.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/dynamic_example_playlist.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/main_dynamic_theme.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/second_dynamic_example_main.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/dynamic_example_player.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/dynamic_example_artist.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/dynamic_example_album.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="270">
 </div>
 
 ### II. Music related functionnalities:
@@ -42,18 +43,20 @@ You can have a theme that depends on your system settings or the current music c
 
 - Search throughout all your elements
 
+- See songs by **added month** or **folders**
+
 - A **music notification** and an **audio manager** are used to improve the user's experience
 
 <div align="center">
-    <img title="" src="screenshots/modify_album.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/modify_album.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="270">
 </div>
 
 ### III. Settings:
 
 <div align="center">
-    <img title="" src="screenshots/settings_view.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/settings_view.png" alt="" data-align="center" width="270">
 </div>
 
 Soul Searching provides multiple ways for customizing the application the way you want it to be.
@@ -65,7 +68,7 @@ Soul Searching provides multiple ways for customizing the application the way yo
 You can manage used folders by choosing those you want to use for the application.
 
 <div align="center">
-    <img title="" src="screenshots/folders_settings.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/folders_settings.png" alt="" data-align="center" width="270">
 </div>
 
 ##### 2. Add new songs:
@@ -73,7 +76,7 @@ You can manage used folders by choosing those you want to use for the applicatio
 You can search new songs to add from your device.
 
 <div align="center">
-    <img title="" src="screenshots/add_new_songs_settings.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/add_new_songs_settings.png" alt="" data-align="center" width="270">
 </div>
 
 #### Color theme:
@@ -85,7 +88,7 @@ You can choose between three options:
 The color palette used for the application is based on the current played music.
 
 <div align="center">
-    <img title="" src="screenshots/theme_settings_dynamic.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/theme_settings_dynamic.png" alt="" data-align="center" width="270">
 </div>
 
 ##### 2. System theme:
@@ -93,9 +96,9 @@ The color palette used for the application is based on the current played music.
 The color palette used for the application is based on the theme of your device (light or dark theme).
 
 <div align="center">
-    <img title="" src="screenshots/theme_settings_system.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/main_dark_theme.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/main_light_theme.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/theme_settings_system.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/main_dark_theme.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/main_light_theme.png" alt="" data-align="center" width="270">
 </div>
 
 ##### 3. Personalized theme:
@@ -103,7 +106,7 @@ The color palette used for the application is based on the theme of your device 
 The default theme used is the system one, but you can choose to use a dynamic theme for the player view, the playlist/album/artist view and for all the other views of the app.
 
 <div align="center">
-    <img title="" src="screenshots/theme_settings_perso.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/theme_settings_perso.png" alt="" data-align="center" width="270">
 </div>
 
 #### Customization:
@@ -115,7 +118,7 @@ Thus, you can choose what parts of the main page are shown (playlists, albums, a
 Examples of what you can achieve:
 
 <div align="center">
-    <img title="" src="screenshots/perso_first_example.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/perso_second_example.png" alt="" data-align="center" width="290">
-    <img title="" src="screenshots/perso_third_example.png" alt="" data-align="center" width="290">
+    <img title="" src="screenshots/perso_first_example.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/perso_second_example.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/perso_third_example.png" alt="" data-align="center" width="270">
 </div>
