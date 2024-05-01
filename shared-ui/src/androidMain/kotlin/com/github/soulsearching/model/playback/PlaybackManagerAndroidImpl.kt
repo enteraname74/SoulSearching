@@ -107,7 +107,7 @@ class PlaybackManagerAndroidImpl(
     }
 
     override fun setAndPlayMusic(music: Music) {
-        if (shouldInit) init()
+
         if (shouldLaunchService) launchService()
 
         super.setAndPlayMusic(music)
