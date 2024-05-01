@@ -33,6 +33,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.elementpage.folderpage.presentation.SelectedFolderScreen
+import com.github.soulsearching.elementpage.monthpage.presentation.SelectedMonthScreen
 import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@Suppress("Deprecation")
 @Composable
 fun AllMusicsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -83,7 +85,13 @@ fun AllMusicsComposable(
                 MusicMonthsHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
                     months = musicState.monthMusics,
-                    onMonthClicked = {},
+                    onMonthClicked = { month ->
+                        navigator.push(
+                            SelectedMonthScreen(
+                                month = month
+                            )
+                        )
+                    },
                     onMonthLongClicked = {}
                 )
             }

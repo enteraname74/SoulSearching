@@ -7,7 +7,7 @@ import com.github.soulsearching.domain.model.MonthMusicList
  * State for managing a selected month.
  */
 data class SelectedMonthState(
-    val playlistWithMusics: MonthMusicList? = MonthMusicList(),
+    val monthMusicList: MonthMusicList? = MonthMusicList(),
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
     val isDeleteMusicDialogShown: Boolean = false,
     val isMusicBottomSheetShown: Boolean = false,

@@ -43,7 +43,7 @@ data class SelectedFolderScreen(
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
-        SelectedPlaylistScreenView(
+        SelectedFolderScreenView(
             selectedFolderPath = folderPath,
             selectedFolderViewModel = screeModel,
             navigateToModifyMusic = { musicId ->
@@ -66,7 +66,7 @@ data class SelectedFolderScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("Deprecation")
 @Composable
-fun SelectedPlaylistScreenView(
+fun SelectedFolderScreenView(
     selectedFolderViewModel: SelectedFolderViewModel,
     selectedFolderPath: String,
     navigateToModifyMusic: (String) -> Unit,

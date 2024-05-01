@@ -19,6 +19,7 @@ import com.github.soulsearching.player.domain.PlayerViewModelHandler
 import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumViewModelHandler
 import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistViewModelHandler
 import com.github.soulsearching.elementpage.folderpage.domain.SelectedFolderViewModelHandler
+import com.github.soulsearching.elementpage.monthpage.domain.SelectedMonthViewModelHandler
 import com.github.soulsearching.elementpage.playlistpage.domain.SelectedPlaylistViewModelHandler
 
 ///**
@@ -159,6 +160,13 @@ interface SelectedPlaylistViewModel : ScreenModel {
  */
 interface SelectedFolderViewModel: ScreenModel {
     val handler: SelectedFolderViewModelHandler
+}
+
+/**
+ * ViewModel for the selected month screen.
+ */
+interface SelectedMonthViewModel: ScreenModel {
+    val handler: SelectedMonthViewModelHandler
 }
 
 /**

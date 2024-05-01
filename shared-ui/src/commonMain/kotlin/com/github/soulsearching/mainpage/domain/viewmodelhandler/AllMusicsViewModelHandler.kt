@@ -17,6 +17,7 @@ import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.MusicFolder
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
+import com.github.soulsearching.domain.utils.Utils
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
 import com.github.soulsearching.mainpage.domain.model.SortDirection
@@ -150,18 +151,13 @@ abstract class AllMusicsViewModelHandler(
         }
     }
 
-    /**
-     * Retrieve the month and the year of a date in MM/yyy format.
-     */
-    private fun getMonthAndYearOfDate(date: LocalDateTime): String {
-        return date.format(DateTimeFormatter.ofPattern("MM/yyyy"))
-    }
+
 
     /**
      * Build a list of month musics.
      */
     private fun buildMonthMusics(allMusics: List<Music>): List<MonthMusicList> {
-        return allMusics.groupBy { getMonthAndYearOfDate(date = it.addedDate) }.entries.map { (date, musics) ->
+        return allMusics.groupBy { Utils.getMonthAndYearOfDate(date = it.addedDate) }.entries.map { (date, musics) ->
             MonthMusicList(
                 month = date,
                 musics = musics,

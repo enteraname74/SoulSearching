@@ -1,5 +1,8 @@
 package com.github.soulsearching.domain.utils
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 /**
  * All kind of different methods.
  */
@@ -20,5 +23,12 @@ object Utils {
         }
 
         return "$strMinutes:$strSeconds"
+    }
+
+    /**
+     * Retrieve the month and the year of a date in MM/yyy format.
+     */
+    fun getMonthAndYearOfDate(date: LocalDateTime): String {
+        return date.format(DateTimeFormatter.ofPattern("MM/yyyy"))
     }
 }

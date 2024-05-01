@@ -89,6 +89,14 @@ fun PlaylistScreen(
         mutableStateOf(false)
     }
 
+    var musicBottomSheetStates = when(playlistType) {
+        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
+        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
+        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
+        PlaylistType.FOLDER -> MusicBottomSheetState.NORMAL
+        PlaylistType.MONTH -> MusicBottomSheetState.NORMAL
+    }
+
     playlistCover?.let {
         if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
             colorThemeManager.setNewPlaylistCover(it)
@@ -212,7 +220,7 @@ fun PlaylistScreen(
                             navigateToModifyMusic = navigateToModifyMusic,
                             retrieveCoverMethod = { retrieveCoverMethod(it) },
                             updateNbPlayedAction = updateNbPlayedAction,
-                            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
+                            musicBottomSheetState = musicBottomSheetStates,
                             playerDraggableState = playerDraggableState
                         )
                     }
@@ -225,7 +233,7 @@ fun PlaylistScreen(
                         selectedMusic = music,
                         playlistsWithMusics = playlistWithMusics,
                         navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
+                        musicBottomSheetState = musicBottomSheetStates,
                         playerDraggableState = playerDraggableState,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,

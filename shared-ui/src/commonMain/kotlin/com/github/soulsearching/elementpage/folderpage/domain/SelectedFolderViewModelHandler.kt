@@ -154,7 +154,6 @@ class SelectedFolderViewModelHandler(
      * Set the selected playlist.
      */
     private fun setSelectedFolder(path: String) {
-        println("SET SELECTED FOLDER: $path")
         _selectedFolder = musicRepository
             .getAllMusicsSortByNameAscAsFlow()
             .map { allMusics ->
@@ -174,7 +173,6 @@ class SelectedFolderViewModelHandler(
             _selectedFolder,
             _playlists
         ) { state, folder, playlists ->
-            println("FOLDER: $folder")
             state.copy(
                 musicFolder = folder,
                 allPlaylists = playlists
