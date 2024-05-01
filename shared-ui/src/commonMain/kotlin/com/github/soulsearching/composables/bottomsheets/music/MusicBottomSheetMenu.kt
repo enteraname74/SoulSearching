@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -85,7 +86,7 @@ fun MusicBottomSheetMenu(
         }
         if (playbackManager.playedList.isNotEmpty()) {
             BottomSheetRow(
-                icon = Icons.Rounded.Delete,
+                icon = Icons.Rounded.PlaylistRemove,
                 text = strings.removeFromPlayedList,
                 onClick = removeFromPlayedListAction,
                 textColor = textColor
