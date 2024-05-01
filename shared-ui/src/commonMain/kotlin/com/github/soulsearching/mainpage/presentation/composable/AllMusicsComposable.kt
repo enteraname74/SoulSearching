@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
@@ -30,6 +32,7 @@ import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
+import com.github.soulsearching.elementpage.folderpage.presentation.SelectedFolderScreen
 import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
@@ -53,6 +56,7 @@ fun AllMusicsComposable(
     viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val navigator = LocalNavigator.currentOrThrow
 
     LazyColumn(
         modifier = Modifier
@@ -63,7 +67,13 @@ fun AllMusicsComposable(
                 MusicFoldersHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
                     folders = musicState.folderMusics,
-                    onFolderClicked = {},
+                    onFolderClicked = { folderPath ->
+                        navigator.push(
+                            SelectedFolderScreen(
+                                folderPath = folderPath
+                            )
+                        )
+                    },
                     onFolderLongClicked = {}
                 )
             }

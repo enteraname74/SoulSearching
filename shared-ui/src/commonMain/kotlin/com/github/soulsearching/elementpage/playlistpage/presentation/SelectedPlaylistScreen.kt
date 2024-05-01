@@ -74,6 +74,7 @@ data class SelectedPlaylistScreen(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
+@Suppress("Deprecation")
 @Composable
 fun SelectedPlaylistScreenView(
     selectedPlaylistViewModel: SelectedPlaylistViewModel,

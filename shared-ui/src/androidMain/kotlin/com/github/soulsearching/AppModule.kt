@@ -36,12 +36,14 @@ import com.github.soulsearching.viewmodel.PlayerViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SelectedAlbumViewModel
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SelectedArtistViewModel
+import com.github.soulsearching.domain.viewmodel.SelectedFolderViewModel
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
+import com.github.soulsearching.viewmodel.SelectedFolderViewModelAndroidImpl
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelAndroidImpl
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
@@ -183,6 +185,14 @@ actual val appModule = module {
             musicRepository = get(),
             musicPlaylistRepository = get(),
             playbackManager = get()
+        )
+    }
+    single<SelectedFolderViewModel> {
+        SelectedFolderViewModelAndroidImpl(
+            playlistRepository = get(),
+            playbackManager = get(),
+            musicRepository = get(),
+            musicPlaylistRepository = get()
         )
     }
     factory<MusicFetcher> {

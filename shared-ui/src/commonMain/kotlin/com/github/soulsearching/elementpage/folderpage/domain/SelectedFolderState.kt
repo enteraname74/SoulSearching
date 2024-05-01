@@ -7,7 +7,7 @@ import com.github.soulsearching.domain.model.MusicFolder
  * State for managing a selected folder.
  */
 data class SelectedFolderState(
-    val playlistWithMusics: MusicFolder? = MusicFolder(),
+    val musicFolder: MusicFolder? = MusicFolder(),
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
     val isDeleteMusicDialogShown: Boolean = false,
     val isMusicBottomSheetShown: Boolean = false,

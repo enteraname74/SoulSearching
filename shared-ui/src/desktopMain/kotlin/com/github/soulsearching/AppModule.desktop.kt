@@ -22,6 +22,7 @@ import com.github.soulsearching.viewmodel.NavigationViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.PlayerViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedAlbumViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedArtistViewModelDesktopImpl
+import com.github.soulsearching.viewmodel.SelectedFolderViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SelectedPlaylistViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SettingsAddMusicsViewModelDesktopImpl
 import com.github.soulsearching.viewmodel.SettingsAllFoldersViewModelDesktopImpl
@@ -164,6 +165,14 @@ actual val appModule: Module = module {
             musicRepository = get(),
             musicPlaylistRepository = get(),
             playbackManager = get()
+        )
+    }
+    single {
+        SelectedFolderViewModelDesktopImpl(
+            playbackManager = get(),
+            playlistRepository = get(),
+            musicPlaylistRepository = get(),
+            musicRepository = get()
         )
     }
     single {

@@ -23,10 +23,11 @@ fun PlaylistPanel(
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .background(primaryColor)
-        .padding(bottom = Constants.Spacing.medium),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(primaryColor)
+            .padding(bottom = Constants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {

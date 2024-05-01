@@ -13,7 +13,6 @@ sealed interface SelectedFolderEvent {
     data class SetMusicBottomSheetVisibility(val isShown: Boolean): SelectedFolderEvent
 
     data class SetAddToPlaylistBottomSheetVisibility(val isShown: Boolean): SelectedFolderEvent
-    data class SetRemoveFromPlaylistDialogVisibility(val isShown: Boolean): SelectedFolderEvent
 
     data class DeleteMusic(val musicId: UUID): SelectedFolderEvent
 
@@ -22,5 +21,4 @@ sealed interface SelectedFolderEvent {
     data class AddMusicToPlaylists(val musicId: UUID, val selectedPlaylistsIds: List<UUID>): SelectedFolderEvent
 
     data class AddNbPlayed(val playlistId: UUID): SelectedFolderEvent
-    data class RemoveMusicFromPlaylist(val playlistId: UUID, val musicId: UUID): SelectedFolderEvent
 }
