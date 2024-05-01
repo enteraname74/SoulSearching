@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.ImageCover
@@ -80,6 +81,8 @@ fun PlayerPanelView(
         }
     }
 
+    val topPanelSize = with(LocalDensity.current) { 64.dp.toPx() }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,7 +97,7 @@ fun PlayerPanelView(
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     0f to BottomSheetStates.EXPANDED,
-                    (maxHeight - 208f) to BottomSheetStates.COLLAPSED,
+                    (maxHeight - topPanelSize) to BottomSheetStates.COLLAPSED,
                 )
             )
     ) {
