@@ -46,13 +46,13 @@ class PlaybackManagerAndroidImpl(
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.extras?.getBoolean(STOP_RECEIVE) != null) {
+            if (intent.extras?.getBoolean(STOP_RECEIVE) == true) {
                 context.unregisterReceiver(this)
-            } else if (intent.extras?.getBoolean(NEXT) != null) {
+            } else if (intent.extras?.getBoolean(NEXT) == true) {
                 next()
-            } else if (intent.extras?.getBoolean(PREVIOUS) != null) {
+            } else if (intent.extras?.getBoolean(PREVIOUS) == true) {
                 previous()
-            } else if(intent.extras?.getBoolean(TOGGLE_PLAY_PAUSE) != null) {
+            } else if(intent.extras?.getBoolean(TOGGLE_PLAY_PAUSE) == true) {
                 togglePlayPause()
             }
         }
@@ -146,7 +146,7 @@ class PlaybackManagerAndroidImpl(
 
         const val STOP_RECEIVE = "STOP RECEIVE"
         const val NEXT = "NEXT"
-        const val PREVIOUS = "NEXT"
+        const val PREVIOUS = "PREVIOUS"
         const val TOGGLE_PLAY_PAUSE = "TOGGLE PLAY PAUSE"
     }
 }
