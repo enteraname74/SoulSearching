@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import com.github.soulsearching.player.domain.model.SoulSearchingPlayer
+import com.github.soulsearching.player.domain.model.PlaybackManager
 
 /**
  * Manage the audio of the application.
@@ -15,7 +15,7 @@ import com.github.soulsearching.player.domain.model.SoulSearchingPlayer
  */
 class PlayerAudioManager(
     private val context: Context,
-    private val player: SoulSearchingPlayer
+    private val playbackManager: PlaybackManager
 ): AudioManager.OnAudioFocusChangeListener {
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     val audioAttributes: AudioAttributes = AudioAttributes.Builder()
@@ -30,7 +30,7 @@ class PlayerAudioManager(
 
     private val audioBecomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            player.pause()
+            playbackManager.pause()
         }
     }
 
@@ -58,9 +58,9 @@ class PlayerAudioManager(
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
-            AudioManager.AUDIOFOCUS_GAIN -> player.play()
-            AudioManager.AUDIOFOCUS_LOSS -> player.pause()
-            else -> player.pause()
+            AudioManager.AUDIOFOCUS_GAIN -> playbackManager.play()
+            AudioManager.AUDIOFOCUS_LOSS -> playbackManager.pause()
+            else -> playbackManager.pause()
         }
     }
 
