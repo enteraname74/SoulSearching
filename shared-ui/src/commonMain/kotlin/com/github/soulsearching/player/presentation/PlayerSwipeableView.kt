@@ -79,6 +79,7 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
 import com.github.soulsearching.player.presentation.composable.MinimisedPlayButtonsComposable
 import com.github.soulsearching.playerpanel.presentation.PlayerPanelView
+import com.github.soulsearching.settings.domain.ViewSettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -104,7 +105,8 @@ fun PlayerDraggableView(
     playerViewModel: PlayerViewModel,
     coverList: ArrayList<ImageCover>,
     playbackManager: PlaybackManager = injectElement(),
-    colorThemeManager: ColorThemeManager = injectElement()
+    colorThemeManager: ColorThemeManager = injectElement(),
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state by playerViewModel.handler.state.collectAsState()
@@ -244,7 +246,7 @@ fun PlayerDraggableView(
     if (state.playedList.isEmpty() &&
         draggableState.currentValue != BottomSheetStates.COLLAPSED &&
         !draggableState.isAnimationRunning
-        ) {
+    ) {
         coroutineScope.launch {
             if (state.isMusicBottomSheetShown) {
                 playerViewModel.handler.onEvent(
@@ -535,9 +537,13 @@ fun PlayerDraggableView(
                     }
                     aroundSongs = getAroundSongs(playbackManager = playbackManager)
 
-                    if (aroundSongs.filterNotNull().size > 1 && draggableState.currentValue == BottomSheetStates.EXPANDED) {
+                    if (
+                        aroundSongs.filterNotNull().size > 1
+                        && draggableState.currentValue == BottomSheetStates.EXPANDED
+                        && viewSettingsManager.isPlayerSwipeEnabled
+                    ) {
                         val pagerState = remember(aroundSongs) {
-                            object: PagerState(currentPage = 1) {
+                            object : PagerState(currentPage = 1) {
                                 override val pageCount: Int = aroundSongs.size
                             }
                         }
@@ -545,7 +551,7 @@ fun PlayerDraggableView(
                         LaunchedEffect(pagerState) {
                             snapshotFlow { pagerState.currentPage }.collect { page ->
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    when(page) {
+                                    when (page) {
                                         0 -> playbackManager.previous()
                                         2 -> playbackManager.next()
                                     }
@@ -586,7 +592,7 @@ fun PlayerDraggableView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {

@@ -30,6 +30,9 @@ class ViewSettingsManager(
     var areMusicsByMonthsShown by mutableStateOf(false)
         private set
 
+    var isPlayerSwipeEnabled by mutableStateOf(true)
+        private set
+
     init {
         initializeManager()
     }
@@ -161,6 +164,17 @@ class ViewSettingsManager(
         settings.setBoolean(
             key = SoulSearchingSettings.ARE_MUSICS_BY_FOLDERS_SHOWN,
             value = areMusicsByFoldersShown
+        )
+    }
+
+    /**
+     * Enable or disable the swipe to change current song on player view.
+     */
+    fun togglePlayerSwipe() {
+        isPlayerSwipeEnabled = !isPlayerSwipeEnabled
+        settings.setBoolean(
+            key = SoulSearchingSettings.IS_PLAYER_SWIPE_ENABLED,
+            value = isPlayerSwipeEnabled
         )
     }
 }

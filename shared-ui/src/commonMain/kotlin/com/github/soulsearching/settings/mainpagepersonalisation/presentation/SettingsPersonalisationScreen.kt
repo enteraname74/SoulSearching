@@ -166,6 +166,34 @@ fun SettingsPersonalisationScreenView(
                 )
             }
             item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = Constants.Spacing.large)
+                )
+            }
+            item {
+                SettingsElement(
+                    title = strings.managePlayerTitle,
+                    text = strings.managePlayerText,
+                    padding = PaddingValues(Constants.Spacing.large),
+                    isClickable = false
+                )
+            }
+            item {
+                SettingsSwitchElement(
+                    title = strings.playerSwipeTitle,
+                    toggleAction = { viewSettingsManager.togglePlayerSwipe() },
+                    isChecked = viewSettingsManager.isPlayerSwipeEnabled,
+                    titleFontSize = 16.sp,
+                    padding = PaddingValues(
+                        start = Constants.Spacing.veryLarge,
+                        end = Constants.Spacing.veryLarge,
+                        top = Constants.Spacing.medium,
+                        bottom = Constants.Spacing.medium
+                    )
+                )
+            }
+            item {
                 PlayerSpacer()
             }
         }

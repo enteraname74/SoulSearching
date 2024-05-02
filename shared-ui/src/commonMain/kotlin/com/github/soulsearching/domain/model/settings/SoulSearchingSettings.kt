@@ -93,5 +93,7 @@ interface SoulSearchingSettings {
 
         const val ARE_MUSICS_BY_FOLDERS_SHOWN = "ARE_MUSICS_BY_FOLDERS_SHOWN"
         const val ARE_MUSICS_BY_MONTHS_SHOWN = "ARE_MUSICS_BY_MONTHS_SHOWN"
+
+        const val IS_PLAYER_SWIPE_ENABLED = "IS_PLAYER_SWIPE_ENABLED"
     }
 }

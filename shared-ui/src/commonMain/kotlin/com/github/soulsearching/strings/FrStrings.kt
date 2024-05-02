@@ -76,7 +76,7 @@ object FrStrings : Strings {
     override val albumInformation = "Informations de l'album"
 
     override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
-    override val deleteMusicDialogText: String = "Elle sera supprimée de l'application."
+    override val deleteMusicDialogText = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
@@ -109,7 +109,7 @@ object FrStrings : Strings {
     override val colorThemeTitle = "Thème de couleur"
     override val colorThemeText = "Thème dynamique, personnalisé"
     override val personalizationTitle = "Personnalisation"
-    override val personalizationText = "Gérer la vue de la page principale"
+    override val personalizationText = "Gérer la vue de la page principale et du lecteur"
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
 
@@ -124,6 +124,10 @@ object FrStrings : Strings {
     override val showMusicsByMonths = "Afficher les musiques par mois"
     override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
     override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
+
+    override val managePlayerTitle = "Vue du lecteur de musique"
+    override val managePlayerText = "Gérer la vue du lecteur de musique"
+    override val playerSwipeTitle = "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
 
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
