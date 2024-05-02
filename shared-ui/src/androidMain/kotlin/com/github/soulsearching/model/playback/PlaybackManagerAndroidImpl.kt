@@ -131,14 +131,12 @@ class PlaybackManagerAndroidImpl(
     }
 
     override fun updateNotification() {
-        CoroutineScope(Dispatchers.IO).launch {
-            mediaSessionManager.updateMetadata()
-            mediaSessionManager.updateState()
+        mediaSessionManager.updateMetadata()
+        mediaSessionManager.updateState()
 
-            val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
-            intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
-            context.sendBroadcast(intentForUpdatingNotification)
-        }
+        val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
+        intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
+        context.sendBroadcast(intentForUpdatingNotification)
     }
 
     companion object {
