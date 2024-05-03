@@ -30,6 +30,7 @@ fun SettingsSwitchElement(
     toggleAction: () -> Unit,
     isChecked: Boolean,
     padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge),
+    maxLines : Int = 2
 ) {
     Row(
         modifier = Modifier
@@ -58,7 +59,7 @@ fun SettingsSwitchElement(
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     fontSize = titleFontSize,
                     fontWeight = FontWeight(500),
-                    maxLines = 2,
+                    maxLines = maxLines,
                     overflow = TextOverflow.Ellipsis
                 )
                 if (text.isNotBlank()) {
