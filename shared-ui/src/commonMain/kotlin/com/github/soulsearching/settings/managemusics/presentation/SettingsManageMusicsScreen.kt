@@ -19,6 +19,7 @@ import com.github.soulsearching.settings.managemusics.addmusics.domain.AddMusics
 import com.github.soulsearching.settings.managemusics.managefolders.domain.FolderEvent
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
@@ -102,6 +103,9 @@ fun SettingsManageMusicsScreenView(
                     },
                     isChecked = viewSettingsManager.isMusicFileModificationOn
                 )
+            }
+            item {
+                PlayerSpacer()
             }
         }
     }
