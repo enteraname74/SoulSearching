@@ -291,7 +291,7 @@ abstract class PlaybackManager(
      * Return null if nothing is found.
      * Return the first music if we are at the end of the playlist.
      */
-    private fun getNextMusic(currentIndex: Int): Music? {
+    fun getNextMusic(currentIndex: Int): Music? {
         return if (playedList.isNotEmpty()) playedList[(currentIndex + 1) % playedList.size] else null
     }
 
@@ -300,7 +300,7 @@ abstract class PlaybackManager(
      * Return null if nothing is found.
      * Return the last music if we are at the start of the playlist.
      */
-    private fun getPreviousMusic(currentIndex: Int): Music? {
+    fun getPreviousMusic(currentIndex: Int): Music? {
         return if (playedList.isNotEmpty()) {
             if (currentIndex == 0) {
                 playedList.last()

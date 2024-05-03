@@ -27,7 +27,7 @@ class SoulSearchingAndroidPlayerImpl(
     private var player: MediaPlayer = MediaPlayer()
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
-    private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
+    private val audioManager: PlayerAudioManager = PlayerAudioManager(context, playbackManager)
 
     override fun init() {
         audioManager.init()

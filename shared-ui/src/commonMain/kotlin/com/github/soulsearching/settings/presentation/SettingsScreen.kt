@@ -19,7 +19,7 @@ import com.github.soulsearching.composables.PlayerSpacer
 import com.github.soulsearching.settings.presentation.composable.SettingsElement
 import com.github.soulsearching.strings.strings
 import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.settings.mainpagepersonalisation.presentation.SettingsPersonalisationScreen
+import com.github.soulsearching.settings.personalisation.presentation.SettingsPersonalisationScreen
 import com.github.soulsearching.settings.aboutpage.presentation.SettingsAboutScreen
 import com.github.soulsearching.settings.colortheme.presentation.SettingsColorThemeScreen
 import com.github.soulsearching.settings.managemusics.presentation.SettingsManageMusicsScreen

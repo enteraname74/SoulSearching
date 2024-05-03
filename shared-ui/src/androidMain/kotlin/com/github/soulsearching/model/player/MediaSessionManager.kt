@@ -13,6 +13,7 @@ import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.soulsearching.R
 import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
+import com.github.soulsearching.model.utils.AndroidUtils
 
 /**
  * Manage media session related things.
@@ -24,7 +25,12 @@ class MediaSessionManager(
     private var mediaSession: MediaSessionCompat =
         MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
 
-    private val standardNotificationBitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.notification_default)
+    private val standardNotificationBitmap: Bitmap = Bitmap.createScaledBitmap(
+        BitmapFactory.decodeResource(context.resources, R.drawable.notification_default),
+        AndroidUtils.BITMAP_SIZE,
+        AndroidUtils.BITMAP_SIZE,
+        false
+    )
 
     /**
      * The token of the media session.
@@ -89,11 +95,8 @@ class MediaSessionManager(
      * Update media session data with information the current played song in the player view model.
      */
     fun updateMetadata() {
-        val bitmap = if (playbackManager.currentMusicCover != null) {
-            playbackManager.currentMusicCover!!.asAndroidBitmap()
-        } else {
-            standardNotificationBitmap
-        }
+        val bitmap = playbackManager.currentMusicCover?.asAndroidBitmap() ?: standardNotificationBitmap
+
         mediaSession.setMetadata(
             MediaMetadataCompat.Builder()
                 .putBitmap(

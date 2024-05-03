@@ -1,6 +1,5 @@
 package com.github.soulsearching.player.domain
 
-import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.ui.graphics.ImageBitmap
@@ -10,7 +9,6 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.LyricsProvider
-import com.github.soulsearching.Constants
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.ColorPaletteUtils
@@ -20,7 +18,6 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.domain.model.PlayerMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -40,7 +37,7 @@ class PlayerViewModelHandler(
     private val playbackManager: PlaybackManager,
     private val colorThemeManager: ColorThemeManager,
     private val lyricsProvider: LyricsProvider,
-    private val coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope
 ) : ViewModelHandler {
     private val _state = MutableStateFlow(PlayerState())
 

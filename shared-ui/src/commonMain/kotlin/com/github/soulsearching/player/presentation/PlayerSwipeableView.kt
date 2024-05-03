@@ -24,6 +24,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
@@ -31,12 +34,16 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -53,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Music
 import com.github.soulsearching.Constants
 import com.github.soulsearching.SoulSearchingContext
 import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
@@ -71,6 +79,8 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.player.presentation.composable.ExpandedPlayButtonsComposable
 import com.github.soulsearching.player.presentation.composable.MinimisedPlayButtonsComposable
 import com.github.soulsearching.playerpanel.presentation.PlayerPanelView
+import com.github.soulsearching.settings.domain.ViewSettingsManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,7 +105,8 @@ fun PlayerDraggableView(
     playerViewModel: PlayerViewModel,
     coverList: ArrayList<ImageCover>,
     playbackManager: PlaybackManager = injectElement(),
-    colorThemeManager: ColorThemeManager = injectElement()
+    colorThemeManager: ColorThemeManager = injectElement(),
+    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state by playerViewModel.handler.state.collectAsState()
@@ -235,7 +246,7 @@ fun PlayerDraggableView(
     if (state.playedList.isEmpty() &&
         draggableState.currentValue != BottomSheetStates.COLLAPSED &&
         !draggableState.isAnimationRunning
-        ) {
+    ) {
         coroutineScope.launch {
             if (state.isMusicBottomSheetShown) {
                 playerViewModel.handler.onEvent(
@@ -520,14 +531,58 @@ fun PlayerDraggableView(
                             end = imagePaddingStart
                         )
                 ) {
-                    AppImage(
-                        modifier = imageModifier,
-                        bitmap =
-                        retrieveCoverMethod(playbackManager.currentMusic?.coverId),
-                        size = imageSize,
-                        roundedPercent = (draggableState.offset.value / 100).roundToInt()
-                            .coerceIn(3, 10)
-                    )
+
+                    var aroundSongs by remember {
+                        mutableStateOf(listOf<Music?>())
+                    }
+                    aroundSongs = getAroundSongs(playbackManager = playbackManager)
+
+                    if (
+                        aroundSongs.filterNotNull().size > 1
+                        && draggableState.currentValue == BottomSheetStates.EXPANDED
+                        && viewSettingsManager.isPlayerSwipeEnabled
+                    ) {
+                        val pagerState = remember(aroundSongs) {
+                            object : PagerState(currentPage = 1) {
+                                override val pageCount: Int = aroundSongs.size
+                            }
+                        }
+
+                        LaunchedEffect(pagerState) {
+                            snapshotFlow { pagerState.currentPage }.collect { page ->
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    when (page) {
+                                        0 -> playbackManager.previous()
+                                        2 -> playbackManager.next()
+                                    }
+                                }
+                            }
+                        }
+
+                        HorizontalPager(
+                            state = pagerState,
+                            pageSpacing = 120.dp
+                        ) { currentSongPos ->
+
+                            AppImage(
+                                modifier = imageModifier,
+                                bitmap =
+                                retrieveCoverMethod(aroundSongs.getOrNull(currentSongPos)?.coverId),
+                                size = imageSize,
+                                roundedPercent = (draggableState.offset.value / 100).roundToInt()
+                                    .coerceIn(3, 10)
+                            )
+                        }
+                    } else {
+                        AppImage(
+                            modifier = imageModifier,
+                            bitmap =
+                            retrieveCoverMethod(playbackManager.currentMusic?.coverId),
+                            size = imageSize,
+                            roundedPercent = (draggableState.offset.value / 100).roundToInt()
+                                .coerceIn(3, 10)
+                        )
+                    }
                 }
 
                 Column(
@@ -537,7 +592,7 @@ fun PlayerDraggableView(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -779,6 +834,29 @@ fun PlayerDraggableView(
             )
         }
     }
+}
+
+/**
+ * Retrieve a list containing the current song and its around songs (previous and next).
+ * If no songs are played, return a list containing null. If the played list contains only
+ * the current song, it will return a list with only the current song.
+ */
+private fun getAroundSongs(
+    playbackManager: PlaybackManager
+): List<Music?> {
+    val currentSongIndex = playbackManager.currentMusicIndex
+
+    if (currentSongIndex == -1) return listOf(null)
+
+    if (playbackManager.playedList.size == 1) return listOf(
+        playbackManager.currentMusic
+    )
+
+    return listOf(
+        playbackManager.getPreviousMusic(currentSongIndex),
+        playbackManager.currentMusic,
+        playbackManager.getNextMusic(currentSongIndex)
+    )
 }
 
 private fun formatTextForEllipsis(text: String, orientation: ScreenOrientation): String {

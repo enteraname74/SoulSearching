@@ -52,6 +52,10 @@ interface Strings {
     val personalizeMainPageTitle: String
     val personalizeMainPageText: String
 
+    val managePlayerTitle: String
+    val managePlayerText: String
+    val playerSwipeTitle: String
+
     val searchingSongsFromYourDevice: String
     val searchForMusics: String
     val searchAll: String

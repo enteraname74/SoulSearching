@@ -108,7 +108,7 @@ object EnStrings : Strings {
     override val colorThemeTitle = "Color theme"
     override val colorThemeText = "Dynamic theme, personalized theme"
     override val personalizationTitle = "Personalization"
-    override val personalizationText = "Manage main page view"
+    override val personalizationText = "Manage main page and player view"
     override val aboutTitle = "About Soul Searching"
     override val aboutText = "Developers, application's version name"
 
@@ -118,11 +118,15 @@ object EnStrings : Strings {
     override val showPlaylists = "Show playlists"
     override val showAlbums = "Show albums"
     override val showArtists = "Show artists"
-    override val manageMusicsViewText = "Manage musics view"
-    override val showMusicsByFolders = "Show musics by folders"
-    override val showMusicsByMonths = "Show musics by months"
+    override val manageMusicsViewText = "Manage songs view"
+    override val showMusicsByFolders = "Show songs by folders"
+    override val showMusicsByMonths = "Show songs by months"
     override val showVerticalAccessBarTitle = "Show vertical access bar"
     override val showVerticalAccessBarText = "Gives quick access to all elements on the main page"
+
+    override val managePlayerTitle = "Music player view"
+    override val managePlayerText = "Manage music player view"
+    override val playerSwipeTitle = "Swipe the song cover to move forward or backward in the played list"
 
     override val usedFoldersTitle = "Used folders"
     override val usedFoldersText = "Define the folders used in the application"

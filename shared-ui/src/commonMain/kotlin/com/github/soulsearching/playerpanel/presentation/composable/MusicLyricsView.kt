@@ -89,7 +89,7 @@ fun LyricsView(
                 state = rememberScrollState()
             )
             .padding(Constants.Spacing.medium),
-        verticalArrangement = Arrangement.spacedBy(Constants.Spacing.veryLarge)
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = lyrics,
@@ -97,7 +97,9 @@ fun LyricsView(
             fontSize = 14.sp
         )
         Text(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Constants.Spacing.veryLarge),
             text = strings.lyricsProvider,
             fontSize = 12.sp,
             color = subTextColor,
