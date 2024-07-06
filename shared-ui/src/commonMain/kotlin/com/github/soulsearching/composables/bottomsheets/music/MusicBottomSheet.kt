@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
@@ -105,7 +105,7 @@ fun MusicBottomSheet(
                     if (playerDraggableState.currentValue == BottomSheetStates.COLLAPSED) {
                         playerDraggableState.animateTo(
                             BottomSheetStates.MINIMISED, tween(
-                                Constants.AnimationDuration.normal
+                                UiConstants.AnimationDuration.normal
                             )
                         )
                     }

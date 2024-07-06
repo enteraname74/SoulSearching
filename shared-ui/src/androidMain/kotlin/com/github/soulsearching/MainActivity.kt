@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
@@ -28,7 +28,6 @@ import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
     // Main page view models

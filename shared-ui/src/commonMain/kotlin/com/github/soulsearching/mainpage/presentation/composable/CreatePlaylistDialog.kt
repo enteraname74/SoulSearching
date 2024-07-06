@@ -11,10 +11,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppTextField
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun CreatePlaylistDialog(
@@ -55,7 +55,7 @@ fun CreatePlaylistDialog(
             )
         },
         text = {
-            AppTextField(
+            SoulTextField(
                 value = playlistName,
                 onValueChange = { playlistName = it },
                 labelName = strings.playlistName,

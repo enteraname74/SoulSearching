@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
@@ -43,7 +43,7 @@ import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.playerpanel.presentation.composable.MusicLyricsView
 import com.github.soulsearching.playerpanel.presentation.composable.PlayerListView
 import com.github.soulsearching.playerpanel.presentation.composable.PlayerPanelTab
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -76,7 +76,7 @@ fun PlayerPanelView(
         coroutineScope.launch {
             musicListDraggableState.animateTo(
                 BottomSheetStates.COLLAPSED,
-                tween(Constants.AnimationDuration.normal)
+                tween(UiConstants.AnimationDuration.normal)
             )
         }
     }
@@ -147,7 +147,7 @@ fun PlayerPanelView(
                 coroutineScope.launch {
                     musicListDraggableState.animateTo(
                         BottomSheetStates.COLLAPSED,
-                        tween(Constants.AnimationDuration.normal)
+                        tween(UiConstants.AnimationDuration.normal)
                     )
                 }
             } else {
@@ -160,7 +160,7 @@ fun PlayerPanelView(
                     coroutineScope.launch {
                         musicListDraggableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationDuration.normal)
+                            tween(UiConstants.AnimationDuration.normal)
                         )
                     }
                 }
@@ -198,9 +198,9 @@ fun PlayerPanelView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = Constants.Spacing.medium,
-                        end = Constants.Spacing.medium,
-                        bottom = Constants.Spacing.small
+                        start = UiConstants.Spacing.medium,
+                        end = UiConstants.Spacing.medium,
+                        bottom = UiConstants.Spacing.small
                     ),
             ) {
                 pages.forEachIndexed { index, page ->

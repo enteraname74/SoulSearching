@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.soulsearching.R
 import com.github.soulsearching.domain.model.MusicFetcher
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope

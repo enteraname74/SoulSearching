@@ -16,11 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 
 
 @Composable
@@ -35,16 +35,16 @@ fun PageHeader(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Constants.Spacing.large),
-                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                    .padding(UiConstants.Spacing.large),
+                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             ) {
-                AppImage(
+                SoulImage(
                     bitmap = cover,
-                    size = Constants.ImageSize.huge,
+                    size = UiConstants.ImageSize.huge,
                     roundedPercent = 5
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
                 ) {
                     Text(
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -75,20 +75,20 @@ fun PageHeader(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = Constants.Spacing.large,
-                        end = Constants.Spacing.large,
-                        bottom = Constants.Spacing.large
+                        start = UiConstants.Spacing.large,
+                        end = UiConstants.Spacing.large,
+                        bottom = UiConstants.Spacing.large
                     ),
-                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AppImage(
+                SoulImage(
                     bitmap = cover,
-                    size = Constants.ImageSize.veryHuge,
+                    size = UiConstants.ImageSize.veryHuge,
                     roundedPercent = 5
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(

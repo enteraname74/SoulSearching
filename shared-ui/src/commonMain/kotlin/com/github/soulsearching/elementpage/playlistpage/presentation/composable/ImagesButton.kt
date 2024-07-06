@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.soulsearching.elementpage.domain.PlaylistType
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun ImagesButton(

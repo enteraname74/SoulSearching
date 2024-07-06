@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
@@ -36,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,18 +59,18 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppImage
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.model.types.ScreenOrientation
-import com.github.soulsearching.domain.utils.ColorPaletteUtils
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
 import com.github.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.soulsearching.player.domain.PlayerEvent
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -124,7 +122,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationDuration.normal),
+        tween(UiConstants.AnimationDuration.normal),
         label = "BACKGROUND_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
     val textColor: Color by animateColorAsState(
@@ -138,7 +136,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationDuration.normal),
+        tween(UiConstants.AnimationDuration.normal),
         label = "TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -153,7 +151,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationDuration.normal),
+        tween(UiConstants.AnimationDuration.normal),
         label = "SUB_TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -171,7 +169,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationDuration.normal),
+        tween(UiConstants.AnimationDuration.normal),
         label = "CONTENT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -188,7 +186,7 @@ fun PlayerDraggableView(
                 }
             }
         },
-        tween(Constants.AnimationDuration.normal),
+        tween(UiConstants.AnimationDuration.normal),
         label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -205,7 +203,7 @@ fun PlayerDraggableView(
                     SoulSearchingColorTheme.defaultTheme.secondary
                 }
             }
-        }, tween(Constants.AnimationDuration.normal),
+        }, tween(UiConstants.AnimationDuration.normal),
         label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
     )
 
@@ -232,12 +230,12 @@ fun PlayerDraggableView(
             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListDraggableState.animateTo(
                     BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationDuration.normal)
+                    tween(UiConstants.AnimationDuration.normal)
                 )
             }
             draggableState.animateTo(
                 BottomSheetStates.MINIMISED,
-                tween(Constants.AnimationDuration.normal)
+                tween(UiConstants.AnimationDuration.normal)
             )
         }
     }
@@ -258,12 +256,12 @@ fun PlayerDraggableView(
             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListDraggableState.animateTo(
                     BottomSheetStates.COLLAPSED,
-                    tween(Constants.AnimationDuration.normal)
+                    tween(UiConstants.AnimationDuration.normal)
                 )
             }
             draggableState.animateTo(
                 BottomSheetStates.COLLAPSED,
-                tween(Constants.AnimationDuration.normal)
+                tween(UiConstants.AnimationDuration.normal)
             )
         }
     }
@@ -329,7 +327,7 @@ fun PlayerDraggableView(
                     coroutineScope.launch {
                         draggableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationDuration.normal)
+                            tween(UiConstants.AnimationDuration.normal)
                         )
                     }
                 }
@@ -346,12 +344,12 @@ fun PlayerDraggableView(
                         if (musicListDraggableState.currentValue == BottomSheetStates.EXPANDED) {
                             musicListDraggableState.animateTo(
                                 BottomSheetStates.COLLAPSED,
-                                tween(Constants.AnimationDuration.normal)
+                                tween(UiConstants.AnimationDuration.normal)
                             )
                         }
                         draggableState.animateTo(
                             BottomSheetStates.MINIMISED,
-                            tween(Constants.AnimationDuration.normal)
+                            tween(UiConstants.AnimationDuration.normal)
                         )
                     }.invokeOnCompletion {
                         navigateToModifyMusic(path)
@@ -428,7 +426,7 @@ fun PlayerDraggableView(
                             draggableState.offset.value.roundToInt(),
                             0
                         ) / 15)).roundToInt().dp,
-                        Constants.Spacing.small
+                        UiConstants.Spacing.small
                     )
 
                     else -> max(
@@ -436,7 +434,7 @@ fun PlayerDraggableView(
                             draggableState.offset.value.roundToInt(),
                             0
                         ) / 40)).roundToInt().dp,
-                        Constants.Spacing.small
+                        UiConstants.Spacing.small
                     )
                 }
 
@@ -447,7 +445,7 @@ fun PlayerDraggableView(
                             draggableState.offset.value.roundToInt(),
                             0
                         ) / 5)).roundToInt().dp,
-                        Constants.Spacing.small
+                        UiConstants.Spacing.small
                     )
 
                     else -> max(
@@ -455,7 +453,7 @@ fun PlayerDraggableView(
                             draggableState.offset.value.roundToInt(),
                             0
                         ) / 15)).roundToInt().dp,
-                        Constants.Spacing.small
+                        UiConstants.Spacing.small
                     )
                 }
 
@@ -506,12 +504,12 @@ fun PlayerDraggableView(
                             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                                 musicListDraggableState.animateTo(
                                     BottomSheetStates.COLLAPSED,
-                                    tween(Constants.AnimationDuration.normal)
+                                    tween(UiConstants.AnimationDuration.normal)
                                 )
                             }
                             draggableState.animateTo(
                                 BottomSheetStates.MINIMISED,
-                                tween(Constants.AnimationDuration.normal)
+                                tween(UiConstants.AnimationDuration.normal)
                             )
                         }
                     }
@@ -520,7 +518,7 @@ fun PlayerDraggableView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Constants.Spacing.small)
+                    .padding(UiConstants.Spacing.small)
             ) {
                 Box(
                     modifier = Modifier
@@ -564,7 +562,7 @@ fun PlayerDraggableView(
                             pageSpacing = 120.dp
                         ) { currentSongPos ->
 
-                            AppImage(
+                            SoulImage(
                                 modifier = imageModifier,
                                 bitmap =
                                 retrieveCoverMethod(aroundSongs.getOrNull(currentSongPos)?.coverId),
@@ -574,7 +572,7 @@ fun PlayerDraggableView(
                             )
                         }
                     } else {
-                        AppImage(
+                        SoulImage(
                             modifier = imageModifier,
                             bitmap =
                             retrieveCoverMethod(playbackManager.currentMusic?.coverId),
@@ -600,7 +598,7 @@ fun PlayerDraggableView(
                             imageVector = Icons.Rounded.KeyboardArrowDown,
                             contentDescription = "",
                             modifier = Modifier
-                                .size(Constants.ImageSize.medium)
+                                .size(UiConstants.ImageSize.medium)
                                 .composed { backImageClickableModifier },
                             colorFilter = ColorFilter.tint(textColor),
                             alpha = alphaTransition
@@ -635,7 +633,7 @@ fun PlayerDraggableView(
 
                                                         draggableState.animateTo(
                                                             BottomSheetStates.MINIMISED,
-                                                            tween(Constants.AnimationDuration.normal)
+                                                            tween(UiConstants.AnimationDuration.normal)
                                                         )
                                                     }
                                                 }
@@ -661,7 +659,7 @@ fun PlayerDraggableView(
 
                                                         draggableState.animateTo(
                                                             BottomSheetStates.MINIMISED,
-                                                            tween(Constants.AnimationDuration.normal)
+                                                            tween(UiConstants.AnimationDuration.normal)
                                                         )
                                                     }
                                                 }
@@ -717,7 +715,7 @@ fun PlayerDraggableView(
                             }
                         }
                         Spacer(
-                            modifier = Modifier.size(Constants.ImageSize.medium)
+                            modifier = Modifier.size(UiConstants.ImageSize.medium)
                         )
                     }
 
@@ -767,11 +765,11 @@ fun PlayerDraggableView(
 
                 Row(
                     modifier = Modifier
-                        .height(imageSize + Constants.Spacing.small)
+                        .height(imageSize + UiConstants.Spacing.small)
                         .fillMaxWidth()
                         .padding(
-                            start = imageSize + Constants.Spacing.large,
-                            end = Constants.Spacing.small
+                            start = imageSize + UiConstants.Spacing.large,
+                            end = UiConstants.Spacing.small
                         )
                         .alpha((draggableState.offset.value / maxHeight).coerceIn(0.0F, 1.0F)),
                     verticalAlignment = Alignment.CenterVertically,

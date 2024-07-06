@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 
 @Composable
 fun AppFeatureComposable(
@@ -36,8 +36,8 @@ fun AppFeatureComposable(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(Constants.Spacing.large),
-            verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                .padding(UiConstants.Spacing.large),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             Text(
                 text = title,

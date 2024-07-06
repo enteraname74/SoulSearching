@@ -20,14 +20,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.composables.SouTopBar
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
 import com.github.soulsearching.settings.managemusics.presentation.composable.LoadingComposable
 import com.github.soulsearching.settings.presentation.composable.SettingsSwitchElement
 import com.github.soulsearching.settings.managemusics.managefolders.domain.FolderEvent
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.settings.managemusics.managefolders.domain.model.FolderStateType
 import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
 
@@ -70,7 +70,7 @@ fun SettingsUsedFoldersScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        AppHeaderBar(
+        SouTopBar(
             title = strings.usedFoldersTitle,
             leftAction = finishAction,
             rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
@@ -115,7 +115,7 @@ fun SettingsUsedFoldersScreenView(
                         )
                     }
                     item {
-                        PlayerSpacer()
+                        SoulPlayerSpacer()
                     }
                 }
             }

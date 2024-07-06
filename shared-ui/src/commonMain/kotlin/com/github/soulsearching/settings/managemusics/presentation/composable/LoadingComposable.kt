@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.soulsearching.composables.ProgressIndicatorComposable
-import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 
 @Composable
 fun LoadingComposable(
@@ -42,7 +42,7 @@ fun LoadingComposable(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                    .padding(top = Constants.Spacing.large),
+                    .padding(top = UiConstants.Spacing.large),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
                     SoulSearchingLogo()

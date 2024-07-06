@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.player.domain.model.LyricsFetchState
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 
 @Composable
@@ -88,7 +88,7 @@ fun LyricsView(
             .verticalScroll(
                 state = rememberScrollState()
             )
-            .padding(Constants.Spacing.medium),
+            .padding(UiConstants.Spacing.medium),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -99,7 +99,7 @@ fun LyricsView(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Constants.Spacing.veryLarge),
+                .padding(top = UiConstants.Spacing.veryLarge),
             text = strings.lyricsProvider,
             fontSize = 12.sp,
             color = subTextColor,
@@ -115,7 +115,7 @@ fun NoLyricsFoundView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Constants.Spacing.small)
+            .padding(UiConstants.Spacing.small)
     ) {
         Text(
             modifier = Modifier

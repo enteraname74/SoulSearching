@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.elementpage.folderpage.presentation.SelectedFolderScreen
@@ -37,7 +37,7 @@ import com.github.soulsearching.elementpage.monthpage.presentation.SelectedMonth
 import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -101,7 +101,7 @@ fun AllMusicsComposable(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                    .padding(bottom = Constants.Spacing.large),
+                    .padding(bottom = UiConstants.Spacing.large),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -117,7 +117,7 @@ fun AllMusicsComposable(
                     rightComposable = {
                         Icon(
                             modifier = Modifier
-                                .padding(start = Constants.Spacing.medium)
+                                .padding(start = UiConstants.Spacing.medium)
                                 .size(30.dp)
                                 .clickable {
                                     if (musicState.musics.isNotEmpty()) {
@@ -146,7 +146,7 @@ fun AllMusicsComposable(
                         coroutineScope.launch {
                             playerDraggableState.animateTo(
                                 BottomSheetStates.EXPANDED,
-                                tween(Constants.AnimationDuration.normal)
+                                tween(UiConstants.AnimationDuration.normal)
                             )
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
@@ -167,7 +167,7 @@ fun AllMusicsComposable(
                 )
             }
             item {
-                PlayerSpacer()
+                SoulPlayerSpacer()
             }
         } else {
             item {

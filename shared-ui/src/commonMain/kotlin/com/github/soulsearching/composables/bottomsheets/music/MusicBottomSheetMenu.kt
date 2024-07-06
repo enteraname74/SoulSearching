@@ -13,14 +13,14 @@ import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.settings.domain.ViewSettingsManager
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -42,7 +42,7 @@ fun MusicBottomSheetMenu(
     Column(
         modifier = Modifier
             .background(color = primaryColor)
-            .padding(Constants.Spacing.large)
+            .padding(UiConstants.Spacing.large)
     ) {
         if (viewSettingsManager.isQuickAccessShown) {
             BottomSheetRow(

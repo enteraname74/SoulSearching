@@ -12,10 +12,10 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.search.presentation.composable.LinearPreviewComposable
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.events.ArtistEvent
 import com.github.soulsearching.domain.events.PlaylistEvent
@@ -24,7 +24,7 @@ import com.github.soulsearching.mainpage.domain.state.AlbumState
 import com.github.soulsearching.mainpage.domain.state.ArtistState
 import com.github.soulsearching.mainpage.domain.state.MainPageState
 import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.search.presentation.composable.SearchType
 import kotlinx.coroutines.launch
@@ -173,7 +173,7 @@ fun SearchAll(
                             focusManager.clearFocus()
                             playerDraggableState.animateTo(
                                 BottomSheetStates.EXPANDED,
-                                tween(Constants.AnimationDuration.normal)
+                                tween(UiConstants.AnimationDuration.normal)
                             )
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
@@ -196,7 +196,7 @@ fun SearchAll(
             }
         }
         item {
-            PlayerSpacer()
+            SoulPlayerSpacer()
         }
     }
 }

@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
@@ -101,7 +101,7 @@ fun MusicList(
                 music = music,
                 onClick = {
                     coroutineScope.launch {
-                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(Constants.AnimationDuration.normal))
+                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(UiConstants.AnimationDuration.normal))
                     }.invokeOnCompletion {
                         playlistId?.let {
                             updateNbPlayedAction(it)
@@ -127,7 +127,7 @@ fun MusicList(
             )
         }
         item {
-            PlayerSpacer()
+            SoulPlayerSpacer()
         }
     }
 }

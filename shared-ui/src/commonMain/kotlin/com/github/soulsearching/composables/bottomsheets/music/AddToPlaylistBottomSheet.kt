@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
 import java.util.UUID
 

@@ -2,7 +2,7 @@ package com.github.soulsearching.domain.events.handlers
 
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import com.github.soulsearching.mainpage.domain.state.MainPageState

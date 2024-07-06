@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.BuildConfig
 import com.github.soulsearching.settings.aboutpage.presentation.composable.SettingsAboutComposable
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 actual fun SettingsAboutScreenView(

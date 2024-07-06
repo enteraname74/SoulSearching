@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SearchType(
@@ -24,8 +24,8 @@ fun SearchType(
             .fillMaxWidth()
             .background(primaryColor)
             .padding(
-                top = Constants.Spacing.medium,
-                bottom = Constants.Spacing.medium
+                top = UiConstants.Spacing.medium,
+                bottom = UiConstants.Spacing.medium
             )
     ) {
         Text(

@@ -27,14 +27,14 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.composables.AppHeaderBar
 import com.github.soulsearching.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.settings.managemusics.presentation.composable.LoadingComposable
 import com.github.soulsearching.settings.managemusics.addmusics.domain.AddMusicsEvent
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.soulsearching.settings.managemusics.addmusics.domain.model.AddMusicsStateType
 import com.github.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -86,13 +86,13 @@ fun SettingsAddMusicsScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        AppHeaderBar(
+        SoulTopBar(
             title = strings.addMusicsTitle,
             leftAction = finishAction,
             rightIcon = if (addMusicsState.state == AddMusicsStateType.WAITING_FOR_USER_ACTION) Icons.Rounded.Check else null,
             rightAction = {
                 if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
-                    return@AppHeaderBar
+                    return@SoulTopBar
                 }
                 addMusicsViewModel.handler.onAddMusicEvent(
                     AddMusicsEvent.SetState(
@@ -191,7 +191,7 @@ fun SettingsAddMusicsScreenView(
                             )
                         }
                         item {
-                            PlayerSpacer()
+                            SoulPlayerSpacer()
                         }
                     }
                 }

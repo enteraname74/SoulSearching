@@ -2,7 +2,7 @@ package com.github.soulsearching.player.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.player.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.PlayerMode
 import java.util.UUID
 
 /**

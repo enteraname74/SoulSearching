@@ -1,8 +1,8 @@
 package com.github.soulsearching
 
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.soulsearching.domain.model.MusicFetcher
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.model.MusicFetcherDesktopImpl
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl

@@ -10,17 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.soulsearching.settings.presentation.composable.SettingsSwitchElement
 
 @Composable
 fun PersonalizedColorThemeCard(
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = Constants.Spacing.large,
+    padding: Dp = UiConstants.Spacing.large,
     colorThemeManager: ColorThemeManager = injectElement()
 ) {
     ColorCard(
@@ -33,8 +33,8 @@ fun PersonalizedColorThemeCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Constants.Spacing.large),
-            verticalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+                .padding(top = UiConstants.Spacing.large),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
             SettingsSwitchElement(
                 title = strings.dynamicPlayerView,

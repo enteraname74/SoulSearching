@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.player.domain.model.PlaybackManager
@@ -34,7 +34,7 @@ fun MinimisedPlayButtonsComposable(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
     ) {
         Image(
             imageVector = Icons.Rounded.SkipPrevious,

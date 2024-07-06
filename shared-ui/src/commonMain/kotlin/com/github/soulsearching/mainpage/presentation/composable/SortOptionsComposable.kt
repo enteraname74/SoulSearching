@@ -19,15 +19,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 
 @Composable
 fun SortOptionsComposable(
-    imageSize: Dp = Constants.ImageSize.small,
+    imageSize: Dp = UiConstants.ImageSize.small,
     sortByDateAction: () -> Unit,
     sortByMostListenedAction: () -> Unit,
     sortByName: () -> Unit,
@@ -40,17 +40,17 @@ fun SortOptionsComposable(
             color = SoulSearchingColorTheme.colorScheme.secondary,
             shape = RoundedCornerShape(10.dp)
         ),
-        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 modifier = Modifier
                     .clickable { sortByDateAction() }
-                    .padding(Constants.Spacing.small)
+                    .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.ADDED_DATE) (imageSize + imageSize / 3) else imageSize
                     ),
@@ -61,7 +61,7 @@ fun SortOptionsComposable(
             Icon(
                 modifier = Modifier
                     .clickable { sortByMostListenedAction() }
-                    .padding(Constants.Spacing.small)
+                    .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.NB_PLAYED) (imageSize + imageSize / 3) else imageSize
                     ),
@@ -72,7 +72,7 @@ fun SortOptionsComposable(
             Icon(
                 modifier = Modifier
                     .clickable { sortByName() }
-                    .padding(Constants.Spacing.small)
+                    .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.NAME) (imageSize + imageSize / 3) else imageSize
                     ),
@@ -84,7 +84,7 @@ fun SortOptionsComposable(
         Icon(
             modifier = Modifier
                 .clickable { setSortDirection() }
-                .padding(Constants.Spacing.small)
+                .padding(UiConstants.Spacing.small)
                 .size(
                     imageSize
                 ),

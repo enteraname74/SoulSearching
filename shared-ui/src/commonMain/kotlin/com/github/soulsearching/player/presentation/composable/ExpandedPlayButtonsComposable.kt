@@ -33,11 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.utils.Utils
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.player.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.PlayerMode
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +88,7 @@ fun ExpandedPlayButtonsComposable(
                 SliderDefaults.Thumb(
                     interactionSource = interactionSource,
                     modifier = Modifier
-                        .size(Constants.ImageSize.small)
+                        .size(UiConstants.ImageSize.small)
                         .padding(
                             start = 4.dp,
                             top = 4.dp
@@ -105,7 +105,7 @@ fun ExpandedPlayButtonsComposable(
                     start = 5.dp,
                     end = 5.dp
                 ),
-            verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
 
             Row(
@@ -139,7 +139,7 @@ fun ExpandedPlayButtonsComposable(
                     },
                     contentDescription = "",
                     modifier = Modifier
-                        .size(Constants.ImageSize.medium)
+                        .size(UiConstants.ImageSize.medium)
                         .clickable {
                             playbackManager.changePlayerMode()
                         },
@@ -149,7 +149,7 @@ fun ExpandedPlayButtonsComposable(
                     imageVector = Icons.Rounded.SkipPrevious,
                     contentDescription = "",
                     modifier = Modifier
-                        .size(Constants.ImageSize.large)
+                        .size(UiConstants.ImageSize.large)
                         .clickable { playbackManager.previous() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
@@ -176,7 +176,7 @@ fun ExpandedPlayButtonsComposable(
                     imageVector = Icons.Rounded.SkipNext,
                     contentDescription = "",
                     modifier = Modifier
-                        .size(Constants.ImageSize.large)
+                        .size(UiConstants.ImageSize.large)
                         .clickable { playbackManager.next() },
                     colorFilter = ColorFilter.tint(color = mainColor)
                 )
@@ -188,7 +188,7 @@ fun ExpandedPlayButtonsComposable(
                     },
                     contentDescription = "",
                     modifier = Modifier
-                        .size(Constants.ImageSize.medium)
+                        .size(UiConstants.ImageSize.medium)
                         .clickable {
                             playbackManager.currentMusic?.let {
                                 onSetFavoriteState()

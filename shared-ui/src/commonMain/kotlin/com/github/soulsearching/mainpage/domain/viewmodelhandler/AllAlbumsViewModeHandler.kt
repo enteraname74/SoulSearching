@@ -2,7 +2,7 @@ package com.github.soulsearching.mainpage.domain.viewmodelhandler
 
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType

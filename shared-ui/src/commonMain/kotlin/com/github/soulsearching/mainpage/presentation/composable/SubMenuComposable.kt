@@ -16,8 +16,8 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SubMenuComposable(
@@ -41,9 +41,9 @@ fun SubMenuComposable(
             .background(color = backgroundColor)
             .clickable { }
             .padding(
-                top = Constants.Spacing.medium,
-                start = Constants.Spacing.medium,
-                end = Constants.Spacing.medium
+                top = UiConstants.Spacing.medium,
+                start = UiConstants.Spacing.medium,
+                end = UiConstants.Spacing.medium
             )
             .composed {
                 modifier
@@ -59,7 +59,7 @@ fun SubMenuComposable(
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
             createPlaylistComposable()
             if (isUsingSort) {

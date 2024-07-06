@@ -2,10 +2,11 @@ package com.github.soulsearching.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

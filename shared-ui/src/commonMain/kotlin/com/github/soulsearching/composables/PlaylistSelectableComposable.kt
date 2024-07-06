@@ -17,8 +17,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Playlist
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun PlaylistSelectableComposable(
@@ -34,7 +35,7 @@ fun PlaylistSelectableComposable(
             .clickable {
                 onClick()
             }
-            .padding(Constants.Spacing.medium),
+            .padding(UiConstants.Spacing.medium),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -42,9 +43,9 @@ fun PlaylistSelectableComposable(
             modifier = Modifier
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            AppImage(
+            SoulImage(
                 bitmap = cover,
                 size = 55.dp,
                 tint = textColor

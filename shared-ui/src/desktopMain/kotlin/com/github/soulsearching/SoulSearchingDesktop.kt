@@ -6,8 +6,8 @@ import com.github.enteraname74.localdesktop.AppDatabase
 import com.github.enteraname74.localdesktop.localDesktopModule
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.viewmodel.MainActivityViewModelDesktopImpl
 import org.koin.compose.KoinApplication
 

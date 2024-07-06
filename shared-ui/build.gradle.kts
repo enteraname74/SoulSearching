@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -12,6 +13,7 @@ kotlin {
     androidTarget()
     jvm("desktop")
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -27,6 +29,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":domain"))
+                implementation(project(":core-ui"))
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)

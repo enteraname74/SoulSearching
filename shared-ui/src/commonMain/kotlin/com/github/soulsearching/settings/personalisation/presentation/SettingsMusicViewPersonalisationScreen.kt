@@ -11,14 +11,14 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.soulsearching.composables.SouTopBar
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.settings.presentation.composable.SettingsSwitchElement
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 /**
  * Represent the view of the music view personalisation screen in the settings.
@@ -47,7 +47,7 @@ fun SettingsMusicViewPersonalisationScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        AppHeaderBar(
+        SouTopBar(
             title = strings.manageMusicsViewText,
             leftAction = onBack
         )
@@ -59,10 +59,10 @@ fun SettingsMusicViewPersonalisationScreenView(
                     isChecked = viewSettingsManager.areMusicsByFoldersShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
-                        start = Constants.Spacing.veryLarge,
-                        end = Constants.Spacing.veryLarge,
-                        top = Constants.Spacing.veryLarge,
-                        bottom = Constants.Spacing.medium
+                        start = UiConstants.Spacing.veryLarge,
+                        end = UiConstants.Spacing.veryLarge,
+                        top = UiConstants.Spacing.veryLarge,
+                        bottom = UiConstants.Spacing.medium
                     )
                 )
             }
@@ -73,15 +73,15 @@ fun SettingsMusicViewPersonalisationScreenView(
                     isChecked = viewSettingsManager.areMusicsByMonthsShown,
                     titleFontSize = 16.sp,
                     padding = PaddingValues(
-                        start = Constants.Spacing.veryLarge,
-                        end = Constants.Spacing.veryLarge,
-                        top = Constants.Spacing.medium,
-                        bottom = Constants.Spacing.medium
+                        start = UiConstants.Spacing.veryLarge,
+                        end = UiConstants.Spacing.veryLarge,
+                        top = UiConstants.Spacing.medium,
+                        bottom = UiConstants.Spacing.medium
                     )
                 )
             }
             item {
-                PlayerSpacer()
+                SoulPlayerSpacer()
             }
         }
     }

@@ -12,15 +12,15 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.composable.SearchType
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -64,7 +64,7 @@ fun SearchMusics(
                             focusManager.clearFocus()
                             playerDraggableState.animateTo(
                                 BottomSheetStates.EXPANDED,
-                                tween(Constants.AnimationDuration.normal)
+                                tween(UiConstants.AnimationDuration.normal)
                             )
                         }.invokeOnCompletion { _ ->
                             playbackManager.setCurrentPlaylistAndMusic(
@@ -88,7 +88,7 @@ fun SearchMusics(
             }
         }
         item {
-            PlayerSpacer()
+            SoulPlayerSpacer()
         }
     }
 }

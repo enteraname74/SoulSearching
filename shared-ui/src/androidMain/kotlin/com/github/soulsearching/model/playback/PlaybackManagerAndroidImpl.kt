@@ -13,10 +13,7 @@ import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.model.player.MediaSessionManager
 import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 
 /**
  * Implementation of a MusicPlayerManager for Android.

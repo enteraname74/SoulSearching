@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SettingsSwitchElement(
@@ -29,7 +29,7 @@ fun SettingsSwitchElement(
     titleFontSize: TextUnit = 18.sp,
     toggleAction: () -> Unit,
     isChecked: Boolean,
-    padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge),
+    padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
     maxLines : Int = 2
 ) {
     Row(
@@ -46,12 +46,12 @@ fun SettingsSwitchElement(
             modifier = Modifier
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = Constants.Spacing.small),
+                    .padding(end = UiConstants.Spacing.small),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(

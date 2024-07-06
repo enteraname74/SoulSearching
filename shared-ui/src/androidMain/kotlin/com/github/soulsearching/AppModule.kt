@@ -4,11 +4,11 @@ import android.content.Context
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.soulsearching.viewmodel.AllAlbumsViewModelAndroidImpl
 import com.github.soulsearching.domain.viewmodel.AllArtistsViewModel

@@ -35,26 +35,26 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.MusicItemComposable
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.soulsearching.elementpage.domain.PlaylistType
 import com.github.soulsearching.elementpage.playlistpage.presentation.composable.PlaylistPanel
 import com.github.soulsearching.elementpage.presentation.composable.PageHeader
 import com.github.soulsearching.player.domain.model.PlaybackManager
 import com.github.soulsearching.search.presentation.SearchMusics
 import com.github.soulsearching.search.presentation.SearchView
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -127,7 +127,7 @@ fun ArtistScreen(
                 .launch {
                     playerDraggableState.animateTo(
                         BottomSheetStates.EXPANDED,
-                        tween(Constants.AnimationDuration.normal)
+                        tween(UiConstants.AnimationDuration.normal)
                     )
                 }
                 .invokeOnCompletion {
@@ -156,7 +156,7 @@ fun ArtistScreen(
             coroutineScope.launch {
                 searchDraggableState.animateTo(
                     BottomSheetStates.EXPANDED,
-                    tween(Constants.AnimationDuration.normal)
+                    tween(UiConstants.AnimationDuration.normal)
                 )
             }.invokeOnCompletion {
                 searchBarFocusRequester.requestFocus()
@@ -257,8 +257,8 @@ fun ArtistScreen(
                                 Text(
                                     modifier = Modifier
                                         .padding(
-                                            start = Constants.Spacing.medium,
-                                            bottom = Constants.Spacing.large
+                                            start = UiConstants.Spacing.medium,
+                                            bottom = UiConstants.Spacing.large
                                         ),
                                     text = strings.musics,
                                     color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -286,7 +286,7 @@ fun ArtistScreen(
                                         coroutineScope.launch {
                                             playerDraggableState.animateTo(
                                                 BottomSheetStates.EXPANDED,
-                                                tween(Constants.AnimationDuration.normal)
+                                                tween(UiConstants.AnimationDuration.normal)
                                             )
                                         }.invokeOnCompletion {
                                             playlistId?.let {
@@ -311,7 +311,7 @@ fun ArtistScreen(
                                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                                 )
                             }
-                            item { PlayerSpacer() }
+                            item { SoulPlayerSpacer() }
                         }
                     }
                 }
@@ -355,8 +355,8 @@ fun ArtistScreen(
                             Text(
                                 modifier = Modifier
                                     .padding(
-                                        start = Constants.Spacing.medium,
-                                        bottom = Constants.Spacing.large
+                                        start = UiConstants.Spacing.medium,
+                                        bottom = UiConstants.Spacing.large
                                     ),
                                 text = strings.musics,
                                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -384,7 +384,7 @@ fun ArtistScreen(
                                     coroutineScope.launch {
                                         playerDraggableState.animateTo(
                                             BottomSheetStates.EXPANDED,
-                                            tween(Constants.AnimationDuration.normal)
+                                            tween(UiConstants.AnimationDuration.normal)
                                         )
                                     }.invokeOnCompletion {
                                         playlistId?.let {
@@ -409,7 +409,7 @@ fun ArtistScreen(
                                 isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                             )
                         }
-                        item { PlayerSpacer() }
+                        item { SoulPlayerSpacer() }
                     }
                 }
             }

@@ -28,17 +28,17 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.AppImage
-import com.github.soulsearching.composables.AppTextField
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.soulsearching.domain.viewmodel.ModifyMusicViewModel
 import com.github.soulsearching.modifyelement.composable.DropdownTextField
 import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicEvent
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import java.util.UUID
 
 @Composable
@@ -64,7 +64,7 @@ fun ModifyMusicComposable(
 
     Scaffold(
         topBar = {
-            AppHeaderBar(
+            SoulTopBar(
                 title = strings.musicInformation,
                 leftAction = onCancel,
                 rightIcon = Icons.Rounded.Done,
@@ -89,17 +89,17 @@ fun ModifyMusicComposable(
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(Constants.Spacing.medium)
+                                .padding(UiConstants.Spacing.medium)
                                 .weight(1F),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                modifier = Modifier.padding(bottom = Constants.Spacing.medium),
+                                modifier = Modifier.padding(bottom = UiConstants.Spacing.medium),
                                 text = strings.albumCover,
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
-                            AppImage(
+                            SoulImage(
                                 bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
@@ -110,7 +110,7 @@ fun ModifyMusicComposable(
                                 .fillMaxSize()
                                 .weight(2F)
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                                .padding(Constants.Spacing.medium),
+                                .padding(UiConstants.Spacing.medium),
                             name = state.modifiedMusicInformation.name,
                             album = state.modifiedMusicInformation.album,
                             artist = state.modifiedMusicInformation.artist,
@@ -156,7 +156,7 @@ fun ModifyMusicComposable(
                             .fillMaxSize()
                             .background(SoulSearchingColorTheme.colorScheme.secondary)
                             .padding(padding)
-                            .padding(top = Constants.Spacing.medium)
+                            .padding(top = UiConstants.Spacing.medium)
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
                                     focusManager.clearFocus()
@@ -166,16 +166,16 @@ fun ModifyMusicComposable(
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(Constants.Spacing.medium),
+                                .padding(UiConstants.Spacing.medium),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                modifier = Modifier.padding(bottom = Constants.Spacing.medium),
+                                modifier = Modifier.padding(bottom = UiConstants.Spacing.medium),
                                 text = strings.albumCover,
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
-                            AppImage(
+                            SoulImage(
                                 bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
@@ -187,7 +187,7 @@ fun ModifyMusicComposable(
                                 .weight(1F)
                                 .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
                                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                                .padding(Constants.Spacing.medium),
+                                .padding(UiConstants.Spacing.medium),
                             name = state.modifiedMusicInformation.name,
                             album = state.modifiedMusicInformation.album,
                             artist = state.modifiedMusicInformation.artist,
@@ -259,9 +259,9 @@ fun ModifyMusicTextFields(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(4F),
-            verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            AppTextField(
+            SoulTextField(
                 value = name,
                 onValueChange = { setName(it) },
                 labelName = strings.musicName,

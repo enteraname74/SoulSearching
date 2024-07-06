@@ -21,8 +21,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -33,7 +34,7 @@ fun BigPreviewComposable(
     text : String = "",
     onClick : () -> Unit,
     onLongClick : () -> Unit = {},
-    imageSize : Dp = Constants.ImageSize.veryLarge,
+    imageSize : Dp = UiConstants.ImageSize.veryLarge,
     titleStyle : TextStyle = MaterialTheme.typography.labelLarge,
     textStyle : TextStyle = MaterialTheme.typography.labelSmall,
     roundedPercent : Int = 4,
@@ -55,11 +56,11 @@ fun BigPreviewComposable(
             )
 
     ) {
-        AppImage(bitmap = image, size = imageSize, roundedPercent = roundedPercent)
+        SoulImage(bitmap = image, size = imageSize, roundedPercent = roundedPercent)
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             if (isFavoritePlaylist) {
                 Icon(

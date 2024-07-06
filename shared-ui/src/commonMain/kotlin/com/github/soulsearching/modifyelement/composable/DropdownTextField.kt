@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)

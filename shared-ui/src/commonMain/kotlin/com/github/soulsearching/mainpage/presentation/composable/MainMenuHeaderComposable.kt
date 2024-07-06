@@ -1,6 +1,5 @@
 package com.github.soulsearching.mainpage.presentation.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun MainMenuHeaderComposable(
@@ -31,10 +30,10 @@ fun MainMenuHeaderComposable(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = Constants.Spacing.medium,
-                end = Constants.Spacing.medium,
-                top = Constants.Spacing.small,
-                bottom = Constants.Spacing.small
+                start = UiConstants.Spacing.medium,
+                end = UiConstants.Spacing.medium,
+                top = UiConstants.Spacing.small,
+                bottom = UiConstants.Spacing.small
             ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

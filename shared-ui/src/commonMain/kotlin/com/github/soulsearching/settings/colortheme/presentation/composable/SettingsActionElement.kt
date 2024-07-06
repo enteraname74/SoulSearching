@@ -13,8 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SettingsActionElement(
@@ -22,7 +22,7 @@ fun SettingsActionElement(
     text: String,
     clickAction: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = Constants.Spacing.veryLarge
+    padding: Dp = UiConstants.Spacing.veryLarge
 ) {
     Row(
         modifier = Modifier
@@ -38,7 +38,7 @@ fun SettingsActionElement(
             modifier = Modifier
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),

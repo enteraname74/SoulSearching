@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.elementpage.domain.PlaylistType
 
 @Composable
@@ -27,7 +27,7 @@ fun PlaylistPanel(
         modifier = Modifier
             .fillMaxWidth()
             .background(primaryColor)
-            .padding(bottom = Constants.Spacing.medium),
+            .padding(bottom = UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {

@@ -24,11 +24,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.mainpage.domain.model.ElementEnum
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun MainPageVerticalShortcut(
@@ -49,10 +49,10 @@ fun MainPageVerticalShortcut(
             Row(
                 modifier = Modifier
                     .padding(
-                        top = Constants.Spacing.large,
-                        bottom = Constants.Spacing.large,
-                        start = Constants.Spacing.medium,
-                        end = Constants.Spacing.large
+                        top = UiConstants.Spacing.large,
+                        bottom = UiConstants.Spacing.large,
+                        start = UiConstants.Spacing.medium,
+                        end = UiConstants.Spacing.large
                     )
                     .clickable {
                         switchPageAction(pos)
@@ -61,7 +61,7 @@ fun MainPageVerticalShortcut(
             ) {
                 Image(
                     modifier = Modifier
-                        .size(Constants.ImageSize.medium)
+                        .size(UiConstants.ImageSize.medium)
                         .alpha(
                             if (!isCurrentPosition) {
                                 0F
@@ -105,7 +105,7 @@ fun MainPageVerticalShortcut(
 
         }
         item {
-            PlayerSpacer()
+            SoulPlayerSpacer()
         }
     }
 }

@@ -17,9 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.search.presentation.composable.AppSearchBar
 import kotlinx.coroutines.launch
@@ -50,7 +50,7 @@ fun SearchView(
         coroutineScope.launch {
             draggableState.animateTo(
                 BottomSheetStates.COLLAPSED,
-                tween(Constants.AnimationDuration.normal)
+                tween(UiConstants.AnimationDuration.normal)
             )
         }
     }
@@ -93,7 +93,7 @@ fun SearchView(
                         focusManager.clearFocus()
                     })
                 }
-                .padding(Constants.Spacing.medium)
+                .padding(UiConstants.Spacing.medium)
         ) {
 
             AppSearchBar(

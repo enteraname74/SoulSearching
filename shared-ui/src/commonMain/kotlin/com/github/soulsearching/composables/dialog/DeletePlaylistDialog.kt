@@ -1,15 +1,16 @@
 package com.github.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.soulsearching.domain.events.PlaylistEvent
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun DeletePlaylistDialog(
     onPlaylistEvent: (PlaylistEvent) -> Unit,
     confirmAction: () -> Unit
 ) {
-    SoulSearchingDialog(
+    SoulDialog(
         confirmAction = {
             onPlaylistEvent(PlaylistEvent.DeletePlaylist)
             onPlaylistEvent(PlaylistEvent.DeleteDialog(isShown = false))

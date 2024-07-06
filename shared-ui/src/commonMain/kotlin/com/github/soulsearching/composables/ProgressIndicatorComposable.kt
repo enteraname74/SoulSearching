@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun ProgressIndicatorComposable(
@@ -20,7 +20,7 @@ fun ProgressIndicatorComposable(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.padding(Constants.Spacing.medium),
+            modifier = Modifier.padding(UiConstants.Spacing.medium),
             text = progressMessage,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center

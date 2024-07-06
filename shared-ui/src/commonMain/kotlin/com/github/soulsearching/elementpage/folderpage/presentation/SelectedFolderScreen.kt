@@ -13,7 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel

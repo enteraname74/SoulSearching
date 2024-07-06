@@ -7,20 +7,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Album
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.BigPreviewComposable
 import com.github.soulsearching.mainpage.presentation.composable.NoElementView
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 
 @Composable
@@ -33,12 +31,12 @@ fun ArtistAlbums(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Constants.Spacing.veryLarge),
-        verticalArrangement = Arrangement.spacedBy(Constants.Spacing.small)
+            .padding(bottom = UiConstants.Spacing.veryLarge),
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
     ) {
         Text(
             modifier = Modifier
-                .padding(start = Constants.Spacing.medium),
+                .padding(start = UiConstants.Spacing.medium),
             text = strings.albums,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
@@ -48,10 +46,10 @@ fun ArtistAlbums(
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 contentPadding = PaddingValues(
-                    start = Constants.Spacing.medium,
-                    end = Constants.Spacing.medium
+                    start = UiConstants.Spacing.medium,
+                    end = UiConstants.Spacing.medium
                 )
             ) {
                 items(

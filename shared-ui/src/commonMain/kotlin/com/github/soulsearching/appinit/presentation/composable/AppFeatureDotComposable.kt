@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun AppFeatureDotComposable(
@@ -20,12 +20,12 @@ fun AppFeatureDotComposable(
 ) {
     Box(
         modifier = Modifier
-            .size(Constants.ImageSize.medium)
-            .padding(Constants.Spacing.small)
+            .size(UiConstants.ImageSize.medium)
+            .padding(UiConstants.Spacing.small)
     ) {
         Image(
             modifier = Modifier
-                .size(Constants.ImageSize.small)
+                .size(UiConstants.ImageSize.small)
                 .align(Alignment.Center)
                 .clickable {
                     onClick()

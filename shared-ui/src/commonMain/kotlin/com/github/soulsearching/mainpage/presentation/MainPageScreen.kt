@@ -32,8 +32,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
 import com.github.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
@@ -77,7 +77,7 @@ import com.github.soulsearching.search.presentation.SearchAll
 import com.github.soulsearching.search.presentation.SearchView
 import com.github.soulsearching.settings.domain.ViewSettingsManager
 import com.github.soulsearching.settings.presentation.SettingsScreen
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -325,7 +325,7 @@ fun MainPageScreenView(
                     coroutineScope.launch {
                         searchDraggableState.animateTo(
                             BottomSheetStates.EXPANDED,
-                            tween(Constants.AnimationDuration.normal)
+                            tween(UiConstants.AnimationDuration.normal)
                         )
                     }.invokeOnCompletion {
                         searchBarFocusRequester.requestFocus()
@@ -398,7 +398,7 @@ fun MainPageScreenView(
                                         coroutineScope.launch {
                                             playerDraggableState.animateTo(
                                                 BottomSheetStates.EXPANDED,
-                                                tween(Constants.AnimationDuration.normal)
+                                                tween(UiConstants.AnimationDuration.normal)
                                             )
                                         }.invokeOnCompletion {
                                             val musicListSingleton = arrayListOf(music)
@@ -465,7 +465,7 @@ fun MainPageScreenView(
                                                             )
                                                         )
                                                     }
-                                                    .size(Constants.ImageSize.medium),
+                                                    .size(UiConstants.ImageSize.medium),
                                                 imageVector = Icons.Rounded.Add,
                                                 contentDescription = strings.createPlaylistButton,
                                                 tint = SoulSearchingColorTheme.colorScheme.onPrimary

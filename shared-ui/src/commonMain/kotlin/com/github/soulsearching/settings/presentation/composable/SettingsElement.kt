@@ -13,8 +13,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SettingsElement(
@@ -23,7 +23,7 @@ fun SettingsElement(
     icon: ImageVector? = null,
     isClickable: Boolean = true,
     clickAction: () -> Unit = {},
-    padding: PaddingValues = PaddingValues(Constants.Spacing.veryLarge)
+    padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge)
 ) {
 
     val clickableModifier = if (isClickable) Modifier.clickable { clickAction() } else Modifier
@@ -34,11 +34,11 @@ fun SettingsElement(
             .then(clickableModifier)
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
         icon?.let {
             Image(
-                modifier = Modifier.size(Constants.ImageSize.medium),
+                modifier = Modifier.size(UiConstants.ImageSize.medium),
                 imageVector = it,
                 contentDescription = "",
                 colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary)

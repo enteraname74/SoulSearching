@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun BottomSheetRow(
@@ -26,12 +26,12 @@ fun BottomSheetRow(
             .clickable(
                 onClick = onClick
             )
-            .padding(Constants.Spacing.large),
-        horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+            .padding(UiConstants.Spacing.large),
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier.size(Constants.ImageSize.medium),
+            modifier = Modifier.size(UiConstants.ImageSize.medium),
             imageVector = icon,
             contentDescription = text,
             colorFilter = ColorFilter.tint(textColor)

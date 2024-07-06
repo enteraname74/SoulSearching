@@ -1,17 +1,9 @@
 package com.github.soulsearching.domain.model.settings
 
-import com.github.soulsearching.player.domain.model.PlayerMode
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.domain.events.MusicEvent
-import com.github.soulsearching.domain.events.PlaylistEvent
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.PlayerMode
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * Implementation of the SoulSearchingSettings using the multiplatform-settings library

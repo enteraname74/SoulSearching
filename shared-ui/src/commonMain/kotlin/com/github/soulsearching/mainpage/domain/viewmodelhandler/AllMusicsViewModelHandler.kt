@@ -15,7 +15,7 @@ import com.github.soulsearching.domain.events.handlers.MusicEventHandler
 import com.github.soulsearching.domain.model.MonthMusicList
 import com.github.soulsearching.domain.model.MusicFetcher
 import com.github.soulsearching.domain.model.MusicFolder
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.utils.Utils
 import com.github.soulsearching.domain.viewmodel.handler.ViewModelHandler
@@ -33,8 +33,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.runBlocking
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 /**

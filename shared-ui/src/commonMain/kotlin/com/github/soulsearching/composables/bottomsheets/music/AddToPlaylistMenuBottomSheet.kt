@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.AppHeaderBar
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.soulsearching.composables.SouTopBar
 import com.github.soulsearching.composables.PlaylistSelectableComposable
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 
 @Composable
@@ -44,9 +44,9 @@ fun AddToPlaylistMenuBottomSheet(
                 .fillMaxSize()
                 .background(primaryColor)
                 .padding(it)
-                .padding(Constants.Spacing.medium)
+                .padding(UiConstants.Spacing.medium)
         ) {
-            AppHeaderBar(
+            SouTopBar(
                 title = strings.addToPlaylist,
                 leftAction = {
                     onDismiss()

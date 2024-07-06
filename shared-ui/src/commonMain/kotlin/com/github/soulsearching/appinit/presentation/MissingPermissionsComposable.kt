@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
-import com.github.soulsearching.composables.SoulSearchingLogo
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 
 @Composable
 fun MissingPermissionsComposable() {
@@ -26,7 +26,7 @@ fun MissingPermissionsComposable() {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                    .padding(Constants.Spacing.medium),
+                    .padding(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -44,10 +44,10 @@ fun MissingPermissionsComposable() {
                     .fillMaxSize()
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
                     .padding(
-                        top = Constants.Spacing.large,
-                        bottom = Constants.Spacing.medium,
-                        start = Constants.Spacing.medium,
-                        end = Constants.Spacing.medium
+                        top = UiConstants.Spacing.large,
+                        bottom = UiConstants.Spacing.medium,
+                        start = UiConstants.Spacing.medium,
+                        end = UiConstants.Spacing.medium
                     ),
             ) {
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {

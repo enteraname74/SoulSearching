@@ -19,9 +19,9 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
-import com.github.soulsearching.Constants
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.composables.BigPreviewComposable
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.soulsearching.mainpage.domain.model.SortDirection
 import com.github.soulsearching.mainpage.domain.model.SortType
 import java.util.UUID
@@ -51,7 +51,7 @@ fun AllElementsComposable(
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(Constants.Spacing.large)
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
         Row(
             modifier = Modifier
@@ -73,14 +73,14 @@ fun AllElementsComposable(
         }
         if (list.isNotEmpty()) {
             LazyVerticalGrid(
-                columns = GridCells.FixedSize(Constants.ImageSize.veryLarge),
+                columns = GridCells.FixedSize(UiConstants.ImageSize.veryLarge),
                 contentPadding = PaddingValues(
-                    top = Constants.Spacing.small,
-                    start = Constants.Spacing.small,
-                    end = Constants.Spacing.small,
+                    top = UiConstants.Spacing.small,
+                    start = UiConstants.Spacing.small,
+                    end = UiConstants.Spacing.small,
                     bottom = 80.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium),
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 items(

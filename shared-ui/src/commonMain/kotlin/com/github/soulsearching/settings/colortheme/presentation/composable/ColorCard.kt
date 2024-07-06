@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun ColorCard(
@@ -20,17 +20,17 @@ fun ColorCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = Constants.Spacing.large,
+    padding: Dp = UiConstants.Spacing.large,
     subComposable: @Composable (() -> Unit)
 ) {
     Card(
         modifier = Modifier
             .clickable { onClick() }
             .padding(
-                top = Constants.Spacing.large,
-                bottom = Constants.Spacing.large,
-                start = Constants.Spacing.veryLarge,
-                end = Constants.Spacing.veryLarge,
+                top = UiConstants.Spacing.large,
+                bottom = UiConstants.Spacing.large,
+                start = UiConstants.Spacing.veryLarge,
+                end = UiConstants.Spacing.veryLarge,
             )
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(

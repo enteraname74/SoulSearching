@@ -14,11 +14,11 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlayerSpacer
+import com.github.soulsearching.composables.SouTopBar
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.soulsearching.settings.presentation.composable.SettingsElement
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.settings.personalisation.presentation.SettingsPersonalisationScreen
 import com.github.soulsearching.settings.aboutpage.presentation.SettingsAboutScreen
 import com.github.soulsearching.settings.colortheme.presentation.SettingsColorThemeScreen
@@ -73,7 +73,7 @@ fun SettingsScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        AppHeaderBar(
+        SouTopBar(
             title = strings.settings,
             leftAction = finishAction
         )
@@ -111,7 +111,7 @@ fun SettingsScreenView(
                 )
             }
             item {
-                PlayerSpacer()
+                SoulPlayerSpacer()
             }
         }
     }

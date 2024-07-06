@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.composables.AppHeaderBar
-import com.github.soulsearching.composables.PlayerSpacer
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.soulsearching.composables.SouTopBar
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.settings.presentation.composable.SettingsElement
 
 @Composable
@@ -32,7 +32,7 @@ fun SettingsAboutComposable(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        AppHeaderBar(
+        SouTopBar(
             title = strings.aboutTitle,
             leftAction = finishAction
         )
@@ -58,7 +58,7 @@ fun SettingsAboutComposable(
                 )
             }
             item {
-                PlayerSpacer()
+                SoulPlayerSpacer()
             }
         }
     }

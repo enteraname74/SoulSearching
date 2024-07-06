@@ -10,14 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.composables.dialog.SoulSearchingDialog
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ fun MusicBottomSheetEvents(
     }
 
     if (isDeleteMusicDialogShown) {
-        SoulSearchingDialog(
+        SoulDialog(
             title = strings.deleteMusicDialogTitle,
             text = strings.deleteMusicDialogText,
             confirmAction = {
@@ -96,7 +96,7 @@ fun MusicBottomSheetEvents(
     }
 
     if (isRemoveFromPlaylistDialogShown) {
-        SoulSearchingDialog(
+        SoulDialog(
             title = strings.removeMusicFromPlaylistTitle,
             text = strings.removeMusicFromPlaylistText,
             confirmAction = {

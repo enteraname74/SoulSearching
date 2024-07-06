@@ -1,15 +1,15 @@
 package com.github.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
-import com.github.soulsearching.domain.events.AlbumEvent
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun DeleteAlbumDialog(
     onDeleteAlbum: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    SoulSearchingDialog(
+    SoulDialog(
         confirmAction = onDeleteAlbum,
         dismissAction =  onDismiss,
         confirmText = strings.delete,

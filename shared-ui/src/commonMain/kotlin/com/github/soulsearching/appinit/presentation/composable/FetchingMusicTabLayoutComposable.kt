@@ -10,12 +10,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import com.github.soulsearching.Constants
-import com.github.soulsearching.Drawables
-import com.github.soulsearching.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.Drawables
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.soulsearching.mainpage.domain.model.PagerScreen
-import com.github.soulsearching.strings.strings
-import com.github.soulsearching.domain.model.types.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import kotlinx.coroutines.launch
 
 
@@ -106,17 +106,17 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(end = Constants.Spacing.small)
+                    .padding(end = UiConstants.Spacing.small)
                     .composed {
                         modifier
                     },
-                horizontalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
             ) {
                 VerticalPager(
                     modifier = Modifier.weight(1F),
                     state = pagerState,
-                    pageSpacing = Constants.Spacing.veryLarge,
-                    contentPadding = PaddingValues(Constants.Spacing.veryLarge)
+                    pageSpacing = UiConstants.Spacing.veryLarge,
+                    contentPadding = PaddingValues(UiConstants.Spacing.veryLarge)
                 ) {
                     pagerScreens[it].screen()
                 }
@@ -143,17 +143,17 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
         else -> {
             Column(
                 modifier = Modifier
-                    .padding(bottom = Constants.Spacing.small)
+                    .padding(bottom = UiConstants.Spacing.small)
                     .composed {
                         modifier
                     },
-                verticalArrangement = Arrangement.spacedBy(Constants.Spacing.medium)
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
             ) {
                 HorizontalPager(
                     modifier = Modifier.weight(1F),
                     state = pagerState,
-                    pageSpacing = Constants.Spacing.veryLarge,
-                    contentPadding = PaddingValues(Constants.Spacing.veryLarge)
+                    pageSpacing = UiConstants.Spacing.veryLarge,
+                    contentPadding = PaddingValues(UiConstants.Spacing.veryLarge)
                 ) {
                     pagerScreens[it].screen()
                 }

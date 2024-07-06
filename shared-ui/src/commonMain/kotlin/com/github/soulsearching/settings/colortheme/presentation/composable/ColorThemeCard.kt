@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.soulsearching.Constants
-import com.github.soulsearching.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 
 @Composable
 fun ColorThemeCard(
@@ -18,7 +18,7 @@ fun ColorThemeCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = Constants.Spacing.large,
+    padding: Dp = UiConstants.Spacing.large,
     firstImagePath: String,
     secondImagePath: String,
 ) {

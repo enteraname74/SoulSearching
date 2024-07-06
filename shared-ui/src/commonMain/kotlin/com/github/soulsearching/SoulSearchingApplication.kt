@@ -17,11 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.appinit.presentation.FetchingMusicsComposable
-import com.github.soulsearching.colortheme.domain.model.ColorThemeManager
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel
@@ -126,7 +127,7 @@ fun SoulSearchingApplication(
                     coroutineScope.launch {
                         playerDraggableState.animateTo(
                             BottomSheetStates.MINIMISED,
-                            tween(Constants.AnimationDuration.normal)
+                            tween(UiConstants.AnimationDuration.normal)
                         )
                     }
                 }
@@ -139,7 +140,7 @@ fun SoulSearchingApplication(
 
             CrossfadeTransition(
                 navigator = navigator,
-                animationSpec = tween(Constants.AnimationDuration.normal)
+                animationSpec = tween(UiConstants.AnimationDuration.normal)
             ) { screen ->
                 screen.Content()
             }

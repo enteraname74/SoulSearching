@@ -24,13 +24,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.Constants
-import com.github.soulsearching.colortheme.domain.model.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.soulsearching.composables.MusicItemComposable
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.domain.model.types.BottomSheetStates
 import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.strings.strings
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -55,7 +54,7 @@ fun PlayerListView(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Constants.Spacing.small)
+                .padding(UiConstants.Spacing.small)
         ) {
             Button(
                 modifier = Modifier
