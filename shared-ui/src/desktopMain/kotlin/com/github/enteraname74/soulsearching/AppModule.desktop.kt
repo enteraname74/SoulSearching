@@ -1,4 +1,4 @@
-package com.github.soulsearching
+package com.github.enteraname74.soulsearching
 
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.soulsearching.domain.model.MusicFetcher

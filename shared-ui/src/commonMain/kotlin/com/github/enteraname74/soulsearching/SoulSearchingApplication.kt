@@ -1,4 +1,4 @@
-package com.github.soulsearching
+package com.github.enteraname74.soulsearching
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background

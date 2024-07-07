@@ -1,4 +1,4 @@
-package com.github.soulsearching
+package com.github.enteraname74.soulsearching
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -17,6 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdb.localAndroidModule
+import com.github.enteraname74.soulsearching.SoulSearchingApplication
+import com.github.enteraname74.soulsearching.appModule
+import com.github.enteraname74.soulsearching.commonModule
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.soulsearching.appinit.presentation.MissingPermissionsComposable
 import com.github.soulsearching.domain.viewmodel.AllMusicsViewModel

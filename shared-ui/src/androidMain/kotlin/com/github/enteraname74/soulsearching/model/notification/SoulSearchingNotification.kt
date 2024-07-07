@@ -9,7 +9,7 @@ import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import com.github.enteraname74.domain.model.Music
-import com.github.soulsearching.MainActivity
+import com.github.enteraname74.soulsearching.MainActivity
 import com.github.soulsearching.R
 import com.github.soulsearching.model.notification.receivers.DeletedNotificationIntentReceiver
 

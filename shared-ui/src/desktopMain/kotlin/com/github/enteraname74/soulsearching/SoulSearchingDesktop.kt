@@ -1,9 +1,12 @@
-package com.github.soulsearching
+package com.github.enteraname74.soulsearching
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.domainModule
 import com.github.enteraname74.localdesktop.AppDatabase
 import com.github.enteraname74.localdesktop.localDesktopModule
+import com.github.enteraname74.soulsearching.SoulSearchingApplication
+import com.github.enteraname74.soulsearching.appModule
+import com.github.enteraname74.soulsearching.commonModule
 import com.github.soulsearching.domain.di.injectElement
 import com.github.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager

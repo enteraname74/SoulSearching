@@ -1,4 +1,4 @@
-package com.github.soulsearching
+package com.github.enteraname74.soulsearching
 
 import android.content.Context
 import com.github.soulsearching.model.utils.MusicFetcherAndroidImpl
