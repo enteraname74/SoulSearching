@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain
+package com.github.enteraname74.soulsearching.domain
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

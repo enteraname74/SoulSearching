@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.viewmodel.handler
+package com.github.enteraname74.soulsearching.domain.viewmodel.handler
 
 /**
  * Interface used to identify ViewModel's handlers.

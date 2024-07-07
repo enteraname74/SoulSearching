@@ -1,12 +1,13 @@
-package com.github.soulsearching.composables.bottomsheets.artist
+package com.github.enteraname74.soulsearching.composables.bottomsheets.artist
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.domain.events.ArtistEvent
-import com.github.soulsearching.mainpage.domain.state.ArtistState
+import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetMenu
+import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

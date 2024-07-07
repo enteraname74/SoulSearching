@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.playback
+package com.github.enteraname74.soulsearching.model.playback
 
 import android.annotation.SuppressLint
 import android.app.Service
@@ -10,8 +10,8 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
-import com.github.soulsearching.model.notification.SoulSearchingNotification
-import com.github.soulsearching.model.notification.SoulSearchingNotificationBuilder
+import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
+import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotificationBuilder
 
 /**
  * Service used for the playback.

@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.playback
+package com.github.enteraname74.soulsearching.model.playback
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
@@ -10,9 +10,9 @@ import android.util.Log
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.model.player.MediaSessionManager
-import com.github.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.model.player.MediaSessionManager
+import com.github.enteraname74.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.enteraname74.domain.settings.SoulSearchingSettings
 
 /**

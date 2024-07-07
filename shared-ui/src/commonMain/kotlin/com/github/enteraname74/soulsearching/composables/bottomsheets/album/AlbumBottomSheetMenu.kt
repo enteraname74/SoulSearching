@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets.album
+package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,9 +10,9 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 

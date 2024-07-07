@@ -1,15 +1,14 @@
-package com.github.soulsearching.domain.navigation
+package com.github.enteraname74.soulsearching.domain.navigation
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 
 /**
  * Navigation host used to show the current screen.

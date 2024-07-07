@@ -1,4 +1,4 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,8 +7,8 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.coversprovider.domain.AllImageCoversViewModelHandler
-import com.github.soulsearching.domain.viewmodel.AllImageCoversViewModel
+import com.github.enteraname74.soulsearching.feature.coversprovider.domain.AllImageCoversViewModelHandler
+import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
 
 /**
  * Implementation of the AllImageCoversViewModel.

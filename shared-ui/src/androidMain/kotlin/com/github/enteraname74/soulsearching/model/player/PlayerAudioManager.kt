@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.player
+package com.github.enteraname74.soulsearching.model.player
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 
 /**
  * Manage the audio of the application.

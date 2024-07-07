@@ -1,14 +1,14 @@
-package com.github.soulsearching.model.notification.impl
+package com.github.enteraname74.soulsearching.model.notification.impl
 
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.media.session.MediaSessionCompat
 import com.github.soulsearching.R
-import com.github.soulsearching.model.notification.SoulSearchingNotification
-import com.github.soulsearching.model.notification.receivers.NextMusicNotificationReceiver
-import com.github.soulsearching.model.notification.receivers.PausePlayNotificationReceiver
-import com.github.soulsearching.model.notification.receivers.PreviousMusicNotificationReceiver
+import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
+import com.github.enteraname74.soulsearching.model.notification.receivers.NextMusicNotificationReceiver
+import com.github.enteraname74.soulsearching.model.notification.receivers.PausePlayNotificationReceiver
+import com.github.enteraname74.soulsearching.model.notification.receivers.PreviousMusicNotificationReceiver
 
 /**
  * Specification of a SoulSearchingNotification for devices below Android 13.

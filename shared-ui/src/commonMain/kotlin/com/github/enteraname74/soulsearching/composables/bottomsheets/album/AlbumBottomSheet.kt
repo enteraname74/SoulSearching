@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets.album
+package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -6,6 +6,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetMenu
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

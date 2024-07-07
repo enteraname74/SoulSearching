@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets.music
+package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.SouTopBar
-import com.github.soulsearching.composables.PlaylistSelectableComposable
+import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 

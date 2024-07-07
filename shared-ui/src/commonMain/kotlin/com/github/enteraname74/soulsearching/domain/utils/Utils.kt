@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.utils
+package com.github.enteraname74.soulsearching.domain.utils
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

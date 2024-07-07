@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.navigation
+package com.github.enteraname74.soulsearching.domain.navigation
 
 import androidx.compose.runtime.Composable
 

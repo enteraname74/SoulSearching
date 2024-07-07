@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.model
+package com.github.enteraname74.soulsearching.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music

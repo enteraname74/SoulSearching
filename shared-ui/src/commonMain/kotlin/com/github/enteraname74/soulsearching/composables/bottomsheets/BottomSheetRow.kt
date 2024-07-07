@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets
+package com.github.enteraname74.soulsearching.composables.bottomsheets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

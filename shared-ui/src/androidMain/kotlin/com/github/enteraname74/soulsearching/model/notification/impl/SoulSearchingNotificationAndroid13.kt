@@ -1,8 +1,8 @@
-package com.github.soulsearching.model.notification.impl
+package com.github.enteraname74.soulsearching.model.notification.impl
 
 import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat.Token
-import com.github.soulsearching.model.notification.SoulSearchingNotification
+import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
 
 /**
  * Specification of a SoulSearchingNotification for Android 13 and above.

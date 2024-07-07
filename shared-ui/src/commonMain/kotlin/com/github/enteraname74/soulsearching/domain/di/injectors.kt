@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.di
+package com.github.enteraname74.soulsearching.domain.di
 
 import androidx.compose.runtime.Composable
 import org.koin.compose.koinInject

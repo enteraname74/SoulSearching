@@ -1,9 +1,9 @@
-package com.github.soulsearching.model.notification.receivers
+package com.github.enteraname74.soulsearching.model.notification.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
+import com.github.enteraname74.soulsearching.model.playback.PlaybackManagerAndroidImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

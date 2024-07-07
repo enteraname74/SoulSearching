@@ -1,4 +1,4 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
@@ -8,9 +8,9 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.LyricsProvider
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.soulsearching.player.domain.PlayerViewModelHandler
-import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.domain.viewmodel.PlayerViewModel
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModelHandler
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 
 /**
  * Implementation of the PlayerViewModel.

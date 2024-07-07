@@ -1,11 +1,11 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.soulsearching.domain.viewmodel.AllAlbumsViewModel
+import com.github.enteraname74.soulsearching.domain.viewmodel.AllAlbumsViewModel
 import com.github.enteraname74.domain.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
 
 /**
  * Implementation of the AllAlbumsViewModel.

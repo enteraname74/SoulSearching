@@ -1,6 +1,4 @@
-package com.github.soulsearching.viewmodel
-
-import com.github.soulsearching.domain.viewmodel.handler.NavigationViewModelHandler
+package com.github.enteraname74.soulsearching.viewmodel
 
 //class NavigationViewModelAndroidImpl: NavigationViewModel {
 //    override val handler: NavigationViewModelHandler = NavigationViewModelHandler()

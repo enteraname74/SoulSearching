@@ -1,12 +1,12 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.domain.viewmodel.SelectedMonthViewModel
-import com.github.soulsearching.elementpage.monthpage.domain.SelectedMonthViewModelHandler
-import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.domain.viewmodel.SelectedMonthViewModel
+import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthViewModelHandler
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 
 /**
  * Implementation of the SelectedMonthViewModel for Desktop

@@ -1,4 +1,4 @@
-package com.github.soulsearching.ui.theme
+package com.github.enteraname74.soulsearching.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -6,17 +6,8 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import com.github.soulsearching.domain.Typography
-import com.github.enteraname74.soulsearching.coreui.theme.color.primaryColorDark
-import com.github.enteraname74.soulsearching.coreui.theme.color.primaryColorLight
-import com.github.enteraname74.soulsearching.coreui.theme.color.secondaryColorDark
-import com.github.enteraname74.soulsearching.coreui.theme.color.secondaryColorLight
-import com.github.enteraname74.soulsearching.coreui.theme.color.subTextColorDark
-import com.github.enteraname74.soulsearching.coreui.theme.color.subTextColorLight
-import com.github.enteraname74.soulsearching.coreui.theme.color.textColorDark
-import com.github.enteraname74.soulsearching.coreui.theme.color.textColorLight
-import com.github.enteraname74.soulsearching.coreui.theme.color.thirdColorDark
-import com.github.enteraname74.soulsearching.coreui.theme.color.thirdColorLight
+import com.github.enteraname74.soulsearching.coreui.theme.color.*
+import com.github.enteraname74.soulsearching.domain.Typography
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(

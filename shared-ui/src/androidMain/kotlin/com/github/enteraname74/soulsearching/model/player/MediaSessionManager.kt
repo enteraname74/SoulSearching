@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.player
+package com.github.enteraname74.soulsearching.model.player
 
 import android.content.Context
 import android.content.Intent
@@ -12,8 +12,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.soulsearching.R
-import com.github.soulsearching.model.playback.PlaybackManagerAndroidImpl
-import com.github.soulsearching.model.utils.AndroidUtils
+import com.github.enteraname74.soulsearching.model.playback.PlaybackManagerAndroidImpl
+import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 
 /**
  * Manage media session related things.

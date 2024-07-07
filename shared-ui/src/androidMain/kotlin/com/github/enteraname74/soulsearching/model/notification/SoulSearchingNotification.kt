@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.notification
+package com.github.enteraname74.soulsearching.model.notification
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.MainActivity
 import com.github.soulsearching.R
-import com.github.soulsearching.model.notification.receivers.DeletedNotificationIntentReceiver
+import com.github.enteraname74.soulsearching.model.notification.receivers.DeletedNotificationIntentReceiver
 
 /**
  * Notification used for the playback by the service.

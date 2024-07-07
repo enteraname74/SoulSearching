@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.model.types
+package com.github.enteraname74.soulsearching.domain.model.types
 
 /**
  * All possibilities for displaying a bottom sheet or a draggable view.

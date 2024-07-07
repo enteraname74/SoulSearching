@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets.music
+package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
@@ -13,10 +13,10 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.model.types.BottomSheetStates
-import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

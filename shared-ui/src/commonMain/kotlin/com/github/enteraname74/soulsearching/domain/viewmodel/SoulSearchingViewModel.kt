@@ -1,26 +1,26 @@
-package com.github.soulsearching.domain.viewmodel
+package com.github.enteraname74.soulsearching.domain.viewmodel
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.github.soulsearching.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModelHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllArtistsViewModelHandler
-import com.github.soulsearching.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
-import com.github.soulsearching.coversprovider.domain.AllImageCoversViewModelHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllPlaylistsViewModelHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.AllQuickAccessViewModelHandler
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.MainActivityViewModelHandler
-import com.github.soulsearching.modifyelement.modifyalbum.domain.ModifyAlbumViewModelHandler
-import com.github.soulsearching.modifyelement.modifyartist.domain.ModifyArtistViewModelHandler
-import com.github.soulsearching.modifyelement.modifymusic.domain.ModifyMusicViewModelHandler
-import com.github.soulsearching.modifyelement.modifyplaylist.domain.ModifyPlaylistViewModelHandler
-import com.github.soulsearching.domain.viewmodel.handler.NavigationViewModelHandler
-import com.github.soulsearching.player.domain.PlayerViewModelHandler
-import com.github.soulsearching.elementpage.albumpage.domain.SelectedAlbumViewModelHandler
-import com.github.soulsearching.elementpage.artistpage.domain.SelectedArtistViewModelHandler
-import com.github.soulsearching.elementpage.folderpage.domain.SelectedFolderViewModelHandler
-import com.github.soulsearching.elementpage.monthpage.domain.SelectedMonthViewModelHandler
-import com.github.soulsearching.elementpage.playlistpage.domain.SelectedPlaylistViewModelHandler
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllAlbumsViewModeHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllArtistsViewModelHandler
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
+import com.github.enteraname74.soulsearching.feature.coversprovider.domain.AllImageCoversViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllPlaylistsViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllQuickAccessViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.MainActivityViewModelHandler
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumViewModelHandler
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.domain.ModifyArtistViewModelHandler
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicViewModelHandler
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.domain.ModifyPlaylistViewModelHandler
+import com.github.enteraname74.soulsearching.domain.viewmodel.handler.NavigationViewModelHandler
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModelHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModelHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistViewModelHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderViewModelHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthViewModelHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistViewModelHandler
 
 ///**
 // * A ViewModel is represented by an Interface.

@@ -1,12 +1,13 @@
-package com.github.soulsearching.composables.bottomsheets.album
+package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheet
 import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.soulsearching.composables.dialog.DeleteAlbumDialog
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

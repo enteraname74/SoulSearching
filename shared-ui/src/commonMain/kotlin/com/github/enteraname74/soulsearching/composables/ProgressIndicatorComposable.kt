@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables
+package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

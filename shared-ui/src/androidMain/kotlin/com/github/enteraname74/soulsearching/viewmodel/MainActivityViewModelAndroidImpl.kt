@@ -1,9 +1,9 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.github.soulsearching.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.domain.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.domain.viewmodelhandler.MainActivityViewModelHandler
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.MainActivityViewModelHandler
 
 /**
  * Implementation of the MainActivityViewModel.

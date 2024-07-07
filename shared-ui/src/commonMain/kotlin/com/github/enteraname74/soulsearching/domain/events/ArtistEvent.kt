@@ -1,6 +1,5 @@
-package com.github.soulsearching.domain.events
+package com.github.enteraname74.soulsearching.domain.events
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import java.util.UUID
 

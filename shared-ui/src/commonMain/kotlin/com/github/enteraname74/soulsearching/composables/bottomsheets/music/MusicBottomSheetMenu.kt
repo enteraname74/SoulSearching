@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables.bottomsheets.music
+package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.soulsearching.composables.bottomsheets.BottomSheetRow
-import com.github.soulsearching.domain.di.injectElement
-import com.github.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.soulsearching.player.domain.model.PlaybackManager
-import com.github.soulsearching.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable

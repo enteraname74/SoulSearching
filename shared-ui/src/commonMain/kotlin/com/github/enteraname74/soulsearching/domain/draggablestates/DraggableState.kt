@@ -1,4 +1,4 @@
-//package com.github.soulsearching.draggablestates
+package com.github.enteraname74.soulsearching.domain.draggablestates//package com.github.soulsearching.draggablestates
 //
 //import androidx.compose.animation.core.tween
 //import androidx.compose.foundation.ExperimentalFoundationApi

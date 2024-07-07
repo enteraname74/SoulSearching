@@ -1,4 +1,4 @@
-package com.github.soulsearching.composables
+package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.model.settings
+package com.github.enteraname74.soulsearching.domain.model.settings
 
 import com.github.enteraname74.domain.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.PlayerMode

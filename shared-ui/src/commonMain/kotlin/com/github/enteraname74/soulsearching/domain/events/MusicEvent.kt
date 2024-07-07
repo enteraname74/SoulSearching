@@ -1,4 +1,4 @@
-package com.github.soulsearching.domain.events
+package com.github.enteraname74.soulsearching.domain.events
 
 import com.github.enteraname74.domain.model.Music
 import java.util.UUID

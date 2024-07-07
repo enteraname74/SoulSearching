@@ -1,4 +1,4 @@
-package com.github.soulsearching.model.utils
+package com.github.enteraname74.soulsearching.model.utils
 
 import android.content.ContentResolver
 import android.content.Context

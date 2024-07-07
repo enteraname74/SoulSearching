@@ -1,10 +1,10 @@
-package com.github.soulsearching.viewmodel
+package com.github.enteraname74.soulsearching.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.github.enteraname74.domain.repository.FolderRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
-import com.github.soulsearching.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
+import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFolderViewModelHandler
 
 /**
  * Implementation of the SettingsAllFoldersViewModel.

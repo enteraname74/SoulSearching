@@ -1,16 +1,16 @@
-package com.github.soulsearching.domain.events.handlers
+package com.github.enteraname74.soulsearching.domain.events.handlers
 
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.soulsearching.domain.events.PlaylistEvent
+import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.domain.settings.SoulSearchingSettings
-import com.github.soulsearching.mainpage.domain.model.SortDirection
-import com.github.soulsearching.mainpage.domain.model.SortType
-import com.github.soulsearching.mainpage.domain.state.PlaylistState
-import com.github.soulsearching.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
