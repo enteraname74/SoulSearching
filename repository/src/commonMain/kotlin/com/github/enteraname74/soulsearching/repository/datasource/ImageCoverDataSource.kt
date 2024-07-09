@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.datasource
+package com.github.enteraname74.soulsearching.repository.datasource
 import com.github.enteraname74.domain.model.ImageCover
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -10,7 +10,7 @@ interface ImageCoverDataSource {
     /**
      * Inserts or updates an ImageCover
      */
-    suspend fun insertImageCover(imageCover: ImageCover)
+    suspend fun upsert(imageCover: ImageCover)
 
     /**
      * Deletes an ImageCover.
@@ -30,5 +30,5 @@ interface ImageCoverDataSource {
     /**
      * Retrieves a flow of all ImageCover.
      */
-    fun getAllCoversAsFlow() : Flow<List<ImageCover>>
+    fun getAll() : Flow<List<ImageCover>>
 }

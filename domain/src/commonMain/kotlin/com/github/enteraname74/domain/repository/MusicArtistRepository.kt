@@ -1,54 +1,33 @@
 package com.github.enteraname74.domain.repository
 
-import com.github.enteraname74.domain.datasource.MusicArtistDataSource
 import com.github.enteraname74.domain.model.MusicArtist
-import java.util.UUID
+import java.util.*
 
-/**
- * Repository of a MusicArtist.
- */
-class MusicArtistRepository(
-    private val musicArtistDataSource: MusicArtistDataSource
-) {
+interface MusicArtistRepository {
     /**
      * Inserts or updates a MusicArtist.
      * It is the equivalent of adding a Music to an Artist.
      */
-    suspend fun insertMusicIntoArtist(musicArtist: MusicArtist) =
-        musicArtistDataSource.insertMusicIntoArtist(
-            musicArtist = musicArtist
-        )
+    suspend fun insertMusicIntoArtist(musicArtist: MusicArtist)
 
     /**
      * Change the Artist of a Music.
      */
-    suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
-        musicArtistDataSource.updateArtistOfMusic(
-            musicId = musicId,
-            newArtistId = newArtistId
-        )
+    suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID)
 
     /**
      * Deletes a MusicArtist.
      * It is the equivalent of removing a Music from an Artist.
      */
-    suspend fun deleteMusicFromArtist(musicId: UUID) = musicArtistDataSource.deleteMusicFromArtist(
-        musicId = musicId
-    )
+    suspend fun deleteMusicFromArtist(musicId: UUID)
 
     /**
-     * Tries to retrieves the id of an Artist of a Music from its id.
+     * Tries to retrieve the id of an Artist of a Music from its id.
      */
-    suspend fun getArtistIdFromMusicId(musicId: UUID): UUID? =
-        musicArtistDataSource.getArtistIdFromMusicId(
-            musicId = musicId
-        )
+    suspend fun getArtistIdFromMusicId(musicId: UUID): UUID?
 
     /**
      * Get the number of musics from an Artist.
      */
-    suspend fun getNumberOfMusicsFromArtist(artistId: UUID): Int =
-        musicArtistDataSource.getNumberOfMusicsFromArtist(
-            artistId = artistId
-        )
+    suspend fun getNumberOfMusicsFromArtist(artistId: UUID): Int
 }

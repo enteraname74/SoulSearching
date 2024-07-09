@@ -26,7 +26,7 @@ class AllQuickAccessViewModelHandler(
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), ArrayList())
     private var _playlists = playlistRepository.getAllPlaylistsFromQuickAccessAsFlow()
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), ArrayList())
-    private var _albums = albumRepository.getAllAlbumWithArtistFromQuickAccessAsFlow()
+    private var _albums = albumRepository.getAllAlbumWithArtistFromQuickAccess()
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), ArrayList())
     private var _artists = artistRepository.getAllArtistWithMusicsFromQuickAccessAsFlow()
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(), ArrayList())

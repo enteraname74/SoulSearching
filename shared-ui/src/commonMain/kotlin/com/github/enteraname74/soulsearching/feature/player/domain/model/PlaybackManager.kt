@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -319,7 +319,7 @@ abstract class PlaybackManager(
     private fun savePlayedList() {
         playedListSavingJob?.cancel()
         playedListSavingJob = CoroutineScope(Dispatchers.IO).launch {
-            playerMusicRepository.deleteAllPlayerMusic()
+            playerMusicRepository.deleteAll()
             for (id in playedList.map { it.musicId }) {
                 playerMusicRepository.insertPlayerMusic(
                     playerMusic = PlayerMusic(
@@ -438,7 +438,7 @@ abstract class PlaybackManager(
      */
     private fun resetSavePlayedListInDb() {
         CoroutineScope(Dispatchers.IO).launch {
-            playerMusicRepository.deleteAllPlayerMusic()
+            playerMusicRepository.deleteAll()
         }
         settings.saveCurrentMusicInformation(
             currentMusicIndex = -1,

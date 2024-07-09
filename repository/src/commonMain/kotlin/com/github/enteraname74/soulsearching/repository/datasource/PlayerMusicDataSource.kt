@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.datasource
+package com.github.enteraname74.soulsearching.repository.datasource
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.PlayerWithMusicItem
 import kotlinx.coroutines.flow.Flow
@@ -11,30 +11,25 @@ interface PlayerMusicDataSource {
     /**
      * Inserts or updates a PlayerMusic.
      */
-    suspend fun insertPlayerMusic(playerMusic: PlayerMusic)
+    suspend fun upsert(playerMusic: PlayerMusic)
 
     /**
      * Deletes a PlayerMusic from a given musicId.
      */
-    suspend fun deleteMusicFromPlayerList(musicId: UUID)
+    suspend fun delete(musicId: UUID)
 
     /**
      * Deletes all PlayerMusic.
      */
-    suspend fun deleteAllPlayerMusic()
+    suspend fun deleteAll()
 
     /**
      * Inserts a list of PlayerMusic.
      */
-    suspend fun insertAllPlayerMusics(playlist: List<PlayerMusic>)
-
-    /**
-     * Retrieves all PlayerWithMusicItem.
-     */
-    suspend fun getAllPlayerMusics(): List<PlayerWithMusicItem>
+    suspend fun upsertAll(playlist: List<PlayerMusic>)
 
     /**
      * Retrieves a flow of all PlayerWithMusicItem.
      */
-    fun getAllPlayerMusicsAsFlow(): Flow<List<PlayerWithMusicItem>>
+    fun getAll(): Flow<List<PlayerWithMusicItem>>
 }

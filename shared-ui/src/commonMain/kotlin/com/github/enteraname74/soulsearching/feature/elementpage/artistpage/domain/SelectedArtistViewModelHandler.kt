@@ -136,7 +136,7 @@ class SelectedArtistViewModelHandler(
                 coroutineScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
             )
 
-        artistAlbums = albumRepository.getAlbumsOfArtistAsFlow(
+        artistAlbums = albumRepository.getAlbumsOfArtist(
             artistId = artistId
         ).stateIn(
             coroutineScope, SharingStarted.WhileSubscribed(), emptyList()

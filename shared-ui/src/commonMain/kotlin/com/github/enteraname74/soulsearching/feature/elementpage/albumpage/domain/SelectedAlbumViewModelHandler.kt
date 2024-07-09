@@ -79,7 +79,7 @@ class SelectedAlbumViewModelHandler(
      */
     private fun setSelectedAlbum(albumId: UUID) {
         _selectedAlbumWithMusics = albumRepository
-            .getAlbumWithMusicsAsFlow(albumId = albumId)
+            .getAlbumWithMusics(albumId = albumId)
             .stateIn(
                 coroutineScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
             )

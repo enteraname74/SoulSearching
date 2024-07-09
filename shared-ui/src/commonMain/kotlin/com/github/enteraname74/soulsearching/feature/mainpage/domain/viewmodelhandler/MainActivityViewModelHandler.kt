@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelh
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 
 /**

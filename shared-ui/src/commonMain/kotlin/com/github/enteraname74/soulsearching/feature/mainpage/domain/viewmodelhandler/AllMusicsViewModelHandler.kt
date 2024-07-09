@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.domain.events.handlers.MusicEventHa
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
 import com.github.enteraname74.soulsearching.domain.model.MusicFolder
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler

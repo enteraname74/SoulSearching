@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.model.settings
 
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.domain.model.PlayerMode
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get

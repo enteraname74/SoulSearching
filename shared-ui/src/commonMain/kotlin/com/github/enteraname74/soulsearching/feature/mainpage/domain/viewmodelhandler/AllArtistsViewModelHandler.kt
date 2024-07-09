@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType

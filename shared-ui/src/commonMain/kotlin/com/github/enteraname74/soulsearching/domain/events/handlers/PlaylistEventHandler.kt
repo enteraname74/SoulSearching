@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState

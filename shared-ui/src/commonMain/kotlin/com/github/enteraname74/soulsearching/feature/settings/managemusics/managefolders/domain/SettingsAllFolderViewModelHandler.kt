@@ -33,7 +33,7 @@ open class SettingsAllFolderViewModelHandler(
                     return
                 }
                 CoroutineScope(Dispatchers.IO).launch {
-                    val folders = folderRepository.getAllFolders()
+                    val folders = folderRepository.getAll()
                     _state.update {
                         it.copy(
                             folders = folders as ArrayList<Folder>,

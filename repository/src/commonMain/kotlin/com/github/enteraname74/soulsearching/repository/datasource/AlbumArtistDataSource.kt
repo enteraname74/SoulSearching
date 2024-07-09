@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.datasource
+package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.AlbumArtist
 import java.util.UUID
@@ -11,15 +11,15 @@ interface AlbumArtistDataSource {
     /**
      * Insert or updates an AlbumArtist.
      */
-    suspend fun insertAlbumIntoArtist(albumArtist: AlbumArtist)
+    suspend fun upsert(albumArtist: AlbumArtist)
 
     /**
      * Update the artist of an album.
      */
-    suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID)
+    suspend fun update(albumId: UUID, newArtistId: UUID)
 
     /**
      * Delete an album from an artist.
      */
-    suspend fun deleteAlbumFromArtist(albumId: UUID)
+    suspend fun delete(albumId: UUID)
 }

@@ -68,11 +68,11 @@ val domainModule = module {
     }
     single {
         CheckAndDeleteVerification(
-            albumArtistDataSource = get(),
-            artistDataSource = get(),
-            musicArtistDataSource = get(),
-            musicAlbumDataSource = get(),
-            albumDataSource = get()
+            albumArtistRepository = get(),
+            artistRepository = get(),
+            musicArtistRepository = get(),
+            musicAlbumRepository = get(),
+            albumRepository = get()
         )
     }
     single {

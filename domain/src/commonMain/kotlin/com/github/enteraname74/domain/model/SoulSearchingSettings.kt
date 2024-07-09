@@ -1,6 +1,4 @@
-package com.github.enteraname74.domain.settings
-
-import com.github.enteraname74.domain.model.PlayerMode
+package com.github.enteraname74.domain.model
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.

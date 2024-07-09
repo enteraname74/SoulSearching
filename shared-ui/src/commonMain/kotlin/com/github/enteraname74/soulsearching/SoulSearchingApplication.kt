@@ -22,7 +22,7 @@ import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsCompo
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel

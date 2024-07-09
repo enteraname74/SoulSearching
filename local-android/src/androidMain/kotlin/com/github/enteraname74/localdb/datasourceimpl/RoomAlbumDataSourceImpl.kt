@@ -153,23 +153,4 @@ internal class RoomAlbumDataSourceImpl(
             albumId = albumId
         )
     }
-
-    override suspend fun getNumberOfAlbumsWithCoverId(coverId: UUID): Int {
-        return appDatabase.albumDao.getNumberOfAlbumsWithCoverId(
-            coverId = coverId
-        )
-    }
-
-    override suspend fun getNbPlayedOfAlbum(albumId: UUID): Int {
-        return appDatabase.albumDao.getNbPlayedOfAlbum(
-            albumId = albumId
-        ) ?: 0
-    }
-
-    override suspend fun updateNbPlayed(newNbPlayed: Int, albumId: UUID) {
-        appDatabase.albumDao.updateNbPlayed(
-            newNbPlayed = newNbPlayed,
-            albumId = albumId
-        )
-    }
 }

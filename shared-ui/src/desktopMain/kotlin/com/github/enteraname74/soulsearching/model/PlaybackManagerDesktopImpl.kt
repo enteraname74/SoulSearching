@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.model
 
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.SoulSearchingPlayer
 

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.palette.graphics.Palette
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 
 /**
  * Manage the color theme of the application.

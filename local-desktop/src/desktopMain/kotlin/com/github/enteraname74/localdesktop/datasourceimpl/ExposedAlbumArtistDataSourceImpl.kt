@@ -14,17 +14,17 @@ import java.util.UUID
 internal class ExposedAlbumArtistDataSourceImpl(
     private val albumArtistDao: AlbumArtistDao
 ) : AlbumArtistDataSource {
-    override suspend fun insertAlbumIntoArtist(albumArtist: AlbumArtist) =
+    override suspend fun insert(albumArtist: AlbumArtist) =
         albumArtistDao.insertAlbumIntoArtist(
             albumArtist = albumArtist
         )
 
-    override suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID) =
+    override suspend fun update(albumId: UUID, newArtistId: UUID) =
         albumArtistDao.updateArtistOfAlbum(
             albumId = albumId,
             newArtistId = newArtistId
         )
 
-    override suspend fun deleteAlbumFromArtist(albumId: UUID) =
+    override suspend fun delete(albumId: UUID) =
         albumArtistDao.deleteAlbumFromArtist(albumId = albumId)
 }

@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllArtistsViewModel
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllArtistsViewModelHandler
 
 /**

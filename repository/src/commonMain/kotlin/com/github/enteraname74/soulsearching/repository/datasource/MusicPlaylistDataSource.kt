@@ -1,4 +1,4 @@
-package com.github.enteraname74.domain.datasource
+package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.MusicPlaylist
 import java.util.UUID

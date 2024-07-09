@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
 import com.github.enteraname74.soulsearching.model.MusicFetcherDesktopImpl

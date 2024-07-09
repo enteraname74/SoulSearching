@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching
 
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
-import com.github.enteraname74.domain.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.model.MusicFetcherDesktopImpl
 import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
