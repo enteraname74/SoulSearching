@@ -1,7 +1,7 @@
-package com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation.composable.SettingsAboutComposable
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.composable.SettingsAboutComposable
 
 @Composable
 actual fun SettingsAboutScreenView(

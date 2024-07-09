@@ -25,12 +25,7 @@ interface MusicArtistDataSource {
     suspend fun deleteMusicFromArtist(musicId: UUID)
 
     /**
-     * Tries to retrieves the id of an Artist of a Music from its id.
+     * Tries to retrieve the id of an Artist of a Music from its id.
      */
     suspend fun getArtistIdFromMusicId(musicId: UUID) : UUID?
-
-    /**
-     * Get the number of musics from an Artist.
-     */
-    suspend fun getNumberOfMusicsFromArtist(artistId : UUID) : Int
 }

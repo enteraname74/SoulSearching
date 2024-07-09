@@ -54,7 +54,7 @@ class ArtistRepositoryImpl(
             val newMusicInformation = music.copy(
                 artist = newArtistName
             )
-            musicDataSource.insertMusic(
+            musicDataSource.upsert(
                 newMusicInformation
             )
             musicFileUpdater.updateMusic(
@@ -68,7 +68,7 @@ class ArtistRepositoryImpl(
      * Redirect the albums of an artist with the same name to the correct artist id.
      */
     private suspend fun redirectAlbumsToCorrectArtist(artist: Artist) {
-        val legacyAlbumsOfArtist = albumDataSource.getAllAlbumsWithMusics().first().filter {
+        val legacyAlbumsOfArtist = albumDataSource.getAllAlbumWithMusics().first().filter {
             it.artist!!.artistName == artist.artistName
         }
 

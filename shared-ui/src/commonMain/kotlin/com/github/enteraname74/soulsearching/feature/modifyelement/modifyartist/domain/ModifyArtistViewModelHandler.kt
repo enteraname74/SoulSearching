@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.ImageCoverRepository
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

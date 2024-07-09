@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation.composable
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 
 @Composable
@@ -32,7 +32,7 @@ fun SettingsAboutComposable(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        SouTopBar(
+        SoulTopBar(
             title = strings.aboutTitle,
             leftAction = finishAction
         )

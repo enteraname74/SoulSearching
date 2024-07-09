@@ -15,7 +15,7 @@ interface ImageCoverDataSource {
     /**
      * Deletes an ImageCover.
      */
-    suspend fun deleteImageCover(imageCover: ImageCover)
+    suspend fun delete(imageCover: ImageCover)
 
     /**
      * Deletes an ImageCover from its id.

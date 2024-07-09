@@ -72,14 +72,14 @@ class MusicRepositoryImpl(
         ) ?: return null
         return artistDataSource.getFromId(
             artistId = artistId
-        )
+        ).first()
     }
 
     /**
      * Check if a music has already been saved.
      */
     private suspend fun isMusicAlreadySaved(music: Music): Boolean =
-        musicDataSource.getMusicFromPath(music.path) != null
+        musicDataSource.getFromPath(music.path) != null
 
 
     private suspend fun saveMusicAndCreateMissingArtistAndAlbum(
@@ -99,7 +99,7 @@ class MusicRepositoryImpl(
             )
         }
 
-        albumDataSource.insert(
+        albumDataSource.upsert(
             Album(
                 coverId = if (musicCover != null) coverId else null,
                 albumId = albumId,
@@ -128,7 +128,7 @@ class MusicRepositoryImpl(
         // Si la musique a déjà été enregistrée, on ne fait rien :
         if (isMusicAlreadySaved(music = music)) return
 
-        val correspondingArtist = artistDataSource.getArtistFromInfo(
+        val correspondingArtist = artistDataSource.getFromName(
             artistName = music.artist
         )
         // Si l'artiste existe, on regarde si on trouve un album correspondant :
@@ -190,7 +190,7 @@ class MusicRepositoryImpl(
                 }
             }
         }
-        musicDataSource.insertMusic(music)
+        musicDataSource.upsert(music)
         folderDataSource.upsert(
             Folder(
                 folderPath = music.folder
@@ -231,9 +231,9 @@ class MusicRepositoryImpl(
         newMusicInformation: Music
     ) {
         if (legacyMusic.artist != newMusicInformation.artist) {
-            val legacyArtist = artistDataSource.getArtistFromInfo(artistName = legacyMusic.artist)
+            val legacyArtist = artistDataSource.getFromName(artistName = legacyMusic.artist)
             var newArtist =
-                artistDataSource.getArtistFromInfo(artistName = newMusicInformation.artist.trim())
+                artistDataSource.getFromName(artistName = newMusicInformation.artist.trim())
 
             // It's a new artist, we need to create it.
             if (newArtist == null) {
@@ -272,7 +272,7 @@ class MusicRepositoryImpl(
             }
         }
         // We update the cover of the artist and album of the music.
-        val artist = artistDataSource.getArtistFromInfo(
+        val artist = artistDataSource.getFromName(
             newMusicInformation.artist
         )
         val album = albumDataSource.getCorrespondingAlbum(
@@ -291,7 +291,7 @@ class MusicRepositoryImpl(
                 albumDataSource.updateAlbumCover(musicCoverId, album.albumId)
             }
         }
-        musicDataSource.insertMusic(newMusicInformation)
+        musicDataSource.upsert(newMusicInformation)
 
         // We only set a new cover if the previous one has been changed.
         val musicCover: ImageBitmap? = if (legacyMusic.coverId != newMusicInformation.coverId) {
@@ -326,7 +326,7 @@ class MusicRepositoryImpl(
                 albumName = newAlbumName,
                 coverId = legacyMusic.coverId
             )
-            albumDataSource.insert(album = newMusicAlbum)
+            albumDataSource.upsert(album = newMusicAlbum)
 
             // We link the new album to the music's artist.
             albumArtistDataSource.upsert(

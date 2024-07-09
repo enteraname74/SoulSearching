@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi

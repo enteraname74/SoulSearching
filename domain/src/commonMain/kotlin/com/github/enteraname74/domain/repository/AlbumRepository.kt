@@ -25,7 +25,7 @@ interface AlbumRepository {
     /**
      * Inserts a new Album.
      */
-    suspend fun insert(album: Album)
+    suspend fun upsert(album: Album)
 
     /**
      * Retrieves all Albums from an Artist as a flow.
@@ -50,7 +50,7 @@ interface AlbumRepository {
     /**
      * Retrieves a flow of all AlbumsWithMusics.
      */
-    fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>>
+    fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves all AlbumsWithArtist.

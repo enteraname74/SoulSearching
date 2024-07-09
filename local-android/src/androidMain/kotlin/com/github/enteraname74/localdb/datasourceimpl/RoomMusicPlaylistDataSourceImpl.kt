@@ -1,11 +1,11 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.datasource.MusicPlaylistDataSource
+import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusicPlaylist
 import com.github.enteraname74.localdb.model.toRoomMusicPlaylist
-import com.github.enteraname74.domain.model.MusicPlaylist
-import java.util.UUID
+import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
+import java.util.*
 
 /**
  * Implementation of the MusicPlaylistDataSource with Room's DAO.

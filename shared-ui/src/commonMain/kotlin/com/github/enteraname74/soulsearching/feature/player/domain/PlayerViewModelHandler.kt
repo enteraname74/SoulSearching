@@ -8,11 +8,9 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.enteraname74.domain.util.LyricsProvider
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.domain.model.PlayerMode

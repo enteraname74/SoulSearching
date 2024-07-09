@@ -41,9 +41,4 @@ class MusicAlbumRepositoryImpl(
         musicAlbumDataSource.getAlbumIdFromMusicId(
             musicId = musicId
         )
-
-    override suspend fun getNumberOfMusicsFromAlbum(albumId: UUID): Int =
-        musicAlbumDataSource.getNumberOfMusicsFromAlbum(
-            albumId = albumId
-        )
 }

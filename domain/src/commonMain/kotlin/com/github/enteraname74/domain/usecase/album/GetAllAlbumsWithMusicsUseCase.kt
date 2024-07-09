@@ -8,5 +8,5 @@ class GetAllAlbumsWithMusicsUseCase(
     private val albumRepository: AlbumRepository,
 ) {
     operator fun invoke(): Flow<List<AlbumWithMusics>> =
-        albumRepository.getAllAlbumsWithMusics()
+        albumRepository.getAllAlbumWithMusics()
 }

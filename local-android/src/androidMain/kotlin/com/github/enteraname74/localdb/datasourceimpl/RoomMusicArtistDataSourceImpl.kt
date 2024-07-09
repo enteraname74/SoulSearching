@@ -1,10 +1,10 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.datasource.MusicArtistDataSource
+import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomMusicArtist
-import com.github.enteraname74.domain.model.MusicArtist
-import java.util.UUID
+import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
+import java.util.*
 
 /**
  * Implementation of the MusicArtistDataSource with Room's DAO.
@@ -34,12 +34,6 @@ internal class RoomMusicArtistDataSourceImpl(
     override suspend fun getArtistIdFromMusicId(musicId: UUID): UUID? {
         return appDatabase.musicArtistDao.getArtistIdFromMusicId(
             musicId = musicId
-        )
-    }
-
-    override suspend fun getNumberOfMusicsFromArtist(artistId: UUID): Int {
-        return appDatabase.musicArtistDao.getNumberOfMusicsFromArtist(
-            artistId = artistId
         )
     }
 }

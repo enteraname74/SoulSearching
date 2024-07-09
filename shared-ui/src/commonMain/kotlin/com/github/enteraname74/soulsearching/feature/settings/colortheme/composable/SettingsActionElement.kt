@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.colortheme.presentation.composable
+package com.github.enteraname74.soulsearching.feature.settings.colortheme.composable
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.coversprovider.domain
+package com.github.enteraname74.soulsearching.feature.coversprovider
 
 import com.github.enteraname74.domain.model.ImageCover
 

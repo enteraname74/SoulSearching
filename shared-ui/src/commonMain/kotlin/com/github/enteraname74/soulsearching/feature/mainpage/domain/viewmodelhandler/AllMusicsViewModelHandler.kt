@@ -18,7 +18,6 @@ import com.github.enteraname74.soulsearching.domain.model.MusicFolder
 import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.utils.Utils
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType

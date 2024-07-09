@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.colortheme.presentation
+package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,15 +11,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.Drawables
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.presentation.composable.ColorThemeCard
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.presentation.composable.PersonalizedColorThemeCard
-import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 
 /**
  * Represent the view of the color theme screen.
@@ -48,7 +48,7 @@ fun SettingsColorThemeScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        SouTopBar(
+        SoulTopBar(
             title = strings.colorThemeTitle,
             leftAction = finishAction
         )

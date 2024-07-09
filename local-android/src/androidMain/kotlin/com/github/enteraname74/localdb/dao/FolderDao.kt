@@ -13,17 +13,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 internal interface FolderDao {
     @Upsert
-    suspend fun insertFolder(roomFolder : RoomFolder)
+    suspend fun upsert(roomFolder : RoomFolder)
 
     @Delete
-    suspend fun deleteFolder(roomFolder: RoomFolder)
+    suspend fun delete(roomFolder: RoomFolder)
 
     @Query("SELECT * FROM RoomFolder")
-    fun getAllFoldersAsFlow(): Flow<List<RoomFolder>>
-
-    @Query("SELECT * FROM RoomFolder")
-    suspend fun getAllFolders(): List<RoomFolder>
-
-    @Query("SELECT folderPath FROM RoomFolder WHERE isSelected = 0")
-    suspend fun getAllHiddenFoldersPaths(): List<String>
+    fun getAll(): Flow<List<RoomFolder>>
 }

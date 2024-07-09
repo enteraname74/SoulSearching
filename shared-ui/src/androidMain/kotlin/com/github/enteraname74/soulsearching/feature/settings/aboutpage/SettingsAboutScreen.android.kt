@@ -1,10 +1,10 @@
-package com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.github.soulsearching.BuildConfig
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation.composable.SettingsAboutComposable
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.composable.SettingsAboutComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable

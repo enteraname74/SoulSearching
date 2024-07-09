@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.viewmodel.AllAlbumsViewModelAndroid
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllArtistsViewModel
 import com.github.enteraname74.soulsearching.viewmodel.AllArtistsViewModelAndroidImpl
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.enteraname74.soulsearching.viewmodel.AllImageCoversViewModelAndroidImpl
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel
 import com.github.enteraname74.soulsearching.viewmodel.AllMusicsViewModelAndroidImpl
 import com.github.enteraname74.soulsearching.domain.viewmodel.AllPlaylistsViewModel
@@ -78,15 +77,6 @@ actual val appModule = module {
         SettingsAllFoldersViewModelAndroidImpl(
             folderRepository = get(),
             musicRepository = get()
-        )
-    }
-    single<AllImageCoversViewModel> {
-        AllImageCoversViewModelAndroidImpl(
-            imageCoverRepository = get(),
-            musicRepository = get(),
-            albumRepository = get(),
-            artistRepository = get(),
-            playlistRepository = get()
         )
     }
     single<AllMusicsViewModel> {

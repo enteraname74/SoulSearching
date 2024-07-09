@@ -7,7 +7,7 @@ class InsertAlbumUseCase(
     private val albumRepository: AlbumRepository,
 ) {
     suspend operator fun invoke(album: Album) {
-        albumRepository.insert(
+        albumRepository.upsert(
             album = album,
         )
     }

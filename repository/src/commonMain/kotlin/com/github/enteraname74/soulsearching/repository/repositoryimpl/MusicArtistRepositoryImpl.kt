@@ -30,9 +30,4 @@ class MusicArtistRepositoryImpl(
         musicArtistDataSource.getArtistIdFromMusicId(
             musicId = musicId
         )
-
-    override suspend fun getNumberOfMusicsFromArtist(artistId: UUID): Int =
-        musicArtistDataSource.getNumberOfMusicsFromArtist(
-            artistId = artistId
-        )
 }

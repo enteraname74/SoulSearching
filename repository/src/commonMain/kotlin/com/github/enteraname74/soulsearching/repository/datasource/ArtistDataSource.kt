@@ -36,22 +36,12 @@ interface ArtistDataSource {
     fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
 
     /**
-     * Tries to find a duplicate artist.
-     */
-    suspend fun getPossibleDuplicatedArtist(artistId: UUID, artistName: String) : ArtistWithMusics?
-
-    /**
      * Tries to find an artist from its name.
      */
-    suspend fun getArtistFromInfo(artistName: String): Artist?
+    suspend fun getFromName(artistName: String): Artist?
 
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */
     fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?>
-
-    /**
-     * Update the cover of an Artist.
-     */
-    suspend fun updateArtistCover(newCoverId : UUID, artistId : UUID)
 }

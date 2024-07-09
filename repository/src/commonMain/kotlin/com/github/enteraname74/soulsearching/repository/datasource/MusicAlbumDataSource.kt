@@ -25,12 +25,12 @@ interface MusicAlbumDataSource {
     suspend fun updateAlbumOfMusic(musicId: UUID, newAlbumId: UUID)
 
     /**
-     * Replace an album by an other one.
+     * Replace an album by another one.
      */
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 
     /**
-     * Retrieve a list of ids of Music in an Album.
+     * Retrieve a list of ids of Music on an Album.
      */
     suspend fun getMusicsIdsFromAlbumId(albumId: UUID): List<UUID>
 
@@ -38,9 +38,4 @@ interface MusicAlbumDataSource {
      * Tries to retrieve the album id of a Music from its id.
      */
     suspend fun getAlbumIdFromMusicId(musicId: UUID): UUID?
-
-    /**
-     * Retrieves the number of musics in an Album.
-     */
-    suspend fun getNumberOfMusicsFromAlbum(albumId: UUID): Int
 }

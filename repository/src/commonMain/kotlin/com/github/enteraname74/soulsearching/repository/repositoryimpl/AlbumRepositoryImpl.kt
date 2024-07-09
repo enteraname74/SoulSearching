@@ -63,7 +63,7 @@ class AlbumRepositoryImpl(
         var albumArtistToSave = initialArtist
         if (newAlbumWithArtistInformation.artist?.artistName != initialArtist.artistName) {
             // We first try to find if there is an existing artist with the new artist name.
-            var newArtist = artistDataSource.getArtistFromInfo(
+            var newArtist = artistDataSource.getFromName(
                 artistName = newAlbumWithArtistInformation.artist?.artistName.orEmpty()
             )
             // If this artist doesn't exist, we create it.
@@ -110,7 +110,7 @@ class AlbumRepositoryImpl(
                 coverId = newAlbumWithArtistInformation.album.coverId,
                 artist = newAlbumWithArtistInformation.artist?.artistName.orEmpty()
             )
-            musicDataSource.insertMusic(newMusic)
+            musicDataSource.upsert(newMusic)
             musicFileUpdater.updateMusic(
                 music = newMusic,
                 cover = albumCover
@@ -122,7 +122,7 @@ class AlbumRepositoryImpl(
         }
 
         // Finally, we can update the information of the album.
-        albumDataSource.insert(newAlbumWithArtistInformation.album)
+        albumDataSource.upsert(newAlbumWithArtistInformation.album)
 
         // We check and delete the initial artist if it no longer possess songs.
         checkAndDeleteVerification.checkAndDeleteArtist(artistToCheck = initialArtist)
@@ -148,7 +148,7 @@ class AlbumRepositoryImpl(
         )
     }
 
-    override suspend fun insert(album: Album) = albumDataSource.insert(
+    override suspend fun upsert(album: Album) = albumDataSource.upsert(
         album = album
     )
 
@@ -168,8 +168,8 @@ class AlbumRepositoryImpl(
     override fun getAll(): Flow<List<Album>> =
         albumDataSource.getAll()
 
-    override fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> =
-        albumDataSource.getAllAlbumsWithMusics()
+    override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> =
+        albumDataSource.getAllAlbumWithMusics()
 
     override suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist> =
         albumDataSource.getAllAlbumsWithArtist()

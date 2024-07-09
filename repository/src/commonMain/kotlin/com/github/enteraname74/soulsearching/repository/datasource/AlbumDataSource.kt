@@ -14,7 +14,7 @@ interface AlbumDataSource {
     /**
      * Inserts or updates a new Album.
      */
-    suspend fun insert(album: Album)
+    suspend fun upsert(album: Album)
 
     /**
      * Deletes an Album.
@@ -44,17 +44,10 @@ interface AlbumDataSource {
     /**
      * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
      */
-    fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>>
+    fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves all AlbumsWithArtist.
      */
     suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist>
-
-
-    /**
-     * Updates the cover of an album.
-     */
-    suspend fun updateAlbumCover(newCoverId : UUID, albumId : UUID)
-
 }

@@ -9,7 +9,6 @@ import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
 import com.github.enteraname74.soulsearching.viewmodel.AllAlbumsViewModelDesktopImpl
 import com.github.enteraname74.soulsearching.viewmodel.AllArtistsViewModelDesktopImpl
-import com.github.enteraname74.soulsearching.viewmodel.AllImageCoversViewModelDesktopImpl
 import com.github.enteraname74.soulsearching.viewmodel.AllMusicsViewModelDesktopImpl
 import com.github.enteraname74.soulsearching.viewmodel.AllPlaylistsViewModelDesktopImpl
 import com.github.enteraname74.soulsearching.viewmodel.AllQuickAccessViewModelDesktopImpl

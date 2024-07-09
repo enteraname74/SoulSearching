@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Suppress("deprecation")
 @Composable
 fun SearchMusics(
     playerDraggableState: SwipeableState<BottomSheetStates>,

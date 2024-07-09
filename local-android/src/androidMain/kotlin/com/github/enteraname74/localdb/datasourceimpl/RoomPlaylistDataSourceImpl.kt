@@ -1,12 +1,12 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.datasource.PlaylistDataSource
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toPlaylist
 import com.github.enteraname74.localdb.model.toPlaylistWIthMusics
 import com.github.enteraname74.localdb.model.toRoomPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
@@ -14,112 +14,38 @@ import java.util.UUID
 internal class RoomPlaylistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : PlaylistDataSource {
-    override suspend fun insertPlaylist(playlist: Playlist) {
-        appDatabase.playlistDao.insertPlaylist(
+    override suspend fun upsert(playlist: Playlist) {
+        appDatabase.playlistDao.upsert(
             roomPlaylist = playlist.toRoomPlaylist()
         )
     }
 
-    override suspend fun deletePlaylist(playlist: Playlist) {
-        appDatabase.playlistDao.deletePlaylist(
+    override suspend fun delete(playlist: Playlist) {
+        appDatabase.playlistDao.delete(
             roomPlaylist = playlist.toRoomPlaylist()
         )
     }
 
-    override fun getAllPlaylistsSortByNameAscAsFlow(): Flow<List<Playlist>> {
-        return appDatabase.playlistDao.getAllPlaylistsSortByNameAscAsFlow().map { list ->
+    override fun getAll(): Flow<List<Playlist>> {
+        return appDatabase.playlistDao.getAll().map { list ->
             list.map { it.toPlaylist() }
         }
     }
 
-    override fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistsWithMusicsSortByNameAscAsFlow().map { list ->
+    override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> {
+        return appDatabase.playlistDao.getAllPlaylistWithMusics().map { list ->
             list.map { it.toPlaylistWIthMusics() }
         }
     }
 
-    override fun getAllPlaylistWithMusicsSortByNameDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistWithMusicsSortByNameDescAsFlow().map { list ->
-            list.map { it.toPlaylistWIthMusics() }
-        }
-    }
-
-    override fun getAllPlaylistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistWithMusicsSortByAddedDateAscAsFlow()
-            .map { list ->
-                list.map { it.toPlaylistWIthMusics() }
-            }
-    }
-
-    override fun getAllPlaylistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistWithMusicsSortByAddedDateDescAsFlow()
-            .map { list ->
-                list.map { it.toPlaylistWIthMusics() }
-            }
-    }
-
-    override fun getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow()
-            .map { list ->
-                list.map { it.toPlaylistWIthMusics() }
-            }
-    }
-
-    override fun getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow()
-            .map { list ->
-                list.map { it.toPlaylistWIthMusics() }
-            }
-    }
-
-    override fun getAllPlaylistsFromQuickAccessAsFlow(): Flow<List<PlaylistWithMusics>> {
-        return appDatabase.playlistDao.getAllPlaylistsFromQuickAccessAsFlow().map { list ->
-            list.map { it.toPlaylistWIthMusics() }
-        }
-    }
-
-    override suspend fun getFavoritePlaylist(): Playlist {
-        return appDatabase.playlistDao.getFavoritePlaylist().toPlaylist()
-    }
-
-    override suspend fun getPlaylistFromId(playlistId: UUID): Playlist {
-        return appDatabase.playlistDao.getPlaylistFromId(
+    override fun getFromId(playlistId: UUID): Flow<Playlist?> {
+        return appDatabase.playlistDao.getFromId(
             playlistId = playlistId
-        ).toPlaylist()
+        ).map { it?.toPlaylist() }
     }
 
-    override fun getPlaylistWithMusicsAsFlow(playlistId: UUID): Flow<PlaylistWithMusics?> {
-        return appDatabase.playlistDao.getPlaylistWithMusicsAsFlow(playlistId = playlistId)
+    override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> {
+        return appDatabase.playlistDao.getPlaylistWithMusics(playlistId = playlistId)
             .map { it?.toPlaylistWIthMusics() }
-    }
-
-    override suspend fun getAllPlaylistsWithMusics(): List<PlaylistWithMusics> {
-        return appDatabase.playlistDao.getAllPlaylistsWithMusics().map { it.toPlaylistWIthMusics() }
-    }
-
-    override suspend fun getNumberOfPlaylistsWithCoverId(coverId: UUID): Int {
-        return appDatabase.playlistDao.getNumberOfPlaylistsWithCoverId(
-            coverId = coverId
-        )
-    }
-
-    override suspend fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID) {
-        appDatabase.playlistDao.updateQuickAccessState(
-            newQuickAccessState = newQuickAccessState,
-            playlistId = playlistId
-        )
-    }
-
-    override suspend fun getNbPlayedOfPlaylist(playlistId: UUID): Int {
-        return appDatabase.playlistDao.getNbPlayedOfPlaylist(
-            playlistId = playlistId
-        )
-    }
-
-    override suspend fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID) {
-        appDatabase.playlistDao.updateNbPlayed(
-            newNbPlayed = newNbPlayed,
-            playlistId = playlistId
-        )
     }
 }

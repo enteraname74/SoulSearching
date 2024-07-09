@@ -1,10 +1,10 @@
-package com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.soulsearching.feature.settings.developers.presentation.SettingsDevelopersScreen
+import com.github.enteraname74.soulsearching.feature.settings.developers.SettingsDevelopersScreen
 
 /**
  * Represent the view of the settings about screen.

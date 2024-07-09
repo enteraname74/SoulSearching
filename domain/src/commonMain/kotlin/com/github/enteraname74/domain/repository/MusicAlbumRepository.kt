@@ -35,9 +35,4 @@ interface MusicAlbumRepository {
      * Tries to retrieve the album id of a Music from its id.
      */
     suspend fun getAlbumIdFromMusicId(musicId: UUID): UUID?
-
-    /**
-     * Retrieves the number of musics on an Album.
-     */
-    suspend fun getNumberOfMusicsFromAlbum(albumId: UUID): Int
 }

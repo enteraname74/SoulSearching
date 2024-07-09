@@ -16,7 +16,7 @@ class ImageCoverRepositoryImpl(
         imageCover = imageCover
     )
 
-    override suspend fun delete(imageCover: ImageCover) = imageCoverDataSource.deleteImageCover(
+    override suspend fun delete(imageCover: ImageCover) = imageCoverDataSource.delete(
         imageCover = imageCover
     )
 

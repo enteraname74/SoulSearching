@@ -1,20 +1,18 @@
-package com.github.enteraname74.domain.util
+package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Music
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.http.isSuccess
-import io.ktor.serialization.kotlinx.json.json
+import com.github.enteraname74.domain.repository.LyricsRepository
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-/**
- * Lyrics provider for musics.
- */
-class LyricsProvider {
+class LyricsRepositoryImpl: LyricsRepository {
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json {
@@ -23,11 +21,7 @@ class LyricsProvider {
         }
     }
 
-    /**
-     * Retrieves the lyrics of a song.
-     * If no lyrics are found, returns null.
-     */
-    suspend fun getLyricsOfSong(music: Music): String? {
+    override suspend fun getLyricsOfSong(music: Music): String? {
         val initialPath = "https://lyrist.vercel.app/api/${music.name}/${music.artist}"
         val encodedPath = initialPath.replace(" ", "%20")
 
@@ -44,9 +38,9 @@ class LyricsProvider {
             null
         }
     }
-
-    @Serializable
-    private data class LyricsResult(
-        val lyrics: String
-    )
 }
+
+@Serializable
+private data class LyricsResult(
+    val lyrics: String
+)

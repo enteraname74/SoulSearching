@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.enteraname74.domain.model.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 
 /**
  * Handler for managing the MainActivityViewModel.

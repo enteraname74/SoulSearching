@@ -30,7 +30,8 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation(project(mapOf("path" to ":domain")))
+                implementation(project(":domain"))
+                implementation(project(":repository"))
                 implementation(libs.koin.core)
             }
         }

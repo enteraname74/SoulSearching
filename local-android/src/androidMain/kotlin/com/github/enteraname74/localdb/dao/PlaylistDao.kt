@@ -13,51 +13,24 @@ import java.util.*
 internal interface PlaylistDao {
 
     @Upsert
-    suspend fun insertPlaylist(roomPlaylist : RoomPlaylist)
+    suspend fun upsert(roomPlaylist : RoomPlaylist)
 
     @Delete
-    suspend fun deletePlaylist(roomPlaylist : RoomPlaylist)
+    suspend fun delete(roomPlaylist : RoomPlaylist)
 
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAllPlaylistsSortByNameAscAsFlow(): Flow<List<RoomPlaylist>>
+    fun getAll(): Flow<List<RoomPlaylist>>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAllPlaylistsWithMusicsSortByNameAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY name DESC")
-    fun getAllPlaylistWithMusicsSortByNameDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate ASC")
-    fun getAllPlaylistWithMusicsSortByAddedDateAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY addedDate DESC")
-    fun getAllPlaylistWithMusicsSortByAddedDateDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed ASC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedAscAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY nbPlayed DESC")
-    fun getAllPlaylistWithMusicsSortByNbPlayedDescAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist WHERE isInQuickAccess = 1")
-    fun getAllPlaylistsFromQuickAccessAsFlow(): Flow<List<RoomPlaylistWithMusics>>
-
-    @Query("SELECT * FROM RoomPlaylist WHERE isFavorite = 1")
-    suspend fun getFavoritePlaylist(): RoomPlaylist
+    fun getAllPlaylistWithMusics(): Flow<List<RoomPlaylistWithMusics>>
 
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    suspend fun getPlaylistFromId(playlistId: UUID) : RoomPlaylist
+    fun getFromId(playlistId: UUID) : Flow<RoomPlaylist?>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
-    fun getPlaylistWithMusicsAsFlow(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
+    fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist")

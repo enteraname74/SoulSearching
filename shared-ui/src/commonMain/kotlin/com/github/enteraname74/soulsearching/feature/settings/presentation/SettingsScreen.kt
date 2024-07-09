@@ -20,8 +20,8 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.presentation.SettingsPersonalisationScreen
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.presentation.SettingsAboutScreen
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.presentation.SettingsColorThemeScreen
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutScreen
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsScreen
 
 /**

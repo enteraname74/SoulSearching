@@ -18,7 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.search.composable.AppSearchBar
@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
+@Suppress("deprecation")
 @Composable
 fun SearchView(
     maxHeight: Float,
@@ -41,7 +42,7 @@ fun SearchView(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
 
-    SoulSearchingBackHandler(
+    SoulBackHandler(
         draggableState.currentValue == BottomSheetStates.EXPANDED
                 && playerDraggableState.currentValue != BottomSheetStates.EXPANDED
     ) {

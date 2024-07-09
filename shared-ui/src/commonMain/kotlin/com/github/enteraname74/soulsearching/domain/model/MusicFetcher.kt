@@ -86,7 +86,7 @@ abstract class MusicFetcher(
                 )
             }
 
-            albumRepository.insert(
+            albumRepository.upsert(
                 Album(
                     coverId = if (musicCover != null) coverId else null,
                     albumId = albumId,

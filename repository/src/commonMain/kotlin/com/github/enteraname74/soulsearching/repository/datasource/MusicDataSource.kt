@@ -11,7 +11,7 @@ interface MusicDataSource {
     /**
      * Inserts or updates a Music.
      */
-    suspend fun insertMusic(music: Music)
+    suspend fun upsert(music: Music)
 
     /**
      * Deletes a Music.
@@ -26,7 +26,7 @@ interface MusicDataSource {
     /**
      * Tries to retrieve a Music from its path.
      */
-    suspend fun getMusicFromPath(musicPath: String): Music?
+    suspend fun getFromPath(musicPath: String): Music?
 
     /**
      * Retrieve a music from its id.

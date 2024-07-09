@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelh
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.soulsearching.domain.events.AlbumEvent
 import com.github.enteraname74.domain.model.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.viewmodel.handler.ViewModelHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
@@ -43,10 +42,10 @@ open class AllAlbumsViewModeHandler(
             when (sortDirection) {
                 SortDirection.ASC -> {
                     when (sortType) {
-                        SortType.NAME -> albumRepository.getAllAlbumsWithMusics()
+                        SortType.NAME -> albumRepository.getAllAlbumWithMusics()
                         SortType.ADDED_DATE -> albumRepository.getAllAlbumsWithMusicsSortByAddedDateAscAsFlow()
                         SortType.NB_PLAYED -> albumRepository.getAllAlbumsWithMusicsSortByNbPlayedAscAsFlow()
-                        else -> albumRepository.getAllAlbumsWithMusics()
+                        else -> albumRepository.getAllAlbumWithMusics()
                     }
                 }
                 SortDirection.DESC -> {
@@ -57,7 +56,7 @@ open class AllAlbumsViewModeHandler(
                         else -> albumRepository.getAllAlbumsWithMusicsSortByNameDescAsFlow()
                     }
                 }
-                else -> albumRepository.getAllAlbumsWithMusics()
+                else -> albumRepository.getAllAlbumWithMusics()
             }
         }
     }.stateIn(
