@@ -4,20 +4,22 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.util.CheckAndDeleteVerification
+import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
+import com.github.enteraname74.domain.util.MusicFileUpdater
 import kotlinx.coroutines.flow.first
 
 class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
+    private val musicRepository: MusicRepository,
+    private val imageCoverRepository: ImageCoverRepository,
     private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicArtistRepository: MusicArtistRepository,
     private val albumArtistRepository: AlbumArtistRepository,
-    private val checkAndDeleteVerification: CheckAndDeleteVerification,
-    private val getDuplicatedAlbumUseCase: GetDuplicatedAlbumUseCase
+    private val getDuplicatedAlbumUseCase: GetDuplicatedAlbumUseCase,
+    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val musicFileUpdater: MusicFileUpdater,
 ) {
     suspend operator fun invoke(
         newAlbumWithArtistInformation: AlbumWithArtist,
@@ -38,7 +40,7 @@ class UpdateAlbumUseCase(
             // If this artist doesn't exist, we create it.
             if (newArtist == null) {
                 newArtist = Artist(
-                    artistName = newAlbumWithArtistInformation.artist?.artistName.orEmpty(),
+                    artistName = newAlbumWithArtistInformation.artist.artistName,
                     coverId = newAlbumWithArtistInformation.album.coverId
                 )
                 artistRepository.upsert(
@@ -64,37 +66,37 @@ class UpdateAlbumUseCase(
         if (duplicateAlbum != null) mergeAlbums(from = duplicateAlbum, to = newAlbumWithArtistInformation.album)
 
         // We then need to update the musics of the album (new artist, album name and cover).
-        val musicsFromAlbum = musicDataSource.getAllMusicFromAlbum(
+        val musicsFromAlbum = musicRepository.getAllMusicFromAlbum(
             albumId = newAlbumWithArtistInformation.album.albumId
         )
 
         var albumCover: ImageBitmap? = null
         newAlbumWithArtistInformation.album.coverId?.let { coverId ->
-            albumCover = imageCoverDataSource.getCoverOfElement(coverId = coverId)?.cover
+            albumCover = imageCoverRepository.getCoverOfElement(coverId = coverId)?.cover
         }
 
         for (music in musicsFromAlbum) {
             val newMusic = music.copy(
                 album = newAlbumWithArtistInformation.album.albumName,
                 coverId = newAlbumWithArtistInformation.album.coverId,
-                artist = newAlbumWithArtistInformation.artist?.artistName.orEmpty()
+                artist = newAlbumWithArtistInformation.artist.artistName
             )
-            musicDataSource.upsert(newMusic)
+            musicRepository.upsert(newMusic)
             musicFileUpdater.updateMusic(
                 music = newMusic,
                 cover = albumCover
             )
-            musicArtistDataSource.updateArtistOfMusic(
+            musicArtistRepository.updateArtistOfMusic(
                 musicId = music.musicId,
                 newArtistId = albumArtistToSave.artistId
             )
         }
 
         // Finally, we can update the information of the album.
-        albumDataSource.upsert(newAlbumWithArtistInformation.album)
+        albumRepository.upsert(newAlbumWithArtistInformation.album)
 
         // We check and delete the initial artist if it no longer possess songs.
-        checkAndDeleteVerification.checkAndDeleteArtist(artistToCheck = initialArtist)
+        deleteArtistIfEmptyUseCase(artistId = initialArtist.artistId)
     }
 
     /**

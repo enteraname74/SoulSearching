@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-group = "com.github.enteraname74.soulsearching"
+group = "com.github.enteraname74.soulsearching.coreui"
 description = "Core UI elements of the application"
 
 kotlin {
@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.enteraname74.soulsearching"
+    namespace = "com.github.enteraname74.soulsearching.coreui"
     compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {

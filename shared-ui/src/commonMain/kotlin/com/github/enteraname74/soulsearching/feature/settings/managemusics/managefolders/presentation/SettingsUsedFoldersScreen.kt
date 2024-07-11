@@ -9,27 +9,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.model.FolderStateType
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
-import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.model.FolderStateType
-import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
 
 /**
  * Represent the view of the used folders in the settings.
@@ -54,7 +50,7 @@ fun SettingsUsedFoldersScreenView(
     finishAction: () -> Unit,
     settingsAllFoldersViewModel: SettingsAllFoldersViewModel
 ) {
-    val folderState by settingsAllFoldersViewModel.handler.state.collectAsState()
+    val folderState by settingsAllFoldersViewModel.state.collectAsState()
 
     var savingProgress by rememberSaveable {
         mutableFloatStateOf(0F)
@@ -70,12 +66,12 @@ fun SettingsUsedFoldersScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        SouTopBar(
+        SoulTopBar(
             title = strings.usedFoldersTitle,
             leftAction = finishAction,
             rightIcon = if (folderState.state != FolderStateType.SAVING_SELECTION) Icons.Rounded.Check else null,
             rightAction = {
-                settingsAllFoldersViewModel.handler.onFolderEvent(
+                settingsAllFoldersViewModel.onFolderEvent(
                     FolderEvent.SaveSelection(
                         updateProgress = {
                             savingProgress = it
@@ -104,7 +100,7 @@ fun SettingsUsedFoldersScreenView(
                         SettingsSwitchElement(
                             title = it.folderPath,
                             toggleAction = {
-                                settingsAllFoldersViewModel.handler.onFolderEvent(
+                                settingsAllFoldersViewModel.onFolderEvent(
                                     FolderEvent.SetSelectedFolder(
                                         folder = it,
                                         isSelected = !it.isSelected

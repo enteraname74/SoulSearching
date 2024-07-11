@@ -5,6 +5,9 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
 }
 
+group = "com.github.enteraname74.soulsearching.repository"
+description = "Repoistory layer of the app"
+
 kotlin {
     androidTarget()
     jvm("desktop")
@@ -26,7 +29,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.enteraname74.soulsearching"
+    namespace = "com.github.enteraname74.soulsearching.repository"
     compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {

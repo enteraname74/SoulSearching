@@ -8,6 +8,9 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+group = "com.github.enteraname74.soulsearching"
+description = "Application's elements"
+
 kotlin {
 
     androidTarget()

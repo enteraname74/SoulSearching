@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-group = "com.github.enteraname74.soulsearching"
+group = "com.github.enteraname74.soulsearching.desktopapp"
 version = "1.0-SNAPSHOT"
 
 repositories {

@@ -5,6 +5,9 @@ plugins {
     id("com.android.library")
 }
 
+group = "com.github.enteraname74.soulsearching.shareddi"
+description = "Shared DI elements of the application"
+
 kotlin {
     androidTarget()
     jvm("desktop")
@@ -34,7 +37,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.github.enteraname74.soulsearching"
+    namespace = "com.github.enteraname74.soulsearching.shareddi"
     compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {

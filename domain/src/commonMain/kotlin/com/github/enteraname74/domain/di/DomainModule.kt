@@ -76,6 +76,7 @@ val domainModule = module {
     singleOf(::GetAllMusicUseCase)
     singleOf(::GetMusicUseCase)
     singleOf(::IsMusicAlreadySavedUseCase)
+    singleOf(::IsMusicInFavoritePlaylistUseCase)
     singleOf(::SaveMusicAndCreateMissingArtistAndAlbumUseCase)
     singleOf(::SaveMusicUseCase)
     singleOf(::ToggleMusicFavoriteStatusUseCase)
@@ -89,6 +90,7 @@ val domainModule = module {
 
     // MusicArtist
     singleOf(::GetArtistIdFromMusicIdUseCase)
+    singleOf(::UpsertMusicIntoArtistUseCase)
 
     // MusicPlaylist
     singleOf(::DeleteMusicFromPlaylistUseCase)

@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyAlbumViewModel
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumEvent
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.composable.ModifyAlbumComposable
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumEvent
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumViewModel
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.composable.ModifyAlbumComposable
 
 @Composable
 actual fun ModifyAlbumScreenView(
@@ -17,7 +17,7 @@ actual fun ModifyAlbumScreenView(
         modifyAlbumViewModel = modifyAlbumViewModel,
         selectedAlbumId = selectedAlbumId,
         onModifyAlbum = {
-            modifyAlbumViewModel.handler.onEvent(ModifyAlbumEvent.UpdateAlbum)
+            modifyAlbumViewModel.onEvent(ModifyAlbumEvent.UpdateAlbum)
             finishAction()
         },
         selectImage = {},

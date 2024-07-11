@@ -88,7 +88,7 @@ abstract class AllMusicsViewModel(
         getAllPlaylistWithMusicsUseCase()
     ) { state, musics, sortType, sortDirection, playlists ->
         state.copy(
-            musics = musics as ArrayList<Music>,
+            musics = musics,
             sortType = sortType,
             sortDirection = sortDirection,
             allPlaylists = playlists,

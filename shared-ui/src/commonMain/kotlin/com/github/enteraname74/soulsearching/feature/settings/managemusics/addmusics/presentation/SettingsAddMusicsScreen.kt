@@ -29,14 +29,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.model.AddMusicsStateType
-import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,7 +56,7 @@ class SettingsAddMusicsScreen : Screen {
             finishAction = {
                 navigator.pop()
             },
-            saveMusicFunction = screenModel.handler::addMusic
+            saveMusicFunction = screenModel::addMusic
         )
     }
 }
@@ -67,7 +67,7 @@ fun SettingsAddMusicsScreenView(
     finishAction: () -> Unit,
     saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
 ) {
-    val addMusicsState by addMusicsViewModel.handler.state.collectAsState()
+    val addMusicsState by addMusicsViewModel.state.collectAsState()
 
     var isFetchingMusics by rememberSaveable {
         mutableStateOf(false)
@@ -77,7 +77,7 @@ fun SettingsAddMusicsScreenView(
         mutableStateOf(false)
     }
 
-    SoulSearchingBackHandler {
+    SoulBackHandler {
         finishAction()
     }
 
@@ -94,7 +94,7 @@ fun SettingsAddMusicsScreenView(
                 if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
                     return@SoulTopBar
                 }
-                addMusicsViewModel.handler.onAddMusicEvent(
+                addMusicsViewModel.onAddMusicEvent(
                     AddMusicsEvent.SetState(
                         newState = AddMusicsStateType.SAVING_MUSICS
                     )
@@ -118,7 +118,7 @@ fun SettingsAddMusicsScreenView(
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
                         isFetchingMusics = true
-                        addMusicsViewModel.handler.fetchAndAddNewMusics { progress = it }
+                        addMusicsViewModel.fetchAndAddNewMusics { progress = it }
                         isFetchingMusics = false
                     }
                 }
@@ -152,7 +152,7 @@ fun SettingsAddMusicsScreenView(
                                     progress = (count * 1F) / addMusicsState.fetchedMusics.size
                                 }
                                 isSavingMusics = false
-                                addMusicsViewModel.handler.onAddMusicEvent(
+                                addMusicsViewModel.onAddMusicEvent(
                                     AddMusicsEvent.SetState(
                                         newState = AddMusicsStateType.FETCHING_MUSICS
                                     ))
@@ -179,7 +179,7 @@ fun SettingsAddMusicsScreenView(
                             MusicSelectableComposable(
                                 music = it.music,
                                 onClick = {
-                                    addMusicsViewModel.handler.onAddMusicEvent(
+                                    addMusicsViewModel.onAddMusicEvent(
                                         AddMusicsEvent.SetSelectedMusic(
                                             music = it.music,
                                             isSelected = !it.isSelected

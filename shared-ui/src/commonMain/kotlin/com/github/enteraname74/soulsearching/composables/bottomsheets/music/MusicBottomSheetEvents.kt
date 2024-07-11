@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
@@ -62,11 +62,11 @@ fun MusicBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    SoulSearchingBackHandler(addToPlaylistModalSheetState.isVisible) {
+    SoulBackHandler(addToPlaylistModalSheetState.isVisible) {
         coroutineScope.launch { addToPlaylistModalSheetState.hide() }
     }
 
-    SoulSearchingBackHandler(musicModalSheetState.isVisible) {
+    SoulBackHandler(musicModalSheetState.isVisible) {
         coroutineScope.launch { musicModalSheetState.hide() }
     }
 

@@ -17,20 +17,40 @@ import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.UpdateAlbumCoverUseCase
+import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
+import com.github.enteraname74.domain.usecase.albumartist.UpsertAlbumArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistFromNameUseCase
+import com.github.enteraname74.domain.usecase.artist.UpdateArtistCoverUseCase
+import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
+import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
+import com.github.enteraname74.domain.usecase.imagecover.GetCoverOfElementUseCase
+import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.music.IsMusicAlreadySavedUseCase
+import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.musicalbum.UpsertMusicIntoAlbumUseCase
+import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
 import java.util.UUID
 
 /**
  * Utilities for fetching musics on current device.
  */
 abstract class MusicFetcher(
-    private val musicRepository: MusicRepository,
-    private val albumRepository: AlbumRepository,
-    private val artistRepository: ArtistRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val musicArtistRepository: MusicArtistRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
-    private val imageCoverRepository: ImageCoverRepository,
-    private val folderRepository: FolderRepository
+    private val isMusicAlreadySavedUseCase: IsMusicAlreadySavedUseCase,
+    private val getArtistFromNameUseCase: GetArtistFromNameUseCase,
+    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
+    private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
+    private val upsertAlbumUseCase: UpsertAlbumUseCase,
+    private val upsertArtistUseCase: UpsertArtistUseCase,
+    private val upsertAlbumArtistUseCase: UpsertAlbumArtistUseCase,
+    private val getCoverOfElementUseCase: GetCoverOfElementUseCase,
+    private val updateAlbumCoverUseCase: UpdateAlbumCoverUseCase,
+    private val updateArtistCoverUseCase: UpdateArtistCoverUseCase,
+    private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val upsertFolderUseCase: UpsertFolderUseCase,
+    private val upsertMusicIntoAlbumUseCase: UpsertMusicIntoAlbumUseCase,
+    private val upsertMusicIntoArtistUseCase: UpsertMusicIntoArtistUseCase,
 ) {
     /**
      * Fetch all musics on the device.
@@ -54,12 +74,9 @@ abstract class MusicFetcher(
      */
     suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
         // If the song has already been saved once, we do nothing.
-        val existingMusic = musicRepository.getMusicFromPath(musicToAdd.path)
-        if (existingMusic != null) {
-            return
-        }
+        if (isMusicAlreadySavedUseCase(musicToAdd.path)) return
 
-        val correspondingArtist = artistRepository.getArtistFromInfo(
+        val correspondingArtist = getArtistFromNameUseCase(
             artistName = musicToAdd.artist
         )
 
@@ -67,7 +84,7 @@ abstract class MusicFetcher(
         val correspondingAlbum = if (correspondingArtist == null) {
             null
         } else {
-            albumRepository.getCorrespondingAlbum(
+            getCorrespondingAlbumUseCase(
                 albumName = musicToAdd.album,
                 artistId = correspondingArtist.artistId
             )
@@ -78,7 +95,7 @@ abstract class MusicFetcher(
             val coverId = UUID.randomUUID()
             if (musicCover != null) {
                 musicToAdd.coverId = coverId
-                imageCoverRepository.insertImageCover(
+                upsertImageCoverUseCase(
                     ImageCover(
                         coverId = coverId,
                         cover = musicCover
@@ -86,7 +103,7 @@ abstract class MusicFetcher(
                 )
             }
 
-            albumRepository.upsert(
+            upsertAlbumUseCase(
                 Album(
                     coverId = if (musicCover != null) coverId else null,
                     albumId = albumId,
@@ -97,14 +114,14 @@ abstract class MusicFetcher(
             val artistCoverId = if (correspondingArtist != null) correspondingArtist.coverId
             else if (musicCover != null) coverId else null
 
-            artistRepository.insertArtist(
+            upsertArtistUseCase(
                 Artist(
                     coverId = artistCoverId,
                     artistId = artistId,
                     artistName = musicToAdd.artist
                 )
             )
-            albumArtistRepository.upsert(
+            upsertAlbumArtistUseCase(
                 AlbumArtist(
                     albumId = albumId,
                     artistId = artistId
@@ -112,10 +129,8 @@ abstract class MusicFetcher(
             )
         } else {
             // We add, if possible, the cover art of the album of the music to the music.
-            val albumCover = if (correspondingAlbum.coverId != null) {
-                imageCoverRepository.getCoverOfElement(coverId = correspondingAlbum.coverId!!)
-            } else {
-                null
+            val albumCover = correspondingAlbum.coverId?.let { coverId ->
+                getCoverOfElementUseCase(coverId = coverId)
             }
             val shouldPutAlbumCoverWithMusic = (albumCover != null)
             val shouldUpdateArtistCover =
@@ -126,14 +141,14 @@ abstract class MusicFetcher(
             } else if (musicCover != null) {
                 val coverId = UUID.randomUUID()
                 musicToAdd.coverId = coverId
-                imageCoverRepository.insertImageCover(
+                upsertImageCoverUseCase(
                     ImageCover(
                         coverId = coverId,
                         cover = musicCover
                     )
                 )
                 // In this case, the album has no cover, so we add the one from the music.
-                albumRepository.updateAlbumCover(
+                updateAlbumCoverUseCase(
                     newCoverId = coverId,
                     albumId = correspondingAlbum.albumId
                 )
@@ -146,26 +161,26 @@ abstract class MusicFetcher(
                     musicToAdd.coverId
                 }
                 if (correspondingArtist != null && newArtistCover != null) {
-                    artistRepository.updateArtistCover(
+                    updateArtistCoverUseCase(
                         newCoverId = newArtistCover,
                         artistId = correspondingArtist.artistId
                     )
                 }
             }
         }
-        musicRepository.insertMusic(musicToAdd)
-        folderRepository.insertFolder(
+        upsertMusicUseCase(musicToAdd)
+        upsertFolderUseCase(
             Folder(
                 folderPath = musicToAdd.folder
             )
         )
-        musicAlbumRepository.insertMusicIntoAlbum(
+        upsertMusicIntoAlbumUseCase(
             MusicAlbum(
                 musicId = musicToAdd.musicId,
                 albumId = albumId
             )
         )
-        musicArtistRepository.upsertMusicIntoArtist(
+        upsertMusicIntoArtistUseCase(
             MusicArtist(
                 musicId = musicToAdd.musicId,
                 artistId = artistId

@@ -33,6 +33,7 @@ class PlayerService : Service() {
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @Suppress("Deprecation")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("Player service", "ON START COMMAND")
         val token: MediaSessionCompat.Token? = intent?.extras?.get(MEDIA_SESSION_TOKEN) as MediaSessionCompat.Token?

@@ -4,8 +4,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ fun PlaylistBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    SoulSearchingBackHandler(playlistModalSheetState.isVisible) {
+    SoulBackHandler(playlistModalSheetState.isVisible) {
         coroutineScope.launch { playlistModalSheetState.hide() }
     }
 

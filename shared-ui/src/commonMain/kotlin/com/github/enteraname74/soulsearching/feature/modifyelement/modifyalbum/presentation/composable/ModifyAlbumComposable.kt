@@ -33,11 +33,11 @@ import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyAlbumViewModel
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextField
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumEvent
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumViewModel
 import java.util.UUID
 
 @Composable
@@ -49,14 +49,14 @@ fun ModifyAlbumComposable(
     selectImage: () -> Unit
 ) {
 
-    val state by modifyAlbumViewModel.handler.state.collectAsState()
+    val state by modifyAlbumViewModel.state.collectAsState()
 
     var isSelectedAlbumFetched by rememberSaveable {
         mutableStateOf(false)
     }
 
     if (!isSelectedAlbumFetched) {
-        modifyAlbumViewModel.handler.onEvent(
+        modifyAlbumViewModel.onEvent(
             ModifyAlbumEvent.AlbumFromID(
                 albumId = UUID.fromString(selectedAlbumId)
             )
@@ -119,14 +119,14 @@ fun ModifyAlbumComposable(
                             artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetName(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetArtist(
                                         it
                                     )
@@ -134,7 +134,7 @@ fun ModifyAlbumComposable(
                             },
                             albumsNames = state.matchingAlbumsNames,
                             updateAlbumsNames = { albumSearch ->
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetMatchingAlbums(
                                         search = albumSearch
                                     )
@@ -142,7 +142,7 @@ fun ModifyAlbumComposable(
                             },
                             artistsNames = state.matchingArtistsNames,
                             updateArtistsNames = { artistSearch ->
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetMatchingArtists(
                                         search = artistSearch
                                     )
@@ -194,14 +194,14 @@ fun ModifyAlbumComposable(
                             artistName = state.albumWithMusics.artist!!.artistName,
                             focusManager = focusManager,
                             setName = {
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetName(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetArtist(
                                         it
                                     )
@@ -209,7 +209,7 @@ fun ModifyAlbumComposable(
                             },
                             albumsNames = state.matchingAlbumsNames,
                             updateAlbumsNames = { albumSearch ->
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetMatchingAlbums(
                                         search = albumSearch
                                     )
@@ -217,7 +217,7 @@ fun ModifyAlbumComposable(
                             },
                             artistsNames = state.matchingArtistsNames,
                             updateArtistsNames = { artistSearch ->
-                                modifyAlbumViewModel.handler.onEvent(
+                                modifyAlbumViewModel.onEvent(
                                     ModifyAlbumEvent.SetMatchingArtists(
                                         search = artistSearch
                                     )

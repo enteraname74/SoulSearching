@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class SettingsAllFolderViewModel(
+class SettingsAllFoldersViewModel(
     private val getAllFoldersUseCase: GetAllFoldersUseCase,
     private val upsertFolderUseCase: UpsertFolderUseCase,
     private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,

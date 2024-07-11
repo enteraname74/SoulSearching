@@ -11,7 +11,7 @@ import com.github.enteraname74.domain.model.SortType
  * UI State of the main page.
  */
 data class MainPageState(
-    val musics: ArrayList<Music> = ArrayList(),
+    val musics: List<Music> = listOf(),
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
     val isBottomSheetShown: Boolean = false,
     val isDeleteDialogShown: Boolean = false,

@@ -26,7 +26,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.appinit.composable.FetchingMusicTabLayoutComposable
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -94,7 +94,7 @@ fun FetchingMusicsComposable(
         LaunchedEffect(key1 = "FetchingMusics") {
             CoroutineScope(Dispatchers.IO).launch {
                 isFetchingMusics = true
-                allMusicsViewModel.handler.fetchMusics(
+                allMusicsViewModel.fetchMusics(
                     updateProgress = {
                         progress = it
                     },

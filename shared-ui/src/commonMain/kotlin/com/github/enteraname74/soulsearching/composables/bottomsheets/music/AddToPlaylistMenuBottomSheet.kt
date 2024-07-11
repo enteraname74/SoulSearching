@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import java.util.UUID
 
 @Composable
@@ -46,7 +46,7 @@ fun AddToPlaylistMenuBottomSheet(
                 .padding(it)
                 .padding(UiConstants.Spacing.medium)
         ) {
-            SouTopBar(
+            SoulTopBar(
                 title = strings.addToPlaylist,
                 leftAction = {
                     onDismiss()

@@ -1,14 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchString
+import com.github.enteraname74.domain.usecase.album.UpdateAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.imagecover.GetCoverOfElementUseCase
 import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
@@ -17,20 +17,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class ModifyAlbumViewModel(
-    coroutineScope: CoroutineScope,
     private val getAlbumsNameFromSearchString: GetAlbumsNameFromSearchString,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
     private val getCoverOfElementUseCase: GetCoverOfElementUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
+    private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val playbackManager: PlaybackManager
-) : ViewModelHandler {
+) : ScreenModel {
     private val _state = MutableStateFlow(ModifyAlbumState())
     val state = _state.stateIn(
-        coroutineScope,
+        screenModelScope,
         SharingStarted.WhileSubscribed(5000),
         ModifyAlbumState()
     )
@@ -177,7 +177,7 @@ class ModifyAlbumViewModel(
             )
 
             // We update the information of the album.
-            albumRepository.update(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+            updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
 
             // We retrieve the updated album
             val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(

@@ -13,18 +13,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
@@ -44,7 +44,7 @@ class SettingsManageMusicsScreen : Screen {
                 navigator.pop()
             },
             navigateToFolders = {
-                allFoldersViewModel.handler.onFolderEvent(
+                allFoldersViewModel.onFolderEvent(
                     FolderEvent.FetchFolders
                 )
                 navigator.push(
@@ -52,7 +52,7 @@ class SettingsManageMusicsScreen : Screen {
                 )
             },
             navigateToAddMusics = {
-                addMusicsViewModel.handler.onAddMusicEvent(AddMusicsEvent.ResetState)
+                addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.ResetState)
                 navigator.push(
                     SettingsAddMusicsScreen()
                 )
@@ -73,7 +73,7 @@ fun SettingsManageMusicsScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        SouTopBar(
+        SoulTopBar(
             title = strings.manageMusicsTitle,
             leftAction = finishAction
         )

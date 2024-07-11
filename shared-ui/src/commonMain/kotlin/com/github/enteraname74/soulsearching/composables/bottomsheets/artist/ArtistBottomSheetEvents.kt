@@ -4,9 +4,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheet
-import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import kotlinx.coroutines.launch
@@ -24,7 +23,7 @@ fun ArtistBottomSheetEvents(
         skipPartiallyExpanded = true
     )
 
-    SoulSearchingBackHandler(artistModalSheetState.isVisible) {
+    SoulBackHandler(artistModalSheetState.isVisible) {
         coroutineScope.launch { artistModalSheetState.hide() }
     }
 
