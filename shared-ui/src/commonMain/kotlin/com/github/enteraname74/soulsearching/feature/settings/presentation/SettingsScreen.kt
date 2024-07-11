@@ -14,15 +14,15 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.soulsearching.composables.SouTopBar
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.settings.personalisation.presentation.SettingsPersonalisationScreen
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutScreen
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsScreen
+import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationScreen
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 
 /**
  * Represent the view of the settings screen.
@@ -73,7 +73,7 @@ fun SettingsScreenView(
             .fillMaxSize()
             .background(SoulSearchingColorTheme.colorScheme.primary)
     ) {
-        SouTopBar(
+        SoulTopBar(
             title = strings.settings,
             leftAction = finishAction
         )

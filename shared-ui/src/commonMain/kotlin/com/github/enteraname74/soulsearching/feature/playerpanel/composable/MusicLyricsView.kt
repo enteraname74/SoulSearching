@@ -63,7 +63,7 @@ fun MusicLyricsView(
 }
 
 @Composable
-fun FetchingLyricsView(
+private fun FetchingLyricsView(
     contentColor: Color
 ) {
     Box(
@@ -77,7 +77,7 @@ fun FetchingLyricsView(
 }
 
 @Composable
-fun LyricsView(
+private fun LyricsView(
     contentColor: Color,
     subTextColor: Color,
     lyrics: String
@@ -109,7 +109,7 @@ fun LyricsView(
 }
 
 @Composable
-fun NoLyricsFoundView(
+private fun NoLyricsFoundView(
     contentColor: Color
 ) {
     Box(

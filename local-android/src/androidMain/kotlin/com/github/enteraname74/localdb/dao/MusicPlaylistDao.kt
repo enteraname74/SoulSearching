@@ -13,7 +13,7 @@ import java.util.*
 internal interface MusicPlaylistDao {
 
     @Upsert
-    suspend fun insertMusicIntoPlaylist(roomMusicPlaylist: RoomMusicPlaylist)
+    suspend fun upsertMusicIntoPlaylist(roomMusicPlaylist: RoomMusicPlaylist)
 
     @Query("DELETE FROM RoomMusicPlaylist WHERE musicId = :musicId AND playlistId = :playlistId")
     suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID)

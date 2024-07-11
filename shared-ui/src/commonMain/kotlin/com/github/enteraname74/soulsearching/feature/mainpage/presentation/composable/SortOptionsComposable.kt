@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 
 @Composable
 fun SortOptionsComposable(

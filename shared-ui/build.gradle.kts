@@ -22,7 +22,6 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(project(":local-desktop"))
                 implementation(compose.desktop.common)
             }
         }
@@ -30,6 +29,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":core-ui"))
+                implementation(project(":shared-di"))
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
@@ -54,8 +54,6 @@ kotlin {
         }
         androidMain {
             dependencies {
-                implementation(project(":local-android"))
-
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.bundles.androidx)
                 implementation(libs.room)

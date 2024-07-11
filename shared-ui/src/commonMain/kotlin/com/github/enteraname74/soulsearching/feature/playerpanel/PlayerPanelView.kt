@@ -4,28 +4,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.swipeable
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -34,7 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.soulsearching.composables.SoulSearchingBackHandler
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -43,7 +30,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.MusicLyricsView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerListView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelTab
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -72,7 +58,7 @@ fun PlayerPanelView(
         }
     }
 
-    SoulSearchingBackHandler(isExpanded) {
+    SoulBackHandler(isExpanded) {
         coroutineScope.launch {
             musicListDraggableState.animateTo(
                 BottomSheetStates.COLLAPSED,

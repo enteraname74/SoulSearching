@@ -17,7 +17,7 @@ import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyAlbumViewMod
 import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.domain.ModifyAlbumEvent
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.composable.ModifyAlbumComposable
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 
 @Composable
 actual fun ModifyAlbumScreenView(

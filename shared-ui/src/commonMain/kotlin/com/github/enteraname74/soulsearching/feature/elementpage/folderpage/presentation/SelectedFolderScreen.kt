@@ -2,12 +2,7 @@ package com.github.enteraname74.soulsearching.feature.elementpage.folderpage.pre
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -16,14 +11,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.SelectedFolderViewModel
+import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import java.util.UUID
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
+import java.util.*
 
 /**
  * Represent the view of the selected folder screen.
@@ -38,7 +33,7 @@ data class SelectedFolderScreen(
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
 
         val playerViewModel = getScreenModel<PlayerViewModel>()
-        val playerDraggableState = playerViewModel.handler.playerDraggableState
+        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -57,7 +52,7 @@ data class SelectedFolderScreen(
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
             },
-            retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
+            retrieveCoverMethod = allImagesViewModel::getImageCover,
             playerDraggableState = playerDraggableState
         )
     }
@@ -79,7 +74,7 @@ fun SelectedFolderScreenView(
     }
 
     if (!isFolderFetched) {
-        selectedFolderViewModel.handler.onEvent(
+        selectedFolderViewModel.onEvent(
             SelectedFolderEvent.SetSelectedFolder(
                 folderPath = selectedFolderPath
             )
@@ -87,7 +82,7 @@ fun SelectedFolderScreenView(
         isFolderFetched = true
     }
 
-    val state by selectedFolderViewModel.handler.state.collectAsState()
+    val state by selectedFolderViewModel.state.collectAsState()
 
     PlaylistScreen(
         playlistId = null,
@@ -100,7 +95,7 @@ fun SelectedFolderScreenView(
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.AddNbPlayed(
                     it
                 )
@@ -112,42 +107,42 @@ fun SelectedFolderScreenView(
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
         isRemoveFromPlaylistDialogShown = state.isRemoveFromPlaylistDialogShown,
         onSetBottomSheetVisibility = { isShown ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.SetMusicBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.SetDeleteMusicDialogVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.SetAddToPlaylistBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onDeleteMusic = { music ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.DeleteMusic(
                     musicId = music.musicId
                 )
             )
         },
         onToggleQuickAccessState = { music ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.ToggleQuickAccessState(
-                    musicId = music.musicId
+                    music = music
                 )
             )
         },
         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedFolderViewModel.handler.onEvent(
+            selectedFolderViewModel.onEvent(
                 SelectedFolderEvent.AddMusicToPlaylists(
                     musicId = selectedMusic.musicId,
                     selectedPlaylistsIds = selectedPlaylistsIds

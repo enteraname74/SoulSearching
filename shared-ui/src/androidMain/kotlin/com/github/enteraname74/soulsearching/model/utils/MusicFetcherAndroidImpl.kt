@@ -143,7 +143,7 @@ class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count)
                 }
                 cursor.close()
-                playlistRepository.insertPlaylist(
+                playlistRepository.upsert(
                     Playlist(
                         playlistId = UUID.randomUUID(),
                         name = context.getString(R.string.favorite),

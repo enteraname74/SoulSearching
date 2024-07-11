@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain
 
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Music
 import java.util.UUID
 
 /**
@@ -17,7 +18,7 @@ sealed interface SelectedArtistEvent {
 
     data class DeleteMusic(val musicId: UUID): SelectedArtistEvent
 
-    data class ToggleQuickAccessState(val musicId: UUID): SelectedArtistEvent
+    data class ToggleQuickAccessState(val music: Music): SelectedArtistEvent
 
     data class AddMusicToPlaylists(val musicId: UUID, val selectedPlaylistsIds: List<UUID>):
         SelectedArtistEvent

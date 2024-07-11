@@ -65,7 +65,9 @@ internal class RoomAlbumDataSourceImpl(
         }
     }
 
-    override suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist> {
-        return appDatabase.albumDao.getAllAlbumsWithArtist().map { it.toAlbumWithArtist() }
+    override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> {
+        return appDatabase.albumDao.getAllAlbumsWithArtist().map { list ->
+            list.map { it.toAlbumWithArtist() }
+        }
     }
 }

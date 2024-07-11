@@ -11,7 +11,7 @@ interface MusicPlaylistDataSource {
      * Inserts or updates a MusicPlaylist.
      * It is the equivalent of adding a Music to a Playlist.
      */
-    suspend fun insertMusicIntoPlaylist(musicPlaylist: MusicPlaylist)
+    suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist)
 
     /**
      * Deletes a MusicPlaylist.

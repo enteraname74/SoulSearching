@@ -23,7 +23,7 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.domain.viewmodel.SettingsAllFoldersViewModel
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement

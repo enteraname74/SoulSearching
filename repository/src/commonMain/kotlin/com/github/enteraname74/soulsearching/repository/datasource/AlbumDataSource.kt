@@ -49,5 +49,5 @@ interface AlbumDataSource {
     /**
      * Retrieves all AlbumsWithArtist.
      */
-    suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist>
+    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
 }

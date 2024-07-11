@@ -1,37 +1,39 @@
 package com.github.enteraname74.soulsearching.viewmodel
 
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
-import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.model.SoulSearchingSettings
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodelhandler.AllMusicsViewModelHandler
-import com.github.enteraname74.soulsearching.model.MusicFetcherDesktopImpl
-import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
-import com.github.enteraname74.soulsearching.viewmodel.handler.AllMusicsViewModelDesktopHandler
+import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
+import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
+import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
+import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 
-/**
- * Implementation of the AllMusicsViewModel.
- */
 class AllMusicsViewModelDesktopImpl(
-    musicRepository: MusicRepository,
-    playlistRepository: PlaylistRepository,
-    musicAlbumRepository: MusicAlbumRepository,
-    musicArtistRepository: MusicArtistRepository,
     settings: SoulSearchingSettings,
-    playbackManager: PlaybackManagerDesktopImpl,
-    musicFetcher: MusicFetcherDesktopImpl
-) : AllMusicsViewModel {
-    override val handler: AllMusicsViewModelHandler = AllMusicsViewModelDesktopHandler(
-        coroutineScope = screenModelScope,
-        musicRepository = musicRepository,
-        playlistRepository = playlistRepository,
-        musicAlbumRepository = musicAlbumRepository,
-        musicArtistRepository = musicArtistRepository,
-        settings = settings,
-        musicFetcher = musicFetcher,
-        playbackManager = playbackManager
-    )
+    playbackManager: PlaybackManager,
+    getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase,
+    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
+    getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
+    getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
+    musicFetcher: MusicFetcher,
+    deleteMusicUseCase: DeleteMusicUseCase,
+    toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    upsertMusicUseCase: UpsertMusicUseCase,
+) : AllMusicsViewModel(
+    settings = settings,
+    musicFetcher = musicFetcher,
+    playbackManager = playbackManager,
+    getAllMusicsSortedUseCase = getAllMusicsSortedUseCase,
+    getAllPlaylistWithMusicsUseCase = getAllPlaylistWithMusicsUseCase,
+    getArtistIdFromMusicIdUseCase = getArtistIdFromMusicIdUseCase,
+    getAlbumIdFromMusicIdUseCase = getAlbumIdFromMusicIdUseCase,
+    deleteMusicUseCase = deleteMusicUseCase,
+    toggleMusicFavoriteStatusUseCase = toggleMusicFavoriteStatusUseCase,
+    upsertMusicUseCase = upsertMusicUseCase,
+) {
+    override fun checkAndDeleteMusicIfNotExist() {}
 }

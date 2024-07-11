@@ -4,8 +4,8 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
 import com.github.enteraname74.soulsearching.domain.model.MusicFolder
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 
 /**
  * UI State of the main page.

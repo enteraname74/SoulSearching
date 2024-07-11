@@ -42,5 +42,5 @@ internal interface AlbumDao {
 
     @Transaction
     @Query("SELECT * FROM RoomAlbum")
-    suspend fun getAllAlbumsWithArtist(): List<RoomAlbumWithArtist>
+    fun getAllAlbumsWithArtist(): Flow<List<RoomAlbumWithArtist>>
 }

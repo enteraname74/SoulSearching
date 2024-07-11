@@ -165,7 +165,7 @@ abstract class MusicFetcher(
                 albumId = albumId
             )
         )
-        musicArtistRepository.insertMusicIntoArtist(
+        musicArtistRepository.upsertMusicIntoArtist(
             MusicArtist(
                 musicId = musicToAdd.musicId,
                 artistId = artistId

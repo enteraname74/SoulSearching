@@ -19,7 +19,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomShee
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable

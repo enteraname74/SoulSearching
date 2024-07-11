@@ -3,13 +3,7 @@ package com.github.enteraname74.soulsearching.feature.modifyelement.modifyplayli
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
@@ -28,17 +22,17 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.soulsearching.composables.SouTopBar
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyPlaylistViewModel
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.domain.ModifyPlaylistEvent
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.UUID
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.domain.ModifyPlaylistEvent
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.domain.ModifyPlaylistViewModel
+import java.util.*
 
 @Composable
 fun ModifyPlaylistComposable(
@@ -52,7 +46,7 @@ fun ModifyPlaylistComposable(
     }
 
     if (!isPlaylistFetched) {
-        modifyPlaylistViewModel.handler.onEvent(
+        modifyPlaylistViewModel.onEvent(
             ModifyPlaylistEvent.PlaylistFromId(
                 playlistId = UUID.fromString(selectedPlaylistId)
             )
@@ -61,16 +55,16 @@ fun ModifyPlaylistComposable(
     }
 
     val focusManager = LocalFocusManager.current
-    val state by modifyPlaylistViewModel.handler.state.collectAsState()
+    val state by modifyPlaylistViewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
-            SouTopBar(
+            SoulTopBar(
                 title = strings.playlistInformation,
                 leftAction = finishAction,
                 rightIcon = Icons.Rounded.Done,
                 rightAction = {
-                    modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.UpdatePlaylist)
+                    modifyPlaylistViewModel.onEvent(ModifyPlaylistEvent.UpdatePlaylist)
                     finishAction()
                 }
             )
@@ -116,7 +110,7 @@ fun ModifyPlaylistComposable(
                             playlistName = state.selectedPlaylist.name,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.onEvent(ModifyPlaylistEvent.SetName(it))
                             }
                         )
                     }
@@ -162,7 +156,7 @@ fun ModifyPlaylistComposable(
                             playlistName = state.selectedPlaylist.name,
                             focusManager = focusManager,
                             setName = {
-                                modifyPlaylistViewModel.handler.onEvent(ModifyPlaylistEvent.SetName(it))
+                                modifyPlaylistViewModel.onEvent(ModifyPlaylistEvent.SetName(it))
                             }
                         )
                     }

@@ -3,13 +3,7 @@ package com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
@@ -28,18 +22,18 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyMusicViewModel
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextField
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicEvent
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextField
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import java.util.UUID
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicEvent
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicViewModel
+import java.util.*
 
 @Composable
 fun ModifyMusicComposable(
@@ -49,14 +43,14 @@ fun ModifyMusicComposable(
     onCancel: () -> Unit,
     selectImage: () -> Unit
 ) {
-    val state by modifyMusicViewModel.handler.state.collectAsState()
+    val state by modifyMusicViewModel.state.collectAsState()
 
     var isSelectedMusicFetched by rememberSaveable {
         mutableStateOf(false)
     }
 
     if (!isSelectedMusicFetched) {
-        modifyMusicViewModel.handler.getMusicFromId(UUID.fromString(selectedMusicId))
+        modifyMusicViewModel.getMusicFromId(UUID.fromString(selectedMusicId))
         isSelectedMusicFetched = true
     }
 
@@ -115,16 +109,16 @@ fun ModifyMusicComposable(
                             album = state.modifiedMusicInformation.album,
                             artist = state.modifiedMusicInformation.artist,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.onEvent(ModifyMusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetArtist(
                                         it
                                     )
@@ -132,7 +126,7 @@ fun ModifyMusicComposable(
                             },
                             albumsNames = state.matchingAlbumsNames,
                             updateAlbumsNames = { albumSearch ->
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetMatchingAlbums(
                                         search = albumSearch
                                     )
@@ -140,7 +134,7 @@ fun ModifyMusicComposable(
                             },
                             artistsNames = state.matchingArtistsNames,
                             updateArtistsNames = { artistSearch ->
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetMatchingArtists(
                                         search = artistSearch
                                     )
@@ -192,16 +186,16 @@ fun ModifyMusicComposable(
                             album = state.modifiedMusicInformation.album,
                             artist = state.modifiedMusicInformation.artist,
                             focusManager = focusManager,
-                            setName = { modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.SetName(it)) },
+                            setName = { modifyMusicViewModel.onEvent(ModifyMusicEvent.SetName(it)) },
                             setAlbum = {
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetAlbum(
                                         it
                                     )
                                 )
                             },
                             setArtist = {
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetArtist(
                                         it
                                     )
@@ -209,7 +203,7 @@ fun ModifyMusicComposable(
                             },
                             albumsNames = state.matchingAlbumsNames,
                             updateAlbumsNames = { albumSearch ->
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetMatchingAlbums(
                                         search = albumSearch
                                     )
@@ -217,7 +211,7 @@ fun ModifyMusicComposable(
                             },
                             artistsNames = state.matchingArtistsNames,
                             updateArtistsNames = { artistSearch ->
-                                modifyMusicViewModel.handler.onEvent(
+                                modifyMusicViewModel.onEvent(
                                     ModifyMusicEvent.SetMatchingArtists(
                                         search = artistSearch
                                     )

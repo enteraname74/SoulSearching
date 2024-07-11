@@ -13,11 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyArtistViewModel
-import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.domain.ModifyArtistEvent
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.domain.ModifyArtistViewModel
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.composable.ModifyArtistComposable
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 
 @Composable
 actual fun ModifyArtistScreenView(
@@ -28,13 +28,13 @@ actual fun ModifyArtistScreenView(
 ) {
     val context = LocalContext.current
 
-    val state by modifyArtistViewModel.handler.state.collectAsState()
+    val state by modifyArtistViewModel.state.collectAsState()
 
     val resultImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyArtistViewModel.handler.onEvent(
+                modifyArtistViewModel.onEvent(
                     ModifyArtistEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -48,7 +48,7 @@ actual fun ModifyArtistScreenView(
                We accept the finish action even if the user doesn't want to write the file modification on the device (it will
                just not do it then)
             */
-            modifyArtistViewModel.handler.onEvent(ModifyArtistEvent.UpdateArtist)
+            modifyArtistViewModel.onEvent(ModifyArtistEvent.UpdateArtist)
             finishAction()
         }
 
@@ -77,7 +77,7 @@ actual fun ModifyArtistScreenView(
             val intentSenderRequest = IntentSenderRequest.Builder(intent.intentSender).build()
             resultWriteFileLauncher.launch(intentSenderRequest)
         } else {
-            modifyArtistViewModel.handler.onEvent(ModifyArtistEvent.UpdateArtist)
+            modifyArtistViewModel.onEvent(ModifyArtistEvent.UpdateArtist)
             finishAction()
         }
     }

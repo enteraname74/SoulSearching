@@ -15,7 +15,7 @@ class CheckAndDeleteVerification(
     private val musicArtistRepository: MusicArtistDataSource
 ) {
     /**
-     * Check if an album can be deleted automatically (no songs in the album).
+     * Check if an album can be deleted automatically (no songs on the album).
      * Delete the album if possible.
      */
     suspend fun checkAndDeleteAlbum(albumToCheck: Album) {

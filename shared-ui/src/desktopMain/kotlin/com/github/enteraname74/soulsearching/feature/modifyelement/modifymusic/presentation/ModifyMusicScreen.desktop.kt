@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.composable.ModifyMusicComposable
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyMusicViewModel
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicEvent
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicViewModel
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.composable.ModifyMusicComposable
 
 @Composable
 actual fun ModifyMusicScreenView(
@@ -17,7 +17,7 @@ actual fun ModifyMusicScreenView(
         modifyMusicViewModel = modifyMusicViewModel,
         selectedMusicId = selectedMusicId,
         onModifyMusic = {
-            modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
+            modifyMusicViewModel.onEvent(ModifyMusicEvent.UpdateMusic)
             finishAction()
         },
         selectImage = {},

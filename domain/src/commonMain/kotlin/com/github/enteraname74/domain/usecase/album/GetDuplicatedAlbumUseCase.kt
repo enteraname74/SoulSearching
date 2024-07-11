@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.usecase.album
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.repository.AlbumRepository
+import kotlinx.coroutines.flow.first
 import java.util.*
 
 class GetDuplicatedAlbumUseCase(
@@ -13,7 +14,7 @@ class GetDuplicatedAlbumUseCase(
         albumName: String,
         artistId: UUID
     ): Album? {
-        val allAlbumsWithArtists: List<AlbumWithArtist> = albumRepository.getAllAlbumsWithArtist()
+        val allAlbumsWithArtists: List<AlbumWithArtist> = albumRepository.getAllAlbumsWithArtist().first()
         return allAlbumsWithArtists
             .firstOrNull {
                 it.album.albumName == albumName &&

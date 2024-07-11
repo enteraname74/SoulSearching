@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortDirection
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortType
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 
 /**
  * Manage elements related to artists.

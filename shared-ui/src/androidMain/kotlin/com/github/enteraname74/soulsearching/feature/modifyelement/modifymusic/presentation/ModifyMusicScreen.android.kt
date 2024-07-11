@@ -13,11 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyMusicViewModel
-import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicEvent
+import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.domain.ModifyMusicViewModel
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.composable.ModifyMusicComposable
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.model.utils.AndroidUtils
 
 @Composable
 actual fun ModifyMusicScreenView(
@@ -28,13 +28,13 @@ actual fun ModifyMusicScreenView(
 ) {
     val context = LocalContext.current
 
-    val state by modifyMusicViewModel.handler.state.collectAsState()
+    val state by modifyMusicViewModel.state.collectAsState()
 
     val resultImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                modifyMusicViewModel.handler.onEvent(
+                modifyMusicViewModel.onEvent(
                     ModifyMusicEvent.SetCover(
                         AndroidUtils.getBitmapFromUri(uri as Uri, context.contentResolver)
                     )
@@ -49,7 +49,7 @@ actual fun ModifyMusicScreenView(
                 We accept the finish action even if the user doesn't want to write the file modification on the device (it will
                 just not do it then)
                 */
-                modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
+                modifyMusicViewModel.onEvent(ModifyMusicEvent.UpdateMusic)
                 finishAction()
             }
         }
@@ -77,7 +77,7 @@ actual fun ModifyMusicScreenView(
             val intentSenderRequest = IntentSenderRequest.Builder(intent.intentSender).build()
             resultWriteFileLauncher.launch(intentSenderRequest)
         } else {
-            modifyMusicViewModel.handler.onEvent(ModifyMusicEvent.UpdateMusic)
+            modifyMusicViewModel.onEvent(ModifyMusicEvent.UpdateMusic)
             finishAction()
         }
     }

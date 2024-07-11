@@ -2,12 +2,7 @@ package com.github.enteraname74.soulsearching.feature.elementpage.albumpage.pres
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -16,16 +11,16 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.SelectedAlbumViewModel
+import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.composable.AlbumScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import java.util.UUID
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
+import java.util.*
 
 /**
  * Represent the view of the selected album screen.
@@ -40,12 +35,12 @@ data class SelectedAlbumScreen(
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerViewModel = getScreenModel<PlayerViewModel>()
 
-        val playerDraggableState = playerViewModel.handler.playerDraggableState
+        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
-        val state by screenModel.handler.state.collectAsState()
+        val state by screenModel.state.collectAsState()
 
         SelectedAlbumScreenView(
             selectedAlbumViewModel = screenModel,
@@ -78,7 +73,7 @@ data class SelectedAlbumScreen(
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
             },
-            retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
+            retrieveCoverMethod = allImagesViewModel::getImageCover,
             playerDraggableState = playerDraggableState
         )
     }
@@ -101,7 +96,7 @@ fun SelectedAlbumScreenView(
         mutableStateOf(false)
     }
     if (!isAlbumFetched) {
-        selectedAlbumViewModel.handler.onEvent(
+        selectedAlbumViewModel.onEvent(
             SelectedAlbumEvent.SetSelectedAlbum(
                 albumId = UUID.fromString(selectedAlbumId)
             )
@@ -109,12 +104,12 @@ fun SelectedAlbumScreenView(
         isAlbumFetched = true
     }
 
-    val state by selectedAlbumViewModel.handler.state.collectAsState()
+    val state by selectedAlbumViewModel.state.collectAsState()
 
 //    if (musicState.musics.isEmpty()) {
 //        SideEffect {
 //            CoroutineScope(Dispatchers.IO).launch {
-//                if (selectedAlbumViewModel.handler.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
+//                if (selectedAlbumViewModel.doesAlbumExists(UUID.fromString(selectedAlbumId))) {
 //                    withContext(Dispatchers.Main) {
 //                        navigateBack()
 //                    }
@@ -138,7 +133,7 @@ fun SelectedAlbumScreenView(
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.AddNbPlayed(
                     it
                 )
@@ -149,42 +144,42 @@ fun SelectedAlbumScreenView(
         isBottomSheetShown = state.isMusicBottomSheetShown,
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
         onSetBottomSheetVisibility = { isShown ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.SetMusicBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.SetDeleteMusicDialogVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.SetAddToPlaylistBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onDeleteMusic = { music ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.DeleteMusic(
                     musicId = music.musicId
                 )
             )
         },
         onToggleQuickAccessState = { music ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.ToggleQuickAccessState(
-                    musicId = music.musicId
+                    music = music
                 )
             )
         },
         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedAlbumViewModel.handler.onEvent(
+            selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.AddMusicToPlaylists(
                     musicId = selectedMusic.musicId,
                     selectedPlaylistsIds = selectedPlaylistsIds

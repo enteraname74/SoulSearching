@@ -1,31 +1,30 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.domainModule
-import com.github.enteraname74.localdesktop.AppDatabase
-import com.github.enteraname74.localdesktop.localDesktopModule
-import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.viewmodel.MainActivityViewModelDesktopImpl
+import com.github.enteraname74.soulsearching.di.appModule
+import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
+import com.github.enteraname74.soulsearching.shareddi.LocalDatabaseInitializer
 import org.koin.compose.KoinApplication
 
 @Composable
 fun SoulSearchingDesktop() {
-    AppDatabase.connectToDatabase()
+    LocalDatabaseInitializer.init()
     KoinApplication(
         application = {
-            modules(domainModule, localDesktopModule, appModule, commonModule)
+            modules(appModule)
         }
     ) {
         val colorThemeManager: ColorThemeManager = injectElement()
         SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
-        val mainActivityViewModel = injectElement<MainActivityViewModelDesktopImpl>()
+        val mainActivityViewModel = injectElement<MainActivityViewModel>()
         val playbackManager = injectElement<PlaybackManagerDesktopImpl>()
 
-        with(mainActivityViewModel.handler) {
+        with(mainActivityViewModel) {
             isReadPermissionGranted = true
             isPostNotificationGranted = true
         }

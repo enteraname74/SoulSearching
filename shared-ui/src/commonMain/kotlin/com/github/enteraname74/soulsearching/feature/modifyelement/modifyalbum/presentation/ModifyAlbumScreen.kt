@@ -7,7 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.viewmodel.ModifyAlbumViewModel
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 
 data class ModifyAlbumScreen(private val selectedAlbumId: String): Screen {
     @Composable

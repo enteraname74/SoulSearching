@@ -3,27 +3,9 @@ package com.github.enteraname74.soulsearching.feature.player.presentation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -32,16 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.swipeable
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -59,30 +33,30 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
-import com.github.soulsearching.composables.SoulSearchingBackHandler
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
 import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
-import com.github.enteraname74.soulsearching.domain.viewmodel.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerEvent
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.ExpandedPlayButtonsComposable
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.MinimisedPlayButtonsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelView
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -107,7 +81,7 @@ fun PlayerDraggableView(
     viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val state by playerViewModel.handler.state.collectAsState()
+    val state by playerViewModel.state.collectAsState()
 
     val backgroundColor: Color by animateColorAsState(
         targetValue = when (draggableState.currentValue) {
@@ -225,7 +199,7 @@ fun PlayerDraggableView(
         mutableStateOf<UUID?>(null)
     }
 
-    SoulSearchingBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
+    SoulBackHandler(draggableState.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (musicListDraggableState.currentValue != BottomSheetStates.COLLAPSED) {
                 musicListDraggableState.animateTo(
@@ -247,7 +221,7 @@ fun PlayerDraggableView(
     ) {
         coroutineScope.launch {
             if (state.isMusicBottomSheetShown) {
-                playerViewModel.handler.onEvent(
+                playerViewModel.onEvent(
                     PlayerEvent.SetMusicBottomSheetVisibility(
                         isShown = false
                     )
@@ -361,38 +335,38 @@ fun PlayerDraggableView(
                 isBottomSheetShown = state.isMusicBottomSheetShown,
                 isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
                 onDismiss = {
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.SetMusicBottomSheetVisibility(
                             isShown = false
                         )
                     )
                 },
                 onSetDeleteMusicDialogVisibility = { isShown ->
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.SetDeleteMusicDialogVisibility(
                             isShown = isShown
                         )
                     )
                 },
                 onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.SetAddToPlaylistBottomSheetVisibility(
                             isShown = isShown
                         )
                     )
                 },
                 onDeleteMusic = {
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.DeleteMusic(musicId = music.musicId)
                     )
                 },
                 onToggleQuickAccessState = {
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.ToggleQuickAccessState(musicId = music.musicId)
                     )
                 },
                 onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.AddMusicToPlaylists(
                             musicId = music.musicId,
                             selectedPlaylistsIds = selectedPlaylistsIds
@@ -483,7 +457,7 @@ fun PlayerDraggableView(
                         if (state.currentMusic != null) {
                             coroutineScope.launch {
                                 selectedMusicId = state.currentMusic?.musicId
-                                playerViewModel.handler.onEvent(
+                                playerViewModel.onEvent(
                                     PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
                                 )
                             }
@@ -733,7 +707,7 @@ fun PlayerDraggableView(
                                     mainColor = textColor,
                                     sliderInactiveBarColor = contentColor,
                                     onSetFavoriteState = {
-                                        playerViewModel.handler.onEvent(
+                                        playerViewModel.onEvent(
                                             PlayerEvent.ToggleFavoriteState
                                         )
                                     },
@@ -750,7 +724,7 @@ fun PlayerDraggableView(
                                 mainColor = textColor,
                                 sliderInactiveBarColor = contentColor,
                                 onSetFavoriteState = {
-                                    playerViewModel.handler.onEvent(
+                                    playerViewModel.onEvent(
                                         PlayerEvent.ToggleFavoriteState
                                     )
                                 },
@@ -812,7 +786,7 @@ fun PlayerDraggableView(
                 onSelectedMusic = { selectedMusic ->
                     coroutineScope.launch {
                         selectedMusicId = selectedMusic.musicId
-                        playerViewModel.handler.onEvent(
+                        playerViewModel.onEvent(
                             PlayerEvent.SetMusicBottomSheetVisibility(
                                 isShown = true
                             )
@@ -821,7 +795,7 @@ fun PlayerDraggableView(
                 },
                 coverList = coverList,
                 onRetrieveLyrics = {
-                    playerViewModel.handler.onEvent(
+                    playerViewModel.onEvent(
                         PlayerEvent.GetLyrics
                     )
                 },

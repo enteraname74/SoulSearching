@@ -11,8 +11,8 @@ import java.util.*
 class MusicPlaylistRepositoryImpl(
     private val musicPlaylistDataSource: MusicPlaylistDataSource
 ): MusicPlaylistRepository {
-    override suspend fun insertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) =
-        musicPlaylistDataSource.insertMusicIntoPlaylist(
+    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) =
+        musicPlaylistDataSource.upsertMusicIntoPlaylist(
             musicPlaylist = musicPlaylist
         )
 

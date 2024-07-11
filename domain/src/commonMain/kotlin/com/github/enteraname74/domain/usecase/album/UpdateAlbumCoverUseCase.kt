@@ -1,6 +1,8 @@
 package com.github.enteraname74.domain.usecase.album
 
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.repository.AlbumRepository
+import kotlinx.coroutines.flow.first
 import java.util.UUID
 
 class UpdateAlbumCoverUseCase(
@@ -10,9 +12,11 @@ class UpdateAlbumCoverUseCase(
         newCoverId: UUID,
         albumId: UUID,
     ) {
-        albumRepository.updateAlbumCover(
-            newCoverId = newCoverId,
-            albumId = albumId,
+        val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
+        albumRepository.upsert(
+            album = album.copy(
+                coverId = newCoverId,
+            )
         )
     }
 }

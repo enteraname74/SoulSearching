@@ -4,10 +4,9 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.github.enteraname74.domain.domainModule
-import com.github.enteraname74.localdb.localAndroidModule
-import com.github.soulsearching.R
+import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
+import com.github.soulsearching.R
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -16,7 +15,7 @@ class App : Application() {
         createNotificationChannel()
         startKoin {
             androidContext(applicationContext)
-            modules(domainModule, appModule, localAndroidModule, commonModule)
+            modules(appModule)
         }
         super.onCreate()
     }

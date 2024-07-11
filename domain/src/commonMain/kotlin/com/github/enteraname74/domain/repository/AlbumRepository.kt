@@ -11,16 +11,9 @@ import java.util.*
  */
 interface AlbumRepository {
     /**
-     * Update an album with new information.
-     */
-    suspend fun update(
-        newAlbumWithArtistInformation: AlbumWithArtist
-    )
-
-    /**
      * Delete an album.
      */
-    suspend fun delete(albumId: UUID)
+    suspend fun delete(album: Album)
 
     /**
      * Inserts a new Album.
@@ -55,5 +48,5 @@ interface AlbumRepository {
     /**
      * Retrieves all AlbumsWithArtist.
      */
-    suspend fun getAllAlbumsWithArtist(): List<AlbumWithArtist>
+    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
 }

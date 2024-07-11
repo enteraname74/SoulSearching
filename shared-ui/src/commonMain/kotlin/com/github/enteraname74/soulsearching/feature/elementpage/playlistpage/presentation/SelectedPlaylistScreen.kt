@@ -2,12 +2,7 @@ package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.p
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -16,15 +11,15 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllImageCoversViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.PlayerViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.SelectedPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
-import java.util.UUID
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
+import java.util.*
 
 /**
  * Represent the view of the selected album screen.
@@ -40,7 +35,7 @@ data class SelectedPlaylistScreen(
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
 
         val playerViewModel = getScreenModel<PlayerViewModel>()
-        val playerDraggableState = playerViewModel.handler.playerDraggableState
+        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -66,7 +61,7 @@ data class SelectedPlaylistScreen(
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
             },
-            retrieveCoverMethod = allImagesViewModel.handler::getImageCover,
+            retrieveCoverMethod = allImagesViewModel::getImageCover,
             playerDraggableState = playerDraggableState
         )
     }
@@ -90,7 +85,7 @@ fun SelectedPlaylistScreenView(
     }
 
     if (!isPlaylistFetched) {
-        selectedPlaylistViewModel.handler.onEvent(
+        selectedPlaylistViewModel.onEvent(
             SelectedPlaylistEvent.SetSelectedPlaylist(
                 playlistId = UUID.fromString(selectedPlaylistId)
             )
@@ -98,7 +93,7 @@ fun SelectedPlaylistScreenView(
         isPlaylistFetched = true
     }
 
-    val state by selectedPlaylistViewModel.handler.state.collectAsState()
+    val state by selectedPlaylistViewModel.state.collectAsState()
 
     PlaylistScreen(
         playlistId = state.playlistWithMusics?.playlist?.playlistId,
@@ -114,7 +109,7 @@ fun SelectedPlaylistScreenView(
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.AddNbPlayed(
                     it
                 )
@@ -126,50 +121,50 @@ fun SelectedPlaylistScreenView(
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
         isRemoveFromPlaylistDialogShown = state.isRemoveFromPlaylistDialogShown,
         onSetBottomSheetVisibility = { isShown ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.SetMusicBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.SetDeleteMusicDialogVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetRemoveMusicFromPlaylistDialogVisibility = { isShown ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.SetRemoveFromPlaylistDialogVisibility(
                     isShown = isShown
                 )
             )
         },
         onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.SetAddToPlaylistBottomSheetVisibility(
                     isShown = isShown
                 )
             )
         },
         onDeleteMusic = { music ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.DeleteMusic(
                     musicId = music.musicId
                 )
             )
         },
         onToggleQuickAccessState = { music ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.ToggleQuickAccessState(
-                    musicId = music.musicId
+                    music = music
                 )
             )
         },
         onRemoveFromPlaylist = { music ->
             state.playlistWithMusics?.playlist?.playlistId?.let { playlistId ->
-                selectedPlaylistViewModel.handler.onEvent(
+                selectedPlaylistViewModel.onEvent(
                     SelectedPlaylistEvent.RemoveMusicFromPlaylist(
                         musicId = music.musicId,
                         playlistId = playlistId
@@ -178,7 +173,7 @@ fun SelectedPlaylistScreenView(
             }
         },
         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedPlaylistViewModel.handler.onEvent(
+            selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.AddMusicToPlaylists(
                     musicId = selectedMusic.musicId,
                     selectedPlaylistsIds = selectedPlaylistsIds

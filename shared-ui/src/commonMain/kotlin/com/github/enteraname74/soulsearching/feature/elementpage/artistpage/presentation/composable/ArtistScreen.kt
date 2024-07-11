@@ -41,13 +41,13 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.soulsearching.composables.SoulSearchingBackHandler
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
@@ -116,7 +116,7 @@ fun ArtistScreen(
         hasPlaylistPaletteBeenFetched = true
     }
 
-    SoulSearchingBackHandler(playerDraggableState.currentValue != BottomSheetStates.EXPANDED) {
+    SoulBackHandler(playerDraggableState.currentValue != BottomSheetStates.EXPANDED) {
         navigateBack()
     }
 

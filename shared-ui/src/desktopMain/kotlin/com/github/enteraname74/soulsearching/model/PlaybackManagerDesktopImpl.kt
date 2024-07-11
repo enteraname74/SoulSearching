@@ -25,6 +25,10 @@ class PlaybackManagerDesktopImpl(
         TODO("Not yet implemented")
     }
 
+    override fun updateNotification() {
+        TODO("Not yet implemented")
+    }
+
     override fun update() {
         TODO("Not yet implemented")
     }

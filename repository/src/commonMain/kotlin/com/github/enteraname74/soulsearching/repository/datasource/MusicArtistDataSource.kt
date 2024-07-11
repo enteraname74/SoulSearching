@@ -11,7 +11,7 @@ interface MusicArtistDataSource {
      * Inserts or updates a MusicArtist.
      * It is the equivalent of adding a Music to an Artist.
      */
-    suspend fun insertMusicIntoArtist(musicArtist: MusicArtist)
+    suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist)
 
     /**
      * Change the Artist of a Music.

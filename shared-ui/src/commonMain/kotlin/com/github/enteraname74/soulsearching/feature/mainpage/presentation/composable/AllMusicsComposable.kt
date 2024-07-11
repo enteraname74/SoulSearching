@@ -36,7 +36,7 @@ import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.pres
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation.SelectedMonthScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.settings.domain.ViewSettingsManager
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
 import java.util.UUID

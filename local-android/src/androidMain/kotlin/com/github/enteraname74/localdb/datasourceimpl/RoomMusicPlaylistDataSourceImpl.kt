@@ -13,8 +13,8 @@ import java.util.*
 internal class RoomMusicPlaylistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicPlaylistDataSource {
-    override suspend fun insertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
-        appDatabase.musicPlaylistDao.insertMusicIntoPlaylist(
+    override suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
+        appDatabase.musicPlaylistDao.upsertMusicIntoPlaylist(
             roomMusicPlaylist = musicPlaylist.toRoomMusicPlaylist()
         )
     }

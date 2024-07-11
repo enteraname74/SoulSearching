@@ -99,7 +99,7 @@ class MusicFetcherDesktopImpl(
     override suspend fun fetchMusics(updateProgress: (Float) -> Unit, finishAction: () -> Unit) {
         val root = File("/home")
         extractMusicsFromCurrentDirectory(root)
-        playlistRepository.insertPlaylist(
+        playlistRepository.upsert(
             Playlist(
                 playlistId = UUID.randomUUID(),
                 name = strings.favorite,

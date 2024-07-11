@@ -1,18 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlayerMode
-import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.model.SoulSearchingSettings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.UUID
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
+import java.util.*
 
 /**
  * Used to manage the music playback of the application.
@@ -321,7 +315,7 @@ abstract class PlaybackManager(
         playedListSavingJob = CoroutineScope(Dispatchers.IO).launch {
             playerMusicRepository.deleteAll()
             for (id in playedList.map { it.musicId }) {
-                playerMusicRepository.insertPlayerMusic(
+                playerMusicRepository.upsertMusicToPlayerList(
                     playerMusic = PlayerMusic(
                         playerMusicId = id
                     )
@@ -520,7 +514,7 @@ abstract class PlaybackManager(
     /**
      * Shuffle the current playlist and place the current music at first place in the list.
      */
-    private fun shuffleCurrentList(listToShuffle: java.util.ArrayList<Music>) {
+    private fun shuffleCurrentList(listToShuffle: ArrayList<Music>) {
         val tmpList = listToShuffle.map { it.copy() } as ArrayList<Music>
         tmpList.shuffle()
         currentMusic?.let { music ->
@@ -568,7 +562,7 @@ abstract class PlaybackManager(
      * Retrieve the player music list from the database.
      */
     suspend fun getSavedPlayedList(): List<Music> {
-        val playerWithMusics = playerMusicRepository.getAllPlayerMusics()
+        val playerWithMusics: List<PlayerWithMusicItem> = playerMusicRepository.getAll().first()
 
         return playerWithMusics.filter { it.music != null }.map { it.music!! }
     }
@@ -607,7 +601,11 @@ abstract class PlaybackManager(
         player.setMusic(music)
         player.launchMusic()
         CoroutineScope(Dispatchers.IO).launch {
-            musicRepository.updateNbPlayed(music.musicId)
+            musicRepository.upsert(
+                music = music.copy(
+                    nbPlayed = music.nbPlayed + 1,
+                )
+            )
         }
         update()
         updateNotification()
@@ -621,7 +619,7 @@ abstract class PlaybackManager(
         if (!isChangingPlayerMode) {
             isChangingPlayerMode = true
             setPlayerMode(PlayerMode.NORMAL)
-            setCurrentPlayedList(musicList.map { it.copy() } as java.util.ArrayList<Music>)
+            setCurrentPlayedList(musicList.map { it.copy() } as ArrayList<Music>)
 
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = currentMusicIndex,
@@ -657,7 +655,7 @@ abstract class PlaybackManager(
 
                 PlayerMode.LOOP -> {
                     // to normal mode :
-                    playedList = initialList.map { it.copy() } as java.util.ArrayList<Music>
+                    playedList = initialList.map { it.copy() } as ArrayList<Music>
                     playedListId = null
                     callback.onPlayedListUpdated(
                         playedList = playedList

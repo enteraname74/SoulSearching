@@ -15,14 +15,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import com.github.enteraname74.domain.domainModule
-import com.github.enteraname74.localdb.localAndroidModule
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
-import com.github.enteraname74.soulsearching.domain.viewmodel.AllMusicsViewModel
-import com.github.enteraname74.soulsearching.domain.viewmodel.MainActivityViewModel
-import com.github.enteraname74.soulsearching.model.playback.PlayerService
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.model.playback.PlayerService
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
@@ -71,29 +70,29 @@ class MainActivity : AppCompatActivity() {
         initializeBroadcastReceive()
 
         setContent {
-            mainActivityViewModel.handler.isReadPermissionGranted =
+            mainActivityViewModel.isReadPermissionGranted =
                 SoulSearchingContext.checkIfReadPermissionGranted()
-            mainActivityViewModel.handler.isPostNotificationGranted =
+            mainActivityViewModel.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.handler.isReadPermissionGranted = isGranted
+                    mainActivityViewModel.isReadPermissionGranted = isGranted
                 }
 
                 val postNotificationLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.handler.isPostNotificationGranted = isGranted
+                    mainActivityViewModel.isPostNotificationGranted = isGranted
                 }
 
                 if (
-                    !mainActivityViewModel.handler.isReadPermissionGranted ||
-                    !mainActivityViewModel.handler.isPostNotificationGranted
+                    !mainActivityViewModel.isReadPermissionGranted ||
+                    !mainActivityViewModel.isPostNotificationGranted
                 ) {
                     MissingPermissionsComposable()
                     SideEffect {
                         checkAndAskMissingPermissions(
-                            isReadPermissionGranted = mainActivityViewModel.handler.isReadPermissionGranted,
-                            isPostNotificationGranted = mainActivityViewModel.handler.isPostNotificationGranted,
+                            isReadPermissionGranted = mainActivityViewModel.isReadPermissionGranted,
+                            isPostNotificationGranted = mainActivityViewModel.isPostNotificationGranted,
                             readPermissionLauncher = readPermissionLauncher,
                             postNotificationLauncher = postNotificationLauncher,
                         )
@@ -147,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         try {
-            allMusicsViewModel.handler.checkAndDeleteMusicIfNotExist()
+            allMusicsViewModel.checkAndDeleteMusicIfNotExist()
         } catch (_: RuntimeException) {
 
         }
@@ -157,8 +156,8 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         if (isFinishing) {
             playbackManager.stopPlayback(resetPlayedList = false)
-            unloadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
-            loadKoinModules(listOf(domainModule, appModule, localAndroidModule, commonModule))
+            unloadKoinModules(appModule)
+            loadKoinModules(appModule)
         }
     }
 }

@@ -12,8 +12,8 @@ import java.util.*
 internal class RoomMusicArtistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicArtistDataSource {
-    override suspend fun insertMusicIntoArtist(musicArtist: MusicArtist) {
-        appDatabase.musicArtistDao.insertMusicIntoArtist(
+    override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) {
+        appDatabase.musicArtistDao.upsertMusicIntoArtist(
             roomMusicArtist = musicArtist.toRoomMusicArtist()
         )
     }

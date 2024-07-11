@@ -6,10 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 interface ArtistRepository {
-    /**
-     * Update an artist with new information.
-     */
-    suspend fun update(newArtistWithMusicsInformation: ArtistWithMusics)
 
     /**
      * Inserts or updates an artist.
@@ -25,6 +21,11 @@ interface ArtistRepository {
      * Retrieves an Artist from its id.
      */
     fun getFromId(artistId: UUID): Flow<Artist?>
+
+    /**
+     * Retrieves an Artist from its name.
+     */
+    suspend fun getFromName(artistName: String): Artist?
 
     /**
      * Retrieves a flow of all Artist.
