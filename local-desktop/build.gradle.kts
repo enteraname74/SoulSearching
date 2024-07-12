@@ -9,7 +9,9 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(project(mapOf("path" to ":domain")))
+                implementation(project(":domain"))
+                implementation(project(":repository"))
+                implementation(files("exposed-flows-core-0.2.0.jar"))
                 implementation(libs.koin.core)
                 implementation(libs.bundles.exposed)
                 implementation(libs.sqlite.jdbc)
