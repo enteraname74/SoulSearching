@@ -5,7 +5,7 @@ import com.github.enteraname74.soulsearching.localdesktop.dao.MusicDao
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.util.UUID
+import java.util.*
 
 internal class MusicDataSourceImpl(
     private val musicDao: MusicDao
@@ -28,8 +28,7 @@ internal class MusicDataSourceImpl(
     override fun getFromId(musicId: UUID): Flow<Music?> =
         musicDao.getFromId(musicId)
 
-    override fun getAll(): Flow<List<Music>> =
-        musicDao.getAll()
+    override fun getAll(): Flow<List<Music>> = musicDao.getAll()
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDao.getAllMusicFromAlbum(albumId).first()

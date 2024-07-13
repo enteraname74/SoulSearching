@@ -15,12 +15,24 @@ internal object PlayerMusicTable: LongIdTable() {
     val playerMusicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE)
 }
 
-internal fun ResultRow.toPlayerMusic(): PlayerMusic = PlayerMusic(
-    id = this[PlayerMusicTable.id].value,
-    playerMusicId = this[PlayerMusicTable.playerMusicId].value,
-)
+internal fun ResultRow.toPlayerMusic(): PlayerMusic? =
+    try {
+        PlayerMusic(
+            id = this[PlayerMusicTable.id].value,
+            playerMusicId = this[PlayerMusicTable.playerMusicId].value,
+        )
+    } catch (_: Exception) {
+        null
+    }
 
-internal fun ResultRow.toPlayerWithMusicItem(): PlayerWithMusicItem = PlayerWithMusicItem(
-    playerMusic = this.toPlayerMusic(),
-    music = this.toMusic(),
-)
+internal fun ResultRow.toPlayerWithMusicItem(): PlayerWithMusicItem? =
+    try {
+        this.toPlayerMusic()?.let {
+            PlayerWithMusicItem(
+                playerMusic = it,
+                music = this.toMusic(),
+            )
+        }
+    } catch (_: Exception) {
+        null
+    }

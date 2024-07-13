@@ -63,6 +63,7 @@ abstract class AllMusicsViewModel(
     val searchDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics = _sortDirection.flatMapLatest { sortDirection ->
         _sortType.flatMapLatest { sortType ->
@@ -73,7 +74,7 @@ abstract class AllMusicsViewModel(
         }
     }.stateIn(
         screenModelScope,
-        SharingStarted.WhileSubscribed(),
+        SharingStarted.Eagerly,
         ArrayList()
     )
 

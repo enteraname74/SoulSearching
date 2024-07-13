@@ -19,8 +19,13 @@ internal object MusicPlaylistTable: LongIdTable() {
 /**
  * Builds a MusicPlaylist from a ResultRow.
  */
-internal fun ResultRow.toMusicPlaylist(): MusicPlaylist = MusicPlaylist(
-    id = this[MusicPlaylistTable.id].value,
-    musicId = this[MusicPlaylistTable.musicId].value,
-    playlistId = this[MusicPlaylistTable.playlistId].value
-)
+internal fun ResultRow.toMusicPlaylist(): MusicPlaylist? =
+    try {
+        MusicPlaylist(
+            id = this[MusicPlaylistTable.id].value,
+            musicId = this[MusicPlaylistTable.musicId].value,
+            playlistId = this[MusicPlaylistTable.playlistId].value
+        )
+    } catch (_: Exception) {
+        null
+    }

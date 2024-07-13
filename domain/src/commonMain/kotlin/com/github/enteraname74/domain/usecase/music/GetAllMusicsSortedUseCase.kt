@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -13,10 +12,13 @@ class GetAllMusicsSortedUseCase(
 ) {
     operator fun invoke(sortDirection: Int, sortType: Int) : Flow<List<Music>> =
         musicRepository.getAll().map { list ->
-            list.sorted(
+            println("ALL MUSICS: ${list.size}")
+            val sorted = list.sorted(
                 sortDirection = sortDirection,
                 sortType = sortType,
             )
+            println("After sort: $sorted")
+            sorted
         }
 
     private fun List<Music>.sortedByType(sortType: Int): List<Music> =

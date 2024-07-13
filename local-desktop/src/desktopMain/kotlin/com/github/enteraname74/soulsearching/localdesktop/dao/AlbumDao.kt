@@ -7,12 +7,7 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
-import com.github.enteraname74.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
-import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toAlbum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -50,6 +45,7 @@ internal class AlbumDao(
             .orderBy(AlbumTable.albumName to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toAlbum() }
+            .map { it.filterNotNull() }
     }
 
     fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = transaction {
@@ -62,6 +58,7 @@ internal class AlbumDao(
         ).selectAll()
             .asFlow()
             .mapResultRow { it.toAlbum() }
+            .map { it.filterNotNull() }
     }
 
     fun getFromId(albumId: UUID): Flow<Album?> = transaction {
@@ -93,12 +90,14 @@ internal class AlbumDao(
             .map { list ->
                 list.groupBy(
                     { it.toAlbum() }, { it.toArtist() }
-                ).map { (k,v) ->
-                    AlbumWithArtist(
-                        album = k,
-                        artist = v.firstOrNull(),
-                    )
-                }
+                ).map { (album, artist) ->
+                    album?.let {
+                        AlbumWithArtist(
+                            album = it,
+                            artist = artist.firstOrNull(),
+                        )
+                    }
+                }.filterNotNull()
             }
     }
 
@@ -109,13 +108,15 @@ internal class AlbumDao(
             .map { list ->
                 list.groupBy(
                     { it.toAlbum() }, { Pair(it.toMusic(), it.toArtist()) }
-                ).map { (k,v) ->
-                    AlbumWithMusics(
-                        album = k,
-                        artist = v.map { it.second }.firstOrNull(),
-                        musics = v.map { it.first },
-                    )
-                }
+                ).map { (album, elt) ->
+                    album?.let { actualAlbum ->
+                        AlbumWithMusics(
+                            album = actualAlbum,
+                            artist = elt.map { it.second }.firstOrNull(),
+                            musics = elt.filter { it.first != null }.map { it.first!! },
+                        )
+                    }
+                }.filterNotNull()
             }
     }
 }

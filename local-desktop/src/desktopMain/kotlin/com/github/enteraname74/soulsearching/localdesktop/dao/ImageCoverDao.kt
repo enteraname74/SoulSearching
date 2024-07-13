@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.ImageCoverTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toImageCover
 import com.github.enteraname74.soulsearching.localdesktop.utils.ExposedUtils
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
@@ -52,5 +53,6 @@ internal class ImageCoverDao {
             .selectAll()
             .asFlow()
             .mapResultRow { it.toImageCover() }
+            .map { it.filterNotNull() }
     }
 }

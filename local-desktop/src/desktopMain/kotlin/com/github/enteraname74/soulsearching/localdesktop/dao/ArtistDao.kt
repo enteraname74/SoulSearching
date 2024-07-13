@@ -68,6 +68,7 @@ internal class ArtistDao(
             .selectAll()
             .asFlow()
             .mapResultRow { it.toArtist() }
+            .map { list -> list.filterNotNull() }
     }
 
     fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> = transaction {
@@ -77,12 +78,14 @@ internal class ArtistDao(
             .map { list ->
                 list.groupBy(
                     { it.toArtist() }, { it.toMusic() }
-                ).map { (k,v) ->
-                    ArtistWithMusics(
-                        artist = k,
-                        musics = v,
-                    )
-                }
+                ).map { (artist,songs) ->
+                    artist?.let {
+                        ArtistWithMusics(
+                            artist = it,
+                            musics = songs.filterNotNull(),
+                        )
+                    }
+                }.filterNotNull()
             }
     }
 

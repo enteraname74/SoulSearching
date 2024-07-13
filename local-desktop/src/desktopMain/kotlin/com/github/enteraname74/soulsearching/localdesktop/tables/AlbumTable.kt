@@ -21,11 +21,16 @@ internal object AlbumTable: UUIDTable() {
 /**
  * Builds an Album from a ResultRow.
  */
-internal fun ResultRow.toAlbum(): Album = Album(
-    albumId = this[AlbumTable.id].value,
-    albumName = this[AlbumTable.albumName],
-    coverId = this[AlbumTable.coverId]?.let { UUID.fromString(it) },
-    addedDate = this[AlbumTable.addedDate],
-    nbPlayed = this[AlbumTable.nbPlayed],
-    isInQuickAccess = this[AlbumTable.isInQuickAccess],
-)
+internal fun ResultRow.toAlbum(): Album? =
+    try {
+        Album(
+            albumId = this[AlbumTable.id].value,
+            albumName = this[AlbumTable.albumName],
+            coverId = this[AlbumTable.coverId]?.let { UUID.fromString(it) },
+            addedDate = this[AlbumTable.addedDate],
+            nbPlayed = this[AlbumTable.nbPlayed],
+            isInQuickAccess = this[AlbumTable.isInQuickAccess],
+        )
+    } catch (_: Exception) {
+        null
+    }

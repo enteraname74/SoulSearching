@@ -6,7 +6,6 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
-import com.github.enteraname74.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
@@ -55,6 +54,7 @@ internal class PlaylistDao(
             .orderBy(PlaylistTable.name to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toPlaylist() }
+            .map { it.filterNotNull() }
     }
 
     fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> = transaction {
@@ -64,12 +64,14 @@ internal class PlaylistDao(
             .map { list ->
                 list.groupBy(
                     { it.toPlaylist() }, { it.toMusic() }
-                ).map { (k,v) ->
-                    PlaylistWithMusics(
-                        playlist = k,
-                        musics = v,
-                    )
-                }
+                ).map { (playlist,songs) ->
+                    playlist?.let {
+                        PlaylistWithMusics(
+                            playlist = it,
+                            musics = songs.filterNotNull(),
+                        )
+                    }
+                }.filterNotNull()
             }
     }
 

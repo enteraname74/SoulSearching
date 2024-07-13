@@ -26,6 +26,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
+                implementation(libs.coroutines.core.swing)
             }
         }
         commonMain {
@@ -53,6 +54,8 @@ kotlin {
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)
                 implementation(libs.bundles.voyager)
+
+                implementation(libs.coroutines.core)
             }
         }
         androidMain {

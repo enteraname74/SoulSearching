@@ -22,12 +22,17 @@ internal object PlaylistTable: UUIDTable() {
 /**
  * Builds a Playlist from a ResultRow.
  */
-internal fun ResultRow.toPlaylist(): Playlist = Playlist(
-    playlistId = this[PlaylistTable.id].value,
-    name = this[PlaylistTable.name],
-    coverId = this[PlaylistTable.coverId]?.let { UUID.fromString(it) },
-    isFavorite = this[PlaylistTable.isFavorite],
-    addedDate = this[PlaylistTable.addedDate],
-    nbPlayed = this[PlaylistTable.nbPlayed],
-    isInQuickAccess = this[PlaylistTable.isInQuickAccess]
-)
+internal fun ResultRow.toPlaylist(): Playlist? =
+    try {
+        Playlist(
+            playlistId = this[PlaylistTable.id].value,
+            name = this[PlaylistTable.name],
+            coverId = this[PlaylistTable.coverId]?.let { UUID.fromString(it) },
+            isFavorite = this[PlaylistTable.isFavorite],
+            addedDate = this[PlaylistTable.addedDate],
+            nbPlayed = this[PlaylistTable.nbPlayed],
+            isInQuickAccess = this[PlaylistTable.isInQuickAccess]
+        )
+    } catch (_: Exception) {
+        null
+    }

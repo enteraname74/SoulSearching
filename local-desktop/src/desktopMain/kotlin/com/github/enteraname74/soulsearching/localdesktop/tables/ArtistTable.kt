@@ -21,11 +21,16 @@ internal object ArtistTable: UUIDTable() {
 /**
  * Builds an Artist from a ResultRow.
  */
-internal fun ResultRow.toArtist(): Artist = Artist(
-    artistId = this[ArtistTable.id].value,
-    artistName = this[ArtistTable.artistName],
-    coverId = this[ArtistTable.coverId]?.let { UUID.fromString(it) },
-    addedDate = this[ArtistTable.addedDate],
-    nbPlayed = this[ArtistTable.nbPlayed],
-    isInQuickAccess = this[ArtistTable.isInQuickAccess]
-)
+internal fun ResultRow.toArtist(): Artist? =
+    try {
+        Artist(
+            artistId = this[ArtistTable.id].value,
+            artistName = this[ArtistTable.artistName],
+            coverId = this[ArtistTable.coverId]?.let { UUID.fromString(it) },
+            addedDate = this[ArtistTable.addedDate],
+            nbPlayed = this[ArtistTable.nbPlayed],
+            isInQuickAccess = this[ArtistTable.isInQuickAccess]
+        )
+    } catch (_: Exception) {
+        null
+    }

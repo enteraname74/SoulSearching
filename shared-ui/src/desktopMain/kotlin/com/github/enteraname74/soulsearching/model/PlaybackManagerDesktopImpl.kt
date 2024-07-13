@@ -12,24 +12,22 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.SoulSea
 class PlaybackManagerDesktopImpl(
     settings: SoulSearchingSettings,
     playerMusicRepository: PlayerMusicRepository,
-    musicRepository: MusicRepository
+    musicRepository: MusicRepository,
 ): PlaybackManager(
     settings = settings,
     playerMusicRepository = playerMusicRepository,
     musicRepository = musicRepository
 ) {
     override val player: SoulSearchingPlayer
-        get() = TODO("Not yet implemented")
+        get() = SoulSearchingDesktopPlayerImpl()
 
     override fun stopPlayback(resetPlayedList: Boolean) {
-        TODO("Not yet implemented")
+
     }
 
-    override fun updateNotification() {
-        TODO("Not yet implemented")
-    }
+    override fun updateNotification() {}
 
     override fun update() {
-        TODO("Not yet implemented")
+
     }
 }

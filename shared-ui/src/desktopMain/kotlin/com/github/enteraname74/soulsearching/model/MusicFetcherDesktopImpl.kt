@@ -68,7 +68,7 @@ class MusicFetcherDesktopImpl(
 ) {
 
     /**
-     * Tries to retrieves the cover of a music from its metadata.
+     * Tries to retrieve the cover of a music from its metadata.
      */
     private fun fetchMusicCoverFromMetadata(tag: Tag): ImageBitmap? {
         return try {

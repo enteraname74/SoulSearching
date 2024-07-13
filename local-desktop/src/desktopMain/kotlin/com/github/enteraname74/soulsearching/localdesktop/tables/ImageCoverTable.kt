@@ -17,8 +17,13 @@ internal object ImageCoverTable : LongIdTable() {
 /**
  * Builds an ImageCover from a ResultRow.
  */
-internal fun ResultRow.toImageCover(): ImageCover = ImageCover(
-    id = this[ImageCoverTable.id].value,
-    cover = stringToImageBitmap(this[ImageCoverTable.cover]),
-    coverId = UUID.fromString(this[ImageCoverTable.coverId])
-)
+internal fun ResultRow.toImageCover(): ImageCover? =
+    try {
+        ImageCover(
+            id = this[ImageCoverTable.id].value,
+            cover = stringToImageBitmap(this[ImageCoverTable.cover]),
+            coverId = UUID.fromString(this[ImageCoverTable.coverId])
+        )
+    } catch (_: Exception) {
+        null
+    }

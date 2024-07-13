@@ -17,7 +17,12 @@ internal object FolderTable: Table() {
 /**
  * Builds a Folder from a ResultRow.
  */
-internal fun ResultRow.toFolder(): Folder = Folder(
-    folderPath = this[FolderTable.folderPath],
-    isSelected = this[FolderTable.isSelected]
-)
+internal fun ResultRow.toFolder(): Folder? =
+    try {
+        Folder(
+            folderPath = this[FolderTable.folderPath],
+            isSelected = this[FolderTable.isSelected]
+        )
+    } catch (_: Exception) {
+        null
+    }

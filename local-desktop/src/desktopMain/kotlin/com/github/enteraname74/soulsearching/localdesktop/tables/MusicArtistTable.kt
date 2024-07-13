@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 

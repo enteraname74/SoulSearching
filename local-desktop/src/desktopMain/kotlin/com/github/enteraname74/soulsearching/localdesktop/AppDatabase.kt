@@ -26,7 +26,7 @@ object AppDatabase {
      * Establish a connection with the database.
      */
     fun connectToDatabase() {
-        Database.connect("jdbc:sqlite:database.db", "org.sqlite.JDBC")
+        Database.connect("jdbc:sqlite:soulSearchingDatabase.db?foreign_keys=on", "org.sqlite.JDBC")
         transaction {
             SchemaUtils.create(
                 AlbumArtistTable,

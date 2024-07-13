@@ -13,7 +13,12 @@ internal object AlbumArtistTable: LongIdTable() {
     val artistId = reference("artistId", ArtistTable.id, onDelete = ReferenceOption.CASCADE)
 }
 
-internal fun ResultRow.toAlbumArtist(): AlbumArtist = AlbumArtist(
-    albumId = this[AlbumArtistTable.albumId].value,
-    artistId = this[AlbumArtistTable.artistId].value,
-)
+internal fun ResultRow.toAlbumArtist(): AlbumArtist? =
+    try {
+        AlbumArtist(
+            albumId = this[AlbumArtistTable.albumId].value,
+            artistId = this[AlbumArtistTable.artistId].value,
+        )
+    } catch (_: Exception) {
+        null
+    }

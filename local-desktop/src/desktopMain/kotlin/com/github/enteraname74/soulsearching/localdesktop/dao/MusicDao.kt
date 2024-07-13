@@ -12,6 +12,9 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -19,7 +22,7 @@ import java.util.*
 
 internal class MusicDao {
     suspend fun upsert(music: Music) {
-        flowTransactionOn {
+        flowTransactionOn(MusicTable) {
             MusicTable.upsert {
                 it[id] = music.musicId
                 it[name] = music.name
@@ -34,6 +37,11 @@ internal class MusicDao {
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
             }
+            runBlocking {
+                val total = getAll().first().size
+                println("INSERTED: $total")
+            }
+
         }
     }
 
@@ -72,6 +80,7 @@ internal class MusicDao {
             .orderBy(MusicTable.name to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toMusic() }
+            .map { it.filterNotNull() }
     }
 
     fun getAllMusicFromAlbum(albumId: UUID): Flow<List<Music>> = transaction {
@@ -85,6 +94,7 @@ internal class MusicDao {
             .selectAll()
             .asFlow()
             .mapResultRow { it.toMusic() }
+            .map { it.filterNotNull() }
     }
 
     fun getAllMusicFromArtist(artistId: UUID): Flow<List<Music>> = transaction {
@@ -98,6 +108,7 @@ internal class MusicDao {
             .selectAll()
             .asFlow()
             .mapResultRow { it.toMusic() }
+            .map { it.filterNotNull() }
     }
 
     fun getAllMusicFromPlaylist(playlistId: UUID): Flow<List<Music>> = transaction {
@@ -111,5 +122,6 @@ internal class MusicDao {
             .selectAll()
             .asFlow()
             .mapResultRow { it.toMusic() }
+            .map { it.filterNotNull() }
     }
 }

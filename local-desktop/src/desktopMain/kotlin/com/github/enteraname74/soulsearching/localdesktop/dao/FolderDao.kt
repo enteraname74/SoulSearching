@@ -7,6 +7,7 @@ import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toFolder
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
@@ -34,5 +35,6 @@ internal class FolderDao {
             .selectAll()
             .asFlow()
             .mapResultRow { it.toFolder() }
+            .map { it.filterNotNull() }
     }
 }

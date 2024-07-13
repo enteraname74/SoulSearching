@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.PlayerMusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toPlayerWithMusicItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -54,5 +55,6 @@ internal class PlayerMusicDao {
         ).selectAll()
             .asFlow()
             .mapResultRow { it.toPlayerWithMusicItem() }
+            .map { it.filterNotNull() }
     }
 }
