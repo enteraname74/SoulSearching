@@ -14,6 +14,7 @@ import com.github.enteraname74.domain.usecase.musicartist.*
 import com.github.enteraname74.domain.usecase.musicplaylist.*
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
+import com.github.enteraname74.domain.util.MusicFileUpdater
 
 val domainModule = module {
     // USE CASES
@@ -109,4 +110,8 @@ val domainModule = module {
 
     // QuickAccess
     singleOf(::GetAllQuickAccessElementsUseCase)
+
+
+    // OTHERS
+    singleOf(::MusicFileUpdater)
 }
