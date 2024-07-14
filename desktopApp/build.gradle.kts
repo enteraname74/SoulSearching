@@ -23,8 +23,6 @@ dependencies {
     implementation(libs.material3.desktop)
     implementation(libs.material.desktop)
     implementation(libs.foundation.desktop)
-//    implementation(libs.coroutines.core.jvm)
-//    implementation(libs.coroutines.core.swing)
     implementation(project(":shared-ui"))
 }
 

@@ -102,13 +102,6 @@ class SoulSearchingAndroidPlayerImpl(
         }
     }
 
-    override fun togglePlayPause() {
-        try {
-            if (player.isPlaying) pause()
-            else play()
-        } catch (_: Exception) {}
-    }
-
     override fun seekToPosition(position: Int) {
         try {
             player.seekTo(position)

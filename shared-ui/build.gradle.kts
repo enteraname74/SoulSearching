@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.common)
                 implementation(libs.coroutines.core.swing)
+                implementation(libs.vlcj)
             }
         }
         commonMain {

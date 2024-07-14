@@ -31,7 +31,12 @@ interface SoulSearchingPlayer {
     /**
      * Play or pause the current music.
      */
-    fun togglePlayPause()
+    fun togglePlayPause() {
+        try {
+            if (isPlaying()) pause()
+            else play()
+        } catch (_: Exception) {}
+    }
 
     /**
      * Play the loaded music.

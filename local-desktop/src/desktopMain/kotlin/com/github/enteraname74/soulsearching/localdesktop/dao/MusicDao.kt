@@ -37,11 +37,6 @@ internal class MusicDao {
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
             }
-            runBlocking {
-                val total = getAll().first().size
-                println("INSERTED: $total")
-            }
-
         }
     }
 

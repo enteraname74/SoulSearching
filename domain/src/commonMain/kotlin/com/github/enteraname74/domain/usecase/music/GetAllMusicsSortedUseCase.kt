@@ -12,13 +12,10 @@ class GetAllMusicsSortedUseCase(
 ) {
     operator fun invoke(sortDirection: Int, sortType: Int) : Flow<List<Music>> =
         musicRepository.getAll().map { list ->
-            println("ALL MUSICS: ${list.size}")
-            val sorted = list.sorted(
+            list.sorted(
                 sortDirection = sortDirection,
                 sortType = sortType,
             )
-            println("After sort: $sorted")
-            sorted
         }
 
     private fun List<Music>.sortedByType(sortType: Int): List<Music> =

@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.model.MusicFetcherDesktopImpl
 import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.enteraname74.soulsearching.viewmodel.AllMusicsViewModelDesktopImpl
+import com.github.enteraname74.soulsearching.model.SoulSearchingDesktopPlayerImpl
 import com.russhwolf.settings.PreferencesSettings
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -19,6 +20,7 @@ actual val platformModule: Module = module {
     singleOf(::AllMusicsViewModelDesktopImpl) bind AllMusicsViewModel::class
     singleOf(::MusicFetcherDesktopImpl) bind MusicFetcher::class
     singleOf(::PlaybackManagerDesktopImpl) bind PlaybackManager::class
+    singleOf(::SoulSearchingDesktopPlayerImpl)
     single<SoulSearchingSettings> {
         SoulSearchingSettingsImpl(
             settings = PreferencesSettings(

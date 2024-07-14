@@ -203,7 +203,7 @@ abstract class PlaybackManager(
 
     /**
      * Make the initial list the same as the played list.
-     * The match will only occurs if the player mode is set to NORMAL.
+     * The match will only occur if the player mode is set to NORMAL.
      */
     private fun matchInitialListToPlayedListIfNormalPlayerMode() {
         if (_playerMode == PlayerMode.NORMAL) {
@@ -228,7 +228,6 @@ abstract class PlaybackManager(
             currentMusic?.let {
                 if (it.musicId.compareTo(musicId) == 0) {
                     // We place ourself in the previous music :
-                    println("Actual index: $actualIndex")
                     currentMusic = if (actualIndex == 0) {
                         playedList[playedList.lastIndex]
                     } else {
@@ -597,7 +596,6 @@ abstract class PlaybackManager(
             key = SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY,
             value = playedList.indexOfFirst { it.musicId == music.musicId }
         )
-
         player.setMusic(music)
         player.launchMusic()
         CoroutineScope(Dispatchers.IO).launch {
