@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
@@ -50,6 +49,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -68,7 +68,6 @@ fun AlbumScreen(
     navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
     isDeleteMusicDialogShown: Boolean,
@@ -84,7 +83,8 @@ fun AlbumScreen(
     onRemoveFromPlaylist: (Music) -> Unit = {},
     onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -104,7 +104,7 @@ fun AlbumScreen(
         hasPlaylistPaletteBeenFetched = true
     }
 
-    SoulBackHandler(playerDraggableState.currentValue != BottomSheetStates.EXPANDED) {
+    SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
         navigateBack()
     }
 
@@ -113,9 +113,8 @@ fun AlbumScreen(
             playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
-                    playerDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(UiConstants.AnimationDuration.normal)
+                    playerViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
                     )
                 }
                 .invokeOnCompletion {
@@ -217,7 +216,6 @@ fun AlbumScreen(
                             retrieveCoverMethod = { retrieveCoverMethod(it) },
                             updateNbPlayedAction = updateNbPlayedAction,
                             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
-                            playerDraggableState = playerDraggableState
                         )
                     }
                 }
@@ -230,7 +228,6 @@ fun AlbumScreen(
                         playlistsWithMusics = playlistWithMusics,
                         navigateToModifyMusic = navigateToModifyMusic,
                         musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
-                        playerDraggableState = playerDraggableState,
                         isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                         isBottomSheetShown = isBottomSheetShown,
                         isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
@@ -292,10 +289,7 @@ fun AlbumScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerDraggableState.animateTo(
-                                            BottomSheetStates.EXPANDED,
-                                            tween(UiConstants.AnimationDuration.normal)
-                                        )
+                                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                                     }.invokeOnCompletion {
                                         playlistId?.let {
                                             updateNbPlayedAction(it)
@@ -327,13 +321,11 @@ fun AlbumScreen(
 
         SearchView(
             draggableState = searchDraggableState,
-            playerDraggableState = playerDraggableState,
             placeholder = strings.searchForMusics,
             maxHeight = maxHeight,
             focusRequester = searchBarFocusRequester
         ) { searchText, focusManager ->
             SearchMusics(
-                playerDraggableState = playerDraggableState,
                 searchText = searchText,
                 allMusics = musics,
                 isMainPlaylist = false,

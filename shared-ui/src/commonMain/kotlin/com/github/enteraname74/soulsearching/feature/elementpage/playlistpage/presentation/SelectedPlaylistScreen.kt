@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,7 +8,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistEvent
@@ -18,13 +15,11 @@ import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.do
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import java.util.*
 
 /**
  * Represent the view of the selected album screen.
  */
-@OptIn(ExperimentalMaterialApi::class)
 data class SelectedPlaylistScreen(
     private val selectedPlaylistId: String
 ) : Screen {
@@ -33,9 +28,6 @@ data class SelectedPlaylistScreen(
     override fun Content() {
         val screenModel = getScreenModel<SelectedPlaylistViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
-
-        val playerViewModel = getScreenModel<PlayerViewModel>()
-        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -62,14 +54,11 @@ data class SelectedPlaylistScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel::getImageCover,
-            playerDraggableState = playerDraggableState
         )
     }
 
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Suppress("Deprecation")
 @Composable
 fun SelectedPlaylistScreenView(
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
@@ -78,7 +67,6 @@ fun SelectedPlaylistScreenView(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
     var isPlaylistFetched by remember {
         mutableStateOf(false)
@@ -107,7 +95,6 @@ fun SelectedPlaylistScreenView(
         navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
             selectedPlaylistViewModel.onEvent(
                 SelectedPlaylistEvent.AddNbPlayed(

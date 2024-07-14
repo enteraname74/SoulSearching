@@ -36,9 +36,6 @@ data class SelectedArtistScreen(
         val screenModel = getScreenModel<SelectedArtistViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
 
-        val playerViewModel = getScreenModel<PlayerViewModel>()
-        val playerDraggableState = playerViewModel.playerDraggableState
-
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
@@ -64,7 +61,6 @@ data class SelectedArtistScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel::getImageCover,
-            playerDraggableState = playerDraggableState,
             navigateToAlbum = { albumId ->
                 navigator.push(
                     SelectedAlbumScreen(
@@ -95,7 +91,6 @@ fun SelectedArtistScreenView(
     navigateBack: () -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
     var isArtistFetched by remember {
         mutableStateOf(false)
@@ -136,7 +131,6 @@ fun SelectedArtistScreenView(
         navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
             selectedArtistViewModel.onEvent(
                 SelectedArtistEvent.AddNbPlayed(

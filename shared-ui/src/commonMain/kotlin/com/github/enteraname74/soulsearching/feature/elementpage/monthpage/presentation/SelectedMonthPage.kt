@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,14 +8,12 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthEvent
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import java.util.*
 
 /**
@@ -26,14 +22,10 @@ import java.util.*
 data class SelectedMonthScreen(
     private val month: String
 ): Screen {
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         val screeModel = getScreenModel<SelectedMonthViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
-
-        val playerViewModel = getScreenModel<PlayerViewModel>()
-        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -53,13 +45,10 @@ data class SelectedMonthScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel::getImageCover,
-            playerDraggableState = playerDraggableState
         )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Suppress("Deprecation")
 @Composable
 fun SelectedMonthScreenView(
     selectedMonthViewModel: SelectedMonthViewModel,
@@ -67,7 +56,6 @@ fun SelectedMonthScreenView(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
     var isMonthFetched by remember {
         mutableStateOf(false)
@@ -93,7 +81,6 @@ fun SelectedMonthScreenView(
         navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
             selectedMonthViewModel.onEvent(
                 SelectedMonthEvent.AddNbPlayed(

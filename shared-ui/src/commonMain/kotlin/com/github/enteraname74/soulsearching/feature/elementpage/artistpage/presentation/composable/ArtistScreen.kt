@@ -3,29 +3,18 @@ package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.pre
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
@@ -35,28 +24,29 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistPanel
-import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Suppress("Deprecation")
@@ -73,7 +63,6 @@ fun ArtistScreen(
     navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
     isDeleteMusicDialogShown: Boolean,
@@ -96,7 +85,8 @@ fun ArtistScreen(
     onDeleteAlbum: (Album) -> Unit,
     onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -116,7 +106,7 @@ fun ArtistScreen(
         hasPlaylistPaletteBeenFetched = true
     }
 
-    SoulBackHandler(playerDraggableState.currentValue != BottomSheetStates.EXPANDED) {
+    SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
         navigateBack()
     }
 
@@ -125,9 +115,8 @@ fun ArtistScreen(
             playlistId?.let(updateNbPlayedAction)
             coroutineScope
                 .launch {
-                    playerDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(UiConstants.AnimationDuration.normal)
+                    playerViewManager.animateTo(
+                        newState = BottomSheetStates.EXPANDED,
                     )
                 }
                 .invokeOnCompletion {
@@ -177,7 +166,6 @@ fun ArtistScreen(
                 playlistsWithMusics = playlistWithMusics,
                 navigateToModifyMusic = navigateToModifyMusic,
                 musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
-                playerDraggableState = playerDraggableState,
                 isDeleteMusicDialogShown = isDeleteMusicDialogShown,
                 isBottomSheetShown = isBottomSheetShown,
                 isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
@@ -284,9 +272,8 @@ fun ArtistScreen(
                                     music = elt,
                                     onClick = { music ->
                                         coroutineScope.launch {
-                                            playerDraggableState.animateTo(
-                                                BottomSheetStates.EXPANDED,
-                                                tween(UiConstants.AnimationDuration.normal)
+                                            playerViewManager.animateTo(
+                                                newState = BottomSheetStates.EXPANDED,
                                             )
                                         }.invokeOnCompletion {
                                             playlistId?.let {
@@ -382,9 +369,8 @@ fun ArtistScreen(
                                 music = elt,
                                 onClick = { music ->
                                     coroutineScope.launch {
-                                        playerDraggableState.animateTo(
-                                            BottomSheetStates.EXPANDED,
-                                            tween(UiConstants.AnimationDuration.normal)
+                                        playerViewManager.animateTo(
+                                            newState = BottomSheetStates.EXPANDED,
                                         )
                                     }.invokeOnCompletion {
                                         playlistId?.let {
@@ -417,13 +403,11 @@ fun ArtistScreen(
 
         SearchView(
             draggableState = searchDraggableState,
-            playerDraggableState = playerDraggableState,
             placeholder = strings.searchForMusics,
             maxHeight = maxHeight,
             focusRequester = searchBarFocusRequester
         ) { searchText, focusManager ->
             SearchMusics(
-                playerDraggableState = playerDraggableState,
                 searchText = searchText,
                 allMusics = musics,
                 isMainPlaylist = false,

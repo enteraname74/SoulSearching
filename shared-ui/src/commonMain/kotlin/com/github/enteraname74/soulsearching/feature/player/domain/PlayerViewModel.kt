@@ -1,32 +1,31 @@
 package com.github.enteraname74.soulsearching.feature.player.domain
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
-import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.music.*
+import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
+import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlinx.coroutines.runBlocking
+import java.util.*
 
 /**
  * Handler for managing the PlayerViewModel.
  */
-@Suppress("Deprecation")
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     private val colorThemeManager: ColorThemeManager,
@@ -37,6 +36,8 @@ class PlayerViewModel(
     private val upsertMusicUseCase: UpsertMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
+    private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
+    private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel {
     private val _state = MutableStateFlow(PlayerState())
@@ -53,14 +54,6 @@ class PlayerViewModel(
         SharingStarted.WhileSubscribed(5000),
         PlayerState()
     )
-
-    @OptIn(ExperimentalMaterialApi::class)
-    val playerDraggableState: SwipeableState<BottomSheetStates> =
-        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
-
-    @OptIn(ExperimentalMaterialApi::class)
-    val musicListDraggableState: SwipeableState<BottomSheetStates> =
-        SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
     init {
         playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
@@ -144,6 +137,24 @@ class PlayerViewModel(
                 musicId = event.musicId,
                 selectedPlaylistsIds = event.selectedPlaylistsIds
             )
+        }
+    }
+
+    /**
+     * Retrieve the artist id of a music.
+     */
+    fun getArtistIdFromMusicId(musicId: UUID): UUID? {
+        return runBlocking(context = Dispatchers.IO) {
+            getArtistIdFromMusicIdUseCase(musicId)
+        }
+    }
+
+    /**
+     * Retrieve the album id of a music.
+     */
+    fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
+        return runBlocking(context = Dispatchers.IO) {
+            getAlbumIdFromMusicIdUseCase(musicId)
         }
     }
 
@@ -254,6 +265,7 @@ class PlayerViewModel(
      */
     private fun setPlayedList(playedList: List<Music>) {
         _state.update {
+            println("WILL SET LIST")
             it.copy(
                 playedList = playedList
             )

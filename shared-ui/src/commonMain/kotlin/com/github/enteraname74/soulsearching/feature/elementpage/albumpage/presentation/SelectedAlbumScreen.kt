@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,7 +8,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumEvent
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModel
@@ -25,7 +22,6 @@ import java.util.*
 /**
  * Represent the view of the selected album screen.
  */
-@OptIn(ExperimentalMaterialApi::class)
 data class SelectedAlbumScreen(
     private val selectedAlbumId: String,
 ) : Screen {
@@ -34,8 +30,6 @@ data class SelectedAlbumScreen(
         val screenModel = getScreenModel<SelectedAlbumViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
         val playerViewModel = getScreenModel<PlayerViewModel>()
-
-        val playerDraggableState = playerViewModel.playerDraggableState
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -74,14 +68,11 @@ data class SelectedAlbumScreen(
                 navigator.pop()
             },
             retrieveCoverMethod = allImagesViewModel::getImageCover,
-            playerDraggableState = playerDraggableState
         )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-@Suppress("Deprecation")
 fun SelectedAlbumScreenView(
     selectedAlbumViewModel: SelectedAlbumViewModel,
     selectedAlbumId: String,
@@ -90,7 +81,6 @@ fun SelectedAlbumScreenView(
     navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    playerDraggableState: SwipeableState<BottomSheetStates>
 ) {
     var isAlbumFetched by remember {
         mutableStateOf(false)
@@ -131,7 +121,6 @@ fun SelectedAlbumScreenView(
         navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
-        playerDraggableState = playerDraggableState,
         updateNbPlayedAction = {
             selectedAlbumViewModel.onEvent(
                 SelectedAlbumEvent.AddNbPlayed(

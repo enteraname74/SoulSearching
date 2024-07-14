@@ -1,38 +1,34 @@
 package com.github.enteraname74.soulsearching.feature.search
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
-import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-@Suppress("Deprecation")
 fun SearchAll(
     searchText: String,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -47,10 +43,10 @@ fun SearchAll(
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -171,9 +167,8 @@ fun SearchAll(
                     onClick = {
                         coroutineScope.launch {
                             focusManager.clearFocus()
-                            playerDraggableState.animateTo(
-                                BottomSheetStates.EXPANDED,
-                                tween(UiConstants.AnimationDuration.normal)
+                            playerViewManager.animateTo(
+                                newState = BottomSheetStates.EXPANDED,
                             )
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(

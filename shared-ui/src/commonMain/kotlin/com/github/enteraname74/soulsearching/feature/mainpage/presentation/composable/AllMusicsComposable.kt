@@ -1,19 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material3.Icon
@@ -26,23 +18,23 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.presentation.SelectedFolderScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation.SelectedMonthScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
-@Suppress("Deprecation")
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AllMusicsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -52,10 +44,10 @@ fun AllMusicsComposable(
     sortByMostListenedAction: () -> Unit = {},
     setSortDirectionAction: () -> Unit = {},
     isUsingSort: Boolean = true,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     onLongMusicClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
-    viewSettingsManager: ViewSettingsManager = injectElement()
+    viewSettingsManager: ViewSettingsManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val navigator = LocalNavigator.currentOrThrow
@@ -123,7 +115,7 @@ fun AllMusicsComposable(
                                     if (musicState.musics.isNotEmpty()) {
                                         coroutineScope
                                             .launch {
-                                                playerDraggableState.animateTo(BottomSheetStates.EXPANDED)
+                                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                                             }
                                             .invokeOnCompletion {
                                                 playbackManager.playShuffle(musicList = musicState.musics)
@@ -144,10 +136,7 @@ fun AllMusicsComposable(
                     music = elt,
                     onClick = { music ->
                         coroutineScope.launch {
-                            playerDraggableState.animateTo(
-                                BottomSheetStates.EXPANDED,
-                                tween(UiConstants.AnimationDuration.normal)
-                            )
+                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = music,

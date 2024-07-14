@@ -50,8 +50,8 @@ import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.p
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchAll
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
@@ -74,7 +74,6 @@ class MainPageScreen : Screen {
         val allArtistsViewModel = getScreenModel<AllArtistsViewModel>()
         val allImageCoversViewModel = getScreenModel<AllImageCoversViewModel>()
         val allQuickAccessViewModel = getScreenModel<AllQuickAccessViewModel>()
-        val playerViewModel = getScreenModel<PlayerViewModel>()
 
         val musicState by allMusicsViewModel.state.collectAsState()
         val playlistState by allPlaylistsViewModel.state.collectAsState()
@@ -83,7 +82,6 @@ class MainPageScreen : Screen {
         val quickAccessState by allQuickAccessViewModel.state.collectAsState()
 
         val searchDraggableState = allMusicsViewModel.searchDraggableState
-        val playerDraggableState = playerViewModel.playerDraggableState
 
         MainPageScreenView(
             allMusicsViewModel = allMusicsViewModel,
@@ -139,7 +137,6 @@ class MainPageScreen : Screen {
                     SettingsScreen()
                 )
             },
-            playerDraggableState = playerDraggableState,
             searchDraggableState = searchDraggableState,
             musicState = musicState,
             playlistState = playlistState,
@@ -167,7 +164,6 @@ fun MainPageScreenView(
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
     navigateToSettings: () -> Unit,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     searchDraggableState: SwipeableState<BottomSheetStates>,
     musicState: MainPageState,
     playlistState: PlaylistState,
@@ -175,7 +171,8 @@ fun MainPageScreenView(
     artistState: ArtistState,
     quickAccessState: QuickAccessState,
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -192,7 +189,6 @@ fun MainPageScreenView(
             selectedMusic = music,
             playlistsWithMusics = musicState.allPlaylists,
             navigateToModifyMusic = navigateToModifyMusic,
-            playerDraggableState = playerDraggableState,
             isDeleteMusicDialogShown = musicState.isDeleteDialogShown,
             isBottomSheetShown = musicState.isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = musicState.isAddToPlaylistBottomSheetShown,
@@ -373,9 +369,8 @@ fun MainPageScreenView(
                                     },
                                     playMusicAction = { music ->
                                         coroutineScope.launch {
-                                            playerDraggableState.animateTo(
-                                                BottomSheetStates.EXPANDED,
-                                                tween(UiConstants.AnimationDuration.normal)
+                                            playerViewManager.animateTo(
+                                                newState = BottomSheetStates.EXPANDED,
                                             )
                                         }.invokeOnCompletion {
                                             val musicListSingleton = arrayListOf(music)
@@ -619,7 +614,6 @@ fun MainPageScreenView(
                                             MusicEvent.SetSortDirection(newDirection)
                                         )
                                     },
-                                    playerDraggableState = playerDraggableState,
                                     onLongMusicClick = { music ->
                                         selectedMusicId = music.musicId
                                         allMusicsViewModel.onMusicEvent(
@@ -673,7 +667,6 @@ fun MainPageScreenView(
 
         SearchView(
             draggableState = searchDraggableState,
-            playerDraggableState = playerDraggableState,
             placeholder = strings.searchAll,
             maxHeight = maxHeight,
             focusRequester = searchBarFocusRequester
@@ -690,7 +683,6 @@ fun MainPageScreenView(
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
-                playerDraggableState = playerDraggableState,
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 onSelectedMusicForBottomSheet = { music ->

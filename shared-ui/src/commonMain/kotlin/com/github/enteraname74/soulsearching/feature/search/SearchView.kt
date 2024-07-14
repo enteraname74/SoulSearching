@@ -20,23 +20,25 @@ import androidx.compose.ui.unit.IntOffset
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.AppSearchBar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
-@Suppress("deprecation")
+@Suppress("Deprecation")
 @Composable
 fun SearchView(
     maxHeight: Float,
     draggableState: SwipeableState<BottomSheetStates>,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     placeholder: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     focusRequester: FocusRequester,
+    playerViewManager: PlayerViewManager = injectElement(),
     searchResult: @Composable (String, FocusManager) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -44,7 +46,7 @@ fun SearchView(
 
     SoulBackHandler(
         draggableState.currentValue == BottomSheetStates.EXPANDED
-                && playerDraggableState.currentValue != BottomSheetStates.EXPANDED
+                && playerViewManager.currentValue != BottomSheetStates.EXPANDED
     ) {
         focusRequester.freeFocus()
         focusManager.clearFocus()

@@ -1,10 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -12,20 +9,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
-@OptIn(ExperimentalMaterialApi::class)
-@Suppress("Deprecation")
 @Composable
 fun MusicList(
     modifier: Modifier = Modifier,
@@ -51,12 +46,12 @@ fun MusicList(
     isMainPlaylist: Boolean = false,
     updateNbPlayedAction: (UUID) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -67,7 +62,6 @@ fun MusicList(
             playlistsWithMusics = playlistsWithMusics,
             navigateToModifyMusic = navigateToModifyMusic,
             musicBottomSheetState = musicBottomSheetState,
-            playerDraggableState = playerDraggableState,
             isDeleteMusicDialogShown = isDeleteMusicDialogShown,
             isBottomSheetShown = isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
@@ -101,7 +95,7 @@ fun MusicList(
                 music = music,
                 onClick = {
                     coroutineScope.launch {
-                        playerDraggableState.animateTo(BottomSheetStates.EXPANDED, tween(UiConstants.AnimationDuration.normal))
+                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                     }.invokeOnCompletion {
                         playlistId?.let {
                             updateNbPlayedAction(it)

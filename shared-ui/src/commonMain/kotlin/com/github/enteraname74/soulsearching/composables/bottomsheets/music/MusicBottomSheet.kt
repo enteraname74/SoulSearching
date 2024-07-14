@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.animation.core.tween
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -10,19 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class,)
 @Composable
 fun MusicBottomSheet(
     musicModalSheetState: SheetState,
@@ -34,10 +29,10 @@ fun MusicBottomSheet(
     showAddToPlaylistBottomSheet: () -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -102,12 +97,8 @@ fun MusicBottomSheet(
                     }
                 }
                 coroutineScope.launch {
-                    if (playerDraggableState.currentValue == BottomSheetStates.COLLAPSED) {
-                        playerDraggableState.animateTo(
-                            BottomSheetStates.MINIMISED, tween(
-                                UiConstants.AnimationDuration.normal
-                            )
-                        )
+                    if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
+                        playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                     }
                 }.invokeOnCompletion {
                     playbackManager.addMusicToPlayNext(

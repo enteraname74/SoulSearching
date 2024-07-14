@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -10,29 +8,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 @Composable
-@Suppress("Deprecation")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 fun MusicBottomSheetEvents(
     selectedMusic: Music,
     currentPlaylistId: UUID? = null,
     playlistsWithMusics: List<PlaylistWithMusics>,
     navigateToModifyMusic: (String) -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    playerDraggableState: SwipeableState<BottomSheetStates>,
     isDeleteMusicDialogShown: Boolean,
     isBottomSheetShown: Boolean,
     isAddToPlaylistBottomSheetShown: Boolean,
@@ -135,7 +130,6 @@ fun MusicBottomSheetEvents(
             showAddToPlaylistBottomSheet = { onSetAddToPlaylistBottomSheetVisibility(true) },
             navigateToModifyMusic = navigateToModifyMusic,
             musicBottomSheetState = musicBottomSheetState,
-            playerDraggableState = playerDraggableState,
             primaryColor = secondaryColor,
             textColor = onSecondaryColor,
             playbackManager = playbackManager
