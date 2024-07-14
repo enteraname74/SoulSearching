@@ -20,10 +20,11 @@ import java.util.UUID
 internal class ImageCoverDao {
     suspend fun upsert(imageCover: ImageCover) {
         flowTransactionOn {
+            val byteArray = ExposedUtils.imageBitmapToByteArray(imageCover.cover)
             ImageCoverTable.upsert {
                 if (imageCover.id != 0L) it[id] = imageCover.id
                 it[coverId] = imageCover.coverId.toString()
-                it[cover] = ExposedUtils.imageBitmapToString(imageCover.cover)
+                it[cover] = byteArray
             }
         }
     }

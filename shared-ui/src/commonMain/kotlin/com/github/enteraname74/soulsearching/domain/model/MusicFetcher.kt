@@ -74,7 +74,11 @@ abstract class MusicFetcher(
      */
     suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) {
         // If the song has already been saved once, we do nothing.
+        println("Will try to add the following music:")
+        println(musicToAdd)
+        println("path: ${musicToAdd.path}")
         if (isMusicAlreadySavedUseCase(musicToAdd.path)) return
+        println("Will save music!")
 
         val correspondingArtist = getArtistFromNameUseCase(
             artistName = musicToAdd.artist

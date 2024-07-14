@@ -1,8 +1,10 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.soulsearching.localdesktop.utils.ExposedUtils
 import com.github.enteraname74.soulsearching.localdesktop.utils.ExposedUtils.stringToImageBitmap
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.*
 
@@ -11,7 +13,7 @@ import java.util.*
  */
 internal object ImageCoverTable : LongIdTable() {
     val coverId = varchar("coverId", 128)
-    val cover = largeText("cover").nullable()
+    val cover: Column<ByteArray?> = binary("cover").nullable()
 }
 
 /**
@@ -21,7 +23,7 @@ internal fun ResultRow.toImageCover(): ImageCover? =
     try {
         ImageCover(
             id = this[ImageCoverTable.id].value,
-            cover = stringToImageBitmap(this[ImageCoverTable.cover]),
+            cover = ExposedUtils.byteArrayToImageBitmap(this[ImageCoverTable.cover]),
             coverId = UUID.fromString(this[ImageCoverTable.coverId])
         )
     } catch (_: Exception) {

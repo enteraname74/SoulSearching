@@ -27,10 +27,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
@@ -276,6 +273,10 @@ fun PlayerDraggableView(
                 }
             }
         }
+    val localDensity = LocalDensity.current
+    val playerHeight: Float = with(localDensity) {
+        100.dp.toPx()
+    }
 
     Box(
         modifier = Modifier
@@ -289,7 +290,7 @@ fun PlayerDraggableView(
                 state = draggableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
-                    (maxHeight - 200f) to BottomSheetStates.MINIMISED,
+                    (maxHeight - playerHeight) to BottomSheetStates.MINIMISED,
                     maxHeight to BottomSheetStates.COLLAPSED,
                     0f to BottomSheetStates.EXPANDED
                 )
