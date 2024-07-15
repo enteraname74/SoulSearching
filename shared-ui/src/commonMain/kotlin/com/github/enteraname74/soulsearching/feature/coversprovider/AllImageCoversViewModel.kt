@@ -49,7 +49,7 @@ class AllImageCoversViewModel(
      * Delete an image if it's not used by a song, an album, an artist or a playlist.
      */
     suspend fun deleteImageIfNotUsed(coverId: UUID) {
-        if (isImageCoverUsedUseCase(coverId = coverId)) {
+        if (!isImageCoverUsedUseCase(coverId = coverId)) {
             deleteImageCoverUseCase(coverId = coverId)
         }
     }

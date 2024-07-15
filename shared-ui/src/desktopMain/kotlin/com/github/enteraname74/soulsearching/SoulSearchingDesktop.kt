@@ -24,14 +24,6 @@ fun SoulSearchingDesktop() {
             modules(appModule)
         }
     ) {
-        val useCase: GetAllMusicUseCase = injectElement()
-//        CoroutineScope(Dispatchers.IO).launch {
-//            println("Will listen on use case")
-//            println("Got musics? ${useCase().first().size}")
-//            useCase().collect { musics ->
-//                println("Got music! $musics")
-//            }
-//        }
         val colorThemeManager: ColorThemeManager = injectElement()
         SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 

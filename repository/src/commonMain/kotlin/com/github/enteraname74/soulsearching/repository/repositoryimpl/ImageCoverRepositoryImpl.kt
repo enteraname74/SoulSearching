@@ -12,17 +12,23 @@ import java.util.*
 class ImageCoverRepositoryImpl(
     private val imageCoverDataSource: ImageCoverDataSource
 ): ImageCoverRepository {
-    override suspend fun upsert(imageCover: ImageCover) = imageCoverDataSource.upsert(
-        imageCover = imageCover
-    )
+    override suspend fun upsert(imageCover: ImageCover) {
+        imageCoverDataSource.upsert(
+            imageCover = imageCover
+        )
+    }
 
-    override suspend fun delete(imageCover: ImageCover) = imageCoverDataSource.delete(
-        imageCover = imageCover
-    )
+    override suspend fun delete(imageCover: ImageCover) {
+        imageCoverDataSource.delete(
+            imageCover = imageCover
+        )
+    }
 
-    override suspend fun delete(coverId: UUID) = imageCoverDataSource.deleteFromCoverId(
-        coverId = coverId
-    )
+    override suspend fun delete(coverId: UUID) {
+        imageCoverDataSource.deleteFromCoverId(
+            coverId = coverId
+        )
+    }
 
     override suspend fun getCoverOfElement(coverId: UUID): ImageCover? =
         imageCoverDataSource.getCoverOfElement(

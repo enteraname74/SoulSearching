@@ -62,7 +62,7 @@ fun SoulSearchingApplication(
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
+    rememberCoroutineScope()
 
     if (!mainActivityViewModel.hasMusicsBeenFetched) {
         FetchingMusicsComposable(
