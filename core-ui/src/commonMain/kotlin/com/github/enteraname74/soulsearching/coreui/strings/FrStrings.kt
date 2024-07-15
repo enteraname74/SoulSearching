@@ -6,6 +6,7 @@ package com.github.enteraname74.soulsearching.coreui.strings
 object FrStrings : Strings {
     override val appLogo = "Logo de l'application"
     override val noElements = "Aucun élément"
+    override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"
     override val headerBarRightButton = "Bouton droit de la bar d'état"
@@ -156,4 +157,11 @@ object FrStrings : Strings {
             else -> "$total musiques"
         }
     }
+
+    override fun deletedMusicsAutomatically(total: Int): String =
+        when(total) {
+            0 -> "Aucune musique supprimée"
+            1 -> "1 musique a été supprimée car elle n'existe plus sur l'appareil"
+            else -> "$total musiques ont été supprimées car elles n\\'existent plus sur l\\'appareil"
+        }
 }

@@ -15,9 +15,9 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
-import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
-import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.events.MusicEvent
 import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
@@ -27,25 +27,28 @@ import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 /**
  * Handler for managing the AllMusicsViewModel.
  */
 @Suppress("Deprecation")
-abstract class AllMusicsViewModel(
+class AllMusicsViewModel(
     private val settings: SoulSearchingSettings,
     private val playbackManager: PlaybackManager,
     private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
-    private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicFetcher: MusicFetcher,
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel {
     var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(
@@ -131,24 +134,6 @@ abstract class AllMusicsViewModel(
     }
 
     /**
-     * Retrieve the artist id of a music.
-     */
-    fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) {
-            getArtistIdFromMusicIdUseCase(musicId)
-        }
-    }
-
-    /**
-     * Retrieve the album id of a music.
-     */
-    fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) {
-            getAlbumIdFromMusicIdUseCase(musicId)
-        }
-    }
-
-    /**
      * Fetch all musics.
      */
     suspend fun fetchMusics(
@@ -162,9 +147,28 @@ abstract class AllMusicsViewModel(
     }
 
     /**
-     * Check all musics and delete the one that does not exists (if the path of the music is not valid).
+     * Check all musics and delete the one that does not exist (if the path of the music is not valid).
      */
-    abstract fun checkAndDeleteMusicIfNotExist()
+    fun checkAndDeleteMusicIfNotExist() {
+        CoroutineScope(Dispatchers.IO).launch {
+            var deleteCount = 0
+            for (music in state.value.musics) {
+                if (!File(music.path).exists()) {
+                    playbackManager.removeSongFromPlayedPlaylist(
+                        music.musicId
+                    )
+                    deleteMusicUseCase(music)
+                    deleteCount += 1
+                }
+            }
+
+            if (deleteCount > 0) {
+                feedbackPopUpManager.showFeedback(
+                    feedback = strings.deletedMusicsAutomatically(total = deleteCount)
+                )
+            }
+        }
+    }
 
     /**
      * handle a music event.

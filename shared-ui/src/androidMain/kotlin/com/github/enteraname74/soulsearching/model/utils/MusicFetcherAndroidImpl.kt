@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -27,9 +26,14 @@ import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpsertMusicIntoAlbumUseCase
 import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
 import com.github.enteraname74.soulsearching.domain.model.SelectableMusicItem
 import com.github.soulsearching.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -40,6 +44,7 @@ import java.util.*
 class MusicFetcherAndroidImpl(
     private val context: Context,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     isMusicAlreadySavedUseCase: IsMusicAlreadySavedUseCase,
     getArtistFromNameUseCase: GetArtistFromNameUseCase,
     getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
@@ -136,11 +141,9 @@ class MusicFetcherAndroidImpl(
 
         when (cursor?.count) {
             null -> {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.cannot_retrieve_musics),
-                    Toast.LENGTH_SHORT
-                ).show()
+                feedbackPopUpManager.showFeedback(
+                    feedback = strings.cannotRetrieveSongs
+                )
             }
             else -> {
                 var count = 0
@@ -186,11 +189,11 @@ class MusicFetcherAndroidImpl(
 
         when (cursor?.count) {
             null -> {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.cannot_retrieve_musics),
-                    Toast.LENGTH_SHORT
-                ).show()
+                CoroutineScope(Dispatchers.Main).launch {
+                    feedbackPopUpManager.showFeedback(
+                        feedback = strings.cannotRetrieveSongs
+                    )
+                }
             }
             else -> {
                 var count = 0

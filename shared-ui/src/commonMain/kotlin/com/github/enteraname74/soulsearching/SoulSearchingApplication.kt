@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.*
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
@@ -30,6 +31,7 @@ fun SoulSearchingApplication(
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
+    feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
 ) {
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
     val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
@@ -85,34 +87,38 @@ fun SoulSearchingApplication(
 
     var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
-    PlayerViewScaffold(
-        generalNavigator = generalNavigator,
+    FeedbackPopUpScaffold(
+        feedbackPopUpManager = feedbackPopUpManager,
     ) {
-        var hasLastPlayedMusicsBeenFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        if (!hasLastPlayedMusicsBeenFetched) {
-            LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                val playerSavedMusics = playbackManager.getSavedPlayedList()
-                if (playerSavedMusics.isNotEmpty()) {
-                    playbackManager.initializePlayerFromSavedList(playerSavedMusics)
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.MINIMISED,
-                    )
-                }
-               hasLastPlayedMusicsBeenFetched = true
+        PlayerViewScaffold(
+            generalNavigator = generalNavigator,
+        ) {
+            var hasLastPlayedMusicsBeenFetched by rememberSaveable {
+                mutableStateOf(false)
             }
-        }
 
-        Navigator(MainPageScreen()) { navigator ->
-            generalNavigator = navigator
+            if (!hasLastPlayedMusicsBeenFetched) {
+                LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
+                    val playerSavedMusics = playbackManager.getSavedPlayedList()
+                    if (playerSavedMusics.isNotEmpty()) {
+                        playbackManager.initializePlayerFromSavedList(playerSavedMusics)
+                        playerViewManager.animateTo(
+                            newState = BottomSheetStates.MINIMISED,
+                        )
+                    }
+                    hasLastPlayedMusicsBeenFetched = true
+                }
+            }
 
-            CrossfadeTransition(
-                navigator = navigator,
-                animationSpec = tween(UiConstants.AnimationDuration.normal)
-            ) { screen ->
-                screen.Content()
+            Navigator(MainPageScreen()) { navigator ->
+                generalNavigator = navigator
+
+                CrossfadeTransition(
+                    navigator = navigator,
+                    animationSpec = tween(UiConstants.AnimationDuration.normal)
+                ) { screen ->
+                    screen.Content()
+                }
             }
         }
     }

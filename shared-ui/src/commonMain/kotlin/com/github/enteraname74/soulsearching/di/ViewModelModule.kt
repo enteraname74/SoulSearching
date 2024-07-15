@@ -26,6 +26,7 @@ internal val viewModelModule: Module = module {
     singleOf(::SettingsAllFoldersViewModel)
 
     // Main page
+    singleOf(::AllMusicsViewModel)
     singleOf(::AllAlbumsViewModel)
     singleOf(::AllArtistsViewModel)
     singleOf(::AllPlaylistsViewModel)

@@ -13,6 +13,7 @@ val strings = when(Locale.current.language) {
 interface Strings {
     val appName: String get() = "Soul Searching"
     val appLogo: String
+    val cannotRetrieveSongs: String
     val noElements: String
     val backButton: String
     val headerBarRightButton: String
@@ -163,4 +164,9 @@ interface Strings {
      * Show a text indicating the number of musics.
      */
     fun musics(total: Int): String
+
+    /**
+     * Shows a text indicating that songs were deleted from the app automatically.
+     */
+    fun deletedMusicsAutomatically(total: Int): String
 }

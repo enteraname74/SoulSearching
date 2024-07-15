@@ -6,6 +6,7 @@ package com.github.enteraname74.soulsearching.coreui.strings
 object EnStrings : Strings {
     override val appLogo = "Application's logo"
     override val noElements = "No elements"
+    override val cannotRetrieveSongs: String = "Cannot retrieve songs!"
     override val backButton = "Back button"
     override val createPlaylistButton = "Create playlist button"
     override val headerBarRightButton = "Header bar right button"
@@ -155,4 +156,11 @@ object EnStrings : Strings {
             else -> "$total songs"
         }
     }
+
+    override fun deletedMusicsAutomatically(total: Int): String =
+        when(total) {
+            0 -> "No songs deleted"
+            1 -> "1 song was deleted because it don't exist anymore on the device"
+            else -> "$total songs were deleted because they don't exist anymore on the device"
+        }
 }
