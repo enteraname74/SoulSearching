@@ -23,7 +23,6 @@ class PlayerViewManager {
         get() = playerDraggableState.offset.value
 
     suspend fun animateTo(newState: BottomSheetStates) {
-        println("ANIMATE TO $newState")
         playerDraggableState.animateTo(
             targetValue = newState,
             anim = tween(UiConstants.AnimationDuration.normal),

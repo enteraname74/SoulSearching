@@ -51,6 +51,7 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
+                implementation(compose.components.resources)
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)

@@ -1,12 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.appinit.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,13 +13,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun AppFeatureComposable(
     title: String,
     description: String,
-    imagePath: String
+    image: DrawableResource,
 ) {
     Card(
         modifier = Modifier.fillMaxSize(),
@@ -60,7 +58,7 @@ fun AppFeatureComposable(
                 Image(
                     modifier = Modifier
                         .weight(1F),
-                    painter = SoulSearchingContext.appPainterResource(resourcePath = imagePath),
+                    painter = painterResource(image),
                     contentDescription = ""
                 )
             }

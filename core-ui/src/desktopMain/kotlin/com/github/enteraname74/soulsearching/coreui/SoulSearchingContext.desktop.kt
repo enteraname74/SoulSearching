@@ -55,13 +55,4 @@ actual object SoulSearchingContext {
         // No permissions are necessary on desktop.
         return true
     }
-
-    /**
-     * Painter to use for accessing drawable resources.
-     */
-    @OptIn(ExperimentalResourceApi::class)
-    @Composable
-    actual fun appPainterResource(resourcePath: String): Painter {
-        return androidx.compose.ui.res.painterResource(resourcePath)
-    }
 }

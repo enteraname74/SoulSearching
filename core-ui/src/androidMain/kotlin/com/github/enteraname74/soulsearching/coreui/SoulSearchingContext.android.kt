@@ -82,22 +82,4 @@ actual object SoulSearchingContext {
             ) == PackageManager.PERMISSION_GRANTED
         } else true
     }
-
-    /**
-     * Painter to use for accessing drawable resources.
-     */
-    @SuppressLint("DiscouragedApi")
-    @Composable
-    actual fun appPainterResource(resourcePath: String): Painter {
-        val context = LocalContext.current
-        val drawableId = remember(resourcePath) {
-            context.resources.getIdentifier(
-                resourcePath,
-                "drawable",
-                context.packageName
-            )
-        }
-        return painterResource(id = drawableId)
-    }
-
 }

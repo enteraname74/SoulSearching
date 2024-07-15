@@ -8,11 +8,6 @@ import androidx.compose.ui.graphics.painter.Painter
  * Contains all elements related to a specific context of a SoulSearching application.
  */
 expect object SoulSearchingContext {
-    /**
-     * Painter to use for accessing drawable resources.
-     */
-    @Composable
-    fun appPainterResource(resourcePath: String): Painter
 
     @get:Composable
     val orientation: ScreenOrientation

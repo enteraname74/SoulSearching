@@ -11,15 +11,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.Drawables
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.perso_first_example
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.system_dark_theme_main
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class)
 @Composable
 fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     val pagerScreens = listOf(
@@ -29,7 +33,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.completeApplicationTitle,
                     description = strings.completeApplicationText,
-                    imagePath = Drawables.systemDarkThemeMain
+                    image = Res.drawable.system_dark_theme_main
                 )
             }
         ),
@@ -39,7 +43,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.quickAccessTitle,
                     description = strings.quickAccessText,
-                    imagePath = Drawables.persoFirstExample
+                    image = Res.drawable.perso_first_example
                 )
             }
         ),
@@ -49,7 +53,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.modifyElementsTitle,
                     description = strings.modifyElementsText,
-                    imagePath = Drawables.modifyAlbum
+                    image = Res.drawable.modify_album,
                 )
             }
         ),
@@ -59,7 +63,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.dynamicThemeFeatureTitle,
                     description = strings.dynamicThemeFeatureText,
-                    imagePath = Drawables.dynamicMain
+                    image = Res.drawable.dynamic_main,
                 )
             }
         ),
@@ -69,7 +73,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.manageFoldersTitle,
                     description = strings.manageFoldersText,
-                    imagePath = Drawables.foldersSettings
+                    image = Res.drawable.folders_settings,
                 )
             }
         ),
@@ -79,7 +83,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.addNewMusicsTitle,
                     description = strings.addNewMusicsText,
-                    imagePath = Drawables.addNewSongsSettings
+                    image = Res.drawable.add_new_songs_settings,
                 )
             }
         ),
@@ -89,7 +93,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 AppFeatureComposable(
                     title = strings.personalizeMainPageTitle,
                     description = strings.personalizeMainPageText,
-                    imagePath = Drawables.persoThirdExample
+                    image = Res.drawable.perso_third_example,
                 )
             }
         ),
