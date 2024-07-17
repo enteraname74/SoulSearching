@@ -11,16 +11,19 @@ import com.github.enteraname74.domain.model.SortType
  * UI State of the main page.
  */
 data class MainPageState(
-    val musics: List<Music> = listOf(),
-    val allPlaylists: List<PlaylistWithMusics> = emptyList(),
-    val isBottomSheetShown: Boolean = false,
-    val isDeleteDialogShown: Boolean = false,
-    val isRemoveFromPlaylistDialogShown: Boolean = false,
-    val isAddToPlaylistBottomSheetShown: Boolean = false,
-    val selectedMusic: Music = Music(),
-    var sortType: Int = SortType.NAME,
+    val musics: List<Music>,
+    val allPlaylists: List<PlaylistWithMusics> ,
+    var sortType: Int,
     var sortDirection: Int = SortDirection.ASC,
-    var hasCoverBeenChanged: Boolean = false,
-    var monthMusics: List<MonthMusicList> = emptyList(),
-    var folderMusics: List<MusicFolder> = emptyList()
-)
+    var monthMusics: List<MonthMusicList>,
+    var folderMusics: List<MusicFolder>,
+) {
+    constructor(): this(
+        musics = listOf(),
+        allPlaylists = listOf(),
+        folderMusics = listOf(),
+        sortType = SortType.NAME,
+        sortDirection = SortDirection.ASC,
+        monthMusics = listOf(),
+    )
+}

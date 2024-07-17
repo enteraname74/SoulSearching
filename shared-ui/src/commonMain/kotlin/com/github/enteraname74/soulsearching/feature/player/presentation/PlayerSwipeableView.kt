@@ -44,7 +44,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerEvent
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -313,23 +312,6 @@ fun PlayerDraggableView(
             MusicBottomSheetEvents(
                 selectedMusic = music,
                 playlistsWithMusics = state.playlistsWithMusics,
-                navigateToModifyMusic = { path ->
-                    coroutineScope.launch {
-                        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                            playerMusicListViewManager.animateTo(
-                                newState = BottomSheetStates.COLLAPSED,
-                            )
-                        }
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.MINIMISED,
-                        )
-                    }.invokeOnCompletion {
-                        navigateToModifyMusic(path)
-                    }
-                },
-                musicBottomSheetState = MusicBottomSheetState.PLAYER,
-                isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
-                isBottomSheetShown = state.isMusicBottomSheetShown,
                 isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
                 onDismiss = {
                     playerViewModel.onEvent(
@@ -338,28 +320,11 @@ fun PlayerDraggableView(
                         )
                     )
                 },
-                onSetDeleteMusicDialogVisibility = { isShown ->
-                    playerViewModel.onEvent(
-                        PlayerEvent.SetDeleteMusicDialogVisibility(
-                            isShown = isShown
-                        )
-                    )
-                },
                 onSetAddToPlaylistBottomSheetVisibility = { isShown ->
                     playerViewModel.onEvent(
                         PlayerEvent.SetAddToPlaylistBottomSheetVisibility(
                             isShown = isShown
                         )
-                    )
-                },
-                onDeleteMusic = {
-                    playerViewModel.onEvent(
-                        PlayerEvent.DeleteMusic(musicId = music.musicId)
-                    )
-                },
-                onToggleQuickAccessState = {
-                    playerViewModel.onEvent(
-                        PlayerEvent.ToggleQuickAccessState(musicId = music.musicId)
                     )
                 },
                 onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
@@ -371,8 +336,7 @@ fun PlayerDraggableView(
                     )
                 },
                 secondaryColor = navigationBarColor,
-                onSecondaryColor = textColor,
-                retrieveCoverMethod = retrieveCoverMethod
+                onSecondaryColor = textColor
             )
         }
 

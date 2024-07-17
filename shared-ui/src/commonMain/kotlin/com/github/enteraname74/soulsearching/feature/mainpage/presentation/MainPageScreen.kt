@@ -21,13 +21,16 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
@@ -83,6 +86,26 @@ class MainPageScreen : Screen {
 
         val searchDraggableState = allMusicsViewModel.searchDraggableState
 
+        val musicBottomSheetState: SoulBottomSheet? by allMusicsViewModel.bottomSheetState.collectAsState()
+        val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by allMusicsViewModel.addToPlaylistsBottomSheetState.collectAsState()
+        val dialogState: SoulDialog? by allMusicsViewModel.dialogState.collectAsState()
+
+        val navigationState: MainScreenNavigationState by allMusicsViewModel.navigationState.collectAsState()
+
+        musicBottomSheetState?.BottomSheet()
+        addToPlaylistsBottomSheetState?.BottomSheet()
+        dialogState?.Dialog()
+
+        LaunchedEffect(navigationState) {
+            when(navigationState) {
+                MainScreenNavigationState.Idle -> { /*no-op*/ }
+                is MainScreenNavigationState.ToModifyMusic -> {
+                    val musicToModify: Music = (navigationState as MainScreenNavigationState.ToModifyMusic).selectedMusic
+                    navigator.push(ModifyMusicScreen(selectedMusicId = musicToModify.musicId.toString()))
+                }
+            }
+        }
+
         MainPageScreenView(
             allMusicsViewModel = allMusicsViewModel,
             allPlaylistsViewModel = allPlaylistsViewModel,
@@ -102,13 +125,6 @@ class MainPageScreen : Screen {
             navigateToArtist = { artistId ->
                 navigator.push(
                     SelectedArtistScreen(selectedArtistId = artistId)
-                )
-            },
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
-                    )
                 )
             },
             navigateToModifyPlaylist = { playlistId ->
@@ -159,7 +175,6 @@ fun MainPageScreenView(
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
     navigateToModifyPlaylist: (String) -> Unit,
     navigateToModifyAlbum: (String) -> Unit,
     navigateToModifyArtist: (String) -> Unit,
@@ -176,58 +191,8 @@ fun MainPageScreenView(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedMusicId by rememberSaveable {
-        mutableStateOf<UUID?>(null)
-    }
-
     var selectedAlbumId by rememberSaveable {
         mutableStateOf<UUID?>(null)
-    }
-
-    musicState.musics.find { it.musicId == selectedMusicId }?.let { music ->
-        MusicBottomSheetEvents(
-            selectedMusic = music,
-            playlistsWithMusics = musicState.allPlaylists,
-            navigateToModifyMusic = navigateToModifyMusic,
-            isDeleteMusicDialogShown = musicState.isDeleteDialogShown,
-            isBottomSheetShown = musicState.isBottomSheetShown,
-            isAddToPlaylistBottomSheetShown = musicState.isAddToPlaylistBottomSheetShown,
-            isRemoveFromPlaylistDialogShown = musicState.isRemoveFromPlaylistDialogShown,
-            onDismiss = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.BottomSheet(isShown = false)
-                )
-            },
-            onSetDeleteMusicDialogVisibility = { isShown ->
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.DeleteDialog(isShown = isShown)
-                )
-            },
-            onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.AddToPlaylistBottomSheet(isShown = isShown)
-                )
-            },
-            onDeleteMusic = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.DeleteMusic(musicId = music.musicId)
-                )
-            },
-            onToggleQuickAccessState = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.ToggleQuickAccessState(music = music)
-                )
-            },
-            onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                allPlaylistsViewModel.onPlaylistEvent(
-                    PlaylistEvent.AddMusicToPlaylists(
-                        musicId = music.musicId,
-                        selectedPlaylistsIds = selectedPlaylistsIds
-                    )
-                )
-            },
-            retrieveCoverMethod = allImageCoversViewModel::getImageCover
-        )
     }
 
     PlaylistBottomSheetEvents(
@@ -383,16 +348,7 @@ fun MainPageScreenView(
                                             )
                                         }
                                     },
-                                    musicBottomSheetAction = { music ->
-                                        coroutineScope.launch {
-                                            selectedMusicId = music.musicId
-                                            allMusicsViewModel.onMusicEvent(
-                                                MusicEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    }
+                                    musicBottomSheetAction = allMusicsViewModel::showMusicBottomSheet
                                 )
                             }
                         )
@@ -614,14 +570,7 @@ fun MainPageScreenView(
                                             MusicEvent.SetSortDirection(newDirection)
                                         )
                                     },
-                                    onLongMusicClick = { music ->
-                                        selectedMusicId = music.musicId
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.BottomSheet(
-                                                isShown = true
-                                            )
-                                        )
-                                    }
+                                    onLongMusicClick = allMusicsViewModel::showMusicBottomSheet
                                 )
                             }
                         )
@@ -640,20 +589,20 @@ fun MainPageScreenView(
             ) {
 
                 // We only show the vertical shortcut if there is more than one panel to access.
-               if (visibleElements.size > 1) {
-                   MainPageVerticalShortcut(
-                       currentPage = currentPage,
-                       visibleElements = visibleElements,
-                       switchPageAction = {
-                           coroutineScope.launch {
-                               if (it != -1) {
-                                   pagerState.animateScrollToPage(it)
-                                   allMusicsViewModel.currentPage = visibleElements[it]
-                               }
-                           }
-                       }
-                   )
-               }
+                if (visibleElements.size > 1) {
+                    MainPageVerticalShortcut(
+                        currentPage = currentPage,
+                        visibleElements = visibleElements,
+                        switchPageAction = {
+                            coroutineScope.launch {
+                                if (it != -1) {
+                                    pagerState.animateScrollToPage(it)
+                                    allMusicsViewModel.currentPage = visibleElements[it]
+                                }
+                            }
+                        }
+                    )
+                }
 
                 VerticalPager(
                     state = pagerState,
@@ -685,16 +634,7 @@ fun MainPageScreenView(
                 navigateToAlbum = navigateToAlbum,
                 isMainPlaylist = false,
                 focusManager = focusManager,
-                onSelectedMusicForBottomSheet = { music ->
-                    coroutineScope.launch {
-                        selectedMusicId = music.musicId
-                        allMusicsViewModel.onMusicEvent(
-                            MusicEvent.BottomSheet(
-                                isShown = true
-                            )
-                        )
-                    }
-                },
+                onSelectedMusicForBottomSheet = allMusicsViewModel::showMusicBottomSheet,
                 onSelectedAlbumForBottomSheet = { album ->
                     selectedAlbumId = album.albumId
                     allAlbumsViewModel.onAlbumEvent(

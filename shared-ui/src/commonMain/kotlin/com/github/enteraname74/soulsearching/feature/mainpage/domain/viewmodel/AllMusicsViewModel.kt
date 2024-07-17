@@ -7,15 +7,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.events.MusicEvent
@@ -26,6 +28,8 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainScreenNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +52,7 @@ class AllMusicsViewModel(
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel {
     var currentPage by mutableStateOf<ElementEnum?>(null)
@@ -81,17 +86,13 @@ class AllMusicsViewModel(
         ArrayList()
     )
 
-
-    private val _state = MutableStateFlow(MainPageState())
-
     val state = combine(
-        _state,
         _musics,
         _sortType,
         _sortDirection,
         getAllPlaylistWithMusicsUseCase()
-    ) { state, musics, sortType, sortDirection, playlists ->
-        state.copy(
+    ) { musics, sortType, sortDirection, playlists ->
+        MainPageState(
             musics = musics,
             sortType = sortType,
             sortDirection = sortDirection,
@@ -104,6 +105,24 @@ class AllMusicsViewModel(
         SharingStarted.WhileSubscribed(5000),
         MainPageState()
     )
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
+    val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistsBottomSheetState.asStateFlow()
+
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<MainScreenNavigationState> = MutableStateFlow(
+        MainScreenNavigationState.Idle
+    )
+    val navigationState: StateFlow<MainScreenNavigationState> = _navigationState.asStateFlow()
+
+    fun consumeNavigation() {
+        _navigationState.value = MainScreenNavigationState.Idle
+    }
 
     /**
      * Build a list of music folders.
@@ -118,8 +137,6 @@ class AllMusicsViewModel(
         }
     }
 
-
-
     /**
      * Build a list of month musics.
      */
@@ -131,6 +148,71 @@ class AllMusicsViewModel(
                 coverId = musics.firstOrNull { it.coverId != null }?.coverId
             )
         }
+    }
+
+    private fun showDeleteMusicDialog(musicToDelete: Music) {
+        _dialogState.value = DeleteMusicDialog(
+            musicToDelete = musicToDelete,
+            onDelete = {
+                screenModelScope.launch {
+                    deleteMusicUseCase(musicToDelete)
+                }
+            },
+            onClose = { _dialogState.value = null }
+        )
+    }
+
+    /**
+     * Add a music to multiple playlists.
+     */
+    private fun addMusicToPlaylists(music: Music, selectedPlaylistsIds: List<UUID>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (selectedPlaylistId in selectedPlaylistsIds) {
+                upsertMusicIntoPlaylistUseCase(
+                    MusicPlaylist(
+                        musicId = music.musicId,
+                        playlistId = selectedPlaylistId
+                    )
+                )
+            }
+            playbackManager.updateMusic(music = music)
+        }
+    }
+
+    private fun showAddToPlaylistsBottomSheet(musicToAdd: Music) {
+        _addToPlaylistsBottomSheetState.value = AddToPlaylistBottomSheet(
+            onClose = { _addToPlaylistsBottomSheetState.value = null },
+            addMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                addMusicToPlaylists(
+                    music = musicToAdd,
+                    selectedPlaylistsIds = selectedPlaylistsIds,
+                )
+            },
+            playlistsWithMusics = state.value.allPlaylists.filter {
+                println("FILTER: ${it.musics.none { music -> music.musicId == musicToAdd.musicId }}")
+                it.musics.none { music -> music.musicId == musicToAdd.musicId }
+            }
+        )
+    }
+
+    fun showMusicBottomSheet(selectedMusic: Music) {
+        _bottomSheetState.value = MusicBottomSheet(
+            selectedMusic = selectedMusic,
+            onClose = { _bottomSheetState.value = null },
+            onDeleteMusic = { showDeleteMusicDialog(musicToDelete = selectedMusic) },
+            onModifyMusic = { _navigationState.value = MainScreenNavigationState.ToModifyMusic(selectedMusic) },
+            onRemoveFromPlaylist = { /*no-op*/ },
+            onAddToPlaylist = { showAddToPlaylistsBottomSheet(musicToAdd = selectedMusic) },
+            toggleQuickAccess = {
+                screenModelScope.launch {
+                    upsertMusicUseCase(
+                        music = selectedMusic.copy(
+                            isInQuickAccess = !selectedMusic.isInQuickAccess,
+                        )
+                    )
+                }
+            }
+        )
     }
 
     /**
@@ -175,11 +257,6 @@ class AllMusicsViewModel(
      */
     fun onMusicEvent(event: MusicEvent) {
         when(event) {
-            is MusicEvent.DeleteDialog -> showOrHideDeleteDialog(isShown = event.isShown)
-            is MusicEvent.RemoveFromPlaylistDialog -> showOrHideRemoveFromPlaylistDialog(event)
-            is MusicEvent.BottomSheet -> showOrHideMusicBottomSheet(event)
-            is MusicEvent.AddToPlaylistBottomSheet -> showOrHideAddToPlaylistBottomSheet(event)
-            is MusicEvent.SetSelectedMusic -> setSelectedMusic(event)
             is MusicEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
             is MusicEvent.SetSortType -> setSortType(newSortType = event.type)
             is MusicEvent.SetSortDirection -> setSortDirection(newSortDirection = event.direction)
@@ -188,27 +265,6 @@ class AllMusicsViewModel(
         }
     }
 
-    /**
-     * Show or hide the delete dialog.
-     */
-    private fun showOrHideDeleteDialog(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isDeleteDialogShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the remove from playlist dialog.
-     */
-    private fun showOrHideRemoveFromPlaylistDialog(event: MusicEvent.RemoveFromPlaylistDialog) {
-        _state.update {
-            it.copy(
-                isRemoveFromPlaylistDialogShown = event.isShown
-            )
-        }
-    }
 
     /**
      * Remove the selected music, from the MusicState, from the application
@@ -221,48 +277,10 @@ class AllMusicsViewModel(
     }
 
     /**
-     * Define the selected music of the state.
-     */
-    private fun setSelectedMusic(event: MusicEvent.SetSelectedMusic) {
-        _state.update {
-            it.copy(
-                selectedMusic = event.music
-            )
-        }
-    }
-
-    /**
-     * Show or hide the music bottom sheet.
-     */
-    private fun showOrHideMusicBottomSheet(event: MusicEvent.BottomSheet) {
-        _state.update {
-            it.copy(
-                isBottomSheetShown = event.isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the add to playlist bottom sheet.
-     */
-    private fun showOrHideAddToPlaylistBottomSheet(event: MusicEvent.AddToPlaylistBottomSheet) {
-        _state.update {
-            it.copy(
-                isAddToPlaylistBottomSheetShown = event.isShown
-            )
-        }
-    }
-
-    /**
      * Set the sort type.
      */
     private fun setSortType(newSortType: Int) {
         _sortType.value = newSortType
-        _state.update {
-            it.copy(
-                sortType = newSortType
-            )
-        }
         settings.setInt(
             key = SoulSearchingSettings.SORT_MUSICS_TYPE_KEY,
             value = newSortType
@@ -274,11 +292,6 @@ class AllMusicsViewModel(
      */
     private fun setSortDirection(newSortDirection: Int) {
         _sortDirection.value = newSortDirection
-        _state.update {
-            it.copy(
-                sortDirection = newSortDirection
-            )
-        }
         settings.setInt(
             key = SoulSearchingSettings.SORT_MUSICS_DIRECTION_KEY,
             value = newSortDirection

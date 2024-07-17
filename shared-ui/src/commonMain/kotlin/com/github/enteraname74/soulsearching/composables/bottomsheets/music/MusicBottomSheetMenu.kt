@@ -13,21 +13,21 @@ import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun MusicBottomSheetMenu(
     modifyAction: () -> Unit,
     removeAction: () -> Unit,
-    removeFromPlaylistAction: () -> Unit = {},
-    removeFromPlayedListAction: () -> Unit = {},
+    removeFromPlaylistAction: () -> Unit,
+    removeFromPlayedListAction: () -> Unit,
     quickAccessAction: () -> Unit,
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
@@ -37,7 +37,7 @@ fun MusicBottomSheetMenu(
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     isCurrentlyPlaying: Boolean,
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    playbackManager: PlaybackManager = injectElement()
+    playbackManager: PlaybackManager = injectElement(),
 ) {
     Column(
         modifier = Modifier

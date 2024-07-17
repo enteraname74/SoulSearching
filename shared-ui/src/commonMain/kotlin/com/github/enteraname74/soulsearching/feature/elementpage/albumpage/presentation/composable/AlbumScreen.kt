@@ -226,25 +226,17 @@ fun AlbumScreen(
                     MusicBottomSheetEvents(
                         selectedMusic = music,
                         playlistsWithMusics = playlistWithMusics,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
-                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                        isBottomSheetShown = isBottomSheetShown,
                         isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
                         isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
                         onDismiss = {
                             onSetBottomSheetVisibility(false)
                         },
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
                         onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
                         onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onDeleteMusic = { onDeleteMusic(music) },
-                        onToggleQuickAccessState = { onToggleQuickAccessState(music) },
                         onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
                         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                             onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        },
-                        retrieveCoverMethod = retrieveCoverMethod
+                        }
                     )
                 }
 

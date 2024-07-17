@@ -222,25 +222,17 @@ fun PlaylistScreen(
                     MusicBottomSheetEvents(
                         selectedMusic = music,
                         playlistsWithMusics = playlistWithMusics,
-                        navigateToModifyMusic = navigateToModifyMusic,
-                        musicBottomSheetState = musicBottomSheetStates,
-                        isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                        isBottomSheetShown = isBottomSheetShown,
                         isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
                         isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
                         onDismiss = {
                             onSetBottomSheetVisibility(false)
                         },
-                        onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
                         onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
                         onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onDeleteMusic = { onDeleteMusic(music) },
-                        onToggleQuickAccessState = { onToggleQuickAccessState(music) },
                         onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
                         onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                             onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        },
-                        retrieveCoverMethod = retrieveCoverMethod
+                        }
                     )
                 }
 

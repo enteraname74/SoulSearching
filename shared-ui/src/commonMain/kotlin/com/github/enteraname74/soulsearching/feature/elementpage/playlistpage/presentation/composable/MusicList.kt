@@ -60,18 +60,11 @@ fun MusicList(
             selectedMusic = music,
             currentPlaylistId = playlistId,
             playlistsWithMusics = playlistsWithMusics,
-            navigateToModifyMusic = navigateToModifyMusic,
-            musicBottomSheetState = musicBottomSheetState,
-            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-            isBottomSheetShown = isBottomSheetShown,
             isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
             isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
             onDismiss = { onSetBottomSheetVisibility(false) },
-            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
             onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
             onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-            onDeleteMusic = { onDeleteMusic(music) },
-            onToggleQuickAccessState = { onToggleQuickAccessState(music) },
             onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
             onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                 onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
@@ -79,8 +72,7 @@ fun MusicList(
             primaryColor = primaryColor,
             secondaryColor = secondaryColor,
             onPrimaryColor = onPrimaryColor,
-            onSecondaryColor = onSecondaryColor,
-            retrieveCoverMethod = retrieveCoverMethod
+            onSecondaryColor = onSecondaryColor
         )
     }
 

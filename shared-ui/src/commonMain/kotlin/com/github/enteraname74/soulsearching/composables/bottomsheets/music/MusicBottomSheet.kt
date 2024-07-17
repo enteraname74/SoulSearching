@@ -1,14 +1,10 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -16,86 +12,62 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-@OptIn(ExperimentalMaterial3Api::class,)
-@Composable
-fun MusicBottomSheet(
-    musicModalSheetState: SheetState,
-    selectedMusic: Music,
-    onDismiss: () -> Unit,
-    onShowDeleteMusicDialog: () -> Unit,
-    onShowRemoveFromPlaylistDialog: () -> Unit,
-    onToggleQuickAccessState: () -> Unit,
-    showAddToPlaylistBottomSheet: () -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
-) {
-    val coroutineScope = rememberCoroutineScope()
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = musicModalSheetState,
-        dragHandle = {}
+class MusicBottomSheet(
+    private val onClose: () -> Unit,
+    private val selectedMusic: Music,
+    private val onModifyMusic: () -> Unit,
+    private val onDeleteMusic: () -> Unit,
+    private val onRemoveFromPlaylist: () -> Unit,
+    private val onAddToPlaylist: () -> Unit,
+    private val musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
+    private val toggleQuickAccess: () -> Unit,
+): SoulBottomSheet, KoinComponent {
+    private val playbackManager: PlaybackManager by inject()
+    private val playerViewManager: PlayerViewManager by inject()
+
+    @Composable
+    override fun BottomSheet() {
+        SoulBottomSheetHandler(
+            onClose = onClose
+        ) { closeWithAnim ->
+            MusicBottomSheetContent(
+                closeWithAnim = closeWithAnim,
+            )
+        }
+    }
+
+    @Composable
+    private fun MusicBottomSheetContent(
+        closeWithAnim: () -> Unit,
     ) {
+        val coroutineScope = rememberCoroutineScope()
+
         MusicBottomSheetMenu(
-            primaryColor = primaryColor,
-            textColor = textColor,
             musicBottomSheetState = musicBottomSheetState,
             modifyAction = {
-                coroutineScope.launch { musicModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) {
-                            onDismiss()
-                            navigateToModifyMusic(selectedMusic.musicId.toString())
-                        }
-                    }
+                closeWithAnim()
+                onModifyMusic()
             },
             quickAccessAction = {
-                onToggleQuickAccessState()
-                coroutineScope.launch { musicModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) onDismiss()
-                    }
+                toggleQuickAccess()
+                closeWithAnim()
             },
-            removeAction = onShowDeleteMusicDialog,
-            addToPlaylistAction = {
-//                onPlaylistEvent(
-//                    PlaylistEvent.PlaylistsSelection(
-//                        musicId = selectedMusic.musicId
-//                    )
-//                )
-//                onMusicEvent(
-//                    MusicEvent.AddToPlaylistBottomSheet(
-//                        isShown = true
-//                    )
-//                )
-                showAddToPlaylistBottomSheet()
-            },
-            removeFromPlaylistAction = onShowRemoveFromPlaylistDialog,
+            removeAction = onDeleteMusic,
+            addToPlaylistAction = onAddToPlaylist,
+            removeFromPlaylistAction = onRemoveFromPlaylist,
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.removeSongFromPlayedPlaylist(
                         musicId = selectedMusic.musicId
                     )
-                    coroutineScope.launch {
-                        musicModalSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) onDismiss()
-                    }
                 }
+                closeWithAnim()
             },
             playNextAction = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    coroutineScope.launch {
-                        musicModalSheetState.hide()
-                    }.invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) onDismiss()
-                    }
-                }
                 coroutineScope.launch {
                     if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
                         playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
@@ -105,6 +77,7 @@ fun MusicBottomSheet(
                         music = selectedMusic
                     )
                 }
+                closeWithAnim()
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,
             isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId)

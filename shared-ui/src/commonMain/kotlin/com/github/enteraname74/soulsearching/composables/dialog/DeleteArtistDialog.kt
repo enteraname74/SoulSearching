@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 
@@ -10,7 +10,7 @@ fun DeleteArtistDialog(
     onArtistEvent: (ArtistEvent) -> Unit,
     confirmAction : () -> Unit
 ) {
-    SoulDialog(
+    SoulAlertDialog(
         confirmAction = {
             onArtistEvent(ArtistEvent.DeleteArtist)
             onArtistEvent(ArtistEvent.DeleteDialog(isShown = false))

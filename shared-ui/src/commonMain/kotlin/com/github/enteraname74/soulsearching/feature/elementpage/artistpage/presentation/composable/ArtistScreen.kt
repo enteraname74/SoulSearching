@@ -37,7 +37,6 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistPanel
@@ -164,25 +163,17 @@ fun ArtistScreen(
             MusicBottomSheetEvents(
                 selectedMusic = music,
                 playlistsWithMusics = playlistWithMusics,
-                navigateToModifyMusic = navigateToModifyMusic,
-                musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
-                isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                isBottomSheetShown = isBottomSheetShown,
                 isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
                 isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
                 onDismiss = {
                     onSetBottomSheetVisibility(false)
                 },
-                onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
                 onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
                 onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                onDeleteMusic = { onDeleteMusic(music) },
-                onToggleQuickAccessState = { onToggleQuickAccessState(music) },
                 onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
                 onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
                     onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                },
-                retrieveCoverMethod = retrieveCoverMethod
+                }
             )
         }
 

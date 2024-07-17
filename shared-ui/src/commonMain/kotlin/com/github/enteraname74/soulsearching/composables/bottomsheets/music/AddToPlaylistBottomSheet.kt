@@ -1,61 +1,42 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistMenuBottomSheet
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import kotlinx.coroutines.launch
-import java.util.UUID
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
+import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddToPlaylistBottomSheet(
-    playlistsWithMusics: List<PlaylistWithMusics>,
-    onDismiss: () -> Unit,
-    onConfirm: (selectedPlaylistsIds: List<UUID>) -> Unit,
-    addToPlaylistModalSheetState: SheetState,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?
-) {
-    val coroutineScope = rememberCoroutineScope()
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxSize(),
-        windowInsets = WindowInsets.statusBars,
-        onDismissRequest = onDismiss,
-        sheetState = addToPlaylistModalSheetState,
-        dragHandle = {}
+class AddToPlaylistBottomSheet(
+    private val onClose: () -> Unit,
+    private val addMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>) -> Unit,
+    private val playlistsWithMusics: List<PlaylistWithMusics>,
+) : SoulBottomSheet {
+
+    init {
+        println("PLAYLISTS HERE: ${playlistsWithMusics.size}")
+    }
+
+    @Composable
+    override fun BottomSheet() {
+        SoulBottomSheetHandler(
+            onClose = onClose,
+        ) { closeWithAnim ->
+            Content(closeWithAnim = closeWithAnim)
+        }
+    }
+
+    @Composable
+    private fun Content(
+        closeWithAnim: () -> Unit,
     ) {
         AddToPlaylistMenuBottomSheet(
-            primaryColor = primaryColor,
-            textColor = textColor,
-            onDismiss = {
-                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!addToPlaylistModalSheetState.isVisible) onDismiss()
-                    }
-            },
+            onDismiss = closeWithAnim,
             onConfirm = { selectedPlaylistsIds ->
-                coroutineScope.launch { addToPlaylistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!addToPlaylistModalSheetState.isVisible) {
-                            onConfirm(selectedPlaylistsIds)
-                        }
-                    }
+                closeWithAnim()
+                addMusicToSelectedPlaylists(selectedPlaylistsIds)
             },
             playlistsWithMusics = playlistsWithMusics,
-            retrieveCoverMethod = retrieveCoverMethod
         )
     }
 }
