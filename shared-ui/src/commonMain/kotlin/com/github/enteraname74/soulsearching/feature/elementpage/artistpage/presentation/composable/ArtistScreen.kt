@@ -177,19 +177,6 @@ fun ArtistScreen(
             )
         }
 
-        albums.find { it.albumId == selectedAlbumId }?.let { album ->
-            AlbumBottomSheetEvents(
-                selectedAlbum = album,
-                navigateToModifyAlbum = navigateToModifyAlbum,
-                isDeleteAlbumDialogShown = isDeleteAlbumDialogShown,
-                isBottomSheetShown = isAlbumBottomSheetShown,
-                onDismissBottomSheet = { onSetAlbumBottomSheetVisibility(false) },
-                onSetDeleteAlbumDialogVisibility = onSetDeleteAlbumDialogVisibility,
-                onToggleQuickAccessState = { onToggleAlbumQuickAccessState(album) },
-                onDeleteAlbum = { onDeleteAlbum(album) }
-            )
-        }
-
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
                 Row(

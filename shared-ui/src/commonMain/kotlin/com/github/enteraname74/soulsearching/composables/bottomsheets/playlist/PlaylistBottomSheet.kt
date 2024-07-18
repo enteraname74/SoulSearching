@@ -1,68 +1,44 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetMenu
-import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
-import kotlinx.coroutines.launch
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PlaylistBottomSheet(
-    playlistState: PlaylistState,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
-    playlistModalSheetState: SheetState,
-    navigateToModifyPlaylist: (String) -> Unit
-) {
-    val coroutineScope = rememberCoroutineScope()
 
-    ModalBottomSheet(
-        onDismissRequest = {
-            onPlaylistEvent(
-                PlaylistEvent.BottomSheet(
-                    isShown = false
-                )
-            )
-        },
-        sheetState = playlistModalSheetState,
-        dragHandle = {}
+class PlaylistBottomSheet(
+    private val onClose: () -> Unit,
+    private val selectedPlaylist: Playlist,
+    private val onModifyPlaylist: () -> Unit,
+    private val onDeletePlaylist: () -> Unit,
+    private val toggleQuickAccess: () -> Unit,
+): SoulBottomSheet {
+
+    @Composable
+    override fun BottomSheet() {
+        SoulBottomSheetHandler(
+            onClose = onClose
+        ) { closeWithAnim ->
+            Content(closeWithAnim = closeWithAnim)
+        }
+    }
+
+    @Composable
+    private fun Content(
+        closeWithAnim: () -> Unit,
     ) {
         PlaylistBottomSheetMenu(
-            isFavoritePlaylist = playlistState.selectedPlaylist.isFavorite,
+            isFavoritePlaylist = selectedPlaylist.isFavorite,
             modifyAction = {
-                coroutineScope.launch { playlistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!playlistModalSheetState.isVisible) {
-                            onPlaylistEvent(
-                                PlaylistEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                            navigateToModifyPlaylist(playlistState.selectedPlaylist.playlistId.toString())
-                        }
-                    }
+                closeWithAnim()
+                onModifyPlaylist()
             },
-            deleteAction = {
-                onPlaylistEvent(PlaylistEvent.DeleteDialog(isShown = true))
-            },
+            deleteAction = onDeletePlaylist,
             quickAccessAction = {
-                onPlaylistEvent(PlaylistEvent.UpdateQuickAccessState)
-                coroutineScope.launch { playlistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!playlistModalSheetState.isVisible) {
-                            onPlaylistEvent(
-                                PlaylistEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
-                    }
+                closeWithAnim()
+                toggleQuickAccess()
             },
-            isInQuickAccess = playlistState.selectedPlaylist.isInQuickAccess
+            isInQuickAccess = selectedPlaylist.isInQuickAccess
         )
     }
 }

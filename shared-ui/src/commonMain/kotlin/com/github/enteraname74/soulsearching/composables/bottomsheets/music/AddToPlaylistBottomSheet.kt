@@ -12,11 +12,6 @@ class AddToPlaylistBottomSheet(
     private val addMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>) -> Unit,
     private val playlistsWithMusics: List<PlaylistWithMusics>,
 ) : SoulBottomSheet {
-
-    init {
-        println("PLAYLISTS HERE: ${playlistsWithMusics.size}")
-    }
-
     @Composable
     override fun BottomSheet() {
         SoulBottomSheetHandler(

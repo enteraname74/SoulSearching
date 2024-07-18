@@ -34,14 +34,12 @@ class MusicBottomSheet(
         SoulBottomSheetHandler(
             onClose = onClose
         ) { closeWithAnim ->
-            MusicBottomSheetContent(
-                closeWithAnim = closeWithAnim,
-            )
+            Content(closeWithAnim = closeWithAnim)
         }
     }
 
     @Composable
-    private fun MusicBottomSheetContent(
+    private fun Content(
         closeWithAnim: () -> Unit,
     ) {
         val coroutineScope = rememberCoroutineScope()
@@ -53,8 +51,8 @@ class MusicBottomSheet(
                 onModifyMusic()
             },
             quickAccessAction = {
-                toggleQuickAccess()
                 closeWithAnim()
+                toggleQuickAccess()
             },
             removeAction = onDeleteMusic,
             addToPlaylistAction = onAddToPlaylist,

@@ -25,7 +25,6 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
-import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetEvents
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -102,6 +101,7 @@ class MainPageScreen : Screen {
                 is MainScreenNavigationState.ToModifyMusic -> {
                     val musicToModify: Music = (navigationState as MainScreenNavigationState.ToModifyMusic).selectedMusic
                     navigator.push(ModifyMusicScreen(selectedMusicId = musicToModify.musicId.toString()))
+                    allMusicsViewModel.consumeNavigation()
                 }
             }
         }
@@ -194,47 +194,6 @@ fun MainPageScreenView(
     var selectedAlbumId by rememberSaveable {
         mutableStateOf<UUID?>(null)
     }
-
-    PlaylistBottomSheetEvents(
-        playlistState = playlistState,
-        onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
-        navigateToModifyPlaylist = navigateToModifyPlaylist
-    )
-
-    albumState.albums.find { it.album.albumId == selectedAlbumId }?.let { albumWithArtist ->
-        AlbumBottomSheetEvents(
-            selectedAlbum = albumWithArtist.album,
-            navigateToModifyAlbum = navigateToModifyAlbum,
-            isDeleteAlbumDialogShown = albumState.isDeleteDialogShown,
-            isBottomSheetShown = albumState.isBottomSheetShown,
-            onDeleteAlbum = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.DeleteAlbum(albumId = albumWithArtist.album.albumId)
-                )
-            },
-            onDismissBottomSheet = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.BottomSheet(isShown = false)
-                )
-            },
-            onSetDeleteAlbumDialogVisibility = { isShown ->
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.DeleteDialog(isShown = isShown)
-                )
-            },
-            onToggleQuickAccessState = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.UpdateQuickAccessState(album = albumWithArtist.album)
-                )
-            }
-        )
-
-    }
-    ArtistBottomSheetEvents(
-        artistState = artistState,
-        onArtistEvent = allArtistsViewModel::onArtistEvent,
-        navigateToModifyArtist = navigateToModifyArtist
-    )
 
     if (playlistState.isCreatePlaylistDialogShown) {
         CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent)

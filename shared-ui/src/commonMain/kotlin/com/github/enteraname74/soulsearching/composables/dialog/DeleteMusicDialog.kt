@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.dialog
+package com.github.enteraname74.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.Music
@@ -31,7 +31,6 @@ class DeleteMusicDialog(
                         musicId = musicToDelete.musicId
                     )
                 }
-                onClose()
             },
             dismissAction = onClose,
             confirmText = strings.delete,

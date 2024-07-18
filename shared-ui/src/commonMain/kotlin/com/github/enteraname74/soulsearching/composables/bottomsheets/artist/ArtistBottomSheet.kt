@@ -1,67 +1,41 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.artist
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheetMenu
-import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
-import kotlinx.coroutines.launch
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ArtistBottomSheet(
-    artistState: ArtistState,
-    onArtistEvent: (ArtistEvent) -> Unit,
-    artistModalSheetState: SheetState,
-    navigateToModifyArtist: (String) -> Unit
-) {
-    val coroutineScope = rememberCoroutineScope()
+class ArtistBottomSheet(
+    private val onClose: () -> Unit,
+    private val selectedArtist: Artist,
+    private val onModifyArtist: () -> Unit,
+    private val onDeleteArtist: () -> Unit,
+    private val toggleQuickAccess: () -> Unit,
+): SoulBottomSheet {
+    @Composable
+    override fun BottomSheet() {
+        SoulBottomSheetHandler(
+            onClose = onClose
+        ) { closeWithAnim ->
+            Content(closeWithAnim = closeWithAnim)
+        }
+    }
 
-    ModalBottomSheet(
-        onDismissRequest = {
-            onArtistEvent(
-                ArtistEvent.BottomSheet(
-                    isShown = false
-                )
-            )
-        },
-        sheetState = artistModalSheetState,
-        dragHandle = {}
+    @Composable
+    private fun Content(
+        closeWithAnim: () -> Unit,
     ) {
         ArtistBottomSheetMenu(
             modifyAction = {
-                coroutineScope.launch { artistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!artistModalSheetState.isVisible) {
-                            onArtistEvent(
-                                ArtistEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                            navigateToModifyArtist(artistState.selectedArtist.artist.artistId.toString())
-                        }
-                    }
+                closeWithAnim()
+                onModifyArtist()
             },
-            deleteAction = {
-                onArtistEvent(ArtistEvent.DeleteDialog(isShown = true))
-            },
+            deleteAction = onDeleteArtist,
             quickAccessAction = {
-                onArtistEvent(ArtistEvent.UpdateQuickAccessState)
-                coroutineScope.launch { artistModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!artistModalSheetState.isVisible) {
-                            onArtistEvent(
-                                ArtistEvent.BottomSheet(
-                                    isShown = false
-                                )
-                            )
-                        }
-                    }
+                closeWithAnim()
+                toggleQuickAccess()
             },
-            isInQuickAccess = artistState.selectedArtist.artist.isInQuickAccess
+            isInQuickAccess = selectedArtist.isInQuickAccess
         )
     }
 }

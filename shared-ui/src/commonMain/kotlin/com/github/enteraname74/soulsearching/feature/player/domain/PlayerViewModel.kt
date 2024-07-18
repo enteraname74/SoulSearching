@@ -265,7 +265,6 @@ class PlayerViewModel(
      */
     private fun setPlayedList(playedList: List<Music>) {
         _state.update {
-            println("WILL SET LIST")
             it.copy(
                 playedList = playedList
             )

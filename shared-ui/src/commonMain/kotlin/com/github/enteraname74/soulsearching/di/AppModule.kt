@@ -12,6 +12,7 @@ val appModule: Module = module {
         mainModule,
         platformModule,
         viewModelModule,
+        delegateModule,
     )
     singleOf(::PlayerViewManager)
     singleOf(::PlayerMusicListViewManager)
