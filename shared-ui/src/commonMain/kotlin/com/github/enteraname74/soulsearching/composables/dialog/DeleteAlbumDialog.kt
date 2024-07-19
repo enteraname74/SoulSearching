@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.composables.dialog
 
 import androidx.compose.runtime.Composable
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -13,7 +14,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class DeleteAlbumDialog(
-    private val playlistToDelete: PlaylistWithMusics,
+    private val selectedAlbum: AlbumWithMusics,
     private val onDelete: () -> Unit,
     private val onClose: () -> Unit,
 ): SoulDialog, KoinComponent {
@@ -25,7 +26,7 @@ class DeleteAlbumDialog(
             confirmAction = {
                 onDelete()
                 CoroutineScope(Dispatchers.IO).launch {
-                    playlistToDelete.musics.forEach {
+                    selectedAlbum.musics.forEach {
                         playbackManager.removeSongFromPlayedPlaylist(
                             musicId = it.musicId
                         )

@@ -31,7 +31,7 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainScreenNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -117,13 +117,13 @@ class AllMusicsViewModel(
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
-    private val _navigationState: MutableStateFlow<MainScreenNavigationState> = MutableStateFlow(
-        MainScreenNavigationState.Idle
+    private val _navigationState: MutableStateFlow<AllMusicsNavigationState> = MutableStateFlow(
+        AllMusicsNavigationState.Idle
     )
-    val navigationState: StateFlow<MainScreenNavigationState> = _navigationState.asStateFlow()
+    val navigationState: StateFlow<AllMusicsNavigationState> = _navigationState.asStateFlow()
 
     fun consumeNavigation() {
-        _navigationState.value = MainScreenNavigationState.Idle
+        _navigationState.value = AllMusicsNavigationState.Idle
     }
 
     init {
@@ -132,7 +132,7 @@ class AllMusicsViewModel(
             setBottomSheetState = { _bottomSheetState.value = it },
             setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
             getAllPlaylistsWithMusics = { state.value.allPlaylists },
-            onModifyMusic = { _navigationState.value = MainScreenNavigationState.ToModifyMusic(it) }
+            onModifyMusic = { _navigationState.value = AllMusicsNavigationState.ToModifyMusic(it) }
         )
     }
 
@@ -204,24 +204,11 @@ class AllMusicsViewModel(
      */
     fun onMusicEvent(event: MusicEvent) {
         when(event) {
-            is MusicEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
             is MusicEvent.SetSortType -> setSortType(newSortType = event.type)
             is MusicEvent.SetSortDirection -> setSortDirection(newSortDirection = event.direction)
-            is MusicEvent.SetFavorite -> toggleFavoriteState(musicId = event.musicId)
-            is MusicEvent.ToggleQuickAccessState -> toggleQuickAccessState(music = event.music)
         }
     }
 
-
-    /**
-     * Remove the selected music, from the MusicState, from the application
-     */
-    private fun deleteMusicFromApp(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteMusicUseCase(musicId = musicId)
-            playbackManager.removeSongFromLists(musicId = musicId)
-        }
-    }
 
     /**
      * Set the sort type.

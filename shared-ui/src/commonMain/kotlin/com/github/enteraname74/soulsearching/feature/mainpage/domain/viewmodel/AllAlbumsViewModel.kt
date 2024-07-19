@@ -8,8 +8,13 @@ import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.AlbumEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsNavigationState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +26,8 @@ class AllAlbumsViewModel(
     private val getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
     private val deleteAlbumUseCase: DeleteAlbumUseCase,
     private val upsertAlbumUseCase: UpsertAlbumUseCase,
-) : ScreenModel {
+    private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
+) : ScreenModel, AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl {
     private val _sortType = MutableStateFlow(
         settings.getInt(
             SoulSearchingSettings.SORT_ALBUMS_TYPE_KEY, SortType.NAME
@@ -71,25 +77,6 @@ class AllAlbumsViewModel(
      */
     fun onAlbumEvent(event: AlbumEvent) {
         when (event) {
-            is AlbumEvent.DeleteAlbum -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    deleteAlbumUseCase(albumId = event.albumId)
-                }
-            }
-            is AlbumEvent.BottomSheet -> {
-                _state.update {
-                    it.copy(
-                        isBottomSheetShown = event.isShown
-                    )
-                }
-            }
-            is AlbumEvent.DeleteDialog -> {
-                _state.update {
-                    it.copy(
-                        isDeleteDialogShown = event.isShown
-                    )
-                }
-            }
             is AlbumEvent.SetSortType -> {
                 _sortType.value = event.type
                 settings.setInt(
@@ -104,16 +91,30 @@ class AllAlbumsViewModel(
                     value = event.type
                 )
             }
-            is AlbumEvent.UpdateQuickAccessState -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    upsertAlbumUseCase(
-                        album = event.album.copy(
-                            isInQuickAccess = !event.album.isInQuickAccess
-                        )
-                    )
-                }
-            }
             else -> {}
         }
+    }
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<AllAlbumsNavigationState> = MutableStateFlow(
+        AllAlbumsNavigationState.Idle
+    )
+    val navigationState: StateFlow<AllAlbumsNavigationState> = _navigationState.asStateFlow()
+
+    fun consumeNavigation() {
+        _navigationState.value = AllAlbumsNavigationState.Idle
+    }
+
+    init {
+        albumBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyAlbum = { _navigationState.value = AllAlbumsNavigationState.ToModifyAlbum(it) }
+        )
     }
 }

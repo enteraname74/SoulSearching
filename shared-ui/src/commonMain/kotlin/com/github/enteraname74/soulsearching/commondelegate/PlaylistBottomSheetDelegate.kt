@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.playlist.DeletePlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -24,6 +26,16 @@ class PlaylistBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var onModifyPlaylist: (playlist: Playlist) -> Unit = {}
+
+    fun initDelegate(
+        setDialogState: (SoulDialog?) -> Unit,
+        setBottomSheetState: (SoulBottomSheet?) -> Unit,
+        onModifyPlaylist: (playlist: Playlist) -> Unit,
+    ) {
+        this.setDialogState = setDialogState
+        this.setBottomSheetState = setBottomSheetState
+        this.onModifyPlaylist = onModifyPlaylist
+    }
 
     private fun showDeletePlaylistDialog(playlistToDelete: PlaylistWithMusics) {
         setDialogState(

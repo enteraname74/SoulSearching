@@ -21,12 +21,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
-import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
@@ -87,21 +83,70 @@ class MainPageScreen : Screen {
 
         val musicBottomSheetState: SoulBottomSheet? by allMusicsViewModel.bottomSheetState.collectAsState()
         val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by allMusicsViewModel.addToPlaylistsBottomSheetState.collectAsState()
-        val dialogState: SoulDialog? by allMusicsViewModel.dialogState.collectAsState()
-
-        val navigationState: MainScreenNavigationState by allMusicsViewModel.navigationState.collectAsState()
-
+        val musicDialogState: SoulDialog? by allMusicsViewModel.dialogState.collectAsState()
+        val musicNavigationState: AllMusicsNavigationState by allMusicsViewModel.navigationState.collectAsState()
         musicBottomSheetState?.BottomSheet()
         addToPlaylistsBottomSheetState?.BottomSheet()
-        dialogState?.Dialog()
+        musicDialogState?.Dialog()
 
-        LaunchedEffect(navigationState) {
-            when(navigationState) {
-                MainScreenNavigationState.Idle -> { /*no-op*/ }
-                is MainScreenNavigationState.ToModifyMusic -> {
-                    val musicToModify: Music = (navigationState as MainScreenNavigationState.ToModifyMusic).selectedMusic
+        val playlistBottomSheetState: SoulBottomSheet? by allPlaylistsViewModel.bottomSheetState.collectAsState()
+        val playlistDialogState: SoulDialog? by allPlaylistsViewModel.dialogState.collectAsState()
+        val playlistNavigationState: AllPlaylistsNavigationState by allPlaylistsViewModel.navigationState.collectAsState()
+        playlistBottomSheetState?.BottomSheet()
+        playlistDialogState?.Dialog()
+
+        val albumBottomSheetState: SoulBottomSheet? by allAlbumsViewModel.bottomSheetState.collectAsState()
+        val albumDialogState: SoulDialog? by allAlbumsViewModel.dialogState.collectAsState()
+        val albumNavigationState: AllAlbumsNavigationState by allAlbumsViewModel.navigationState.collectAsState()
+        albumBottomSheetState?.BottomSheet()
+        albumDialogState?.Dialog()
+
+        val artistBottomSheetState: SoulBottomSheet? by allArtistsViewModel.bottomSheetState.collectAsState()
+        val artistDialogState: SoulDialog? by allArtistsViewModel.dialogState.collectAsState()
+        val artistNavigationState: AllArtistsNavigationState by allArtistsViewModel.navigationState.collectAsState()
+        artistBottomSheetState?.BottomSheet()
+        artistDialogState?.Dialog()
+
+        LaunchedEffect(musicNavigationState) {
+            when(musicNavigationState) {
+                AllMusicsNavigationState.Idle -> { /*no-op*/ }
+                is AllMusicsNavigationState.ToModifyMusic -> {
+                    val musicToModify: Music = (musicNavigationState as AllMusicsNavigationState.ToModifyMusic).selectedMusic
                     navigator.push(ModifyMusicScreen(selectedMusicId = musicToModify.musicId.toString()))
                     allMusicsViewModel.consumeNavigation()
+                }
+            }
+        }
+        LaunchedEffect(playlistNavigationState) {
+            when(playlistNavigationState) {
+                AllPlaylistsNavigationState.Idle -> { /*no-op*/ }
+                is AllPlaylistsNavigationState.ToModifyPlaylist -> {
+                    val playlistToModify: Playlist =
+                        (playlistNavigationState as AllPlaylistsNavigationState.ToModifyPlaylist).selectedPlaylist
+                    navigator.push(ModifyPlaylistScreen(selectedPlaylistId = playlistToModify.playlistId.toString()))
+                    allPlaylistsViewModel.consumeNavigation()
+                }
+            }
+        }
+        LaunchedEffect(albumNavigationState) {
+            when(albumNavigationState) {
+                AllAlbumsNavigationState.Idle -> { /*no-op*/ }
+                is AllAlbumsNavigationState.ToModifyAlbum -> {
+                    val albumToModify: Album =
+                        (albumNavigationState as AllAlbumsNavigationState.ToModifyAlbum).selectedAlbum
+                    navigator.push(ModifyAlbumScreen(selectedAlbumId = albumToModify.albumId.toString()))
+                    allAlbumsViewModel.consumeNavigation()
+                }
+            }
+        }
+        LaunchedEffect(artistNavigationState) {
+            when(artistNavigationState) {
+                AllArtistsNavigationState.Idle -> { /*no-op*/ }
+                is AllArtistsNavigationState.ToModifyArtist -> {
+                    val artistToModify: Artist =
+                        (artistNavigationState as AllArtistsNavigationState.ToModifyArtist).selectedArtist
+                    navigator.push(ModifyArtistScreen(selectedArtistId = artistToModify.artistId.toString()))
+                    allArtistsViewModel.consumeNavigation()
                 }
             }
         }
@@ -125,27 +170,6 @@ class MainPageScreen : Screen {
             navigateToArtist = { artistId ->
                 navigator.push(
                     SelectedArtistScreen(selectedArtistId = artistId)
-                )
-            },
-            navigateToModifyPlaylist = { playlistId ->
-                navigator.push(
-                    ModifyPlaylistScreen(
-                        selectedPlaylistId = playlistId
-                    )
-                )
-            },
-            navigateToModifyAlbum = { albumId ->
-                navigator.push(
-                    ModifyAlbumScreen(
-                        selectedAlbumId = albumId
-                    )
-                )
-            },
-            navigateToModifyArtist = { artistId ->
-                navigator.push(
-                    ModifyArtistScreen(
-                        selectedArtistId = artistId
-                    )
                 )
             },
             navigateToSettings = {
@@ -175,9 +199,6 @@ fun MainPageScreenView(
     navigateToPlaylist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
-    navigateToModifyPlaylist: (String) -> Unit,
-    navigateToModifyAlbum: (String) -> Unit,
-    navigateToModifyArtist: (String) -> Unit,
     navigateToSettings: () -> Unit,
     searchDraggableState: SwipeableState<BottomSheetStates>,
     musicState: MainPageState,

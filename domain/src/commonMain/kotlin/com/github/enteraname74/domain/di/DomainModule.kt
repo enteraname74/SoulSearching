@@ -105,7 +105,7 @@ val domainModule = module {
     singleOf(::GetFavoritePlaylistWithMusicsUseCase)
     singleOf(::GetPlaylistUseCase)
     singleOf(::GetPlaylistWithMusicsUseCase)
-    singleOf(::GetSelectablePlaylistWithMusicsForMusic)
+    singleOf(::GetSelectablePlaylistWithMusicsForMusicUseCase)
     singleOf(::UpsertPlaylistUseCase)
 
     // QuickAccess

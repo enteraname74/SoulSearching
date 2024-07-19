@@ -8,7 +8,12 @@ import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
+import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +26,8 @@ class AllArtistsViewModel(
     private val getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
     private val deleteArtistUseCase: DeleteArtistUseCase,
     private val upsertArtistUseCase: UpsertArtistUseCase,
-): ScreenModel {
+    private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
+): ScreenModel, ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl {
     private val _sortType = MutableStateFlow(
         settings.getInt(
             SoulSearchingSettings.SORT_ARTISTS_TYPE_KEY, SortType.NAME
@@ -64,34 +70,6 @@ class AllArtistsViewModel(
      */
     fun onArtistEvent(event: ArtistEvent) {
         when (event) {
-            ArtistEvent.DeleteArtist -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    deleteArtistUseCase(
-                        artistWithMusics = _state.value.selectedArtist,
-                    )
-                }
-            }
-            is ArtistEvent.SetSelectedArtistWithMusics -> {
-                _state.update {
-                    it.copy(
-                        selectedArtist = event.artistWithMusics
-                    )
-                }
-            }
-            is ArtistEvent.BottomSheet -> {
-                _state.update {
-                    it.copy(
-                        isBottomSheetShown = event.isShown
-                    )
-                }
-            }
-            is ArtistEvent.DeleteDialog -> {
-                _state.update {
-                    it.copy(
-                        isDeleteDialogShown = event.isShown
-                    )
-                }
-            }
             is ArtistEvent.SetSortDirection -> {
                 _sortDirection.value = event.type
                 settings.setInt(
@@ -106,17 +84,30 @@ class AllArtistsViewModel(
                     value = event.type
                 )
             }
-            is ArtistEvent.UpdateQuickAccessState -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val artist = _state.value.selectedArtist.artist
-                    upsertArtistUseCase(
-                        artist = artist.copy(
-                            isInQuickAccess = !artist.isInQuickAccess
-                        )
-                    )
-                }
-            }
             else -> {}
         }
+    }
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<AllArtistsNavigationState> = MutableStateFlow(
+        AllArtistsNavigationState.Idle
+    )
+    val navigationState: StateFlow<AllArtistsNavigationState> = _navigationState.asStateFlow()
+
+    fun consumeNavigation() {
+        _navigationState.value = AllArtistsNavigationState.Idle
+    }
+
+    init {
+        artistBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyArtist = { _navigationState.value = AllArtistsNavigationState.ToModifyArtist(it) }
+        )
     }
 }

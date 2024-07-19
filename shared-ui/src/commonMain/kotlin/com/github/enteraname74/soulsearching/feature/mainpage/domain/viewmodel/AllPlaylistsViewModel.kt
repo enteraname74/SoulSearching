@@ -7,7 +7,12 @@ import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
+import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -26,9 +31,10 @@ class AllPlaylistsViewModel(
     private val getPlaylistUseCase: GetPlaylistUseCase,
     private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
     private val deletePlaylistUseCase: DeletePlaylistUseCase,
-    private val getSelectablePlaylistWithMusicsForMusic: GetSelectablePlaylistWithMusicsForMusic,
-    private val settings: SoulSearchingSettings
-): ScreenModel {
+    private val getSelectablePlaylistWithMusicsForMusicUseCase: GetSelectablePlaylistWithMusicsForMusicUseCase,
+    private val settings: SoulSearchingSettings,
+    private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
+): ScreenModel, PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl {
     private val _sortType = MutableStateFlow(
         settings.getInt(
             SoulSearchingSettings.SORT_PLAYLISTS_TYPE_KEY, SortType.NAME
@@ -73,51 +79,41 @@ class AllPlaylistsViewModel(
         PlaylistState()
     )
 
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<AllPlaylistsNavigationState> = MutableStateFlow(
+        AllPlaylistsNavigationState.Idle
+    )
+    val navigationState: StateFlow<AllPlaylistsNavigationState> = _navigationState.asStateFlow()
+
+    fun consumeNavigation() {
+        _navigationState.value = AllPlaylistsNavigationState.Idle
+    }
+
+    init {
+        playlistBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyPlaylist = { _navigationState.value = AllPlaylistsNavigationState.ToModifyPlaylist(it) }
+        )
+    }
+
     /**
      * Handle a playlist event.
      */
     fun onPlaylistEvent(event: PlaylistEvent) {
         when(event) {
-            is PlaylistEvent.BottomSheet -> showOrHidBottomSheet(event)
-            is PlaylistEvent.DeleteDialog -> showOrHideDeleteDialog(event)
             is PlaylistEvent.CreatePlaylistDialog -> showOrHideCreatePlaylistDialog(event)
             is PlaylistEvent.AddPlaylist -> addPlaylist(event)
-            is PlaylistEvent.AddMusicToPlaylists -> addMusicToPlaylists(
-                musicId = event.musicId,
-                selectedPlaylistsIds = event.selectedPlaylistsIds
-            )
-            is PlaylistEvent.RemoveMusicFromPlaylist -> removeMusicFromSelectedPlaylist(event)
-            is PlaylistEvent.DeletePlaylist -> deleteSelectedPlaylist()
             is PlaylistEvent.SetSelectedPlaylist -> setSelectedPlaylist(event)
-            is PlaylistEvent.TogglePlaylistSelectedState -> togglePlaylistSelectedState(event)
-            is PlaylistEvent.PlaylistsSelection -> setSelectablePlaylistsForMusic(event)
             is PlaylistEvent.SetSortDirection -> setSortDirection(event)
             is PlaylistEvent.SetSortType -> setSortType(event)
             is PlaylistEvent.CreateFavoritePlaylist -> createFavoritePlaylist(event)
-            is PlaylistEvent.UpdateQuickAccessState -> updateQuickAccessState()
             is PlaylistEvent.AddNbPlayed -> incrementNbPlayedOfPlaylist(event)
-        }
-    }
-
-    /**
-     * Show or hide the playlist bottom sheet.
-     */
-    private fun showOrHidBottomSheet(event: PlaylistEvent.BottomSheet) {
-        _state.update {
-            it.copy(
-                isBottomSheetShown = event.isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the delete dialog.
-     */
-    private fun showOrHideDeleteDialog(event: PlaylistEvent.DeleteDialog) {
-        _state.update {
-            it.copy(
-                isDeleteDialogShown = event.isShown
-            )
         }
     }
 
@@ -170,27 +166,6 @@ class AllPlaylistsViewModel(
     }
 
     /**
-     * Remove a music from the selected playlist
-     */
-    private fun removeMusicFromSelectedPlaylist(event: PlaylistEvent.RemoveMusicFromPlaylist) {
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteMusicFromPlaylistUseCase(
-                musicId = event.musicId,
-                playlistId = _state.value.selectedPlaylist.playlistId
-            )
-        }
-    }
-
-    /**
-     * Delete the selected playlist
-     */
-    private fun deleteSelectedPlaylist() {
-        CoroutineScope(Dispatchers.IO).launch {
-            deletePlaylistUseCase(_state.value.selectedPlaylist)
-        }
-    }
-
-    /**
      * Set the selected playlist.
      */
     private fun setSelectedPlaylist(event: PlaylistEvent.SetSelectedPlaylist) {
@@ -198,36 +173,6 @@ class AllPlaylistsViewModel(
             it.copy(
                 selectedPlaylist = event.playlist
             )
-        }
-    }
-
-    /**
-     * Toggle a playlist selection state.
-     */
-    private fun togglePlaylistSelectedState(event: PlaylistEvent.TogglePlaylistSelectedState) {
-        val newList = ArrayList(_state.value.multiplePlaylistSelected)
-        if (event.playlistId in newList) newList.remove(event.playlistId)
-        else newList.add(event.playlistId)
-
-        _state.update {
-            it.copy(
-                multiplePlaylistSelected = newList
-            )
-        }
-    }
-
-    /**
-     * Define the playlists where a music can be added.
-     */
-    private fun setSelectablePlaylistsForMusic(event: PlaylistEvent.PlaylistsSelection) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val playlists = getSelectablePlaylistWithMusicsForMusic(event.musicId)
-            _state.update {
-                it.copy(
-                    multiplePlaylistSelected = ArrayList(),
-                    playlistsWithMusics = playlists
-                )
-            }
         }
     }
 
@@ -263,19 +208,6 @@ class AllPlaylistsViewModel(
                     playlistId = UUID.randomUUID(),
                     name = event.name,
                     isFavorite = true
-                )
-            )
-        }
-    }
-
-    /**
-     * Update the quick access state of the selected playlist.
-     */
-    private fun updateQuickAccessState() {
-        CoroutineScope(Dispatchers.IO).launch {
-            upsertPlaylistUseCase(
-                playlist = _state.value.selectedPlaylist.copy(
-                    isInQuickAccess = !_state.value.selectedPlaylist.isInQuickAccess
                 )
             )
         }
