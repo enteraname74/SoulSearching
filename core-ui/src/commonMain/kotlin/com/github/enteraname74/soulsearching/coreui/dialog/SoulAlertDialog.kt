@@ -69,3 +69,56 @@ fun SoulAlertDialog(
         iconContentColor = contentColor
     )
 }
+
+@Composable
+fun SoulAlertDialog(
+    confirmAction: () -> Unit,
+    dismissAction: () -> Unit,
+    title: String,
+    content: @Composable () -> Unit,
+    confirmText: String,
+    dismissText: String,
+    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+) {
+    AlertDialog(
+        onDismissRequest = dismissAction,
+        confirmButton = {
+            TextButton(onClick = { confirmAction() }) {
+                Text(
+                    text = confirmText,
+                    color = contentColor
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = dismissAction) {
+                Text(
+                    text = dismissText,
+                    color = contentColor
+                )
+            }
+        },
+        title = {
+            Text(
+                text = title,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            content()
+        },
+        icon = {
+            Image(
+                imageVector = Icons.Rounded.Delete,
+                contentDescription = strings.delete,
+                colorFilter = ColorFilter.tint(contentColor)
+            )
+        },
+        containerColor = backgroundColor,
+        textContentColor = contentColor,
+        titleContentColor = contentColor,
+        iconContentColor = contentColor
+    )
+}

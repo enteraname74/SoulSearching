@@ -1,11 +1,8 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.playlist.DeletePlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -15,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 interface PlaylistBottomSheetDelegate {
-    fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusics)
+    fun showPlaylistBottomSheet(selectedPlaylist: Playlist)
 }
 
 class PlaylistBottomSheetDelegateImpl(
@@ -37,13 +34,13 @@ class PlaylistBottomSheetDelegateImpl(
         this.onModifyPlaylist = onModifyPlaylist
     }
 
-    private fun showDeletePlaylistDialog(playlistToDelete: PlaylistWithMusics) {
+    private fun showDeletePlaylistDialog(playlistToDelete: Playlist) {
         setDialogState(
             DeletePlaylistDialog(
                 playlistToDelete = playlistToDelete,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deletePlaylistUseCase(playlistToDelete.playlist)
+                        deletePlaylistUseCase(playlistToDelete)
                     }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
@@ -54,18 +51,18 @@ class PlaylistBottomSheetDelegateImpl(
         )
     }
 
-    override fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusics) {
+    override fun showPlaylistBottomSheet(selectedPlaylist: Playlist) {
         setBottomSheetState(
             PlaylistBottomSheet(
-                selectedPlaylist = selectedPlaylist.playlist,
+                selectedPlaylist = selectedPlaylist,
                 onClose = { setBottomSheetState(null) },
                 onDeletePlaylist = { showDeletePlaylistDialog(playlistToDelete = selectedPlaylist) },
-                onModifyPlaylist = { onModifyPlaylist(selectedPlaylist.playlist) },
+                onModifyPlaylist = { onModifyPlaylist(selectedPlaylist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         upsertPlaylistUseCase(
-                            playlist = selectedPlaylist.playlist.copy(
-                                isInQuickAccess = !selectedPlaylist.playlist.isInQuickAccess,
+                            playlist = selectedPlaylist.copy(
+                                isInQuickAccess = !selectedPlaylist.isInQuickAccess,
                             )
                         )
                     }

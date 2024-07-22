@@ -2,11 +2,15 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.*
+import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.playlist.GetPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -14,6 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +34,6 @@ class AllPlaylistsViewModel(
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val getMusicUseCase: GetMusicUseCase,
     private val getPlaylistUseCase: GetPlaylistUseCase,
-    private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
-    private val deletePlaylistUseCase: DeletePlaylistUseCase,
-    private val getSelectablePlaylistWithMusicsForMusicUseCase: GetSelectablePlaylistWithMusicsForMusicUseCase,
     private val settings: SoulSearchingSettings,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
 ): ScreenModel, PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl {
@@ -107,7 +109,6 @@ class AllPlaylistsViewModel(
      */
     fun onPlaylistEvent(event: PlaylistEvent) {
         when(event) {
-            is PlaylistEvent.CreatePlaylistDialog -> showOrHideCreatePlaylistDialog(event)
             is PlaylistEvent.AddPlaylist -> addPlaylist(event)
             is PlaylistEvent.SetSelectedPlaylist -> setSelectedPlaylist(event)
             is PlaylistEvent.SetSortDirection -> setSortDirection(event)
@@ -120,12 +121,19 @@ class AllPlaylistsViewModel(
     /**
      * Show or hide the create playlist dialog.
      */
-    private fun showOrHideCreatePlaylistDialog(event: PlaylistEvent.CreatePlaylistDialog) {
-        _state.update {
-            it.copy(
-                isCreatePlaylistDialogShown = event.isShown
-            )
-        }
+    fun showCreatePlaylistDialog() {
+        _dialogState.value = CreatePlaylistDialog(
+            onDismiss = { _dialogState.value = null },
+            onConfirm = { playlistName ->
+                if (playlistName.isNotBlank()) {
+                    screenModelScope.launch {
+                        upsertPlaylistUseCase(
+                            playlist = Playlist(name = playlistName)
+                        )
+                    }
+                }
+            }
+        )
     }
 
     /**
@@ -139,29 +147,6 @@ class AllPlaylistsViewModel(
                     name = event.name
                 )
             )
-        }
-    }
-
-    /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylistsIds: List<UUID>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in selectedPlaylistsIds) {
-                upsertMusicIntoPlaylistUseCase(
-                    MusicPlaylist(
-                        musicId = musicId,
-                        playlistId = selectedPlaylistId
-                    )
-                )
-            }
-            val music: Music = getMusicUseCase(musicId = musicId).first() ?: return@launch
-            playbackManager.updateMusic(music = music)
-            _state.update {
-                it.copy(
-                    multiplePlaylistSelected = ArrayList()
-                )
-            }
         }
     }
 

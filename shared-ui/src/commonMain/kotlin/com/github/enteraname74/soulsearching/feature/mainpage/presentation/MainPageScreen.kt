@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
@@ -43,7 +42,10 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.*
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllElementsComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllMusicsComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
@@ -54,7 +56,6 @@ import com.github.enteraname74.soulsearching.feature.search.SearchAll
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
 import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * Represent the view of the main page screen.
@@ -212,14 +213,6 @@ fun MainPageScreenView(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var selectedAlbumId by rememberSaveable {
-        mutableStateOf<UUID?>(null)
-    }
-
-    if (playlistState.isCreatePlaylistDialogShown) {
-        CreatePlaylistDialog(onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent)
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -265,20 +258,7 @@ fun MainPageScreenView(
                                     title = strings.quickAccess,
                                     isUsingSort = false,
                                     navigateToArtist = navigateToArtist,
-                                    artistBottomSheetAction = {
-                                        coroutineScope.launch {
-                                            allArtistsViewModel.onArtistEvent(
-                                                ArtistEvent.SetSelectedArtistWithMusics(
-                                                    it
-                                                )
-                                            )
-                                            allArtistsViewModel.onArtistEvent(
-                                                ArtistEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    },
+                                    artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
                                     navigateToPlaylist = {
                                         allPlaylistsViewModel.onPlaylistEvent(
                                             PlaylistEvent.SetSelectedPlaylist(
@@ -287,31 +267,9 @@ fun MainPageScreenView(
                                         )
                                         navigateToPlaylist(it.playlistId.toString())
                                     },
-                                    playlistBottomSheetAction = {
-                                        coroutineScope.launch {
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSelectedPlaylist(
-                                                    it
-                                                )
-                                            )
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    },
+                                    playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = { albumWithArtist ->
-                                        coroutineScope.launch {
-                                            selectedAlbumId = albumWithArtist.album.albumId
-                                            allAlbumsViewModel.onAlbumEvent(
-                                                AlbumEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    },
+                                    albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
                                     playMusicAction = { music ->
                                         coroutineScope.launch {
                                             playerViewManager.animateTo(
@@ -349,29 +307,12 @@ fun MainPageScreenView(
                                             )
                                             navigateToPlaylist(it.playlistId.toString())
                                         },
-                                        playlistBottomSheetAction = {
-                                            coroutineScope.launch {
-                                                allPlaylistsViewModel.onPlaylistEvent(
-                                                    PlaylistEvent.SetSelectedPlaylist(
-                                                        it
-                                                    )
-                                                )
-                                                allPlaylistsViewModel.onPlaylistEvent(
-                                                    PlaylistEvent.BottomSheet(
-                                                        isShown = true
-                                                    )
-                                                )
-                                            }
-                                        },
+                                        playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
                                         createPlaylistComposable = {
                                             Icon(
                                                 modifier = Modifier
                                                     .clickable {
-                                                        allPlaylistsViewModel.onPlaylistEvent(
-                                                            PlaylistEvent.CreatePlaylistDialog(
-                                                                isShown = true
-                                                            )
-                                                        )
+                                                        allPlaylistsViewModel.showCreatePlaylistDialog()
                                                     }
                                                     .size(UiConstants.ImageSize.medium),
                                                 imageVector = Icons.Rounded.Add,
@@ -420,16 +361,7 @@ fun MainPageScreenView(
                                     list = albumState.albums,
                                     title = strings.albums,
                                     navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = { albumWithArtist ->
-                                        coroutineScope.launch {
-                                            selectedAlbumId = albumWithArtist.album.albumId
-                                            allAlbumsViewModel.onAlbumEvent(
-                                                AlbumEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    },
+                                    albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
                                     sortByName = {
                                         allAlbumsViewModel.onAlbumEvent(
                                             AlbumEvent.SetSortType(SortType.NAME)
@@ -470,20 +402,7 @@ fun MainPageScreenView(
                                     list = artistState.artists,
                                     title = strings.artists,
                                     navigateToArtist = navigateToArtist,
-                                    artistBottomSheetAction = {
-                                        coroutineScope.launch {
-                                            allArtistsViewModel.onArtistEvent(
-                                                ArtistEvent.SetSelectedArtistWithMusics(
-                                                    it
-                                                )
-                                            )
-                                            allArtistsViewModel.onArtistEvent(
-                                                ArtistEvent.BottomSheet(
-                                                    isShown = true
-                                                )
-                                            )
-                                        }
-                                    },
+                                    artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
                                     sortByName = {
                                         allArtistsViewModel.onArtistEvent(
                                             ArtistEvent.SetSortType(SortType.NAME)
@@ -608,21 +527,15 @@ fun MainPageScreenView(
                 artistState = artistState,
                 playlistState = playlistState,
                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
-                onArtistEvent = allArtistsViewModel::onArtistEvent,
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 onSelectedMusicForBottomSheet = allMusicsViewModel::showMusicBottomSheet,
-                onSelectedAlbumForBottomSheet = { album ->
-                    selectedAlbumId = album.albumId
-                    allAlbumsViewModel.onAlbumEvent(
-                        AlbumEvent.BottomSheet(
-                            isShown = true
-                        )
-                    )
-                }
+                onSelectedAlbumForBottomSheet = allAlbumsViewModel::showAlbumBottomSheet,
+                onSelectedArtistForBottomSheet = allArtistsViewModel::showArtistBottomSheet,
+                onSelectedPlaylistForBottomSheet = allPlaylistsViewModel::showPlaylistBottomSheet,
             )
         }
     }

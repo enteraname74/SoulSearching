@@ -18,10 +18,7 @@ data class PlaylistState(
     val multiplePlaylistSelected: ArrayList<UUID> = ArrayList(),
     val cover: ImageBitmap? = null,
     val name: String = "",
-    val isDeleteDialogShown: Boolean = false,
-    val isBottomSheetShown: Boolean = false,
     val hasSetNewCover: Boolean = false,
-    val isCreatePlaylistDialogShown: Boolean = false,
     var sortType: Int = SortType.NAME,
     var sortDirection: Int = SortDirection.ASC
 )

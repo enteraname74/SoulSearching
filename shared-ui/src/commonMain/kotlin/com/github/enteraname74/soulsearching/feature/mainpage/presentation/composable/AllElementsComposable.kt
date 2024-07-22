@@ -14,16 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
 import java.util.UUID
 
 @Composable
@@ -37,7 +31,7 @@ fun AllElementsComposable(
     playMusicAction: (Music) -> Unit = {},
     musicBottomSheetAction: (Music) -> Unit = {},
     playlistBottomSheetAction: (Playlist) -> Unit = {},
-    albumBottomSheetAction: (AlbumWithArtist) -> Unit = {},
+    albumBottomSheetAction: (AlbumWithMusics) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortByName: () -> Unit = {},
@@ -99,7 +93,7 @@ fun AllElementsComposable(
                                 isFavoritePlaylist = element.playlist.isFavorite
                             )
                         }
-                        is AlbumWithArtist -> {
+                        is AlbumWithMusics -> {
                             BigPreviewComposable(
                                 image = element.album.coverId?.let { retrieveCoverMethod(it) },
                                 title = element.album.albumName,

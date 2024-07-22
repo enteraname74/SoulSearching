@@ -61,8 +61,7 @@ class AllAlbumsViewModel(
         _sortType
     ) { albums, state, sortDirection, sortType ->
         state.copy(
-            albums = albums.filter { it.musics.any { music -> !music.isHidden } }
-                .map { it.toAlbumWithArtist() },
+            albums = albums.filter { it.musics.any { music -> !music.isHidden } },
             sortDirection = sortDirection,
             sortType = sortType
         )

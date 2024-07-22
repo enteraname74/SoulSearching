@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 
@@ -9,7 +10,7 @@ import com.github.enteraname74.domain.model.SortType
  * Manage elements related to albums.
  */
 data class AlbumState(
-    val albums: List<AlbumWithArtist> = emptyList(),
+    val albums: List<AlbumWithMusics> = emptyList(),
     val cover : ImageBitmap? = null,
     val name : String = "",
     val artist : String = "",

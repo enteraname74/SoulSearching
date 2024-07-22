@@ -7,13 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
@@ -37,9 +35,10 @@ fun SearchAll(
     artistState: ArtistState,
     playlistState: PlaylistState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
-    onSelectedAlbumForBottomSheet: (Album) -> Unit,
+    onSelectedAlbumForBottomSheet: (AlbumWithMusics) -> Unit,
+    onSelectedPlaylistForBottomSheet: (Playlist) -> Unit,
+    onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
     onPlaylistEvent: (PlaylistEvent) -> Unit,
-    onArtistEvent: (ArtistEvent) -> Unit,
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
@@ -58,34 +57,23 @@ fun SearchAll(
             stickyHeader {
                 SearchType(title = strings.playlists)
             }
-            items(foundedPlaylists) { playlist ->
+            items(foundedPlaylists) { playlistWithMusics ->
                 LinearPreviewComposable(
-                    title = playlist.playlist.name,
-                    text = strings.musics(playlist.musicsNumber),
+                    title = playlistWithMusics.playlist.name,
+                    text = strings.musics(playlistWithMusics.musicsNumber),
                     onClick = {
                         focusManager.clearFocus()
                         onPlaylistEvent(
                             PlaylistEvent.SetSelectedPlaylist(
-                                playlist.playlist
+                                playlistWithMusics.playlist
                             )
                         )
-                        navigateToPlaylist(playlist.playlist.playlistId.toString())
+                        navigateToPlaylist(playlistWithMusics.playlist.playlistId.toString())
                     },
                     onLongClick = {
-                        coroutineScope.launch {
-                            onPlaylistEvent(
-                                PlaylistEvent.SetSelectedPlaylist(
-                                    playlist.playlist
-                                )
-                            )
-                            onPlaylistEvent(
-                                PlaylistEvent.BottomSheet(
-                                    isShown = true
-                                )
-                            )
-                        }
+                        onSelectedPlaylistForBottomSheet(playlistWithMusics.playlist)
                     },
-                    cover = retrieveCoverMethod(playlist.playlist.coverId)
+                    cover = retrieveCoverMethod(playlistWithMusics.playlist.coverId)
                 )
             }
         }
@@ -97,29 +85,18 @@ fun SearchAll(
             stickyHeader {
                 SearchType(title = strings.artists)
             }
-            items(foundedArtists) { artist ->
+            items(foundedArtists) { artistWithMusics ->
                 LinearPreviewComposable(
-                    title = artist.artist.artistName,
-                    text = strings.musics(artist.musics.size),
+                    title = artistWithMusics.artist.artistName,
+                    text = strings.musics(artistWithMusics.musics.size),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToArtist(artist.artist.artistId.toString())
+                        navigateToArtist(artistWithMusics.artist.artistId.toString())
                     },
                     onLongClick = {
-                        coroutineScope.launch {
-                            onArtistEvent(
-                                ArtistEvent.SetSelectedArtistWithMusics(
-                                    artist
-                                )
-                            )
-                            onArtistEvent(
-                                ArtistEvent.BottomSheet(
-                                    isShown = true
-                                )
-                            )
-                        }
+                        onSelectedArtistForBottomSheet(artistWithMusics)
                     },
-                    cover = retrieveCoverMethod(artist.artist.coverId)
+                    cover = retrieveCoverMethod(artistWithMusics.artist.coverId)
                 )
             }
         }
@@ -142,7 +119,7 @@ fun SearchAll(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onSelectedAlbumForBottomSheet(albumWithArtist.album)
+                            onSelectedAlbumForBottomSheet(albumWithArtist)
                         }
                     },
                     cover = retrieveCoverMethod(albumWithArtist.album.coverId)

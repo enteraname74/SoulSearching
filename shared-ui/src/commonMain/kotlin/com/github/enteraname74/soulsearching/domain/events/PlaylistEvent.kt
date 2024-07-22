@@ -12,6 +12,5 @@ sealed interface PlaylistEvent {
     data class AddPlaylist(val name : String) : PlaylistEvent
     data class CreateFavoritePlaylist(val name : String) : PlaylistEvent
     data class SetSelectedPlaylist(val playlist: Playlist) : PlaylistEvent
-    data class CreatePlaylistDialog(val isShown: Boolean) : PlaylistEvent
     data class AddNbPlayed(val playlistId: UUID): PlaylistEvent
 }

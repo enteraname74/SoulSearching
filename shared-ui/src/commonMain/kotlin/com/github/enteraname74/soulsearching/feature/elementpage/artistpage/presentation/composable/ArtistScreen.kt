@@ -14,7 +14,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
@@ -22,11 +21,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheetEvents
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
@@ -52,37 +49,18 @@ import java.util.*
 @Composable
 fun ArtistScreen(
     playlistId: UUID?,
-    playlistWithMusics: List<PlaylistWithMusics>,
     artistName: String,
     artistCover: ImageBitmap?,
     musics: List<Music>,
     albums: List<Album>,
     navigateToAlbum: (String) -> Unit,
     navigateToModifyArtist: () -> Unit = {},
-    navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
-    isDeleteMusicDialogShown: Boolean,
-    isBottomSheetShown: Boolean,
-    isAddToPlaylistBottomSheetShown: Boolean,
-    isRemoveFromPlaylistDialogShown: Boolean = false,
-    onSetBottomSheetVisibility: (Boolean) -> Unit,
-    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
-    onSetRemoveMusicFromPlaylistDialogVisibility: (Boolean) -> Unit = {},
-    onSetAddToPlaylistBottomSheetVisibility: (Boolean) -> Unit = {},
-    onDeleteMusic: (Music) -> Unit,
-    onToggleQuickAccessState: (Music) -> Unit,
-    onRemoveFromPlaylist: (Music) -> Unit = {},
-    navigateToModifyAlbum: (String) -> Unit,
-    isDeleteAlbumDialogShown: Boolean,
-    isAlbumBottomSheetShown: Boolean,
-    onSetAlbumBottomSheetVisibility: (Boolean) -> Unit,
-    onSetDeleteAlbumDialogVisibility: (Boolean) -> Unit,
-    onToggleAlbumQuickAccessState: (Album) -> Unit,
-    onDeleteAlbum: (Album) -> Unit,
-    onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
+    showMusicBottomSheet: (Music) -> Unit,
+    showAlbumBottomSheet: (AlbumWithMusics) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -151,32 +129,6 @@ fun ArtistScreen(
             }
         }
 
-        var selectedMusicId by rememberSaveable {
-            mutableStateOf<UUID?>(null)
-        }
-
-        var selectedAlbumId by rememberSaveable {
-            mutableStateOf<UUID?>(null)
-        }
-
-        musics.find { it.musicId == selectedMusicId }?.let { music ->
-            MusicBottomSheetEvents(
-                selectedMusic = music,
-                playlistsWithMusics = playlistWithMusics,
-                isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                onDismiss = {
-                    onSetBottomSheetVisibility(false)
-                },
-                onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
-                onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                    onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                }
-            )
-        }
-
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
                 Row(
@@ -213,10 +165,7 @@ fun ArtistScreen(
                                     retrieveCoverMethod = retrieveCoverMethod,
                                     albums = albums,
                                     onAlbumClick = navigateToAlbum,
-                                    onAlbumLongClick = { selectedAlbum ->
-                                        selectedAlbumId = selectedAlbum.albumId
-                                        onSetAlbumBottomSheetVisibility(true)
-                                    }
+                                    onAlbumLongClick = showAlbumBottomSheet
                                 )
                             }
                             item {
@@ -266,10 +215,7 @@ fun ArtistScreen(
                                         }
                                     },
                                     onLongClick = {
-                                        coroutineScope.launch {
-                                            selectedMusicId = elt.musicId
-                                            onSetBottomSheetVisibility(true)
-                                        }
+                                        showMusicBottomSheet(elt)
                                     },
                                     musicCover = retrieveCoverMethod(elt.coverId),
                                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -310,10 +256,7 @@ fun ArtistScreen(
                                 retrieveCoverMethod = retrieveCoverMethod,
                                 albums = albums,
                                 onAlbumClick = navigateToAlbum,
-                                onAlbumLongClick = { selectedAlbum ->
-                                    selectedAlbumId = selectedAlbum.albumId
-                                    onSetAlbumBottomSheetVisibility(true)
-                                }
+                                onAlbumLongClick = showAlbumBottomSheet
                             )
                         }
                         item {
@@ -363,10 +306,7 @@ fun ArtistScreen(
                                     }
                                 },
                                 onLongClick = {
-                                    coroutineScope.launch {
-                                        selectedMusicId = elt.musicId
-                                        onSetBottomSheetVisibility(true)
-                                    }
+                                    showMusicBottomSheet(elt)
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
                                 textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -391,10 +331,7 @@ fun ArtistScreen(
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
-                onSelectedMusicForBottomSheet = {
-                    selectedMusicId = it.musicId
-                    onSetBottomSheetVisibility(true)
-                }
+                onSelectedMusicForBottomSheet = showMusicBottomSheet,
             )
         }
     }

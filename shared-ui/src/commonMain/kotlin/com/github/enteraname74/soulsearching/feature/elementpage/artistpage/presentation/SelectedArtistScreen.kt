@@ -1,7 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,23 +8,21 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.composable.ArtistScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import java.util.*
 
 /**
  * Represent the view of the selected artist screen.
  */
-@OptIn(ExperimentalMaterialApi::class)
 data class SelectedArtistScreen(
     private val selectedArtistId: String
 ) : Screen {
@@ -38,6 +34,24 @@ data class SelectedArtistScreen(
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
+
+        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
+        val dialogState by screenModel.dialogState.collectAsState()
+        val navigationState by screenModel.navigationState.collectAsState()
+
+        bottomSheetState?.BottomSheet()
+        dialogState?.Dialog()
+
+        LaunchedEffect(navigationState) {
+            when(navigationState) {
+                SelectedArtistNavigationState.Idle -> { /*no-op*/  }
+                is SelectedArtistNavigationState.ToModifyAlbum -> {
+                    val selectedAlbum = (navigationState as SelectedArtistNavigationState.ToModifyAlbum).album
+
+                    navigator.push(ModifyAlbumScreen(selectedAlbumId = selectedAlbum.albumId.toString()))
+                }
+            }
+        }
 
         SelectedArtistScreenView(
             selectedArtistViewModel = screenModel,
@@ -79,7 +93,6 @@ data class SelectedArtistScreen(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Suppress("Deprecation")
 fun SelectedArtistScreenView(
@@ -128,7 +141,6 @@ fun SelectedArtistScreenView(
         navigateToModifyArtist = {
             navigateToModifyArtist(selectedArtistId)
         },
-        navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         updateNbPlayedAction = {
@@ -139,10 +151,8 @@ fun SelectedArtistScreenView(
             )
         },
         playlistType = PlaylistType.ARTIST,
-        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
-        isBottomSheetShown = state.isMusicBottomSheetShown,
         isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-        onSetBottomSheetVisibility = { isShown ->
+        showMusicBottomSheet = { isShown ->
             selectedArtistViewModel.onEvent(
                 SelectedArtistEvent.SetMusicBottomSheetVisibility(
                     isShown = isShown
@@ -190,7 +200,7 @@ fun SelectedArtistScreenView(
         isDeleteAlbumDialogShown = state.isDeleteAlbumDialogShown,
         isAlbumBottomSheetShown = state.isAlbumBottomSheetShown,
         navigateToModifyAlbum = navigateToModifyAlbum,
-        onSetAlbumBottomSheetVisibility = { isShown ->
+        showAlbumBottomSheet = { isShown ->
             selectedArtistViewModel.onEvent(
                 SelectedArtistEvent.SetAlbumBottomSheetVisibility(
                     isShown = isShown

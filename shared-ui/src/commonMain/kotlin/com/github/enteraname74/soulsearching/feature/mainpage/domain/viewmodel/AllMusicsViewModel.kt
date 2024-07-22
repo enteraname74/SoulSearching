@@ -30,8 +30,8 @@ import com.github.enteraname74.soulsearching.domain.model.MusicFolder
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsNavigationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 /**
  * Handler for managing the AllMusicsViewModel.
@@ -230,27 +229,5 @@ class AllMusicsViewModel(
             key = SoulSearchingSettings.SORT_MUSICS_DIRECTION_KEY,
             value = newSortDirection
         )
-    }
-
-    /**
-     * Toggle the favorite status of a given music.
-     */
-    private fun toggleFavoriteState(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            toggleMusicFavoriteStatusUseCase(musicId = musicId)
-        }
-    }
-
-    /**
-     * Toggle the quick access state of the selected music.
-     */
-    private fun toggleQuickAccessState(music: Music) {
-        CoroutineScope(Dispatchers.IO).launch {
-            upsertMusicUseCase(
-                music = music.copy(
-                    isInQuickAccess = !music.isInQuickAccess,
-                )
-            )
-        }
     }
 }
