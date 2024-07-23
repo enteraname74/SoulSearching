@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheet
@@ -14,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 interface AlbumBottomSheetDelegate {
-    fun showAlbumBottomSheet(selectedAlbum: AlbumWithMusics)
+    fun showAlbumBottomSheet(album: Album)
 }
 
 class AlbumBottomSheetDelegateImpl(
@@ -35,13 +33,13 @@ class AlbumBottomSheetDelegateImpl(
         this.onModifyAlbum = onModifyAlbum
     }
 
-    private fun showDeleteAlbumDialog(albumWithMusics: AlbumWithMusics) {
+    private fun showDeleteAlbumDialog(album: Album) {
         setDialogState(
             DeleteAlbumDialog(
-                selectedAlbum = albumWithMusics,
+                selectedAlbum = album,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteAlbumUseCase(albumWithMusics.album.albumId)
+                        deleteAlbumUseCase(album.albumId)
                     }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
@@ -52,18 +50,18 @@ class AlbumBottomSheetDelegateImpl(
         )
     }
 
-    override fun showAlbumBottomSheet(selectedAlbum: AlbumWithMusics) {
+    override fun showAlbumBottomSheet(album: Album) {
         setBottomSheetState(
             AlbumBottomSheet(
-                selectedAlbum = selectedAlbum.album,
+                selectedAlbum = album,
                 onClose = { setBottomSheetState(null) },
-                onDeleteAlbum = { showDeleteAlbumDialog(albumWithMusics = selectedAlbum) },
-                onModifyAlbum = { onModifyAlbum(selectedAlbum.album) },
+                onDeleteAlbum = { showDeleteAlbumDialog(album = album) },
+                onModifyAlbum = { onModifyAlbum(album) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         upsertAlbumUseCase(
-                            album = selectedAlbum.album.copy(
-                                isInQuickAccess = !selectedAlbum.album.isInQuickAccess,
+                            album = album.copy(
+                                isInQuickAccess = !album.isInQuickAccess,
                             )
                         )
                     }

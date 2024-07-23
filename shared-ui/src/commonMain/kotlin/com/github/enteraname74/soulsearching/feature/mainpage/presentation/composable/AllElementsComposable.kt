@@ -31,7 +31,7 @@ fun AllElementsComposable(
     playMusicAction: (Music) -> Unit = {},
     musicBottomSheetAction: (Music) -> Unit = {},
     playlistBottomSheetAction: (Playlist) -> Unit = {},
-    albumBottomSheetAction: (AlbumWithMusics) -> Unit = {},
+    albumBottomSheetAction: (Album) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
     createPlaylistComposable: @Composable (() -> Unit) = {},
     sortByName: () -> Unit = {},
@@ -101,7 +101,7 @@ fun AllElementsComposable(
                                 onClick = {
                                     navigateToAlbum(element.album.albumId.toString())
                                 },
-                                onLongClick = { albumBottomSheetAction(element) }
+                                onLongClick = { albumBottomSheetAction(element.album) }
                             )
                         }
                         is ArtistWithMusics -> {

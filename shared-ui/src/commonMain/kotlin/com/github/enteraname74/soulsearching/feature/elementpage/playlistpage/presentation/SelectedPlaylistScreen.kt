@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
@@ -32,6 +33,26 @@ data class SelectedPlaylistScreen(
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
+        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
+        val dialogState by screenModel.dialogState.collectAsState()
+        val navigationState by screenModel.navigationState.collectAsState()
+        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
+
+        bottomSheetState?.BottomSheet()
+        dialogState?.Dialog()
+        addToPlaylistBottomSheet?.BottomSheet()
+
+        LaunchedEffect(navigationState) {
+            when(navigationState) {
+                SelectedPlaylistNavigationState.Idle -> { /*no-op*/  }
+                is SelectedPlaylistNavigationState.ToModifyMusic -> {
+                    val selectedMusic = (navigationState as SelectedPlaylistNavigationState.ToModifyMusic).music
+                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    screenModel.consumeNavigation()
+                }
+            }
+        }
+
         SelectedPlaylistScreenView(
             selectedPlaylistViewModel = screenModel,
             navigateToModifyPlaylist = {
@@ -42,13 +63,6 @@ data class SelectedPlaylistScreen(
                 )
             },
             selectedPlaylistId = selectedPlaylistId,
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
-                    )
-                )
-            },
             navigateBack = {
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
@@ -64,7 +78,6 @@ fun SelectedPlaylistScreenView(
     selectedPlaylistViewModel: SelectedPlaylistViewModel,
     navigateToModifyPlaylist: (String) -> Unit,
     selectedPlaylistId: String,
-    navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
 ) {
@@ -85,14 +98,12 @@ fun SelectedPlaylistScreenView(
 
     PlaylistScreen(
         playlistId = state.playlistWithMusics?.playlist?.playlistId,
-        playlistWithMusics = state.allPlaylists,
         playlistName = state.playlistWithMusics?.playlist?.name ?: "",
         playlistCover = retrieveCoverMethod(state.playlistWithMusics?.playlist?.coverId),
         musics = state.playlistWithMusics?.musics ?: emptyList(),
         navigateToModifyPlaylist = {
             navigateToModifyPlaylist(selectedPlaylistId)
         },
-        navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         updateNbPlayedAction = {
@@ -103,68 +114,10 @@ fun SelectedPlaylistScreenView(
             )
         },
         playlistType = PlaylistType.PLAYLIST,
-        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
-        isBottomSheetShown = state.isMusicBottomSheetShown,
-        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-        isRemoveFromPlaylistDialogShown = state.isRemoveFromPlaylistDialogShown,
-        onSetBottomSheetVisibility = { isShown ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.SetMusicBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.SetDeleteMusicDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetRemoveMusicFromPlaylistDialogVisibility = { isShown ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.SetRemoveFromPlaylistDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.SetAddToPlaylistBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onDeleteMusic = { music ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.DeleteMusic(
-                    musicId = music.musicId
-                )
-            )
-        },
-        onToggleQuickAccessState = { music ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.ToggleQuickAccessState(
-                    music = music
-                )
-            )
-        },
-        onRemoveFromPlaylist = { music ->
-            state.playlistWithMusics?.playlist?.playlistId?.let { playlistId ->
-                selectedPlaylistViewModel.onEvent(
-                    SelectedPlaylistEvent.RemoveMusicFromPlaylist(
-                        musicId = music.musicId,
-                        playlistId = playlistId
-                    )
-                )
-            }
-        },
-        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedPlaylistViewModel.onEvent(
-                SelectedPlaylistEvent.AddMusicToPlaylists(
-                    musicId = selectedMusic.musicId,
-                    selectedPlaylistsIds = selectedPlaylistsIds
-                )
+        onShowMusicBottomSheet = { selectedMusic ->
+            selectedPlaylistViewModel.showMusicBottomSheet(
+                selectedMusic = selectedMusic,
+                currentPlaylist = state.playlistWithMusics?.playlist,
             )
         }
     )

@@ -24,58 +24,17 @@ import java.util.*
 @Composable
 fun MusicList(
     modifier: Modifier = Modifier,
-    selectedMusic: Music?,
-    onSelectMusic: (Music) -> Unit,
     musics: List<Music>,
-    playlistsWithMusics: List<PlaylistWithMusics>,
     playlistId: UUID?,
-    isDeleteMusicDialogShown: Boolean,
-    isBottomSheetShown: Boolean,
-    isAddToPlaylistBottomSheetShown: Boolean,
-    isRemoveFromPlaylistDialogShown: Boolean = false,
-    onSetBottomSheetVisibility: (Boolean) -> Unit,
-    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
-    onSetRemoveMusicFromPlaylistDialogVisibility: (Boolean) -> Unit = {},
-    onSetAddToPlaylistBottomSheetVisibility: (Boolean) -> Unit = {},
-    onDeleteMusic: (Music) -> Unit,
-    onToggleQuickAccessState: (Music) -> Unit,
-    onRemoveFromPlaylist: (Music) -> Unit = {},
-    onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
+    onShowMusicBottomSheet: (Music) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     isMainPlaylist: Boolean = false,
     updateNbPlayedAction: (UUID) -> Unit,
-    musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     onPrimaryColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
-    onSecondaryColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
-
-    selectedMusic?.let { music ->
-        MusicBottomSheetEvents(
-            selectedMusic = music,
-            currentPlaylistId = playlistId,
-            playlistsWithMusics = playlistsWithMusics,
-            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-            onDismiss = { onSetBottomSheetVisibility(false) },
-            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-            onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
-            onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-            },
-            primaryColor = primaryColor,
-            secondaryColor = secondaryColor,
-            onPrimaryColor = onPrimaryColor,
-            onSecondaryColor = onSecondaryColor
-        )
-    }
-
 
     LazyColumn(
         modifier = modifier
@@ -101,12 +60,7 @@ fun MusicList(
                         )
                     }
                 },
-                onLongClick = {
-                    coroutineScope.launch {
-                        onSelectMusic(music)
-                        onSetBottomSheetVisibility(true)
-                    }
-                },
+                onLongClick = { onShowMusicBottomSheet(music) },
                 musicCover = retrieveCoverMethod(music.coverId),
                 textColor = onPrimaryColor,
                 isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)

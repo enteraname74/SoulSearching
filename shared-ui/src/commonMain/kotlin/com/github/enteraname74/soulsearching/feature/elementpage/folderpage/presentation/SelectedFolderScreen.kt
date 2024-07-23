@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderNavigationState
 import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.domain.SelectedFolderViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
@@ -24,22 +25,35 @@ data class SelectedFolderScreen(
 ): Screen {
     @Composable
     override fun Content() {
-        val screeModel = getScreenModel<SelectedFolderViewModel>()
+        val screenModel = getScreenModel<SelectedFolderViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
+        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
+        val dialogState by screenModel.dialogState.collectAsState()
+        val navigationState by screenModel.navigationState.collectAsState()
+        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
+
+        bottomSheetState?.BottomSheet()
+        dialogState?.Dialog()
+        addToPlaylistBottomSheet?.BottomSheet()
+
+        LaunchedEffect(navigationState) {
+            when(navigationState) {
+                SelectedFolderNavigationState.Idle -> { /*no-op*/  }
+                is SelectedFolderNavigationState.ToModifyMusic -> {
+                    val selectedMusic = (navigationState as SelectedFolderNavigationState.ToModifyMusic).music
+                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    screenModel.consumeNavigation()
+                }
+            }
+        }
+
         SelectedFolderScreenView(
             selectedFolderPath = folderPath,
-            selectedFolderViewModel = screeModel,
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
-                    )
-                )
-            },
+            selectedFolderViewModel = screenModel,
             navigateBack = {
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
@@ -53,7 +67,6 @@ data class SelectedFolderScreen(
 fun SelectedFolderScreenView(
     selectedFolderViewModel: SelectedFolderViewModel,
     selectedFolderPath: String,
-    navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
 ) {
@@ -74,11 +87,9 @@ fun SelectedFolderScreenView(
 
     PlaylistScreen(
         playlistId = null,
-        playlistWithMusics = state.allPlaylists,
         playlistName = state.musicFolder?.path ?: "",
         playlistCover = retrieveCoverMethod(state.musicFolder?.coverId),
         musics = state.musicFolder?.musics ?: emptyList(),
-        navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         updateNbPlayedAction = {
@@ -89,52 +100,6 @@ fun SelectedFolderScreenView(
             )
         },
         playlistType = PlaylistType.FOLDER,
-        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
-        isBottomSheetShown = state.isMusicBottomSheetShown,
-        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-        isRemoveFromPlaylistDialogShown = state.isRemoveFromPlaylistDialogShown,
-        onSetBottomSheetVisibility = { isShown ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.SetMusicBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.SetDeleteMusicDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.SetAddToPlaylistBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onDeleteMusic = { music ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.DeleteMusic(
-                    musicId = music.musicId
-                )
-            )
-        },
-        onToggleQuickAccessState = { music ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.ToggleQuickAccessState(
-                    music = music
-                )
-            )
-        },
-        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedFolderViewModel.onEvent(
-                SelectedFolderEvent.AddMusicToPlaylists(
-                    musicId = selectedMusic.musicId,
-                    selectedPlaylistsIds = selectedPlaylistsIds
-                )
-            )
-        }
+        onShowMusicBottomSheet = selectedFolderViewModel::showMusicBottomSheet,
     )
 }

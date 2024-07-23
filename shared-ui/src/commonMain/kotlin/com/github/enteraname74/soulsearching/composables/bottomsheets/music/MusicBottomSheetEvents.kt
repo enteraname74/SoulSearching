@@ -54,33 +54,4 @@ fun MusicBottomSheetEvents(
     SoulBackHandler(musicModalSheetState.isVisible) {
         coroutineScope.launch { musicModalSheetState.hide() }
     }
-
-    if (isRemoveFromPlaylistDialogShown) {
-        SoulAlertDialog(
-            title = strings.removeMusicFromPlaylistTitle,
-            text = strings.removeMusicFromPlaylistText,
-            confirmAction = {
-                onRemoveFromPlaylist()
-                onSetRemoveMusicFromPlaylistDialogVisibility(false)
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeMusicIfSamePlaylist(
-                        musicId = selectedMusic.musicId,
-                        playlistId = currentPlaylistId
-                    )
-                }
-
-                coroutineScope.launch { musicModalSheetState.hide() }
-                    .invokeOnCompletion {
-                        if (!musicModalSheetState.isVisible) onDismiss()
-                    }
-            },
-            dismissAction = {
-                onSetRemoveMusicFromPlaylistDialogVisibility(false)
-            },
-            confirmText = strings.delete,
-            dismissText = strings.cancel,
-            backgroundColor = primaryColor,
-            contentColor = onPrimaryColor
-        )
-    }
 }

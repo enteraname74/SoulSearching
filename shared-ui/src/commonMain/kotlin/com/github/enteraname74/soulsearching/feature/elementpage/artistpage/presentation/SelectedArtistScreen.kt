@@ -38,17 +38,25 @@ data class SelectedArtistScreen(
         val bottomSheetState by screenModel.bottomSheetState.collectAsState()
         val dialogState by screenModel.dialogState.collectAsState()
         val navigationState by screenModel.navigationState.collectAsState()
+        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
 
         bottomSheetState?.BottomSheet()
         dialogState?.Dialog()
+        addToPlaylistBottomSheet?.BottomSheet()
 
         LaunchedEffect(navigationState) {
             when(navigationState) {
                 SelectedArtistNavigationState.Idle -> { /*no-op*/  }
                 is SelectedArtistNavigationState.ToModifyAlbum -> {
                     val selectedAlbum = (navigationState as SelectedArtistNavigationState.ToModifyAlbum).album
-
                     navigator.push(ModifyAlbumScreen(selectedAlbumId = selectedAlbum.albumId.toString()))
+                    screenModel.consumeNavigation()
+                }
+
+                is SelectedArtistNavigationState.ToModifyMusic -> {
+                    val selectedMusic = (navigationState as SelectedArtistNavigationState.ToModifyMusic).music
+                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    screenModel.consumeNavigation()
                 }
             }
         }
@@ -60,13 +68,6 @@ data class SelectedArtistScreen(
                 navigator.push(
                     ModifyArtistScreen(
                         selectedArtistId = selectedArtistId
-                    )
-                )
-            },
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
                     )
                 )
             },
@@ -82,27 +83,17 @@ data class SelectedArtistScreen(
                     )
                 )
             },
-            navigateToModifyAlbum = { albumId ->
-                navigator.push(
-                    ModifyAlbumScreen(
-                        selectedAlbumId = albumId
-                    )
-                )
-            }
         )
     }
 }
 
 @Composable
-@Suppress("Deprecation")
 fun SelectedArtistScreenView(
     selectedArtistViewModel: SelectedArtistViewModel,
     selectedArtistId: String,
     navigateToModifyArtist: (String) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
     navigateBack: () -> Unit,
-    navigateToModifyAlbum: (String) -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
 ) {
     var isArtistFetched by remember {
@@ -134,7 +125,6 @@ fun SelectedArtistScreenView(
 
     ArtistScreen(
         playlistId = state.artistWithMusics.artist.artistId,
-        playlistWithMusics = state.allPlaylists,
         artistName = state.artistWithMusics.artist.artistName,
         artistCover = retrieveCoverMethod(state.artistWithMusics.artist.coverId),
         musics = state.artistWithMusics.musics,
@@ -151,80 +141,9 @@ fun SelectedArtistScreenView(
             )
         },
         playlistType = PlaylistType.ARTIST,
-        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-        showMusicBottomSheet = { isShown ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.SetMusicBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.SetDeleteMusicDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.SetAddToPlaylistBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onDeleteMusic = { music ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.DeleteMusic(
-                    musicId = music.musicId
-                )
-            )
-        },
-        onToggleQuickAccessState = { music ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.ToggleQuickAccessState(
-                    music = music
-                )
-            )
-        },
-        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.AddMusicToPlaylists(
-                    musicId = selectedMusic.musicId,
-                    selectedPlaylistsIds = selectedPlaylistsIds
-                )
-            )
-        },
+        showMusicBottomSheet = selectedArtistViewModel::showMusicBottomSheet,
         albums = state.artistAlbums,
         navigateToAlbum = navigateToAlbum,
-        isDeleteAlbumDialogShown = state.isDeleteAlbumDialogShown,
-        isAlbumBottomSheetShown = state.isAlbumBottomSheetShown,
-        navigateToModifyAlbum = navigateToModifyAlbum,
-        showAlbumBottomSheet = { isShown ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.SetAlbumBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetDeleteAlbumDialogVisibility = { isShown ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.SetDeleteAlbumDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onToggleAlbumQuickAccessState = { album ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.ToggleAlbumQuickAccessState(
-                    album = album
-                )
-            )
-        },
-        onDeleteAlbum = { album ->
-            selectedArtistViewModel.onEvent(
-                SelectedArtistEvent.DeleteAlbum(albumId = album.albumId)
-            )
-        }
+        showAlbumBottomSheet = selectedArtistViewModel::showAlbumBottomSheet,
     )
 }

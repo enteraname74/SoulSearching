@@ -10,7 +10,14 @@ import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.MusicFolder
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.domain.SelectedPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,13 +29,9 @@ import java.util.*
 
 class SelectedFolderViewModel(
     private val getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val playbackManager: PlaybackManager,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
-    private val deleteMusicUseCase: DeleteMusicUseCase,
     private val getAllMusicUseCase: GetAllMusicUseCase,
-    private val getMusicUseCase: GetMusicUseCase,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
-) : ScreenModel {
+    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private var _selectedFolder: StateFlow<MusicFolder?> = MutableStateFlow(
         MusicFolder()
     )
@@ -47,104 +50,41 @@ class SelectedFolderViewModel(
         SelectedFolderState()
     )
 
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<SelectedFolderNavigationState> = MutableStateFlow(
+        SelectedFolderNavigationState.Idle,
+    )
+    val navigationState: StateFlow<SelectedFolderNavigationState> = _navigationState.asStateFlow()
+
+    init {
+        musicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyMusic = { _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it) },
+            getAllPlaylistsWithMusics = { state.value.allPlaylists },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+        )
+    }
+
+    fun consumeNavigation() {
+        _navigationState.value = SelectedFolderNavigationState.Idle
+    }
+
     /**
      * Handles events of the selected folder screen.
      */
     fun onEvent(event: SelectedFolderEvent) {
         when (event) {
-            is SelectedFolderEvent.AddMusicToPlaylists -> addMusicToPlaylists(
-                musicId = event.musicId,
-                selectedPlaylistsIds = event.selectedPlaylistsIds
-            )
-
-            is SelectedFolderEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
-            is SelectedFolderEvent.SetAddToPlaylistBottomSheetVisibility -> showOrHideAddToPlaylistBottomSheet(
-                isShown = event.isShown
-            )
-
-            is SelectedFolderEvent.SetDeleteMusicDialogVisibility -> showOrHideDeleteDialog(isShown = event.isShown)
-            is SelectedFolderEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(
-                isShown = event.isShown
-            )
-
             is SelectedFolderEvent.SetSelectedFolder -> setSelectedFolder(path = event.folderPath)
-            is SelectedFolderEvent.ToggleQuickAccessState -> toggleQuickAccessState(music = event.music)
             is SelectedFolderEvent.AddNbPlayed -> incrementNbPlayed(playlistId = event.playlistId)
-        }
-    }
-
-    /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylistsIds: List<UUID>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in selectedPlaylistsIds) {
-                upsertMusicIntoPlaylistUseCase(
-                    MusicPlaylist(
-                        musicId = musicId,
-                        playlistId = selectedPlaylistId
-                    )
-                )
-            }
-            getMusicUseCase(musicId = musicId).first()?.let { music ->
-                playbackManager.updateMusic(music = music)
-            }
-        }
-    }
-
-    /**
-     * Remove the selected music, from the MusicState, from the application
-     */
-    private fun deleteMusicFromApp(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteMusicUseCase(musicId = musicId)
-            playbackManager.removeSongFromLists(musicId = musicId)
-        }
-    }
-
-    /**
-     * Toggle the quick access state of the selected music.
-     */
-    private fun toggleQuickAccessState(music: Music) {
-        CoroutineScope(Dispatchers.IO).launch {
-            upsertMusicUseCase(
-                music = music.copy(
-                    isInQuickAccess = !music.isInQuickAccess,
-                )
-            )
-        }
-    }
-
-    /**
-     * Show or hide the delete dialog.
-     */
-    private fun showOrHideDeleteDialog(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isDeleteMusicDialogShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the add to playlist bottom sheet.
-     */
-    private fun showOrHideAddToPlaylistBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isAddToPlaylistBottomSheetShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the music bottom sheet.
-     */
-    private fun showOrHideMusicBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isMusicBottomSheetShown = isShown
-            )
         }
     }
 

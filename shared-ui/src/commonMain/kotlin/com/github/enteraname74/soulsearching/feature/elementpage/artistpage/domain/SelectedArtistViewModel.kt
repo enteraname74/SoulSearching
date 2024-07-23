@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.dom
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.usecase.album.GetAlbumsOfArtistsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
@@ -33,12 +32,6 @@ class SelectedArtistViewModel(
     ScreenModel,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
-
-    private var _selectedArtistWithMusics: StateFlow<ArtistWithMusics?> = MutableStateFlow(
-        ArtistWithMusics()
-    )
-
-    private var artistAlbums: StateFlow<List<Album>> = MutableStateFlow(emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var state = getAllPlaylistWithMusicsUseCase().mapLatest { playlists ->
@@ -97,32 +90,21 @@ class SelectedArtistViewModel(
      * Set the selected artist.
      */
     private fun setSelectedArtist(artistId: UUID) {
-        _selectedArtistWithMusics = getArtistWithMusicsUseCase(artistId = artistId)
-            .stateIn(
-                screenModelScope, SharingStarted.WhileSubscribed(), ArtistWithMusics()
-            )
-
-        artistAlbums = getAlbumsOfArtistsUseCase(
-            artistId = artistId
-        ).stateIn(
-            screenModelScope, SharingStarted.WhileSubscribed(), emptyList()
-        )
-
         state = combine(
-                _selectedArtistWithMusics,
-                getAllPlaylistWithMusicsUseCase(),
-                artistAlbums
-            ) { artist, playlists, albums ->
-                state.value.copy(
-                    artistWithMusics = artist ?: ArtistWithMusics(),
-                    allPlaylists = playlists,
-                    artistAlbums = albums
-                )
-            }.stateIn(
-                screenModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                SelectedArtistState()
+            getArtistWithMusicsUseCase(artistId = artistId),
+            getAllPlaylistWithMusicsUseCase(),
+            getAlbumsOfArtistsUseCase(artistId = artistId),
+        ) { artist, playlists, albums ->
+            state.value.copy(
+                artistWithMusics = artist ?: ArtistWithMusics(),
+                allPlaylists = playlists,
+                artistAlbums = albums
             )
+        }.stateIn(
+            screenModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            SelectedArtistState()
+        )
     }
 
     /**

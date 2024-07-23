@@ -60,7 +60,7 @@ fun ArtistScreen(
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
     showMusicBottomSheet: (Music) -> Unit,
-    showAlbumBottomSheet: (AlbumWithMusics) -> Unit,
+    showAlbumBottomSheet: (Album) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),

@@ -9,8 +9,4 @@ import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
 data class SelectedMonthState(
     val monthMusicList: MonthMusicList? = MonthMusicList(),
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
-    val isDeleteMusicDialogShown: Boolean = false,
-    val isMusicBottomSheetShown: Boolean = false,
-    val isAddToPlaylistBottomSheetShown: Boolean = false,
-    val isRemoveFromPlaylistDialogShown: Boolean = false
 )

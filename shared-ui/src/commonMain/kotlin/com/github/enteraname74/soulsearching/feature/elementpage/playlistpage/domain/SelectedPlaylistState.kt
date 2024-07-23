@@ -8,8 +8,4 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 data class SelectedPlaylistState(
     val playlistWithMusics: PlaylistWithMusics? = PlaylistWithMusics(),
     val allPlaylists: List<PlaylistWithMusics> = emptyList(),
-    val isDeleteMusicDialogShown: Boolean = false,
-    val isMusicBottomSheetShown: Boolean = false,
-    val isAddToPlaylistBottomSheetShown: Boolean = false,
-    val isRemoveFromPlaylistDialogShown: Boolean = false
 )

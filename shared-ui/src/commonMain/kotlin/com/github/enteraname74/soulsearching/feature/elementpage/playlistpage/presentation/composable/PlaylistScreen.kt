@@ -48,28 +48,15 @@ import java.util.*
 @Composable
 fun PlaylistScreen(
     playlistId: UUID?,
-    playlistWithMusics: List<PlaylistWithMusics>,
     playlistName: String,
     playlistCover: ImageBitmap?,
     musics: List<Music>,
     navigateToModifyPlaylist: () -> Unit = {},
-    navigateToModifyMusic: (String) -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
-    isDeleteMusicDialogShown: Boolean,
-    isBottomSheetShown: Boolean,
-    isAddToPlaylistBottomSheetShown: Boolean,
-    isRemoveFromPlaylistDialogShown: Boolean = false,
-    onSetBottomSheetVisibility: (Boolean) -> Unit,
-    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
-    onSetRemoveMusicFromPlaylistDialogVisibility: (Boolean) -> Unit = {},
-    onSetAddToPlaylistBottomSheetVisibility: (Boolean) -> Unit = {},
-    onDeleteMusic: (Music) -> Unit,
-    onToggleQuickAccessState: (Music) -> Unit,
-    onRemoveFromPlaylist: (Music) -> Unit = {},
-    onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
+    onShowMusicBottomSheet: (Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -78,14 +65,6 @@ fun PlaylistScreen(
 
     var hasPlaylistPaletteBeenFetched by remember {
         mutableStateOf(false)
-    }
-
-    val musicBottomSheetStates = when(playlistType) {
-        PlaylistType.PLAYLIST -> MusicBottomSheetState.PLAYLIST
-        PlaylistType.ALBUM -> MusicBottomSheetState.ALBUM_OR_ARTIST
-        PlaylistType.ARTIST -> MusicBottomSheetState.ALBUM_OR_ARTIST
-        PlaylistType.FOLDER -> MusicBottomSheetState.NORMAL
-        PlaylistType.MONTH -> MusicBottomSheetState.NORMAL
     }
 
     playlistCover?.let {
@@ -146,10 +125,6 @@ fun PlaylistScreen(
             }
         }
 
-        var selectedMusicId by rememberSaveable {
-            mutableStateOf<UUID?>(null)
-        }
-
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
                 Row(
@@ -188,54 +163,18 @@ fun PlaylistScreen(
                         MusicList(
                             modifier = Modifier
                                 .fillMaxHeight(),
-                            selectedMusic = musics.find { it.musicId == selectedMusicId },
-                            onSelectMusic = {
-                                selectedMusicId = it.musicId
-                            },
                             musics = musics,
-                            playlistsWithMusics = playlistWithMusics,
                             playlistId = playlistId,
-                            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                            isBottomSheetShown = isBottomSheetShown,
-                            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                            onSetBottomSheetVisibility = onSetBottomSheetVisibility,
-                            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                            onDeleteMusic = onDeleteMusic,
-                            onToggleQuickAccessState = onToggleQuickAccessState,
-                            onRemoveFromPlaylist = onRemoveFromPlaylist,
-                            onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                            navigateToModifyMusic = navigateToModifyMusic,
                             retrieveCoverMethod = { retrieveCoverMethod(it) },
                             updateNbPlayedAction = updateNbPlayedAction,
-                            musicBottomSheetState = musicBottomSheetStates,
-                            playerViewManager = playerViewManager
+                            playerViewManager = playerViewManager,
+                            onShowMusicBottomSheet = onShowMusicBottomSheet
                         )
                     }
                 }
             }
 
             else -> {
-                musics.find { it.musicId == selectedMusicId }?.let { music ->
-                    MusicBottomSheetEvents(
-                        selectedMusic = music,
-                        playlistsWithMusics = playlistWithMusics,
-                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onDismiss = {
-                            onSetBottomSheetVisibility(false)
-                        },
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
-                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        }
-                    )
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -292,12 +231,7 @@ fun PlaylistScreen(
                                         )
                                     }
                                 },
-                                onLongClick = {
-                                    coroutineScope.launch {
-                                        selectedMusicId = elt.musicId
-                                        onSetBottomSheetVisibility(true)
-                                    }
-                                },
+                                onLongClick = { onShowMusicBottomSheet(elt) },
                                 musicCover = retrieveCoverMethod(elt.coverId),
                                 textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                                 isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
@@ -322,10 +256,7 @@ fun PlaylistScreen(
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
-                onSelectedMusicForBottomSheet = {
-                    selectedMusicId = it.musicId
-                    onSetBottomSheetVisibility(true)
-                }
+                onSelectedMusicForBottomSheet = onShowMusicBottomSheet
             )
         }
     }
