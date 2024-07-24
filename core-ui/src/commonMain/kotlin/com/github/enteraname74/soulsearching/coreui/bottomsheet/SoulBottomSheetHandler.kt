@@ -5,12 +5,15 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoulBottomSheetHandler(
     onClose: () -> Unit,
+    colors: SoulBottomSheetColors = SoulBottomSheetColors(),
     content: @Composable (closeWithAnim: () -> Unit) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -27,7 +30,15 @@ fun SoulBottomSheetHandler(
     ModalBottomSheet(
         onDismissRequest = onClose,
         sheetState = bottomSheetState,
+        containerColor = colors.containerColor,
+        contentColor = colors.contentColor,
+        dragHandle = null,
     ) {
         content(closeWithAnim)
     }
 }
+
+data class SoulBottomSheetColors(
+    val containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    val contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+)

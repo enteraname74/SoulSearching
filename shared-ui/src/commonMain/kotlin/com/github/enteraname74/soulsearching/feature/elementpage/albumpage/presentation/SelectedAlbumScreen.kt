@@ -10,13 +10,13 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManage
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.composable.AlbumScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import java.util.*
 
 /**
@@ -29,12 +29,31 @@ data class SelectedAlbumScreen(
     override fun Content() {
         val screenModel = getScreenModel<SelectedAlbumViewModel>()
         val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
-        val playerViewModel = getScreenModel<PlayerViewModel>()
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
 
         val state by screenModel.state.collectAsState()
+
+        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
+        val dialogState by screenModel.dialogState.collectAsState()
+        val navigationState by screenModel.navigationState.collectAsState()
+        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
+
+        bottomSheetState?.BottomSheet()
+        dialogState?.Dialog()
+        addToPlaylistBottomSheet?.BottomSheet()
+
+        LaunchedEffect(navigationState) {
+            when(navigationState) {
+                SelectedAlbumNavigationState.Idle -> { /*no-op*/  }
+                is SelectedAlbumNavigationState.ToModifyMusic -> {
+                    val selectedMusic = (navigationState as SelectedAlbumNavigationState.ToModifyMusic).music
+                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    screenModel.consumeNavigation()
+                }
+            }
+        }
 
         SelectedAlbumScreenView(
             selectedAlbumViewModel = screenModel,
@@ -43,13 +62,6 @@ data class SelectedAlbumScreen(
                 navigator.push(
                     ModifyAlbumScreen(
                         selectedAlbumId = selectedAlbumId
-                    )
-                )
-            },
-            navigateToModifyMusic = { musicId ->
-                navigator.push(
-                    ModifyMusicScreen(
-                        selectedMusicId = musicId
                     )
                 )
             },
@@ -77,7 +89,6 @@ fun SelectedAlbumScreenView(
     selectedAlbumViewModel: SelectedAlbumViewModel,
     selectedAlbumId: String,
     navigateToModifyAlbum: (String) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
     navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
@@ -109,7 +120,6 @@ fun SelectedAlbumScreenView(
 //    }
     AlbumScreen(
         playlistId = state.albumWithMusics.album.albumId,
-        playlistWithMusics = state.allPlaylists,
         albumName = state.albumWithMusics.album.albumName,
         artistName = state.albumWithMusics.artist?.artistName ?: "",
         image = retrieveCoverMethod(state.albumWithMusics.album.coverId),
@@ -118,7 +128,6 @@ fun SelectedAlbumScreenView(
             navigateToModifyAlbum(selectedAlbumId)
         },
         navigateToArtist = navigateToArtist,
-        navigateToModifyMusic = navigateToModifyMusic,
         navigateBack = navigateBack,
         retrieveCoverMethod = { retrieveCoverMethod(it) },
         updateNbPlayedAction = {
@@ -129,51 +138,6 @@ fun SelectedAlbumScreenView(
             )
         },
         playlistType = PlaylistType.ALBUM,
-        isDeleteMusicDialogShown = state.isDeleteMusicDialogShown,
-        isBottomSheetShown = state.isMusicBottomSheetShown,
-        isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-        onSetBottomSheetVisibility = { isShown ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.SetMusicBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetDeleteMusicDialogVisibility = { isShown ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.SetDeleteMusicDialogVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.SetAddToPlaylistBottomSheetVisibility(
-                    isShown = isShown
-                )
-            )
-        },
-        onDeleteMusic = { music ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.DeleteMusic(
-                    musicId = music.musicId
-                )
-            )
-        },
-        onToggleQuickAccessState = { music ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.ToggleQuickAccessState(
-                    music = music
-                )
-            )
-        },
-        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds, selectedMusic ->
-            selectedAlbumViewModel.onEvent(
-                SelectedAlbumEvent.AddMusicToPlaylists(
-                    musicId = selectedMusic.musicId,
-                    selectedPlaylistsIds = selectedPlaylistsIds
-                )
-            )
-        }
+        onShowMusicBottomSheet = selectedAlbumViewModel::showMusicBottomSheet,
     )
 }

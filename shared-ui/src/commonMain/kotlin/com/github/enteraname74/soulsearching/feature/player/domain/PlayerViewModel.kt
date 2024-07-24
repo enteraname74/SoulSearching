@@ -12,8 +12,14 @@ import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUs
 import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -38,8 +44,9 @@ class PlayerViewModel(
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
+    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-) : ScreenModel {
+) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _state = MutableStateFlow(PlayerState())
 
     val state = combine(
@@ -55,7 +62,34 @@ class PlayerViewModel(
         PlayerState()
     )
 
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<PlayerNavigationState> = MutableStateFlow(
+        PlayerNavigationState.Idle,
+    )
+    val navigationState: StateFlow<PlayerNavigationState> = _navigationState.asStateFlow()
+
+    fun consumeNavigation() {
+        _navigationState.value = PlayerNavigationState.Idle
+    }
+
     init {
+        musicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyMusic = { _navigationState.value = PlayerNavigationState.ToModifyMusic(it) },
+            getAllPlaylistsWithMusics = { state.value.playlistsWithMusics },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+        )
+
         playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
             override fun onPlayedListUpdated(playedList: List<Music>) {
                 super.onPlayedListUpdated(playedList)
@@ -120,23 +154,12 @@ class PlayerViewModel(
         when (event) {
             PlayerEvent.ToggleFavoriteState -> toggleFavoriteState()
             PlayerEvent.GetLyrics -> setLyricsOfCurrentMusic()
-            is PlayerEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
-            is PlayerEvent.SetAddToPlaylistBottomSheetVisibility -> showOrHideAddToPlaylistBottomSheet(
-                isShown = event.isShown
-            )
-            is PlayerEvent.SetDeleteMusicDialogVisibility -> showOrHideDeleteDialog(isShown = event.isShown)
-            is PlayerEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(isShown = event.isShown)
-            is PlayerEvent.ToggleQuickAccessState -> toggleQuickAccessState(musicId = event.musicId)
             is PlayerEvent.SetCurrentMusic -> setCurrentMusic(music = event.currentMusic)
             is PlayerEvent.SetCurrentMusicCover -> setCurrentMusicCover(cover = event.cover)
             is PlayerEvent.SetCurrentMusicPosition -> setCurrentMusicPosition(position = event.position)
             is PlayerEvent.SetIsPlaying -> setIsPlaying(isPlaying = event.isPlaying)
             is PlayerEvent.SetPlayedList -> setPlayedList(playedList = event.playedList)
             is PlayerEvent.SetPlayerMode -> setPlayerMode(playerMode = event.playerMode)
-            is PlayerEvent.AddMusicToPlaylists -> addMusicToPlaylists(
-                musicId = event.musicId,
-                selectedPlaylistsIds = event.selectedPlaylistsIds
-            )
         }
     }
 
@@ -272,30 +295,6 @@ class PlayerViewModel(
     }
 
     /**
-     * Remove the selected music, from the MusicState, from the application
-     */
-    private fun deleteMusicFromApp(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteMusicUseCase(musicId = musicId)
-            playbackManager.removeSongFromLists(musicId = musicId)
-        }
-    }
-
-    /**
-     * Toggle the quick access state of the selected music.
-     */
-    private fun toggleQuickAccessState(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val music = getMusicUseCase(musicId = musicId).first() ?: return@launch
-            upsertMusicUseCase(
-                music = music.copy(
-                    isInQuickAccess = !music.isInQuickAccess
-                )
-            )
-        }
-    }
-
-    /**
      * Toggle the favorite status of the current music if there is one.
      */
     private fun toggleFavoriteState() {
@@ -319,39 +318,6 @@ class PlayerViewModel(
                     )
                 }
             }
-        }
-    }
-
-    /**
-     * Show or hide the delete dialog.
-     */
-    private fun showOrHideDeleteDialog(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isDeleteMusicDialogShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the add to playlist bottom sheet.
-     */
-    private fun showOrHideAddToPlaylistBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isAddToPlaylistBottomSheetShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the music bottom sheet.
-     */
-    private fun showOrHideMusicBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isMusicBottomSheetShown = isShown
-            )
         }
     }
 }

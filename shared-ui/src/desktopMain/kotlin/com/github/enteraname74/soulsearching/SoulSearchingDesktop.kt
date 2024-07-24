@@ -10,10 +10,6 @@ import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.soulsearching.model.PlaybackManagerDesktopImpl
 import com.github.enteraname74.soulsearching.shareddi.LocalDatabaseInitializer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import org.koin.compose.KoinApplication
 
 @Composable

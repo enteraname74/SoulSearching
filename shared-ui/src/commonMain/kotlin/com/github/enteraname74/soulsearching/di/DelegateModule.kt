@@ -7,4 +7,7 @@ import org.koin.core.module.dsl.singleOf
 
 internal val delegateModule = module {
     singleOf(::MusicBottomSheetDelegateImpl)
+    singleOf(::PlaylistBottomSheetDelegateImpl)
+    singleOf(::AlbumBottomSheetDelegateImpl)
+    singleOf(::ArtistBottomSheetDelegateImpl)
 }

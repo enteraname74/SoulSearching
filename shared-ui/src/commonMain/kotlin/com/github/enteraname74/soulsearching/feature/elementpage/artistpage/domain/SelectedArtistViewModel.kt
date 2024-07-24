@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDele
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -68,7 +69,8 @@ class SelectedArtistViewModel(
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyMusic = { _navigationState.value = SelectedArtistNavigationState.ToModifyMusic(it) },
             getAllPlaylistsWithMusics = { state.value.allPlaylists },
-            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it }
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
         )
     }
 

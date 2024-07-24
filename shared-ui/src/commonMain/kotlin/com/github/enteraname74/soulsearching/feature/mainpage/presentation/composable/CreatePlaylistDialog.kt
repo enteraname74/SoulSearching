@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -15,7 +16,7 @@ class CreatePlaylistDialog(
     private val onConfirm: (playlistName: String) -> Unit,
     private val onDismiss: () -> Unit,
 ) : SoulDialog {
-
+    @Composable
     override fun Dialog() {
         var playlistName by rememberSaveable {
             mutableStateOf("")

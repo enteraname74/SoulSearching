@@ -3,11 +3,7 @@ package com.github.enteraname74.soulsearching.feature.elementpage.albumpage.pres
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -16,72 +12,50 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.MusicList
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistPanel
-import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
-import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Suppress("Deprecation")
 @Composable
 fun AlbumScreen(
     playlistId: UUID?,
-    playlistWithMusics: List<PlaylistWithMusics>,
     albumName: String,
     artistName: String,
     image: ImageBitmap?,
     musics: List<Music>,
     navigateToModifyPlaylist: () -> Unit = {},
-    navigateToModifyMusic: (String) -> Unit,
     navigateToArtist: () -> Unit,
     navigateBack: () -> Unit,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     updateNbPlayedAction: (UUID) -> Unit,
     playlistType: PlaylistType,
-    isDeleteMusicDialogShown: Boolean,
-    isBottomSheetShown: Boolean,
-    isAddToPlaylistBottomSheetShown: Boolean,
-    isRemoveFromPlaylistDialogShown: Boolean = false,
-    onSetBottomSheetVisibility: (Boolean) -> Unit,
-    onSetDeleteMusicDialogVisibility: (Boolean) -> Unit,
-    onSetRemoveMusicFromPlaylistDialogVisibility: (Boolean) -> Unit = {},
-    onSetAddToPlaylistBottomSheetVisibility: (Boolean) -> Unit = {},
-    onDeleteMusic: (Music) -> Unit,
-    onToggleQuickAccessState: (Music) -> Unit,
-    onRemoveFromPlaylist: (Music) -> Unit = {},
-    onAddMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>, selectedMusic: Music) -> Unit,
+    onShowMusicBottomSheet: (Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -150,10 +124,6 @@ fun AlbumScreen(
             }
         }
 
-        var selectedMusicId by rememberSaveable {
-            mutableStateOf<UUID?>(null)
-        }
-
         when (SoulSearchingContext.orientation) {
             ScreenOrientation.HORIZONTAL -> {
                 Row(
@@ -193,53 +163,17 @@ fun AlbumScreen(
                         MusicList(
                             modifier = Modifier
                                 .fillMaxHeight(),
-                            selectedMusic = musics.find { it.musicId == selectedMusicId },
-                            onSelectMusic = {
-                                selectedMusicId = it.musicId
-                            },
                             musics = musics,
-                            playlistsWithMusics = playlistWithMusics,
                             playlistId = playlistId,
-                            isDeleteMusicDialogShown = isDeleteMusicDialogShown,
-                            isBottomSheetShown = isBottomSheetShown,
-                            isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                            isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                            onSetBottomSheetVisibility = onSetBottomSheetVisibility,
-                            onSetDeleteMusicDialogVisibility = onSetDeleteMusicDialogVisibility,
-                            onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                            onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                            onDeleteMusic = onDeleteMusic,
-                            onToggleQuickAccessState = onToggleQuickAccessState,
-                            onRemoveFromPlaylist = onRemoveFromPlaylist,
-                            onAddMusicToSelectedPlaylists = onAddMusicToSelectedPlaylists,
-                            navigateToModifyMusic = navigateToModifyMusic,
                             retrieveCoverMethod = { retrieveCoverMethod(it) },
                             updateNbPlayedAction = updateNbPlayedAction,
-                            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+                            onShowMusicBottomSheet = onShowMusicBottomSheet
                         )
                     }
                 }
             }
 
             else -> {
-                musics.find { it.musicId == selectedMusicId }?.let { music ->
-                    MusicBottomSheetEvents(
-                        selectedMusic = music,
-                        playlistsWithMusics = playlistWithMusics,
-                        isAddToPlaylistBottomSheetShown = isAddToPlaylistBottomSheetShown,
-                        isRemoveFromPlaylistDialogShown = isRemoveFromPlaylistDialogShown,
-                        onDismiss = {
-                            onSetBottomSheetVisibility(false)
-                        },
-                        onSetRemoveMusicFromPlaylistDialogVisibility = onSetRemoveMusicFromPlaylistDialogVisibility,
-                        onSetAddToPlaylistBottomSheetVisibility = onSetAddToPlaylistBottomSheetVisibility,
-                        onRemoveFromPlaylist = { onRemoveFromPlaylist(music) },
-                        onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                            onAddMusicToSelectedPlaylists(selectedPlaylistsIds, music)
-                        }
-                    )
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -295,10 +229,7 @@ fun AlbumScreen(
                                     }
                                 },
                                 onLongClick = {
-                                    coroutineScope.launch {
-                                        selectedMusicId = elt.musicId
-                                        onSetBottomSheetVisibility(true)
-                                    }
+                                    onShowMusicBottomSheet(elt)
                                 },
                                 musicCover = retrieveCoverMethod(elt.coverId),
                                 textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -323,10 +254,7 @@ fun AlbumScreen(
                 isMainPlaylist = false,
                 focusManager = focusManager,
                 retrieveCoverMethod = retrieveCoverMethod,
-                onSelectedMusicForBottomSheet = {
-                    selectedMusicId = it.musicId
-                    onSetBottomSheetVisibility(true)
-                }
+                onSelectedMusicForBottomSheet = onShowMusicBottomSheet
             )
         }
     }

@@ -8,14 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch

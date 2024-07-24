@@ -48,14 +48,14 @@ internal class MusicAlbumDao {
         MusicAlbumTable
             .selectAll()
             .where { MusicAlbumTable.albumId eq albumId }
-            .map { it[MusicAlbumTable.albumId].value }
+            .map { it[MusicAlbumTable.musicId].value }
     }
 
     suspend fun getAlbumIdFromMusicId(musicId: UUID): UUID? = dbQuery {
         MusicAlbumTable
-            .select(MusicAlbumTable.albumId)
+            .selectAll()
             .where { MusicAlbumTable.musicId eq musicId }
-            .map { it[MusicAlbumTable.musicId].value }
+            .map { it[MusicAlbumTable.albumId].value }
             .firstOrNull()
     }
 }

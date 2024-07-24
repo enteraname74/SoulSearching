@@ -3,45 +3,32 @@ package com.github.enteraname74.soulsearching.feature.elementpage.albumpage.doma
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicPlaylist
-import com.github.enteraname74.domain.repository.PlaylistRepository
-import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
-import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class SelectedAlbumViewModel(
     private val getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
-    private val playbackManager: PlaybackManager,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
-    private val getMusicUseCase: GetMusicUseCase,
-    private val deleteMusicUseCase: DeleteMusicUseCase,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
     private val upsertAlbumUseCase: UpsertAlbumUseCase,
-) : ScreenModel {
-    private var _selectedAlbumWithMusics: StateFlow<AlbumWithMusics?> = MutableStateFlow(
-        AlbumWithMusics()
-    )
+    private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
 
-    private val _state = MutableStateFlow(SelectedAlbumState())
-    var state = combine(
-        _state,
-        getAllPlaylistWithMusicsUseCase()
-    ) { state, playlists ->
-        state.copy(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var state = getAllPlaylistWithMusicsUseCase().mapLatest { playlists ->
+        SelectedAlbumState(
             allPlaylists = playlists
         )
     }.stateIn(
@@ -50,23 +37,42 @@ class SelectedAlbumViewModel(
         SelectedAlbumState()
     )
 
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
+    private val _addToPlaylistBottomSheet: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
+    val addToPlaylistBottomSheet: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistBottomSheet.asStateFlow()
+
+    private val _navigationState: MutableStateFlow<SelectedAlbumNavigationState> = MutableStateFlow(
+        SelectedAlbumNavigationState.Idle,
+    )
+    val navigationState: StateFlow<SelectedAlbumNavigationState> = _navigationState.asStateFlow()
+
+    init {
+        musicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            onModifyMusic = { _navigationState.value = SelectedAlbumNavigationState.ToModifyMusic(it) },
+            getAllPlaylistsWithMusics = { state.value.allPlaylists },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+        )
+    }
+
+    fun consumeNavigation() {
+        _navigationState.value = SelectedAlbumNavigationState.Idle
+    }
+
     /**
      * Manage album events.
      */
     fun onEvent(event: SelectedAlbumEvent) {
         when (event) {
-            is SelectedAlbumEvent.AddMusicToPlaylists -> addMusicToPlaylists(
-                musicId = event.musicId,
-                selectedPlaylistsIds = event.selectedPlaylistsIds
-            )
-
             is SelectedAlbumEvent.AddNbPlayed -> incrementNbPlayed(albumId = event.albumId)
-            is SelectedAlbumEvent.DeleteMusic -> deleteMusicFromApp(musicId = event.musicId)
-            is SelectedAlbumEvent.SetAddToPlaylistBottomSheetVisibility -> showOrHideAddToPlaylistBottomSheet(isShown = event.isShown)
-            is SelectedAlbumEvent.SetDeleteMusicDialogVisibility -> showOrHideDeleteDialog(isShown = event.isShown)
-            is SelectedAlbumEvent.SetMusicBottomSheetVisibility -> showOrHideMusicBottomSheet(isShown = event.isShown)
             is SelectedAlbumEvent.SetSelectedAlbum -> setSelectedAlbum(albumId = event.albumId)
-            is SelectedAlbumEvent.ToggleQuickAccessState -> toggleQuickAccessState(music = event.music)
         }
     }
 
@@ -74,17 +80,14 @@ class SelectedAlbumViewModel(
      * Set the selected album.
      */
     private fun setSelectedAlbum(albumId: UUID) {
-        _selectedAlbumWithMusics = getAlbumWithMusicsUseCase(albumId = albumId)
-            .stateIn(
-                screenModelScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
-            )
-
         state = combine(
-            _state,
-            _selectedAlbumWithMusics,
+            getAlbumWithMusicsUseCase(albumId = albumId)
+                .stateIn(
+                    screenModelScope, SharingStarted.WhileSubscribed(), AlbumWithMusics()
+                ),
             getAllPlaylistWithMusicsUseCase()
-        ) { state, album, playlists ->
-            state.copy(
+        ) { album, playlists ->
+            state.value.copy(
                 albumWithMusics = album ?: AlbumWithMusics(),
                 allPlaylists = playlists
             )
@@ -93,88 +96,6 @@ class SelectedAlbumViewModel(
             SharingStarted.WhileSubscribed(5000),
             SelectedAlbumState()
         )
-
-        _state.update {
-            it.copy(
-                albumWithMusics = _selectedAlbumWithMusics.value ?: AlbumWithMusics()
-            )
-        }
-    }
-
-    /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylistsIds: List<UUID>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in selectedPlaylistsIds) {
-                upsertMusicIntoPlaylistUseCase(
-                    MusicPlaylist(
-                        musicId = musicId,
-                        playlistId = selectedPlaylistId
-                    )
-                )
-            }
-            getMusicUseCase(musicId = musicId).first()?.let { music ->
-                playbackManager.updateMusic(music = music)
-            }
-
-        }
-    }
-
-    /**
-     * Remove the selected music, from the MusicState, from the application
-     */
-    private fun deleteMusicFromApp(musicId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteMusicUseCase(musicId = musicId)
-            playbackManager.removeSongFromLists(musicId = musicId)
-        }
-    }
-
-    /**
-     * Toggle the quick access state of the selected music.
-     */
-    private fun toggleQuickAccessState(music: Music) {
-        CoroutineScope(Dispatchers.IO).launch {
-            upsertMusicUseCase(
-                music = music.copy(
-                    isInQuickAccess = !music.isInQuickAccess,
-                )
-            )
-        }
-    }
-
-    /**
-     * Show or hide the delete dialog.
-     */
-    private fun showOrHideDeleteDialog(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isDeleteMusicDialogShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the add to playlist bottom sheet.
-     */
-    private fun showOrHideAddToPlaylistBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isAddToPlaylistBottomSheetShown = isShown
-            )
-        }
-    }
-
-    /**
-     * Show or hide the music bottom sheet.
-     */
-    private fun showOrHideMusicBottomSheet(isShown: Boolean) {
-        _state.update {
-            it.copy(
-                isMusicBottomSheetShown = isShown
-            )
-        }
     }
 
     /**
@@ -182,7 +103,7 @@ class SelectedAlbumViewModel(
      */
     private fun incrementNbPlayed(albumId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            val album = _state.value.albumWithMusics.album
+            val album = state.value.albumWithMusics.album
             upsertAlbumUseCase(
                 album = album.copy(
                     nbPlayed = album.nbPlayed + 1,

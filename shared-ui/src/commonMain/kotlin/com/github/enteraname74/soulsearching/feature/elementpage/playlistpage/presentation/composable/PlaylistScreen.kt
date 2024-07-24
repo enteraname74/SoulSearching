@@ -14,15 +14,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
@@ -33,7 +30,6 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.elementpage.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager

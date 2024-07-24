@@ -17,9 +17,6 @@ data class PlayerState(
     val playedList: List<Music> = emptyList(),
     val isPlaying: Boolean = false,
     val playerMode: PlayerMode = PlayerMode.NORMAL,
-    val isDeleteMusicDialogShown: Boolean = false,
-    val isAddToPlaylistBottomSheetShown: Boolean = false,
-    val isMusicBottomSheetShown: Boolean = false,
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
     val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound
 )

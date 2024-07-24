@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheetEvents
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -45,6 +44,7 @@ import com.github.enteraname74.soulsearching.domain.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerEvent
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
@@ -80,6 +80,27 @@ fun PlayerDraggableView(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state by playerViewModel.state.collectAsState()
+
+    val bottomSheetState by playerViewModel.bottomSheetState.collectAsState()
+    val dialogState by playerViewModel.dialogState.collectAsState()
+    val navigationState by playerViewModel.navigationState.collectAsState()
+    val addToPlaylistBottomSheet by playerViewModel.addToPlaylistBottomSheet.collectAsState()
+
+    bottomSheetState?.BottomSheet()
+    dialogState?.Dialog()
+    addToPlaylistBottomSheet?.BottomSheet()
+
+    LaunchedEffect(navigationState) {
+        when(navigationState) {
+            PlayerNavigationState.Idle -> { /*no-op*/  }
+            is PlayerNavigationState.ToModifyMusic -> {
+                val selectedMusic = (navigationState as PlayerNavigationState.ToModifyMusic).music
+                navigateToModifyMusic(selectedMusic.musicId.toString())
+                playerViewModel.consumeNavigation()
+            }
+        }
+    }
+
 
     val backgroundColor: Color by animateColorAsState(
         targetValue = when (playerViewManager.currentValue) {
@@ -193,10 +214,6 @@ fun PlayerDraggableView(
         isUsingDarkIcons = isUsingDarkIcons
     )
 
-    var selectedMusicId by rememberSaveable {
-        mutableStateOf<UUID?>(null)
-    }
-
     SoulBackHandler(playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
             if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
@@ -216,19 +233,11 @@ fun PlayerDraggableView(
         !playerViewManager.isAnimationRunning
     ) {
         coroutineScope.launch {
-            if (state.isMusicBottomSheetShown) {
-                playerViewModel.onEvent(
-                    PlayerEvent.SetMusicBottomSheetVisibility(
-                        isShown = false
-                    )
-                )
-            }
             if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
                 playerMusicListViewManager.animateTo(
                     newState = BottomSheetStates.COLLAPSED,
                 )
             }
-            println("WILL COLLAPSE 1, ${state.playedList.isEmpty()}, pos: ${playerViewManager.currentValue}")
             playerViewManager.animateTo(
                newState = BottomSheetStates.COLLAPSED,
             )
@@ -308,38 +317,6 @@ fun PlayerDraggableView(
                 Modifier
             }
 
-        state.playedList.find { it.musicId == selectedMusicId }?.let { music ->
-            MusicBottomSheetEvents(
-                selectedMusic = music,
-                playlistsWithMusics = state.playlistsWithMusics,
-                isAddToPlaylistBottomSheetShown = state.isAddToPlaylistBottomSheetShown,
-                onDismiss = {
-                    playerViewModel.onEvent(
-                        PlayerEvent.SetMusicBottomSheetVisibility(
-                            isShown = false
-                        )
-                    )
-                },
-                onSetAddToPlaylistBottomSheetVisibility = { isShown ->
-                    playerViewModel.onEvent(
-                        PlayerEvent.SetAddToPlaylistBottomSheetVisibility(
-                            isShown = isShown
-                        )
-                    )
-                },
-                onAddMusicToSelectedPlaylists = { selectedPlaylistsIds ->
-                    playerViewModel.onEvent(
-                        PlayerEvent.AddMusicToPlaylists(
-                            musicId = music.musicId,
-                            selectedPlaylistsIds = selectedPlaylistsIds
-                        )
-                    )
-                },
-                secondaryColor = navigationBarColor,
-                onSecondaryColor = textColor
-            )
-        }
-
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
@@ -415,13 +392,8 @@ fun PlayerDraggableView(
             val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                 Modifier.combinedClickable(
                     onLongClick = {
-                        if (state.currentMusic != null) {
-                            coroutineScope.launch {
-                                selectedMusicId = state.currentMusic?.musicId
-                                playerViewModel.onEvent(
-                                    PlayerEvent.SetMusicBottomSheetVisibility(isShown = true)
-                                )
-                            }
+                        state.currentMusic?.let {
+                            playerViewModel.showMusicBottomSheet(it)
                         }
                     },
                     onClick = { }
@@ -740,16 +712,7 @@ fun PlayerDraggableView(
                 maxHeight = maxHeight,
                 musicListDraggableState = playerMusicListViewManager.musicListDraggableState,
                 playerState = state,
-                onSelectedMusic = { selectedMusic ->
-                    coroutineScope.launch {
-                        selectedMusicId = selectedMusic.musicId
-                        playerViewModel.onEvent(
-                            PlayerEvent.SetMusicBottomSheetVisibility(
-                                isShown = true
-                            )
-                        )
-                    }
-                },
+                onSelectedMusic = playerViewModel::showMusicBottomSheet,
                 coverList = coverList,
                 onRetrieveLyrics = {
                     playerViewModel.onEvent(
