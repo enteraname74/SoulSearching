@@ -2,19 +2,9 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.DoubleArrow
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,11 +14,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.ext.navigationIcon
+import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun MainPageVerticalShortcut(
@@ -70,26 +61,14 @@ fun MainPageVerticalShortcut(
                             }
                         ),
                     colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
-                    imageVector = when (it) {
-                        ElementEnum.QUICK_ACCESS -> Icons.Rounded.DoubleArrow
-                        ElementEnum.PLAYLISTS -> Icons.AutoMirrored.Rounded.QueueMusic
-                        ElementEnum.ALBUMS -> Icons.Rounded.Album
-                        ElementEnum.ARTISTS -> Icons.Rounded.Person
-                        ElementEnum.MUSICS -> Icons.Rounded.MusicNote
-                    },
+                    imageVector = it.navigationIcon(),
                     contentDescription = ""
                 )
                 Text(
                     modifier = Modifier
                         .rotate(-90f)
                         .vertical(),
-                    text = when (it) {
-                        ElementEnum.QUICK_ACCESS -> strings.quickAccess
-                        ElementEnum.PLAYLISTS -> strings.playlists
-                        ElementEnum.ALBUMS -> strings.albums
-                        ElementEnum.ARTISTS -> strings.artists
-                        ElementEnum.MUSICS -> strings.musics
-                    },
+                    text = it.navigationTitle(),
                     color = if (isCurrentPosition) {
                         SoulSearchingColorTheme.colorScheme.onPrimary
                     } else {

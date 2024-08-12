@@ -13,8 +13,6 @@ import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
@@ -31,7 +29,7 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsNavigationState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,8 +49,6 @@ class AllMusicsViewModel(
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val musicFetcher: MusicFetcher,
     private val deleteMusicUseCase: DeleteMusicUseCase,
-    private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
@@ -93,7 +89,7 @@ class AllMusicsViewModel(
         _sortDirection,
         getAllPlaylistWithMusicsUseCase()
     ) { musics, sortType, sortDirection, playlists ->
-        MainPageState(
+        AllMusicsState(
             musics = musics,
             sortType = sortType,
             sortDirection = sortDirection,
@@ -104,7 +100,7 @@ class AllMusicsViewModel(
     }.stateIn(
         screenModelScope,
         SharingStarted.WhileSubscribed(5000),
-        MainPageState()
+        AllMusicsState()
     )
 
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)

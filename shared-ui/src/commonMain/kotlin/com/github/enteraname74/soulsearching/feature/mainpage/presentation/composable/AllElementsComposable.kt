@@ -1,11 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,19 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.UUID
+import java.util.*
 
 @Composable
 fun AllElementsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     list: List<Any>,
     title: String,
-    navigateToPlaylist: (Playlist) -> Unit = {},
-    navigateToAlbum: (String) -> Unit = {},
-    navigateToArtist: (String) -> Unit = {},
+    navigateToPlaylist: (playlistId: String) -> Unit = {},
+    navigateToAlbum: (albumId: String) -> Unit = {},
+    navigateToArtist: (artistId: String) -> Unit = {},
     playMusicAction: (Music) -> Unit = {},
     musicBottomSheetAction: (Music) -> Unit = {},
     playlistBottomSheetAction: (Playlist) -> Unit = {},
@@ -42,6 +37,7 @@ fun AllElementsComposable(
     sortDirection: Int = SortDirection.DESC,
     isUsingSort: Boolean = true
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -87,7 +83,7 @@ fun AllElementsComposable(
                                 title = element.playlist.name,
                                 text = strings.musics(element.musicsNumber),
                                 onClick = {
-                                    navigateToPlaylist(element.playlist)
+                                    navigateToPlaylist(element.playlist.playlistId.toString())
                                 },
                                 onLongClick = { playlistBottomSheetAction(element.playlist) },
                                 isFavoritePlaylist = element.playlist.isFavorite
@@ -100,7 +96,7 @@ fun AllElementsComposable(
                                 text = if (element.artist != null) element.artist!!.artistName else "",
                                 onClick = {
                                     navigateToAlbum(element.album.albumId.toString())
-                                },
+                                          },
                                 onLongClick = { albumBottomSheetAction(element.album) }
                             )
                         }

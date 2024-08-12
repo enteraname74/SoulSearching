@@ -3,15 +3,14 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -20,38 +19,38 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.domain.di.injectElement
-import com.github.enteraname74.soulsearching.domain.events.AlbumEvent
-import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
-import com.github.enteraname74.soulsearching.domain.events.MusicEvent
-import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.presentation.SelectedFolderScreen
+import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation.SelectedMonthScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.SelectedPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.*
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllElementsComposable
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllMusicsComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchAll
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
@@ -109,18 +108,23 @@ class MainPageScreen : Screen {
         artistDialogState?.Dialog()
 
         LaunchedEffect(musicNavigationState) {
-            when(musicNavigationState) {
-                AllMusicsNavigationState.Idle -> { /*no-op*/ }
+            when (musicNavigationState) {
+                AllMusicsNavigationState.Idle -> { /*no-op*/
+                }
+
                 is AllMusicsNavigationState.ToModifyMusic -> {
-                    val musicToModify: Music = (musicNavigationState as AllMusicsNavigationState.ToModifyMusic).selectedMusic
+                    val musicToModify: Music =
+                        (musicNavigationState as AllMusicsNavigationState.ToModifyMusic).selectedMusic
                     navigator.push(ModifyMusicScreen(selectedMusicId = musicToModify.musicId.toString()))
                     allMusicsViewModel.consumeNavigation()
                 }
             }
         }
         LaunchedEffect(playlistNavigationState) {
-            when(playlistNavigationState) {
-                AllPlaylistsNavigationState.Idle -> { /*no-op*/ }
+            when (playlistNavigationState) {
+                AllPlaylistsNavigationState.Idle -> { /*no-op*/
+                }
+
                 is AllPlaylistsNavigationState.ToModifyPlaylist -> {
                     val playlistToModify: Playlist =
                         (playlistNavigationState as AllPlaylistsNavigationState.ToModifyPlaylist).selectedPlaylist
@@ -130,8 +134,10 @@ class MainPageScreen : Screen {
             }
         }
         LaunchedEffect(albumNavigationState) {
-            when(albumNavigationState) {
-                AllAlbumsNavigationState.Idle -> { /*no-op*/ }
+            when (albumNavigationState) {
+                AllAlbumsNavigationState.Idle -> { /*no-op*/
+                }
+
                 is AllAlbumsNavigationState.ToModifyAlbum -> {
                     val albumToModify: Album =
                         (albumNavigationState as AllAlbumsNavigationState.ToModifyAlbum).selectedAlbum
@@ -141,8 +147,10 @@ class MainPageScreen : Screen {
             }
         }
         LaunchedEffect(artistNavigationState) {
-            when(artistNavigationState) {
-                AllArtistsNavigationState.Idle -> { /*no-op*/ }
+            when (artistNavigationState) {
+                AllArtistsNavigationState.Idle -> { /*no-op*/
+                }
+
                 is AllArtistsNavigationState.ToModifyArtist -> {
                     val artistToModify: Artist =
                         (artistNavigationState as AllArtistsNavigationState.ToModifyArtist).selectedArtist
@@ -178,6 +186,16 @@ class MainPageScreen : Screen {
                     SettingsScreen()
                 )
             },
+            navigateToMonth = {
+                navigator.push(
+                    SelectedMonthScreen(it)
+                )
+            },
+            navigateToFolder = {
+                navigator.push(
+                    SelectedFolderScreen(it)
+                )
+            },
             searchDraggableState = searchDraggableState,
             musicState = musicState,
             playlistState = playlistState,
@@ -197,21 +215,84 @@ fun MainPageScreenView(
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
     allImageCoversViewModel: AllImageCoversViewModel,
-    navigateToPlaylist: (String) -> Unit,
-    navigateToAlbum: (String) -> Unit,
-    navigateToArtist: (String) -> Unit,
+    navigateToPlaylist: (playlistId: String) -> Unit,
+    navigateToAlbum: (albumId: String) -> Unit,
+    navigateToArtist: (artistId: String) -> Unit,
+    navigateToFolder: (folderPath: String) -> Unit,
+    navigateToMonth: (month: String) -> Unit,
     navigateToSettings: () -> Unit,
     searchDraggableState: SwipeableState<BottomSheetStates>,
-    musicState: MainPageState,
+    musicState: AllMusicsState,
     playlistState: PlaylistState,
     albumState: AlbumState,
     artistState: ArtistState,
     quickAccessState: QuickAccessState,
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val windowSize = rememberWindowSize()
+
+    val visibleElements = viewSettingsManager.getListOfVisibleElements()
+    val pagerScreens = ArrayList<PagerScreen>()
+    visibleElements.forEach { element ->
+        pagerScreens.add(
+            when (element) {
+                ElementEnum.QUICK_ACCESS -> allQuickAccessTab(
+                    allImageCoversViewModel = allImageCoversViewModel,
+                    quickAccessState = quickAccessState,
+                    navigateToPlaylist = navigateToPlaylist,
+                    navigateToAlbum = navigateToAlbum,
+                    navigateToArtist = navigateToArtist,
+                    playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
+                    artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
+                    albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
+                    musicBottomSheetAction = allMusicsViewModel::showMusicBottomSheet,
+                )
+
+                ElementEnum.PLAYLISTS -> allPlaylistsTab(
+                    allPlaylistsViewModel = allPlaylistsViewModel,
+                    allImageCoversViewModel = allImageCoversViewModel,
+                    playlistState = playlistState,
+                    navigateToPlaylist = navigateToPlaylist,
+                )
+
+                ElementEnum.ALBUMS -> allAlbumsTab(
+                    allAlbumsViewModel = allAlbumsViewModel,
+                    allImageCoversViewModel = allImageCoversViewModel,
+                    albumState = albumState,
+                    navigateToAlbum = navigateToAlbum,
+                )
+
+                ElementEnum.ARTISTS -> allArtistsTab(
+                    allArtistsViewModel = allArtistsViewModel,
+                    allImageCoversViewModel = allImageCoversViewModel,
+                    artistState = artistState,
+                    navigateToArtist = navigateToArtist,
+                )
+
+                ElementEnum.MUSICS -> allMusicsTab(
+                    allMusicsViewModel = allMusicsViewModel,
+                    allImageCoversViewModel = allImageCoversViewModel,
+                    state = musicState,
+                    navigateToFolder = navigateToFolder,
+                    navigateToMonth = navigateToMonth,
+                )
+            }
+        )
+    }
+
+    val pagerState = rememberPagerState(
+        pageCount = { pagerScreens.size }
+    )
+
+    LaunchedEffect(allMusicsViewModel.currentPage) {
+        val vmCurrentPager = visibleElements.indexOf(allMusicsViewModel.currentPage)
+        if (vmCurrentPager != pagerState.currentPage && vmCurrentPager != -1) {
+            pagerState.animateScrollToPage(vmCurrentPager)
+        }
+    }
+
+    val searchBarFocusRequester = remember { FocusRequester() }
+    val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -223,7 +304,7 @@ fun MainPageScreenView(
             constraintsScope.maxHeight.toPx()
         }
 
-        val searchBarFocusRequester = remember { FocusRequester() }
+        val coroutineScope = rememberCoroutineScope()
 
         Column(
             modifier = Modifier
@@ -244,251 +325,12 @@ fun MainPageScreenView(
                 }
             )
 
-            val visibleElements = viewSettingsManager.getListOfVisibleElements()
-            val pagerScreens = ArrayList<PagerScreen>()
-            visibleElements.forEach { element ->
-                pagerScreens.add(
-                    when (element) {
-                        ElementEnum.QUICK_ACCESS -> PagerScreen(
-                            title = strings.quickAccess,
-                            screen = {
-                                AllElementsComposable(
-                                    retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                    list = quickAccessState.allQuickAccess,
-                                    title = strings.quickAccess,
-                                    isUsingSort = false,
-                                    navigateToArtist = navigateToArtist,
-                                    artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
-                                    navigateToPlaylist = {
-                                        allPlaylistsViewModel.onPlaylistEvent(
-                                            PlaylistEvent.SetSelectedPlaylist(
-                                                it
-                                            )
-                                        )
-                                        navigateToPlaylist(it.playlistId.toString())
-                                    },
-                                    playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
-                                    navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
-                                    playMusicAction = { music ->
-                                        coroutineScope.launch {
-                                            playerViewManager.animateTo(
-                                                newState = BottomSheetStates.EXPANDED,
-                                            )
-                                        }.invokeOnCompletion {
-                                            val musicListSingleton = arrayListOf(music)
-                                            playbackManager.setCurrentPlaylistAndMusic(
-                                                music = music,
-                                                musicList = musicListSingleton,
-                                                isMainPlaylist = false,
-                                                playlistId = null,
-                                                isForcingNewPlaylist = true
-                                            )
-                                        }
-                                    },
-                                    musicBottomSheetAction = allMusicsViewModel::showMusicBottomSheet
-                                )
-                            }
-                        )
-
-                        ElementEnum.PLAYLISTS -> {
-                            PagerScreen(
-                                title = strings.playlists,
-                                screen = {
-                                    AllElementsComposable(
-                                        retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                        list = playlistState.playlists,
-                                        title = strings.playlists,
-                                        navigateToPlaylist = {
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSelectedPlaylist(
-                                                    it
-                                                )
-                                            )
-                                            navigateToPlaylist(it.playlistId.toString())
-                                        },
-                                        playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
-                                        createPlaylistComposable = {
-                                            Icon(
-                                                modifier = Modifier
-                                                    .clickable {
-                                                        allPlaylistsViewModel.showCreatePlaylistDialog()
-                                                    }
-                                                    .size(UiConstants.ImageSize.medium),
-                                                imageVector = Icons.Rounded.Add,
-                                                contentDescription = strings.createPlaylistButton,
-                                                tint = SoulSearchingColorTheme.colorScheme.onPrimary
-                                            )
-                                        },
-                                        sortByName = {
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSortType(SortType.NAME)
-                                            )
-                                        },
-                                        sortByMostListenedAction = {
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSortType(SortType.NB_PLAYED)
-                                            )
-                                        },
-                                        sortByDateAction = {
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSortType(SortType.ADDED_DATE)
-                                            )
-                                        },
-                                        setSortDirectionAction = {
-                                            val newDirection =
-                                                if (playlistState.sortDirection == SortDirection.ASC) {
-                                                    SortDirection.DESC
-                                                } else {
-                                                    SortDirection.ASC
-                                                }
-                                            allPlaylistsViewModel.onPlaylistEvent(
-                                                PlaylistEvent.SetSortDirection(newDirection)
-                                            )
-                                        },
-                                        sortType = playlistState.sortType,
-                                        sortDirection = playlistState.sortDirection
-                                    )
-                                }
-                            )
-                        }
-
-                        ElementEnum.ALBUMS -> PagerScreen(
-                            title = strings.albums,
-                            screen = {
-                                AllElementsComposable(
-                                    retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                    list = albumState.albums,
-                                    title = strings.albums,
-                                    navigateToAlbum = navigateToAlbum,
-                                    albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
-                                    sortByName = {
-                                        allAlbumsViewModel.onAlbumEvent(
-                                            AlbumEvent.SetSortType(SortType.NAME)
-                                        )
-                                    },
-                                    sortByMostListenedAction = {
-                                        allAlbumsViewModel.onAlbumEvent(
-                                            AlbumEvent.SetSortType(SortType.NB_PLAYED)
-                                        )
-                                    },
-                                    sortByDateAction = {
-                                        allAlbumsViewModel.onAlbumEvent(
-                                            AlbumEvent.SetSortType(SortType.ADDED_DATE)
-                                        )
-                                    },
-                                    setSortDirectionAction = {
-                                        val newDirection =
-                                            if (albumState.sortDirection == SortDirection.ASC) {
-                                                SortDirection.DESC
-                                            } else {
-                                                SortDirection.ASC
-                                            }
-                                        allAlbumsViewModel.onAlbumEvent(
-                                            AlbumEvent.SetSortDirection(newDirection)
-                                        )
-                                    },
-                                    sortType = albumState.sortType,
-                                    sortDirection = albumState.sortDirection
-                                )
-                            }
-                        )
-
-                        ElementEnum.ARTISTS -> PagerScreen(
-                            title = strings.artists,
-                            screen = {
-                                AllElementsComposable(
-                                    retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                    list = artistState.artists,
-                                    title = strings.artists,
-                                    navigateToArtist = navigateToArtist,
-                                    artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
-                                    sortByName = {
-                                        allArtistsViewModel.onArtistEvent(
-                                            ArtistEvent.SetSortType(SortType.NAME)
-                                        )
-                                    },
-                                    sortByMostListenedAction = {
-                                        allArtistsViewModel.onArtistEvent(
-                                            ArtistEvent.SetSortType(SortType.NB_PLAYED)
-                                        )
-                                    },
-                                    sortByDateAction = {
-                                        allArtistsViewModel.onArtistEvent(
-                                            ArtistEvent.SetSortType(SortType.ADDED_DATE)
-                                        )
-                                    },
-                                    setSortDirectionAction = {
-                                        val newDirection =
-                                            if (artistState.sortDirection == SortDirection.ASC) {
-                                                SortDirection.DESC
-                                            } else {
-                                                SortDirection.ASC
-                                            }
-                                        allArtistsViewModel.onArtistEvent(
-                                            ArtistEvent.SetSortDirection(newDirection)
-                                        )
-                                    },
-                                    sortType = artistState.sortType,
-                                    sortDirection = artistState.sortDirection
-                                )
-                            }
-                        )
-
-                        ElementEnum.MUSICS -> PagerScreen(
-                            title = strings.musics,
-                            screen = {
-                                AllMusicsComposable(
-                                    retrieveCoverMethod = allImageCoversViewModel::getImageCover,
-                                    musicState = musicState,
-                                    sortByName = {
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.SetSortType(SortType.NAME)
-                                        )
-
-                                    },
-                                    sortByDateAction = {
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.SetSortType(SortType.ADDED_DATE)
-                                        )
-                                    },
-                                    sortByMostListenedAction = {
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.SetSortType(SortType.NB_PLAYED)
-                                        )
-
-                                    },
-                                    setSortDirectionAction = {
-                                        val newDirection =
-                                            if (musicState.sortDirection == SortDirection.ASC) {
-                                                SortDirection.DESC
-                                            } else {
-                                                SortDirection.ASC
-                                            }
-                                        allMusicsViewModel.onMusicEvent(
-                                            MusicEvent.SetSortDirection(newDirection)
-                                        )
-                                    },
-                                    onLongMusicClick = allMusicsViewModel::showMusicBottomSheet
-                                )
-                            }
-                        )
-                    }
-                )
-            }
-
-            val pagerState = rememberPagerState(
-                pageCount = { pagerScreens.size }
-            )
-
-            val currentPage by remember { derivedStateOf { pagerState.currentPage } }
-
             Row(
                 modifier = Modifier.fillMaxSize()
             ) {
 
                 // We only show the vertical shortcut if there is more than one panel to access.
-                if (visibleElements.size > 1) {
+                if (visibleElements.size > 1 && windowSize != WindowSize.Large) {
                     MainPageVerticalShortcut(
                         currentPage = currentPage,
                         visibleElements = visibleElements,

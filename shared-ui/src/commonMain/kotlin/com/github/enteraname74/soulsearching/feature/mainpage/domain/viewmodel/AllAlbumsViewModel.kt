@@ -5,9 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.SoulSearchingSettings
-import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -15,17 +13,12 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.AlbumEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsNavigationState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class AllAlbumsViewModel(
     private val settings: SoulSearchingSettings,
     private val getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
-    private val deleteAlbumUseCase: DeleteAlbumUseCase,
-    private val upsertAlbumUseCase: UpsertAlbumUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
 ) : ScreenModel, AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl {
     private val _sortType = MutableStateFlow(

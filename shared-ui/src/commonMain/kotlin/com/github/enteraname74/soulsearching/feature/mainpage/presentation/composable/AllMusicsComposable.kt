@@ -15,20 +15,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.presentation.SelectedFolderScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation.SelectedMonthScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
@@ -38,7 +34,9 @@ import java.util.*
 @Composable
 fun AllMusicsComposable(
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    musicState: MainPageState,
+    musicState: AllMusicsState,
+    navigateToFolder: (folderPath: String) -> Unit,
+    navigateToMonth: (month: String) -> Unit,
     sortByName: () -> Unit = {},
     sortByDateAction: () -> Unit = {},
     sortByMostListenedAction: () -> Unit = {},
@@ -50,7 +48,6 @@ fun AllMusicsComposable(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val navigator = LocalNavigator.currentOrThrow
 
     LazyColumn(
         modifier = Modifier
@@ -61,13 +58,7 @@ fun AllMusicsComposable(
                 MusicFoldersHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
                     folders = musicState.folderMusics,
-                    onFolderClicked = { folderPath ->
-                        navigator.push(
-                            SelectedFolderScreen(
-                                folderPath = folderPath
-                            )
-                        )
-                    },
+                    onFolderClicked = navigateToFolder,
                     onFolderLongClicked = {}
                 )
             }
@@ -77,13 +68,7 @@ fun AllMusicsComposable(
                 MusicMonthsHorizontalList(
                     retrieveCoverMethod = retrieveCoverMethod,
                     months = musicState.monthMusics,
-                    onMonthClicked = { month ->
-                        navigator.push(
-                            SelectedMonthScreen(
-                                month = month
-                            )
-                        )
-                    },
+                    onMonthClicked = navigateToMonth,
                     onMonthLongClicked = {}
                 )
             }

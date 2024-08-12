@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-enum class WindowSize(val value: Dp) {
+enum class WindowSize(val maxValue: Dp) {
     Small(600.dp),
     Medium(900.dp),
     Large(Dp.Infinity);
@@ -15,8 +15,8 @@ enum class WindowSize(val value: Dp) {
     companion object {
         fun getCorrespondingWindowSize(width: Dp): WindowSize =
             when {
-                width <= Small.value -> Small
-                width <= Medium.value -> Medium
+                width <= Small.maxValue -> Small
+                width <= Medium.maxValue -> Medium
                 else -> Large
             }
     }

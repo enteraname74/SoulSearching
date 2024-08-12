@@ -16,7 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManage
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*

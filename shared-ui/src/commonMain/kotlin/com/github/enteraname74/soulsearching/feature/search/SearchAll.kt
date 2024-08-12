@@ -11,12 +11,12 @@ import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.di.injectElement
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -30,7 +30,7 @@ import java.util.*
 fun SearchAll(
     searchText: String,
     retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    musicState: MainPageState,
+    musicState: AllMusicsState,
     albumState: AlbumState,
     artistState: ArtistState,
     playlistState: PlaylistState,

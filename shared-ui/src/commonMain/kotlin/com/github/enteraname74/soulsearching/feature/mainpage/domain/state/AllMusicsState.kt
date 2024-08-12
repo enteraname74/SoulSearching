@@ -8,9 +8,9 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 
 /**
- * UI State of the main page.
+ * UI State of the all musics tab on the main page.
  */
-data class MainPageState(
+data class AllMusicsState(
     val musics: List<Music>,
     val allPlaylists: List<PlaylistWithMusics> ,
     var sortType: Int,
