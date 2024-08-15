@@ -140,7 +140,6 @@ android {
         }
     }
 }
-
 compose.desktop {
     application {
         mainClass = "MainKt"

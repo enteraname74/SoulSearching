@@ -3,65 +3,54 @@ package com.github.enteraname74.soulsearching.feature.player.presentation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.swipeable
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import com.github.enteraname74.domain.model.ImageCover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
+import com.github.enteraname74.soulsearching.coreui.utils.*
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerEvent
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerNavigationState
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.ExpandedPlayButtonsComposable
-import com.github.enteraname74.soulsearching.feature.player.presentation.composable.MinimisedPlayButtonsComposable
-import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMusicCover
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerTopInformation
+import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
+import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
+import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
+import kotlin.ranges.coerceIn
 
 @Suppress("Deprecation")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
@@ -73,7 +62,6 @@ fun PlayerDraggableView(
     coverList: ArrayList<ImageCover>,
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
-    viewSettingsManager: ViewSettingsManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
@@ -90,8 +78,10 @@ fun PlayerDraggableView(
     addToPlaylistBottomSheet?.BottomSheet()
 
     LaunchedEffect(navigationState) {
-        when(navigationState) {
-            PlayerNavigationState.Idle -> { /*no-op*/  }
+        when (navigationState) {
+            PlayerNavigationState.Idle -> { /*no-op*/
+            }
+
             is PlayerNavigationState.ToModifyMusic -> {
                 val selectedMusic = (navigationState as PlayerNavigationState.ToModifyMusic).music
                 navigateToModifyMusic(selectedMusic.musicId.toString())
@@ -238,7 +228,7 @@ fun PlayerDraggableView(
                 )
             }
             playerViewManager.animateTo(
-               newState = BottomSheetStates.COLLAPSED,
+                newState = BottomSheetStates.COLLAPSED,
             )
         }
     }
@@ -249,41 +239,7 @@ fun PlayerDraggableView(
         playbackManager.stopPlayback()
     }
 
-    val orientation = SoulSearchingContext.orientation
-    val alphaTransition =
-        if (playerViewManager.currentValue == BottomSheetStates.MINIMISED
-            && playerViewManager.offset == 0f) {
-            0f
-        } else {
-            when (orientation) {
-                ScreenOrientation.HORIZONTAL -> {
-                    if ((1f / (abs(playerViewManager.offset) / 70)) > 0.1) {
-                        (1f / (abs(playerViewManager.offset) / 70)).coerceAtMost(1f)
-                    } else {
-                        0f
-                    }
-                }
-
-                else -> {
-                    if ((1f / (abs(
-                            max(
-                                playerViewManager.offset.roundToInt(),
-                                0
-                            )
-                        ) / 100)) > 0.1
-                    ) {
-                        (1f / (abs(max(playerViewManager.offset.roundToInt(), 0)) / 100))
-                            .coerceAtMost(1f)
-                    } else {
-                        0f
-                    }
-                }
-            }
-        }
-    val localDensity = LocalDensity.current
-    val playerHeight: Float = with(localDensity) {
-        100.dp.toPx()
-    }
+    val alphaTransition = getAlphaTransition()
 
     Box(
         modifier = Modifier
@@ -297,466 +253,375 @@ fun PlayerDraggableView(
                 state = playerViewManager.playerDraggableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
-                    (maxHeight - playerHeight) to BottomSheetStates.MINIMISED,
+                    (maxHeight - PlayerHeight) to BottomSheetStates.MINIMISED,
                     maxHeight to BottomSheetStates.COLLAPSED,
                     0f to BottomSheetStates.EXPANDED
                 )
             )
     ) {
-        val mainBoxClickableModifier =
-            if (playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
-                Modifier.clickable {
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = backgroundColor)
+                .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
                     coroutineScope.launch {
                         playerViewManager.animateTo(
                             newState = BottomSheetStates.EXPANDED,
                         )
                     }
                 }
-            } else {
-                Modifier
-            }
-
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor)
-                .composed {
-                    mainBoxClickableModifier
-                }
                 .align(Alignment.TopStart)
         ) {
-            val constraintsScope = this
-            val maxWidth = with(LocalDensity.current) {
-                constraintsScope.maxWidth.toPx()
-            }
 
-            val imagePaddingStart =
-                when (SoulSearchingContext.orientation) {
-                    ScreenOrientation.HORIZONTAL -> max(
-                        (((maxWidth * 1.5) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 15)).roundToInt().dp,
-                        UiConstants.Spacing.small
-                    )
+            val imageSize = getImageSize()
+            var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
 
-                    else -> max(
-                        (((maxWidth * 3.5) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 40)).roundToInt().dp,
-                        UiConstants.Spacing.small
-                    )
+            PlayerTopInformation(
+                modifier = Modifier
+                    .align(Alignment.TopStart),
+                alphaTransition = alphaTransition,
+                state = state,
+                playerViewModel = playerViewModel,
+                textColor = textColor,
+                subTextColor = subTextColor,
+                navigateToArtist = navigateToArtist,
+                navigateToAlbum = navigateToAlbum,
+                onTopInformationHeightChange = { height ->
+                    playerTopInformationHeight = height
+                },
+                onShowPanel = if (!PlayerUiUtils.canShowSidePanel()) {
+                    {
+                        coroutineScope.launch {
+                            playerMusicListViewManager.animateTo(
+                                newState = BottomSheetStates.EXPANDED,
+                            )
+                        }
+                    }
+                } else {
+                    null
                 }
+            )
 
-            val imagePaddingTop =
-                when (SoulSearchingContext.orientation) {
-                    ScreenOrientation.HORIZONTAL -> max(
-                        (((maxHeight * 7) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 5)).roundToInt().dp,
-                        UiConstants.Spacing.small
-                    )
+            val playerControlsWidth: Dp = getPlayerControlsWidth(
+                imageSize = imageSize,
+            )
+            val imageHorizontalPadding = getImageHorizontalPadding(imageSize)
+            val imageTopPadding = getImageTopPadding(
+                expandedMainInformationHeight = playerTopInformationHeight,
+                imageSize = imageSize,
+            )
+            val fullImageSize = imageSize + (imageHorizontalPadding * 2)
+            Column {
+                val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
 
-                    else -> max(
-                        (((maxHeight * 5) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 15)).roundToInt().dp,
-                        UiConstants.Spacing.small
-                    )
-                }
-
-
-            val imageSize =
-                when (SoulSearchingContext.orientation) {
-                    ScreenOrientation.HORIZONTAL -> max(
-                        (((maxWidth * 10) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 2)).dp,
-                        55.dp
-                    )
-
-                    else -> max(
-                        (((maxWidth * 29) / 100) - (max(
-                            playerViewManager.offset.roundToInt(),
-                            0
-                        ) / 7)).dp,
-                        55.dp
-                    )
-                }
-
-            val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                Modifier.combinedClickable(
+                PlayerMusicCover(
                     onLongClick = {
                         state.currentMusic?.let {
                             playerViewModel.showMusicBottomSheet(it)
                         }
                     },
-                    onClick = { }
+                    retrieveCoverMethod = retrieveCoverMethod,
+                    imageSize = imageSize,
+                    horizontalPadding = imageHorizontalPadding,
+                    topPadding = imageTopPadding,
                 )
-            } else {
-                Modifier
+
+                if (!PlayerUiUtils.canShowRowControlPanel()) {
+                    Box(
+                        modifier = Modifier
+                            .padding(
+                                top = PlayerControlsTopPadding,
+                            )
+                            .width(controlsBoxWidth),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        ExpandedPlayerControlsComposable(
+                            modifier = Modifier
+                                .width(playerControlsWidth)
+                                .alpha(alphaTransition),
+                            contentColor = textColor,
+                            sliderInactiveBarColor = contentColor,
+                            onSetFavoriteState = {
+                                playerViewModel.onEvent(
+                                    PlayerEvent.ToggleFavoriteState
+                                )
+                            },
+                            isMusicInFavorite = state.isCurrentMusicInFavorite,
+                            currentMusicPosition = state.currentMusicPosition,
+                            playerMode = state.playerMode,
+                            isPlaying = state.isPlaying
+                        )
+                    }
+                }
             }
 
-            val backImageClickableModifier =
-                if (playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
-                    Modifier
-                } else {
-                    Modifier.clickable {
-                        coroutineScope.launch {
-                            if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                                playerMusicListViewManager.animateTo(
-                                    newState = BottomSheetStates.COLLAPSED,
-                                )
-                            }
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.MINIMISED,
-                            )
-                        }
-                    }
-                }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(UiConstants.Spacing.small)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = imagePaddingStart,
-                            top = imagePaddingTop,
-                            end = imagePaddingStart
-                        )
-                ) {
-
-                    var aroundSongs by remember {
-                        mutableStateOf(listOf<Music?>())
-                    }
-                    aroundSongs = getAroundSongs(playbackManager = playbackManager)
-
-                    if (
-                        aroundSongs.filterNotNull().size > 1
-                        && playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                        && viewSettingsManager.isPlayerSwipeEnabled
-                    ) {
-                        val pagerState = remember(aroundSongs) {
-                            object : PagerState(currentPage = 1) {
-                                override val pageCount: Int = aroundSongs.size
-                            }
-                        }
-
-                        LaunchedEffect(pagerState) {
-                            snapshotFlow { pagerState.currentPage }.collect { page ->
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    when (page) {
-                                        0 -> playbackManager.previous()
-                                        2 -> playbackManager.next()
-                                    }
-                                }
-                            }
-                        }
-
-                        HorizontalPager(
-                            state = pagerState,
-                            pageSpacing = 120.dp
-                        ) { currentSongPos ->
-
-                            SoulImage(
-                                modifier = imageModifier,
-                                bitmap =
-                                retrieveCoverMethod(aroundSongs.getOrNull(currentSongPos)?.coverId),
-                                size = imageSize,
-                                roundedPercent = (playerViewManager.offset / 100).roundToInt()
-                                    .coerceIn(3, 10)
-                            )
-                        }
-                    } else {
-                        SoulImage(
-                            modifier = imageModifier,
-                            bitmap =
-                            retrieveCoverMethod(playbackManager.currentMusic?.coverId),
-                            size = imageSize,
-                            roundedPercent = (playerViewManager.offset / 100).roundToInt()
-                                .coerceIn(3, 10)
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(alphaTransition),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            imageVector = Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(UiConstants.ImageSize.medium)
-                                .composed { backImageClickableModifier },
-                            colorFilter = ColorFilter.tint(textColor),
-                            alpha = alphaTransition
-                        )
-                        Column(
-                            modifier = Modifier
-                                .weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(
-                                text = state.currentMusic?.name ?: "",
-                                color = textColor,
-                                maxLines = 1,
-                                textAlign = TextAlign.Center,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier
-                                    .basicMarquee()
-                            )
-
-                            val clickableArtistModifier =
-                                if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                    Modifier.clickable {
-                                        playbackManager.currentMusic?.let {
-                                            coroutineScope.launch {
-                                                val artistId = withContext(Dispatchers.IO) {
-                                                    playerViewModel.getArtistIdFromMusicId(it.musicId)
-                                                }
-                                                artistId?.let { id ->
-                                                    if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                                        navigateToArtist(id.toString())
-
-                                                        playerViewManager.animateTo(
-                                                            newState = BottomSheetStates.MINIMISED,
-                                                        )
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    Modifier
-                                }
-
-                            val clickableAlbumModifier =
-                                if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                    Modifier.clickable {
-                                        playbackManager.currentMusic?.let {
-                                            coroutineScope.launch {
-                                                val albumId = withContext(Dispatchers.IO) {
-                                                    playerViewModel.getAlbumIdFromMusicId(it.musicId)
-                                                }
-                                                albumId?.let { id ->
-                                                    if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                                        navigateToAlbum(id.toString())
-
-                                                        playerViewManager.animateTo(
-                                                            newState = BottomSheetStates.MINIMISED,
-                                                        )
-                                                    }
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    Modifier
-                                }
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = if (state.currentMusic != null) formatTextForEllipsis(
-                                        state.currentMusic!!.artist,
-                                        SoulSearchingContext.orientation
-                                    )
-                                    else "",
-                                    color = subTextColor,
-                                    fontSize = 15.sp,
-                                    maxLines = 1,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .composed {
-                                            clickableArtistModifier
-                                        },
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = " | ",
-                                    color = subTextColor,
-                                    fontSize = 15.sp,
-                                )
-                                Text(
-                                    text = if (state.currentMusic != null) formatTextForEllipsis(
-                                        state.currentMusic!!.album,
-                                        SoulSearchingContext.orientation
-                                    ) else "",
-                                    color = subTextColor,
-                                    fontSize = 15.sp,
-                                    maxLines = 1,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .composed {
-                                            clickableAlbumModifier
-                                        },
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                        Spacer(
-                            modifier = Modifier.size(UiConstants.ImageSize.medium)
-                        )
-                    }
-
-                    when (SoulSearchingContext.orientation) {
-                        ScreenOrientation.HORIZONTAL -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                ExpandedPlayButtonsComposable(
-                                    widthFraction = 0.45f,
-                                    paddingBottom = 0.dp,
-                                    mainColor = textColor,
-                                    sliderInactiveBarColor = contentColor,
-                                    onSetFavoriteState = {
-                                        playerViewModel.onEvent(
-                                            PlayerEvent.ToggleFavoriteState
-                                        )
-                                    },
-                                    isMusicInFavorite = state.isCurrentMusicInFavorite,
-                                    currentMusicPosition = state.currentMusicPosition,
-                                    playerMode = state.playerMode,
-                                    isPlaying = state.isPlaying
-                                )
-                            }
-                        }
-
-                        else -> {
-                            ExpandedPlayButtonsComposable(
-                                mainColor = textColor,
-                                sliderInactiveBarColor = contentColor,
-                                onSetFavoriteState = {
-                                    playerViewModel.onEvent(
-                                        PlayerEvent.ToggleFavoriteState
-                                    )
-                                },
-                                isMusicInFavorite = state.isCurrentMusicInFavorite,
-                                currentMusicPosition = state.currentMusicPosition,
-                                playerMode = state.playerMode,
-                                isPlaying = state.isPlaying
-                            )
-                        }
-                    }
-                }
-
+            if (PlayerUiUtils.canShowRowControlPanel()) {
                 Row(
                     modifier = Modifier
-                        .height(imageSize + UiConstants.Spacing.small)
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(
-                            start = imageSize + UiConstants.Spacing.large,
-                            end = UiConstants.Spacing.small
-                        )
-                        .alpha((playerViewManager.offset / maxHeight).coerceIn(0.0F, 1.0F)),
+                            start = fullImageSize,
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Column(
+                    ExpandedPlayerControlsComposable(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = if (state.currentMusic != null) state.currentMusic!!.name else "",
-                            color = textColor,
-                            maxLines = 1,
-                            textAlign = TextAlign.Start,
-                            fontSize = 15.sp,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = if (state.currentMusic != null) state.currentMusic!!.artist else "",
-                            color = textColor,
-                            fontSize = 12.sp,
-                            maxLines = 1,
-                            textAlign = TextAlign.Start,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    MinimisedPlayButtonsComposable(
-                        playerViewDraggableState = playerViewManager.playerDraggableState,
+                            .weight(
+                                weight = 1f,
+                                fill = false,
+                            )
+                            .alpha(alphaTransition)
+                            .padding(
+                                horizontal = UiConstants.Spacing.medium,
+                            ),
+                        contentColor = textColor,
+                        sliderInactiveBarColor = contentColor,
+                        onSetFavoriteState = {
+                            playerViewModel.onEvent(
+                                PlayerEvent.ToggleFavoriteState
+                            )
+                        },
+                        isMusicInFavorite = state.isCurrentMusicInFavorite,
+                        currentMusicPosition = state.currentMusicPosition,
+                        playerMode = state.playerMode,
                         isPlaying = state.isPlaying
                     )
+
+                    if (PlayerUiUtils.canShowSidePanel()) {
+                        PlayerPanelContent(
+                            modifier = Modifier
+                                .padding(
+                                    top = imageTopPadding,
+                                    start = UiConstants.Spacing.medium,
+                                )
+                                .alpha(alphaTransition)
+                                .weight(1f)
+                                .widthIn(
+                                    min = MinPlayerSidePanelWidth,
+                                    max = MaxPlayerSidePanelWidth,
+                                ),
+                            coverList = coverList,
+                            playerState = state,
+                            onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                            onRetrieveLyrics = {
+                                playerViewModel.onEvent(
+                                    PlayerEvent.GetLyrics,
+                                )
+                            },
+                            primaryColor = contentColor,
+                            contentColor = textColor,
+                            subTextColor = subTextColor,
+                            isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                        )
+                    }
                 }
             }
 
-            PlayerPanelView(
-                maxHeight = maxHeight,
-                musicListDraggableState = playerMusicListViewManager.musicListDraggableState,
-                playerState = state,
-                onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                coverList = coverList,
-                onRetrieveLyrics = {
-                    playerViewModel.onEvent(
-                        PlayerEvent.GetLyrics
-                    )
-                },
-                secondaryColor = contentColor,
-                primaryColor = backgroundColor,
-                contentColor = textColor,
-                subTextColor = subTextColor
+            PlayerMinimisedMainInfo(
+                imageSize = imageSize,
+                currentMusic = state.currentMusic,
+                textColor = textColor,
+                isPlaying = state.isPlaying,
+                alphaTransition = 1f - alphaTransition,
             )
+
+
+            if (!PlayerUiUtils.canShowSidePanel()) {
+                PlayerPanelDraggableView(
+                    maxHeight = maxHeight,
+                    playerState = state,
+                    onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                    coverList = coverList,
+                    onRetrieveLyrics = {
+                        playerViewModel.onEvent(
+                            PlayerEvent.GetLyrics
+                        )
+                    },
+                    secondaryColor = contentColor,
+                    primaryColor = backgroundColor,
+                    contentColor = textColor,
+                    subTextColor = subTextColor
+                )
+            } else if (!PlayerUiUtils.canShowRowControlPanel()){
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .padding(
+                            top = imageTopPadding,
+                            start = UiConstants.Spacing.medium,
+                        )
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.TopEnd,
+                ) {
+                    PlayerPanelContent(
+                        modifier = Modifier
+                            .alpha(alphaTransition)
+                            .width(
+                                this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
+                            ),
+                        coverList = coverList,
+                        playerState = state,
+                        onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                        onRetrieveLyrics = {
+                            playerViewModel.onEvent(
+                                PlayerEvent.GetLyrics,
+                            )
+                        },
+                        primaryColor = contentColor,
+                        contentColor = textColor,
+                        subTextColor = subTextColor,
+                        isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                    )
+                }
+            }
         }
     }
 }
 
-/**
- * Retrieve a list containing the current song and its around songs (previous and next).
- * If no songs are played, return a list containing null. If the played list contains only
- * the current song, it will return a list with only the current song.
- */
-private fun getAroundSongs(
-    playbackManager: PlaybackManager
-): List<Music?> {
-    val currentSongIndex = playbackManager.currentMusicIndex
 
-    if (currentSongIndex == -1) return listOf(null)
+@Composable
+private fun getTransitionRatio(
+    playerViewManager: PlayerViewManager = injectElement(),
+): Float {
+    val maxHeight: Float = rememberWindowHeight()
+    val currentOffset = playerViewManager.offset
 
-    if (playbackManager.playedList.size == 1) return listOf(
-        playbackManager.currentMusic
+    val maxOffset: Float = maxHeight - PlayerHeight
+    return currentOffset / maxOffset
+}
+
+@Composable
+private fun getAlphaTransition(): Float {
+    val ratio = getTransitionRatio()
+    val alpha = 1f - ratio
+    val fixedAlpha = alpha.coerceIn(
+        minimumValue = 0f,
+        maximumValue = 1f,
+    )
+    return fixedAlpha
+}
+
+@Composable
+private fun getImageSize(): Dp {
+    val maxHeight: Dp = rememberWindowHeightDp()
+    val ratio = getTransitionRatio()
+
+    val maxImageSize = max(
+        maxHeight / 2.45f,
+        MinImageSize,
     )
 
-    return listOf(
-        playbackManager.getPreviousMusic(currentSongIndex),
-        playbackManager.currentMusic,
-        playbackManager.getNextMusic(currentSongIndex)
+    val size = max(
+        maxImageSize * (1f - ratio),
+        MinImageSize,
+    )
+    val coerced = size.coerceIn(
+        minimumValue = MinImageSize,
+        maximumValue = maxImageSize,
+    )
+
+    return coerced
+}
+
+@Composable
+private fun getImageHorizontalPadding(imageSize: Dp): Dp {
+    val windowSize = rememberWindowSize()
+    if (windowSize != WindowSize.Small) {
+        return MinImagePaddingStart
+    }
+
+    val maxWidth = rememberWindowWidthDp()
+    val ratio = getTransitionRatio()
+    val alpha = 1f - ratio
+
+    val padding = max(
+        ((maxWidth - imageSize) / 2) * alpha,
+        MinImagePaddingStart,
+    )
+
+    return padding
+}
+
+@Composable
+private fun getPlayerControlsWidth(
+    imageSize: Dp,
+): Dp {
+    val maxWidth: Dp = rememberWindowWidthDp()
+    return min(
+        imageSize + PlayerControlsExtraWidth,
+        maxWidth,
     )
 }
 
-private fun formatTextForEllipsis(text: String, orientation: ScreenOrientation): String {
-    if (orientation == ScreenOrientation.HORIZONTAL) {
-        return text
-    }
-    return if (text.length > 16) {
-        "${text.subSequence(0, 16)}…"
+@Composable
+private fun getImageTopPadding(
+    expandedMainInformationHeight: Int,
+    imageSize: Dp
+): Dp =
+    if (PlayerUiUtils.canShowRowControlPanel()) {
+        getImageTopPaddingForRowView(imageSize)
     } else {
-        text
+        getImageTopPaddingForColumnView(expandedMainInformationHeight)
     }
+
+
+@Composable
+private fun getImageTopPaddingForColumnView(
+    expandedMainInformationHeight: Int
+): Dp {
+
+    val mainInfoHeightDp: Dp = expandedMainInformationHeight.toDp() + TopInformationBottomPadding
+
+    val ratio = getTransitionRatio()
+    val alpha = 1f - ratio
+
+    return max(
+        mainInfoHeightDp * alpha,
+        MinImagePaddingTop
+    )
 }
+
+@Composable
+private fun getImageTopPaddingForRowView(
+    imageSize: Dp
+): Dp {
+
+    val maxHeight = rememberWindowHeightDp()
+    val topPadding = (maxHeight - imageSize) / 2
+
+    val ratio = getTransitionRatio()
+    val alpha = 1f - ratio
+
+    return max(
+        topPadding * alpha,
+        MinImagePaddingTop,
+    )
+}
+
+@Composable
+private fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): Dp {
+    val maxWidth = this.maxWidth
+    val maxWidthForPanel = maxWidth - playerControlsWidth
+
+    return maxWidthForPanel.coerceIn(
+        minimumValue = MinPlayerSidePanelWidth,
+        maximumValue = MaxPlayerSidePanelWidth,
+    )
+}
+
+private val PlayerHeight: Float
+    @Composable
+    get() = 70.dp.toPx()
+
+private val MinImageSize: Dp = 55.dp
+private val MinImagePaddingStart: Dp = 4.dp
+private val MinImagePaddingTop: Dp = 4.dp
+
+private val TopInformationBottomPadding: Dp = 40.dp
+private val PlayerControlsTopPadding: Dp = 40.dp
+private val PlayerControlsExtraWidth: Dp = 25.dp
+
+private val MinPlayerSidePanelWidth: Dp = 50.dp
+private val MaxPlayerSidePanelWidth: Dp = 600.dp

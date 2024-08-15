@@ -15,7 +15,11 @@ class PlayerMusicListViewManager {
     val musicListDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
-    val currentValue: BottomSheetStates = musicListDraggableState.currentValue
+    val currentValue: BottomSheetStates
+        get() = musicListDraggableState.currentValue
+
+    val offset: Float
+        get() = musicListDraggableState.offset.value
 
     suspend fun animateTo(newState: BottomSheetStates) {
         musicListDraggableState.animateTo(

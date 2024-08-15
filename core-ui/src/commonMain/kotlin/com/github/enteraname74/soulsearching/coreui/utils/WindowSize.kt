@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -22,13 +19,17 @@ enum class WindowSize(val maxValue: Dp) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun rememberWindowSize(): WindowSize {
-    val density = LocalDensity.current
-    val windowWidth: Dp = with(density) {
-        LocalWindowInfo.current.containerSize.width.toDp()
-    }
+expect fun rememberWindowSize(): WindowSize
 
-    return WindowSize.getCorrespondingWindowSize(windowWidth)
-}
+@Composable
+expect fun rememberWindowHeight(): Float
+
+@Composable
+expect fun rememberWindowWidth(): Float
+
+@Composable
+expect fun rememberWindowHeightDp(): Dp
+
+@Composable
+expect fun rememberWindowWidthDp(): Dp

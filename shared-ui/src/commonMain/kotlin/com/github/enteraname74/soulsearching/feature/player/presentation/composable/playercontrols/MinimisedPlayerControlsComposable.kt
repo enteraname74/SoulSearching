@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.player.presentation.composable
+package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MinimisedPlayButtonsComposable(
+fun MinimisedPlayerControlsComposable(
     modifier: Modifier = Modifier,
     playerViewDraggableState: SwipeableState<BottomSheetStates>,
     playbackManager: PlaybackManager = injectElement(),

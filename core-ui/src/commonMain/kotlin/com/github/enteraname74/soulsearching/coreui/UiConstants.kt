@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -7,6 +9,15 @@ import androidx.compose.ui.unit.dp
  * Constants used throughout the application.
  */
 object UiConstants {
+
+    object Player {
+        val minHeightForRowView: Dp = 400.dp
+        val TopPanelSize: Float
+            @Composable
+            get() = with(LocalDensity.current) { 64.dp.toPx() }
+
+        val playerPlayerButtonSize: Dp = 78.dp
+    }
 
     /**
      * Spacing values for spacing or simple size.
