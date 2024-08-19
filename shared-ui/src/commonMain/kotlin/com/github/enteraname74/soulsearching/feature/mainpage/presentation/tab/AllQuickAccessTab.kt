@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.QuickAccessState
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllElementsComposable
@@ -19,7 +18,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun allQuickAccessTab(
-    allImageCoversViewModel: AllImageCoversViewModel,
     quickAccessState: QuickAccessState,
     navigateToPlaylist: (playlistId: String) -> Unit,
     navigateToArtist: (artistId: String) -> Unit,
@@ -37,16 +35,11 @@ fun allQuickAccessTab(
         val coroutineScope = rememberCoroutineScope()
 
         AllElementsComposable(
-            retrieveCoverMethod = allImageCoversViewModel::getImageCover,
             list = quickAccessState.allQuickAccess,
             title = strings.quickAccess,
-            isUsingSort = false,
-            artistBottomSheetAction = artistBottomSheetAction,
-            playlistBottomSheetAction = playlistBottomSheetAction,
-            albumBottomSheetAction = albumBottomSheetAction,
-            navigateToArtist = navigateToArtist,
             navigateToPlaylist = navigateToPlaylist,
             navigateToAlbum = navigateToAlbum,
+            navigateToArtist = navigateToArtist,
             playMusicAction = { music ->
                 coroutineScope.launch {
                     playerViewManager.animateTo(
@@ -64,6 +57,10 @@ fun allQuickAccessTab(
                 }
             },
             musicBottomSheetAction = musicBottomSheetAction,
+            playlistBottomSheetAction = playlistBottomSheetAction,
+            albumBottomSheetAction = albumBottomSheetAction,
+            artistBottomSheetAction = artistBottomSheetAction,
+            isUsingSort = false,
         )
     }
 )

@@ -7,17 +7,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.*
 
 @Composable
 fun AllElementsComposable(
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     list: List<Any>,
     title: String,
     navigateToPlaylist: (playlistId: String) -> Unit = {},
@@ -28,7 +25,7 @@ fun AllElementsComposable(
     playlistBottomSheetAction: (Playlist) -> Unit = {},
     albumBottomSheetAction: (Album) -> Unit = {},
     artistBottomSheetAction: (ArtistWithMusics) -> Unit = {},
-    createPlaylistComposable: @Composable (() -> Unit) = {},
+    createPlaylistComposable: @Composable () -> Unit = {},
     sortByName: () -> Unit = {},
     sortByDateAction: () -> Unit = {},
     sortByMostListenedAction: () -> Unit = {},
@@ -79,7 +76,7 @@ fun AllElementsComposable(
                     when (element) {
                         is PlaylistWithMusicsNumber -> {
                             BigPreviewComposable(
-                                image = element.playlist.coverId?.let { retrieveCoverMethod(it) },
+                                coverId = element.playlist.coverId,
                                 title = element.playlist.name,
                                 text = strings.musics(element.musicsNumber),
                                 onClick = {
@@ -91,7 +88,7 @@ fun AllElementsComposable(
                         }
                         is AlbumWithMusics -> {
                             BigPreviewComposable(
-                                image = element.album.coverId?.let { retrieveCoverMethod(it) },
+                                coverId = element.album.coverId,
                                 title = element.album.albumName,
                                 text = if (element.artist != null) element.artist!!.artistName else "",
                                 onClick = {
@@ -102,7 +99,7 @@ fun AllElementsComposable(
                         }
                         is ArtistWithMusics -> {
                             BigPreviewComposable(
-                                image = element.artist.coverId?.let { retrieveCoverMethod(it) },
+                                coverId = element.artist.coverId,
                                 title = element.artist.artistName,
                                 text = strings.musics(element.musics.size),
                                 onClick = {
@@ -113,7 +110,7 @@ fun AllElementsComposable(
                         }
                         is Music -> {
                             BigPreviewComposable(
-                                image = retrieveCoverMethod(element.coverId),
+                                coverId = element.coverId,
                                 title = element.name,
                                 text = element.artist,
                                 onClick = { playMusicAction(element) },

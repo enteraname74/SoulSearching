@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable
+package com.github.enteraname74.soulsearching.feature.elementpage.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,19 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun ImagesButton(
-    editAction: () -> Unit,
+    editAction: (() -> Unit)?,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    playlistType: PlaylistType,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    if (playlistType != PlaylistType.FOLDER && playlistType != PlaylistType.MONTH) {
+    editAction?.let {
         Image(
             modifier = Modifier
                 .size(48.dp)
@@ -36,7 +34,7 @@ fun ImagesButton(
                     shape = CircleShape
                 )
                 .clickable {
-                    editAction()
+                    it()
                 }
                 .padding(10.dp),
             imageVector = Icons.Rounded.Edit,

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.Music
@@ -22,6 +23,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -30,7 +32,7 @@ fun PlayerPanelContent(
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
-    coverList: ArrayList<ImageCover>,
+    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onRetrieveLyrics: () -> Unit,
     primaryColor: Color,
     contentColor: Color,
@@ -48,7 +50,7 @@ fun PlayerPanelContent(
                     playbackManager = playbackManager,
                     playedList = playerState.playedList,
                     onSelectedMusic = onSelectedMusic,
-                    coverList = coverList,
+                    retrieveCoverMethod = retrieveCoverMethod,
                     secondaryColor = contentColor,
                     primaryColor = primaryColor,
                     isExpanded = isExpanded,

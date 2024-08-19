@@ -19,10 +19,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -34,7 +31,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.presentation.SelectedFolderScreen
@@ -70,7 +66,6 @@ class MainPageScreen : Screen {
         val allPlaylistsViewModel = getScreenModel<AllPlaylistsViewModel>()
         val allAlbumsViewModel = getScreenModel<AllAlbumsViewModel>()
         val allArtistsViewModel = getScreenModel<AllArtistsViewModel>()
-        val allImageCoversViewModel = getScreenModel<AllImageCoversViewModel>()
         val allQuickAccessViewModel = getScreenModel<AllQuickAccessViewModel>()
 
         val musicState by allMusicsViewModel.state.collectAsState()
@@ -165,7 +160,6 @@ class MainPageScreen : Screen {
             allPlaylistsViewModel = allPlaylistsViewModel,
             allAlbumsViewModel = allAlbumsViewModel,
             allArtistsViewModel = allArtistsViewModel,
-            allImageCoversViewModel = allImageCoversViewModel,
             navigateToPlaylist = { playlistId ->
                 navigator.push(
                     SelectedPlaylistScreen(selectedPlaylistId = playlistId)
@@ -181,9 +175,9 @@ class MainPageScreen : Screen {
                     SelectedArtistScreen(selectedArtistId = artistId)
                 )
             },
-            navigateToSettings = {
+            navigateToFolder = {
                 navigator.push(
-                    SettingsScreen()
+                    SelectedFolderScreen(it)
                 )
             },
             navigateToMonth = {
@@ -191,9 +185,9 @@ class MainPageScreen : Screen {
                     SelectedMonthScreen(it)
                 )
             },
-            navigateToFolder = {
+            navigateToSettings = {
                 navigator.push(
-                    SelectedFolderScreen(it)
+                    SettingsScreen()
                 )
             },
             searchDraggableState = searchDraggableState,
@@ -214,7 +208,6 @@ fun MainPageScreenView(
     allPlaylistsViewModel: AllPlaylistsViewModel,
     allAlbumsViewModel: AllAlbumsViewModel,
     allArtistsViewModel: AllArtistsViewModel,
-    allImageCoversViewModel: AllImageCoversViewModel,
     navigateToPlaylist: (playlistId: String) -> Unit,
     navigateToAlbum: (albumId: String) -> Unit,
     navigateToArtist: (artistId: String) -> Unit,
@@ -237,41 +230,36 @@ fun MainPageScreenView(
         pagerScreens.add(
             when (element) {
                 ElementEnum.QUICK_ACCESS -> allQuickAccessTab(
-                    allImageCoversViewModel = allImageCoversViewModel,
                     quickAccessState = quickAccessState,
                     navigateToPlaylist = navigateToPlaylist,
-                    navigateToAlbum = navigateToAlbum,
                     navigateToArtist = navigateToArtist,
-                    playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
+                    navigateToAlbum = navigateToAlbum,
                     artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
+                    playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
                     albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
                     musicBottomSheetAction = allMusicsViewModel::showMusicBottomSheet,
                 )
 
                 ElementEnum.PLAYLISTS -> allPlaylistsTab(
                     allPlaylistsViewModel = allPlaylistsViewModel,
-                    allImageCoversViewModel = allImageCoversViewModel,
                     playlistState = playlistState,
                     navigateToPlaylist = navigateToPlaylist,
                 )
 
                 ElementEnum.ALBUMS -> allAlbumsTab(
                     allAlbumsViewModel = allAlbumsViewModel,
-                    allImageCoversViewModel = allImageCoversViewModel,
                     albumState = albumState,
                     navigateToAlbum = navigateToAlbum,
                 )
 
                 ElementEnum.ARTISTS -> allArtistsTab(
                     allArtistsViewModel = allArtistsViewModel,
-                    allImageCoversViewModel = allImageCoversViewModel,
                     artistState = artistState,
                     navigateToArtist = navigateToArtist,
                 )
 
                 ElementEnum.MUSICS -> allMusicsTab(
                     allMusicsViewModel = allMusicsViewModel,
-                    allImageCoversViewModel = allImageCoversViewModel,
                     state = musicState,
                     navigateToFolder = navigateToFolder,
                     navigateToMonth = navigateToMonth,
@@ -363,7 +351,7 @@ fun MainPageScreenView(
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,
-                retrieveCoverMethod = allImageCoversViewModel::getImageCover,
+                retrieveCoverMethod = musicState.allCovers::getFromCoverId,
                 musicState = musicState,
                 albumState = albumState,
                 artistState = artistState,

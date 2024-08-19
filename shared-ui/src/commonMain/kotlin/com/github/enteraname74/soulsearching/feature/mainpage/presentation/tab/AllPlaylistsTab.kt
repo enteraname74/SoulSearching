@@ -12,7 +12,6 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllPlaylistsViewModel
@@ -20,17 +19,15 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 
 fun allPlaylistsTab(
     allPlaylistsViewModel: AllPlaylistsViewModel,
-    allImageCoversViewModel: AllImageCoversViewModel,
     playlistState: PlaylistState,
     navigateToPlaylist: (playlistId: String) -> Unit,
 ): PagerScreen = PagerScreen(
     title = strings.playlists,
     screen = {
         AllElementsComposable(
-            navigateToPlaylist = navigateToPlaylist,
-            retrieveCoverMethod = allImageCoversViewModel::getImageCover,
             list = playlistState.playlists,
             title = strings.playlists,
+            navigateToPlaylist = navigateToPlaylist,
             playlistBottomSheetAction = allPlaylistsViewModel::showPlaylistBottomSheet,
             createPlaylistComposable = {
                 Icon(
@@ -49,14 +46,14 @@ fun allPlaylistsTab(
                     PlaylistEvent.SetSortType(SortType.NAME)
                 )
             },
-            sortByMostListenedAction = {
-                allPlaylistsViewModel.onPlaylistEvent(
-                    PlaylistEvent.SetSortType(SortType.NB_PLAYED)
-                )
-            },
             sortByDateAction = {
                 allPlaylistsViewModel.onPlaylistEvent(
                     PlaylistEvent.SetSortType(SortType.ADDED_DATE)
+                )
+            },
+            sortByMostListenedAction = {
+                allPlaylistsViewModel.onPlaylistEvent(
+                    PlaylistEvent.SetSortType(SortType.NB_PLAYED)
                 )
             },
             setSortDirectionAction = {

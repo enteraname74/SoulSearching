@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -28,12 +27,10 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMu
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
-import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AllMusicsComposable(
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     musicState: AllMusicsState,
     navigateToFolder: (folderPath: String) -> Unit,
     navigateToMonth: (month: String) -> Unit,
@@ -56,7 +53,6 @@ fun AllMusicsComposable(
         if (viewSettingsManager.areMusicsByFoldersShown) {
             item {
                 MusicFoldersHorizontalList(
-                    retrieveCoverMethod = retrieveCoverMethod,
                     folders = musicState.folderMusics,
                     onFolderClicked = navigateToFolder,
                     onFolderLongClicked = {}
@@ -66,7 +62,6 @@ fun AllMusicsComposable(
         if (viewSettingsManager.areMusicsByMonthsShown) {
             item {
                 MusicMonthsHorizontalList(
-                    retrieveCoverMethod = retrieveCoverMethod,
                     months = musicState.monthMusics,
                     onMonthClicked = navigateToMonth,
                     onMonthLongClicked = {}
@@ -136,7 +131,6 @@ fun AllMusicsComposable(
                             onLongMusicClick(elt)
                         }
                     },
-                    musicCover = retrieveCoverMethod(elt.coverId),
                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                 )
             }

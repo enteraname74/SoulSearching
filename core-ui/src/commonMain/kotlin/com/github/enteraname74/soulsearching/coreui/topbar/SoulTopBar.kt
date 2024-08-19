@@ -1,12 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.topbar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
@@ -21,18 +16,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulTopBar(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String? = null,
     leftAction: () -> Unit,
     leftIcon: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-    rightAction: () -> Unit = {},
+    rightAction: (() -> Unit)? = null,
     rightIcon: ImageVector? = null,
-    backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
     Row(
@@ -40,7 +35,7 @@ fun SoulTopBar(
             .then(
                 Modifier
                     .fillMaxWidth()
-                    .background(backgroundColor)
+                    .background(containerColor)
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -52,12 +47,10 @@ fun SoulTopBar(
                 tint = contentColor
             )
         }
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        title?.let {
             Text(
-                text = title,
+                modifier = Modifier.weight(1f),
+                text = it,
                 maxLines = 2,
                 fontSize = 18.sp,
                 color = contentColor,
@@ -66,7 +59,7 @@ fun SoulTopBar(
             )
         }
 
-        if (rightIcon != null) {
+        if (rightIcon != null && rightAction != null) {
             IconButton(onClick = rightAction) {
                 Icon(
                     imageVector = rightIcon,

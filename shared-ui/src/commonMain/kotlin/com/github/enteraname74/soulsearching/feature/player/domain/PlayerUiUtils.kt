@@ -1,13 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.player.domain
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.UiConstants.Player.minHeightForRowView
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 object PlayerUiUtils {
+    private val minHeightForRowView: Dp = 400.dp
+
     @Composable
     fun canShowRowControlPanel(): Boolean {
         val windowSize = rememberWindowSize()

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
@@ -93,7 +93,7 @@ fun ModifyMusicComposable(
                                 text = strings.albumCover,
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
-                            SoulImage(
+                            SoulBitmapImage(
                                 bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }
@@ -169,7 +169,7 @@ fun ModifyMusicComposable(
                                 text = strings.albumCover,
                                 color = SoulSearchingColorTheme.colorScheme.onSecondary
                             )
-                            SoulImage(
+                            SoulBitmapImage(
                                 bitmap = state.cover,
                                 size = 200.dp,
                                 modifier = Modifier.clickable { selectImage() }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -49,7 +49,7 @@ fun LinearPreviewComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SoulImage(bitmap = cover, size = 55.dp)
+            SoulBitmapImage(bitmap = cover, size = 55.dp)
             Column(
                 modifier = Modifier
                     .height(55.dp)

@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -56,7 +56,7 @@ fun MusicItemComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SoulImage(
+            SoulBitmapImage(
                 bitmap = musicCover,
                 size = 55.dp,
                 tint = textColor
@@ -67,6 +67,71 @@ fun MusicItemComposable(
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
                 ) {
+                Text(
+                    text = music.name,
+                    color = textColor,
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                )
+                Text(
+                    text = "${music.artist} | ${music.album}",
+                    color = textColor,
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
+                )
+
+            }
+            Icon(
+                modifier = Modifier.clickable { onLongClick() },
+                imageVector = Icons.Rounded.MoreVert,
+                contentDescription = strings.moreButton,
+                tint = textColor
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MusicItemComposable(
+    music: Music,
+    onClick: (Music) -> Unit,
+    onLongClick: () -> Unit,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    backgroundColor: Color = Color.Transparent,
+    isPlayedMusic: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor)
+            .combinedClickable(
+                onClick = { onClick(music) },
+                onLongClick = onLongClick
+            )
+            .padding(UiConstants.Spacing.medium),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SoulImage(
+                coverId = music.coverId,
+                size = 55.dp,
+                tint = textColor
+            )
+            Column(
+                modifier = Modifier
+                    .height(55.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = music.name,
                     color = textColor,

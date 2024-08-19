@@ -11,3 +11,5 @@ data class ImageCover(
     val coverId : UUID = UUID.randomUUID(),
     val cover : ImageBitmap? = null
 )
+
+fun List<ImageCover>.getFromCoverId(coverId: UUID?) : ImageBitmap? = firstOrNull { it.coverId == coverId }?.cover

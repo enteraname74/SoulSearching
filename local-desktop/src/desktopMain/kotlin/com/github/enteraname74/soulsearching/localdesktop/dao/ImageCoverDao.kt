@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
+import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.ImageCoverTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toImageCover

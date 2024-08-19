@@ -1,21 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
-import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
-import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthEvent
+import com.github.enteraname74.soulsearching.feature.elementpage.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthNavigationState
+import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthState
 import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.domain.SelectedMonthViewModel
-import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import java.util.*
 
 /**
  * Represent the view of the selected month screen.
@@ -26,7 +23,6 @@ data class SelectedMonthScreen(
     @Composable
     override fun Content() {
         val screenModel = getScreenModel<SelectedMonthViewModel>()
-        val allImagesViewModel = getScreenModel<AllImageCoversViewModel>()
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()
@@ -51,14 +47,21 @@ data class SelectedMonthScreen(
             }
         }
 
+        var isMonthFetched by remember {
+            mutableStateOf(false)
+        }
+
+        if (!isMonthFetched) {
+            screenModel.init(month = month)
+            isMonthFetched = true
+        }
+
         SelectedMonthScreenView(
-            selectedMonth = month,
             selectedMonthViewModel = screenModel,
             navigateBack = {
                 colorThemeManager.removePlaylistTheme()
                 navigator.pop()
             },
-            retrieveCoverMethod = allImagesViewModel::getImageCover,
         )
     }
 }
@@ -66,40 +69,19 @@ data class SelectedMonthScreen(
 @Composable
 fun SelectedMonthScreenView(
     selectedMonthViewModel: SelectedMonthViewModel,
-    selectedMonth: String,
     navigateBack: () -> Unit,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
 ) {
-    var isMonthFetched by remember {
-        mutableStateOf(false)
-    }
-
-    if (!isMonthFetched) {
-        selectedMonthViewModel.onEvent(
-            SelectedMonthEvent.SetSelectedMonth(
-                month = selectedMonth
-            )
-        )
-        isMonthFetched = true
-    }
-
     val state by selectedMonthViewModel.state.collectAsState()
 
-    PlaylistScreen(
-        playlistId = null,
-        playlistName = state.monthMusicList?.month ?: "",
-        playlistCover = retrieveCoverMethod(state.monthMusicList?.coverId),
-        musics = state.monthMusicList?.musics ?: emptyList(),
-        navigateBack = navigateBack,
-        retrieveCoverMethod = { retrieveCoverMethod(it) },
-        updateNbPlayedAction = {
-            selectedMonthViewModel.onEvent(
-                SelectedMonthEvent.AddNbPlayed(
-                    it
-                )
-            )
-        },
-        playlistType = PlaylistType.MONTH,
-        onShowMusicBottomSheet = selectedMonthViewModel::showMusicBottomSheet
-    )
+    when (state) {
+        SelectedMonthState.Loading -> SoulLoadingScreen(
+            navigateBack = navigateBack,
+        )
+        is SelectedMonthState.Data -> PlaylistScreen(
+            playlistDetail = (state as SelectedMonthState.Data).playlistDetail,
+            playlistDetailListener = selectedMonthViewModel,
+            navigateBack = navigateBack,
+            onShowMusicBottomSheet = selectedMonthViewModel::showMusicBottomSheet,
+        )
+    }
 }

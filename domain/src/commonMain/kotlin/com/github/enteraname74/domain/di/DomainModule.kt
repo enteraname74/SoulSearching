@@ -14,6 +14,8 @@ import com.github.enteraname74.domain.usecase.musicartist.*
 import com.github.enteraname74.domain.usecase.musicplaylist.*
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
+import com.github.enteraname74.domain.usecase.month.*
+import com.github.enteraname74.domain.usecase.musicfolder.*
 import com.github.enteraname74.domain.util.MusicFileUpdater
 
 val domainModule = module {
@@ -33,6 +35,7 @@ val domainModule = module {
     singleOf(::GetDuplicatedAlbumUseCase)
     singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
     singleOf(::UpdateAlbumCoverUseCase)
+    singleOf(::UpdateAlbumNbPlayedUseCase)
     singleOf(::UpdateAlbumUseCase)
     singleOf(::UpsertAlbumUseCase)
 
@@ -50,6 +53,7 @@ val domainModule = module {
     singleOf(::GetCorrespondingArtistUseCase)
     singleOf(::GetDuplicatedArtistUseCase)
     singleOf(::UpdateArtistCoverUseCase)
+    singleOf(::UpdateArtistNbPlayedUseCase)
     singleOf(::UpdateArtistUseCase)
     singleOf(::UpsertArtistUseCase)
 
@@ -69,6 +73,10 @@ val domainModule = module {
     // Lyrics
     singleOf(::GetLyricsOfSongUseCase)
 
+    // MonthMusic
+    singleOf(::GetAllMonthMusicUseCase)
+    singleOf(::GetMonthMusicListUseCase)
+
     // Music
     singleOf(::DeleteMusicUseCase)
     singleOf(::GetAllMusicFromFolderPathUseCase)
@@ -82,6 +90,7 @@ val domainModule = module {
     singleOf(::SaveMusicUseCase)
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
+    singleOf(::UpdateMusicNbPlayedUseCase)
     singleOf(::UpdateMusicUseCase)
     singleOf(::UpsertMusicUseCase)
 
@@ -92,6 +101,10 @@ val domainModule = module {
     // MusicArtist
     singleOf(::GetArtistIdFromMusicIdUseCase)
     singleOf(::UpsertMusicIntoArtistUseCase)
+
+    // MusicFolder
+    singleOf(::GetAllMusicFolderUseCase)
+    singleOf(::GetMusicFolderListUseCase)
 
     // MusicPlaylist
     singleOf(::DeleteMusicFromPlaylistUseCase)
@@ -106,6 +119,7 @@ val domainModule = module {
     singleOf(::GetPlaylistUseCase)
     singleOf(::GetPlaylistWithMusicsUseCase)
     singleOf(::GetSelectablePlaylistWithMusicsForMusicUseCase)
+    singleOf(::UpdatePlaylistNbPlayedUseCase)
     singleOf(::UpsertPlaylistUseCase)
 
     // QuickAccess

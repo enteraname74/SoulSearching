@@ -1,28 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.domain.model.MusicFolder
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
-import com.github.enteraname74.soulsearching.domain.model.MusicFolder
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.UUID
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun MusicFoldersHorizontalList(
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     folders: List<MusicFolder>,
     onFolderClicked: (path: String) -> Unit = {},
     onFolderLongClicked: (path: String) -> Unit = {},
@@ -55,9 +48,9 @@ fun MusicFoldersHorizontalList(
                     items = folders
                 ) { element ->
                     BigPreviewComposable(
-                        image = element.coverId?.let { retrieveCoverMethod(it) },
+                        coverId = element.coverId,
                         title = element.path,
-                        text = strings.musics(total = element.musics.size),
+                        text = strings.musics(total = element.allMusicsSize),
                         onClick = {
                             onFolderClicked(element.path)
                         },

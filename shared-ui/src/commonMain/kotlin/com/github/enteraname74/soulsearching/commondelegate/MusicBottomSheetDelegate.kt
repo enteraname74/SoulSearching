@@ -10,10 +10,10 @@ import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlayl
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheet
-import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
-import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -136,6 +136,7 @@ class MusicBottomSheetDelegateImpl(
         selectedMusic: Music,
         currentPlaylist: Playlist?,
     ) {
+        println("SHOW BOTTOM")
         setBottomSheetState(
             MusicBottomSheet(
                 musicBottomSheetState = musicBottomSheetState,

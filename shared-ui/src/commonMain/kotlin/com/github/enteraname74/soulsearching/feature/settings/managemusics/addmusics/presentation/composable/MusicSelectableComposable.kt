@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 
 @Composable
 fun MusicSelectableComposable(
@@ -46,7 +46,7 @@ fun MusicSelectableComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SoulImage(
+            SoulBitmapImage(
                 bitmap = musicCover,
                 size = 55.dp,
                 tint = textColor

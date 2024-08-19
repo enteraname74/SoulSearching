@@ -2,33 +2,52 @@ package com.github.enteraname74.soulsearching.feature.elementpage.monthpage.doma
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
+import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
+import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
-import com.github.enteraname74.soulsearching.domain.utils.Utils
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.toPlaylistDetail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 
 class SelectedMonthViewModel(
     private val getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val getAllMusicUseCase: GetAllMusicUseCase,
+    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+    private val getMonthMusicListUseCase: GetMonthMusicListUseCase,
+) : ScreenModel, PlaylistDetailListener, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+
+    private val _month: MutableStateFlow<String?> = MutableStateFlow(null)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = getAllPlaylistWithMusicsUseCase().mapLatest { playlists ->
-        SelectedMonthState(
-            allPlaylists = playlists,
-        )
+    var state = _month.flatMapLatest { month ->
+        if (month == null) {
+            flowOf(SelectedMonthState.Loading)
+        } else {
+            combine(
+                getAllPlaylistWithMusicsUseCase(),
+                getMonthMusicListUseCase(month = month),
+            ) { allPlaylists, monthMusicList ->
+                when {
+                    monthMusicList == null -> SelectedMonthState.Loading
+                    else -> SelectedMonthState.Data(
+                        playlistDetail = monthMusicList.toPlaylistDetail(),
+                        allPlaylists = allPlaylists,
+                    )
+                }
+            }
+        }
     }.stateIn(
-        screenModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        SelectedMonthState()
+        scope = screenModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = SelectedMonthState.Loading,
     )
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
@@ -50,7 +69,7 @@ class SelectedMonthViewModel(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyMusic = { _navigationState.value = SelectedMonthNavigationState.ToModifyMusic(it) },
-            getAllPlaylistsWithMusics = { state.value.allPlaylists },
+            getAllPlaylistsWithMusics = ::getAllPlaylistWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
         )
     }
@@ -59,45 +78,27 @@ class SelectedMonthViewModel(
         _navigationState.value = SelectedMonthNavigationState.Idle
     }
 
-    /**
-     * Handles events of the selected folder screen.
-     */
-    fun onEvent(event: SelectedMonthEvent) {
-        when (event) {
-            is SelectedMonthEvent.SetSelectedMonth -> setSelectedFolder(month = event.month)
-            is SelectedMonthEvent.AddNbPlayed -> incrementNbPlayed(playlistId = event.playlistId)
-        }
-    }
+    private fun getAllPlaylistWithMusics() =
+        (state.value as? SelectedMonthState.Data)?.allPlaylists ?: emptyList()
 
     /**
      * Set the selected playlist.
      */
-    private fun setSelectedFolder(month: String) {
-        state = combine(
-            getAllMusicUseCase()
-                .map { allMusics ->
-                    val musics = allMusics.filter { Utils.getMonthAndYearOfDate(date = it.addedDate) == month  }
-                    MonthMusicList(
-                        month = month,
-                        musics = musics,
-                        coverId = musics.firstOrNull { it.coverId != null }?.coverId
-                    )
-                },
-            getAllPlaylistWithMusicsUseCase()
-        ) { monthMusics, playlists ->
-            state.value.copy(
-                monthMusicList = monthMusics,
-                allPlaylists = playlists
-            )
-        }.stateIn(
-            screenModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SelectedMonthState()
-        )
+    fun init(month: String) {
+        _month.value = month
     }
 
-    /**
-     * Increment by one the number of time a playlist was played.
-     */
-    private fun incrementNbPlayed(playlistId: UUID) {}
+    override fun onEdit() {
+        /* no-op */
+    }
+
+    override fun onUpdateNbPlayed(musicId: UUID) {
+        screenModelScope.launch {
+            updateMusicNbPlayedUseCase(musicId = musicId)
+        }
+    }
+
+    override fun onUpdateNbPlayed() {
+        /* no-op */
+    }
 }

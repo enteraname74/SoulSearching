@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Album
@@ -23,9 +22,8 @@ import java.util.UUID
 
 @Composable
 fun ArtistAlbums(
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     albums: List<Album>,
-    onAlbumClick: (String) -> Unit = {},
+    onAlbumClick: (albumId: UUID) -> Unit = {},
     onAlbumLongClick: (Album) -> Unit = {},
 ) {
     Column(
@@ -56,10 +54,10 @@ fun ArtistAlbums(
                     items = albums
                 ) { element ->
                     BigPreviewComposable(
-                        image = element.coverId?.let { retrieveCoverMethod(it) },
+                        coverId = element.coverId,
                         title = element.albumName,
                         onClick = {
-                            onAlbumClick(element.albumId.toString())
+                            onAlbumClick(element.albumId)
                         },
                         onLongClick = { onAlbumLongClick(element) }
                     )

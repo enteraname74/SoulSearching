@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
 import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -38,23 +39,26 @@ class PlayerViewModel(
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val getMusicUseCase: GetMusicUseCase,
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
-    private val deleteMusicUseCase: DeleteMusicUseCase,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+    val imageCoverRetriever: ImageCoverRetriever,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _state = MutableStateFlow(PlayerState())
 
     val state = combine(
         _state,
-        getAllPlaylistWithMusicsUseCase()
-    ) { state, playlists ->
+        getAllPlaylistWithMusicsUseCase(),
+        imageCoverRetriever.allCovers,
+        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId)
+    ) { state, playlists, allCovers, currentMusicCover ->
         state.copy(
-            playlistsWithMusics = playlists
+            playlistsWithMusics = playlists,
+            allCovers = allCovers,
+            currentMusicCover = currentMusicCover,
         )
     }.stateIn(
         screenModelScope,

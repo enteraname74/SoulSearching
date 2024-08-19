@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.events.MusicEvent
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
@@ -12,7 +11,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 
 fun allMusicsTab(
     allMusicsViewModel: AllMusicsViewModel,
-    allImageCoversViewModel: AllImageCoversViewModel,
     state: AllMusicsState,
     navigateToFolder: (folderPath: String) -> Unit,
     navigateToMonth: (month: String) -> Unit,
@@ -20,8 +18,9 @@ fun allMusicsTab(
     title = strings.musics,
     screen = {
         AllMusicsComposable(
-            retrieveCoverMethod = allImageCoversViewModel::getImageCover,
             musicState = state,
+            navigateToFolder = navigateToFolder,
+            navigateToMonth = navigateToMonth,
             sortByName = {
                 allMusicsViewModel.onMusicEvent(
                     MusicEvent.SetSortType(SortType.NAME)
@@ -51,8 +50,6 @@ fun allMusicsTab(
                 )
             },
             onLongMusicClick = allMusicsViewModel::showMusicBottomSheet,
-            navigateToFolder = navigateToFolder,
-            navigateToMonth = navigateToMonth,
         )
     }
 )

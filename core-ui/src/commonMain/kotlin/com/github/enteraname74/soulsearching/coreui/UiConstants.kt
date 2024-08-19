@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 object UiConstants {
 
     object Player {
-        val minHeightForRowView: Dp = 400.dp
         val TopPanelSize: Float
             @Composable
             get() = with(LocalDensity.current) { 64.dp.toPx() }

@@ -1,29 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.domain.model.MonthMusics
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import java.util.UUID
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun MusicMonthsHorizontalList(
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
-    months: List<MonthMusicList>,
+    months: List<MonthMusics>,
     onMonthClicked: (month: String) -> Unit = {},
     onMonthLongClicked: (month: String) -> Unit = {},
 ) {
@@ -55,9 +48,9 @@ fun MusicMonthsHorizontalList(
                     items = months
                 ) { element ->
                     BigPreviewComposable(
-                        image = element.coverId?.let { retrieveCoverMethod(it) },
+                        coverId = element.coverId,
                         title = element.month,
-                        text = strings.musics(total = element.musics.size),
+                        text = strings.musics(total = element.allMusicsSize),
                         onClick = {
                             onMonthClicked(element.month)
                         },

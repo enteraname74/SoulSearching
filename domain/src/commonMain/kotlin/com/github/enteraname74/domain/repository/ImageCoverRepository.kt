@@ -24,7 +24,6 @@ interface ImageCoverRepository {
      * Get an ImageCover from its id.
      */
     suspend fun getCoverOfElement(coverId: UUID): ImageCover?
-
     /**
      * Retrieves a flow of all ImageCover.
      */

@@ -2,20 +2,19 @@ package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.d
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpdatePlaylistNbPlayedUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistNavigationState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.toPlaylistDetail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,10 +23,10 @@ import java.util.*
 class SelectedPlaylistViewModel(
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
-    private val getPlaylistUseCase: GetPlaylistUseCase,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val updatePlaylistNbPlayedUseCase: UpdatePlaylistNbPlayedUseCase,
+    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+) : ScreenModel, PlaylistDetailListener, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _playlists = getAllPlaylistWithMusicsUseCase()
         .stateIn(
             screenModelScope,
@@ -35,15 +34,13 @@ class SelectedPlaylistViewModel(
             emptyList()
         )
 
+    private val _playlistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = _playlists.mapLatest { playlists ->
-        SelectedPlaylistState(
-            allPlaylists = playlists
-        )
-    }.stateIn(
-        screenModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        SelectedPlaylistState()
+    var state = flowOf<SelectedPlaylistState>().stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = SelectedPlaylistState.Loading
     )
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
@@ -65,56 +62,56 @@ class SelectedPlaylistViewModel(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyMusic = { _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it) },
-            getAllPlaylistsWithMusics = { state.value.allPlaylists },
+            getAllPlaylistsWithMusics = ::getAllPlaylistsWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
         )
     }
+
+    private fun getAllPlaylistsWithMusics(): List<PlaylistWithMusics> =
+        (state.value as? SelectedPlaylistState.Data)?.allPlaylists ?: emptyList()
 
     fun consumeNavigation() {
         _navigationState.value = SelectedPlaylistNavigationState.Idle
     }
 
     /**
-     * Handles events of the selected playlist screen.
-     */
-    fun onEvent(event: SelectedPlaylistEvent) {
-        when(event) {
-            is SelectedPlaylistEvent.SetSelectedPlaylist -> setSelectedPlaylist(playlistId = event.playlistId)
-            is SelectedPlaylistEvent.AddNbPlayed -> incrementNbPlayed(playlistId = event.playlistId)
-        }
-    }
-
-    /**
      * Set the selected playlist.
      */
-    private fun setSelectedPlaylist(playlistId: UUID) {
+    fun init(playlistId: UUID) {
         state = combine(
-            getPlaylistWithMusicsUseCase(playlistId = playlistId),
-            _playlists
-        ) { playlist, playlists ->
-            state.value.copy(
-                playlistWithMusics = playlist,
-                allPlaylists = playlists
-            )
+            _playlists,
+            getPlaylistWithMusicsUseCase(playlistId),
+        ) { allPlaylists, playlistWithMusics ->
+            when {
+                playlistWithMusics == null -> SelectedPlaylistState.Loading
+                else -> SelectedPlaylistState.Data(
+                    playlistDetail = playlistWithMusics.toPlaylistDetail(),
+                    allPlaylists = allPlaylists,
+                )
+            }
         }.stateIn(
-            screenModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            SelectedPlaylistState()
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = SelectedPlaylistState.Loading
         )
     }
 
-    /**
-     * Increment by one the number of time a playlist was played.
-     */
-    private fun incrementNbPlayed(playlistId: UUID) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val playlist: Playlist = getPlaylistUseCase(playlistId = playlistId).first() ?: return@launch
-            upsertPlaylistUseCase(
-                playlist = playlist.copy(
-                    nbPlayed = playlist.nbPlayed + 1,
-                )
-            )
+    override fun onEdit() {
+        _navigationState.value = SelectedPlaylistNavigationState.ToEdit
+    }
+
+    override fun onUpdateNbPlayed(musicId: UUID) {
+        screenModelScope.launch {
+            updateMusicNbPlayedUseCase(musicId = musicId)
+        }
+    }
+
+    override fun onUpdateNbPlayed() {
+        screenModelScope.launch {
+            val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
+                ?: return@launch
+            updatePlaylistNbPlayedUseCase(playlistId = playlistId)
         }
     }
 }

@@ -7,10 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
@@ -22,11 +19,11 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.events.MusicEvent
-import com.github.enteraname74.soulsearching.domain.model.MonthMusicList
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
-import com.github.enteraname74.soulsearching.domain.model.MusicFolder
+import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderUseCase
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.domain.utils.Utils
+import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
@@ -51,7 +48,11 @@ class AllMusicsViewModel(
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+    imageCoverRetriever: ImageCoverRetriever,
+    getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
+    getAllMusicFolderUseCase: GetAllMusicFolderUseCase
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+
     var currentPage by mutableStateOf<ElementEnum?>(null)
     private val _sortType = MutableStateFlow(
         settings.getInt(
@@ -83,19 +84,33 @@ class AllMusicsViewModel(
         ArrayList()
     )
 
+    @Suppress("UNCHECKED_CAST")
     val state = combine(
         _musics,
         _sortType,
         _sortDirection,
-        getAllPlaylistWithMusicsUseCase()
-    ) { musics, sortType, sortDirection, playlists ->
+        getAllPlaylistWithMusicsUseCase(),
+        imageCoverRetriever.allCovers,
+        getAllMonthMusicUseCase(),
+        getAllMusicFolderUseCase(),
+    ) {
+
+        val musics = it[0] as List<Music>
+        val sortType = it[1] as Int
+        val sortDirection = it[2] as Int
+        val playlists = it[3] as List<PlaylistWithMusics>
+        val allCovers = it[4] as List<ImageCover>
+        val allMonthMusics = it[5] as List<MonthMusics>
+        val allMusicFolders = it[6] as List<MusicFolder>
+
         AllMusicsState(
             musics = musics,
             sortType = sortType,
             sortDirection = sortDirection,
             allPlaylists = playlists,
-            monthMusics = buildMonthMusics(allMusics = musics),
-            folderMusics = buildMusicFolders(allMusics = musics)
+            monthMusics = allMonthMusics,
+            folderMusics = allMusicFolders,
+            allCovers = allCovers,
         )
     }.stateIn(
         screenModelScope,
@@ -129,32 +144,6 @@ class AllMusicsViewModel(
             getAllPlaylistsWithMusics = { state.value.allPlaylists },
             onModifyMusic = { _navigationState.value = AllMusicsNavigationState.ToModifyMusic(it) }
         )
-    }
-
-    /**
-     * Build a list of music folders.
-     */
-    private fun buildMusicFolders(allMusics: List<Music>): List<MusicFolder> {
-        return allMusics.groupBy { it.folder }.entries.map { (folder, musics) ->
-            MusicFolder(
-                path = folder,
-                musics = musics,
-                coverId = musics.firstOrNull { it.coverId != null }?.coverId
-            )
-        }
-    }
-
-    /**
-     * Build a list of month musics.
-     */
-    private fun buildMonthMusics(allMusics: List<Music>): List<MonthMusicList> {
-        return allMusics.groupBy { Utils.getMonthAndYearOfDate(date = it.addedDate) }.entries.map { (date, musics) ->
-            MonthMusicList(
-                month = date,
-                musics = musics,
-                coverId = musics.firstOrNull { it.coverId != null }?.coverId
-            )
-        }
     }
 
     /**

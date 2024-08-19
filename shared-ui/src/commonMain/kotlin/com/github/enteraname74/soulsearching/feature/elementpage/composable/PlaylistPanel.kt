@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.composable
+package com.github.enteraname74.soulsearching.feature.elementpage.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,14 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistType
 
 @Composable
 fun PlaylistPanel(
-    editAction: () -> Unit,
+    editAction: (() -> Unit)?,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    playlistType: PlaylistType,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
@@ -35,7 +33,6 @@ fun PlaylistPanel(
             editAction = editAction,
             shuffleAction = shuffleAction,
             searchAction = searchAction,
-            playlistType = playlistType,
             tint = tint,
             primaryColor = secondaryColor
         )

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulImage
+import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -92,7 +92,7 @@ fun PlayerMusicCover(
                     pageSpacing = 120.dp
                 ) { currentSongPos ->
 
-                    SoulImage(
+                    SoulBitmapImage(
                         modifier = imageModifier,
                         bitmap =
                         retrieveCoverMethod(aroundSongs.getOrNull(currentSongPos)?.coverId),
@@ -102,7 +102,7 @@ fun PlayerMusicCover(
                     )
                 }
             } else {
-                SoulImage(
+                SoulBitmapImage(
                     modifier = imageModifier,
                     bitmap =
                     retrieveCoverMethod(playbackManager.currentMusic?.coverId),

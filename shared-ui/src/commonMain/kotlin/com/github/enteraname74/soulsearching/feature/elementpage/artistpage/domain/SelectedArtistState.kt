@@ -2,13 +2,18 @@ package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.dom
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetail
 
 /**
  * State for managing a selected artist.
  */
-data class SelectedArtistState(
-    val artistWithMusics: ArtistWithMusics = ArtistWithMusics(),
-    val artistAlbums: List<Album> = emptyList(),
-    val allPlaylists: List<PlaylistWithMusics> = emptyList(),
-)
+sealed interface SelectedArtistState {
+    data object Loading : SelectedArtistState
+    data class Data(
+        val playlistDetail: PlaylistDetail,
+        val artistAlbums: List<Album>,
+        val allPlaylists: List<PlaylistWithMusics>,
+    ): SelectedArtistState
+}

@@ -4,7 +4,6 @@ package com.github.enteraname74.soulsearching.feature.player.presentation
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -16,9 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.*
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
@@ -44,7 +42,6 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.ranges.coerceIn
@@ -54,12 +51,10 @@ import kotlin.ranges.coerceIn
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
     playerViewModel: PlayerViewModel,
-    coverList: ArrayList<ImageCover>,
     playbackManager: PlaybackManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -111,6 +106,7 @@ fun PlayerDraggableView(
         targetValue = when (playerViewManager.currentValue) {
             BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
             BottomSheetStates.EXPANDED -> {
+                println("COVER: ${state.currentMusicCover}")
                 if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && state.currentMusicCover != null) {
                     Color.White
                 } else {
@@ -322,7 +318,7 @@ fun PlayerDraggableView(
                             playerViewModel.showMusicBottomSheet(it)
                         }
                     },
-                    retrieveCoverMethod = retrieveCoverMethod,
+                    retrieveCoverMethod = state.allCovers::getFromCoverId,
                     imageSize = imageSize,
                     horizontalPadding = imageHorizontalPadding,
                     topPadding = imageTopPadding,
@@ -403,7 +399,7 @@ fun PlayerDraggableView(
                                     min = MinPlayerSidePanelWidth,
                                     max = MaxPlayerSidePanelWidth,
                                 ),
-                            coverList = coverList,
+                            retrieveCoverMethod = state.allCovers::getFromCoverId,
                             playerState = state,
                             onSelectedMusic = playerViewModel::showMusicBottomSheet,
                             onRetrieveLyrics = {
@@ -434,7 +430,7 @@ fun PlayerDraggableView(
                     maxHeight = maxHeight,
                     playerState = state,
                     onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                    coverList = coverList,
+                    retrieveCoverMethod = state.allCovers::getFromCoverId,
                     onRetrieveLyrics = {
                         playerViewModel.onEvent(
                             PlayerEvent.GetLyrics
@@ -461,7 +457,7 @@ fun PlayerDraggableView(
                             .width(
                                 this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
                             ),
-                        coverList = coverList,
+                        retrieveCoverMethod = state.allCovers::getFromCoverId,
                         playerState = state,
                         onSelectedMusic = playerViewModel::showMusicBottomSheet,
                         onRetrieveLyrics = {

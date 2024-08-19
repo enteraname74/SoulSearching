@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -27,7 +28,7 @@ import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsComposable
-import com.github.enteraname74.soulsearching.feature.coversprovider.AllImageCoversViewModel
+import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
@@ -38,7 +39,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
@@ -46,23 +46,23 @@ fun SoulSearchingApplication(
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
+    imageCoverRetriever : ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
 ) {
     val allMusicsViewModel = injectElement<AllMusicsViewModel>()
-    val allImageCoversViewModel = injectElement<AllImageCoversViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val musicState by allMusicsViewModel.state.collectAsState()
-    val coversState by allImageCoversViewModel.state.collectAsState()
+    val allImages by imageCoverRetriever.allCovers.collectAsState()
 
     SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
-    playbackManager.retrieveCoverMethod = allImageCoversViewModel::getImageCover
+    playbackManager.retrieveCoverMethod = allImages::getFromCoverId
 
-    if (coversState.covers.isNotEmpty() && !mainActivityViewModel.cleanImagesLaunched) {
+    if (musicState.allCovers.isNotEmpty() && !mainActivityViewModel.cleanImagesLaunched) {
         LaunchedEffect("Covers check") {
             CoroutineScope(Dispatchers.IO).launch {
-                for (cover in coversState.covers) {
-                    allImageCoversViewModel.deleteImageIfNotUsed(cover.coverId)
+                for (cover in musicState.allCovers) {
+                    imageCoverRetriever.deleteImageIfNotUsed(cover.coverId)
                 }
             }
 
