@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -44,8 +45,6 @@ fun PlayerTopInformation(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
-    subTextColor: Color,
-    textColor: Color,
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     onTopInformationHeightChange: (Int) -> Unit,
@@ -78,7 +77,7 @@ fun PlayerTopInformation(
                         )
                     }
                 },
-            colorFilter = ColorFilter.tint(textColor),
+            colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
         )
         Column(
             modifier = Modifier
@@ -92,7 +91,7 @@ fun PlayerTopInformation(
         ) {
             Text(
                 text = state.currentMusic?.name.orEmpty(),
-                color = textColor,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
                 fontSize = 18.sp,
@@ -108,7 +107,7 @@ fun PlayerTopInformation(
             ) {
                 Text(
                     text = state.currentMusic?.artist?.formatTextForEllipsis().orEmpty(),
-                    color = subTextColor,
+                    color = SoulSearchingColorTheme.colorScheme.subText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,
@@ -136,12 +135,12 @@ fun PlayerTopInformation(
                 )
                 Text(
                     text = " | ",
-                    color = subTextColor,
+                    color = SoulSearchingColorTheme.colorScheme.subText,
                     fontSize = 15.sp,
                 )
                 Text(
                     text = state.currentMusic?.album?.formatTextForEllipsis().orEmpty(),
-                    color = subTextColor,
+                    color = SoulSearchingColorTheme.colorScheme.subText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,
@@ -175,7 +174,7 @@ fun PlayerTopInformation(
                 modifier = Modifier
                     .size(UiConstants.ImageSize.medium)
                     .clickable { onShowPanel() },
-                colorFilter = ColorFilter.tint(textColor),
+                colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
             )
         } else {
             Spacer(

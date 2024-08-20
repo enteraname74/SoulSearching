@@ -17,8 +17,7 @@ import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDele
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
@@ -249,9 +248,7 @@ class PlayerViewModel(
                 currentMusicCover = cover
             )
         }
-        colorThemeManager.currentColorPalette = ColorPaletteUtils.getPaletteFromAlbumArt(
-            image = cover
-        )
+        colorThemeManager.setCurrentCover(cover = cover)
     }
 
     /**

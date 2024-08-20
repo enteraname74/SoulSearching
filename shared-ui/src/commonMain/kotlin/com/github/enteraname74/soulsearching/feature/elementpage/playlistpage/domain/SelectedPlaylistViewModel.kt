@@ -37,7 +37,28 @@ class SelectedPlaylistViewModel(
     private val _playlistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = flowOf<SelectedPlaylistState>().stateIn(
+    var state = _playlistId.flatMapLatest { playlistId ->
+        if (playlistId == null) {
+            flowOf(SelectedPlaylistState.Loading)
+        } else {
+            combine(
+                _playlists,
+                getPlaylistWithMusicsUseCase(playlistId),
+            ) { allPlaylists, playlistWithMusics ->
+                when {
+                    playlistWithMusics == null -> SelectedPlaylistState.Loading
+                    else -> SelectedPlaylistState.Data(
+                        playlistDetail = playlistWithMusics.toPlaylistDetail(),
+                        allPlaylists = allPlaylists,
+                    )
+                }
+            }.stateIn(
+                scope = screenModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = SelectedPlaylistState.Loading
+            )
+        }
+    }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SelectedPlaylistState.Loading
@@ -79,22 +100,7 @@ class SelectedPlaylistViewModel(
      * Set the selected playlist.
      */
     fun init(playlistId: UUID) {
-        state = combine(
-            _playlists,
-            getPlaylistWithMusicsUseCase(playlistId),
-        ) { allPlaylists, playlistWithMusics ->
-            when {
-                playlistWithMusics == null -> SelectedPlaylistState.Loading
-                else -> SelectedPlaylistState.Data(
-                    playlistDetail = playlistWithMusics.toPlaylistDetail(),
-                    allPlaylists = allPlaylists,
-                )
-            }
-        }.stateIn(
-            scope = screenModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = SelectedPlaylistState.Loading
-        )
+        _playlistId.value = playlistId
     }
 
     override fun onEdit() {

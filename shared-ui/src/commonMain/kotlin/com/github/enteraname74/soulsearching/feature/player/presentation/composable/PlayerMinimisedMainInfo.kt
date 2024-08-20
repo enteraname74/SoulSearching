@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.MinimisedPlayerControlsComposable
@@ -24,7 +25,6 @@ fun PlayerMinimisedMainInfo(
     imageSize: Dp,
     playerViewManager: PlayerViewManager = injectElement(),
     currentMusic: Music?,
-    textColor: Color,
     isPlaying: Boolean,
     alphaTransition: Float,
 ) {
@@ -49,7 +49,7 @@ fun PlayerMinimisedMainInfo(
         ) {
             Text(
                 text = currentMusic?.name.orEmpty(),
-                color = textColor,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 textAlign = TextAlign.Start,
                 fontSize = 15.sp,
@@ -57,7 +57,7 @@ fun PlayerMinimisedMainInfo(
             )
             Text(
                 text = currentMusic?.artist.orEmpty(),
-                color = textColor,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 fontSize = 12.sp,
                 maxLines = 1,
                 textAlign = TextAlign.Start,

@@ -23,7 +23,8 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.*
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -41,6 +42,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols.ExpandedPlayerControlsComposable
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -68,6 +70,9 @@ fun PlayerDraggableView(
     val navigationState by playerViewModel.navigationState.collectAsState()
     val addToPlaylistBottomSheet by playerViewModel.addToPlaylistBottomSheet.collectAsState()
 
+    val playerColorTheme by colorThemeManager.playerColorTheme.collectAsState()
+    val colorThemeSettings by colorThemeManager.currentColorThemeSettings.collectAsState()
+
     bottomSheetState?.BottomSheet()
     dialogState?.Dialog()
     addToPlaylistBottomSheet?.BottomSheet()
@@ -84,120 +89,6 @@ fun PlayerDraggableView(
             }
         }
     }
-
-
-    val backgroundColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.secondary
-            BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = colorThemeManager.currentColorPalette?.rgb
-                    )
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.primary
-                }
-            }
-        },
-        tween(UiConstants.AnimationDuration.normal),
-        label = "BACKGROUND_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-    val textColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.onPrimary
-            BottomSheetStates.EXPANDED -> {
-                println("COVER: ${state.currentMusicCover}")
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && state.currentMusicCover != null) {
-                    Color.White
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.onPrimary
-                }
-            }
-        },
-        tween(UiConstants.AnimationDuration.normal),
-        label = "TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-
-    val subTextColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.subText
-            BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn() && state.currentMusicCover != null) {
-                    Color.LightGray
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.subText
-                }
-            }
-        },
-        tween(UiConstants.AnimationDuration.normal),
-        label = "SUB_TEXT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-
-
-    val contentColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.COLLAPSED, BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
-            BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = colorThemeManager.currentColorPalette?.rgb
-                    )
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.secondary
-                }
-            }
-        },
-        tween(UiConstants.AnimationDuration.normal),
-        label = "CONTENT_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-
-    val statusBarColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.MINIMISED, BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
-            BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicPrimaryColor(
-                        baseColor = colorThemeManager.currentColorPalette?.rgb
-                    )
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.primary
-                }
-            }
-        },
-        tween(UiConstants.AnimationDuration.normal),
-        label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-
-    val navigationBarColor: Color by animateColorAsState(
-        targetValue = when (playerViewManager.currentValue) {
-            BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
-            BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
-            BottomSheetStates.EXPANDED -> {
-                if (colorThemeManager.isPersonalizedDynamicPlayerThemeOn()) {
-                    ColorPaletteUtils.getDynamicSecondaryColor(
-                        baseColor = colorThemeManager.currentColorPalette?.rgb
-                    )
-                } else {
-                    SoulSearchingColorTheme.defaultTheme.secondary
-                }
-            }
-        }, tween(UiConstants.AnimationDuration.normal),
-        label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-    )
-
-    val isUsingDarkIcons = if (colorThemeManager.currentColorPalette == null
-        || !colorThemeManager.isPersonalizedDynamicPlayerThemeOn()
-    ) {
-        !isSystemInDarkTheme()
-    } else {
-        false
-    }
-
-    SoulSearchingContext.setSystemBarsColor(
-        statusBarColor = statusBarColor,
-        navigationBarColor = navigationBarColor,
-        isUsingDarkIcons = isUsingDarkIcons
-    )
 
     SoulBackHandler(playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         coroutineScope.launch {
@@ -237,108 +128,184 @@ fun PlayerDraggableView(
 
     val alphaTransition = getAlphaTransition()
 
-    Box(
-        modifier = Modifier
-            .offset {
-                IntOffset(
-                    x = 0,
-                    y = max(playerViewManager.offset.roundToInt(), 0)
-                )
-            }
-            .swipeable(
-                state = playerViewManager.playerDraggableState,
-                orientation = Orientation.Vertical,
-                anchors = mapOf(
-                    (maxHeight - PlayerHeight) to BottomSheetStates.MINIMISED,
-                    maxHeight to BottomSheetStates.COLLAPSED,
-                    0f to BottomSheetStates.EXPANDED
-                )
-            )
+    CompositionLocalProvider(
+        LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme)
     ) {
 
+        val statusBarColor: Color by animateColorAsState(
+            targetValue = SoulSearchingColorTheme.colorScheme.primary,
+            tween(UiConstants.AnimationDuration.normal),
+            label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
+        )
+
+        val navigationBarColor: Color by animateColorAsState(
+            targetValue = when (playerViewManager.currentValue) {
+                BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
+                BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
+                BottomSheetStates.EXPANDED -> {
+                    if (!PlayerUiUtils.canShowSidePanel()) {
+                        SoulSearchingColorTheme.colorScheme.secondary
+                    } else {
+                        SoulSearchingColorTheme.colorScheme.primary
+                    }
+                }
+            }, tween(UiConstants.AnimationDuration.normal),
+            label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
+        )
+
+        val isUsingDarkIcons = if (state.currentMusicCover == null
+            || !colorThemeSettings.canShowDynamicPlayerTheme()
+        ) {
+            !isSystemInDarkTheme()
+        } else {
+            false
+        }
+
+        SoulSearchingContext.setSystemBarsColor(
+            statusBarColor = statusBarColor,
+            navigationBarColor = navigationBarColor,
+            isUsingDarkIcons = isUsingDarkIcons
+        )
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(color = backgroundColor)
-                .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
-                    coroutineScope.launch {
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                        )
-                    }
+                .offset {
+                    IntOffset(
+                        x = 0,
+                        y = max(playerViewManager.offset.roundToInt(), 0)
+                    )
                 }
-                .align(Alignment.TopStart)
+                .swipeable(
+                    state = playerViewManager.playerDraggableState,
+                    orientation = Orientation.Vertical,
+                    anchors = mapOf(
+                        (maxHeight - PlayerHeight) to BottomSheetStates.MINIMISED,
+                        maxHeight to BottomSheetStates.COLLAPSED,
+                        0f to BottomSheetStates.EXPANDED
+                    )
+                )
         ) {
-
-            val imageSize = getImageSize()
-            var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
-
-            PlayerTopInformation(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopStart),
-                alphaTransition = alphaTransition,
-                state = state,
-                playerViewModel = playerViewModel,
-                textColor = textColor,
-                subTextColor = subTextColor,
-                navigateToArtist = navigateToArtist,
-                navigateToAlbum = navigateToAlbum,
-                onTopInformationHeightChange = { height ->
-                    playerTopInformationHeight = height
-                },
-                onShowPanel = if (!PlayerUiUtils.canShowSidePanel()) {
-                    {
+                    .fillMaxSize()
+                    .background(
+                        color = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                            SoulSearchingColorTheme.colorScheme.primary
+                        } else {
+                            SoulSearchingColorTheme.colorScheme.secondary
+                        }
+                    )
+                    .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
                         coroutineScope.launch {
-                            playerMusicListViewManager.animateTo(
+                            playerViewManager.animateTo(
                                 newState = BottomSheetStates.EXPANDED,
                             )
                         }
                     }
-                } else {
-                    null
-                }
-            )
+                    .align(Alignment.TopStart)
+            ) {
 
-            val playerControlsWidth: Dp = getPlayerControlsWidth(
-                imageSize = imageSize,
-            )
-            val imageHorizontalPadding = getImageHorizontalPadding(imageSize)
-            val imageTopPadding = getImageTopPadding(
-                expandedMainInformationHeight = playerTopInformationHeight,
-                imageSize = imageSize,
-            )
-            val fullImageSize = imageSize + (imageHorizontalPadding * 2)
-            Column {
-                val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
+                val imageSize = getImageSize()
+                var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
 
-                PlayerMusicCover(
-                    onLongClick = {
-                        state.currentMusic?.let {
-                            playerViewModel.showMusicBottomSheet(it)
-                        }
+                PlayerTopInformation(
+                    modifier = Modifier
+                        .align(Alignment.TopStart),
+                    alphaTransition = alphaTransition,
+                    state = state,
+                    playerViewModel = playerViewModel,
+                    navigateToArtist = navigateToArtist,
+                    navigateToAlbum = navigateToAlbum,
+                    onTopInformationHeightChange = { height ->
+                        playerTopInformationHeight = height
                     },
-                    retrieveCoverMethod = state.allCovers::getFromCoverId,
-                    imageSize = imageSize,
-                    horizontalPadding = imageHorizontalPadding,
-                    topPadding = imageTopPadding,
+                    onShowPanel = if (
+                        !PlayerUiUtils.canShowSidePanel()
+                        && PlayerUiUtils.getDraggablePanelCollapsedOffset() == 0f
+                        ) {
+                        {
+                            coroutineScope.launch {
+                                playerMusicListViewManager.animateTo(
+                                    newState = BottomSheetStates.EXPANDED,
+                                )
+                            }
+                        }
+                    } else {
+                        null
+                    }
                 )
 
-                if (!PlayerUiUtils.canShowRowControlPanel()) {
-                    Box(
-                        modifier = Modifier
-                            .padding(
-                                top = PlayerControlsTopPadding,
+                val playerControlsWidth: Dp = getPlayerControlsWidth(
+                    imageSize = imageSize,
+                )
+                val imageHorizontalPadding = getImageHorizontalPadding(imageSize)
+                val imageTopPadding = getImageTopPadding(
+                    expandedMainInformationHeight = playerTopInformationHeight,
+                    imageSize = imageSize,
+                )
+                val fullImageSize = imageSize + (imageHorizontalPadding * 2)
+                Column {
+                    val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
+
+                    PlayerMusicCover(
+                        onLongClick = {
+                            state.currentMusic?.let {
+                                playerViewModel.showMusicBottomSheet(it)
+                            }
+                        },
+                        retrieveCoverMethod = state.allCovers::getFromCoverId,
+                        imageSize = imageSize,
+                        horizontalPadding = imageHorizontalPadding,
+                        topPadding = imageTopPadding,
+                    )
+
+                    if (!PlayerUiUtils.canShowRowControlPanel()) {
+                        Box(
+                            modifier = Modifier
+                                .padding(
+                                    top = getTopInformationBottomPadding(),
+                                )
+                                .width(controlsBoxWidth),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ExpandedPlayerControlsComposable(
+                                modifier = Modifier
+                                    .width(playerControlsWidth)
+                                    .alpha(alphaTransition),
+                                onSetFavoriteState = {
+                                    playerViewModel.onEvent(
+                                        PlayerEvent.ToggleFavoriteState
+                                    )
+                                },
+                                isMusicInFavorite = state.isCurrentMusicInFavorite,
+                                currentMusicPosition = state.currentMusicPosition,
+                                playerMode = state.playerMode,
+                                isPlaying = state.isPlaying
                             )
-                            .width(controlsBoxWidth),
-                        contentAlignment = Alignment.Center,
+                        }
+                    }
+                }
+
+                if (PlayerUiUtils.canShowRowControlPanel()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                start = fullImageSize,
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         ExpandedPlayerControlsComposable(
                             modifier = Modifier
-                                .width(playerControlsWidth)
-                                .alpha(alphaTransition),
-                            contentColor = textColor,
-                            sliderInactiveBarColor = contentColor,
+                                .weight(
+                                    weight = 1f,
+                                    fill = false,
+                                )
+                                .alpha(alphaTransition)
+                                .padding(
+                                    horizontal = UiConstants.Spacing.medium,
+                                ),
                             onSetFavoriteState = {
                                 playerViewModel.onEvent(
                                     PlayerEvent.ToggleFavoriteState
@@ -349,55 +316,76 @@ fun PlayerDraggableView(
                             playerMode = state.playerMode,
                             isPlaying = state.isPlaying
                         )
+
+                        if (PlayerUiUtils.canShowSidePanel()) {
+                            PlayerPanelContent(
+                                modifier = Modifier
+                                    .padding(
+                                        top = imageTopPadding,
+                                        start = UiConstants.Spacing.medium,
+                                    )
+                                    .alpha(alphaTransition)
+                                    .weight(1f)
+                                    .widthIn(
+                                        min = MinPlayerSidePanelWidth,
+                                        max = MaxPlayerSidePanelWidth,
+                                    ),
+                                retrieveCoverMethod = state.allCovers::getFromCoverId,
+                                playerState = state,
+                                onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                                onRetrieveLyrics = {
+                                    playerViewModel.onEvent(
+                                        PlayerEvent.GetLyrics,
+                                    )
+                                },
+                                primaryColor = SoulSearchingColorTheme.colorScheme.primary,
+                                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                subTextColor = SoulSearchingColorTheme.colorScheme.subText,
+                                isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                            )
+                        }
                     }
                 }
-            }
 
-            if (PlayerUiUtils.canShowRowControlPanel()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            start = fullImageSize,
-                        ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    ExpandedPlayerControlsComposable(
-                        modifier = Modifier
-                            .weight(
-                                weight = 1f,
-                                fill = false,
-                            )
-                            .alpha(alphaTransition)
-                            .padding(
-                                horizontal = UiConstants.Spacing.medium,
-                            ),
-                        contentColor = textColor,
-                        sliderInactiveBarColor = contentColor,
-                        onSetFavoriteState = {
+                PlayerMinimisedMainInfo(
+                    imageSize = imageSize,
+                    currentMusic = state.currentMusic,
+                    isPlaying = state.isPlaying,
+                    alphaTransition = 1f - alphaTransition,
+                )
+
+
+                if (!PlayerUiUtils.canShowSidePanel()) {
+                    PlayerPanelDraggableView(
+                        maxHeight = maxHeight,
+                        playerState = state,
+                        onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                        retrieveCoverMethod = state.allCovers::getFromCoverId,
+                        onRetrieveLyrics = {
                             playerViewModel.onEvent(
-                                PlayerEvent.ToggleFavoriteState
+                                PlayerEvent.GetLyrics
                             )
                         },
-                        isMusicInFavorite = state.isCurrentMusicInFavorite,
-                        currentMusicPosition = state.currentMusicPosition,
-                        playerMode = state.playerMode,
-                        isPlaying = state.isPlaying
+                        secondaryColor = SoulSearchingColorTheme.colorScheme.secondary,
+                        primaryColor = SoulSearchingColorTheme.colorScheme.primary,
+                        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        subTextColor = SoulSearchingColorTheme.colorScheme.subText,
                     )
-
-                    if (PlayerUiUtils.canShowSidePanel()) {
+                } else if (!PlayerUiUtils.canShowRowControlPanel()){
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .padding(
+                                top = imageTopPadding,
+                                start = UiConstants.Spacing.medium,
+                            )
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopEnd,
+                    ) {
                         PlayerPanelContent(
                             modifier = Modifier
-                                .padding(
-                                    top = imageTopPadding,
-                                    start = UiConstants.Spacing.medium,
-                                )
                                 .alpha(alphaTransition)
-                                .weight(1f)
-                                .widthIn(
-                                    min = MinPlayerSidePanelWidth,
-                                    max = MaxPlayerSidePanelWidth,
+                                .width(
+                                    this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
                                 ),
                             retrieveCoverMethod = state.allCovers::getFromCoverId,
                             playerState = state,
@@ -407,69 +395,12 @@ fun PlayerDraggableView(
                                     PlayerEvent.GetLyrics,
                                 )
                             },
-                            primaryColor = contentColor,
-                            contentColor = textColor,
-                            subTextColor = subTextColor,
+                            primaryColor = SoulSearchingColorTheme.colorScheme.primary,
+                            contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            subTextColor = SoulSearchingColorTheme.colorScheme.subText,
                             isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                         )
                     }
-                }
-            }
-
-            PlayerMinimisedMainInfo(
-                imageSize = imageSize,
-                currentMusic = state.currentMusic,
-                textColor = textColor,
-                isPlaying = state.isPlaying,
-                alphaTransition = 1f - alphaTransition,
-            )
-
-
-            if (!PlayerUiUtils.canShowSidePanel()) {
-                PlayerPanelDraggableView(
-                    maxHeight = maxHeight,
-                    playerState = state,
-                    onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                    retrieveCoverMethod = state.allCovers::getFromCoverId,
-                    onRetrieveLyrics = {
-                        playerViewModel.onEvent(
-                            PlayerEvent.GetLyrics
-                        )
-                    },
-                    secondaryColor = contentColor,
-                    primaryColor = backgroundColor,
-                    contentColor = textColor,
-                    subTextColor = subTextColor
-                )
-            } else if (!PlayerUiUtils.canShowRowControlPanel()){
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .padding(
-                            top = imageTopPadding,
-                            start = UiConstants.Spacing.medium,
-                        )
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.TopEnd,
-                ) {
-                    PlayerPanelContent(
-                        modifier = Modifier
-                            .alpha(alphaTransition)
-                            .width(
-                                this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
-                            ),
-                        retrieveCoverMethod = state.allCovers::getFromCoverId,
-                        playerState = state,
-                        onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                        onRetrieveLyrics = {
-                            playerViewModel.onEvent(
-                                PlayerEvent.GetLyrics,
-                            )
-                        },
-                        primaryColor = contentColor,
-                        contentColor = textColor,
-                        subTextColor = subTextColor,
-                        isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
-                    )
                 }
             }
         }
@@ -562,13 +493,18 @@ private fun getImageTopPadding(
         getImageTopPaddingForColumnView(expandedMainInformationHeight)
     }
 
+@Composable
+private fun getTopInformationBottomPadding(): Dp {
+    val maxHeight: Dp = rememberWindowHeightDp()
+    return maxHeight / 20
+}
 
 @Composable
 private fun getImageTopPaddingForColumnView(
     expandedMainInformationHeight: Int
 ): Dp {
 
-    val mainInfoHeightDp: Dp = expandedMainInformationHeight.toDp() + TopInformationBottomPadding
+    val mainInfoHeightDp: Dp = expandedMainInformationHeight.toDp() + getTopInformationBottomPadding()
 
     val ratio = getTransitionRatio()
     val alpha = 1f - ratio
@@ -615,8 +551,6 @@ private val MinImageSize: Dp = 55.dp
 private val MinImagePaddingStart: Dp = 4.dp
 private val MinImagePaddingTop: Dp = 4.dp
 
-private val TopInformationBottomPadding: Dp = 40.dp
-private val PlayerControlsTopPadding: Dp = 40.dp
 private val PlayerControlsExtraWidth: Dp = 25.dp
 
 private val MinPlayerSidePanelWidth: Dp = 50.dp

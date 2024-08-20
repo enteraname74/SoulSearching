@@ -136,7 +136,6 @@ class MusicBottomSheetDelegateImpl(
         selectedMusic: Music,
         currentPlaylist: Playlist?,
     ) {
-        println("SHOW BOTTOM")
         setBottomSheetState(
             MusicBottomSheet(
                 musicBottomSheetState = musicBottomSheetState,

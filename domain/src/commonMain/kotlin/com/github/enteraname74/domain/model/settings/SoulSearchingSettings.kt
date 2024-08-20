@@ -1,4 +1,7 @@
-package com.github.enteraname74.domain.model
+package com.github.enteraname74.domain.model.settings
+
+import com.github.enteraname74.domain.model.PlayerMode
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
@@ -51,6 +54,54 @@ interface SoulSearchingSettings {
         currentMusicIndex: Int,
         currentMusicPosition: Int
     )
+
+    fun <DataType>updateFlowValue(key: String) {
+        SettingsFlowSystem.update<DataType>(key = key)
+    }
+
+    fun getFlowOn(key: String, defaultValue: Int): Flow<Int> {
+        val settingFlowInformation = SettingFlowInformation(
+            key = key,
+            retrieveValue = { getInt(key, defaultValue) }
+        )
+        val returnedFlow: SettingFlowInformation<Int> = SettingsFlowSystem.addFlowIfNotExist(
+            settingFlowInformation = settingFlowInformation,
+        )
+        return returnedFlow.flow
+    }
+
+    fun getFlowOn(key: String, defaultValue: String): Flow<String> {
+        val settingFlowInformation = SettingFlowInformation(
+            key = key,
+            retrieveValue = { getString(key, defaultValue) }
+        )
+        val returnedFlow: SettingFlowInformation<String> = SettingsFlowSystem.addFlowIfNotExist(
+            settingFlowInformation = settingFlowInformation,
+        )
+        return returnedFlow.flow
+    }
+
+    fun getFlowOn(key: String, defaultValue: Boolean): Flow<Boolean> {
+        val settingFlowInformation = SettingFlowInformation(
+            key = key,
+            retrieveValue = { getBoolean(key, defaultValue) }
+        )
+        val returnedFlow: SettingFlowInformation<Boolean> = SettingsFlowSystem.addFlowIfNotExist(
+            settingFlowInformation = settingFlowInformation,
+        )
+        return returnedFlow.flow
+    }
+
+    fun getPlayerModeAsFlow(): Flow<PlayerMode> {
+        val settingFlowInformation = SettingFlowInformation(
+            key = PLAYER_MODE_KEY,
+            retrieveValue = { getPlayerMode() }
+        )
+        val returnedFlow: SettingFlowInformation<PlayerMode> = SettingsFlowSystem.addFlowIfNotExist(
+            settingFlowInformation = settingFlowInformation,
+        )
+        return returnedFlow.flow
+    }
 
     companion object {
         const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"

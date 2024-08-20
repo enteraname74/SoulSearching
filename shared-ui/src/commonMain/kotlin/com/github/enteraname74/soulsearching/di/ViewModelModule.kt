@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.di
 
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.domain.SelectedArtistViewModel
@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylis
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -24,9 +25,10 @@ internal val viewModelModule: Module = module {
     // Settings
     factoryOf(::SettingsAddMusicsViewModel)
     factoryOf(::SettingsAllFoldersViewModel)
+    factoryOf(::SettingsColorThemeViewModel)
 
     // Main page
-    factoryOf(::AllMusicsViewModel)
+    singleOf(::AllMusicsViewModel)
     factoryOf(::AllAlbumsViewModel)
     factoryOf(::AllArtistsViewModel)
     factoryOf(::AllPlaylistsViewModel)

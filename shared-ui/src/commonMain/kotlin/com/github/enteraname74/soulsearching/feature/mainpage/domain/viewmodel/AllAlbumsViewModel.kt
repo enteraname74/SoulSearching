@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl

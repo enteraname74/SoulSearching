@@ -17,8 +17,11 @@ import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -30,6 +33,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
+import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -49,23 +53,13 @@ fun PlaylistScreen(
     val coroutineScope = rememberCoroutineScope()
     val imageState by imageCoverRetriever.allCovers.collectAsState()
 
-    var hasPlaylistPaletteBeenFetched by remember {
-        mutableStateOf(false)
-    }
-
-    val playlistDetailCover: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = playlistDetail.coverId)
+    val playlistImageBitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = playlistDetail.coverId)
         .collectAsState(initial = null)
 
-    playlistDetailCover.let {
-        if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOn()) {
-            colorThemeManager.setNewPlaylistCover(it)
-            hasPlaylistPaletteBeenFetched = true
-        }
-    }
-
-    if (!hasPlaylistPaletteBeenFetched && colorThemeManager.isPersonalizedDynamicPlaylistThemeOff()) {
-        colorThemeManager.forceBasicThemeForPlaylists = true
-        hasPlaylistPaletteBeenFetched = true
+    LaunchedEffect(playlistImageBitmap) {
+        colorThemeManager.setNewPlaylistCover(
+            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(imageBitmap = playlistImageBitmap)
+        )
     }
 
     SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
@@ -87,74 +81,80 @@ fun PlaylistScreen(
         }
     }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.primary)
+    val playlistPalette: SoulSearchingPalette by colorThemeManager.playlistsColorTheme.collectAsState()
+
+    CompositionLocalProvider(
+        LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette)
     ) {
-        val searchDraggableState = rememberSwipeableState(
-            initialValue = BottomSheetStates.COLLAPSED
-        )
-
-        val constraintsScope = this
-        val maxHeight = with(LocalDensity.current) {
-            constraintsScope.maxHeight.toPx()
-        }
-
-        val searchBarFocusRequester = remember { FocusRequester() }
-
-        val searchAction: () -> Unit = {
-            coroutineScope.launch {
-                searchDraggableState.animateTo(
-                    BottomSheetStates.EXPANDED,
-                    tween(UiConstants.AnimationDuration.normal)
-                )
-            }.invokeOnCompletion {
-                searchBarFocusRequester.requestFocus()
-            }
-        }
-
-        val windowSize = rememberWindowSize()
-        when {
-            windowSize != WindowSize.Small -> {
-                PlaylistRowView(
-                    navigateBack = navigateBack,
-                    shuffleAction = shuffleAction,
-                    searchAction = searchAction,
-                    onShowMusicBottomSheet = onShowMusicBottomSheet,
-                    playlistDetail = playlistDetail,
-                    playlistDetailListener = playlistDetailListener,
-                    optionalContent = optionalContent,
-                )
-            }
-            else -> {
-                PlaylistColumnView(
-                    navigateBack = navigateBack,
-                    shuffleAction = shuffleAction,
-                    searchAction = searchAction,
-                    onShowMusicBottomSheet = onShowMusicBottomSheet,
-                    playlistDetail = playlistDetail,
-                    playlistDetailListener = playlistDetailListener,
-                    optionalContent = optionalContent,
-                )
-            }
-        }
-
-        SearchView(
-            draggableState = searchDraggableState,
-            placeholder = strings.searchForMusics,
-            maxHeight = maxHeight,
-            focusRequester = searchBarFocusRequester
-        ) { searchText, focusManager ->
-            SearchMusics(
-                playerViewManager = playerViewManager,
-                searchText = searchText,
-                allMusics = playlistDetail.musics,
-                isMainPlaylist = false,
-                focusManager = focusManager,
-                retrieveCoverMethod = imageState::getFromCoverId,
-                onSelectedMusicForBottomSheet = onShowMusicBottomSheet
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(SoulSearchingColorTheme.colorScheme.primary)
+        ) {
+            val searchDraggableState = rememberSwipeableState(
+                initialValue = BottomSheetStates.COLLAPSED
             )
+
+            val constraintsScope = this
+            val maxHeight = with(LocalDensity.current) {
+                constraintsScope.maxHeight.toPx()
+            }
+
+            val searchBarFocusRequester = remember { FocusRequester() }
+
+            val searchAction: () -> Unit = {
+                coroutineScope.launch {
+                    searchDraggableState.animateTo(
+                        BottomSheetStates.EXPANDED,
+                        tween(UiConstants.AnimationDuration.normal)
+                    )
+                }.invokeOnCompletion {
+                    searchBarFocusRequester.requestFocus()
+                }
+            }
+
+            val windowSize = rememberWindowSize()
+            when {
+                windowSize != WindowSize.Small -> {
+                    PlaylistRowView(
+                        navigateBack = navigateBack,
+                        shuffleAction = shuffleAction,
+                        searchAction = searchAction,
+                        onShowMusicBottomSheet = onShowMusicBottomSheet,
+                        playlistDetail = playlistDetail,
+                        playlistDetailListener = playlistDetailListener,
+                        optionalContent = optionalContent,
+                    )
+                }
+                else -> {
+                    PlaylistColumnView(
+                        navigateBack = navigateBack,
+                        shuffleAction = shuffleAction,
+                        searchAction = searchAction,
+                        onShowMusicBottomSheet = onShowMusicBottomSheet,
+                        playlistDetail = playlistDetail,
+                        playlistDetailListener = playlistDetailListener,
+                        optionalContent = optionalContent,
+                    )
+                }
+            }
+
+            SearchView(
+                draggableState = searchDraggableState,
+                placeholder = strings.searchForMusics,
+                maxHeight = maxHeight,
+                focusRequester = searchBarFocusRequester
+            ) { searchText, focusManager ->
+                SearchMusics(
+                    playerViewManager = playerViewManager,
+                    searchText = searchText,
+                    allMusics = playlistDetail.musics,
+                    isMainPlaylist = false,
+                    focusManager = focusManager,
+                    retrieveCoverMethod = imageState::getFromCoverId,
+                    onSelectedMusicForBottomSheet = onShowMusicBottomSheet
+                )
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 
 class MainActivityViewModel(
     settings: SoulSearchingSettings

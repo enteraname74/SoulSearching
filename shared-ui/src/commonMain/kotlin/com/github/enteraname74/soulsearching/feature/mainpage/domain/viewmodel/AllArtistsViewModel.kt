@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
@@ -15,11 +15,8 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class AllArtistsViewModel(
     private val settings: SoulSearchingSettings,

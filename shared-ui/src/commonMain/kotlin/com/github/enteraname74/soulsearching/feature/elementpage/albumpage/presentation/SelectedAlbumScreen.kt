@@ -1,18 +1,20 @@
 package com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumState
 import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.elementpage.composable.PlaylistScreen
+import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import java.util.*
@@ -22,7 +24,7 @@ import java.util.*
  */
 data class SelectedAlbumScreen(
     private val selectedAlbumId: String,
-) : Screen {
+) : Screen, PlaylistDetailScreen {
     private val albumId: UUID = UUID.fromString(selectedAlbumId)
 
     @Composable
@@ -62,7 +64,7 @@ data class SelectedAlbumScreen(
             }
         }
 
-        var isAlbumFetched by remember {
+        var isAlbumFetched by rememberSaveable {
             mutableStateOf(false)
         }
 

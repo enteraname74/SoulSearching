@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.di
 
 import android.content.Context
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager

@@ -9,7 +9,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 object PlayerUiUtils {
-    private val minHeightForRowView: Dp = 400.dp
+    private val minHeightForRowView: Dp = 500.dp
 
     @Composable
     fun canShowRowControlPanel(): Boolean {

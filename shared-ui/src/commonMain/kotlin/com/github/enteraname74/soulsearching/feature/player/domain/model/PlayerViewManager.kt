@@ -5,6 +5,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Manages the view of the player draggable view.
@@ -14,6 +16,9 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 class PlayerViewManager {
     val playerDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
+
+    private val _state: MutableStateFlow<BottomSheetStates> = MutableStateFlow(BottomSheetStates.COLLAPSED)
+    val state = _state.asStateFlow()
 
     val currentValue: BottomSheetStates
         get() = playerDraggableState.currentValue
@@ -27,5 +32,9 @@ class PlayerViewManager {
             targetValue = newState,
             anim = tween(UiConstants.AnimationDuration.normal),
         )
+    }
+
+    fun updateState(newState: BottomSheetStates) {
+        _state.value = newState
     }
 }

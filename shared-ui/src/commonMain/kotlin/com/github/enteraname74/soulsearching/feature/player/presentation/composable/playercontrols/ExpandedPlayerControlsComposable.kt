@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -26,8 +27,6 @@ import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
 @Composable
 fun ExpandedPlayerControlsComposable(
     modifier: Modifier = Modifier,
-    contentColor: Color,
-    sliderInactiveBarColor: Color,
     onSetFavoriteState: () -> Unit,
     isMusicInFavorite: Boolean,
     currentMusicPosition: Int,
@@ -42,9 +41,9 @@ fun ExpandedPlayerControlsComposable(
 
         val interactionSource = remember { MutableInteractionSource() }
         val sliderColors = SliderDefaults.colors(
-            thumbColor = contentColor,
-            activeTrackColor = contentColor,
-            inactiveTrackColor = sliderInactiveBarColor
+            thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+            inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
         )
 
         Slider(
@@ -81,7 +80,7 @@ fun ExpandedPlayerControlsComposable(
         ) {
 
             SliderMusidPositionAndDuration(
-                contentColor = contentColor,
+                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                 currentMusicPosition = currentMusicPosition,
             )
 
@@ -90,7 +89,7 @@ fun ExpandedPlayerControlsComposable(
                 isPlaying = isPlaying,
                 isMusicInFavorite = isMusicInFavorite,
                 onSetFavoriteState = onSetFavoriteState,
-                contentColor = contentColor,
+                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         }
     }

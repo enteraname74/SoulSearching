@@ -1,19 +1,18 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 
 /**
  * Dynamic colors used in the application.
  */
 object SoulSearchingColorTheme {
-    var colorScheme by mutableStateOf(SoulSearchingPalette())
+    val colorScheme: SoulSearchingPalette
+        @Composable
+        get() = LocalColors.current
 
-    private val darkTheme = SoulSearchingPalette()
-    private val lightTheme = SoulSearchingPalette(
+    val darkTheme = SoulSearchingPalette()
+    val lightTheme = SoulSearchingPalette(
         primary = primaryColorLight,
         secondary = secondaryColorLight,
         onPrimary = textColorLight,
@@ -28,4 +27,9 @@ object SoulSearchingColorTheme {
         @Composable
         get() = if (isSystemInDarkTheme()) darkTheme else lightTheme
 
+    fun fromTheme(isInDarkTheme: Boolean): SoulSearchingPalette =
+        if (isInDarkTheme) darkTheme else lightTheme
+
 }
+
+val LocalColors = compositionLocalOf { SoulSearchingColorTheme.lightTheme }

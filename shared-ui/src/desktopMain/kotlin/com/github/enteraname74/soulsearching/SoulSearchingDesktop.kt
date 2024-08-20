@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
@@ -18,8 +16,8 @@ fun SoulSearchingDesktop() {
             modules(appModule)
         }
     ) {
-        val colorThemeManager: ColorThemeManager = injectElement()
-        SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
+//        val colorThemeManager: ColorThemeManager = injectElement()
+//        SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
         val mainActivityViewModel = injectElement<MainActivityViewModel>()
         val playbackManager = injectElement<PlaybackManagerDesktopImpl>()

@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.domain.model.settings
 
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.PlayerMode
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
@@ -15,17 +15,26 @@ class SoulSearchingSettingsImpl(
     /**
      * Save an Integer related to a given key.
      */
-    override fun setInt(key: String, value: Int) = settings.putInt(key, value)
+    override fun setInt(key: String, value: Int) {
+        settings.putInt(key, value)
+        updateFlowValue<Int>(key)
+    }
 
     /**
      * Save a String related to a given key.
      */
-    override fun setString(key: String, value: String) = settings.putString(key, value)
+    override fun setString(key: String, value: String) {
+        settings.putString(key, value)
+        updateFlowValue<String>(key)
+    }
 
     /**
      * Save a Boolean related to a given key.
      */
-    override fun setBoolean(key: String, value: Boolean) = settings.putBoolean(key, value)
+    override fun setBoolean(key: String, value: Boolean) {
+        settings.putBoolean(key, value)
+        updateFlowValue<Boolean>(key)
+    }
 
     /**
      * Tries to retrieve an Integer related to a given key.

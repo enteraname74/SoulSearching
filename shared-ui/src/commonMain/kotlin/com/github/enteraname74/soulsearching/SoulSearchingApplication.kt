@@ -2,14 +2,13 @@ package com.github.enteraname74.soulsearching
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import com.github.enteraname74.domain.model.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
@@ -17,13 +16,12 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpScaffold
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -35,6 +33,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainP
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ import kotlinx.coroutines.launch
 fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
-    colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
     imageCoverRetriever : ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
@@ -53,8 +51,6 @@ fun SoulSearchingApplication(
 
     val musicState by allMusicsViewModel.state.collectAsState()
     val allImages by imageCoverRetriever.allCovers.collectAsState()
-
-    SoulSearchingColorTheme.colorScheme = colorThemeManager.getColorTheme()
 
     playbackManager.retrieveCoverMethod = allImages::getFromCoverId
 
@@ -78,8 +74,6 @@ fun SoulSearchingApplication(
         }
     }
 
-    rememberCoroutineScope()
-
     if (!mainActivityViewModel.hasMusicsBeenFetched) {
         FetchingMusicsComposable(
             finishAddingMusicsAction = {
@@ -101,48 +95,50 @@ fun SoulSearchingApplication(
 
     var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
-    FeedbackPopUpScaffold(
-        feedbackPopUpManager = feedbackPopUpManager,
-    ) {
-        Row {
-            val windowSize = rememberWindowSize()
+    SoulSearchingAppTheme {
+        FeedbackPopUpScaffold(
+            feedbackPopUpManager = feedbackPopUpManager,
+        ) {
+            Row {
+                val windowSize = rememberWindowSize()
 
-            if (windowSize == WindowSize.Large) {
-                NavigationPanel(
-                    rows = navigationRows(
-                        generalNavigator = generalNavigator,
+                if (windowSize == WindowSize.Large) {
+                    NavigationPanel(
+                        rows = navigationRows(
+                            generalNavigator = generalNavigator,
+                        )
                     )
-                )
-            }
-
-            PlayerViewScaffold(
-                generalNavigator = generalNavigator,
-            ) {
-                var hasLastPlayedMusicsBeenFetched by rememberSaveable {
-                    mutableStateOf(false)
                 }
 
-                if (!hasLastPlayedMusicsBeenFetched) {
-                    LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                        val playerSavedMusics = playbackManager.getSavedPlayedList()
-                        if (playerSavedMusics.isNotEmpty()) {
-                            playbackManager.initializePlayerFromSavedList(playerSavedMusics)
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.MINIMISED,
-                            )
-                        }
-                        hasLastPlayedMusicsBeenFetched = true
+                PlayerViewScaffold(
+                    generalNavigator = generalNavigator,
+                ) {
+                    var hasLastPlayedMusicsBeenFetched by rememberSaveable {
+                        mutableStateOf(false)
                     }
-                }
 
-                Navigator(MainPageScreen()) { navigator ->
-                    generalNavigator = navigator
+                    if (!hasLastPlayedMusicsBeenFetched) {
+                        LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
+                            val playerSavedMusics = playbackManager.getSavedPlayedList()
+                            if (playerSavedMusics.isNotEmpty()) {
+                                playbackManager.initializePlayerFromSavedList(playerSavedMusics)
+                                playerViewManager.animateTo(
+                                    newState = BottomSheetStates.MINIMISED,
+                                )
+                            }
+                            hasLastPlayedMusicsBeenFetched = true
+                        }
+                    }
 
-                    CrossfadeTransition(
-                        navigator = navigator,
-                        animationSpec = tween(UiConstants.AnimationDuration.normal)
-                    ) { screen ->
-                        screen.Content()
+                    Navigator(MainPageScreen()) { navigator ->
+                        generalNavigator = navigator
+
+                        CrossfadeTransition(
+                            navigator = navigator,
+                            animationSpec = tween(UiConstants.AnimationDuration.normal)
+                        ) { screen ->
+                            screen.Content()
+                        }
                     }
                 }
             }
@@ -155,6 +151,7 @@ private fun navigationRows(
     viewSettingsManager: ViewSettingsManager = injectElement(),
     allMusicsViewModel: AllMusicsViewModel = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
+    colorThemeManager: ColorThemeManager = injectElement(),
     generalNavigator: Navigator?,
 ): List<NavigationRowSpec> {
     val visibleElements = viewSettingsManager.getListOfVisibleElements()
@@ -174,6 +171,9 @@ private fun navigationRows(
                 title = strings.settings,
                 onClick = {
                     playerAction()
+                    if (generalNavigator?.isComingFromPlaylistDetails() == true) {
+                        colorThemeManager.removePlaylistTheme()
+                    }
                     generalNavigator?.safePush(
                         SettingsScreen()
                     )
