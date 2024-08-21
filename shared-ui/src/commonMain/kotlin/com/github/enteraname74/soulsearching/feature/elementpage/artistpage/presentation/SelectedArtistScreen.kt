@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.elementpage.artistpage.pre
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -27,6 +28,7 @@ import java.util.*
 data class SelectedArtistScreen(
     private val selectedArtistId: String
 ) : Screen, PlaylistDetailScreen {
+    override val key: ScreenKey = UUID.randomUUID().toString()
     private val artistId = UUID.fromString(selectedArtistId)
 
     @Composable
