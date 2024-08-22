@@ -13,7 +13,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -48,7 +47,6 @@ fun PlaylistScreen(
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val imageState by imageCoverRetriever.allCovers.collectAsState()
 
     val playlistImageBitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = playlistDetail.coverId)
         .collectAsState(initial = null)
@@ -143,13 +141,12 @@ fun PlaylistScreen(
                 focusRequester = searchBarFocusRequester
             ) { searchText, focusManager ->
                 SearchMusics(
-                    playerViewManager = playerViewManager,
                     searchText = searchText,
                     allMusics = playlistDetail.musics,
                     isMainPlaylist = false,
                     focusManager = focusManager,
-                    retrieveCoverMethod = imageState::getFromCoverId,
-                    onSelectedMusicForBottomSheet = onShowMusicBottomSheet
+                    onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
+                    playerViewManager = playerViewManager
                 )
             }
         }

@@ -6,8 +6,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -15,8 +17,8 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -29,7 +31,6 @@ import java.util.*
 @Composable
 fun SearchAll(
     searchText: String,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     musicState: AllMusicsState,
     albumState: AlbumState,
     artistState: ArtistState,
@@ -73,7 +74,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedPlaylistForBottomSheet(playlistWithMusics.playlist)
                     },
-                    cover = retrieveCoverMethod(playlistWithMusics.playlist.coverId)
+                    coverId = playlistWithMusics.playlist.coverId,
                 )
             }
         }
@@ -96,7 +97,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedArtistForBottomSheet(artistWithMusics)
                     },
-                    cover = retrieveCoverMethod(artistWithMusics.artist.coverId)
+                    coverId = artistWithMusics.artist.coverId,
                 )
             }
         }
@@ -122,7 +123,7 @@ fun SearchAll(
                             onSelectedAlbumForBottomSheet(albumWithArtist.album)
                         }
                     },
-                    cover = retrieveCoverMethod(albumWithArtist.album.coverId)
+                    coverId = albumWithArtist.album.coverId,
                 )
             }
         }
@@ -162,7 +163,6 @@ fun SearchAll(
                             onSelectedMusicForBottomSheet(music)
                         }
                     },
-                    musicCover = retrieveCoverMethod(music.coverId),
                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
                 )
             }

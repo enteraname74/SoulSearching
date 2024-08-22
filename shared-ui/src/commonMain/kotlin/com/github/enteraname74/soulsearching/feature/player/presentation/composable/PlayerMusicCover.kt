@@ -9,12 +9,11 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -23,7 +22,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -32,7 +30,6 @@ fun PlayerMusicCover(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     viewSettingsManager: ViewSettingsManager = injectElement(),
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     imageSize: Dp,
     horizontalPadding: Dp,
     topPadding: Dp,
@@ -92,20 +89,18 @@ fun PlayerMusicCover(
                     pageSpacing = 120.dp
                 ) { currentSongPos ->
 
-                    SoulBitmapImage(
+                    SoulImage(
                         modifier = imageModifier,
-                        bitmap =
-                        retrieveCoverMethod(aroundSongs.getOrNull(currentSongPos)?.coverId),
+                        coverId = aroundSongs.getOrNull(currentSongPos)?.coverId,
                         size = imageSize,
                         roundedPercent = (playerViewManager.offset / 100).roundToInt()
                             .coerceIn(3, 10)
                     )
                 }
             } else {
-                SoulBitmapImage(
+                SoulImage(
                     modifier = imageModifier,
-                    bitmap =
-                    retrieveCoverMethod(playbackManager.currentMusic?.coverId),
+                    coverId = playbackManager.currentMusic?.coverId,
                     size = imageSize,
                     roundedPercent = (playerViewManager.offset / 100).roundToInt()
                         .coerceIn(3, 10)

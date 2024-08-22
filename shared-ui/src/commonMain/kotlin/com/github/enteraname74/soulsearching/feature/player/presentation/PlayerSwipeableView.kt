@@ -259,15 +259,14 @@ fun PlayerDraggableView(
                     val controlsBoxWidth = playerControlsWidth + (imageHorizontalPadding * 2)
 
                     PlayerMusicCover(
+                        imageSize = imageSize,
+                        horizontalPadding = imageHorizontalPadding,
+                        topPadding = imageTopPadding,
                         onLongClick = {
                             state.currentMusic?.let {
                                 playerViewModel.showMusicBottomSheet(it)
                             }
                         },
-                        retrieveCoverMethod = state.allCovers::getFromCoverId,
-                        imageSize = imageSize,
-                        horizontalPadding = imageHorizontalPadding,
-                        topPadding = imageTopPadding,
                     )
 
                     if (!PlayerUiUtils.canShowRowControlPanel()) {
@@ -341,7 +340,6 @@ fun PlayerDraggableView(
                                         min = MinPlayerSidePanelWidth,
                                         max = MaxPlayerSidePanelWidth,
                                     ),
-                                retrieveCoverMethod = state.allCovers::getFromCoverId,
                                 playerState = state,
                                 onSelectedMusic = playerViewModel::showMusicBottomSheet,
                                 onRetrieveLyrics = {
@@ -371,7 +369,6 @@ fun PlayerDraggableView(
                         maxHeight = maxHeight,
                         playerState = state,
                         onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                        retrieveCoverMethod = state.allCovers::getFromCoverId,
                         onRetrieveLyrics = {
                             playerViewModel.onEvent(
                                 PlayerEvent.GetLyrics
@@ -398,7 +395,6 @@ fun PlayerDraggableView(
                                 .width(
                                     this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
                                 ),
-                            retrieveCoverMethod = state.allCovers::getFromCoverId,
                             playerState = state,
                             onSelectedMusic = playerViewModel::showMusicBottomSheet,
                             onRetrieveLyrics = {
@@ -558,7 +554,7 @@ private val PlayerHeight: Float
     @Composable
     get() = 70.dp.toPx()
 
-private val MinImageSize: Dp = 55.dp
+private val MinImageSize: Dp = UiConstants.CoverSize.small
 private val MinImagePaddingStart: Dp = 4.dp
 private val MinImagePaddingTop: Dp = 4.dp
 

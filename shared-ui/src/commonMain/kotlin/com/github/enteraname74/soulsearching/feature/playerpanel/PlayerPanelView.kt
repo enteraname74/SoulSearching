@@ -9,7 +9,6 @@ import androidx.compose.material.swipeable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
@@ -21,7 +20,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -33,7 +31,6 @@ fun PlayerPanelDraggableView(
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onRetrieveLyrics: () -> Unit,
     primaryColor: Color,
     secondaryColor: Color,
@@ -87,7 +84,6 @@ fun PlayerPanelDraggableView(
         ) {
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
-                retrieveCoverMethod = retrieveCoverMethod,
                 subTextColor = subTextColor,
                 playerState = playerState,
                 onSelectedMusic = onSelectedMusic,

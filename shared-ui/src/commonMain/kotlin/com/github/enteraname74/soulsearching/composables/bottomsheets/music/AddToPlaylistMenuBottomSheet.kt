@@ -10,18 +10,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import java.util.*
 
 @Composable
@@ -31,11 +30,7 @@ fun AddToPlaylistMenuBottomSheet(
     onConfirm: (selectedPlaylists: List<UUID>) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    imageCoverRetriever: ImageCoverRetriever = injectElement(),
 ) {
-
-    val allCovers by imageCoverRetriever.allCovers.collectAsState(emptyList())
-
     val selectedPlaylistIds = remember {
         mutableStateListOf<UUID>()
     }
@@ -77,7 +72,6 @@ fun AddToPlaylistMenuBottomSheet(
                         },
                         isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
                         textColor = textColor,
-                        cover = allCovers.getFromCoverId(playlistWithMusics.playlist.coverId),
                     )
                 }
             }

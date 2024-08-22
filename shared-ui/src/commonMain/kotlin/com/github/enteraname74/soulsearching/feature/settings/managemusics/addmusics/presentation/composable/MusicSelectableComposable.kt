@@ -15,20 +15,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 
 @Composable
 fun MusicSelectableComposable(
     music: Music,
     onClick: () -> Unit,
-    musicCover: ImageBitmap?,
     isSelected: Boolean,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
@@ -46,9 +44,9 @@ fun MusicSelectableComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SoulBitmapImage(
-                bitmap = musicCover,
-                size = 55.dp,
+            SoulImage(
+                coverId = music.coverId,
+                size = UiConstants.CoverSize.small,
                 tint = textColor
             )
             Column(

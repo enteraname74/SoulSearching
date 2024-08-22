@@ -41,6 +41,13 @@ object UiConstants {
     }
 
     /**
+     * Define the sizes of cover of elements (playlist, music...) in the application.
+     */
+    object CoverSize {
+        val small: Dp = 55.dp
+    }
+
+    /**
      * Define the durations of animations
      */
     object AnimationDuration {

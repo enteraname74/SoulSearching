@@ -351,21 +351,20 @@ fun MainPageScreenView(
         ) { searchText, focusManager ->
             SearchAll(
                 searchText = searchText,
-                retrieveCoverMethod = musicState.allCovers::getFromCoverId,
                 musicState = musicState,
                 albumState = albumState,
                 artistState = artistState,
                 playlistState = playlistState,
+                onSelectedMusicForBottomSheet = allMusicsViewModel::showMusicBottomSheet,
+                onSelectedAlbumForBottomSheet = allAlbumsViewModel::showAlbumBottomSheet,
+                onSelectedPlaylistForBottomSheet = allPlaylistsViewModel::showPlaylistBottomSheet,
+                onSelectedArtistForBottomSheet = allArtistsViewModel::showArtistBottomSheet,
                 onPlaylistEvent = allPlaylistsViewModel::onPlaylistEvent,
                 navigateToPlaylist = navigateToPlaylist,
                 navigateToArtist = navigateToArtist,
                 navigateToAlbum = navigateToAlbum,
                 isMainPlaylist = false,
                 focusManager = focusManager,
-                onSelectedMusicForBottomSheet = allMusicsViewModel::showMusicBottomSheet,
-                onSelectedAlbumForBottomSheet = allAlbumsViewModel::showAlbumBottomSheet,
-                onSelectedArtistForBottomSheet = allArtistsViewModel::showArtistBottomSheet,
-                onSelectedPlaylistForBottomSheet = allPlaylistsViewModel::showPlaylistBottomSheet,
             )
         }
     }

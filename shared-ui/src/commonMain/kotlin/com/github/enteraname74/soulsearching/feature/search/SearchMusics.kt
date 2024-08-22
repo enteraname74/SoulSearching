@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -19,7 +18,6 @@ import com.github.enteraname74.soulsearching.feature.search.composable.SearchTyp
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -28,7 +26,6 @@ fun SearchMusics(
     allMusics: List<Music>,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -75,7 +72,6 @@ fun SearchMusics(
                             onSelectedMusicForBottomSheet(music)
                         }
                     },
-                    musicCover = retrieveCoverMethod(music.coverId),
                     textColor = textColor,
                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
                 )

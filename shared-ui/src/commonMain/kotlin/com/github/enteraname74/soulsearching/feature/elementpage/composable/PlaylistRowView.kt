@@ -4,13 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -18,7 +15,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.elementpage.domain.PlaylistVIewUiUtils
@@ -128,12 +124,10 @@ private fun Content(
     playlistDetailListener: PlaylistDetailListener,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
-    imageCoverRetriever: ImageCoverRetriever = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val imageState by imageCoverRetriever.allCovers.collectAsState()
 
     Row(
         modifier = modifier,
@@ -190,7 +184,6 @@ private fun Content(
                             }
                         },
                         onLongClick = { onShowMusicBottomSheet(music) },
-                        musicCover = imageState.getFromCoverId(music.coverId),
                         isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
                     )
                 }

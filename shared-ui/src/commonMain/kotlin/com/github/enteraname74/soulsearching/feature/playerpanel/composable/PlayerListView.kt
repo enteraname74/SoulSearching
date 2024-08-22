@@ -14,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
@@ -24,7 +23,6 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.launch
-import java.util.*
 
 @Composable
 fun PlayerListView(
@@ -32,7 +30,6 @@ fun PlayerListView(
     isExpanded: Boolean,
     playedList: List<Music>,
     onSelectedMusic: (Music) -> Unit,
-    retrieveCoverMethod: (UUID?) -> ImageBitmap?,
     secondaryColor: Color,
     primaryColor: Color
 ) {
@@ -93,7 +90,6 @@ fun PlayerListView(
                                 onSelectedMusic(elt)
                             }
                         },
-                        musicCover = retrieveCoverMethod(elt.coverId),
                         textColor = secondaryColor,
                         isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                     )

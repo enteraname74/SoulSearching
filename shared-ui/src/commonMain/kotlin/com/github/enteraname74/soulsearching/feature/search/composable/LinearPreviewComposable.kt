@@ -20,17 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LinearPreviewComposable(
     title: String,
     text: String,
-    cover: ImageBitmap?,
+    coverId: UUID?,
     onLongClick: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -49,10 +51,13 @@ fun LinearPreviewComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SoulBitmapImage(bitmap = cover, size = 55.dp)
+            SoulImage(
+                coverId = coverId,
+                size = UiConstants.CoverSize.small
+            )
             Column(
                 modifier = Modifier
-                    .height(55.dp)
+                    .height(UiConstants.CoverSize.small)
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {

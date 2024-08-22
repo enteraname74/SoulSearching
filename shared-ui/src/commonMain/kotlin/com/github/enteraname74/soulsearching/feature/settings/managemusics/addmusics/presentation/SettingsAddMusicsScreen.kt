@@ -186,8 +186,7 @@ fun SettingsAddMusicsScreenView(
                                         )
                                     )
                                 },
-                                isSelected = it.isSelected,
-                                musicCover = it.cover
+                                isSelected = it.isSelected
                             )
                         }
                         item {
