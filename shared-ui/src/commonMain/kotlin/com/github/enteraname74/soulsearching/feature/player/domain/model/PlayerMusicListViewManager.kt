@@ -22,9 +22,11 @@ class PlayerMusicListViewManager {
         get() = musicListDraggableState.offset.value
 
     suspend fun animateTo(newState: BottomSheetStates) {
-        musicListDraggableState.animateTo(
-            targetValue = newState,
-            anim = tween(UiConstants.AnimationDuration.normal),
-        )
+        try {
+            musicListDraggableState.animateTo(
+                targetValue = newState,
+                anim = tween(UiConstants.AnimationDuration.normal),
+            )
+        } catch (_: Exception) {}
     }
 }

@@ -17,11 +17,8 @@ import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -81,10 +78,10 @@ fun PlaylistScreen(
         }
     }
 
-    val playlistPalette: SoulSearchingPalette by colorThemeManager.playlistsColorTheme.collectAsState()
+    val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
 
     CompositionLocalProvider(
-        LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette)
+        LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
     ) {
         BoxWithConstraints(
             modifier = Modifier

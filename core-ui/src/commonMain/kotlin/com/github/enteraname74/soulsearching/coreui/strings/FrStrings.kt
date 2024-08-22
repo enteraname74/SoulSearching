@@ -138,7 +138,7 @@ object FrStrings : Strings {
     override val deletingMusicsFromUnselectedFolders = "Suppression des musiques des dossiers désélectionnés…"
 
     override val dynamicThemeTitle = "Thème dynamique"
-    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d\\'album de la musique jouée courante"
+    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d'album de la musique jouée courante"
     override val systemThemeTitle = "Thème du système"
     override val systemThemeText = "Thème de couleur global basé sur le mode de couleur de votre système"
 

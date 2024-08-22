@@ -26,6 +26,7 @@ import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.orDefault
 import com.github.enteraname74.soulsearching.coreui.utils.*
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -77,15 +78,26 @@ fun PlayerDraggableView(
     dialogState?.Dialog()
     addToPlaylistBottomSheet?.BottomSheet()
 
+    val canShowPanel = PlayerUiUtils.canShowSidePanel()
+    val shouldCloseMusicListDraggableView: () -> Boolean = {
+        !canShowPanel && playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED
+    }
+
     LaunchedEffect(navigationState) {
         when (navigationState) {
-            PlayerNavigationState.Idle -> { /*no-op*/
-            }
+            PlayerNavigationState.Idle -> { /*no-op*/ }
 
             is PlayerNavigationState.ToModifyMusic -> {
-                val selectedMusic = (navigationState as PlayerNavigationState.ToModifyMusic).music
-                navigateToModifyMusic(selectedMusic.musicId.toString())
-                playerViewModel.consumeNavigation()
+                coroutineScope.launch {
+                    if (shouldCloseMusicListDraggableView()) {
+                        playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
+                    }
+                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                }.invokeOnCompletion {
+                    val selectedMusic = (navigationState as PlayerNavigationState.ToModifyMusic).music
+                    navigateToModifyMusic(selectedMusic.musicId.toString())
+                    playerViewModel.consumeNavigation()
+                }
             }
         }
     }
@@ -129,7 +141,7 @@ fun PlayerDraggableView(
     val alphaTransition = getAlphaTransition()
 
     CompositionLocalProvider(
-        LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme)
+        LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme.orDefault())
     ) {
 
         val statusBarColor: Color by animateColorAsState(
@@ -152,8 +164,7 @@ fun PlayerDraggableView(
             }, tween(UiConstants.AnimationDuration.normal),
             label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
         )
-
-        val isUsingDarkIcons = if (state.currentMusicCover == null
+        val isUsingDarkIcons = if (state.allCovers.getFromCoverId(state.currentMusic?.coverId) == null
             || !colorThemeSettings.canShowDynamicPlayerTheme()
         ) {
             !isSystemInDarkTheme()

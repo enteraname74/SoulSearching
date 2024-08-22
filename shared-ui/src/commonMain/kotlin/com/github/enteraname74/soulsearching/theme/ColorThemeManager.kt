@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.theme
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.palette.graphics.Palette
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
 import com.github.enteraname74.soulsearching.coreui.theme.color.DynamicColorThemeBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
@@ -41,7 +42,12 @@ class ColorThemeManager(
     settings: SoulSearchingSettings,
     playerViewManager: PlayerViewManager,
 ) {
-    private val isInDarkTheme: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    var isInDarkMode: Boolean
+        get() = isInDarkTheme.value
+        set(value) {
+            isInDarkTheme.value = value
+        }
+    private val isInDarkTheme: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val palette: MutableStateFlow<Palette.Swatch?> = MutableStateFlow(null)
     private val playlistDetailCover: MutableStateFlow<PlaylistDetailCover?> = MutableStateFlow(null)
 
@@ -64,8 +70,8 @@ class ColorThemeManager(
         ),
     ) { colorThemeType, hasDynamicPlayer, hasDynamicPlaylists, hasDynamicOtherViews ->
         when (colorThemeType) {
-            1 -> ColorThemeSettings.DynamicTheme
-            2 -> ColorThemeSettings.Personalized(
+            ColorThemeType.DYNAMIC -> ColorThemeSettings.DynamicTheme
+            ColorThemeType.PERSONALIZED  -> ColorThemeSettings.Personalized(
                 hasDynamicPlayer = hasDynamicPlayer,
                 hasDynamicPlaylists = hasDynamicPlaylists,
                 hasDynamicOtherViews = hasDynamicOtherViews
@@ -79,7 +85,7 @@ class ColorThemeManager(
         initialValue = ColorThemeSettings.DynamicTheme,
     )
 
-    val appColorPalette: StateFlow<SoulSearchingPalette> = combine(
+    val appColorPalette: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
         palette,
         playlistDetailCover,
@@ -124,10 +130,10 @@ class ColorThemeManager(
     }.stateIn(
         scope = CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Eagerly,
-        initialValue = SoulSearchingColorTheme.lightTheme,
+        initialValue = null,
     )
 
-    val playerColorTheme: StateFlow<SoulSearchingPalette> = combine(
+    val playerColorTheme: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
         palette,
         playlistDetailCover,
@@ -150,10 +156,10 @@ class ColorThemeManager(
     }.stateIn(
         scope = CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Eagerly,
-        initialValue = SoulSearchingColorTheme.lightTheme,
+        initialValue = null,
     )
 
-    val playlistsColorTheme: StateFlow<SoulSearchingPalette> = combine(
+    val playlistsColorTheme: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
         palette,
         playlistDetailCover,
@@ -180,7 +186,7 @@ class ColorThemeManager(
     }.stateIn(
         scope = CoroutineScope(Dispatchers.IO),
         started = SharingStarted.Eagerly,
-        initialValue = SoulSearchingColorTheme.lightTheme,
+        initialValue = null,
     )
 
     private fun buildMinimisedPlayerTheme(

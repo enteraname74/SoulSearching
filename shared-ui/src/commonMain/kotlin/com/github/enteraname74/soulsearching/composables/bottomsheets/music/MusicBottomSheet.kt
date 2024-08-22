@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetH
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,14 @@ class MusicBottomSheet(
 ): SoulBottomSheet, KoinComponent {
     private val playbackManager: PlaybackManager by inject()
     private val playerViewManager: PlayerViewManager by inject()
+    private val playerMusicListViewManager: PlayerMusicListViewManager by inject()
+
+    private suspend fun minimisePlayerViewsIfNeeded() {
+        if (playerMusicListViewManager.currentValue == BottomSheetStates.EXPANDED) {
+            playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
+        }
+        playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+    }
 
     @Composable
     override fun BottomSheet() {
@@ -48,7 +57,12 @@ class MusicBottomSheet(
             musicBottomSheetState = musicBottomSheetState,
             modifyAction = {
                 closeWithAnim()
-                onModifyMusic()
+                coroutineScope
+                    .launch {
+                        minimisePlayerViewsIfNeeded()
+                    }.invokeOnCompletion {
+                        onModifyMusic()
+                    }
             },
             quickAccessAction = {
                 closeWithAnim()

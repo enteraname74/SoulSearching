@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -12,3 +13,7 @@ data class SoulSearchingPalette(
     val onSecondary: Color = textColorDark,
     val subText: Color = subTextColorDark
 )
+
+@Composable
+fun SoulSearchingPalette?.orDefault(): SoulSearchingPalette =
+    this ?: SoulSearchingColorTheme.defaultTheme
