@@ -47,6 +47,12 @@ object DynamicColorThemeBuilder {
         )
     }
 
+    private fun doesColorHasGoodContrast(
+        foregroundColor: Color,
+        backgroundColor: Color,
+    ): Boolean = true
+
     private const val PRIMARY_COLOR_RATIO = 0.5f
     private const val SECONDARY_COLOR_RATIO = 0.2f
+    private const val CONTRASTED_COLOR_THRESHOLD = 4.5f
 }

@@ -31,11 +31,11 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.SelectedAlbumScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.folderpage.presentation.SelectedFolderScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.monthpage.presentation.SelectedMonthScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.playlistpage.presentation.SelectedPlaylistScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*

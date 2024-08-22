@@ -15,7 +15,7 @@ import java.util.*
  * Represent the view of the modify music screen.
  */
 data class ModifyMusicScreen(private val selectedMusicId: String): Screen {
-    override val key: ScreenKey = UUID.randomUUID().toString()
+    override val key: ScreenKey = selectedMusicId
 
     @Composable
     override fun Content() {

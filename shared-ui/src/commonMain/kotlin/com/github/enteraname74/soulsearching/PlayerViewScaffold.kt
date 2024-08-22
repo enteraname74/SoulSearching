@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -11,8 +10,9 @@ import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.navigator.Navigator
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.elementpage.albumpage.presentation.SelectedAlbumScreen
-import com.github.enteraname74.soulsearching.feature.elementpage.artistpage.presentation.SelectedArtistScreen
+import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -46,17 +46,17 @@ fun PlayerViewScaffold(
         PlayerDraggableView(
             maxHeight = maxHeight,
             navigateToAlbum = { albumId ->
-                generalNavigator?.push(
+                generalNavigator?.safePush(
                     SelectedAlbumScreen(selectedAlbumId = albumId)
                 )
             },
             navigateToArtist = { artistId ->
-                generalNavigator?.push(
+                generalNavigator?.safePush(
                     SelectedArtistScreen(selectedArtistId = artistId)
                 )
             },
             navigateToModifyMusic = { musicId ->
-                generalNavigator?.push(
+                generalNavigator?.safePush(
                     ModifyMusicScreen(
                         selectedMusicId = musicId
                     )
