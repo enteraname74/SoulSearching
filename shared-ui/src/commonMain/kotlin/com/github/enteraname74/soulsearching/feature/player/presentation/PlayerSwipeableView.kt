@@ -109,7 +109,7 @@ fun PlayerDraggableView(
                     newState = BottomSheetStates.COLLAPSED,
                 )
             }
-            playerMusicListViewManager.animateTo(
+            playerViewManager.animateTo(
                 newState = BottomSheetStates.MINIMISED,
             )
         }
