@@ -11,7 +11,8 @@ data class SoulSearchingPalette(
     val secondary: Color = secondaryColorDark,
     val onPrimary: Color = textColorDark,
     val onSecondary: Color = textColorDark,
-    val subText: Color = subTextColorDark
+    val subSecondaryText: Color = subTextColorDark,
+    val subPrimaryText: Color = subTextColorDark,
 )
 
 @Composable

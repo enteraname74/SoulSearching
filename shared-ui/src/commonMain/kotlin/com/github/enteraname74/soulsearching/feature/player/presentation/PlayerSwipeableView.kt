@@ -348,8 +348,9 @@ fun PlayerDraggableView(
                                     )
                                 },
                                 primaryColor = SoulSearchingColorTheme.colorScheme.primary,
-                                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                                subTextColor = SoulSearchingColorTheme.colorScheme.subText,
+                                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                                buttonTextColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                                 isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                             )
                         }
@@ -376,8 +377,9 @@ fun PlayerDraggableView(
                         },
                         secondaryColor = SoulSearchingColorTheme.colorScheme.secondary,
                         primaryColor = SoulSearchingColorTheme.colorScheme.primary,
-                        contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        subTextColor = SoulSearchingColorTheme.colorScheme.subText,
+                        textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                        buttonTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     )
                 } else if (!PlayerUiUtils.canShowRowControlPanel()){
                     BoxWithConstraints(
@@ -403,9 +405,10 @@ fun PlayerDraggableView(
                                 )
                             },
                             primaryColor = SoulSearchingColorTheme.colorScheme.primary,
-                            contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                            subTextColor = SoulSearchingColorTheme.colorScheme.subText,
+                            textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                             isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                            buttonTextColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                         )
                     }
                 }

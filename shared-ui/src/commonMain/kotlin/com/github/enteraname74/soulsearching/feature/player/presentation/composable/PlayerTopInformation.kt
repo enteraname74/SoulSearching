@@ -14,7 +14,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
@@ -107,7 +106,7 @@ fun PlayerTopInformation(
             ) {
                 Text(
                     text = state.currentMusic?.artist?.formatTextForEllipsis().orEmpty(),
-                    color = SoulSearchingColorTheme.colorScheme.subText,
+                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,
@@ -135,12 +134,12 @@ fun PlayerTopInformation(
                 )
                 Text(
                     text = " | ",
-                    color = SoulSearchingColorTheme.colorScheme.subText,
+                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     fontSize = 15.sp,
                 )
                 Text(
                     text = state.currentMusic?.album?.formatTextForEllipsis().orEmpty(),
-                    color = SoulSearchingColorTheme.colorScheme.subText,
+                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,

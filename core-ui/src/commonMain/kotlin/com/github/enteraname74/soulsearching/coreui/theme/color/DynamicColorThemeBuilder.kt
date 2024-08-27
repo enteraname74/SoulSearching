@@ -1,25 +1,47 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
-import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.luminance
+import kotlin.math.max
+import kotlin.math.min
 
 object DynamicColorThemeBuilder {
-    fun buildDynamicTheme(paletteRgb: Int): SoulSearchingPalette = SoulSearchingPalette(
-        primary = getDynamicColor(color = paletteRgb, ratio = PRIMARY_COLOR_RATIO),
-        onPrimary = Color.White,
-        secondary = getDynamicColor(color = paletteRgb, ratio = SECONDARY_COLOR_RATIO),
-        onSecondary = Color.White,
-        subText = Color.LightGray,
-    )
+    fun buildDynamicTheme(paletteRgb: Int): SoulSearchingPalette {
+        val primary = getDynamicColor(
+            color = Color(paletteRgb),
+            ratio = PRIMARY_COLOR_RATIO
+        )
+
+        val secondary = getDynamicColor(
+            color = Color(paletteRgb),
+            ratio = SECONDARY_COLOR_RATIO
+        )
+
+        return SoulSearchingPalette(
+            primary = primary,
+            onPrimary = getTextColor(backgroundColor = primary),
+            secondary = secondary,
+            onSecondary = getTextColor(backgroundColor = secondary),
+            subSecondaryText = getTextColor(
+                backgroundColor = secondary,
+                baseLight = Color.LightGray,
+                baseDark = Color.DarkGray,
+            ),
+            subPrimaryText = getTextColor(
+                backgroundColor = primary,
+                baseLight = Color.LightGray,
+                baseDark = Color.DarkGray,
+            )
+        )
+    }
 
     private fun getDynamicColor(
-        color: Int,
+        color: Color,
         ratio: Float,
     ): Color = blendARGB(
         color1 = color,
-        color2 = Color.Black.toArgb(),
+        color2 = Color.Black,
         ratio = ratio,
     )
 
@@ -27,18 +49,16 @@ object DynamicColorThemeBuilder {
      * Blend two colors together.
      */
     private fun blendARGB(
-        @ColorInt color1: Int,
-        @ColorInt color2: Int,
+        color1: Color,
+        color2: Color,
         @FloatRange(from = 0.0, to = 1.0) ratio: Float
     ): Color {
-        val firstColor = Color(color1)
-        val secondColor = Color(color2)
 
         val inverseRatio = 1 - ratio
-        val a = firstColor.alpha * inverseRatio + secondColor.alpha * ratio
-        val r = firstColor.red * inverseRatio + secondColor.red * ratio
-        val g = firstColor.green * inverseRatio + secondColor.green * ratio
-        val b = firstColor.blue * inverseRatio + secondColor.blue * ratio
+        val a = color1.alpha * inverseRatio + color2.alpha * ratio
+        val r = color1.red * inverseRatio + color2.red * ratio
+        val g = color1.green * inverseRatio + color2.green * ratio
+        val b = color1.blue * inverseRatio + color2.blue * ratio
         return Color(
             red = r,
             green = g,
@@ -47,10 +67,52 @@ object DynamicColorThemeBuilder {
         )
     }
 
-    private fun doesColorHasGoodContrast(
+    private fun getTextColor(
+        backgroundColor: Color,
+        baseLight: Color = Color.White,
+        baseDark: Color = Color.Black,
+    ): Color {
+
+        val lightColor = blendARGB(
+            color1 = baseLight,
+            color2 = backgroundColor,
+            ratio = 0.2f
+        )
+
+        val darkColor = blendARGB(
+            color1 = baseDark,
+            color2 = backgroundColor,
+            ratio = 0.4f,
+        )
+
+        val whiteContrast = getContrast(
+            foregroundColor = lightColor,
+            backgroundColor = backgroundColor,
+        )
+        val darkContrast = getContrast(
+            foregroundColor = darkColor,
+            backgroundColor = backgroundColor,
+        )
+
+        return if (whiteContrast >= CONTRASTED_COLOR_THRESHOLD || whiteContrast >= darkContrast) {
+            lightColor
+        } else {
+            darkColor
+        }
+    }
+
+    private fun getContrast(
         foregroundColor: Color,
         backgroundColor: Color,
-    ): Boolean = true
+    ): Float {
+        val foregroundLuminance = foregroundColor.luminance()
+        val backgroundLuminance = backgroundColor.luminance()
+
+        val brightest = max(foregroundLuminance, backgroundLuminance)
+        val darkest = min(foregroundLuminance, backgroundLuminance)
+
+        return (brightest + 0.05f) / (darkest + 0.05f)
+    }
 
     private const val PRIMARY_COLOR_RATIO = 0.5f
     private const val SECONDARY_COLOR_RATIO = 0.2f

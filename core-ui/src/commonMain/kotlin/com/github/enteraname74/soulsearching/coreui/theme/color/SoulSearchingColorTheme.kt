@@ -17,7 +17,8 @@ object SoulSearchingColorTheme {
         secondary = secondaryColorLight,
         onPrimary = textColorLight,
         onSecondary = textColorLight,
-        subText = subTextColorLight
+        subSecondaryText = subTextColorLight,
+        subPrimaryText = subTextColorLight,
     )
 
     /**

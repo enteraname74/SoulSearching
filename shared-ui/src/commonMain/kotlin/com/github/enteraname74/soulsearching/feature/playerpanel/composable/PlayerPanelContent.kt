@@ -30,7 +30,8 @@ fun PlayerPanelContent(
     onSelectedMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
     primaryColor: Color,
-    contentColor: Color,
+    buttonTextColor: Color,
+    textColor: Color,
     subTextColor: Color,
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
@@ -45,9 +46,10 @@ fun PlayerPanelContent(
                     playbackManager = playbackManager,
                     playedList = playerState.playedList,
                     onSelectedMusic = onSelectedMusic,
-                    secondaryColor = contentColor,
+                    secondaryColor = textColor,
                     primaryColor = primaryColor,
                     isExpanded = isExpanded,
+                    buttonTextColor = buttonTextColor,
                 )
             }
         ),
@@ -55,7 +57,7 @@ fun PlayerPanelContent(
             title = strings.lyrics,
             screen = {
                 MusicLyricsView(
-                    contentColor = contentColor,
+                    contentColor = textColor,
                     noLyricsColor = subTextColor,
                     lyricsState = playerState.currentMusicLyrics,
                     currentMusic = playerState.currentMusic,
@@ -90,7 +92,7 @@ fun PlayerPanelContent(
                         .fillMaxWidth()
                         .weight(1f),
                     title = page.title,
-                    contentColor = if (isSelected && isExpanded) contentColor else subTextColor,
+                    contentColor = if (isSelected && isExpanded) textColor else subTextColor,
                     isSelected = isExpanded && isSelected,
                     onSelected = {
                         coroutineScope.launch {

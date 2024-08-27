@@ -46,7 +46,7 @@ fun AppFeatureComposable(
             )
             Text(
                 text = description,
-                color = SoulSearchingColorTheme.colorScheme.subText,
+                color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis
             )

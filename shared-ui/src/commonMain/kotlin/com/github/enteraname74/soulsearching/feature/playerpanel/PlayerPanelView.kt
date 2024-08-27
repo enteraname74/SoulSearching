@@ -34,7 +34,8 @@ fun PlayerPanelDraggableView(
     onRetrieveLyrics: () -> Unit,
     primaryColor: Color,
     secondaryColor: Color,
-    contentColor: Color,
+    textColor: Color,
+    buttonTextColor: Color,
     subTextColor: Color
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -89,8 +90,9 @@ fun PlayerPanelDraggableView(
                 onSelectedMusic = onSelectedMusic,
                 onRetrieveLyrics = onRetrieveLyrics,
                 primaryColor = primaryColor,
-                contentColor = contentColor,
+                textColor = textColor,
                 isExpanded = isExpanded,
+                buttonTextColor = buttonTextColor,
             )
         }
     }

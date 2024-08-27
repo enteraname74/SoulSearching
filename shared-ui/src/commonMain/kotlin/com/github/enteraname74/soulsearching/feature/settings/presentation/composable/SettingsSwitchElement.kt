@@ -30,7 +30,9 @@ fun SettingsSwitchElement(
     toggleAction: () -> Unit,
     isChecked: Boolean,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
-    maxLines : Int = 2
+    maxLines : Int = 2,
+    titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
 ) {
     Row(
         modifier = Modifier
@@ -56,7 +58,7 @@ fun SettingsSwitchElement(
             ) {
                 Text(
                     text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = titleColor,
                     fontSize = titleFontSize,
                     fontWeight = FontWeight(500),
                     maxLines = maxLines,
@@ -65,7 +67,7 @@ fun SettingsSwitchElement(
                 if (text.isNotBlank()) {
                     Text(
                         text = text,
-                        color = SoulSearchingColorTheme.colorScheme.subText,
+                        color = textColor,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -77,12 +79,12 @@ fun SettingsSwitchElement(
             checked = isChecked,
             onCheckedChange = { toggleAction() },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = SoulSearchingColorTheme.colorScheme.subText,
-                checkedTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                checkedBorderColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                uncheckedThumbColor = SoulSearchingColorTheme.colorScheme.subText,
+                checkedThumbColor = textColor,
+                checkedTrackColor = titleColor,
+                checkedBorderColor = titleColor,
+                uncheckedThumbColor = textColor,
                 uncheckedTrackColor = Color.Transparent,
-                uncheckedBorderColor = SoulSearchingColorTheme.colorScheme.subText,
+                uncheckedBorderColor = textColor,
             )
         )
     }

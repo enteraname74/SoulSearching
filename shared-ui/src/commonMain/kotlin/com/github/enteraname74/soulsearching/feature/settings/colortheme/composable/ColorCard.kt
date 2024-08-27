@@ -34,7 +34,7 @@ fun ColorCard(
             )
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(
-            contentColor = SoulSearchingColorTheme.colorScheme.secondary,
+            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
             containerColor = SoulSearchingColorTheme.colorScheme.secondary
         )
     ) {
@@ -47,7 +47,9 @@ fun ColorCard(
                 text = text,
                 clickAction = onClick,
                 isSelected = isSelected,
-                padding = 0.dp
+                padding = 0.dp,
+                textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )
             subComposable()
         }

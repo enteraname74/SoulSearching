@@ -58,7 +58,7 @@ fun SettingsElement(
             )
             Text(
                 text = text,
-                color = SoulSearchingColorTheme.colorScheme.subText,
+                color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis

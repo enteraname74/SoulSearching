@@ -50,7 +50,7 @@ fun PageHeader(
                         modifier = Modifier.clickable {
                             onSubTitleClicked()
                         },
-                        color = SoulSearchingColorTheme.colorScheme.subText,
+                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                         text = it,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -96,7 +96,7 @@ fun PageHeader(
                             onSubTitleClicked()
                         },
                         textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.subText,
+                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                         text = it,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

@@ -31,7 +31,8 @@ fun PlayerListView(
     playedList: List<Music>,
     onSelectedMusic: (Music) -> Unit,
     secondaryColor: Color,
-    primaryColor: Color
+    primaryColor: Color,
+    buttonTextColor: Color,
 ) {
     
     val coroutineScope = rememberCoroutineScope()
@@ -51,7 +52,8 @@ fun PlayerListView(
                     .align(Alignment.CenterEnd),
                 shape = RoundedCornerShape(percent = 50),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = primaryColor
+                    backgroundColor = primaryColor,
+                    contentColor = buttonTextColor,
                 ),
                 onClick = {
                     coroutineScope.launch {
@@ -67,7 +69,7 @@ fun PlayerListView(
                     text = strings.currentSong,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    color = secondaryColor,
+                    color = buttonTextColor,
                     fontSize = 12.sp
                 )
             }

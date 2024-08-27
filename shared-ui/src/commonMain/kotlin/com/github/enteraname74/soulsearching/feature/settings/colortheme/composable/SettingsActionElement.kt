@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -22,7 +23,9 @@ fun SettingsActionElement(
     text: String,
     clickAction: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = UiConstants.Spacing.veryLarge
+    padding: Dp = UiConstants.Spacing.veryLarge,
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    subTextColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
 ) {
     Row(
         modifier = Modifier
@@ -46,7 +49,7 @@ fun SettingsActionElement(
             ) {
                 Text(
                     text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    color = textColor,
                     fontSize = 18.sp,
                     fontWeight = FontWeight(500),
                     maxLines = 1,
@@ -54,7 +57,7 @@ fun SettingsActionElement(
                 )
                 Text(
                     text = text,
-                    color = SoulSearchingColorTheme.colorScheme.subText,
+                    color = subTextColor,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -65,8 +68,8 @@ fun SettingsActionElement(
             selected = isSelected,
             onClick = clickAction,
             colors = RadioButtonDefaults.colors(
-                selectedColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unselectedColor = SoulSearchingColorTheme.colorScheme.onPrimary
+                selectedColor = textColor,
+                unselectedColor = textColor,
             )
         )
     }

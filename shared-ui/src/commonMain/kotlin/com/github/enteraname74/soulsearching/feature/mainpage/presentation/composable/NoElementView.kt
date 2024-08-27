@@ -28,7 +28,7 @@ fun NoElementView(
         Text(
             text = strings.noElements,
             fontSize = 15.sp,
-            color = SoulSearchingColorTheme.colorScheme.subText
+            color = SoulSearchingColorTheme.colorScheme.subPrimaryText
         )
     }
 }

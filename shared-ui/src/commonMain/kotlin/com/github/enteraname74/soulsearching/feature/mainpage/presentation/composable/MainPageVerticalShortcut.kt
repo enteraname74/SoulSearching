@@ -72,7 +72,7 @@ fun MainPageVerticalShortcut(
                     color = if (isCurrentPosition) {
                         SoulSearchingColorTheme.colorScheme.onPrimary
                     } else {
-                        SoulSearchingColorTheme.colorScheme.subText
+                        SoulSearchingColorTheme.colorScheme.subPrimaryText
                     },
                     fontWeight = if (isCurrentPosition) {
                         FontWeight.ExtraBold

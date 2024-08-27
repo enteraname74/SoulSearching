@@ -49,7 +49,7 @@ fun PlayerMinimisedMainInfo(
         ) {
             Text(
                 text = currentMusic?.name.orEmpty(),
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 maxLines = 1,
                 textAlign = TextAlign.Start,
                 fontSize = 15.sp,
@@ -57,7 +57,7 @@ fun PlayerMinimisedMainInfo(
             )
             Text(
                 text = currentMusic?.artist.orEmpty(),
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 fontSize = 12.sp,
                 maxLines = 1,
                 textAlign = TextAlign.Start,

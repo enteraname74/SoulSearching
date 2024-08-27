@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -56,7 +57,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Schedule,
                 contentDescription = strings.sortByDateAdded,
-                tint = if (sortType == SortType.ADDED_DATE) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
+                tint = getSelectedColor(sortType == SortType.ADDED_DATE)
             )
             Icon(
                 modifier = Modifier
@@ -67,7 +68,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.Pin,
                 contentDescription = strings.sortByMostListened,
-                tint = if (sortType == SortType.NB_PLAYED) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
+                tint = getSelectedColor(sortType == SortType.NB_PLAYED)
             )
             Icon(
                 modifier = Modifier
@@ -78,7 +79,7 @@ fun SortOptionsComposable(
                     ),
                 imageVector = Icons.Rounded.SortByAlpha,
                 contentDescription = strings.sortByName,
-                tint = if (sortType == SortType.NAME) SoulSearchingColorTheme.colorScheme.onPrimary else SoulSearchingColorTheme.colorScheme.subText
+                tint = getSelectedColor(sortType == SortType.NAME)
             )
         }
         Icon(
@@ -90,7 +91,10 @@ fun SortOptionsComposable(
                 ),
             imageVector = if (sortDirection == SortDirection.ASC) Icons.Rounded.North else Icons.Rounded.South,
             contentDescription = strings.sortByAscOrDesc,
-            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+            tint = SoulSearchingColorTheme.colorScheme.onSecondary
         )
     }
 }
+@Composable
+private fun getSelectedColor(condition: Boolean): Color =
+    if (condition) SoulSearchingColorTheme.colorScheme.onSecondary else SoulSearchingColorTheme.colorScheme.subSecondaryText
