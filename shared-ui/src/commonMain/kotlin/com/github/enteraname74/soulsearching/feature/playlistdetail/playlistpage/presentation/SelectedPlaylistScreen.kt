@@ -2,20 +2,19 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpag
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistViewModel
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyplaylist.presentation.ModifyPlaylistScreen
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import java.util.*
 
 /**
@@ -23,7 +22,7 @@ import java.util.*
  */
 data class SelectedPlaylistScreen(
     private val selectedPlaylistId: String
-) : Screen, PlaylistDetailScreen {
+) : PlaylistDetailScreen(selectedPlaylistId) {
     private val playlistId: UUID = UUID.fromString(selectedPlaylistId)
 
     @Composable

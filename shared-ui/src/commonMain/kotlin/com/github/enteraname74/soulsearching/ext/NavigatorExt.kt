@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.ext
 
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 
 /**
  * Checks if we are not already on the same screen before navigating.

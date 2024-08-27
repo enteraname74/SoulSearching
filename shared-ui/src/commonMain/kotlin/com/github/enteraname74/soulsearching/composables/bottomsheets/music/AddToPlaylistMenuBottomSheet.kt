@@ -20,7 +20,7 @@ import com.github.enteraname74.soulsearching.composables.PlaylistSelectableCompo
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.*
 import java.util.*
 
 @Composable
@@ -45,17 +45,22 @@ fun AddToPlaylistMenuBottomSheet(
         ) {
             SoulTopBar(
                 title = strings.addToPlaylist,
-                leftAction = {
-                    onDismiss()
-                    selectedPlaylistIds.clear()
-                },
-                rightAction = {
-                    onConfirm(selectedPlaylistIds.toList())
-                    selectedPlaylistIds.clear()
-                },
-                rightIcon = Icons.Rounded.Done,
-                containerColor = Color.Transparent,
-                contentColor = textColor
+                leftAction = TopBarNavigationAction(
+                    onClick = {
+                        onDismiss()
+                        selectedPlaylistIds.clear()
+                    }
+                ),
+                rightAction = TopBarValidateAction(
+                    onClick = {
+                        onConfirm(selectedPlaylistIds.toList())
+                        selectedPlaylistIds.clear()
+                    }
+                ),
+                colors = SoulTopBarDefaults.colors(
+                    containerColor = Color.Transparent,
+                    contentColor = textColor,
+                ),
             )
             LazyColumn(
                 modifier = Modifier

@@ -2,8 +2,6 @@ package com.github.enteraname74.soulsearching.coreui.topbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -11,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -23,28 +20,28 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulTopBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    leftAction: () -> Unit,
-    leftIcon: ImageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-    rightAction: (() -> Unit)? = null,
-    rightIcon: ImageVector? = null,
-    containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    leftAction: TopBarActionSpec,
+    rightAction: TopBarActionSpec? = null,
+    colors: TopBarColors = SoulTopBarDefaults.colors(),
 ) {
     Row(
         modifier = modifier
             .then(
                 Modifier
                     .fillMaxWidth()
-                    .background(containerColor)
+                    .background(colors.containerColor)
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = leftAction) {
+        IconButton(
+            onClick = leftAction.onClick,
+            enabled = leftAction.isEnabled,
+        ) {
             Icon(
-                imageVector = leftIcon,
-                contentDescription = strings.backButton,
-                tint = contentColor
+                imageVector = leftAction.icon,
+                contentDescription = leftAction.contentDescription,
+                tint = colors.contentColor,
             )
         }
         title?.let {
@@ -53,18 +50,21 @@ fun SoulTopBar(
                 text = it,
                 maxLines = 2,
                 fontSize = 18.sp,
-                color = contentColor,
+                color = colors.contentColor,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
 
-        if (rightIcon != null && rightAction != null) {
-            IconButton(onClick = rightAction) {
+        if (rightAction != null) {
+            IconButton(
+                onClick = rightAction.onClick,
+                enabled = rightAction.isEnabled,
+            ) {
                 Icon(
-                    imageVector = rightIcon,
+                    imageVector = rightAction.icon,
                     contentDescription = strings.headerBarRightButton,
-                    tint = contentColor
+                    tint = colors.contentColor,
                 )
             }
         } else {
@@ -72,3 +72,20 @@ fun SoulTopBar(
         }
     }
 }
+
+object SoulTopBarDefaults {
+    @Composable
+    fun colors(
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    ): TopBarColors =
+        TopBarColors(
+            contentColor = contentColor,
+            containerColor = containerColor,
+        )
+}
+
+data class TopBarColors(
+    val containerColor: Color,
+    val contentColor: Color,
+)

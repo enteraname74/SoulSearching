@@ -2,24 +2,22 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.composable.ArtistAlbums
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyartist.presentation.ModifyArtistScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import java.util.*
 
 /**
@@ -27,8 +25,7 @@ import java.util.*
  */
 data class SelectedArtistScreen(
     private val selectedArtistId: String
-) : Screen, PlaylistDetailScreen {
-    override val key: ScreenKey = selectedArtistId
+) : PlaylistDetailScreen(selectedArtistId) {
     private val artistId = UUID.fromString(selectedArtistId)
 
     @Composable

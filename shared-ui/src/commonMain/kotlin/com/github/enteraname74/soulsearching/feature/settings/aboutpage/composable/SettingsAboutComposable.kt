@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 
 @Composable
@@ -34,7 +35,9 @@ fun SettingsAboutComposable(
     ) {
         SoulTopBar(
             title = strings.aboutTitle,
-            leftAction = finishAction
+            leftAction = TopBarNavigationAction(
+                onClick = finishAction,
+            )
         )
         LazyColumn {
             item {

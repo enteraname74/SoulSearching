@@ -13,6 +13,7 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
@@ -40,7 +41,7 @@ fun PlaylistColumnView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        SoulTopBar(leftAction = navigateBack)
+        SoulTopBar(leftAction = TopBarNavigationAction(onClick = navigateBack))
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

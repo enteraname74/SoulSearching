@@ -1,3 +1,0 @@
-package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
-
-interface PlaylistDetailScreen

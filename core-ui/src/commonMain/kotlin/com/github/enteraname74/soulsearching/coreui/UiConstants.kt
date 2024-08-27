@@ -45,6 +45,7 @@ object UiConstants {
      */
     object CoverSize {
         val small: Dp = 55.dp
+        val huge: Dp = 200.dp
     }
 
     /**

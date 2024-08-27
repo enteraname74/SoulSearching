@@ -123,7 +123,8 @@ class AllMusicsViewModel(
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
-    val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> = _addToPlaylistsBottomSheetState.asStateFlow()
+    val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> =
+        _addToPlaylistsBottomSheetState.asStateFlow()
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
@@ -188,7 +189,7 @@ class AllMusicsViewModel(
      * handle a music event.
      */
     fun onMusicEvent(event: MusicEvent) {
-        when(event) {
+        when (event) {
             is MusicEvent.SetSortType -> setSortType(newSortType = event.type)
             is MusicEvent.SetSortDirection -> setSortDirection(newSortDirection = event.direction)
         }

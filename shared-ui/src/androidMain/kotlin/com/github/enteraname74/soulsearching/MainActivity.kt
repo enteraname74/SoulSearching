@@ -23,6 +23,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.model.playback.PlayerService
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
+import io.github.vinceglb.filekit.core.FileKit
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
@@ -65,9 +66,12 @@ class MainActivity : AppCompatActivity() {
     fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        // For JAudiotagger to work on android.
+        // For JAudiotagger to work on android.
         TagOptionSingleton.getInstance().isAndroid = true
         initializeBroadcastReceive()
+
+        // For the file picker to work on android.
+        FileKit.init(this)
 
         setContent {
             mainActivityViewModel.isReadPermissionGranted =

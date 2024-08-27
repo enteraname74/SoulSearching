@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 actual fun rememberWindowSize(): WindowSize {
-    val context = LocalContext.current
+    LocalContext.current
     val windowWidth: Dp = LocalConfiguration.current.screenWidthDp.dp
     return WindowSize.getCorrespondingWindowSize(windowWidth)
 }

@@ -15,9 +15,9 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.do
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifyalbum.presentation.ModifyAlbumScreen
-import com.github.enteraname74.soulsearching.feature.modifyelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 import java.util.*
 
 /**
@@ -25,9 +25,7 @@ import java.util.*
  */
 data class SelectedAlbumScreen(
     private val selectedAlbumId: String,
-) : Screen, PlaylistDetailScreen {
-    override val key: ScreenKey = selectedAlbumId
-
+) : PlaylistDetailScreen(selectedAlbumId) {
     private val albumId: UUID = UUID.fromString(selectedAlbumId)
 
     @Composable

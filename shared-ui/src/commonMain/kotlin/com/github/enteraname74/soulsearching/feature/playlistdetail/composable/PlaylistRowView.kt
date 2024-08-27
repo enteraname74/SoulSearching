@@ -11,6 +11,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -70,7 +71,7 @@ private fun LargeView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        SoulTopBar(leftAction = navigateBack)
+        SoulTopBar(leftAction = TopBarNavigationAction(onClick = navigateBack))
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
@@ -102,7 +103,7 @@ private fun MediumView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        SoulTopBar(leftAction = navigateBack)
+        SoulTopBar(leftAction = TopBarNavigationAction(onClick = navigateBack))
         Content(
             modifier = Modifier.fillMaxSize(),
             shuffleAction = shuffleAction,

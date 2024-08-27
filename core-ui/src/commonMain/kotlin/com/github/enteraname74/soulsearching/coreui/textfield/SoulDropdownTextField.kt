@@ -7,25 +7,20 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +28,7 @@ fun SoulDropdownTextField(
     values: List<String>,
     value: String,
     onValueChange: (String) -> Unit,
-    labelName: String,
+    labelName: String?,
     focusManager: FocusManager
 ) {
     var isExpanded by rememberSaveable {
@@ -47,19 +42,28 @@ fun SoulDropdownTextField(
         mutableStateOf(false)
     }
 
+    val focusRequester = remember { FocusRequester() }
+
     ExposedDropdownMenuBox(
         expanded = isExpanded && isFocused,
         onExpandedChange = { isExpanded = it }
     ) {
         TextField(
             interactionSource = interactionSource,
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier
+                .menuAnchor()
+                .focusRequester(focusRequester),
             value = value,
             onValueChange = {
                 isDropdownExpanded = it != value
+                focusRequester.requestFocus()
                 onValueChange(it)
             },
-            label = { Text(text = labelName) },
+            label = {
+                labelName?.let {
+                    Text(text = it)
+                }
+            },
             singleLine = true,
             colors = ExposedDropdownMenuDefaults.textFieldColors(
                 unfocusedContainerColor = Color.Transparent,
@@ -114,5 +118,43 @@ fun SoulDropdownTextField(
                 )
             }
         }
+    }
+}
+
+class SoulDropdownTextFieldHolderImpl(
+    id: String,
+    initialValue: String = "",
+    isValid: (value: String) -> Boolean = { true },
+    private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
+): SoulTextFieldHolder(
+    initialValue = initialValue,
+    isValid = isValid,
+    id = id,
+) {
+    private var values: List<String> by mutableStateOf(emptyList())
+    private var updateJob: Job? = null
+
+    override fun onValueChanged(newValue: String) {
+        super.onValueChanged(newValue)
+        if (updateJob?.isActive == true) {
+            updateJob?.cancel()
+        }
+        updateJob = CoroutineScope(Dispatchers.IO).launch {
+            values = updateProposedValues(newValue)
+        }
+    }
+
+    @Composable
+    override fun TextField(
+        focusManager: FocusManager,
+        label: String?,
+    ) {
+        SoulDropdownTextField(
+            value = value,
+            onValueChange = ::onValueChanged,
+            labelName = label,
+            focusManager = focusManager,
+            values = values,
+        )
     }
 }

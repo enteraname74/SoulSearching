@@ -73,7 +73,7 @@ class UpdateArtistUseCase(
      */
     private suspend fun redirectAlbumsToCorrectArtist(artist: Artist) {
         val legacyAlbumsOfArtist = albumRepository.getAllAlbumWithMusics().first().filter {
-            it.artist!!.artistName == artist.artistName
+            it.artist?.artistName == artist.artistName
         }
 
         /*

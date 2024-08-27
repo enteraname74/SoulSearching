@@ -23,7 +23,7 @@ val domainModule = module {
     // Album
     singleOf(::DeleteAlbumIfEmptyUseCase)
     singleOf(::DeleteAlbumUseCase)
-    singleOf(::GetAlbumsNameFromSearchString)
+    singleOf(::GetAlbumsNameFromSearchStringUseCase)
     singleOf(::GetAlbumsOfArtistsUseCase)
     singleOf(::GetAlbumUseCase)
     singleOf(::GetAlbumWithMusicsUseCase)

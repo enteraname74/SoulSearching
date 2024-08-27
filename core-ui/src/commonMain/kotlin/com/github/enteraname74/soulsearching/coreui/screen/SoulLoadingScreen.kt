@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 
 @Composable
 fun SoulLoadingScreen(
@@ -15,7 +16,11 @@ fun SoulLoadingScreen(
 ) {
     SoulScreen {
         Column {
-            SoulTopBar(leftAction = navigateBack)
+            SoulTopBar(
+                leftAction = TopBarNavigationAction(
+                    onClick = navigateBack,
+                )
+            )
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,

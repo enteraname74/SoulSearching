@@ -36,7 +36,7 @@ class UpdateMusicUseCase(
      */
     suspend operator fun invoke(
         legacyMusic: Music,
-        newMusicInformation: Music
+        newMusicInformation: Music,
     ) {
         if (legacyMusic.artist != newMusicInformation.artist) {
             val legacyArtist = artistRepository.getFromName(artistName = legacyMusic.artist)

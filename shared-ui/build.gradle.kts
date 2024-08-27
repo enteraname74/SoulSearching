@@ -58,6 +58,8 @@ kotlin {
                 implementation(libs.bundles.voyager)
 
                 implementation(libs.coroutines.core)
+
+                implementation(libs.file.kit)
             }
         }
         androidMain {

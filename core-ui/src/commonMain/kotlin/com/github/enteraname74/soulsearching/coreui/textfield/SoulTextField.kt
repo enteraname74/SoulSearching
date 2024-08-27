@@ -14,13 +14,15 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulTextField(
     value : String,
     onValueChange : (String) -> Unit,
-    labelName : String,
+    labelName : String?,
     focusManager : FocusManager
 ) {
     TextField(
         value = value,
         onValueChange = { onValueChange(it) },
-        label = { Text(text = labelName) },
+        label = {
+            labelName?.let { Text(text = it) }
+        },
         singleLine = true,
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
@@ -41,4 +43,27 @@ fun SoulTextField(
             onDone = { focusManager.clearFocus() }
         )
     )
+}
+
+class SoulTextFieldHolderImpl(
+    id: String,
+    initialValue: String = "",
+    isValid: (value: String) -> Boolean = { true },
+): SoulTextFieldHolder(
+    initialValue = initialValue,
+    isValid = isValid,
+    id = id,
+) {
+    @Composable
+    override fun TextField(
+        focusManager: FocusManager,
+        label: String?,
+    ) {
+        SoulTextField(
+            value = value,
+            onValueChange = ::onValueChanged,
+            labelName = label,
+            focusManager = focusManager
+        )
+    }
 }

@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
@@ -48,7 +49,9 @@ class SettingsMusicViewPersonalisationScreen: Screen {
         ) {
             SoulTopBar(
                 title = strings.manageMusicsViewText,
-                leftAction = onBack
+                leftAction = TopBarNavigationAction(
+                    onClick = onBack,
+                ),
             )
             LazyColumn {
                 item {

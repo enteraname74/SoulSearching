@@ -7,18 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -27,16 +19,18 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.model.AddMusicsStateType
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,18 +82,22 @@ fun SettingsAddMusicsScreenView(
     ) {
         SoulTopBar(
             title = strings.addMusicsTitle,
-            leftAction = finishAction,
-            rightIcon = if (addMusicsState.state == AddMusicsStateType.WAITING_FOR_USER_ACTION) Icons.Rounded.Check else null,
-            rightAction = {
-                if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
-                    return@SoulTopBar
-                }
-                addMusicsViewModel.onAddMusicEvent(
-                    AddMusicsEvent.SetState(
-                        newState = AddMusicsStateType.SAVING_MUSICS
+            leftAction = TopBarNavigationAction(
+                onClick = finishAction,
+            ),
+            rightAction = TopBarValidateAction(
+                isEnabled = addMusicsState.state == AddMusicsStateType.WAITING_FOR_USER_ACTION,
+                onClick = {
+                    if (addMusicsState.state != AddMusicsStateType.WAITING_FOR_USER_ACTION) {
+                        return@TopBarValidateAction
+                    }
+                    addMusicsViewModel.onAddMusicEvent(
+                        AddMusicsEvent.SetState(
+                            newState = AddMusicsStateType.SAVING_MUSICS
+                        )
                     )
-                )
-            }
+                }
+            ),
         )
         when(addMusicsState.state) {
             AddMusicsStateType.FETCHING_MUSICS -> {
