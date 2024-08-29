@@ -14,15 +14,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.model.FolderStateType
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
@@ -36,21 +36,26 @@ class SettingsUsedFoldersScreen : Screen {
         val screenModel = getScreenModel<SettingsAllFoldersViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
+        val state: FolderState by screenModel.state.collectAsState()
+
         SettingsUsedFoldersScreenView(
-            finishAction = {
+            navigateBack = {
                 navigator.pop()
             },
-            settingsAllFoldersViewModel = screenModel
+            onSaveSelection = screenModel::saveSelection,
+            state = state,
+            setFolderSelectionStatus = screenModel::setFolderSelectionStatus,
         )
     }
 }
 
 @Composable
 fun SettingsUsedFoldersScreenView(
-    finishAction: () -> Unit,
-    settingsAllFoldersViewModel: SettingsAllFoldersViewModel
+    state: FolderState,
+    onSaveSelection: (updateProgress: (Float) -> Unit) -> Unit,
+    setFolderSelectionStatus: (folder: Folder, isSelected: Boolean) -> Unit,
+    navigateBack: () -> Unit,
 ) {
-    val folderState by settingsAllFoldersViewModel.state.collectAsState()
 
     var savingProgress by rememberSaveable {
         mutableFloatStateOf(0F)
@@ -68,52 +73,28 @@ fun SettingsUsedFoldersScreenView(
     ) {
         SoulTopBar(
             title = strings.usedFoldersTitle,
-            leftAction = TopBarNavigationAction(
-                onClick = finishAction,
-            ),
+            leftAction = TopBarNavigationAction(onClick = navigateBack),
             rightAction = TopBarValidateAction(
-                isEnabled = folderState.state != FolderStateType.SAVING_SELECTION,
+                isEnabled = state is FolderState.Data,
                 onClick = {
-                    settingsAllFoldersViewModel.onFolderEvent(
-                        FolderEvent.SaveSelection(
-                            updateProgress = {
-                                savingProgress = it
-                            }
-                        )
-                    )
+                    onSaveSelection {
+                        savingProgress = it
+                    }
                 }
             ),
         )
-        when (folderState.state) {
-            FolderStateType.FETCHING_FOLDERS -> {
-                FolderStateComposable(
-                    stateTitle = strings.fetchingFolders
-                )
-            }
-
-            FolderStateType.SAVING_SELECTION -> {
-                LoadingComposable(
-                    progressIndicator = savingAnimatedProgress,
-                    progressMessage = strings.deletingMusicsFromUnselectedFolders
-                )
-            }
-
-            FolderStateType.WAITING_FOR_USER_ACTION -> {
+        when (state) {
+            is FolderState.Data -> {
                 LazyColumn {
                     items(
-                        items = folderState.folders,
+                        items = state.folders,
                         key = { it.folderPath },
                         contentType = { USED_FOLDERS_CONTENT_TYPE }
                     ) {
                         SettingsSwitchElement(
                             title = it.folderPath,
                             toggleAction = {
-                                settingsAllFoldersViewModel.onFolderEvent(
-                                    FolderEvent.SetSelectedFolder(
-                                        folder = it,
-                                        isSelected = !it.isSelected
-                                    )
-                                )
+                                setFolderSelectionStatus(it, !it.isSelected)
                             },
                             isChecked = it.isSelected
                         )
@@ -125,6 +106,19 @@ fun SettingsUsedFoldersScreenView(
                         SoulPlayerSpacer()
                     }
                 }
+            }
+
+            FolderState.Fetching -> {
+                FolderStateComposable(
+                    stateTitle = strings.fetchingFolders
+                )
+            }
+
+            FolderState.Saving -> {
+                LoadingComposable(
+                    progressIndicator = savingAnimatedProgress,
+                    progressMessage = strings.deletingMusicsFromUnselectedFolders
+                )
             }
         }
     }

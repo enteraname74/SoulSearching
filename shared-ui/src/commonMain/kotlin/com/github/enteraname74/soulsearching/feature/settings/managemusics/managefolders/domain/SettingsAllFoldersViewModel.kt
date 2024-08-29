@@ -1,18 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicFromFolderPathUseCase
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.model.FolderStateType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -22,84 +19,87 @@ class SettingsAllFoldersViewModel(
     private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,
     private val deleteMusicUseCase: DeleteMusicUseCase,
 ): ScreenModel {
-    private val _state = MutableStateFlow(FolderState())
-    val state = _state.asStateFlow()
+    private val isSavingFolders: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val isFetchingFolders: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val folders: MutableStateFlow<List<Folder>> = MutableStateFlow(emptyList())
+    val state: StateFlow<FolderState> = combine(
+        isSavingFolders,
+        isFetchingFolders,
+        folders,
+    ) { isSavingFolders, isFetchingFolders, folders ->
+        when {
+            isSavingFolders -> FolderState.Saving
+            isFetchingFolders -> FolderState.Fetching
+            else -> FolderState.Data(folders)
+        }
+    }.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = FolderState.Fetching,
+    )
 
-    /**
-     * Manage folder events.
-     */
-    fun onFolderEvent(event: FolderEvent) {
-        when (event) {
-            FolderEvent.FetchFolders -> {
-                if (_state.value.state == FolderStateType.SAVING_SELECTION) {
-                    return
-                }
-                CoroutineScope(Dispatchers.IO).launch {
-                    val folders: List<Folder> = getAllFoldersUseCase().first()
-                    _state.update {
-                        it.copy(
-                            folders = folders as ArrayList<Folder>,
-                            state = FolderStateType.WAITING_FOR_USER_ACTION
-                        )
-                    }
-                }
-            }
-            is FolderEvent.SetSelectedFolder -> {
-                _state.update {
-                    it.copy(
-                        folders = it.folders.map { folder ->
-                            if (folder.folderPath == event.folder.folderPath) {
-                                folder.copy(
-                                    isSelected = event.isSelected
-                                )
-                            } else {
-                                folder.copy()
-                            }
-                        } as ArrayList<Folder>
+    init {
+        updateFolders()
+    }
+
+    private fun updateFolders() {
+        CoroutineScope(Dispatchers.IO).launch {
+            isFetchingFolders.value = true
+            val folders: List<Folder> = getAllFoldersUseCase().first()
+            this@SettingsAllFoldersViewModel.folders.value = folders
+            isFetchingFolders.value = false
+        }
+    }
+
+    fun setFolderSelectionStatus(
+        folder: Folder,
+        isSelected: Boolean,
+    ) {
+        if (state.value !is FolderState.Data) {
+            return
+        }
+        folders.update {
+            it.map { savedFolder ->
+                if (savedFolder.folderPath == folder.folderPath) {
+                    savedFolder.copy(
+                        isSelected = isSelected
                     )
+                } else {
+                    savedFolder.copy()
                 }
             }
-            is FolderEvent.SetState -> {
-                _state.update {
-                    it.copy(
-                        state = event.newState
+        }
+    }
+
+    fun saveSelection(
+        updateProgress: (Float) -> Unit
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            isSavingFolders.value = true
+            folders.value.forEach { folder ->
+                upsertFolderUseCase(
+                    Folder(
+                        folderPath = folder.folderPath,
+                        isSelected = folder.isSelected
                     )
+                )
+
+                if (!folder.isSelected) {
+                    val musicsFromFolder = runBlocking {
+                        getAllMusicFromFolderPathUseCase(folder.folderPath).first()
+                    }
+                    var count = 0
+                    musicsFromFolder.forEach { music ->
+                        deleteMusicUseCase(
+                            musicId = music.musicId
+                        )
+                        count++
+                        updateProgress((count * 1F) / musicsFromFolder.size)
+                    }
                 }
             }
-            is FolderEvent.SaveSelection -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    _state.update {
-                        it.copy(
-                            state = FolderStateType.SAVING_SELECTION
-                        )
-                    }
-                    _state.value.folders.forEach { folder ->
-
-                        upsertFolderUseCase(
-                            Folder(
-                                folderPath = folder.folderPath,
-                                isSelected = folder.isSelected
-                            )
-                        )
-
-                        if (!folder.isSelected) {
-                            val musicsFromFolder = runBlocking {
-                                getAllMusicFromFolderPathUseCase(folder.folderPath).first()
-                            }
-                            var count = 0
-                            musicsFromFolder.forEach { music ->
-                                deleteMusicUseCase(
-                                    musicId = music.musicId
-                                )
-                                count++
-                                event.updateProgress((count * 1F) / musicsFromFolder.size)
-                            }
-                        }
-                    }
-                    onFolderEvent(FolderEvent.SetState(FolderStateType.FETCHING_FOLDERS))
-                    onFolderEvent(FolderEvent.FetchFolders)
-                }
-            }
+            isSavingFolders.value = false
+            updateFolders()
         }
     }
 }

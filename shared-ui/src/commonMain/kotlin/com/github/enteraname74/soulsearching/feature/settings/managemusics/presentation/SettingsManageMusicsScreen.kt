@@ -23,8 +23,6 @@ import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
@@ -36,8 +34,6 @@ class SettingsManageMusicsScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-
-        val allFoldersViewModel = getScreenModel<SettingsAllFoldersViewModel>()
         val addMusicsViewModel = getScreenModel<SettingsAddMusicsViewModel>()
 
         SettingsManageMusicsScreenView(
@@ -45,9 +41,6 @@ class SettingsManageMusicsScreen : Screen {
                 navigator.pop()
             },
             navigateToFolders = {
-                allFoldersViewModel.onFolderEvent(
-                    FolderEvent.FetchFolders
-                )
                 navigator.push(
                     SettingsUsedFoldersScreen()
                 )

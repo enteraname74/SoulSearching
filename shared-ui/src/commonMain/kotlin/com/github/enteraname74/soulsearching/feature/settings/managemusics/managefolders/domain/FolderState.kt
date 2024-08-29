@@ -1,15 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain
 
 import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.model.FolderStateType
 
 /**
  * State for managing folders.
  */
-data class FolderState(
-    /**
-     * Current operation on the folders.
-     */
-    val state: FolderStateType = FolderStateType.FETCHING_FOLDERS,
-    val folders: ArrayList<Folder> = ArrayList()
-)
+sealed interface FolderState {
+    data object Fetching: FolderState
+    data object Saving: FolderState
+    data class Data(val folders: List<Folder>): FolderState
+}
