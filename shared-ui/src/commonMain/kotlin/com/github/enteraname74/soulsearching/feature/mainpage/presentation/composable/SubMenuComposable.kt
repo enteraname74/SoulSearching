@@ -18,18 +18,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SortOptionsComposable
 
 @Composable
 fun SubMenuComposable(
     modifier: Modifier = Modifier,
     title: String,
-    sortByDateAction: () -> Unit,
-    sortByMostListenedAction: () -> Unit,
-    sortByName: () -> Unit,
-    setSortDirectionAction: () -> Unit,
+    setSortType: (Int) -> Unit,
+    toggleSortDirection: () -> Unit,
     rightComposable: @Composable (() -> Unit) = {},
-    createPlaylistComposable: @Composable (() -> Unit) = {},
+    leftComposable: @Composable (() -> Unit) = {},
     sortType: Int,
     sortDirection: Int,
     isUsingSort: Boolean = true,
@@ -62,13 +59,11 @@ fun SubMenuComposable(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            createPlaylistComposable()
+            leftComposable()
             if (isUsingSort) {
                 SortOptionsComposable(
-                    sortByDateAction = sortByDateAction,
-                    sortByMostListenedAction = sortByMostListenedAction,
-                    sortByName = sortByName,
-                    setSortDirection = setSortDirectionAction,
+                    setSortType = setSortType,
+                    toggleSortDirection = toggleSortDirection,
                     sortDirection = sortDirection,
                     sortType = sortType
                 )

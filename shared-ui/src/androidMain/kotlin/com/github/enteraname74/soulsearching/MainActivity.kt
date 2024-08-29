@@ -18,7 +18,7 @@ import androidx.compose.runtime.SideEffect
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.model.playback.PlayerService
@@ -31,7 +31,7 @@ import org.koin.core.context.unloadKoinModules
 
 class MainActivity : AppCompatActivity() {
     // Main page view models
-    private val allMusicsViewModel: AllMusicsViewModel by inject()
+    private val mainPageViewModel: MainPageViewModel by inject()
     private val mainActivityViewModel: MainActivityViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         try {
-            allMusicsViewModel.checkAndDeleteMusicIfNotExist()
+            mainPageViewModel.checkAndDeleteMusicIfNotExist()
         } catch (_: RuntimeException) {
 
         }

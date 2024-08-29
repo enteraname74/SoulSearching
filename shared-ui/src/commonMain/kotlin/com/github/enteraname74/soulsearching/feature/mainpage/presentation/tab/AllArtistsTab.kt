@@ -1,54 +1,53 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.events.ArtistEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllArtistsViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllElementsComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import java.util.UUID
 
 fun allArtistsTab(
-    allArtistsViewModel: AllArtistsViewModel,
-    artistState: ArtistState,
-    navigateToArtist: (artistId: String) -> Unit,
+    mainPageViewModel: MainPageViewModel,
+    navigateToArtist: (artistId: UUID) -> Unit,
 ): PagerScreen = PagerScreen(
-    title = strings.artists,
+    type = ElementEnum.ARTISTS,
     screen = {
-        AllElementsComposable(
+
+        val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
+
+        MainPageList(
             list = artistState.artists,
             title = strings.artists,
-            navigateToArtist = navigateToArtist,
-            artistBottomSheetAction = allArtistsViewModel::showArtistBottomSheet,
-            sortByName = {
-                allArtistsViewModel.onArtistEvent(
-                    ArtistEvent.SetSortType(SortType.NAME)
-                )
-            },
-            sortByDateAction = {
-                allArtistsViewModel.onArtistEvent(
-                    ArtistEvent.SetSortType(SortType.ADDED_DATE)
-                )
-            },
-            sortByMostListenedAction = {
-                allArtistsViewModel.onArtistEvent(
-                    ArtistEvent.SetSortType(SortType.NB_PLAYED)
-                )
-            },
-            setSortDirectionAction = {
+            toggleSortDirection = {
                 val newDirection =
                     if (artistState.sortDirection == SortDirection.ASC) {
                         SortDirection.DESC
                     } else {
                         SortDirection.ASC
                     }
-                allArtistsViewModel.onArtistEvent(
-                    ArtistEvent.SetSortDirection(newDirection)
-                )
+                mainPageViewModel.setArtistSortDirection(newDirection)
             },
+            setSortType = mainPageViewModel::setArtistSortType,
             sortType = artistState.sortType,
             sortDirection = artistState.sortDirection
-        )
+        ) { element ->
+            BigPreviewComposable(
+                coverId = element.artist.coverId,
+                title = element.artist.artistName,
+                text = strings.musics(element.musics.size),
+                onClick = {
+                    navigateToArtist(element.artist.artistId)
+                },
+                onLongClick = {
+                    mainPageViewModel.showArtistBottomSheet(element)
+                }
+            )
+        }
     }
 )

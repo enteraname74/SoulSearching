@@ -1,55 +1,39 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.events.MusicEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllMusicsComposable
 
 fun allMusicsTab(
-    allMusicsViewModel: AllMusicsViewModel,
-    state: AllMusicsState,
+    mainPageViewModel: MainPageViewModel,
     navigateToFolder: (folderPath: String) -> Unit,
     navigateToMonth: (month: String) -> Unit,
 ): PagerScreen = PagerScreen(
-    title = strings.musics,
+    type = ElementEnum.MUSICS,
     screen = {
+        val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
+
         AllMusicsComposable(
-            musicState = state,
+            musicState = musicState,
             navigateToFolder = navigateToFolder,
             navigateToMonth = navigateToMonth,
-            sortByName = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.SetSortType(SortType.NAME)
-                )
-
-            },
-            sortByDateAction = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.SetSortType(SortType.ADDED_DATE)
-                )
-            },
-            sortByMostListenedAction = {
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.SetSortType(SortType.NB_PLAYED)
-                )
-
-            },
-            setSortDirectionAction = {
+            setSortType = mainPageViewModel::setMusicSortType,
+            toggleSortDirection = {
                 val newDirection =
-                    if (state.sortDirection == SortDirection.ASC) {
+                    if (musicState.sortDirection == SortDirection.ASC) {
                         SortDirection.DESC
                     } else {
                         SortDirection.ASC
                     }
-                allMusicsViewModel.onMusicEvent(
-                    MusicEvent.SetSortDirection(newDirection)
-                )
+               mainPageViewModel.setMusicSortDirection(newDirection)
             },
-            onLongMusicClick = allMusicsViewModel::showMusicBottomSheet,
+            onLongClick = mainPageViewModel::showMusicBottomSheet,
         )
     }
 )

@@ -29,10 +29,8 @@ import com.github.enteraname74.domain.model.SortType
 @Composable
 fun SortOptionsComposable(
     imageSize: Dp = UiConstants.ImageSize.small,
-    sortByDateAction: () -> Unit,
-    sortByMostListenedAction: () -> Unit,
-    sortByName: () -> Unit,
-    setSortDirection: () -> Unit,
+    setSortType: (Int) -> Unit,
+    toggleSortDirection: () -> Unit,
     sortType: Int,
     sortDirection: Int
 ) {
@@ -50,7 +48,7 @@ fun SortOptionsComposable(
         ) {
             Icon(
                 modifier = Modifier
-                    .clickable { sortByDateAction() }
+                    .clickable { setSortType(SortType.ADDED_DATE) }
                     .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.ADDED_DATE) (imageSize + imageSize / 3) else imageSize
@@ -61,7 +59,7 @@ fun SortOptionsComposable(
             )
             Icon(
                 modifier = Modifier
-                    .clickable { sortByMostListenedAction() }
+                    .clickable { setSortType(SortType.NB_PLAYED) }
                     .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.NB_PLAYED) (imageSize + imageSize / 3) else imageSize
@@ -72,7 +70,7 @@ fun SortOptionsComposable(
             )
             Icon(
                 modifier = Modifier
-                    .clickable { sortByName() }
+                    .clickable { setSortType(SortType.NAME) }
                     .padding(UiConstants.Spacing.small)
                     .size(
                         if (sortType == SortType.NAME) (imageSize + imageSize / 3) else imageSize
@@ -84,7 +82,7 @@ fun SortOptionsComposable(
         }
         Icon(
             modifier = Modifier
-                .clickable { setSortDirection() }
+                .clickable { toggleSortDirection() }
                 .padding(UiConstants.Spacing.small)
                 .size(
                     imageSize

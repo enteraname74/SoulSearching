@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 class MainActivityViewModel(
     settings: SoulSearchingSettings
 ) : ScreenModel {
-    var cleanImagesLaunched by mutableStateOf(false)
     var cleanMusicsLaunched by mutableStateOf(false)
     var hasMusicsBeenFetched by mutableStateOf(
         settings.getBoolean(

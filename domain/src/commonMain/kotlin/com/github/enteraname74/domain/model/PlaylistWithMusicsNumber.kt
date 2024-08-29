@@ -5,5 +5,6 @@ package com.github.enteraname74.domain.model
  */
 data class PlaylistWithMusicsNumber(
     val playlist: Playlist = Playlist(),
-    val musicsNumber : Int = 0
-)
+    val musicsNumber : Int = 0,
+    override var isInQuickAccess: Boolean = playlist.isInQuickAccess,
+): QuickAccessible

@@ -14,8 +14,8 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
@@ -39,7 +39,7 @@ fun PlayerPanelContent(
     val coroutineScope = rememberCoroutineScope()
 
     val pages = listOf(
-        PagerScreen(
+        TabData(
             title = strings.playedList,
             screen = {
                 PlayerListView(
@@ -53,7 +53,7 @@ fun PlayerPanelContent(
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.lyrics,
             screen = {
                 MusicLyricsView(

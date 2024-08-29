@@ -5,5 +5,6 @@ package com.github.enteraname74.domain.model
  */
 data class ArtistWithMusics(
     val artist: Artist = Artist(),
-    val musics : List<Music> = emptyList()
-)
+    val musics : List<Music> = emptyList(),
+    override var isInQuickAccess: Boolean = artist.isInQuickAccess,
+) : QuickAccessible

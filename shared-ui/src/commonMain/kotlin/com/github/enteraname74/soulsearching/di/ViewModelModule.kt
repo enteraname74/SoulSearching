@@ -28,12 +28,8 @@ internal val viewModelModule: Module = module {
     factoryOf(::SettingsColorThemeViewModel)
 
     // Main page
-    singleOf(::AllMusicsViewModel)
-    factoryOf(::AllAlbumsViewModel)
-    factoryOf(::AllArtistsViewModel)
-    factoryOf(::AllPlaylistsViewModel)
-    factoryOf(::AllQuickAccessViewModel)
-    factoryOf(::MainActivityViewModel)
+    singleOf(::MainPageViewModel)
+    singleOf(::MainActivityViewModel)
 
     // Modify elements
     factoryOf(::ModifyAlbumViewModel)

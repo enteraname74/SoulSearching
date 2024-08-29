@@ -10,15 +10,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.perso_first_example
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.system_dark_theme_main
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -27,7 +24,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @Composable
 fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     val pagerScreens = listOf(
-        PagerScreen(
+        TabData(
             title = strings.completeApplicationTitle,
             screen = {
                 AppFeatureComposable(
@@ -37,7 +34,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.quickAccessTitle,
             screen = {
                 AppFeatureComposable(
@@ -47,7 +44,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.modifyElementsTitle,
             screen = {
                 AppFeatureComposable(
@@ -57,7 +54,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.dynamicThemeFeatureTitle,
             screen = {
                 AppFeatureComposable(
@@ -67,7 +64,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.manageFoldersTitle,
             screen = {
                 AppFeatureComposable(
@@ -77,7 +74,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.addNewMusicsTitle,
             screen = {
                 AppFeatureComposable(
@@ -87,7 +84,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                 )
             }
         ),
-        PagerScreen(
+        TabData(
             title = strings.personalizeMainPageTitle,
             screen = {
                 AppFeatureComposable(

@@ -1,54 +1,53 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.domain.events.AlbumEvent
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllAlbumsViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.AllElementsComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import java.util.*
 
 fun allAlbumsTab(
-    allAlbumsViewModel: AllAlbumsViewModel,
-    albumState: AlbumState,
-    navigateToAlbum: (albumId: String) -> Unit,
+    mainPageViewModel: MainPageViewModel,
+    navigateToAlbum: (albumId: UUID) -> Unit,
 ): PagerScreen = PagerScreen(
-    title = strings.albums,
+    type = ElementEnum.ALBUMS,
     screen = {
-        AllElementsComposable(
+
+        val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
+
+        MainPageList(
             list = albumState.albums,
             title = strings.albums,
-            navigateToAlbum = navigateToAlbum,
-            albumBottomSheetAction = allAlbumsViewModel::showAlbumBottomSheet,
-            sortByName = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.SetSortType(SortType.NAME)
-                )
-            },
-            sortByDateAction = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.SetSortType(SortType.ADDED_DATE)
-                )
-            },
-            sortByMostListenedAction = {
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.SetSortType(SortType.NB_PLAYED)
-                )
-            },
-            setSortDirectionAction = {
+            setSortType = mainPageViewModel::setAlbumSortType,
+            toggleSortDirection = {
                 val newDirection =
                     if (albumState.sortDirection == SortDirection.ASC) {
                         SortDirection.DESC
                     } else {
                         SortDirection.ASC
                     }
-                allAlbumsViewModel.onAlbumEvent(
-                    AlbumEvent.SetSortDirection(newDirection)
-                )
+                mainPageViewModel.setAlbumSortDirection(newDirection)
             },
             sortType = albumState.sortType,
             sortDirection = albumState.sortDirection
-        )
+        ) { element ->
+            BigPreviewComposable(
+                coverId = element.album.coverId,
+                title = element.album.albumName,
+                text = element.artist?.artistName.orEmpty(),
+                onClick = {
+                    navigateToAlbum(element.album.albumId)
+                },
+                onLongClick = {
+                    mainPageViewModel.showAlbumBottomSheet(element.album)
+                }
+            )
+        }
     }
 )

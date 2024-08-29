@@ -34,12 +34,10 @@ fun AllMusicsComposable(
     musicState: AllMusicsState,
     navigateToFolder: (folderPath: String) -> Unit,
     navigateToMonth: (month: String) -> Unit,
-    sortByName: () -> Unit = {},
-    sortByDateAction: () -> Unit = {},
-    sortByMostListenedAction: () -> Unit = {},
-    setSortDirectionAction: () -> Unit = {},
+    setSortType: (Int) -> Unit,
+    toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
-    onLongMusicClick: (Music) -> Unit,
+    onLongClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     viewSettingsManager: ViewSettingsManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -79,10 +77,8 @@ fun AllMusicsComposable(
             ) {
                 SubMenuComposable(
                     title = strings.musics,
-                    sortByDateAction = sortByDateAction,
-                    sortByMostListenedAction = sortByMostListenedAction,
-                    sortByName = sortByName,
-                    setSortDirectionAction = setSortDirectionAction,
+                    setSortType = setSortType,
+                    toggleSortDirection = toggleSortDirection,
                     sortType = musicState.sortType,
                     sortDirection = musicState.sortDirection,
                     isUsingSort = isUsingSort,
@@ -114,12 +110,12 @@ fun AllMusicsComposable(
             items(items = musicState.musics) { elt ->
                 MusicItemComposable(
                     music = elt,
-                    onClick = { music ->
+                    onClick = {
                         coroutineScope.launch {
                             playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                         }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
-                                music = music,
+                                music = elt,
                                 musicList = musicState.musics,
                                 isMainPlaylist = true,
                                 playlistId = null,
@@ -128,7 +124,7 @@ fun AllMusicsComposable(
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onLongMusicClick(elt)
+                            onLongClick(elt)
                         }
                     },
                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)

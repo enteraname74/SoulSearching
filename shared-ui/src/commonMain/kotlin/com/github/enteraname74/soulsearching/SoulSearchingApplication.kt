@@ -8,8 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.getFromCoverId
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -19,7 +19,6 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.navigationIcon
@@ -27,8 +26,10 @@ import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsComposable
 import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.AllMusicsViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -46,22 +47,17 @@ fun SoulSearchingApplication(
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
     imageCoverRetriever : ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
 ) {
-    val allMusicsViewModel = injectElement<AllMusicsViewModel>()
+    val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
-    val musicState by allMusicsViewModel.state.collectAsState()
+    val musicState by mainPageViewModel.allMusicsState.collectAsState()
+    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val allImages by imageCoverRetriever.allCovers.collectAsState()
 
     playbackManager.retrieveCoverMethod = allImages::getFromCoverId
 
-    if (musicState.allCovers.isNotEmpty() && !mainActivityViewModel.cleanImagesLaunched) {
+    if (allImages.isNotEmpty()) {
         LaunchedEffect("Covers check") {
-            CoroutineScope(Dispatchers.IO).launch {
-                for (cover in musicState.allCovers) {
-                    imageCoverRetriever.deleteImageIfNotUsed(cover.coverId)
-                }
-            }
-
             CoroutineScope(Dispatchers.IO).launch {
                 playbackManager.currentMusic?.let { currentMusic ->
                     playbackManager.defineCoverAndPaletteFromCoverId(
@@ -70,7 +66,6 @@ fun SoulSearchingApplication(
                     playbackManager.update()
                 }
             }
-            mainActivityViewModel.cleanImagesLaunched = true
         }
     }
 
@@ -83,13 +78,13 @@ fun SoulSearchingApplication(
                 )
                 mainActivityViewModel.hasMusicsBeenFetched = true
             },
-            allMusicsViewModel = allMusicsViewModel
+            mainPageViewModel = mainPageViewModel
         )
         return
     }
 
     if (musicState.musics.isNotEmpty() && !mainActivityViewModel.cleanMusicsLaunched) {
-        allMusicsViewModel.checkAndDeleteMusicIfNotExist()
+        mainPageViewModel.checkAndDeleteMusicIfNotExist()
         mainActivityViewModel.cleanMusicsLaunched = true
     }
 
@@ -106,6 +101,8 @@ fun SoulSearchingApplication(
                     NavigationPanel(
                         rows = navigationRows(
                             generalNavigator = generalNavigator,
+                            setCurrentPage = mainPageViewModel::setCurrentPage,
+                            tabs = tabs,
                         )
                     )
                 }
@@ -148,13 +145,12 @@ fun SoulSearchingApplication(
 
 @Composable
 private fun navigationRows(
-    viewSettingsManager: ViewSettingsManager = injectElement(),
-    allMusicsViewModel: AllMusicsViewModel = injectElement(),
+    setCurrentPage: (ElementEnum) -> Unit,
+    tabs: List<PagerScreen>,
     playerViewManager: PlayerViewManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
     generalNavigator: Navigator?,
 ): List<NavigationRowSpec> {
-    val visibleElements = viewSettingsManager.getListOfVisibleElements()
     val coroutineScope = rememberCoroutineScope()
 
     val playerAction: () -> Unit = {
@@ -181,13 +177,13 @@ private fun navigationRows(
                 icon = Icons.Rounded.Settings
             )
         )
-        visibleElements.forEach { visibleElement ->
+        tabs.forEach { tab ->
             add(
                 NavigationRowSpec(
-                    title = visibleElement.navigationTitle(),
-                    icon = visibleElement.navigationIcon(),
+                    title = tab.type.navigationTitle(),
+                    icon = tab.type.navigationIcon(),
                     onClick = {
-                        allMusicsViewModel.currentPage = visibleElement
+                        setCurrentPage(tab.type)
                         playerAction()
                         generalNavigator?.safePush(
                             MainPageScreen()

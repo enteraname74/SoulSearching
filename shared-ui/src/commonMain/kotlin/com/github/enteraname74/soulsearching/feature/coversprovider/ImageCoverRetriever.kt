@@ -5,9 +5,7 @@ import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.domain.repository.ImageCoverRepository
 import com.github.enteraname74.domain.usecase.imagecover.DeleteImageCoverUseCase
 import com.github.enteraname74.domain.usecase.imagecover.IsImageCoverUsedUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,6 +26,22 @@ class ImageCoverRetriever(
         )
 
     private val cachedCovers: ArrayList<ImageCover> = arrayListOf()
+    private var deleteJob: Job? = null
+    private var cleanImageLaunched: Boolean = false
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            allCovers.collect { covers ->
+                if (covers.isNotEmpty() && !cleanImageLaunched) {
+                    deleteJob = CoroutineScope(Dispatchers.IO).launch {
+                        covers.forEach { cover ->
+                            deleteImageIfNotUsed(coverId = cover.coverId)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Retrieve the latest image bitmap linked to a cover id.

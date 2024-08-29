@@ -14,12 +14,11 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.events.PlaylistEvent
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AlbumState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ArtistState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.PlaylistState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
@@ -32,14 +31,13 @@ import java.util.*
 fun SearchAll(
     searchText: String,
     musicState: AllMusicsState,
-    albumState: AlbumState,
-    artistState: ArtistState,
-    playlistState: PlaylistState,
+    allAlbumsState: AllAlbumsState,
+    allArtistsState: AllArtistsState,
+    allPlaylistsState: AllPlaylistsState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
     onSelectedAlbumForBottomSheet: (Album) -> Unit,
     onSelectedPlaylistForBottomSheet: (Playlist) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
-    onPlaylistEvent: (PlaylistEvent) -> Unit,
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToAlbum: (String) -> Unit,
@@ -51,7 +49,7 @@ fun SearchAll(
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn {
-        val foundedPlaylists = playlistState.playlists.filter {
+        val foundedPlaylists = allPlaylistsState.playlists.filter {
             it.playlist.name.lowercase().contains(searchText.lowercase())
         }
         if (foundedPlaylists.isNotEmpty()) {
@@ -64,11 +62,6 @@ fun SearchAll(
                     text = strings.musics(playlistWithMusics.musicsNumber),
                     onClick = {
                         focusManager.clearFocus()
-                        onPlaylistEvent(
-                            PlaylistEvent.SetSelectedPlaylist(
-                                playlistWithMusics.playlist
-                            )
-                        )
                         navigateToPlaylist(playlistWithMusics.playlist.playlistId.toString())
                     },
                     onLongClick = {
@@ -79,7 +72,7 @@ fun SearchAll(
             }
         }
 
-        val foundedArtists = artistState.artists.filter {
+        val foundedArtists = allArtistsState.artists.filter {
             it.artist.artistName.lowercase().contains(searchText.lowercase())
         }
         if (foundedArtists.isNotEmpty()) {
@@ -102,7 +95,7 @@ fun SearchAll(
             }
         }
 
-        val foundedAlbums = albumState.albums.filter {
+        val foundedAlbums = allAlbumsState.albums.filter {
             it.artist?.artistName?.lowercase()?.contains(searchText.lowercase()) == true ||
                     it.album.albumName.lowercase().contains(searchText.lowercase())
         }

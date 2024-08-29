@@ -7,6 +7,6 @@ import androidx.compose.runtime.Composable
  * It has a title and a composable linked to it.
  */
 data class PagerScreen(
-    val title : String,
+    val type: ElementEnum,
     val screen: @Composable () -> Unit
 )

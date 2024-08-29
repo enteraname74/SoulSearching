@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
 /**
  * Manage settings of the application linked to the view.
@@ -37,27 +39,23 @@ class ViewSettingsManager(
         initializeManager()
     }
 
-    /**
-     * Retrieve a list of visible elements on the main page screen.
-     */
-    fun getListOfVisibleElements(): List<ElementEnum> {
-        val list: ArrayList<ElementEnum> = ArrayList()
-        if (isQuickAccessShown) {
-            list.add(ElementEnum.QUICK_ACCESS)
-        }
-        list.add(ElementEnum.MUSICS)
-        if (isPlaylistsShown) {
-            list.add(ElementEnum.PLAYLISTS)
-        }
-        if (isAlbumsShown) {
-            list.add(ElementEnum.ALBUMS)
-        }
-        if (isArtistsShown) {
-            list.add(ElementEnum.ARTISTS)
-        }
-        return list
+    val visibleElements: Flow<ElementsVisibility> = combine(
+        settings.getFlowOn(SoulSearchingSettings.IS_QUICK_ACCESS_SHOWN, true),
+        settings.getFlowOn(SoulSearchingSettings.IS_PLAYLISTS_SHOWN, true),
+        settings.getFlowOn(SoulSearchingSettings.IS_ALBUMS_SHOWN, true),
+        settings.getFlowOn(SoulSearchingSettings.IS_ARTISTS_SHOWN, true),
+    ) { isQuickAccessShown, arePlaylistsShown, areAlbumsShown, areArtistsShown ->
+        ElementsVisibility(
+            isQuickAccessShown = isQuickAccessShown,
+            arePlaylistsShown = arePlaylistsShown,
+            areAlbumsShown = areAlbumsShown,
+            areArtistsShown = areArtistsShown,
+        )
     }
 
+    /**
+     * Initialize the manager.
+     */
     /**
      * Initialize the manager.
      */
@@ -93,6 +91,9 @@ class ViewSettingsManager(
     /**
      * Show or hide the quick access on the main page screen.
      */
+    /**
+     * Show or hide the quick access on the main page screen.
+     */
     fun toggleQuickAccessVisibility() {
         isQuickAccessShown = !isQuickAccessShown
         settings.setBoolean(
@@ -101,6 +102,9 @@ class ViewSettingsManager(
         )
     }
 
+    /**
+     * Show or hide the playlists on the main page screen.
+     */
     /**
      * Show or hide the playlists on the main page screen.
      */
@@ -115,6 +119,9 @@ class ViewSettingsManager(
     /**
      * Show or hide the albums on the main page screen.
      */
+    /**
+     * Show or hide the albums on the main page screen.
+     */
     fun toggleAlbumsVisibility() {
         isAlbumsShown = !isAlbumsShown
         settings.setBoolean(
@@ -123,6 +130,9 @@ class ViewSettingsManager(
         )
     }
 
+    /**
+     * Show or hide the artists on the main page screen.
+     */
     /**
      * Show or hide the artists on the main page screen.
      */
@@ -137,6 +147,9 @@ class ViewSettingsManager(
     /**
      * Active or deactivate the music file modification.
      */
+    /**
+     * Active or deactivate the music file modification.
+     */
     fun toggleMusicFileModification() {
         isMusicFileModificationOn = !isMusicFileModificationOn
         settings.setBoolean(
@@ -145,6 +158,9 @@ class ViewSettingsManager(
         )
     }
 
+    /**
+     * Show or hide the musics by months part in the musics tab.
+     */
     /**
      * Show or hide the musics by months part in the musics tab.
      */
@@ -159,6 +175,9 @@ class ViewSettingsManager(
     /**
      * Show or hide the musics by folders part in the musics tab.
      */
+    /**
+     * Show or hide the musics by folders part in the musics tab.
+     */
     fun toggleMusicsByFoldersVisibility() {
         areMusicsByFoldersShown = !areMusicsByFoldersShown
         settings.setBoolean(
@@ -167,6 +186,9 @@ class ViewSettingsManager(
         )
     }
 
+    /**
+     * Enable or disable the swipe to change current song on player view.
+     */
     /**
      * Enable or disable the swipe to change current song on player view.
      */
