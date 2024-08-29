@@ -11,3 +11,12 @@ fun Modifier.clickableIf(enabled: Boolean, block: () -> Unit): Modifier =
     } else {
         this
     }
+
+fun Modifier.optionalClickable(block: (() -> Unit)?): Modifier =
+    if (block == null) {
+        this
+    } else {
+        this.clickable {
+            block()
+        }
+    }

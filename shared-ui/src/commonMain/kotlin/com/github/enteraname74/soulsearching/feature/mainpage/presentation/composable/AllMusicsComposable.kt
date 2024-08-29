@@ -49,7 +49,10 @@ fun AllMusicsComposable(
             .fillMaxSize()
     ) {
         if (viewSettingsManager.areMusicsByFoldersShown) {
-            item {
+            item(
+                key = ALL_MUSICS_FOLDER_KEY,
+                contentType = ALL_MUSICS_FOLDER_CONTENT_TYPE,
+            ) {
                 MusicFoldersHorizontalList(
                     folders = musicState.folderMusics,
                     onFolderClicked = navigateToFolder,
@@ -58,7 +61,10 @@ fun AllMusicsComposable(
             }
         }
         if (viewSettingsManager.areMusicsByMonthsShown) {
-            item {
+            item(
+                key = ALL_MUSICS_MONTH_KEY,
+                contentType = ALL_MUSICS_MONTH_STICKY_HEADER,
+            ) {
                 MusicMonthsHorizontalList(
                     months = musicState.monthMusics,
                     onMonthClicked = navigateToMonth,
@@ -66,7 +72,10 @@ fun AllMusicsComposable(
                 )
             }
         }
-        stickyHeader {
+        stickyHeader(
+            key = ALL_MUSICS_STICKY_HEADER_KEY,
+            contentType = ALL_MUSICS_STICKY_CONTENT_TYPE,
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,8 +116,14 @@ fun AllMusicsComposable(
             }
         }
         if (musicState.musics.isNotEmpty()) {
-            items(items = musicState.musics) { elt ->
+            items(
+                key = { it.musicId },
+                contentType = { ALL_MUSICS_CONTENT_TYPE },
+                items = musicState.musics
+            ) { elt ->
                 MusicItemComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     music = elt,
                     onClick = {
                         coroutineScope.launch {
@@ -130,13 +145,31 @@ fun AllMusicsComposable(
                     isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
                 )
             }
-            item {
+            item(
+                key = ALL_MUSICS_SPACER_KEY,
+                contentType = ALL_MUSICS_SPACER_CONTENT_TYPE,
+            ) {
                 SoulPlayerSpacer()
             }
         } else {
-            item {
+            item (
+                key = ALL_MUSICS_NO_ELEMENT_KEY,
+                contentType = ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE,
+            ){
                 NoElementView()
             }
         }
     }
 }
+
+private const val ALL_MUSICS_FOLDER_KEY: String = "ALL_MUSICS_FOLDER_KEY"
+private const val ALL_MUSICS_FOLDER_CONTENT_TYPE: String = "ALL_MUSICS_FOLDER_CONTENT_TYPE"
+private const val ALL_MUSICS_MONTH_KEY: String = "ALL_MUSICS_MONTH_KEY"
+private const val ALL_MUSICS_MONTH_STICKY_HEADER: String = "ALL_MUSICS_MONTH_STICKY_HEADER"
+private const val ALL_MUSICS_STICKY_HEADER_KEY: String = "ALL_MUSICS_STICKY_HEADER_KEY"
+private const val ALL_MUSICS_STICKY_CONTENT_TYPE: String = "ALL_MUSICS_STICKY_CONTENT_TYPE"
+private const val ALL_MUSICS_CONTENT_TYPE: String = "ALL_MUSICS_CONTENT_TYPE"
+private const val ALL_MUSICS_SPACER_KEY: String = "ALL_MUSICS_SPACER_KEY"
+private const val ALL_MUSICS_SPACER_CONTENT_TYPE: String = "ALL_MUSICS_SPACER_CONTENT_TYPE"
+private const val ALL_MUSICS_NO_ELEMENT_KEY: String = "ALL_MUSICS_NO_ELEMENT_KEY"
+private const val ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE: String = "ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE"

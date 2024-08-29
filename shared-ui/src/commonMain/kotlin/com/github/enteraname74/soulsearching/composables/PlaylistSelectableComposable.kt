@@ -21,13 +21,14 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun PlaylistSelectableComposable(
+    modifier: Modifier = Modifier,
     playlist: Playlist,
     onClick: () -> Unit,
     isSelected: Boolean,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable {
                 onClick()

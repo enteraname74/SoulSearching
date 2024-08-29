@@ -100,7 +100,11 @@ fun SettingsUsedFoldersScreenView(
 
             FolderStateType.WAITING_FOR_USER_ACTION -> {
                 LazyColumn {
-                    items(folderState.folders) {
+                    items(
+                        items = folderState.folders,
+                        key = { it.folderPath },
+                        contentType = { USED_FOLDERS_CONTENT_TYPE }
+                    ) {
                         SettingsSwitchElement(
                             title = it.folderPath,
                             toggleAction = {
@@ -114,7 +118,10 @@ fun SettingsUsedFoldersScreenView(
                             isChecked = it.isSelected
                         )
                     }
-                    item {
+                    item(
+                        key = USED_FOLDERS_SPACER_KEY,
+                        contentType = USED_FOLDERS_SPACER_CONTENT_TYPE,
+                    ) {
                         SoulPlayerSpacer()
                     }
                 }
@@ -122,3 +129,7 @@ fun SettingsUsedFoldersScreenView(
         }
     }
 }
+
+private const val USED_FOLDERS_CONTENT_TYPE: String = "USED_FOLDERS_CONTENT_TYPE"
+private const val USED_FOLDERS_SPACER_KEY: String = "USED_FOLDERS_SPACER_KEY"
+private const val USED_FOLDERS_SPACER_CONTENT_TYPE: String = "USED_FOLDERS_SPACER_CONTENT_TYPE"

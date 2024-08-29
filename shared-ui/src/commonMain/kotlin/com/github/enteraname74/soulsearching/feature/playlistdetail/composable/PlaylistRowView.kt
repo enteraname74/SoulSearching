@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,11 +17,11 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
 
 @Composable
@@ -116,6 +117,7 @@ private fun MediumView(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(
     shuffleAction: () -> Unit,
@@ -168,8 +170,12 @@ private fun Content(
                 }
                 items(
                     items = playlistDetail.musics,
+                    key = { it.musicId },
+                    contentType = { PLAYLIST_MUSICS_CONTENT_TYPE },
                 ) { music ->
                     MusicItemComposable(
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         music = music,
                         onClick = {
                             coroutineScope.launch {
@@ -195,3 +201,5 @@ private fun Content(
         }
     }
 }
+
+private const val PLAYLIST_MUSICS_CONTENT_TYPE: String = "PLAYLIST_MUSICS_CONTENT_TYPE"

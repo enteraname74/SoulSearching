@@ -4,7 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
@@ -43,15 +45,26 @@ fun SearchMusics(
         }
 
         if (foundedMusics.isNotEmpty()) {
-            stickyHeader {
+            stickyHeader(
+                key = SEARCH_MUSIC_STICKY_HEADER_KEY,
+                contentType = SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE,
+            ) {
                 SearchType(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     title = strings.musics,
                     primaryColor = primaryColor,
                     textColor = textColor
                 )
             }
-            items(foundedMusics) { music ->
+            items(
+                key = { it.musicId },
+                contentType = { SEARCH_MUSIC_CONTENT_TYPE },
+                items = foundedMusics,
+            ) { music ->
                 MusicItemComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     music = music,
                     onClick = { selectedMusic ->
                         coroutineScope.launch {
@@ -77,8 +90,17 @@ fun SearchMusics(
                 )
             }
         }
-        item {
+        item(
+            key = SEARCH_MUSIC_SPACER_KEY,
+            contentType = SEARCH_MUSIC_SPACER_CONTENT_TYPE,
+        ) {
             SoulPlayerSpacer()
         }
     }
 }
+
+private const val SEARCH_MUSIC_STICKY_HEADER_KEY: String = "SEARCH_MUSIC_STICKY_HEADER_KEY"
+private const val SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE: String = "SEARCH_MUSIC_STICKY_HEADER_CONTENT_TYPE"
+private const val SEARCH_MUSIC_CONTENT_TYPE: String = "SEARCH_MUSIC_CONTENT_TYPE"
+private const val SEARCH_MUSIC_SPACER_KEY: String = "SEARCH_MUSIC_SPACER_KEY"
+private const val SEARCH_MUSIC_SPACER_CONTENT_TYPE: String = "SEARCH_MUSIC_SPACER_CONTENT_TYPE"

@@ -45,7 +45,9 @@ fun MusicMonthsHorizontalList(
                 )
             ) {
                 items(
-                    items = months
+                    items = months,
+                    key = { it.month },
+                    contentType = { MUSIC_MONTH_CONTENT_TYPE }
                 ) { element ->
                     BigPreviewComposable(
                         coverId = element.coverId,
@@ -63,3 +65,5 @@ fun MusicMonthsHorizontalList(
         }
     }
 }
+
+private const val MUSIC_MONTH_CONTENT_TYPE: String = "MUSIC_MONTH_CONTENT_TYPE"

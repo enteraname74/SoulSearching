@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
@@ -21,7 +22,9 @@ fun <T> MainPageList(
     sortType: Int = SortType.NAME,
     sortDirection: Int = SortDirection.DESC,
     isUsingSort: Boolean = true,
-    item: @Composable (element: T) -> Unit,
+    key: ((T) -> Any)?,
+    contentType: (T) -> Any,
+    item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
     Column(
@@ -58,7 +61,9 @@ fun <T> MainPageList(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 items(
-                    items = list
+                    items = list,
+                    key = key,
+                    contentType = contentType,
                 ) { element ->
                     item(element)
                 }

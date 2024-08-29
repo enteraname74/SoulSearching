@@ -17,10 +17,11 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SearchType(
     title: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(primaryColor)
             .padding(

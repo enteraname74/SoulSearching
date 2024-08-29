@@ -66,7 +66,9 @@ fun PlaylistColumnView(
                 optionalContent()
             }
             items(
-                items = playlistDetail.musics
+                items = playlistDetail.musics,
+                key = { it.musicId },
+                contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
             ) { elt ->
                 MusicItemComposable(
                     music = elt,
@@ -94,3 +96,5 @@ fun PlaylistColumnView(
         }
     }
 }
+
+private const val PLAYLIST_MUSIC_CONTENT_TYPE: String = "PLAYLIST_MUSIC_CONTENT_TYPE"

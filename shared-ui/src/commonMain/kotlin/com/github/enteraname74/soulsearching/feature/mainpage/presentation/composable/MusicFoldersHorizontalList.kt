@@ -45,7 +45,9 @@ fun MusicFoldersHorizontalList(
                 )
             ) {
                 items(
-                    items = folders
+                    items = folders,
+                    key = { it.path },
+                    contentType = { MUSIC_FOLDERS_CONTENT_TYPE },
                 ) { element ->
                     BigPreviewComposable(
                         coverId = element.coverId,
@@ -63,3 +65,5 @@ fun MusicFoldersHorizontalList(
         }
     }
 }
+
+private const val MUSIC_FOLDERS_CONTENT_TYPE: String = "MUSIC_FOLDERS_CONTENT_TYPE"

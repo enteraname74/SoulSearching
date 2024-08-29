@@ -44,14 +44,14 @@ fun SettingsAboutComposable(
                 SettingsElement(
                     title = strings.developersTitle,
                     text = strings.developersText,
-                    clickAction = navigateToDevelopers
+                    onClick = navigateToDevelopers
                 )
             }
             item {
                 SettingsElement(
                     title = strings.versionNameTitle,
                     text = versionName,
-                    clickAction = {
+                    onClick = {
                         clickCount += 1
                         if (clickCount == 10) {
                             versionNameAction()

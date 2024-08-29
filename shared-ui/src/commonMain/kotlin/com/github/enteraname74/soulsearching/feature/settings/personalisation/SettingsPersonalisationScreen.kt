@@ -74,7 +74,7 @@ class SettingsPersonalisationScreen : Screen {
                         title = strings.mainPageTitle,
                         text = strings.mainPageText,
                         icon = Icons.Rounded.House,
-                        clickAction = onMainPageClick
+                        onClick = onMainPageClick
                     )
                 }
                 item {
@@ -82,7 +82,7 @@ class SettingsPersonalisationScreen : Screen {
                         title = strings.musics,
                         text = strings.manageMusicsViewText,
                         icon = Icons.Rounded.MusicNote,
-                        clickAction = onMusicPageClick
+                        onClick = onMusicPageClick
                     )
                 }
                 item {
@@ -90,7 +90,7 @@ class SettingsPersonalisationScreen : Screen {
                         title = strings.managePlayerTitle,
                         text = strings.managePlayerText,
                         icon = Icons.Rounded.PlayArrow,
-                        clickAction = onPlayerPageClick
+                        onClick = onPlayerPageClick
                     )
                 }
                 item {

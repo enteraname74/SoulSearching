@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -18,6 +20,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 fun allQuickAccessTab(
     mainPageViewModel: MainPageViewModel,
     onClick: (quickAccessible: QuickAccessible) -> Unit,
@@ -31,8 +34,12 @@ fun allQuickAccessTab(
             list = quickAccessState.allQuickAccess,
             title = strings.quickAccess,
             isUsingSort = false,
+            key = null,
+            contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE }
         ) { element ->
             element.toPreview(
+                modifier = Modifier
+                    .animateItemPlacement(),
                 onClick = onClick,
                 onLongClick = showQuickAccessBottomSheet,
             )
@@ -42,6 +49,7 @@ fun allQuickAccessTab(
 
 @Composable
 private fun QuickAccessible.toPreview(
+    modifier: Modifier,
     onClick: (quickAccessible: QuickAccessible) -> Unit,
     onLongClick: (quickAccessible: QuickAccessible) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
@@ -53,6 +61,7 @@ private fun QuickAccessible.toPreview(
     when(this) {
         is AlbumWithArtist -> {
             BigPreviewComposable(
+                modifier = modifier,
                 coverId = this.album.coverId,
                 title = this.album.albumName,
                 text = this.artist?.artistName.orEmpty(),
@@ -62,6 +71,7 @@ private fun QuickAccessible.toPreview(
         }
         is ArtistWithMusics -> {
             BigPreviewComposable(
+                modifier = modifier,
                 coverId = this.artist.coverId,
                 title = this.artist.artistName,
                 text = strings.musics(total = this.musics.size),
@@ -71,6 +81,7 @@ private fun QuickAccessible.toPreview(
         }
         is Music -> {
             BigPreviewComposable(
+                modifier = modifier,
                 coverId = this.coverId,
                 title = this.name,
                 text = this.album,
@@ -95,6 +106,7 @@ private fun QuickAccessible.toPreview(
         }
         is PlaylistWithMusicsNumber -> {
             BigPreviewComposable(
+                modifier = modifier,
                 coverId = this.playlist.coverId,
                 title = this.playlist.name,
                 text = strings.musics(total = this.musicsNumber),
@@ -104,3 +116,5 @@ private fun QuickAccessible.toPreview(
         }
     }
 }
+
+private const val ALL_QUICK_ACCESS_CONTENT_TYPE = "ALL_QUICK_ACCESS_CONTENT_TYPE"

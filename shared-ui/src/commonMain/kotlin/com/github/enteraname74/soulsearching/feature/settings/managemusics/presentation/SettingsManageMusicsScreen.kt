@@ -13,20 +13,20 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
-import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersScreen
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
 /**
@@ -86,7 +86,7 @@ fun SettingsManageMusicsScreenView(
                     title = strings.usedFoldersTitle,
                     text = strings.usedFoldersText,
                     icon = Icons.Rounded.Folder,
-                    clickAction = navigateToFolders
+                    onClick = navigateToFolders
                 )
             }
             item {
@@ -94,7 +94,7 @@ fun SettingsManageMusicsScreenView(
                     title = strings.addMusicsTitle,
                     text = strings.addMusicsText,
                     icon = Icons.Rounded.MusicNote,
-                    clickAction = navigateToAddMusics
+                    onClick = navigateToAddMusics
                 )
             }
             item {

@@ -28,6 +28,8 @@ fun NavigationPanel(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryLarge),
         ) {
             items(
+                key = { it.title },
+                contentType = { NAVIGATION_CONTENT_TYPE },
                 items = rows
             ) { row ->
                 NavigationRow(navigationRowSpec = row)
@@ -37,3 +39,4 @@ fun NavigationPanel(
 }
 
 private val PanelWidth: Dp = 300.dp
+private const val NAVIGATION_CONTENT_TYPE = "NAVIGATION_CONTENT_TYPE"

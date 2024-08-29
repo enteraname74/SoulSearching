@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -21,17 +21,13 @@ fun SettingsElement(
     title: String,
     text: String,
     icon: ImageVector? = null,
-    isClickable: Boolean = true,
-    clickAction: () -> Unit = {},
+    onClick: (() -> Unit)?,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge)
 ) {
-
-    val clickableModifier = if (isClickable) Modifier.clickable { clickAction() } else Modifier
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(clickableModifier)
+            .optionalClickable(block = onClick)
             .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)

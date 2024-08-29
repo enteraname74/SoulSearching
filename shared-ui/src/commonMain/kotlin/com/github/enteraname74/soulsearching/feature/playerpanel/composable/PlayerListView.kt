@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +25,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerListView(
     playbackManager: PlaybackManager = injectElement(),
@@ -81,8 +83,12 @@ fun PlayerListView(
             ) {
                 items(
                     items = playedList,
+                    key = { it.musicId },
+                    contentType = { PLAYER_LIST_CONTENT_TYPE }
                 ) { elt ->
                     MusicItemComposable(
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         music = elt,
                         onClick = { music ->
                             playbackManager.setAndPlayMusic(music)
@@ -109,3 +115,5 @@ fun PlayerListView(
         }
     }
 }
+
+private const val PLAYER_LIST_CONTENT_TYPE: String = "PLAYER_LIST_CONTENT_TYPE"

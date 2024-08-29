@@ -32,7 +32,11 @@ fun MainPageVerticalShortcut(
             .fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        items(visibleElements) {
+        items(
+            items = visibleElements,
+            key = { it.name },
+            contentType = { VERTICAL_SHORTCUT_TABS_CONTENT_TYPE },
+        ) {
             val pos = visibleElements.indexOf(it)
             val isCurrentPosition = pos == currentPage ||
                     ((pos == visibleElements.size - 1) && (currentPage >= pos))
@@ -83,7 +87,10 @@ fun MainPageVerticalShortcut(
             }
 
         }
-        item {
+        item(
+            key = VERTICAL_SHORTCUT_SPACER_KEY,
+            contentType = VERTICAL_SHORTCUT_SPACER_CONTENT_TYPE,
+        ) {
             SoulPlayerSpacer()
         }
     }
@@ -99,3 +106,7 @@ fun Modifier.vertical() =
             )
         }
     }
+
+private const val VERTICAL_SHORTCUT_TABS_CONTENT_TYPE: String = "VERTICAL_SHORTCUT_TABS_CONTENT_TYPE"
+private const val VERTICAL_SHORTCUT_SPACER_KEY: String = "VERTICAL_SHORTCUT_SPACER_KEY"
+private const val VERTICAL_SHORTCUT_SPACER_CONTENT_TYPE: String = "VERTICAL_SHORTCUT_SPACER_CONTENT_TYPE"

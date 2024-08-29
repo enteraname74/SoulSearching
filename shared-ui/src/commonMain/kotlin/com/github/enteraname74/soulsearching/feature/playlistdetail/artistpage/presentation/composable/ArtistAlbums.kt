@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.composable
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.UUID
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ArtistAlbums(
     albums: List<Album>,
@@ -51,9 +53,13 @@ fun ArtistAlbums(
                 )
             ) {
                 items(
-                    items = albums
+                    items = albums,
+                    key = { it.albumId },
+                    contentType = { ARTIST_ALBUM_CONTENT_TYPE },
                 ) { element ->
                     BigPreviewComposable(
+                        modifier = Modifier
+                            .animateItemPlacement(),
                         coverId = element.coverId,
                         title = element.albumName,
                         onClick = {
@@ -68,3 +74,5 @@ fun ArtistAlbums(
         }
     }
 }
+
+private const val ARTIST_ALBUM_CONTENT_TYPE: String = "ARTIST_ALBUM_CONTENT_TYPE"

@@ -86,7 +86,7 @@ fun SettingsScreenView(
                     title = strings.manageMusicsTitle,
                     text = strings.manageMusicsText,
                     icon = Icons.Rounded.MusicNote,
-                    clickAction = navigateToManageMusics
+                    onClick = navigateToManageMusics
                 )
             }
             item {
@@ -94,7 +94,7 @@ fun SettingsScreenView(
                     title = strings.colorThemeTitle,
                     text = strings.colorThemeText,
                     icon = Icons.Rounded.Palette,
-                    clickAction = navigateToColorTheme
+                    onClick = navigateToColorTheme
                 )
             }
             item {
@@ -102,7 +102,7 @@ fun SettingsScreenView(
                     title = strings.personalizationTitle,
                     text = strings.personalizationText,
                     icon = Icons.Rounded.Edit,
-                    clickAction = navigateToPersonalisation
+                    onClick = navigateToPersonalisation
                 )
             }
             item {
@@ -110,7 +110,7 @@ fun SettingsScreenView(
                     title = strings.aboutTitle,
                     text = strings.aboutText,
                     icon = Icons.Rounded.Info,
-                    clickAction = navigateToAbout
+                    onClick = navigateToAbout
                 )
             }
             item {

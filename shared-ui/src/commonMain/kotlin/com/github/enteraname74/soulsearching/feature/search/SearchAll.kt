@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -16,15 +17,14 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import kotlinx.coroutines.launch
-import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,11 +53,24 @@ fun SearchAll(
             it.playlist.name.lowercase().contains(searchText.lowercase())
         }
         if (foundedPlaylists.isNotEmpty()) {
-            stickyHeader {
-                SearchType(title = strings.playlists)
+            stickyHeader(
+                key = SEARCH_ALL_PLAYLIST_STICKY_KEY,
+                contentType = SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE,
+            ) {
+                SearchType(
+                    modifier = Modifier
+                        .animateItemPlacement(),
+                    title = strings.playlists,
+                )
             }
-            items(foundedPlaylists) { playlistWithMusics ->
+            items(
+                items = foundedPlaylists,
+                key = { it.playlist.playlistId },
+                contentType = { SEARCH_ALL_PLAYLISTS_CONTENT_TYPE }
+            ) { playlistWithMusics ->
                 LinearPreviewComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     title = playlistWithMusics.playlist.name,
                     text = strings.musics(playlistWithMusics.musicsNumber),
                     onClick = {
@@ -76,11 +89,24 @@ fun SearchAll(
             it.artist.artistName.lowercase().contains(searchText.lowercase())
         }
         if (foundedArtists.isNotEmpty()) {
-            stickyHeader {
-                SearchType(title = strings.artists)
+            stickyHeader(
+                key = SEARCH_ALL_ARTIST_STICKY_KEY,
+                contentType = SEARCH_ALL_ARTIST_STICKY_CONTENT_TYPE,
+            ) {
+                SearchType(
+                    modifier = Modifier
+                        .animateItemPlacement(),
+                    title = strings.artists,
+                )
             }
-            items(foundedArtists) { artistWithMusics ->
+            items(
+                items = foundedArtists,
+                key = { it.artist.artistId },
+                contentType = { SEARCH_ALL_ARTIST_CONTENT_TYPE }
+            ) { artistWithMusics ->
                 LinearPreviewComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     title = artistWithMusics.artist.artistName,
                     text = strings.musics(artistWithMusics.musics.size),
                     onClick = {
@@ -100,11 +126,24 @@ fun SearchAll(
                     it.album.albumName.lowercase().contains(searchText.lowercase())
         }
         if (foundedAlbums.isNotEmpty()) {
-            stickyHeader {
-                SearchType(title = strings.albums)
+            stickyHeader(
+                key = SEARCH_ALL_ALBUM_STICKY_KEY,
+                contentType = SEARCH_ALL_ALBUM_STICKY_CONTENT_TYPE,
+            ) {
+                SearchType(
+                    modifier = Modifier
+                        .animateItemPlacement(),
+                    title = strings.albums,
+                )
             }
-            items(foundedAlbums) { albumWithArtist ->
+            items(
+                items = foundedAlbums,
+                key = { it.album.albumId },
+                contentType = { SEARCH_ALL_ALBUM_CONTENT_TYPE },
+            ) { albumWithArtist ->
                 LinearPreviewComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     title = albumWithArtist.album.albumName,
                     text = if (albumWithArtist.artist != null) albumWithArtist.artist!!.artistName else "",
                     onClick = {
@@ -129,11 +168,24 @@ fun SearchAll(
         }
 
         if (foundedMusics.isNotEmpty()) {
-            stickyHeader {
-                SearchType(title = strings.musics)
+            stickyHeader(
+                key = SEARCH_ALL_MUSIC_STICKY_KEY,
+                contentType = SEARCH_ALL_MUSIC_STICKY_CONTENT_TYPE,
+            ) {
+                SearchType(
+                    modifier = Modifier
+                        .animateItemPlacement(),
+                    title = strings.musics,
+                )
             }
-            items(foundedMusics) { music ->
+            items(
+                items = foundedMusics,
+                key = { it.musicId },
+                contentType = { SEARCH_ALL_MUSIC_CONTENT_TYPE }
+            ) { music ->
                 MusicItemComposable(
+                    modifier = Modifier
+                        .animateItemPlacement(),
                     music = music,
                     onClick = {
                         coroutineScope.launch {
@@ -160,8 +212,30 @@ fun SearchAll(
                 )
             }
         }
-        item {
+        item(
+            key = SEARCH_ALL_SPACER_KEY,
+            contentType = SEARCH_ALL_SPACER_CONTENT_TYPE,
+        ) {
             SoulPlayerSpacer()
         }
     }
 }
+
+private const val SEARCH_ALL_PLAYLIST_STICKY_KEY = "SEARCH_ALL_PLAYLIST_STICKY_KEY"
+private const val SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE = "SEARCH_ALL_PLAYLIST_STICKY_CONTENT_TYPE"
+private const val SEARCH_ALL_PLAYLISTS_CONTENT_TYPE = "SEARCH_ALL_PLAYLISTS_CONTENT_TYPE"
+
+private const val SEARCH_ALL_ARTIST_STICKY_KEY = "SEARCH_ALL_ARTIST_STICKY_KEY"
+private const val SEARCH_ALL_ARTIST_STICKY_CONTENT_TYPE = "SEARCH_ALL_ARTIST_STICKY_CONTENT_TYPE"
+private const val SEARCH_ALL_ARTIST_CONTENT_TYPE = "SEARCH_ALL_ARTIST_CONTENT_TYPE"
+
+private const val SEARCH_ALL_ALBUM_STICKY_KEY = "SEARCH_ALL_ALBUM_STICKY_KEY"
+private const val SEARCH_ALL_ALBUM_STICKY_CONTENT_TYPE = "SEARCH_ALL_ALBUM_STICKY_CONTENT_TYPE"
+private const val SEARCH_ALL_ALBUM_CONTENT_TYPE = "SEARCH_ALL_ALBUM_CONTENT_TYPE"
+
+private const val SEARCH_ALL_MUSIC_STICKY_KEY = "SEARCH_ALL_MUSIC_STICKY_KEY"
+private const val SEARCH_ALL_MUSIC_STICKY_CONTENT_TYPE = "SEARCH_ALL_MUSIC_STICKY_CONTENT_TYPE"
+private const val SEARCH_ALL_MUSIC_CONTENT_TYPE = "SEARCH_ALL_MUSIC_CONTENT_TYPE"
+
+private const val SEARCH_ALL_SPACER_KEY = "SEARCH_ALL_SPACER_KEY"
+private const val SEARCH_ALL_SPACER_CONTENT_TYPE = "SEARCH_ALL_SPACER_CONTENT_TYPE"

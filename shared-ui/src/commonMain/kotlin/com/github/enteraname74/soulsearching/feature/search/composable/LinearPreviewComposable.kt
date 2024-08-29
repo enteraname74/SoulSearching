@@ -34,10 +34,11 @@ fun LinearPreviewComposable(
     text: String,
     coverId: UUID?,
     onLongClick: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onClick() },

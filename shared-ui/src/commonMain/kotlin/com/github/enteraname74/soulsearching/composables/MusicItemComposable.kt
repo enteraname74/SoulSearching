@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -25,6 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicItemComposable(
+    modifier: Modifier = Modifier,
     music: Music,
     onClick: (Music) -> Unit,
     onLongClick: () -> Unit,
@@ -33,7 +33,7 @@ fun MusicItemComposable(
     isPlayedMusic: Boolean
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = backgroundColor)
             .combinedClickable(

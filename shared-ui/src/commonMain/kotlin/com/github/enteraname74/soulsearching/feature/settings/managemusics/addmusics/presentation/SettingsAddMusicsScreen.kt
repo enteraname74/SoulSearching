@@ -173,7 +173,11 @@ fun SettingsAddMusicsScreenView(
                     }
                 } else {
                     LazyColumn {
-                        items(addMusicsState.fetchedMusics) {
+                        items(
+                            key = { it.music.musicId },
+                            contentType = { FETCHED_MUSICS_CONTENT_TYPE },
+                            items = addMusicsState.fetchedMusics
+                        ) {
                             MusicSelectableComposable(
                                 music = it.music,
                                 onClick = {
@@ -187,7 +191,10 @@ fun SettingsAddMusicsScreenView(
                                 isSelected = it.isSelected
                             )
                         }
-                        item {
+                        item(
+                            key = FETCHED_MUSICS_SPACER_KEY,
+                            contentType = FETCHED_MUSICS_SPACER_CONTENT_TYPE,
+                        ) {
                             SoulPlayerSpacer()
                         }
                     }
@@ -196,3 +203,7 @@ fun SettingsAddMusicsScreenView(
         }
     }
 }
+
+private const val FETCHED_MUSICS_CONTENT_TYPE: String = "FETCHED_MUSICS_CONTENT_TYPE"
+private const val FETCHED_MUSICS_SPACER_KEY: String = "FETCHED_MUSICS_SPACER_KEY"
+private const val FETCHED_MUSICS_SPACER_CONTENT_TYPE: String = "FETCHED_MUSICS_SPACER_CONTENT_TYPE"
