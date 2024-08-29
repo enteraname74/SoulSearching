@@ -10,12 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Class used for retrieving [ImageCover] of elements.
  */
 class ImageCoverRetriever(
-    private val imageCoverRepository: ImageCoverRepository,
+    imageCoverRepository: ImageCoverRepository,
     private val isImageCoverUsedUseCase: IsImageCoverUsedUseCase,
     private val deleteImageCoverUseCase: DeleteImageCoverUseCase,
 ) {
@@ -26,15 +27,29 @@ class ImageCoverRetriever(
             initialValue = emptyList(),
         )
 
+    private val cachedCovers: ArrayList<ImageCover> = arrayListOf()
+
     /**
-     * Tries to retrieve an ImageBitmap representation of the id of an image cover.
+     * Retrieve the latest image bitmap linked to a cover id.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getImageBitmap(coverId: UUID?): Flow<ImageBitmap?> {
         return allCovers.mapLatest { imageCovers ->
-            imageCovers.find { it.coverId == coverId }?.cover
+            val foundCover: ImageCover? = imageCovers.find { it.coverId == coverId }
+            foundCover?.let {
+                cachedCovers.removeIf { it.coverId == foundCover.coverId }
+                cachedCovers.add(foundCover)
+            }
+            foundCover?.cover
         }
     }
+
+    /**
+     * Retrieve a default image bitmap, from the cached images, of the cover id.
+     * To use when loading the latest image bitmap
+     */
+    fun getDefaultImageBitmap(coverId: UUID?): ImageBitmap? =
+        cachedCovers.find { it.coverId == coverId }?.cover
 
     /**
      * Delete an image if it's not used by a song, an album, an artist or a playlist.

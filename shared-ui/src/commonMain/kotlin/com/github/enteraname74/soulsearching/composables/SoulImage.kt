@@ -33,8 +33,14 @@ fun SoulImage(
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     imageCoverRetriever: ImageCoverRetriever = injectElement(),
+    default: String? = null
 ) {
-    val bitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = coverId).collectAsState(null)
+    val bitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = coverId).collectAsState(
+        imageCoverRetriever.getDefaultImageBitmap(coverId = coverId)
+    )
+    default?.let {
+        println("bitmap: $bitmap")
+    }
 
     val modifierBase = Modifier
         .size(size)
