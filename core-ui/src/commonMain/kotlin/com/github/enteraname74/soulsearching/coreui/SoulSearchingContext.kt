@@ -9,9 +9,6 @@ import androidx.compose.ui.graphics.painter.Painter
  */
 expect object SoulSearchingContext {
 
-    @get:Composable
-    val orientation: ScreenOrientation
-
     /**
      * Define the system bars color if there is any.
      */

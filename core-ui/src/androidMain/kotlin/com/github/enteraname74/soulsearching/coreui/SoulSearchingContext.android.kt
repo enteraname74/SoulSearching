@@ -16,16 +16,6 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 actual object SoulSearchingContext {
-    actual val orientation: ScreenOrientation
-        @Composable
-        get() {
-            val orientation = LocalConfiguration.current.orientation
-            return if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                ScreenOrientation.HORIZONTAL
-            } else {
-                ScreenOrientation.VERTICAL
-            }
-        }
 
     /**
      * Define the system bars color if there is any.

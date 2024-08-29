@@ -10,21 +10,6 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 actual object SoulSearchingContext {
-    @OptIn(ExperimentalComposeUiApi::class)
-    actual val orientation: ScreenOrientation
-        @Composable
-        get() {
-            val density = LocalDensity.current
-            val width = with(density) {
-                LocalWindowInfo.current.containerSize.width.toDp()
-            }
-            return if (width >= 600.dp) {
-                ScreenOrientation.HORIZONTAL
-            } else {
-                ScreenOrientation.VERTICAL
-            }
-        }
-
     /**
      * Define the system bars color if there is any.
      */

@@ -2,30 +2,20 @@ package com.github.enteraname74.soulsearching.feature.appinit
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.composables.ProgressIndicatorComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.appinit.composable.FetchingMusicTabLayoutComposable
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,8 +38,9 @@ fun FetchingMusicsComposable(
         label = "PROGRESS_BAR_FETCHING_MUSICS_COMPOSABLE"
     )
 
-    when (SoulSearchingContext.orientation) {
-        ScreenOrientation.HORIZONTAL -> {
+    val windowSize = rememberWindowSize()
+    when {
+        windowSize != WindowSize.Small-> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()

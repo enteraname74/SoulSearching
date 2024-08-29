@@ -10,10 +10,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*
 import kotlinx.coroutines.launch
@@ -101,9 +101,10 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     )
 
     val coroutineScope = rememberCoroutineScope()
+    val windowSize = rememberWindowSize()
 
-    when (SoulSearchingContext.orientation) {
-        ScreenOrientation.HORIZONTAL -> {
+    when {
+        windowSize != WindowSize.Small -> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()

@@ -1,28 +1,25 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.composables.ProgressIndicatorComposable
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.ScreenOrientation
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun LoadingComposable(
     progressIndicator: Float,
     progressMessage: String
 ) {
-    when (SoulSearchingContext.orientation) {
-        ScreenOrientation.HORIZONTAL -> {
+    val windowSize = rememberWindowSize()
+    when {
+        windowSize != WindowSize.Small -> {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
