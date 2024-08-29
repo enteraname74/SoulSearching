@@ -90,7 +90,6 @@ fun PlayerMusicCover(
                 ) { currentSongPos ->
 
                     SoulImage(
-                        default = "fefef",
                         modifier = imageModifier,
                         coverId = aroundSongs.getOrNull(currentSongPos)?.coverId,
                         size = imageSize,
