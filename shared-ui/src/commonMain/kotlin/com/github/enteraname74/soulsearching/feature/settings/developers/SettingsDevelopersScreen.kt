@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -39,9 +40,12 @@ class SettingsDevelopersScreen : Screen {
         val developers = listOf(
             Developer(
                 name = "Noah Penin",
-                function = strings.leadDeveloper
+                function = strings.leadDeveloper,
+                link = "https://github.com/enteraname74"
             )
         )
+
+        val uriHandler = LocalUriHandler.current
 
         Column(
             modifier = Modifier
@@ -55,11 +59,15 @@ class SettingsDevelopersScreen : Screen {
                 )
             )
             LazyColumn {
-                items(developers) {developer ->
+                items(developers) { developer ->
                     SettingsElement(
                         title = developer.name,
                         text = developer.function,
-                        isClickable = false
+                        onClick = {
+                            uriHandler.openUri(
+                                uri = developer.link,
+                            )
+                        }
                     )
                 }
                 item {
