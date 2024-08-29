@@ -41,6 +41,14 @@ class UpdateArtistUseCase(
             to = newArtistWithMusicsInformation.artist
         )
 
+        // We update the quick access value of the new artist:
+        artistRepository.upsert(
+            newArtistWithMusicsInformation.artist.copy(
+                isInQuickAccess = newArtistWithMusicsInformation.artist.isInQuickAccess ||
+                possibleDuplicatedArtist?.isInQuickAccess == true
+            )
+        )
+
         updateArtistNameOfArtistSongs(
             newArtistName = newArtistWithMusicsInformation.artist.artistName,
             artistMusics = newArtistWithMusicsInformation.musics

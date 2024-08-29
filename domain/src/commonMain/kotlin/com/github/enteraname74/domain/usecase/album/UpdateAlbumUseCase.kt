@@ -92,8 +92,14 @@ class UpdateAlbumUseCase(
             )
         }
 
+        // We adapt the quick access status with the potential duplicate album.
+        val albumToSave = newAlbumWithArtistInformation.album.copy(
+            isInQuickAccess = newAlbumWithArtistInformation.album.isInQuickAccess
+                    || duplicateAlbum?.isInQuickAccess == true
+        )
+
         // Finally, we can update the information of the album.
-        albumRepository.upsert(newAlbumWithArtistInformation.album)
+        albumRepository.upsert(albumToSave)
 
         // We check and delete the initial artist if it no longer possess songs.
         deleteArtistIfEmptyUseCase(artistId = initialArtist.artistId)
