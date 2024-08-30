@@ -93,7 +93,7 @@ class SelectedAlbumViewModel(
         _albumId.value = albumId
     }
 
-    override fun onEdit() {
+    override val onEdit: (() -> Unit) = {
         _navigationState.value = SelectedAlbumNavigationState.ToEdit
     }
 

@@ -89,9 +89,7 @@ class SelectedMonthViewModel(
         _month.value = month
     }
 
-    override fun onEdit() {
-        /* no-op */
-    }
+    override val onEdit: (() -> Unit)? = null
 
     override fun onUpdateNbPlayed(musicId: UUID) {
         screenModelScope.launch {

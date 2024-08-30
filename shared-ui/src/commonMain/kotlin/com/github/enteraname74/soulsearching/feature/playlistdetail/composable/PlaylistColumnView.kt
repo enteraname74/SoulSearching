@@ -54,7 +54,7 @@ fun PlaylistColumnView(
             }
             stickyHeader {
                 PlaylistPanel(
-                    editAction = playlistDetailListener::onEdit,
+                    editAction = playlistDetailListener.onEdit,
                     shuffleAction = {
                         playlistDetailListener.onUpdateNbPlayed()
                         shuffleAction()

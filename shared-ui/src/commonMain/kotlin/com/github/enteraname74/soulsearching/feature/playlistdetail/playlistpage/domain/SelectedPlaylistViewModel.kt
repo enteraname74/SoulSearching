@@ -95,7 +95,7 @@ class SelectedPlaylistViewModel(
         _playlistId.value = playlistId
     }
 
-    override fun onEdit() {
+    override val onEdit: (() -> Unit)? = {
         _navigationState.value = SelectedPlaylistNavigationState.ToEdit
     }
 

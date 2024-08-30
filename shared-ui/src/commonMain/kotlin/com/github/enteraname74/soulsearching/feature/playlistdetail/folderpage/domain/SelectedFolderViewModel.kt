@@ -90,9 +90,7 @@ class SelectedFolderViewModel(
         _folderPath.value = folderPath
     }
 
-    override fun onEdit() {
-        /* no-op */
-    }
+    override val onEdit: (() -> Unit)? = null
 
     override fun onUpdateNbPlayed(musicId: UUID) {
         screenModelScope.launch {

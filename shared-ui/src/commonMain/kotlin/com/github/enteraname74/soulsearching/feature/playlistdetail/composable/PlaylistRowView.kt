@@ -146,7 +146,7 @@ private fun Content(
             )
             if (PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
                 PlaylistPanel(
-                    editAction = playlistDetailListener::onEdit,
+                    editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
                     searchAction = searchAction,
                 )
@@ -157,7 +157,7 @@ private fun Content(
         ) {
             if (!PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
                 PlaylistPanel(
-                    editAction = playlistDetailListener::onEdit,
+                    editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
                     searchAction = searchAction,
                 )
