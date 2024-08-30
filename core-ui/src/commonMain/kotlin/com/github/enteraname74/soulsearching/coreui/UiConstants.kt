@@ -63,6 +63,10 @@ object UiConstants {
     }
 
     object Typography {
+        val titleSmall: TextStyle = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp
+        )
         val bodyTitle: TextStyle = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight(500),

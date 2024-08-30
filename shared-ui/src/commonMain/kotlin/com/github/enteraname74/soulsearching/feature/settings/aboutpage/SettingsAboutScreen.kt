@@ -10,7 +10,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
 import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.settings.developers.SettingsDevelopersScreen
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import kotlinx.coroutines.launch

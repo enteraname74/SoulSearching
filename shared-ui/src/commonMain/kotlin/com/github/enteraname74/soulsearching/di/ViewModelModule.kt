@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.manag
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
+import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -30,6 +31,7 @@ internal val viewModelModule: Module = module {
     factoryOf(::SettingsColorThemeViewModel)
     factoryOf(::SettingsMainPagePersonalisationViewModel)
     factoryOf(::SettingsPlayerPersonalisationViewModel)
+    factoryOf(::SettingsStatisticsViewModel)
 
     // Main page
     singleOf(::MainPageViewModel)

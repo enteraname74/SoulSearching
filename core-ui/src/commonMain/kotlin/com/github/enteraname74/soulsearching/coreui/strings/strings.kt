@@ -133,6 +133,12 @@ interface Strings {
     val personalizationText: String
     val aboutTitle: String
     val aboutText: String
+    val statisticsTitle: String
+    val statisticsText: String
+    val mostPlayedSongs: String
+    val mostPlayedAlbums: String
+    val mostPlayedArtists: String
+    val mostPlayedPlaylists: String
 
     val mainPageTitle: String
     val mainPageText: String
@@ -168,7 +174,7 @@ interface Strings {
     val savingNewMusics: String
 
     /**
-     * Show a text indicating the number of musics.
+     * Shows a text indicating the number of musics.
      */
     fun musics(total: Int): String
 
@@ -176,4 +182,9 @@ interface Strings {
      * Shows a text indicating that songs were deleted from the app automatically.
      */
     fun deletedMusicsAutomatically(total: Int): String
+
+    /**
+     * Shows a text indicating the total play of an element.
+     */
+    fun plays(total: Int): String
 }

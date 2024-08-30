@@ -1,10 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -17,6 +14,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.prese
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
+import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsScreen
 
 /**
  * Represent the view of the settings screen.
@@ -49,6 +47,11 @@ class SettingsScreen : Screen {
                 navigator.safePush(
                     SettingsPersonalisationScreen()
                 )
+            },
+            navigateToStatistics = {
+                navigator.safePush(
+                    SettingsStatisticsScreen()
+                )
             }
         )
     }
@@ -60,6 +63,7 @@ fun SettingsScreenView(
     navigateToManageMusics: () -> Unit,
     navigateToColorTheme: () -> Unit,
     navigateToPersonalisation: () -> Unit,
+    navigateToStatistics: () -> Unit,
     navigateToAbout: () -> Unit
 ) {
     SettingPage(
@@ -88,6 +92,14 @@ fun SettingsScreenView(
                 subTitle = strings.personalizationText,
                 icon = Icons.Rounded.Edit,
                 onClick = navigateToPersonalisation
+            )
+        }
+        item {
+            SettingsElement(
+                title = strings.statisticsTitle,
+                subTitle = strings.statisticsText,
+                icon = Icons.Rounded.BarChart,
+                onClick = navigateToStatistics
             )
         }
         item {

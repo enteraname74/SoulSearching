@@ -10,6 +10,7 @@ class UpdateAlbumNbPlayedUseCase(
 ) {
     suspend operator fun invoke(albumId: UUID) {
         val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
+        println("GOT NEW NB PLAYED: ${album.nbPlayed + 1}")
         albumRepository.upsert(
             album = album.copy(
                 nbPlayed = album.nbPlayed + 1,

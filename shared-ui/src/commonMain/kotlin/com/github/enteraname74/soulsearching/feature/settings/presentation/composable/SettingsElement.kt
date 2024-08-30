@@ -23,7 +23,7 @@ fun SettingsElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .optionalClickable(block = onClick),
+            .optionalClickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {

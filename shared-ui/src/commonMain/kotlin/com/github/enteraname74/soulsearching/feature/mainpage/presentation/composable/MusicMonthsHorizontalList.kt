@@ -31,8 +31,7 @@ fun MusicMonthsHorizontalList(
                 .padding(start = UiConstants.Spacing.medium),
             text = strings.byMonths,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold,
-            fontSize = 22.sp
+            style = UiConstants.Typography.titleSmall,
         )
         if (months.isNotEmpty()) {
             LazyRow(

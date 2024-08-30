@@ -16,7 +16,8 @@ object EnStrings : Strings {
     override val settingsAccessButton = "Settings access button"
     override val shuffleButton = "Shuffle button"
     override val favorite = "Favorites"
-    override val missingPermissions = "You must accept all permissions required by the application for it to work properly."
+    override val missingPermissions =
+        "You must accept all permissions required by the application for it to work properly."
     override val playedList = "Played list"
     override val currentSong = "Current song"
     override val lyrics = "Lyrics"
@@ -26,17 +27,20 @@ object EnStrings : Strings {
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."
     override val quickAccessTitle = "Keep what you love the most near you."
-    override val quickAccessText = "With the quick access, you can easily access your favorite album, or your preferred songs for example."
+    override val quickAccessText =
+        "With the quick access, you can easily access your favorite album, or your preferred songs for example."
     override val modifyElementsTitle = "Modify your music related elements"
     override val modifyElementsText = "You can modify information about an album, a song, an artist…"
     override val dynamicThemeFeatureTitle = "Dynamic theme"
-    override val dynamicThemeFeatureText = "Soul Searching offers you the possibility of having a dynamic theme depending on the current played song."
+    override val dynamicThemeFeatureText =
+        "Soul Searching offers you the possibility of having a dynamic theme depending on the current played song."
     override val manageFoldersTitle = "Manage used folders"
     override val manageFoldersText = "Manage what folders are used to fetch songs."
     override val addNewMusicsTitle = "Add new songs"
     override val addNewMusicsText = "You can easily add new songs from your device."
     override val personalizeMainPageTitle = "Define what you really want"
-    override val personalizeMainPageText = "You don't want the quick access, or you wish to have a bar that helps you to reach parts of the main page? You can realize your wishes in the settings of the application."
+    override val personalizeMainPageText =
+        "You don't want the quick access, or you wish to have a bar that helps you to reach parts of the main page? You can realize your wishes in the settings of the application."
 
     override val searchingSongsFromYourDevice = "Searching songs from your device…"
     override val searchForMusics = "Search a song"
@@ -86,7 +90,8 @@ object EnStrings : Strings {
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"
     override val deleteArtistDialogTitle = "Are you sure to delete this artist?"
     override val removeMusicFromPlaylistTitle = "Are you sure to remove this song from this playlist?"
-    override val removeMusicFromPlaylistText = "This song will be removed from this playlist but not deleted from the application."
+    override val removeMusicFromPlaylistText =
+        "This song will be removed from this playlist but not deleted from the application."
     override val modifyAlbum = "Modify this album"
     override val modifyArtist = "Modify this artist"
     override val modifyMusic = "Modify this song"
@@ -109,13 +114,20 @@ object EnStrings : Strings {
     override val manageMusicsTitle = "Manage songs"
     override val manageMusicsText = "Modify and add new songs, manage used folders"
     override val modifyMusicFileTitle = "Modify files on the device"
-    override val modifyMusicFileText = "Modifying song's information will modify the metadata of the file on your device"
+    override val modifyMusicFileText =
+        "Modifying song's information will modify the metadata of the file on your device"
     override val colorThemeTitle = "Color theme"
     override val colorThemeText = "Dynamic theme, personalized theme"
     override val personalizationTitle = "Personalization"
     override val personalizationText = "Manage player and main page view"
     override val aboutTitle = "About Soul Searching"
     override val aboutText = "Developers, application's version name"
+    override val statisticsTitle = "Statistics"
+    override val statisticsText = "Statistics about your plays"
+    override val mostPlayedSongs = "Most played songs"
+    override val mostPlayedAlbums = "Most played albums"
+    override val mostPlayedArtists = "Most played artists"
+    override val mostPlayedPlaylists = "Most played playlists"
 
     override val mainPageTitle = "Main page"
     override val mainPageText = "Manage main page view"
@@ -154,7 +166,7 @@ object EnStrings : Strings {
     override val savingNewMusics = "Saving new songs…"
 
     override fun musics(total: Int): String {
-        return when(total) {
+        return when (total) {
             0 -> "No songs"
             1 -> "1 song"
             else -> "$total songs"
@@ -162,9 +174,16 @@ object EnStrings : Strings {
     }
 
     override fun deletedMusicsAutomatically(total: Int): String =
-        when(total) {
+        when (total) {
             0 -> "No songs deleted"
             1 -> "1 song was deleted because it don't exist anymore on the device"
             else -> "$total songs were deleted because they don't exist anymore on the device"
+        }
+
+    override fun plays(total: Int): String =
+        when (total) {
+            0 -> "No plays"
+            1 -> "1 play"
+            else -> "$total plays"
         }
 }

@@ -105,6 +105,7 @@ class SelectedAlbumViewModel(
 
     override fun onUpdateNbPlayed() {
         screenModelScope.launch {
+            println("THERE")
             val albumId: UUID = (state.value as? SelectedAlbumState.Data)?.playlistDetail?.id ?: return@launch
             updateAlbumNbPlayedUseCase(albumId = albumId)
         }

@@ -52,7 +52,7 @@ fun SubMenuComposable(
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineSmall,
+            style = UiConstants.Typography.titleSmall,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

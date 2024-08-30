@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.developers
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers
 
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable

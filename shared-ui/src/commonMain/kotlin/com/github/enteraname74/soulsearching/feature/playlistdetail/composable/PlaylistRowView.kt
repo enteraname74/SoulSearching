@@ -181,7 +181,7 @@ private fun Content(
                             coroutineScope.launch {
                                 playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                             }.invokeOnCompletion {
-                                playlistDetailListener.onUpdateNbPlayed(music.musicId)
+                                playlistDetailListener.onUpdateNbPlayed()
                                 playbackManager.setCurrentPlaylistAndMusic(
                                     music = music,
                                     musicList = playlistDetail.musics,

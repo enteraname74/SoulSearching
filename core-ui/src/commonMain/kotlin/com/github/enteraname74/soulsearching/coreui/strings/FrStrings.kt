@@ -16,7 +16,8 @@ object FrStrings : Strings {
     override val settingsAccessButton = "Bouton d'accès aux paramètres de l'application"
     override val shuffleButton = "Bouton pour jouer une liste de musique en aléatoire"
     override val favorite = "Favoris"
-    override val missingPermissions = "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
+    override val missingPermissions =
+        "Vous devez accepter toutes les permissions de l'application pour que cette dernière fonctionne correctement."
     override val playedList = "Liste jouée"
     override val currentSong = "Musique courante"
     override val lyrics = "Paroles"
@@ -26,17 +27,20 @@ object FrStrings : Strings {
     override val completeApplicationTitle = "Une application de musique complète"
     override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."
     override val quickAccessTitle = "Gardez ce que vous aimez proche de vous"
-    override val quickAccessText = "Avec les accès rapides, vous pouvez facilement accéder à votre album favori, ou à vos musiques préférées par exemple."
+    override val quickAccessText =
+        "Avec les accès rapides, vous pouvez facilement accéder à votre album favori, ou à vos musiques préférées par exemple."
     override val modifyElementsTitle = "Modifiez vos éléments musicaux"
     override val modifyElementsText = "Vous pouvez modifier les informations d'un album, d'un artiste, d'une musique…"
     override val dynamicThemeFeatureTitle = "Thème dynamique"
-    override val dynamicThemeFeatureText = "Soul Searching vous offre la possibilité d'avoir un thème dynamique dépendant de la musique en cours de lecture"
+    override val dynamicThemeFeatureText =
+        "Soul Searching vous offre la possibilité d'avoir un thème dynamique dépendant de la musique en cours de lecture"
     override val manageFoldersTitle = "Gérez vos dossiers"
     override val manageFoldersText = "Définissez quels dossiers sont utilisés par l'application."
     override val addNewMusicsTitle = "Ajoutez de nouvelles musiques"
     override val addNewMusicsText = "Vous pouvez facilement ajouter de nouvelles musiques provenant de votre appareil."
     override val personalizeMainPageTitle = "Définissez ce que vous voulez réellement"
-    override val personalizeMainPageText = "Vous ne voulez pas avoir les accès rapides ou vous voudriez avoir une barre vous aidant à accéder à des éléments du menu principal ? Vous pouvez réaliser vos envies dans les paramètres de l'application."
+    override val personalizeMainPageText =
+        "Vous ne voulez pas avoir les accès rapides ou vous voudriez avoir une barre vous aidant à accéder à des éléments du menu principal ? Vous pouvez réaliser vos envies dans les paramètres de l'application."
 
     override val searchingSongsFromYourDevice = "Recherche de musiques sur votre appareil…"
     override val searchForMusics = "Rechercher une musique"
@@ -86,7 +90,8 @@ object FrStrings : Strings {
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
     override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
-    override val removeMusicFromPlaylistText = "Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l'application."
+    override val removeMusicFromPlaylistText =
+        "Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
@@ -110,13 +115,20 @@ object FrStrings : Strings {
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
     override val modifyMusicFileTitle = "Modifier les fichiers sur l'appareil"
-    override val modifyMusicFileText = "Modifier les informations d'une musique modifiera les métadonnées du fichier sur votre appareil."
+    override val modifyMusicFileText =
+        "Modifier les informations d'une musique modifiera les métadonnées du fichier sur votre appareil."
     override val colorThemeTitle = "Thème de couleur"
     override val colorThemeText = "Thème dynamique, personnalisé"
     override val personalizationTitle = "Personnalisation"
     override val personalizationText = "Gérer le lecteur et la vue de la page principale"
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
+    override val statisticsTitle = "Statistiques"
+    override val statisticsText = "Statistiques sur vos écoutes"
+    override val mostPlayedSongs = "Musiques les plus écoutées"
+    override val mostPlayedAlbums = "Albums les plus écoutés"
+    override val mostPlayedArtists = "Artistes les plus écoutés"
+    override val mostPlayedPlaylists = "Playlists les plus écoutées"
 
     override val mainPageTitle = "Page principale"
     override val mainPageText = "Gérer la vue de la page principale"
@@ -132,7 +144,8 @@ object FrStrings : Strings {
 
     override val managePlayerTitle = "Lecteur de musique"
     override val managePlayerText = "Gérer le lecteur de musique"
-    override val playerSwipeTitle = "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
+    override val playerSwipeTitle =
+        "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
     override val soulMixSettingsTitle = "Total de musiques récupérées de chaque dossier pour le Soul Mix"
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
@@ -163,9 +176,16 @@ object FrStrings : Strings {
     }
 
     override fun deletedMusicsAutomatically(total: Int): String =
-        when(total) {
+        when (total) {
             0 -> "Aucune musique supprimée"
             1 -> "1 musique a été supprimée car elle n'existe plus sur l'appareil"
             else -> "$total musiques ont été supprimées car elles n\\'existent plus sur l\\'appareil"
+        }
+
+    override fun plays(total: Int): String =
+        when (total) {
+            0 -> "Aucune écoutes"
+            1 -> "1 écoute"
+            else -> "$total écoutes"
         }
 }

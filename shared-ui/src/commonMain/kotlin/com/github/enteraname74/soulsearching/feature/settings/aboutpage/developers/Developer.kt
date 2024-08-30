@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.developers
+package com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers
 
 /**
  * Information about a developer on the SoulSearching project.
