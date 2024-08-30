@@ -6,4 +6,5 @@ data class NavigationRowSpec(
     val title: String,
     val icon: ImageVector,
     val onClick: () -> Unit,
+    val isSelected: Boolean,
 )

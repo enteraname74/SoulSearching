@@ -45,13 +45,14 @@ fun SoulSearchingApplication(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
-    imageCoverRetriever : ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
+    imageCoverRetriever: ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val musicState by mainPageViewModel.allMusicsState.collectAsState()
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
+    val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
     val allImages by imageCoverRetriever.allCovers.collectAsState()
 
     playbackManager.retrieveCoverMethod = allImages::getFromCoverId
@@ -103,6 +104,7 @@ fun SoulSearchingApplication(
                             generalNavigator = generalNavigator,
                             setCurrentPage = mainPageViewModel::setCurrentPage,
                             tabs = tabs,
+                            currentPage = currentElementPage,
                         )
                     )
                 }
@@ -146,6 +148,7 @@ fun SoulSearchingApplication(
 @Composable
 private fun navigationRows(
     setCurrentPage: (ElementEnum) -> Unit,
+    currentPage: ElementEnum?,
     tabs: List<PagerScreen>,
     playerViewManager: PlayerViewManager = injectElement(),
     colorThemeManager: ColorThemeManager = injectElement(),
@@ -174,10 +177,14 @@ private fun navigationRows(
                         SettingsScreen()
                     )
                 },
-                icon = Icons.Rounded.Settings
+                icon = Icons.Rounded.Settings,
+                isSelected = generalNavigator?.lastItem is SettingsScreen
             )
         )
-        tabs.forEach { tab ->
+        tabs.forEachIndexed { index, tab ->
+
+            val pageCheck: Boolean = (currentPage == null && index == 0) || (currentPage == tab.type)
+
             add(
                 NavigationRowSpec(
                     title = tab.type.navigationTitle(),
@@ -188,7 +195,8 @@ private fun navigationRows(
                         generalNavigator?.safePush(
                             MainPageScreen()
                         )
-                    }
+                    },
+                    isSelected = (generalNavigator?.lastItem is MainPageScreen) && pageCheck
                 )
             )
         }

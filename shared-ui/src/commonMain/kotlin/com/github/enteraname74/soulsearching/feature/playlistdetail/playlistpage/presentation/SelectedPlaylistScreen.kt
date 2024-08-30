@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
@@ -50,12 +51,12 @@ data class SelectedPlaylistScreen(
                 SelectedPlaylistNavigationState.Idle -> { /*no-op*/  }
                 is SelectedPlaylistNavigationState.ToModifyMusic -> {
                     val selectedMusic = (navigationState as SelectedPlaylistNavigationState.ToModifyMusic).music
-                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    navigator.safePush(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
                     screenModel.consumeNavigation()
                 }
 
                 is SelectedPlaylistNavigationState.ToEdit -> {
-                    navigator.push(ModifyPlaylistScreen(selectedPlaylistId = selectedPlaylistId))
+                    navigator.safePush(ModifyPlaylistScreen(selectedPlaylistId = selectedPlaylistId))
                     screenModel.consumeNavigation()
                 }
             }

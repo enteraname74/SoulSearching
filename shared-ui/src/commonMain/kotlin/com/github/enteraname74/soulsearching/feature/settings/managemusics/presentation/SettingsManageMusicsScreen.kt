@@ -11,6 +11,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.AddMusicsEvent
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
@@ -33,13 +34,13 @@ class SettingsManageMusicsScreen : Screen {
                 navigator.pop()
             },
             navigateToFolders = {
-                navigator.push(
+                navigator.safePush(
                     SettingsUsedFoldersScreen()
                 )
             },
             navigateToAddMusics = {
                 addMusicsViewModel.onAddMusicEvent(AddMusicsEvent.ResetState)
-                navigator.push(
+                navigator.safePush(
                     SettingsAddMusicsScreen()
                 )
             }

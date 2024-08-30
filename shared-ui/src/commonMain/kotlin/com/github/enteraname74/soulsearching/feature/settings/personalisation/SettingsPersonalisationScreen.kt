@@ -9,6 +9,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation.SettingsMainPagePersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -27,17 +28,17 @@ class SettingsPersonalisationScreen : Screen {
                 navigator.pop()
             },
             onMainPageClick = {
-                navigator.push(
+                navigator.safePush(
                     SettingsMainPagePersonalisationScreen()
                 )
             },
             onMusicPageClick = {
-                navigator.push(
+                navigator.safePush(
                     SettingsMusicViewPersonalisationScreen()
                 )
             },
             onPlayerPageClick = {
-                navigator.push(
+                navigator.safePush(
                     SettingsPlayerPersonalisationScreen()
                 )
             }

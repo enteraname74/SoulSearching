@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.developers.SettingsDevelopersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
@@ -23,7 +24,7 @@ class SettingsAboutScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         SettingsAboutComposable(
-            navigateToDevelopers = { navigator.push(SettingsDevelopersScreen()) },
+            navigateToDevelopers = { navigator.safePush(SettingsDevelopersScreen()) },
             navigateBack = { navigator.pop() }
         )
     }

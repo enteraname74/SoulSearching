@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
@@ -51,24 +52,24 @@ data class SelectedArtistScreen(
 
                 is SelectedArtistNavigationState.ToModifyAlbum -> {
                     val selectedAlbum = (navigationState as SelectedArtistNavigationState.ToModifyAlbum).album
-                    navigator.push(ModifyAlbumScreen(selectedAlbumId = selectedAlbum.albumId.toString()))
+                    navigator.safePush(ModifyAlbumScreen(selectedAlbumId = selectedAlbum.albumId.toString()))
                     screenModel.consumeNavigation()
                 }
 
                 is SelectedArtistNavigationState.ToModifyMusic -> {
                     val selectedMusic = (navigationState as SelectedArtistNavigationState.ToModifyMusic).music
-                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    navigator.safePush(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
                     screenModel.consumeNavigation()
                 }
 
                 is SelectedArtistNavigationState.ToAlbum -> {
                     val albumId = (navigationState as SelectedArtistNavigationState.ToAlbum).albumId
-                    navigator.push(SelectedAlbumScreen(selectedAlbumId = albumId.toString()))
+                    navigator.safePush(SelectedAlbumScreen(selectedAlbumId = albumId.toString()))
                     screenModel.consumeNavigation()
                 }
 
                 SelectedArtistNavigationState.ToEdit -> {
-                    navigator.push(ModifyArtistScreen(selectedArtistId = selectedArtistId))
+                    navigator.safePush(ModifyArtistScreen(selectedArtistId = selectedArtistId))
                     screenModel.consumeNavigation()
                 }
             }

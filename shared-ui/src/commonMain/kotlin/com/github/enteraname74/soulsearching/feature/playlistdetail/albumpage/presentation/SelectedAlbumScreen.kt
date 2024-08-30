@@ -10,6 +10,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
@@ -49,17 +50,17 @@ data class SelectedAlbumScreen(
                 SelectedAlbumNavigationState.Idle -> { /*no-op*/ }
                 is SelectedAlbumNavigationState.ToModifyMusic -> {
                     val selectedMusic = (navigationState as SelectedAlbumNavigationState.ToModifyMusic).music
-                    navigator.push(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
+                    navigator.safePush(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
                     screenModel.consumeNavigation()
                 }
                 SelectedAlbumNavigationState.ToEdit -> {
-                    navigator.push(ModifyAlbumScreen(selectedAlbumId = selectedAlbumId))
+                    navigator.safePush(ModifyAlbumScreen(selectedAlbumId = selectedAlbumId))
                     screenModel.consumeNavigation()
                 }
 
                 is SelectedAlbumNavigationState.ToArtist -> {
                     val selectedArtistId = (navigationState as SelectedAlbumNavigationState.ToArtist).artistId
-                    navigator.push(SelectedArtistScreen(selectedArtistId = selectedArtistId.toString()))
+                    navigator.safePush(SelectedArtistScreen(selectedArtistId = selectedArtistId.toString()))
                     screenModel.consumeNavigation()
                 }
             }
