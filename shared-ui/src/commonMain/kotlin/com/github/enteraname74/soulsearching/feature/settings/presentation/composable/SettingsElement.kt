@@ -2,16 +2,13 @@ package com.github.enteraname74.soulsearching.feature.settings.presentation.comp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -19,16 +16,14 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SettingsElement(
     title: String,
-    text: String,
+    subTitle: String,
     icon: ImageVector? = null,
-    onClick: (() -> Unit)?,
-    padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge)
+    onClick: (() -> Unit)?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .optionalClickable(block = onClick)
-            .padding(padding),
+            .optionalClickable(block = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
@@ -47,15 +42,14 @@ fun SettingsElement(
             Text(
                 text = title,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                fontSize = 18.sp,
-                fontWeight = FontWeight(500),
+                style = UiConstants.Typography.bodyTitle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = text,
+                text = subTitle,
                 color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                style = MaterialTheme.typography.bodyMedium,
+                style = UiConstants.Typography.bodySmall,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )

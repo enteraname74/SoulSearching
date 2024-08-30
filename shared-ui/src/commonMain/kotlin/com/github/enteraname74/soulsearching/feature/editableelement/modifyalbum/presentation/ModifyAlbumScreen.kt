@@ -88,10 +88,6 @@ private fun ModifyAlbumScreenView(
                     onNewImageSet = onNewImageSet,
                     onValidateModification = onSave,
                     textFields = formState.textFields,
-                    textFieldsLabels = listOf(
-                        strings.albumName,
-                        strings.artistName,
-                    )
                 )
             }
         }

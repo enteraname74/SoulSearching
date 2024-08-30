@@ -74,7 +74,7 @@ fun BigPreviewComposable(
             ) {
                 Text(
                     text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     style = titleStyle,
                     maxLines = 1,
@@ -83,7 +83,7 @@ fun BigPreviewComposable(
                 if (text.isNotBlank()) {
                     Text(
                         text = text,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
                         style = textStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

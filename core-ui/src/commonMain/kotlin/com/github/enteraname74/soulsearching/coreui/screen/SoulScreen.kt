@@ -10,11 +10,12 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun SoulScreen(
+    modifier: Modifier = Modifier,
     containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(
                 color = containerColor,

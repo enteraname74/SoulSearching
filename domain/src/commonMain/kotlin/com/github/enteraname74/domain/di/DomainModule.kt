@@ -103,7 +103,7 @@ val domainModule = module {
     singleOf(::UpsertMusicIntoArtistUseCase)
 
     // MusicFolder
-    singleOf(::GetAllMusicFolderUseCase)
+    singleOf(::GetAllMusicFolderListUseCase)
     singleOf(::GetMusicFolderListUseCase)
 
     // MusicPlaylist

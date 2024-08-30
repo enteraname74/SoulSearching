@@ -5,4 +5,5 @@ data class ElementsVisibility(
     val arePlaylistsShown: Boolean,
     val areAlbumsShown: Boolean,
     val areArtistsShown: Boolean,
+    val areMusicFoldersShown: Boolean,
 )

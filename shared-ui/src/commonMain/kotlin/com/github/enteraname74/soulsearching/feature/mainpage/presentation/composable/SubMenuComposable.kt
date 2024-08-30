@@ -37,7 +37,6 @@ fun SubMenuComposable(
             .fillMaxWidth()
             .height(54.dp)
             .background(color = backgroundColor)
-            .clickable { }
             .padding(
                 top = UiConstants.Spacing.medium,
                 start = UiConstants.Spacing.medium,

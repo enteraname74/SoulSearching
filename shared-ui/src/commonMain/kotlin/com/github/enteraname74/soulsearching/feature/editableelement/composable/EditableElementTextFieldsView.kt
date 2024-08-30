@@ -11,7 +11,6 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 fun EditableElementTextFieldsView(
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    textFieldsLabels: List<String>,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -28,10 +27,9 @@ fun EditableElementTextFieldsView(
                 .weight(4F),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            textFields.forEachIndexed { index, textField ->
+            textFields.forEach { textField ->
                 textField.TextField(
                     focusManager = focusManager,
-                    label = textFieldsLabels.getOrNull(index),
                 )
             }
         }

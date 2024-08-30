@@ -85,9 +85,6 @@ private fun ModifyPlaylistScreenView(
                 onNewImageSet = onNewImageSet,
                 onValidateModification = onValidateModification,
                 textFields = formState.textFields,
-                textFieldsLabels = listOf(
-                    strings.playlistName
-                )
             )
         }
 

@@ -17,6 +17,7 @@ fun <T> MainPageList(
     list: List<T>,
     title: String,
     leftComposable: @Composable () -> Unit = {},
+    innerComposable: @Composable (() -> Unit)? = null,
     setSortType: (Int) -> Unit = {},
     toggleSortDirection: () -> Unit = {},
     sortType: Int = SortType.NAME,
@@ -48,6 +49,7 @@ fun <T> MainPageList(
                 isUsingSort = isUsingSort
             )
         }
+        innerComposable?.let { it() }
         if (list.isNotEmpty()) {
             LazyVerticalGrid(
                 columns = GridCells.FixedSize(UiConstants.ImageSize.veryLarge),

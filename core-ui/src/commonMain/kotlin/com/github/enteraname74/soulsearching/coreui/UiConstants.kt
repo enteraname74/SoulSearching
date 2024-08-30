@@ -1,9 +1,13 @@
 package com.github.enteraname74.soulsearching.coreui
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * Constants used throughout the application.
@@ -26,6 +30,8 @@ object UiConstants {
         val medium: Dp = 8.dp
         val large: Dp = 16.dp
         val veryLarge: Dp = 24.dp
+        val huge: Dp = 32.dp
+        val veryHuge: Dp = 48.dp
     }
 
     /**
@@ -54,5 +60,18 @@ object UiConstants {
     object AnimationDuration {
         const val short: Int = 100
         const val normal: Int = 300
+    }
+
+    object Typography {
+        val bodyTitle: TextStyle = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight(500),
+        )
+        val bodyMediumTitle: TextStyle = TextStyle(
+            fontSize = 18.sp,
+        )
+        val bodySmall: TextStyle
+            @Composable
+            get() = MaterialTheme.typography.bodyMedium
     }
 }

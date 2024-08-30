@@ -3,9 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.compos
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -15,7 +12,6 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 fun PersonalizedColorThemeCard(
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = UiConstants.Spacing.large,
     hasPlayerTheme: Boolean,
     hasPlaylistTheme: Boolean,
     hasOtherViewsTheme: Boolean,
@@ -28,7 +24,6 @@ fun PersonalizedColorThemeCard(
         text = strings.personalizedThemeText,
         onClick = onClick,
         isSelected = isSelected,
-        padding = padding
     ) {
         Column(
             modifier = Modifier
@@ -40,8 +35,6 @@ fun PersonalizedColorThemeCard(
                 title = strings.dynamicPlayerView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlayerTheme() },
                 isChecked = hasPlayerTheme,
-                padding = PaddingValues(0.dp),
-                titleFontSize = 16.sp,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )
@@ -49,8 +42,6 @@ fun PersonalizedColorThemeCard(
                 title = strings.dynamicPlaylistView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlaylistTheme() },
                 isChecked = hasPlaylistTheme,
-                padding = PaddingValues(0.dp),
-                titleFontSize = 16.sp,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )
@@ -58,8 +49,6 @@ fun PersonalizedColorThemeCard(
                 title = strings.dynamicOtherView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicOtherViewsTheme() },
                 isChecked = hasOtherViewsTheme,
-                padding = PaddingValues(0.dp),
-                titleFontSize = 16.sp,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )

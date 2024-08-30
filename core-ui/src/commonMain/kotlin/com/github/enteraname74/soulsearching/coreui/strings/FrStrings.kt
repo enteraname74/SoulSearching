@@ -44,6 +44,7 @@ object FrStrings : Strings {
 
     override val artists = "Artistes"
     override val musics = "Musiques"
+    override val folders = "Dossiers"
     override val byFolders = "Par dossiers"
     override val byMonths = "Par mois"
     override val quickAccess = "Accès rapides"
@@ -62,6 +63,9 @@ object FrStrings : Strings {
     override val create = "Créer"
     override val cancel = "Annuler"
     override val delete = "Supprimer"
+
+    override val soulMixInfoDialogText = "Écoutez un mélange de musiques de chacun de vos dossiers !\nVous pouvez " +
+            "définir le nombre de musiques récupérées de chaque dossier dans les paramètres."
 
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
     override val playlistName = "Nom de la playlist"
@@ -110,7 +114,7 @@ object FrStrings : Strings {
     override val colorThemeTitle = "Thème de couleur"
     override val colorThemeText = "Thème dynamique, personnalisé"
     override val personalizationTitle = "Personnalisation"
-    override val personalizationText = "Gérer la vue de la page principale et du lecteur"
+    override val personalizationText = "Gérer le lecteur et la vue de la page principale"
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
 
@@ -126,10 +130,10 @@ object FrStrings : Strings {
     override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
     override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
 
-    override val managePlayerTitle = "Vue du lecteur de musique"
-    override val managePlayerText = "Gérer la vue du lecteur de musique"
+    override val managePlayerTitle = "Lecteur de musique"
+    override val managePlayerText = "Gérer le lecteur de musique"
     override val playerSwipeTitle = "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
-
+    override val soulMixSettingsTitle = "Total de musiques récupérées de chaque dossier pour le Soul Mix"
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
     override val addMusicsTitle = "Ajouter des musiques"

@@ -87,9 +87,6 @@ private fun ModifyArtistScreenView(
                     onNewImageSet = onNewImageSet,
                     onValidateModification = onSave,
                     textFields = formState.textFields,
-                    textFieldsLabels = listOf(
-                        strings.artistName,
-                    )
                 )
             }
         }

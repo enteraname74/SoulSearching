@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -49,7 +50,7 @@ fun SoulTopBar(
                 modifier = Modifier.weight(1f),
                 text = it,
                 maxLines = 2,
-                fontSize = 18.sp,
+                style = UiConstants.Typography.bodyMediumTitle,
                 color = colors.contentColor,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,

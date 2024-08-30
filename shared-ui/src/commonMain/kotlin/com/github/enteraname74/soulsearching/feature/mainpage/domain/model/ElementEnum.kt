@@ -8,5 +8,6 @@ enum class ElementEnum {
     PLAYLISTS,
     ALBUMS,
     ARTISTS,
-    MUSICS
+    MUSICS,
+    FOLDERS
 }

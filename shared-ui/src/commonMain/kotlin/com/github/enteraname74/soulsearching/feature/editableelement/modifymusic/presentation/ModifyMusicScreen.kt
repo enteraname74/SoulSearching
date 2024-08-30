@@ -93,11 +93,6 @@ private fun ModifyMusicScreenView(
                     onNewImageSet = onNewImageSet,
                     onValidateModification = onSave,
                     textFields = formState.textFields,
-                    textFieldsLabels = listOf(
-                        strings.musicName,
-                        strings.albumName,
-                        strings.artistName,
-                    )
                 )
             }
         }

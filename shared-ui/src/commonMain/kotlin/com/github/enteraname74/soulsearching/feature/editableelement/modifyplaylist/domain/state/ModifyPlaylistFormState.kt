@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state
 
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 
@@ -13,7 +14,8 @@ sealed interface ModifyPlaylistFormState {
             SoulTextFieldHolderImpl(
                 id = PLAYLIST_NAME,
                 initialValue = initialPlaylist.name,
-                isValid = { it.isNotBlank() }
+                isValid = { it.isNotBlank() },
+                getLabel = { strings.playlistName },
             )
         )
 

@@ -2,10 +2,7 @@ package com.github.enteraname74.soulsearching.ext
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
-import androidx.compose.material.icons.rounded.Album
-import androidx.compose.material.icons.rounded.DoubleArrow
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -17,6 +14,7 @@ fun ElementEnum.navigationIcon(): ImageVector =
         ElementEnum.ALBUMS -> Icons.Rounded.Album
         ElementEnum.ARTISTS -> Icons.Rounded.Person
         ElementEnum.MUSICS -> Icons.Rounded.MusicNote
+        ElementEnum.FOLDERS -> Icons.Rounded.Folder
     }
 
 fun ElementEnum.navigationTitle(): String =
@@ -26,4 +24,5 @@ fun ElementEnum.navigationTitle(): String =
         ElementEnum.ALBUMS -> strings.albums
         ElementEnum.ARTISTS -> strings.artists
         ElementEnum.MUSICS -> strings.musics
+        ElementEnum.FOLDERS -> strings.folders
     }

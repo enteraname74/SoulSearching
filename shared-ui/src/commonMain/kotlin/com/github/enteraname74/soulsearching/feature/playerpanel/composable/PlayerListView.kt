@@ -87,8 +87,6 @@ fun PlayerListView(
                     contentType = { PLAYER_LIST_CONTENT_TYPE }
                 ) { elt ->
                     MusicItemComposable(
-                        modifier = Modifier
-                            .animateItemPlacement(),
                         music = elt,
                         onClick = { music ->
                             playbackManager.setAndPlayMusic(music)

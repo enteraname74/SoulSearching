@@ -21,7 +21,6 @@ fun EditableElementRowView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    textFieldsLabels: List<String>,
 ) {
     Row(
         modifier = Modifier
@@ -46,7 +45,6 @@ fun EditableElementRowView(
         EditableElementTextFieldsView(
             focusManager = focusManager,
             textFields = textFields,
-            textFieldsLabels = textFieldsLabels,
             modifier = Modifier
                 .fillMaxSize()
                 .weight(2F)

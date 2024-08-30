@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 
@@ -17,12 +18,14 @@ sealed interface ModifyAlbumFormState {
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.albumName,
                 updateProposedValues = updateFoundAlbums,
+                getLabel = { strings.albumName },
             ),
             SoulDropdownTextFieldHolderImpl(
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.artist?.artistName.orEmpty(),
                 updateProposedValues = updateFoundArtists,
+                getLabel = { strings.artistName },
             ),
         )
 

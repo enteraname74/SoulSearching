@@ -44,6 +44,7 @@ object EnStrings : Strings {
 
     override val artists = "Artists"
     override val musics = "Songs"
+    override val folders = "Folders"
     override val byFolders = "By folders"
     override val byMonths = "By months"
     override val quickAccess = "Quick Access"
@@ -62,6 +63,9 @@ object EnStrings : Strings {
     override val create = "Create"
     override val cancel = "Cancel"
     override val delete = "Delete"
+
+    override val soulMixInfoDialogText = "Listen to a mix of fetched songs from each of your folder!\nYou can " +
+            "define the total of songs fetched from each folder in the settings."
 
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
@@ -109,7 +113,7 @@ object EnStrings : Strings {
     override val colorThemeTitle = "Color theme"
     override val colorThemeText = "Dynamic theme, personalized theme"
     override val personalizationTitle = "Personalization"
-    override val personalizationText = "Manage main page and player view"
+    override val personalizationText = "Manage player and main page view"
     override val aboutTitle = "About Soul Searching"
     override val aboutText = "Developers, application's version name"
 
@@ -125,10 +129,10 @@ object EnStrings : Strings {
     override val showVerticalAccessBarTitle = "Show vertical access bar"
     override val showVerticalAccessBarText = "Gives quick access to all elements on the main page"
 
-    override val managePlayerTitle = "Music player view"
-    override val managePlayerText = "Manage music player view"
+    override val managePlayerTitle = "Music player"
+    override val managePlayerText = "Manage music player"
     override val playerSwipeTitle = "Swipe the song cover to move forward or backward in the played list"
-
+    override val soulMixSettingsTitle = "Total of songs fetched from each folder for the Soul Mix"
     override val usedFoldersTitle = "Used folders"
     override val usedFoldersText = "Define the folders used in the application"
     override val addMusicsTitle = "Add songs"

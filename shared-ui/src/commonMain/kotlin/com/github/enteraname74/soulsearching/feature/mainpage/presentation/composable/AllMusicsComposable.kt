@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun AllMusicsComposable(
     musicState: AllMusicsState,
-    navigateToFolder: (folderPath: String) -> Unit,
     navigateToMonth: (month: String) -> Unit,
     setSortType: (Int) -> Unit,
     toggleSortDirection: () -> Unit = {},
@@ -48,18 +47,6 @@ fun AllMusicsComposable(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        if (viewSettingsManager.areMusicsByFoldersShown) {
-            item(
-                key = ALL_MUSICS_FOLDER_KEY,
-                contentType = ALL_MUSICS_FOLDER_CONTENT_TYPE,
-            ) {
-                MusicFoldersHorizontalList(
-                    folders = musicState.folderMusics,
-                    onFolderClicked = navigateToFolder,
-                    onFolderLongClicked = {}
-                )
-            }
-        }
         if (viewSettingsManager.areMusicsByMonthsShown) {
             item(
                 key = ALL_MUSICS_MONTH_KEY,
@@ -162,8 +149,6 @@ fun AllMusicsComposable(
     }
 }
 
-private const val ALL_MUSICS_FOLDER_KEY: String = "ALL_MUSICS_FOLDER_KEY"
-private const val ALL_MUSICS_FOLDER_CONTENT_TYPE: String = "ALL_MUSICS_FOLDER_CONTENT_TYPE"
 private const val ALL_MUSICS_MONTH_KEY: String = "ALL_MUSICS_MONTH_KEY"
 private const val ALL_MUSICS_MONTH_STICKY_HEADER: String = "ALL_MUSICS_MONTH_STICKY_HEADER"
 private const val ALL_MUSICS_STICKY_HEADER_KEY: String = "ALL_MUSICS_STICKY_HEADER_KEY"

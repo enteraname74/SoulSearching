@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 
@@ -16,6 +17,7 @@ sealed interface ModifyArtistFormState {
                 isValid = { it.isNotBlank() },
                 initialValue = initialArtist.artistName,
                 updateProposedValues = updateFoundArtists,
+                getLabel = { strings.artistName },
             ),
         )
 

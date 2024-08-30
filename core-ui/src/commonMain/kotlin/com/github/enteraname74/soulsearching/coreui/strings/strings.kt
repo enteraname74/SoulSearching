@@ -23,9 +23,11 @@ interface Strings {
     val settingsAccessButton: String
     val createPlaylistButton: String
     val shuffleButton: String
+    val soulMix: String get() = "Soul Mix"
     val favorite: String
     val playlists: String get() = "Playlists"
     val albums: String get() = "Albums"
+    val folders: String
     val artists: String
     val byFolders: String
     val byMonths: String
@@ -56,6 +58,7 @@ interface Strings {
     val managePlayerTitle: String
     val managePlayerText: String
     val playerSwipeTitle: String
+    val soulMixSettingsTitle: String
 
     val searchingSongsFromYourDevice: String
     val searchForMusics: String
@@ -75,6 +78,10 @@ interface Strings {
     val create: String
     val cancel: String
     val delete: String
+    val ok: String get() = "Ok"
+
+    val soulMixInfoDialogTitle: String get() = "Soul Mix"
+    val soulMixInfoDialogText: String
 
     val createPlaylistDialogTitle: String
     val playlistName: String

@@ -135,10 +135,14 @@ interface SoulSearchingSettings {
         const val IS_PLAYLISTS_SHOWN = "IS_PLAYLISTS_SHOWN"
         const val IS_ALBUMS_SHOWN = "IS_ALBUMS_SHOWN"
         const val IS_ARTISTS_SHOWN = "IS_ARTISTS_SHOWN"
-
-        const val ARE_MUSICS_BY_FOLDERS_SHOWN = "ARE_MUSICS_BY_FOLDERS_SHOWN"
         const val ARE_MUSICS_BY_MONTHS_SHOWN = "ARE_MUSICS_BY_MONTHS_SHOWN"
 
+        const val ARE_MUSICS_BY_FOLDERS_SHOWN = "ARE_MUSICS_BY_FOLDERS_SHOWN"
+
         const val IS_PLAYER_SWIPE_ENABLED = "IS_PLAYER_SWIPE_ENABLED"
+        const val IS_PLAYER_SWIPE_ENABLED_DEFAULT = true
+
+        const val SOUL_MIX_TOTAL_BY_LIST = "SOUL_MIX_TOTAL_BY_LIST"
+        const val SOUL_MIX_TOTAL_BY_LIST_DEFAULT = 50
     }
 }

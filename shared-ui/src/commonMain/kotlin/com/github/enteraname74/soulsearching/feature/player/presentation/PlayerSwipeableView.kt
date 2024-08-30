@@ -23,10 +23,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
-import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.theme.color.orDefault
+import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.coreui.utils.*
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -85,7 +82,8 @@ fun PlayerDraggableView(
 
     LaunchedEffect(navigationState) {
         when (navigationState) {
-            PlayerNavigationState.Idle -> { /*no-op*/ }
+            PlayerNavigationState.Idle -> { /*no-op*/
+            }
 
             is PlayerNavigationState.ToModifyMusic -> {
                 coroutineScope.launch {
@@ -196,15 +194,18 @@ fun PlayerDraggableView(
                     )
                 )
         ) {
+            val animatedBackgroundColor =
+                if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                    SoulSearchingColorTheme.colorScheme.primary
+                } else {
+                    SoulSearchingColorTheme.colorScheme.secondary
+                }.animated(label = PLAYER_BACKGROUND_COLOR_LABEL)
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                            SoulSearchingColorTheme.colorScheme.primary
-                        } else {
-                            SoulSearchingColorTheme.colorScheme.secondary
-                        }
+                        color = animatedBackgroundColor
                     )
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
                         coroutineScope.launch {
@@ -233,7 +234,7 @@ fun PlayerDraggableView(
                     onShowPanel = if (
                         !PlayerUiUtils.canShowSidePanel()
                         && PlayerUiUtils.getDraggablePanelCollapsedOffset() == 0f
-                        ) {
+                    ) {
                         {
                             coroutineScope.launch {
                                 playerMusicListViewManager.animateTo(
@@ -381,7 +382,7 @@ fun PlayerDraggableView(
                         subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                         buttonTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     )
-                } else if (!PlayerUiUtils.canShowRowControlPanel()){
+                } else if (!PlayerUiUtils.canShowRowControlPanel()) {
                     BoxWithConstraints(
                         modifier = Modifier
                             .padding(
@@ -404,9 +405,9 @@ fun PlayerDraggableView(
                                     PlayerEvent.GetLyrics,
                                 )
                             },
-                            primaryColor = SoulSearchingColorTheme.colorScheme.primary,
+                            primaryColor = SoulSearchingColorTheme.colorScheme.secondary,
                             textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                            subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                            subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                             isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                             buttonTextColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                         )
@@ -565,3 +566,5 @@ private val PlayerControlsExtraWidth: Dp = 25.dp
 
 private val MinPlayerSidePanelWidth: Dp = 50.dp
 private val MaxPlayerSidePanelWidth: Dp = 600.dp
+
+private val PLAYER_BACKGROUND_COLOR_LABEL = "PLAYER_BACKGROUND_COLOR_LABEL"

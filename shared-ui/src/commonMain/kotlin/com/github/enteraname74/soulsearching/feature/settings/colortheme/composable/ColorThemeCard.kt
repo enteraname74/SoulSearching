@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
@@ -21,7 +19,6 @@ fun ColorThemeCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = UiConstants.Spacing.large,
     firstImage: DrawableResource,
     secondImage: DrawableResource,
 ) {
@@ -30,7 +27,6 @@ fun ColorThemeCard(
         text = text,
         onClick = onClick,
         isSelected = isSelected,
-        padding = padding
     ) {
         Row(
             modifier = Modifier

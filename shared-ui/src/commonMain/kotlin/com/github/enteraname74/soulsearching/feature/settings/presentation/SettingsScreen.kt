@@ -1,28 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
-import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutScreen
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsScreen
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationScreen
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 
 /**
@@ -38,22 +31,22 @@ class SettingsScreen : Screen {
                 navigator.pop()
             },
             navigateToAbout = {
-                navigator.push(
+                navigator.safePush(
                     SettingsAboutScreen()
                 )
             },
             navigateToColorTheme = {
-                navigator.push(
+                navigator.safePush(
                     SettingsColorThemeScreen()
                 )
             },
             navigateToManageMusics = {
-                navigator.push(
+                navigator.safePush(
                     SettingsManageMusicsScreen()
                 )
             },
             navigateToPersonalisation = {
-                navigator.push(
+                navigator.safePush(
                     SettingsPersonalisationScreen()
                 )
             }
@@ -69,53 +62,41 @@ fun SettingsScreenView(
     navigateToPersonalisation: () -> Unit,
     navigateToAbout: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.primary)
+    SettingPage(
+        navigateBack = finishAction,
+        title = strings.settings,
     ) {
-        SoulTopBar(
-            title = strings.settings,
-            leftAction = TopBarNavigationAction(
-                onClick = finishAction,
+        item {
+            SettingsElement(
+                title = strings.manageMusicsTitle,
+                subTitle = strings.manageMusicsText,
+                icon = Icons.Rounded.MusicNote,
+                onClick = navigateToManageMusics
             )
-        )
-        LazyColumn {
-            item {
-                SettingsElement(
-                    title = strings.manageMusicsTitle,
-                    text = strings.manageMusicsText,
-                    icon = Icons.Rounded.MusicNote,
-                    onClick = navigateToManageMusics
-                )
-            }
-            item {
-                SettingsElement(
-                    title = strings.colorThemeTitle,
-                    text = strings.colorThemeText,
-                    icon = Icons.Rounded.Palette,
-                    onClick = navigateToColorTheme
-                )
-            }
-            item {
-                SettingsElement(
-                    title = strings.personalizationTitle,
-                    text = strings.personalizationText,
-                    icon = Icons.Rounded.Edit,
-                    onClick = navigateToPersonalisation
-                )
-            }
-            item {
-                SettingsElement(
-                    title = strings.aboutTitle,
-                    text = strings.aboutText,
-                    icon = Icons.Rounded.Info,
-                    onClick = navigateToAbout
-                )
-            }
-            item {
-                SoulPlayerSpacer()
-            }
+        }
+        item {
+            SettingsElement(
+                title = strings.colorThemeTitle,
+                subTitle = strings.colorThemeText,
+                icon = Icons.Rounded.Palette,
+                onClick = navigateToColorTheme
+            )
+        }
+        item {
+            SettingsElement(
+                title = strings.personalizationTitle,
+                subTitle = strings.personalizationText,
+                icon = Icons.Rounded.Edit,
+                onClick = navigateToPersonalisation
+            )
+        }
+        item {
+            SettingsElement(
+                title = strings.aboutTitle,
+                subTitle = strings.aboutText,
+                icon = Icons.Rounded.Info,
+                onClick = navigateToAbout
+            )
         }
     }
 }

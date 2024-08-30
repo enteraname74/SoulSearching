@@ -9,10 +9,15 @@ import androidx.compose.ui.focus.FocusManager
 abstract class SoulTextFieldHolder(
     val id: String,
     initialValue: String = "",
+    private val getLabel: @Composable () -> String?,
     private val isValid: (value: String) -> Boolean = { true },
 ) {
     var value: String by mutableStateOf(initialValue)
         protected set
+
+    val label: String?
+        @Composable
+        get() = getLabel()
 
     fun isValid(): Boolean = isValid(value)
 
@@ -23,6 +28,5 @@ abstract class SoulTextFieldHolder(
     @Composable
     abstract fun TextField(
         focusManager: FocusManager,
-        label: String?,
     )
 }

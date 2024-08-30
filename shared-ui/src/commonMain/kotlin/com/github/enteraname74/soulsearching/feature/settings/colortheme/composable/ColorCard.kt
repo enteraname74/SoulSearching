@@ -9,10 +9,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsActionElement
 
 @Composable
 fun ColorCard(
@@ -20,18 +20,11 @@ fun ColorCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    padding: Dp = UiConstants.Spacing.large,
     subComposable: @Composable (() -> Unit)
 ) {
     Card(
         modifier = Modifier
             .clickable { onClick() }
-            .padding(
-                top = UiConstants.Spacing.large,
-                bottom = UiConstants.Spacing.large,
-                start = UiConstants.Spacing.veryLarge,
-                end = UiConstants.Spacing.veryLarge,
-            )
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(
             contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -40,11 +33,13 @@ fun ColorCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(padding)
+                .padding(
+                    all = UiConstants.Spacing.large,
+                )
         ) {
             SettingsActionElement(
                 title = title,
-                text = text,
+                subTitle = text,
                 clickAction = onClick,
                 isSelected = isSelected,
                 padding = 0.dp,

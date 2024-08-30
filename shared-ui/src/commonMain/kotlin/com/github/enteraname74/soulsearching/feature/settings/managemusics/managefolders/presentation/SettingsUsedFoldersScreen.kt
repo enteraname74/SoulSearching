@@ -2,7 +2,9 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -85,7 +88,12 @@ fun SettingsUsedFoldersScreenView(
         )
         when (state) {
             is FolderState.Data -> {
-                LazyColumn {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryLarge),
+                    contentPadding = PaddingValues(
+                        all = UiConstants.Spacing.veryLarge,
+                    )
+                ) {
                     items(
                         items = state.folders,
                         key = { it.folderPath },

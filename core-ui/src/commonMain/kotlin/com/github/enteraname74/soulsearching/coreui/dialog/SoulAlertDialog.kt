@@ -1,18 +1,13 @@
 package com.github.enteraname74.soulsearching.coreui.dialog
 
-import androidx.compose.foundation.Image
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun SoulAlertDialog(
@@ -20,8 +15,9 @@ fun SoulAlertDialog(
     dismissAction: () -> Unit,
     title: String,
     text: String = "",
+    icon: @Composable (() -> Unit)? = null,
     confirmText: String,
-    dismissText: String,
+    dismissText: String? = null,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {
@@ -35,12 +31,14 @@ fun SoulAlertDialog(
                 )
             }
         },
-        dismissButton = {
-            TextButton(onClick = dismissAction) {
-                Text(
-                    text = dismissText,
-                    color = contentColor
-                )
+        dismissButton = dismissText?.let {
+            {
+                TextButton(onClick = dismissAction) {
+                    Text(
+                        text = it,
+                        color = contentColor
+                    )
+                }
             }
         },
         title = {
@@ -56,13 +54,7 @@ fun SoulAlertDialog(
                 textAlign = TextAlign.Center
             )
         },
-        icon = {
-            Image(
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = strings.delete,
-                colorFilter = ColorFilter.tint(contentColor)
-            )
-        },
+        icon = icon,
         containerColor = backgroundColor,
         textContentColor = contentColor,
         titleContentColor = contentColor,
@@ -76,6 +68,7 @@ fun SoulAlertDialog(
     dismissAction: () -> Unit,
     title: String,
     content: @Composable () -> Unit,
+    icon: @Composable (() -> Unit)? = null,
     confirmText: String,
     dismissText: String,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
@@ -109,13 +102,7 @@ fun SoulAlertDialog(
         text = {
             content()
         },
-        icon = {
-            Image(
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = strings.delete,
-                colorFilter = ColorFilter.tint(contentColor)
-            )
-        },
+        icon = icon,
         containerColor = backgroundColor,
         textContentColor = contentColor,
         titleContentColor = contentColor,

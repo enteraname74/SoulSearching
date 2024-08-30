@@ -24,7 +24,6 @@ fun EditableElementColumnView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    textFieldsLabels: List<String>,
 ) {
     Column(
         modifier = Modifier
@@ -48,7 +47,6 @@ fun EditableElementColumnView(
         EditableElementTextFieldsView(
             focusManager = focusManager,
             textFields = textFields,
-            textFieldsLabels = textFieldsLabels,
             Modifier
                 .fillMaxSize()
                 .weight(1F)

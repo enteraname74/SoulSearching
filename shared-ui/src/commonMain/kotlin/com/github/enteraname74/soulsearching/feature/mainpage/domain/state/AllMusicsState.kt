@@ -10,5 +10,4 @@ data class AllMusicsState(
     var sortType: Int = SortDirection.ASC,
     var sortDirection: Int = SortDirection.ASC,
     var monthMusics: List<MonthMusics> = listOf(),
-    var folderMusics: List<MusicFolder> = listOf(),
 )

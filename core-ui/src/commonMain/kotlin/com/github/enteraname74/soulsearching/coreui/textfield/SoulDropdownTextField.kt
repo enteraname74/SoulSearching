@@ -125,11 +125,13 @@ class SoulDropdownTextFieldHolderImpl(
     id: String,
     initialValue: String = "",
     isValid: (value: String) -> Boolean = { true },
+    getLabel: @Composable () -> String?,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
 ): SoulTextFieldHolder(
     initialValue = initialValue,
     isValid = isValid,
     id = id,
+    getLabel = getLabel,
 ) {
     private var values: List<String> by mutableStateOf(emptyList())
     private var updateJob: Job? = null
@@ -147,7 +149,6 @@ class SoulDropdownTextFieldHolderImpl(
     @Composable
     override fun TextField(
         focusManager: FocusManager,
-        label: String?,
     ) {
         SoulDropdownTextField(
             value = value,

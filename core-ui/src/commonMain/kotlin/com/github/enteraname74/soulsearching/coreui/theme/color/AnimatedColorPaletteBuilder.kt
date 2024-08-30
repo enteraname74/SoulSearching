@@ -18,13 +18,6 @@ object AnimatedColorPaletteBuilder {
             subPrimaryText = palette.subPrimaryText.animated(label = SUB_PRIMARY_TEXT_COLOR_LABEL),
         )
 
-    @Composable
-    private fun Color.animated(label: String) = animateColorAsState(
-        targetValue = this,
-        animationSpec = tween(UiConstants.AnimationDuration.short),
-        label = label,
-    ).value
-
     private const val PRIMARY_COLOR_LABEL = "PRIMARY_COLOR_LABEL"
     private const val ON_PRIMARY_COLOR_LABEL = "ON_PRIMARY_COLOR_LABEL"
     private const val SECONDARY_COLOR_LABEL = "SECONDARY_COLOR_LABEL"
@@ -32,3 +25,10 @@ object AnimatedColorPaletteBuilder {
     private const val SUB_PRIMARY_TEXT_COLOR_LABEL = "SUB_PRIMARY_TEXT_COLOR_LABEL"
     private const val SUB_SECONDARY_TEXT_COLOR_LABEL = "SUB_SECONDARY_TEXT_COLOR_LABEL"
 }
+
+@Composable
+fun Color.animated(label: String) = animateColorAsState(
+    targetValue = this,
+    animationSpec = tween(UiConstants.AnimationDuration.short),
+    label = label,
+).value

@@ -1,10 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
+import androidx.compose.runtime.key
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
+import com.github.enteraname74.soulsearching.feature.player.ext.getFirstsOrMax
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import java.util.*
@@ -747,6 +749,41 @@ abstract class PlaybackManager(
             key = SoulSearchingSettings.PLAYER_MODE_KEY,
             value = _playerMode
         )
+        settings.saveCurrentMusicInformation(
+            currentMusicIndex = currentMusicIndex,
+            currentMusicPosition = currentMusicPosition
+        )
+
+        setNewCurrentMusicInformation(playedList[0])
+        setAndPlayMusic(playedList[0])
+    }
+
+    fun playSoulMix(musicLists: List<List<Music>>) {
+        playedListId = null
+        isMainPlaylist = false
+
+        val totalByList: Int = settings.getInt(
+            key = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST,
+            defaultValue = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST_DEFAULT,
+        )
+
+        val musicList: List<Music> = buildList {
+            musicLists.forEach { initialList ->
+                addAll(
+                    initialList.shuffled().getFirstsOrMax(total = totalByList)
+                )
+            }
+        }.shuffled()
+
+        setPlayerLists(musicList)
+        savePlayedList()
+
+        setPlayerMode(PlayerMode.NORMAL)
+        settings.setPlayerMode(
+            key = SoulSearchingSettings.PLAYER_MODE_KEY,
+            value = _playerMode
+        )
+
         settings.saveCurrentMusicInformation(
             currentMusicIndex = currentMusicIndex,
             currentMusicPosition = currentMusicPosition

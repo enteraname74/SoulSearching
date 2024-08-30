@@ -10,7 +10,7 @@ import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSorte
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
@@ -29,6 +29,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Eleme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.CreatePlaylistDialog
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.*
@@ -54,7 +55,7 @@ class MainPageViewModel(
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
-    getAllMusicFolderUseCase: GetAllMusicFolderUseCase,
+    getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
 ) : ScreenModel,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
@@ -134,19 +135,28 @@ class MainPageViewModel(
         _musics,
         musicSortingInformation,
         getAllMonthMusicUseCase(),
-        getAllMusicFolderUseCase(),
-    ) { musics, sortingInformation, allMonthMusics, allMusicFolders ->
+    ) { musics, sortingInformation, allMonthMusics ->
         AllMusicsState(
             musics = musics,
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
             monthMusics = allMonthMusics,
-            folderMusics = allMusicFolders,
         )
     }.stateIn(
         scope = screenModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = AllMusicsState()
+    )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val allMusicFoldersState: StateFlow<AllMusicFoldersState> = getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
+        AllMusicFoldersState(
+            allMusicFolders = allMusicFolders,
+        )
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = AllMusicFoldersState()
     )
 
     val allArtistsState: StateFlow<AllArtistsState> = combine(
@@ -300,6 +310,12 @@ class MainPageViewModel(
         )
     }
 
+    fun showSoulMixDialog() {
+        _dialogState.value = SoulMixDialog(
+            onDismiss = { _dialogState.value = null },
+        )
+    }
+
     private fun navigateToQuickAccessible(quickAccessible: QuickAccessible) {
         _navigationState.value = when (quickAccessible) {
             is AlbumWithArtist -> MainPageNavigationState.ToAlbum(
@@ -345,6 +361,7 @@ class MainPageViewModel(
         if (elementsVisibility.arePlaylistsShown) add(ElementEnum.PLAYLISTS)
         if (elementsVisibility.areAlbumsShown) add(ElementEnum.ALBUMS)
         if (elementsVisibility.areArtistsShown) add(ElementEnum.ARTISTS)
+        if (elementsVisibility.areMusicFoldersShown) add(ElementEnum.FOLDERS)
     }
 
     private fun buildTabs(elements: List<ElementEnum>): List<PagerScreen> = buildList {
@@ -394,16 +411,23 @@ class MainPageViewModel(
                 ElementEnum.MUSICS -> add(
                     allMusicsTab(
                         mainPageViewModel = this@MainPageViewModel,
-                        navigateToFolder = { folderPath ->
-                            _navigationState.value = MainPageNavigationState.ToFolder(
-                                folderPath = folderPath,
-                            )
-                        },
                         navigateToMonth = { month ->
                             _navigationState.value = MainPageNavigationState.ToMonth(
                                 month = month,
                             )
                         },
+                    )
+                )
+
+                ElementEnum.FOLDERS -> add(
+                    allMusicFoldersTab(
+                        mainPageViewModel = this@MainPageViewModel,
+                        navigateToFolder = { folderPath ->
+                            _navigationState.value = MainPageNavigationState.ToFolder(
+                                folderPath = folderPath,
+                            )
+                        },
+                        showSoulMixDialog = ::showSoulMixDialog,
                     )
                 )
             }
