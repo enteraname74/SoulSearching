@@ -1,12 +1,9 @@
 package com.github.enteraname74.soulsearching.coreui.button
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,64 +12,82 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 
 @Composable
 fun SoulSegmentedButton(
     leftButtonSpec: SoulSegmentedButtonSpec,
     rightButtonSpec: SoulSegmentedButtonSpec,
-    colors: SoulSegmentedButtonColors = SoulSegmentedButtonDefaults.colors(),
+    colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
     Row(
         modifier = Modifier
-            .background(
-                color = colors.containerColor,
-                shape = RoundedCornerShape(
-                    percent = 50
-                )
-            ).height(IntrinsicSize.Min),
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        leftButtonSpec.Button(
-            contentColor = colors.contentColor
+
+        SoulButton(
+            onClick = leftButtonSpec.onClick,
+            shape = LEFT_BUTTON_SHAPE,
+            contentPadding = SoulButtonDefaults.contentPadding(
+                horizontal = UiConstants.Spacing.medium,
+            )
+        ) {
+            leftButtonSpec.Content(
+                contentColor = colors.contentColor,
+            )
+        }
+        Divider(
+            colors = colors,
         )
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight(DIVIDER_HEIGHT),
-            color = colors.contentColor,
-            thickness = DIVIDER_THICKNESS
-        )
-        rightButtonSpec.Button(
-            contentColor = colors.contentColor
-        )
+        SoulButton(
+            onClick = rightButtonSpec.onClick,
+            shape = RIGHT_BUTTON_SHAPE,
+            contentPadding = SoulButtonDefaults.contentPadding(
+                horizontal = 0.dp,
+            )
+        ) {
+            rightButtonSpec.Content(
+                contentColor = colors.contentColor,
+            )
+        }
     }
 }
+
+private val LEFT_BUTTON_SHAPE = RoundedCornerShape(
+    topStartPercent = 50,
+    bottomStartPercent = 50,
+)
+
+private val RIGHT_BUTTON_SHAPE = RoundedCornerShape(
+    topEndPercent = 50,
+    bottomEndPercent = 50,
+)
 
 private val DIVIDER_THICKNESS: Dp = 2.dp
 private const val DIVIDER_HEIGHT: Float = .8f
 
-object SoulSegmentedButtonDefaults {
-    @Composable
-    fun colors(
-        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
-    ): SoulSegmentedButtonColors = SoulSegmentedButtonColors(
-        contentColor = contentColor,
-        containerColor = containerColor,
+@Composable
+private fun Divider(
+    colors: SoulButtonColors,
+) {
+    Box(
+        modifier = Modifier
+            .width(DIVIDER_THICKNESS)
+            .fillMaxHeight()
+            .background(color = colors.containerColor)
+            .fillMaxHeight(DIVIDER_HEIGHT)
+            .background(color = colors.contentColor)
     )
 }
-
-data class SoulSegmentedButtonColors(
-    val containerColor: Color,
-    val contentColor: Color,
-)
 
 sealed interface SoulSegmentedButtonSpec {
     val data: Any
     val onClick: () -> Unit
 
     @Composable
-    fun Button(
+    fun Content(
         contentColor: Color,
     )
 }
@@ -82,18 +97,14 @@ data class SoulSegmentedTextButton(
     override val onClick: () -> Unit,
 ) : SoulSegmentedButtonSpec {
     @Composable
-    override fun Button(
+    override fun Content(
         contentColor: Color,
     ) {
-        TextButton(
-            onClick = onClick
-        ) {
-            Text(
-                color = contentColor,
-                text = data,
-                fontWeight = FontWeight.Bold,
-            )
-        }
+        Text(
+            color = contentColor,
+            text = data,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 
@@ -104,17 +115,13 @@ data class SoulSegmentedIconButton(
 ) : SoulSegmentedButtonSpec {
 
     @Composable
-    override fun Button(
+    override fun Content(
         contentColor: Color,
     ) {
-        IconButton(
-            onClick = onClick
-        ) {
-            Icon(
-                imageVector = data,
-                tint = contentColor,
-                contentDescription = contentDescription,
-            )
-        }
+        SoulIcon(
+            icon = data,
+            tint = contentColor,
+            contentDescription = contentDescription,
+        )
     }
 }

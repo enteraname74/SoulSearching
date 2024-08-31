@@ -16,6 +16,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,10 +87,10 @@ fun SoulDropdownTextField(
             ),
             trailingIcon = {
                 val rotation by animateFloatAsState(targetValue = if (isExpanded && isFocused) 180f else 0f)
-                Icon(
-                    Icons.Filled.ArrowDropDown,
-                    null,
-                    Modifier.rotate(rotation)
+                SoulIcon(
+                    icon = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = Modifier.rotate(rotation),
                 )
             },
             keyboardActions = KeyboardActions(

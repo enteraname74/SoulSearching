@@ -2,22 +2,20 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -79,25 +77,40 @@ fun AllMusicsComposable(
                     sortDirection = musicState.sortDirection,
                     isUsingSort = isUsingSort,
                     rightComposable = {
-                        Icon(
-                            modifier = Modifier
-                                .padding(start = UiConstants.Spacing.medium)
-                                .size(30.dp)
-                                .clickable {
-                                    if (musicState.musics.isNotEmpty()) {
-                                        coroutineScope
-                                            .launch {
-                                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                                            }
-                                            .invokeOnCompletion {
-                                                playbackManager.playShuffle(musicList = musicState.musics)
-                                            }
-                                    }
-                                },
-                            imageVector = Icons.Rounded.Shuffle,
+                        SoulIconButton(
+                            icon = Icons.Rounded.Shuffle,
                             contentDescription = strings.shuffleButton,
-                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                            onClick = {
+                                if (musicState.musics.isNotEmpty()) {
+                                    coroutineScope
+                                        .launch {
+                                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+                                        }
+                                        .invokeOnCompletion {
+                                            playbackManager.playShuffle(musicList = musicState.musics)
+                                        }
+                                }
+                            }
                         )
+//                        Icon(
+//                            modifier = Modifier
+//                                .padding(start = UiConstants.Spacing.medium)
+//                                .size(30.dp)
+//                                .clickable {
+//                                    if (musicState.musics.isNotEmpty()) {
+//                                        coroutineScope
+//                                            .launch {
+//                                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+//                                            }
+//                                            .invokeOnCompletion {
+//                                                playbackManager.playShuffle(musicList = musicState.musics)
+//                                            }
+//                                    }
+//                                },
+//                            imageVector = Icons.Rounded.Shuffle,
+//                            contentDescription = strings.shuffleButton,
+//                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
+//                        )
                     }
                 )
             }

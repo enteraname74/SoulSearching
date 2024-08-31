@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -33,26 +34,23 @@ fun SubMenuComposable(
     backgroundColor: Color = Color.Transparent
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(54.dp)
             .background(color = backgroundColor)
             .padding(
-                top = UiConstants.Spacing.medium,
-                start = UiConstants.Spacing.medium,
-                end = UiConstants.Spacing.medium
-            )
-            .composed {
-                modifier
-            },
+                horizontal = UiConstants.Spacing.medium,
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
+            modifier = Modifier
+                .weight(1f, fill = false),
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold,
             style = UiConstants.Typography.titleSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

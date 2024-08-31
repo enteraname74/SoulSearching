@@ -5,7 +5,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import java.util.*
 
@@ -63,10 +63,9 @@ fun BigPreviewComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             if (isFavoritePlaylist) {
-                Icon(
-                    imageVector = Icons.Rounded.Favorite,
-                    contentDescription = "",
-                    tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                SoulIcon(
+                    icon = Icons.Rounded.Favorite,
+                    contentDescription = null,
                 )
             }
             Column(

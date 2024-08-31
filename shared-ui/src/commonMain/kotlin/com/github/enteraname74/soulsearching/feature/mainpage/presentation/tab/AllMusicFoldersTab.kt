@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.MusicFolderList
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.*
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedTextButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -107,24 +110,22 @@ private fun Buttons(
                 )
             )
             SoulIconButton(
-                spec = SoulIconButtonSpec(
-                    icon = Icons.Rounded.Shuffle,
-                    onClick = {
-                        coroutineScope.launch {
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
-                            )
-                        }.invokeOnCompletion {
-                            playbackManager.playShuffle(
-                                musicList = buildList {
-                                    allMusicFolders.forEach { musicFolder ->
-                                        addAll(musicFolder.musics)
-                                    }
+                icon = Icons.Rounded.Shuffle,
+                onClick = {
+                    coroutineScope.launch {
+                        playerViewManager.animateTo(
+                            newState = BottomSheetStates.EXPANDED,
+                        )
+                    }.invokeOnCompletion {
+                        playbackManager.playShuffle(
+                            musicList = buildList {
+                                allMusicFolders.forEach { musicFolder ->
+                                    addAll(musicFolder.musics)
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
-                )
+                }
             )
         }
     }

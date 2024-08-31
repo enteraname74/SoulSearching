@@ -39,7 +39,9 @@ object UiConstants {
      */
     object ImageSize {
         val small: Dp = 16.dp
+        val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp
+        val mediumPlus: Dp = 48.dp
         val large: Dp = 64.dp
         val veryLarge: Dp = 128.dp
         val huge: Dp = 160.dp

@@ -33,22 +33,15 @@ fun <T> MainPageList(
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SubMenuComposable(
-                title = title,
-                setSortType = setSortType,
-                toggleSortDirection = toggleSortDirection,
-                sortType = sortType,
-                sortDirection = sortDirection,
-                leftComposable = leftComposable,
-                isUsingSort = isUsingSort
-            )
-        }
+        SubMenuComposable(
+            title = title,
+            setSortType = setSortType,
+            toggleSortDirection = toggleSortDirection,
+            sortType = sortType,
+            sortDirection = sortDirection,
+            leftComposable = leftComposable,
+            isUsingSort = isUsingSort
+        )
         innerComposable?.let { it() }
         if (list.isNotEmpty()) {
             LazyVerticalGrid(

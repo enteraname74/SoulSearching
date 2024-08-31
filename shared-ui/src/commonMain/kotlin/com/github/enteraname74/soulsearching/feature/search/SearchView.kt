@@ -35,8 +35,6 @@ fun SearchView(
     draggableState: SwipeableState<BottomSheetStates>,
     placeholder: String,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-    secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     focusRequester: FocusRequester,
     playerViewManager: PlayerViewManager = injectElement(),
     searchResult: @Composable (String, FocusManager) -> Unit,
@@ -106,9 +104,15 @@ fun SearchView(
                     searchText = it
                 },
                 focusManager = focusManager,
-                primaryColor = secondaryColor,
-                textColor = textColor,
-                focusRequester = focusRequester
+                focusRequester = focusRequester,
+                onClose = {
+                    coroutineScope.launch {
+                        draggableState.animateTo(
+                            targetValue = BottomSheetStates.COLLAPSED,
+                            anim = tween(UiConstants.AnimationDuration.normal),
+                        )
+                    }
+                }
             )
 
             if (searchText.isNotBlank()) {

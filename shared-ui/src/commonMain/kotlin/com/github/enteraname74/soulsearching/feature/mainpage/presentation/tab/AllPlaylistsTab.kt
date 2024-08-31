@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -35,13 +36,12 @@ fun allPlaylistsTab(
                 list = playlistState.playlists,
                 title = strings.playlists,
                 leftComposable = {
-                    Icon(
+                    SoulIcon(
                         modifier = Modifier
-                            .clickable { mainPageViewModel.showCreatePlaylistDialog() }
-                            .size(UiConstants.ImageSize.medium),
-                        imageVector = Icons.Rounded.Add,
+                            .clickable { mainPageViewModel.showCreatePlaylistDialog() },
+                        icon = Icons.Rounded.Add,
                         contentDescription = strings.createPlaylistButton,
-                        tint = SoulSearchingColorTheme.colorScheme.onPrimary
+                        size = UiConstants.ImageSize.medium
                     )
                 },
                 setSortType = mainPageViewModel::setPlaylistSortType,

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import java.util.*
@@ -71,11 +72,10 @@ fun LinearPreviewComposable(
 
             }
             onLongClick?.let {
-                Icon(
+                SoulIcon(
                     modifier = Modifier.optionalClickable(onClick = it),
-                    imageVector = Icons.Rounded.MoreVert,
+                    icon = Icons.Rounded.MoreVert,
                     contentDescription = strings.moreButton,
-                    tint = SoulSearchingColorTheme.colorScheme.onPrimary
                 )
             }
         }

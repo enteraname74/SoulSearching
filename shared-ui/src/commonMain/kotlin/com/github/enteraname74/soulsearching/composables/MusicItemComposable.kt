@@ -7,7 +7,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -77,9 +77,9 @@ fun MusicItemComposable(
                 )
 
             }
-            Icon(
+            SoulIcon(
                 modifier = Modifier.clickable { onLongClick() },
-                imageVector = Icons.Rounded.MoreVert,
+                icon = Icons.Rounded.MoreVert,
                 contentDescription = strings.moreButton,
                 tint = textColor
             )
