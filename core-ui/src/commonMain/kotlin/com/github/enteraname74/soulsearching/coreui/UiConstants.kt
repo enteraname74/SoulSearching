@@ -28,6 +28,7 @@ object UiConstants {
     object Spacing {
         val small: Dp = 4.dp
         val medium: Dp = 8.dp
+        val mediumPlus: Dp = 12.dp
         val large: Dp = 16.dp
         val veryLarge: Dp = 24.dp
         val huge: Dp = 32.dp

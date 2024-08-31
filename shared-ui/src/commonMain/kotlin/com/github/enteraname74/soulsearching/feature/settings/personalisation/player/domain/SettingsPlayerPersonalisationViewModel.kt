@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
@@ -16,35 +17,31 @@ class SettingsPlayerPersonalisationViewModel(
     private val settings: SoulSearchingSettings,
 ): ScreenModel {
     val isPlayerSwipeEnabled: StateFlow<Boolean> = settings.getFlowOn(
-        key = SoulSearchingSettings.IS_PLAYER_SWIPE_ENABLED,
-        defaultValue = SoulSearchingSettings.IS_PLAYER_SWIPE_ENABLED_DEFAULT
+        SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED
     ).stateIn(
         scope = screenModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = SoulSearchingSettings.IS_PLAYER_SWIPE_ENABLED_DEFAULT
+        initialValue = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue
     )
 
     val soulMixTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = SOUL_MIX_TEXT_FIELD,
-        initialValue = settings.getInt(
-            key = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST,
-            defaultValue = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST_DEFAULT,
-        ).toString(),
+        initialValue = settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST).toString(),
         isValid = { text -> text.isNotBlank() },
         keyboardType = KeyboardType.Number,
         getLabel = { null },
         onValueChange = { text ->
             val intValue = text.toIntOrNull() ?: return@SoulTextFieldHolderImpl
-            settings.setInt(
-                key = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST,
+            settings.set(
+                key = SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST.key,
                 value = max(1, intValue),
             )
         }
     )
 
     fun togglePlayerSwipe() {
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_PLAYER_SWIPE_ENABLED,
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.key,
             value = !isPlayerSwipeEnabled.value
         )
     }

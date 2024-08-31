@@ -1,20 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
@@ -35,13 +31,12 @@ fun allPlaylistsTab(
             MainPageList(
                 list = playlistState.playlists,
                 title = strings.playlists,
-                leftComposable = {
-                    SoulIcon(
-                        modifier = Modifier
-                            .clickable { mainPageViewModel.showCreatePlaylistDialog() },
+                rightComposable = {
+                    SoulIconButton(
+                        onClick = mainPageViewModel::showCreatePlaylistDialog,
                         icon = Icons.Rounded.Add,
                         contentDescription = strings.createPlaylistButton,
-                        size = UiConstants.ImageSize.medium
+                        size = UiConstants.ImageSize.medium,
                     )
                 },
                 setSortType = mainPageViewModel::setPlaylistSortType,

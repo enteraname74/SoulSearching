@@ -30,6 +30,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
+import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)

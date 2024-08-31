@@ -23,7 +23,10 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
-import com.github.enteraname74.soulsearching.coreui.theme.color.*
+import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.coreui.utils.*
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -41,6 +44,8 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.theme.isInDarkTheme
+import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -165,7 +170,7 @@ fun PlayerDraggableView(
         val isUsingDarkIcons = if (state.allCovers.getFromCoverId(state.currentMusic?.coverId) == null
             || !colorThemeSettings.canShowDynamicPlayerTheme()
         ) {
-            !isSystemInDarkTheme()
+            !isInDarkTheme()
         } else {
             false
         }

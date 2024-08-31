@@ -2,9 +2,12 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.FormatPaint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -12,11 +15,15 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
+import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
+import com.github.enteraname74.soulsearching.theme.isInDarkTheme
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -36,6 +43,11 @@ class SettingsColorThemeScreen: Screen {
             navigateBack = {
                 navigator.pop()
             },
+            navigateToThemeSelection = {
+                navigator.safePush(
+                    SettingsThemeSelectionScreen()
+                )
+            },
             togglePersonalizedDynamicPlayerTheme = screenModel::togglePersonalizedDynamicPlayerTheme,
             togglePersonalizedDynamicPlaylistTheme = screenModel::togglePersonalizedDynamicPlaylistTheme,
             togglePersonalizedDynamicOtherViewsTheme = screenModel::togglePersonalizedDynamicOtherViewsTheme,
@@ -52,6 +64,7 @@ fun SettingsColorThemeScreenView(
     togglePersonalizedDynamicPlayerTheme: () -> Unit,
     togglePersonalizedDynamicPlaylistTheme: () -> Unit,
     togglePersonalizedDynamicOtherViewsTheme: () -> Unit,
+    navigateToThemeSelection: () -> Unit,
 ) {
 
     SettingPage(
@@ -62,6 +75,15 @@ fun SettingsColorThemeScreenView(
             all = UiConstants.Spacing.veryLarge,
         )
     ) {
+        item {
+            SettingsElement(
+                title = strings.themeSelectionTitle,
+                subTitle = strings.themeSelectionText,
+                icon = Icons.Rounded.FormatPaint,
+                onClick = navigateToThemeSelection,
+                padding = PaddingValues(0.dp)
+            )
+        }
         item {
             ColorThemeCard(
                 title = strings.dynamicThemeTitle,
@@ -78,12 +100,12 @@ fun SettingsColorThemeScreenView(
                 text = strings.systemThemeText,
                 onClick = { updateColorTheme(ColorThemeType.SYSTEM) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.FromSystem,
-                firstImage = if (isSystemInDarkTheme()) {
+                firstImage = if (isInDarkTheme()) {
                     Res.drawable.system_dark_theme_main
                 } else {
                     Res.drawable.system_light_theme_main
                 },
-                secondImage = if (isSystemInDarkTheme()) {
+                secondImage = if (isInDarkTheme()) {
                     Res.drawable.system_dark_theme_player
                 } else {
                     Res.drawable.system_light_theme_player

@@ -5,16 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 
 class MainActivityViewModel(
     settings: SoulSearchingSettings
 ) : ScreenModel {
     var cleanMusicsLaunched by mutableStateOf(false)
     var hasMusicsBeenFetched by mutableStateOf(
-        settings.getBoolean(
-            SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY,
-            false
-        )
+        settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)
     )
 
     var isReadPermissionGranted by mutableStateOf(false)

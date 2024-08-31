@@ -139,6 +139,17 @@ interface Strings {
     val mostPlayedAlbums: String
     val mostPlayedArtists: String
     val mostPlayedPlaylists: String
+    val themeSelectionTitle: String
+    val themeSelectionText: String
+    val forceDarkThemeTitle: String
+    val forceLightThemeTitle: String
+    val mainTheme: String get() = "Soul Searching"
+    val steelTheme: String
+    val glacierTheme: String get() = "Glacier"
+    val duskTheme: String
+    val passionTheme: String get() = "Passion"
+    val greeneryTheme: String
+    val treeBarkTheme: String
 
     val mainPageTitle: String
     val mainPageText: String

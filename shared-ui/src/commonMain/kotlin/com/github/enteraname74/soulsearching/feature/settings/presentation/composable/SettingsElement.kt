@@ -18,16 +18,17 @@ fun SettingsElement(
     title: String,
     subTitle: String,
     icon: ImageVector? = null,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
+    padding: PaddingValues = PaddingValues(
+        horizontal = UiConstants.Spacing.large,
+        vertical = UiConstants.Spacing.veryLarge,
+    ),
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .optionalClickable(onClick = onClick)
-            .padding(
-                horizontal = UiConstants.Spacing.large,
-                vertical = UiConstants.Spacing.veryLarge,
-            ),
+            .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {

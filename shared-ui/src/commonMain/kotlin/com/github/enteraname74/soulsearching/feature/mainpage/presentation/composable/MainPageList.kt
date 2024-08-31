@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.*
@@ -16,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 fun <T> MainPageList(
     list: List<T>,
     title: String,
-    leftComposable: @Composable () -> Unit = {},
+    rightComposable: @Composable () -> Unit = {},
     innerComposable: @Composable (() -> Unit)? = null,
     setSortType: (Int) -> Unit = {},
     toggleSortDirection: () -> Unit = {},
@@ -31,7 +30,7 @@ fun <T> MainPageList(
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
     ) {
         SubMenuComposable(
             title = title,
@@ -39,7 +38,7 @@ fun <T> MainPageList(
             toggleSortDirection = toggleSortDirection,
             sortType = sortType,
             sortDirection = sortDirection,
-            leftComposable = leftComposable,
+            rightComposable = rightComposable,
             isUsingSort = isUsingSort
         )
         innerComposable?.let { it() }

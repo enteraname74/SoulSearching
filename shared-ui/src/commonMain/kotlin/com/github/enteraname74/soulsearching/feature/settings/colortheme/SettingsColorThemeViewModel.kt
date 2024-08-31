@@ -3,10 +3,8 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager.Companion.PERSONALIZED_DYNAMIC_OTHER_VIEWS_DEFAULT
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager.Companion.PERSONALIZED_DYNAMIC_PLAYER_DEFAULT
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager.Companion.PERSONALIZED_DYNAMIC_PLAYLISTS_DEFAULT
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -18,18 +16,9 @@ class SettingsColorThemeViewModel(
 ) : ScreenModel {
     val colorThemeSettingsState: StateFlow<SettingsColorThemeState> = combine(
         colorThemeManager.currentColorThemeSettings,
-        settings.getFlowOn(
-            key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_PLAYER_DEFAULT
-        ),
-        settings.getFlowOn(
-            key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_PLAYLISTS_DEFAULT
-        ),
-        settings.getFlowOn(
-            key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_OTHER_VIEWS_DEFAULT
-        ),
+        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME),
+        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME),
+        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME),
     ) { colorThemeSettings, dynamicPlayer, dynamicPlaylists, dynamicOthers ->
         SettingsColorThemeState(
             colorThemeSettings = colorThemeSettings,
@@ -47,41 +36,32 @@ class SettingsColorThemeViewModel(
      * Update the type of color theme used in the application.
      */
     fun updateColorTheme(newTheme: Int) {
-        settings.setInt(
-            key = SoulSearchingSettings.COLOR_THEME_KEY,
+        settings.set(
+            key = SoulSearchingSettingsKeys.ColorTheme.COLOR_THEME_KEY.key,
             value = newTheme
         )
     }
 
     fun togglePersonalizedDynamicPlayerTheme() {
-        val previousValue: Boolean = settings.getBoolean(
-            key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_PLAYER_DEFAULT,
-        )
-        settings.setBoolean(
-            key = SoulSearchingSettings.DYNAMIC_PLAYER_THEME,
+        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME)
+        settings.set(
+            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME.key,
             value = !previousValue
         )
     }
 
     fun togglePersonalizedDynamicPlaylistTheme() {
-        val previousValue: Boolean = settings.getBoolean(
-            key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_PLAYLISTS_DEFAULT,
-        )
-        settings.setBoolean(
-            key = SoulSearchingSettings.DYNAMIC_PLAYLIST_THEME,
+        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME)
+        settings.set(
+            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYLIST_THEME.key,
             value = !previousValue
         )
     }
 
     fun togglePersonalizedDynamicOtherViewsTheme() {
-        val previousValue: Boolean = settings.getBoolean(
-            key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
-            defaultValue = PERSONALIZED_DYNAMIC_OTHER_VIEWS_DEFAULT,
-        )
-        settings.setBoolean(
-            key = SoulSearchingSettings.DYNAMIC_OTHER_VIEWS_THEME,
+        val previousValue: Boolean = settings.get(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME)
+        settings.set(
+            key = SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_OTHER_VIEWS_THEME.key,
             value = !previousValue
         )
     }

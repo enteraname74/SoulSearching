@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
-import androidx.compose.runtime.key
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.soulsearching.feature.player.ext.getFirstsOrMax
@@ -105,7 +105,7 @@ abstract class PlaybackManager(
      */
     private var playedListSavingJob: Job? = null
 
-    private var _playerMode = PlayerMode.NORMAL
+    private var _playerMode = PlayerMode.Normal
     private var isChangingPlayerMode = false
     private var _currentMusicCover: ImageBitmap? = null
     val currentMusicCover: ImageBitmap?
@@ -209,7 +209,7 @@ abstract class PlaybackManager(
      * The match will only occur if the player mode is set to NORMAL.
      */
     private fun matchInitialListToPlayedListIfNormalPlayerMode() {
-        if (_playerMode == PlayerMode.NORMAL) {
+        if (_playerMode == PlayerMode.Normal) {
             initialList = playedList.map { it.copy() } as ArrayList<Music>
         }
     }
@@ -262,8 +262,8 @@ abstract class PlaybackManager(
                 withContext(Dispatchers.IO) {
                     Thread.sleep(1000)
                 }
-                settings.setInt(
-                    key = SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY,
+                settings.set(
+                    key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY.key,
                     value = player.getMusicPosition()
                 )
                 callback.onCurrentMusicPositionChanged(
@@ -577,13 +577,13 @@ abstract class PlaybackManager(
 
         setPlayerLists(savedList)
 
-        val index = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY, -1)
-        val position = settings.getInt(SoulSearchingSettings.PLAYER_MUSIC_POSITION_KEY, 0)
+        val index = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY)
+        val position = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
 
         setMusicFromIndex(index)
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
 
-        setPlayerMode(settings.getPlayerMode())
+        setPlayerMode(settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY))
         onlyLoadMusic(seekTo = position)
     }
 
@@ -595,8 +595,8 @@ abstract class PlaybackManager(
 
         currentMusic = music
 
-        settings.setInt(
-            key = SoulSearchingSettings.PLAYER_MUSIC_INDEX_KEY,
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
             value = playedList.indexOfFirst { it.musicId == music.musicId }
         )
         player.setMusic(music)
@@ -619,7 +619,7 @@ abstract class PlaybackManager(
     private fun forcePlayerModeToNormal(musicList: List<Music>) {
         if (!isChangingPlayerMode) {
             isChangingPlayerMode = true
-            setPlayerMode(PlayerMode.NORMAL)
+            setPlayerMode(PlayerMode.Normal)
             setCurrentPlayedList(musicList.map { it.copy() } as ArrayList<Music>)
 
             settings.saveCurrentMusicInformation(
@@ -637,13 +637,13 @@ abstract class PlaybackManager(
         if (!isChangingPlayerMode) {
             isChangingPlayerMode = true
             when (_playerMode) {
-                PlayerMode.NORMAL -> {
+                PlayerMode.Normal -> {
                     // to shuffle mode :
                     shuffleCurrentList(playedList)
-                    setPlayerMode(playerMode = PlayerMode.SHUFFLE)
+                    setPlayerMode(playerMode = PlayerMode.Shuffle)
                 }
 
-                PlayerMode.SHUFFLE -> {
+                PlayerMode.Shuffle -> {
                     // to loop mode :
                     playedList =
                         if (currentMusic != null) arrayListOf(currentMusic!!) else ArrayList()
@@ -651,21 +651,21 @@ abstract class PlaybackManager(
                     callback.onPlayedListUpdated(
                         playedList = playedList
                     )
-                    setPlayerMode(playerMode = PlayerMode.LOOP)
+                    setPlayerMode(playerMode = PlayerMode.Loop)
                 }
 
-                PlayerMode.LOOP -> {
+                PlayerMode.Loop -> {
                     // to normal mode :
                     playedList = initialList.map { it.copy() } as ArrayList<Music>
                     playedListId = null
                     callback.onPlayedListUpdated(
                         playedList = playedList
                     )
-                    setPlayerMode(playerMode = PlayerMode.NORMAL)
+                    setPlayerMode(playerMode = PlayerMode.Normal)
                 }
             }
-            settings.setPlayerMode(
-                key = SoulSearchingSettings.PLAYER_MODE_KEY,
+            settings.set(
+                key = SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY.key,
                 value = _playerMode
             )
             settings.saveCurrentMusicInformation(
@@ -744,9 +744,9 @@ abstract class PlaybackManager(
         setPlayerLists(musicList.shuffled())
         savePlayedList()
 
-        setPlayerMode(PlayerMode.NORMAL)
-        settings.setPlayerMode(
-            key = SoulSearchingSettings.PLAYER_MODE_KEY,
+        setPlayerMode(PlayerMode.Normal)
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY.key,
             value = _playerMode
         )
         settings.saveCurrentMusicInformation(
@@ -762,10 +762,7 @@ abstract class PlaybackManager(
         playedListId = null
         isMainPlaylist = false
 
-        val totalByList: Int = settings.getInt(
-            key = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST,
-            defaultValue = SoulSearchingSettings.SOUL_MIX_TOTAL_BY_LIST_DEFAULT,
-        )
+        val totalByList: Int = settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST)
 
         val musicList: List<Music> = buildList {
             musicLists.forEach { initialList ->
@@ -778,9 +775,9 @@ abstract class PlaybackManager(
         setPlayerLists(musicList)
         savePlayedList()
 
-        setPlayerMode(PlayerMode.NORMAL)
-        settings.setPlayerMode(
-            key = SoulSearchingSettings.PLAYER_MODE_KEY,
+        setPlayerMode(PlayerMode.Normal)
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY.key,
             value = _playerMode
         )
 

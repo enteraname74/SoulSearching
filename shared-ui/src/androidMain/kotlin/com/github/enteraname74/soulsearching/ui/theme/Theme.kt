@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.domain.Typography
+import com.github.enteraname74.soulsearching.theme.isInDarkTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
@@ -42,7 +43,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun SoulSearchingTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -52,7 +53,7 @@ fun SoulSearchingTheme(
 
     // Remember a SystemUiController
     val systemUiController = rememberSystemUiController()
-    val useDarkIcons = !isSystemInDarkTheme()
+    val useDarkIcons = !isInDarkTheme()
 
     DisposableEffect(systemUiController, useDarkIcons) {
         // Update all of the system bar colors to be transparent, and use

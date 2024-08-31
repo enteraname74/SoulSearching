@@ -61,59 +61,36 @@ fun AllMusicsComposable(
             key = ALL_MUSICS_STICKY_HEADER_KEY,
             contentType = ALL_MUSICS_STICKY_CONTENT_TYPE,
         ) {
-            Row(
+            SubMenuComposable(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                    .padding(bottom = UiConstants.Spacing.large),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SubMenuComposable(
-                    title = strings.musics,
-                    setSortType = setSortType,
-                    toggleSortDirection = toggleSortDirection,
-                    sortType = musicState.sortType,
-                    sortDirection = musicState.sortDirection,
-                    isUsingSort = isUsingSort,
-                    rightComposable = {
-                        SoulIconButton(
-                            icon = Icons.Rounded.Shuffle,
-                            contentDescription = strings.shuffleButton,
-                            onClick = {
-                                if (musicState.musics.isNotEmpty()) {
-                                    coroutineScope
-                                        .launch {
-                                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                                        }
-                                        .invokeOnCompletion {
-                                            playbackManager.playShuffle(musicList = musicState.musics)
-                                        }
-                                }
+                    .padding(
+                        bottom = UiConstants.Spacing.mediumPlus,
+                    ),
+                title = strings.musics,
+                setSortType = setSortType,
+                toggleSortDirection = toggleSortDirection,
+                sortType = musicState.sortType,
+                sortDirection = musicState.sortDirection,
+                isUsingSort = isUsingSort,
+                rightComposable = {
+                    SoulIconButton(
+                        icon = Icons.Rounded.Shuffle,
+                        contentDescription = strings.shuffleButton,
+                        enabled = musicState.musics.isNotEmpty(),
+                        onClick = {
+                            if (musicState.musics.isNotEmpty()) {
+                                coroutineScope
+                                    .launch {
+                                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+                                    }
+                                    .invokeOnCompletion {
+                                        playbackManager.playShuffle(musicList = musicState.musics)
+                                    }
                             }
-                        )
-//                        Icon(
-//                            modifier = Modifier
-//                                .padding(start = UiConstants.Spacing.medium)
-//                                .size(30.dp)
-//                                .clickable {
-//                                    if (musicState.musics.isNotEmpty()) {
-//                                        coroutineScope
-//                                            .launch {
-//                                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-//                                            }
-//                                            .invokeOnCompletion {
-//                                                playbackManager.playShuffle(musicList = musicState.musics)
-//                                            }
-//                                    }
-//                                },
-//                            imageVector = Icons.Rounded.Shuffle,
-//                            contentDescription = strings.shuffleButton,
-//                            tint = SoulSearchingColorTheme.colorScheme.onPrimary
-//                        )
-                    }
-                )
-            }
+                        }
+                    )
+                }
+            )
         }
         if (musicState.musics.isNotEmpty()) {
             items(

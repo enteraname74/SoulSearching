@@ -10,6 +10,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationRowSpec
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -73,8 +74,8 @@ fun SoulSearchingApplication(
     if (!mainActivityViewModel.hasMusicsBeenFetched) {
         FetchingMusicsComposable(
             finishAddingMusicsAction = {
-                settings.setBoolean(
-                    SoulSearchingSettings.HAS_MUSICS_BEEN_FETCHED_KEY,
+                settings.set(
+                    SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
                     true
                 )
                 mainActivityViewModel.hasMusicsBeenFetched = true

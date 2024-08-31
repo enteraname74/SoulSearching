@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.m
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,8 +34,8 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_QUICK_ACCESS_SHOWN,
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN.key,
             value = !elementsVisibility.isQuickAccessShown
         )
     }
@@ -43,8 +44,8 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_PLAYLISTS_SHOWN,
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.IS_PLAYLISTS_SHOWN.key,
             value = !elementsVisibility.arePlaylistsShown
         )
     }
@@ -54,8 +55,8 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_ALBUMS_SHOWN,
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.IS_ALBUMS_SHOWN.key,
             value = !elementsVisibility.areAlbumsShown
         )
     }
@@ -64,8 +65,8 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.setBoolean(
-            key = SoulSearchingSettings.IS_ARTISTS_SHOWN,
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.IS_ARTISTS_SHOWN.key,
             value = !elementsVisibility.areArtistsShown
         )
     }
@@ -74,8 +75,8 @@ class SettingsMainPagePersonalisationViewModel(
         val elementsVisibility =
             (state.value as? SettingsMainPagePersonalisationState.Data)?.elementsVisibility ?: return
 
-        settings.setBoolean(
-            key = SoulSearchingSettings.ARE_MUSICS_BY_FOLDERS_SHOWN,
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN.key,
             value = !elementsVisibility.areMusicFoldersShown
         )
     }

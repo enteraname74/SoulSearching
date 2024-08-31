@@ -3,6 +3,7 @@ package com.github.enteraname74.domain.util
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.images.ArtworkFactory
@@ -22,12 +23,7 @@ class MusicFileUpdater : KoinComponent {
      * Does nothing if the user has not accepted files to be modified.
      */
     fun updateMusic(music: Music, cover: ImageBitmap?) {
-        if (
-            !settings.getBoolean(
-                key = SoulSearchingSettings.IS_MUSIC_FILE_MODIFICATION_ON,
-                defaultValue = true,
-            )
-        ) return
+        if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
         try {
             val musicFile = File(music.path)
 

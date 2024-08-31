@@ -65,7 +65,7 @@ private val RIGHT_BUTTON_SHAPE = RoundedCornerShape(
     bottomEndPercent = 50,
 )
 
-private val DIVIDER_THICKNESS: Dp = 2.dp
+private val DIVIDER_THICKNESS: Dp = 1.dp
 private const val DIVIDER_HEIGHT: Float = .8f
 
 @Composable

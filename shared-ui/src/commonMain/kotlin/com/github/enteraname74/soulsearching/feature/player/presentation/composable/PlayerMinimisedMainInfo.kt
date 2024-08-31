@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
@@ -31,9 +30,10 @@ fun PlayerMinimisedMainInfo(
 
     Row(
         modifier = Modifier
-            .height(imageSize + UiConstants.Spacing.small)
+            .height(imageSize)
             .fillMaxWidth()
             .padding(
+                top = UiConstants.Spacing.medium,
                 start = imageSize + UiConstants.Spacing.large,
                 end = UiConstants.Spacing.small
             )
@@ -43,24 +43,21 @@ fun PlayerMinimisedMainInfo(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f),
-            verticalArrangement = Arrangement.Center
+                .weight(1f, fill= false),
         ) {
             Text(
                 text = currentMusic?.name.orEmpty(),
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 maxLines = 1,
-                textAlign = TextAlign.Start,
                 fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = currentMusic?.artist.orEmpty(),
-                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 fontSize = 12.sp,
                 maxLines = 1,
-                textAlign = TextAlign.Start,
                 overflow = TextOverflow.Ellipsis
             )
         }

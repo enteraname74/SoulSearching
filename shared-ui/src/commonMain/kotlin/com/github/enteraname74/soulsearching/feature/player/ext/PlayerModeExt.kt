@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.domain.model.PlayerMode
 
 fun PlayerMode.imageVector(): ImageVector = when(this) {
-    PlayerMode.NORMAL -> Icons.Rounded.Sync
-    PlayerMode.SHUFFLE -> Icons.Rounded.Shuffle
-    PlayerMode.LOOP -> Icons.Rounded.Replay
+    PlayerMode.Normal -> Icons.Rounded.Sync
+    PlayerMode.Shuffle -> Icons.Rounded.Shuffle
+    PlayerMode.Loop -> Icons.Rounded.Replay
 }

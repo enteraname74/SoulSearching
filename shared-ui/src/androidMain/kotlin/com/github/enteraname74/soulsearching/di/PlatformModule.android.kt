@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.di
 
 import android.content.Context
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -23,7 +24,7 @@ actual val platformModule = module {
         SoulSearchingSettingsImpl(
             settings = SharedPreferencesSettings(
                 delegate = androidApplication().getSharedPreferences(
-                    SoulSearchingSettings.SHARED_PREF_KEY,
+                    SoulSearchingSettingsKeys.SHARED_PREF_KEY,
                     Context.MODE_PRIVATE
                 )
             )

@@ -1,51 +1,16 @@
 package com.github.enteraname74.domain.model.settings
 
 import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
  */
 interface SoulSearchingSettings {
-    /**
-     * Save an Integer related to a given key.
-     */
-    fun setInt(key: String, value: Int)
-
-    /**
-     * Save a String related to a given key.
-     */
-    fun setString(key: String, value: String)
-
-    /**
-     * Save a Boolean related to a given key.
-     */
-    fun setBoolean(key: String, value: Boolean)
-
-    /**
-     * Save a PlayerMode related to a given key.
-     */
-    fun setPlayerMode(key: String, value: PlayerMode)
-
-    /**
-     * Tries to retrieve an Integer related to a given key.
-     */
-    fun getInt(key: String, defaultValue: Int): Int
-
-    /**
-     * Tries to retrieve a Boolean related to a given key.
-     */
-    fun getBoolean(key: String, defaultValue: Boolean): Boolean
-
-    /**
-     * Tries to retrieve a String related to a given key.
-     */
-    fun getString(key: String, defaultValue: String): String
-
-    /**
-     * Tries to retrieve a PlayerMode related to a given key.
-     */
-    fun getPlayerMode(): PlayerMode
+    fun <T>set(key: String, value: T)
+    fun <T>get(settingElement: SoulSearchingSettingElement<T>): T
 
     /**
      * Set the current played music index and position to the settings.
@@ -59,90 +24,154 @@ interface SoulSearchingSettings {
         SettingsFlowSystem.update<DataType>(key = key)
     }
 
-    fun getFlowOn(key: String, defaultValue: Int): Flow<Int> {
+    fun <T>getFlowOn(settingElement: SoulSearchingSettingElement<T>): Flow<T> {
         val settingFlowInformation = SettingFlowInformation(
-            key = key,
-            retrieveValue = { getInt(key, defaultValue) }
+            key = settingElement.key,
+            retrieveValue = { get(settingElement) }
         )
-        val returnedFlow: SettingFlowInformation<Int> = SettingsFlowSystem.addFlowIfNotExist(
+        val returnedFlow: SettingFlowInformation<T> = SettingsFlowSystem.addFlowIfNotExist(
             settingFlowInformation = settingFlowInformation,
         )
         return returnedFlow.flow
     }
+}
 
-    fun getFlowOn(key: String, defaultValue: String): Flow<String> {
-        val settingFlowInformation = SettingFlowInformation(
-            key = key,
-            retrieveValue = { getString(key, defaultValue) }
-        )
-        val returnedFlow: SettingFlowInformation<String> = SettingsFlowSystem.addFlowIfNotExist(
-            settingFlowInformation = settingFlowInformation,
-        )
-        return returnedFlow.flow
+interface SoulSearchingSettingElement<T> {
+    val key: String
+    val defaultValue: T
+}
+
+fun <T>settingElementOf(key: String, defaultValue: T): SoulSearchingSettingElement<T> =
+    object : SoulSearchingSettingElement<T> {
+        override val key: String = key
+        override val defaultValue: T = defaultValue
     }
 
-    fun getFlowOn(key: String, defaultValue: Boolean): Flow<Boolean> {
-        val settingFlowInformation = SettingFlowInformation(
-            key = key,
-            retrieveValue = { getBoolean(key, defaultValue) }
+object SoulSearchingSettingsKeys {
+    const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"
+
+    val HAS_MUSICS_BEEN_FETCHED_KEY = settingElementOf(
+        key = "MUSICS_FETCHED",
+        defaultValue = false,
+    )
+
+    val IS_MUSIC_FILE_MODIFICATION_ON = settingElementOf(
+        key = "IS_MUSIC_FILE_MODIFICATION_ON",
+        defaultValue = true
+    )
+
+    object Sort {
+        val SORT_MUSICS_TYPE_KEY = settingElementOf(
+            key = "SORT_MUSICS_TYPE",
+            defaultValue = SortType.NAME,
         )
-        val returnedFlow: SettingFlowInformation<Boolean> = SettingsFlowSystem.addFlowIfNotExist(
-            settingFlowInformation = settingFlowInformation,
+        val SORT_MUSICS_DIRECTION_KEY = settingElementOf(
+            key = "SORT_MUSICS_DIRECTION",
+            defaultValue = SortDirection.ASC,
         )
-        return returnedFlow.flow
+
+        val SORT_ALBUMS_TYPE_KEY = settingElementOf(
+            key = "SORT_ALBUMS_TYPE",
+            defaultValue = SortType.NAME,
+        )
+        val SORT_ALBUMS_DIRECTION_KEY = settingElementOf(
+            key = "SORT_ALBUMS_DIRECTION",
+            defaultValue = SortDirection.ASC,
+        )
+
+        val SORT_ARTISTS_TYPE_KEY = settingElementOf(
+            key = "SORT_ARTISTS_TYPE",
+            defaultValue = SortType.NAME,
+        )
+        val SORT_ARTISTS_DIRECTION_KEY = settingElementOf(
+            key = "SORT_ARTISTS_DIRECTION",
+            defaultValue = SortDirection.ASC,
+        )
+
+        val SORT_PLAYLISTS_TYPE_KEY = settingElementOf(
+            key = "SORT_PLAYLISTS_TYPE",
+            defaultValue = SortType.NAME,
+        )
+        val SORT_PLAYLISTS_DIRECTION_KEY = settingElementOf(
+            key = "SORT_PLAYLISTS_DIRECTION",
+            defaultValue = SortDirection.ASC
+        )
     }
 
-    fun getPlayerModeAsFlow(): Flow<PlayerMode> {
-        val settingFlowInformation = SettingFlowInformation(
-            key = PLAYER_MODE_KEY,
-            retrieveValue = { getPlayerMode() }
+    object Player {
+        val PLAYER_MUSIC_INDEX_KEY = settingElementOf(
+            key = "PLAYER_MUSIC_INDEX",
+            defaultValue = -1,
         )
-        val returnedFlow: SettingFlowInformation<PlayerMode> = SettingsFlowSystem.addFlowIfNotExist(
-            settingFlowInformation = settingFlowInformation,
+        val PLAYER_MUSIC_POSITION_KEY = settingElementOf(
+            key = "PLAYER_MUSIC_POSITION",
+            defaultValue = 0,
         )
-        return returnedFlow.flow
+        val PLAYER_MODE_KEY = settingElementOf(
+            key = "PLAYER_MODE_KEY",
+            defaultValue = PlayerMode.Normal,
+        )
+        val IS_PLAYER_SWIPE_ENABLED = settingElementOf(
+            key = "IS_PLAYER_SWIPE_ENABLED",
+            defaultValue = true,
+        )
+        val SOUL_MIX_TOTAL_BY_LIST = settingElementOf(
+            key = "SOUL_MIX_TOTAL_BY_LIST",
+            defaultValue = 50
+        )
     }
 
-    companion object {
-        const val SHARED_PREF_KEY = "SOUL_SEARCHING_SHARED_PREF"
+    object ColorTheme {
+        val COLOR_THEME_KEY = settingElementOf(
+            key = "COLOR_THEME",
+            defaultValue = 0,
+        )
+        val DYNAMIC_PLAYER_THEME = settingElementOf(
+            key = "DYNAMIC_PLAYER_THEME",
+            defaultValue = false,
+        )
+        val DYNAMIC_PLAYLIST_THEME = settingElementOf(
+            key = "DYNAMIC_PLAYLIST_THEME",
+            defaultValue = false,
+        )
+        val DYNAMIC_OTHER_VIEWS_THEME = settingElementOf(
+            key = "DYNAMIC_OTHER_VIEWS_THEME",
+            defaultValue = false
+        )
+        val FORCE_DARK_THEME_KEY = settingElementOf(
+            key = "FORCE_DARK_THEME_KEY",
+            defaultValue = false,
+        )
+        val FORCE_LIGHT_THEME_KEY = settingElementOf(
+            key = "FORCE_LIGHT_THEME_KEY",
+            defaultValue = false,
+        )
+    }
 
-        const val HAS_MUSICS_BEEN_FETCHED_KEY = "MUSICS_FETCHED"
-
-        const val SORT_MUSICS_TYPE_KEY = "SORT_MUSICS_TYPE"
-        const val SORT_MUSICS_DIRECTION_KEY = "SORT_MUSICS_DIRECTION"
-
-        const val SORT_ALBUMS_TYPE_KEY = "SORT_ALBUMS_TYPE"
-        const val SORT_ALBUMS_DIRECTION_KEY = "SORT_ALBUMS_DIRECTION"
-
-        const val SORT_ARTISTS_TYPE_KEY = "SORT_ARTISTS_TYPE"
-        const val SORT_ARTISTS_DIRECTION_KEY = "SORT_ARTISTS_DIRECTION"
-
-        const val SORT_PLAYLISTS_TYPE_KEY = "SORT_PLAYLISTS_TYPE"
-        const val SORT_PLAYLISTS_DIRECTION_KEY = "SORT_PLAYLISTS_DIRECTION"
-
-        const val PLAYER_MUSIC_INDEX_KEY = "PLAYER_MUSIC_INDEX"
-        const val PLAYER_MUSIC_POSITION_KEY = "PLAYER_MUSIC_POSITION"
-        const val PLAYER_MODE_KEY = "PLAYER_MODE_KEY"
-
-        const val COLOR_THEME_KEY = "COLOR_THEME"
-        const val DYNAMIC_PLAYER_THEME = "DYNAMIC_PLAYER_THEME"
-        const val DYNAMIC_PLAYLIST_THEME = "DYNAMIC_PLAYLIST_THEME"
-        const val DYNAMIC_OTHER_VIEWS_THEME = "DYNAMIC_OTHER_VIEWS_THEME"
-
-        const val IS_MUSIC_FILE_MODIFICATION_ON = "IS_MUSIC_FILE_MODIFICATION_ON"
-
-        const val IS_QUICK_ACCESS_SHOWN = "IS_QUICK_ACCESS_SHOWN"
-        const val IS_PLAYLISTS_SHOWN = "IS_PLAYLISTS_SHOWN"
-        const val IS_ALBUMS_SHOWN = "IS_ALBUMS_SHOWN"
-        const val IS_ARTISTS_SHOWN = "IS_ARTISTS_SHOWN"
-        const val ARE_MUSICS_BY_MONTHS_SHOWN = "ARE_MUSICS_BY_MONTHS_SHOWN"
-
-        const val ARE_MUSICS_BY_FOLDERS_SHOWN = "ARE_MUSICS_BY_FOLDERS_SHOWN"
-
-        const val IS_PLAYER_SWIPE_ENABLED = "IS_PLAYER_SWIPE_ENABLED"
-        const val IS_PLAYER_SWIPE_ENABLED_DEFAULT = true
-
-        const val SOUL_MIX_TOTAL_BY_LIST = "SOUL_MIX_TOTAL_BY_LIST"
-        const val SOUL_MIX_TOTAL_BY_LIST_DEFAULT = 50
+    object MainPage {
+        val IS_QUICK_ACCESS_SHOWN = settingElementOf(
+            key = "IS_QUICK_ACCESS_SHOWN",
+            defaultValue = true,
+        )
+        val IS_PLAYLISTS_SHOWN = settingElementOf(
+            key = "IS_PLAYLISTS_SHOWN",
+            defaultValue = true,
+        )
+        val IS_ALBUMS_SHOWN = settingElementOf(
+            key = "IS_ALBUMS_SHOWN",
+            defaultValue = true,
+        )
+        val IS_ARTISTS_SHOWN = settingElementOf(
+            key = "IS_ARTISTS_SHOWN",
+            defaultValue = true,
+        )
+        val ARE_MUSICS_BY_MONTHS_SHOWN = settingElementOf(
+            key = "ARE_MUSICS_BY_MONTHS_SHOWN",
+            defaultValue = false
+        )
+        val ARE_MUSICS_BY_FOLDERS_SHOWN = settingElementOf(
+            key = "ARE_MUSICS_BY_FOLDERS_SHOWN",
+            defaultValue = true,
+        )
     }
 }

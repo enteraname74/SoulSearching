@@ -18,7 +18,7 @@ data class PlayerState(
     val allCovers: List<ImageCover> = emptyList(),
     val playedList: List<Music> = emptyList(),
     val isPlaying: Boolean = false,
-    val playerMode: PlayerMode = PlayerMode.NORMAL,
+    val playerMode: PlayerMode = PlayerMode.Normal,
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
     val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound
 )
