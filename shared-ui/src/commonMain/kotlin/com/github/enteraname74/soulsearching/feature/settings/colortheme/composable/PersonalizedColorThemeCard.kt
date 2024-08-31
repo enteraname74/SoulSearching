@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.compos
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -37,6 +38,7 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasPlayerTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                padding = PaddingValues(all = 0.dp),
             )
             SettingsSwitchElement(
                 title = strings.dynamicPlaylistView,
@@ -44,6 +46,7 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasPlaylistTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                padding = PaddingValues(all = 0.dp),
             )
             SettingsSwitchElement(
                 title = strings.dynamicOtherView,
@@ -51,6 +54,7 @@ fun PersonalizedColorThemeCard(
                 isChecked = hasOtherViewsTheme,
                 titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                padding = PaddingValues(all = 0.dp),
             )
         }
     }

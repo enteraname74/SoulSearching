@@ -68,15 +68,18 @@ class SettingsMainPagePersonalisationScreen: Screen {
             navigateBack = navigateBack,
             title = strings.mainPageTitle,
             contentPadding = PaddingValues(
-                all = UiConstants.Spacing.veryLarge
-            ),
-            verticalPadding = UiConstants.Spacing.large,
+                vertical = UiConstants.Spacing.large,
+            )
         ) {
             item {
                 SettingsSwitchElement(
                     title = strings.showQuickAccess,
                     toggleAction = { screenModel.toggleQuickAccessVisibility() },
                     isChecked = elementsVisibility.isQuickAccessShown,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.medium,
+                    ),
                 )
             }
             item {
@@ -84,6 +87,10 @@ class SettingsMainPagePersonalisationScreen: Screen {
                     title = strings.showPlaylists,
                     toggleAction = { screenModel.togglePlaylistsVisibility() },
                     isChecked = elementsVisibility.arePlaylistsShown,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.medium,
+                    ),
                 )
             }
             item {
@@ -91,6 +98,10 @@ class SettingsMainPagePersonalisationScreen: Screen {
                     title = strings.showAlbums,
                     toggleAction = { screenModel.toggleAlbumsVisibility() },
                     isChecked = elementsVisibility.areAlbumsShown,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.medium,
+                    ),
                 )
             }
             item {
@@ -98,6 +109,10 @@ class SettingsMainPagePersonalisationScreen: Screen {
                     title = strings.showArtists,
                     toggleAction = { screenModel.toggleArtistsVisibility() },
                     isChecked = elementsVisibility.areArtistsShown,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.medium,
+                    ),
                 )
             }
             item {
@@ -105,11 +120,13 @@ class SettingsMainPagePersonalisationScreen: Screen {
                     title = strings.showMusicsByFolders,
                     toggleAction = { screenModel.toggleMusicFoldersVisibility() },
                     isChecked = elementsVisibility.areMusicFoldersShown,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.medium,
+                    ),
                 )
             }
         }
     }
 }
-
-private val SWITCH_TITLE_FONT_SIZE: TextUnit = 16.sp
 

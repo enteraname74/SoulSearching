@@ -22,13 +22,18 @@ fun SettingsSwitchElement(
     maxLines: Int = 2,
     titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+    padding: PaddingValues = PaddingValues(
+        horizontal = UiConstants.Spacing.large,
+        vertical = UiConstants.Spacing.veryLarge,
+    ),
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
                 toggleAction()
-            },
+            }
+            .padding(padding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

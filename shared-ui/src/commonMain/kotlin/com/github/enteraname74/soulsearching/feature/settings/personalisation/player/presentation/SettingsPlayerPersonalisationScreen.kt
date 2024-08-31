@@ -1,10 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -63,7 +65,13 @@ class SettingsPlayerPersonalisationScreen: Screen {
                 )
             }
             item {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = UiConstants.Spacing.large,
+                            vertical = UiConstants.Spacing.veryLarge,
+                        )
+                ) {
                     Text(
                         text = strings.soulMixSettingsTitle,
                         style = UiConstants.Typography.bodyTitle,

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,6 +58,9 @@ fun SettingsColorThemeScreenView(
         navigateBack = navigateBack,
         title = strings.colorThemeTitle,
         verticalPadding = UiConstants.Spacing.veryLarge,
+        contentPadding = PaddingValues(
+            all = UiConstants.Spacing.veryLarge,
+        )
     ) {
         item {
             ColorThemeCard(

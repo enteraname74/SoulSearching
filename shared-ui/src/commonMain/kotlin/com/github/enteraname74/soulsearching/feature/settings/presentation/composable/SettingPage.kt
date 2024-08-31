@@ -8,8 +8,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -19,9 +19,9 @@ fun SettingPage(
     navigateBack: () -> Unit,
     title: String,
     modifier: Modifier = Modifier,
-    verticalPadding: Dp = UiConstants.Spacing.veryHuge,
+    verticalPadding: Dp = 0.dp,
     contentPadding: PaddingValues = PaddingValues(
-        all = UiConstants.Spacing.veryLarge
+        all = 0.dp
     ),
     content: LazyListScope.() -> Unit
 ) {

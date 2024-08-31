@@ -12,6 +12,7 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -88,12 +89,7 @@ fun SettingsUsedFoldersScreenView(
         )
         when (state) {
             is FolderState.Data -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryLarge),
-                    contentPadding = PaddingValues(
-                        all = UiConstants.Spacing.veryLarge,
-                    )
-                ) {
+                LazyColumn {
                     items(
                         items = state.folders,
                         key = { it.folderPath },
@@ -104,7 +100,11 @@ fun SettingsUsedFoldersScreenView(
                             toggleAction = {
                                 setFolderSelectionStatus(it, !it.isSelected)
                             },
-                            isChecked = it.isSelected
+                            isChecked = it.isSelected,
+                            padding = PaddingValues(
+                                horizontal = UiConstants.Spacing.large,
+                                vertical = UiConstants.Spacing.large,
+                            ),
                         )
                     }
                     item(
