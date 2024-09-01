@@ -306,6 +306,7 @@ class MainPageViewModel(
                         )
                     }
                 }
+                _dialogState.value = null
             }
         )
     }

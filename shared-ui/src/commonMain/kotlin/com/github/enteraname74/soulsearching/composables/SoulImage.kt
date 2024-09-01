@@ -18,11 +18,12 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_svg
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.util.*
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -54,7 +55,7 @@ fun SoulImage(
         )
     } ?: Image(
         modifier = modifierBase,
-        painter = painterResource(Res.drawable.saxophone_svg),
+        painter = painterResource(Res.drawable.saxophone_png),
         contentDescription = strings.image,
         contentScale = ContentScale.Crop,
         colorFilter = ColorFilter.tint(tint)

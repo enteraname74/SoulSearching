@@ -19,6 +19,9 @@ fun SoulTextField(
     labelName : String?,
     focusManager : FocusManager,
     keyboardType : KeyboardType = KeyboardType.Text,
+    keyboardActions: KeyboardActions = KeyboardActions(
+        onDone = { focusManager.clearFocus() }
+    )
 ) {
     TextField(
         value = value,
@@ -42,9 +45,7 @@ fun SoulTextField(
             unfocusedIndicatorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
             unfocusedLabelColor = SoulSearchingColorTheme.colorScheme.onPrimary
         ),
-        keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() }
-        ),
+        keyboardActions = keyboardActions,
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType
         )

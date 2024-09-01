@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +35,13 @@ class CreatePlaylistDialog(
                     value = playlistName,
                     onValueChange = { playlistName = it },
                     labelName = strings.playlistName,
-                    focusManager = focusManager
+                    focusManager = focusManager,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            onConfirm(playlistName.trim())
+                        }
+                    )
                 )
             }
         )
