@@ -11,3 +11,7 @@
 -dontwarn org.jetbrains.skia.Image$Companion
 -dontwarn org.jetbrains.skia.Image
 -dontwarn org.jetbrains.skia.ImageInfo
+
+#-dontobfuscate
+#-keepattributes SourceFile,LineNumberTable
+-keep class org.jaudiotagger.audio.asf.io.** { *; }
