@@ -1,13 +1,13 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
-import com.github.enteraname74.domain.datasource.ImageCoverDataSource
+import com.github.enteraname74.domain.model.ImageCover
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toImageCover
 import com.github.enteraname74.localdb.model.toRoomImageCover
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.soulsearching.repository.datasource.ImageCoverDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import java.util.*
 
 /**
  * Implementation of the ImageCoverDataSource with Room's DAO.
@@ -15,14 +15,14 @@ import java.util.UUID
 internal class RoomImageCoverDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : ImageCoverDataSource {
-    override suspend fun insertImageCover(imageCover: ImageCover) {
-        appDatabase.imageCoverDao.insertImageCover(
+    override suspend fun upsert(imageCover: ImageCover) {
+        appDatabase.imageCoverDao.upsert(
             roomImageCover = imageCover.toRoomImageCover()
         )
     }
 
-    override suspend fun deleteImageCover(imageCover: ImageCover) {
-        appDatabase.imageCoverDao.deleteImageCover(
+    override suspend fun delete(imageCover: ImageCover) {
+        appDatabase.imageCoverDao.delete(
             roomImageCover = imageCover.toRoomImageCover()
         )
     }
@@ -39,8 +39,8 @@ internal class RoomImageCoverDataSourceImpl(
         )?.toImageCover()
     }
 
-    override fun getAllCoversAsFlow(): Flow<List<ImageCover>> {
-        return appDatabase.imageCoverDao.getAllCoversAsFlow().map { list ->
+    override fun getAll(): Flow<List<ImageCover>> {
+        return appDatabase.imageCoverDao.getAll().map { list ->
             list.map { it.toImageCover() }
         }
     }

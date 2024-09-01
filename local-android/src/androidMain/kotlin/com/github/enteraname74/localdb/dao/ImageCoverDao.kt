@@ -15,10 +15,10 @@ import java.util.UUID
 @Dao
 internal interface ImageCoverDao {
     @Upsert
-    suspend fun insertImageCover(roomImageCover: RoomImageCover)
+    suspend fun upsert(roomImageCover: RoomImageCover)
 
     @Delete
-    suspend fun deleteImageCover(roomImageCover: RoomImageCover)
+    suspend fun delete(roomImageCover: RoomImageCover)
 
     @Query("DELETE FROM RoomImageCover WHERE coverId = :coverId")
     suspend fun deleteFromCoverId(coverId: UUID)
@@ -27,5 +27,5 @@ internal interface ImageCoverDao {
     suspend fun getCoverOfElement(coverId : UUID) : RoomImageCover?
 
     @Query("SELECT * FROM RoomImageCover")
-    fun getAllCoversAsFlow() : Flow<List<RoomImageCover>>
+    fun getAll() : Flow<List<RoomImageCover>>
 }

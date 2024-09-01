@@ -18,6 +18,6 @@ data class Music(
     var folder: String = "",
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false,
+    override var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false
-)
+): QuickAccessible

@@ -15,3 +15,6 @@
 local.properties
 .idea/
 database.db
+
+
+desktopApp/*.log

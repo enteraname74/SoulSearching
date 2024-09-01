@@ -1,55 +1,33 @@
 package com.github.enteraname74.domain.repository
 
-import com.github.enteraname74.domain.datasource.PlayerMusicDataSource
 import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.PlayerWithMusicItem
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 
-/**
- * Repository of a PlayerMusic.
- */
-class PlayerMusicRepository(
-    private val playerMusicDataSource: PlayerMusicDataSource
-) {
+interface PlayerMusicRepository {
     /**
      * Inserts or updates a PlayerMusic.
      */
-    suspend fun insertPlayerMusic(playerMusic: PlayerMusic) =
-        playerMusicDataSource.insertPlayerMusic(
-            playerMusic = playerMusic
-        )
+    suspend fun upsertMusicToPlayerList(playerMusic: PlayerMusic)
 
     /**
      * Deletes a PlayerMusic from a given musicId.
      */
-    suspend fun deleteMusicFromPlayerList(musicId: UUID) =
-        playerMusicDataSource.deleteMusicFromPlayerList(
-            musicId = musicId
-        )
+    suspend fun deleteMusicFromPlayerList(musicId: UUID)
 
     /**
      * Deletes all PlayerMusic.
      */
-    suspend fun deleteAllPlayerMusic() = playerMusicDataSource.deleteAllPlayerMusic()
+    suspend fun deleteAll()
 
     /**
-     * Inserts a list of PlayerMusic.
+     * Upsert a list of PlayerMusic.
      */
-    suspend fun insertAllPlayerMusics(playlist: List<PlayerMusic>) =
-        playerMusicDataSource.insertAllPlayerMusics(
-            playlist = playlist
-        )
-
-    /**
-     * Retrieves all PlayerWithMusicItem.
-     */
-    suspend fun getAllPlayerMusics(): List<PlayerWithMusicItem> =
-        playerMusicDataSource.getAllPlayerMusics()
+    suspend fun upsertAll(playlist: List<PlayerMusic>)
 
     /**
      * Retrieves a flow of all PlayerWithMusicItem.
      */
-    fun getAllPlayerMusicsAsFlow(): Flow<List<PlayerWithMusicItem>> =
-        playerMusicDataSource.getAllPlayerMusicsAsFlow()
+    fun getAll(): Flow<List<PlayerWithMusicItem>>
 }

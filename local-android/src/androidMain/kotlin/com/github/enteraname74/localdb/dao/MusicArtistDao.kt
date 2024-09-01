@@ -10,7 +10,7 @@ import java.util.UUID
 @Dao
 internal interface MusicArtistDao {
     @Upsert
-    suspend fun insertMusicIntoArtist(roomMusicArtist: RoomMusicArtist)
+    suspend fun upsertMusicIntoArtist(roomMusicArtist: RoomMusicArtist)
 
     @Query("UPDATE RoomMusicArtist SET artistId = :newArtistId WHERE musicId = :musicId")
     suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID)
@@ -20,7 +20,4 @@ internal interface MusicArtistDao {
 
     @Query("SELECT artistId FROM RoomMusicArtist WHERE musicId = :musicId")
     suspend fun getArtistIdFromMusicId(musicId: UUID) : UUID?
-
-    @Query("SELECT COUNT(*) FROM RoomMusicArtist WHERE artistId = :artistId")
-    suspend fun getNumberOfMusicsFromArtist(artistId : UUID) : Int
 }

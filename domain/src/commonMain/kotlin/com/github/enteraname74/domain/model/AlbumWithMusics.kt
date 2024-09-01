@@ -6,7 +6,7 @@ package com.github.enteraname74.domain.model
 data class AlbumWithMusics(
     val album: Album = Album(),
     val musics : List<Music> = emptyList(),
-    val artist: Artist? = Artist()
+    val artist: Artist? = Artist(),
 ) {
     /**
      * Convert an AlbumWithMusics to an AlbumWithArtist only.

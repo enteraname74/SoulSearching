@@ -3,3 +3,15 @@
 -dontwarn java.awt.image.BufferedImage
 -dontwarn javax.imageio.ImageIO
 -dontwarn javax.imageio.stream.ImageInputStream
+
+-dontwarn java.sql.JDBCType
+-dontwarn org.jetbrains.skia.Bitmap
+-dontwarn org.jetbrains.skia.Data
+-dontwarn org.jetbrains.skia.EncodedImageFormat
+-dontwarn org.jetbrains.skia.Image$Companion
+-dontwarn org.jetbrains.skia.Image
+-dontwarn org.jetbrains.skia.ImageInfo
+
+#-dontobfuscate
+#-keepattributes SourceFile,LineNumberTable
+-keep class org.jaudiotagger.audio.asf.io.** { *; }

@@ -12,22 +12,18 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 internal interface PlayerMusicDao {
     @Upsert
-    suspend fun insertPlayerMusic(roomPlayerMusic: RoomPlayerMusic)
+    suspend fun upsert(roomPlayerMusic: RoomPlayerMusic)
 
     @Query("DELETE FROM RoomPlayerMusic WHERE playerMusicId = :musicId")
-    suspend fun deleteMusicFromPlayerList(musicId : UUID)
+    suspend fun delete(musicId : UUID)
 
     @Query("DELETE FROM RoomPlayerMusic")
-    suspend fun deleteAllPlayerMusic()
+    suspend fun deleteAll()
 
     @Upsert
-    suspend fun insertAllPlayerMusics(playlist: List<RoomPlayerMusic>)
+    suspend fun upsertAll(playlist: List<RoomPlayerMusic>)
 
     @Transaction
     @Query("SELECT * FROM RoomPlayerMusic")
-    suspend fun getAllPlayerMusics(): List<RoomPlayerWithMusicItem>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlayerMusic")
-    fun getAllPlayerMusicsAsFlow(): Flow<List<RoomPlayerWithMusicItem>>
+    fun getAll(): Flow<List<RoomPlayerWithMusicItem>>
 }

@@ -2,8 +2,8 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.2.1"
-android-version-name = "0.6.0"
-android-version-code = "16"
+android-version-name = "0.7.0"
+android-version-code = "17"
 android-target-sdk = "34"
 android-compile-sdk = "34"
 android-min-sdk = "26"
@@ -16,8 +16,9 @@ compose = "1.6.2"
 compose-ui = "1.5.1"
 compose-plugin = "1.6.2"
 coroutines-core = "1.8.0"
-desktop-version-name = "1.0.0"
+desktop-version-name = "0.1.0"
 exposed = "0.46.0"
+file-kit = "0.8.1"
 foundation-desktop = "1.6.2"
 gradle = "8.2.1"
 gson = "2.10.1"
@@ -35,12 +36,14 @@ multiplatform-settings = "1.1.1"
 org-jetbrains-kotlin-jvm = "1.9.22"
 room = "2.6.1"
 sqlite-jdbc = "3.41.2.2"
+vlcj = "4.8.3"
 voyager = "1.1.0-alpha03"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
 accompanist-system-ui-controller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-system-ui-controller" }
+
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -48,19 +51,26 @@ androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resource
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
+
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-plugin" }
+
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
 coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines-core" }
+coroutines-core-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines-core" }
+
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposed" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+
 foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "foundation-desktop" }
+file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
+
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -74,12 +84,16 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "material-desktop" }
 material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "material3-desktop" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
-room = { module = "androidx.room:room-ktx", version.ref = "room" }
-sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+
+vlcj = { module  = "uk.co.caprica:vlcj", version.ref = "vlcj"}
+
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screen-model = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+
+room = { module = "androidx.room:room-ktx", version.ref = "room" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -5,5 +5,6 @@ package com.github.enteraname74.domain.model
  */
 data class AlbumWithArtist(
     val album: Album = Album(),
-    val artist: Artist? = Artist()
-)
+    val artist: Artist? = Artist(),
+    override var isInQuickAccess: Boolean = album.isInQuickAccess,
+): QuickAccessible

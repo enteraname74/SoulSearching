@@ -28,7 +28,4 @@ internal interface MusicAlbumDao {
 
     @Query("SELECT albumId FROM RoomMusicAlbum WHERE musicId = :musicId")
     suspend fun getAlbumIdFromMusicId(musicId: UUID) : UUID?
-
-    @Query("SELECT COUNT(*) FROM RoomMusicAlbum WHERE albumId = :albumId")
-    suspend fun getNumberOfMusicsFromAlbum(albumId : UUID) : Int
 }

@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -7,11 +8,15 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+group = "com.github.enteraname74.soulsearching"
+description = "Application's elements"
+
 kotlin {
 
     androidTarget()
     jvm("desktop")
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     compilerOptions {
         // Common compiler options applied to all Kotlin source sets for expect / actual implementations
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -20,13 +25,16 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(project(":local-desktop"))
                 implementation(compose.desktop.common)
+                implementation(libs.coroutines.core.swing)
+                implementation(libs.vlcj)
             }
         }
         commonMain {
             dependencies {
                 implementation(project(":domain"))
+                implementation(project(":core-ui"))
+                implementation(project(":shared-di"))
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
@@ -43,16 +51,19 @@ kotlin {
                 implementation(compose.material)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.material3)
+                implementation(compose.components.resources)
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)
                 implementation(libs.bundles.voyager)
+
+                implementation(libs.coroutines.core)
+
+                implementation(libs.file.kit)
             }
         }
         androidMain {
             dependencies {
-                implementation(project(":local-android"))
-
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.bundles.androidx)
                 implementation(libs.room)
@@ -92,9 +103,25 @@ android {
                 "VERSION_NAME",
                 "\"" + libs.versions.android.version.name.get() + "-dev" + "\""
             )
-            manifestPlaceholders["appName"] = "Soul Searching Dev"
+            manifestPlaceholders["appName"] = "SSDDebug"
             versionNameSuffix = "-dev"
             applicationIdSuffix = ".dev"
+        }
+        create("dev-release") {
+            buildConfigField(
+                "String",
+                "VERSION_NAME",
+                "\"" + libs.versions.android.version.name.get() + "-dev.release" + "\""
+            )
+            manifestPlaceholders["appName"] = "SSDRelease"
+            versionNameSuffix = "-dev.release"
+            applicationIdSuffix = ".dev.release"
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         release {
@@ -128,18 +155,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "SoulSearching"
-            packageVersion = "1.0.0"
         }
     }
 }

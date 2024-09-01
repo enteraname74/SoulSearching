@@ -1,34 +1,24 @@
 package com.github.enteraname74.domain.repository
 
-import com.github.enteraname74.domain.datasource.AlbumArtistDataSource
 import com.github.enteraname74.domain.model.AlbumArtist
-import java.util.UUID
+import java.util.*
 
 /**
  * Repository of an AlbumArtist.
  */
-class AlbumArtistRepository(
-    private val albumArtistDataSource: AlbumArtistDataSource
-) {
+interface AlbumArtistRepository {
     /**
      * Insert or updates an AlbumArtist.
      */
-    suspend fun insertAlbumIntoArtist(albumArtist: AlbumArtist) =
-        albumArtistDataSource.insertAlbumIntoArtist(albumArtist = albumArtist)
+    suspend fun upsert(albumArtist: AlbumArtist)
 
     /**
      * Update the artist of an album.
      */
-    suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID) =
-        albumArtistDataSource.updateArtistOfAlbum(
-            albumId = albumId,
-            newArtistId = newArtistId
-        )
+    suspend fun update(albumId: UUID, newArtistId: UUID)
 
     /**
      * Delete an album from an artist.
      */
-    suspend fun deleteAlbumFromArtist(albumId: UUID) = albumArtistDataSource.deleteAlbumFromArtist(
-        albumId = albumId
-    )
+    suspend fun delete(albumId: UUID)
 }

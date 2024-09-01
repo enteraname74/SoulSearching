@@ -6,6 +6,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
+}
 dependencyResolutionManagement {
 //    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -20,3 +23,6 @@ include(":local-android")
 include(":shared-ui")
 include(":desktopApp")
 include(":local-desktop")
+include("core-ui")
+include("repository")
+include("shared-di")

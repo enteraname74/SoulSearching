@@ -2,16 +2,28 @@ package com.github.enteraname74.domain.util
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.images.ArtworkFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.File
 
 /**
  * Utility class for updating a music file information.
  */
-class MusicFileUpdater {
+class MusicFileUpdater : KoinComponent {
+
+    private val settings by inject<SoulSearchingSettings>()
+
+    /**
+     * Updates the file metadata of a music.
+     * Does nothing if the user has not accepted files to be modified.
+     */
     fun updateMusic(music: Music, cover: ImageBitmap?) {
+        if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
         try {
             val musicFile = File(music.path)
 

@@ -30,7 +30,8 @@ kotlin {
         }
         commonMain {
             dependencies {
-                implementation(project(mapOf("path" to ":domain")))
+                implementation(project(":domain"))
+                implementation(project(":repository"))
                 implementation(libs.koin.core)
             }
         }
@@ -43,6 +44,10 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.min.sdk.get().toInt()
+    }
+
+    buildTypes {
+        create("dev-release")
     }
 
     compileOptions {
