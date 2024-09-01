@@ -56,15 +56,15 @@ abstract class MusicFetcher(
      * Fetch all musics on the device.
      */
     abstract suspend fun fetchMusics(
-        updateProgress: (Float) -> Unit,
+        updateProgress: (Float, String?) -> Unit,
         finishAction: () -> Unit
     )
 
     /**
      * Fetch musics from specified folders on the device.
      */
-    abstract fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float) -> Unit,
+    abstract suspend fun fetchMusicsFromSelectedFolders(
+        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem>

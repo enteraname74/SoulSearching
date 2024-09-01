@@ -104,6 +104,11 @@ fun SettingsAddMusicsScreenView(
                 var progress by rememberSaveable {
                     mutableFloatStateOf(0F)
                 }
+
+                var currentFolder: String? by rememberSaveable {
+                    mutableStateOf(null)
+                }
+
                 val animatedProgress by animateFloatAsState(
                     targetValue = progress,
                     animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -111,12 +116,16 @@ fun SettingsAddMusicsScreenView(
                 )
                 LoadingComposable(
                     progressIndicator = animatedProgress,
-                    progressMessage = strings.searchingSongsFromYourDevice
+                    progressMessage = strings.searchingSongsFromYourDevice,
+                    subText = currentFolder,
                 )
                 if (!isFetchingMusics) {
                     LaunchedEffect(key1 = "FetchingMusics") {
                         isFetchingMusics = true
-                        addMusicsViewModel.fetchAndAddNewMusics { progress = it }
+                        addMusicsViewModel.fetchAndAddNewMusics { progression, folder ->
+                            progress = progression
+                            currentFolder = folder
+                        }
                         isFetchingMusics = false
                     }
                 }
@@ -137,7 +146,8 @@ fun SettingsAddMusicsScreenView(
                     )
                     LoadingComposable(
                         progressIndicator = animatedProgress,
-                        progressMessage = strings.savingNewMusics
+                        progressMessage = strings.savingNewMusics,
+                        subText = null,
                     )
                     if (!isSavingMusics) {
                         LaunchedEffect(key1 = "SavingMusics") {

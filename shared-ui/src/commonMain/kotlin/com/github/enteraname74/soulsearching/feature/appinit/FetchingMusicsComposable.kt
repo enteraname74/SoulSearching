@@ -36,6 +36,11 @@ fun FetchingMusicsComposable(
     var progress by rememberSaveable {
         mutableFloatStateOf(0F)
     }
+
+    var currentFolder: String? by rememberSaveable {
+        mutableStateOf(null)
+    }
+
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -70,7 +75,8 @@ fun FetchingMusicsComposable(
                         SoulSearchingLogo()
                         ProgressIndicatorComposable(
                             progress = animatedProgress,
-                            progressMessage = strings.searchingSongsFromYourDevice
+                            progressMessage = strings.searchingSongsFromYourDevice,
+                            subText = currentFolder,
                         )
                     }
                     FetchingMusicTabLayoutComposable(
@@ -89,7 +95,8 @@ fun FetchingMusicsComposable(
                     SoulSearchingLogo()
                     ProgressIndicatorComposable(
                         progress = animatedProgress,
-                        progressMessage = strings.searchingSongsFromYourDevice
+                        progressMessage = strings.searchingSongsFromYourDevice,
+                        subText = currentFolder,
                     )
                     FetchingMusicTabLayoutComposable()
                 }
@@ -102,8 +109,9 @@ fun FetchingMusicsComposable(
             CoroutineScope(Dispatchers.IO).launch {
                 isFetchingMusics = true
                 mainPageViewModel.fetchMusics(
-                    updateProgress = {
-                        progress = it
+                    updateProgress = { progression, folder ->
+                        progress = progression
+                        currentFolder = folder
                     },
                     finishAction = finishAddingMusicsAction
                 )

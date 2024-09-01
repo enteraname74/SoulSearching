@@ -15,7 +15,8 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 @Composable
 fun LoadingComposable(
     progressIndicator: Float,
-    progressMessage: String
+    progressMessage: String,
+    subText: String?,
 ) {
     val windowSize = rememberWindowSize()
     when {
@@ -30,7 +31,8 @@ fun LoadingComposable(
                 SoulSearchingLogo()
                 ProgressIndicatorComposable(
                     progress = progressIndicator,
-                    progressMessage = progressMessage
+                    progressMessage = progressMessage,
+                    subText = subText,
                 )
             }
         }
@@ -47,7 +49,8 @@ fun LoadingComposable(
                 Box(modifier = Modifier.align(Alignment.Center)) {
                     ProgressIndicatorComposable(
                         progress = progressIndicator,
-                        progressMessage = progressMessage
+                        progressMessage = progressMessage,
+                        subText = subText,
                     )
                 }
             }

@@ -195,4 +195,7 @@ object EnStrings : Strings {
             1 -> "1 play"
             else -> "$total plays"
         }
+
+    override fun fetchingMusicsFrom(path: String): String =
+        "Fetching songs in: $path"
 }

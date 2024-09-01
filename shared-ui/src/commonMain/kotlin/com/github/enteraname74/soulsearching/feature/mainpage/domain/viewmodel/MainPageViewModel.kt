@@ -273,7 +273,7 @@ class MainPageViewModel(
      * Fetch all musics.
      */
     suspend fun fetchMusics(
-        updateProgress: (Float) -> Unit,
+        updateProgress: (Float, String?) -> Unit,
         finishAction: () -> Unit
     ) {
         musicFetcher.fetchMusics(

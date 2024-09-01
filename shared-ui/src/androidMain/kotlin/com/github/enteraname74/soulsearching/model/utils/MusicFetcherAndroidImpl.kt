@@ -134,7 +134,7 @@ class MusicFetcherAndroidImpl(
     }
 
     override suspend fun fetchMusics(
-        updateProgress: (Float) -> Unit,
+        updateProgress: (Float, String?) -> Unit,
         finishAction: () -> Unit
     ) {
         val cursor = buildMusicCursor()
@@ -161,7 +161,7 @@ class MusicFetcherAndroidImpl(
                     addMusic(music, cover)
                     cover?.asAndroidBitmap()?.recycle()
                     count++
-                    updateProgress((count * 1F) / cursor.count)
+                    updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
                 upsertPlaylistUseCase(
@@ -179,8 +179,8 @@ class MusicFetcherAndroidImpl(
     /**
      * Fetch new musics.
      */
-    override fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float) -> Unit,
+    override suspend fun fetchMusicsFromSelectedFolders(
+        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ) : ArrayList<SelectableMusicItem> {
@@ -220,7 +220,7 @@ class MusicFetcherAndroidImpl(
                         )
                     }
                     count++
-                    updateProgress((count * 1F) / cursor.count)
+                    updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
             }

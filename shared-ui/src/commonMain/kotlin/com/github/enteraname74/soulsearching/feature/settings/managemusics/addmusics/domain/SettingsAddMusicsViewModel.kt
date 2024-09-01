@@ -73,7 +73,7 @@ class SettingsAddMusicsViewModel(
      * Fetch and add new musics.
      */
     fun fetchAndAddNewMusics(
-        updateProgressBar: (Float) -> Unit,
+        updateProgressBar: (Float, String?) -> Unit,
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val hiddenFoldersPaths: List<String> = getHiddenFoldersPathUseCase()
@@ -91,8 +91,8 @@ class SettingsAddMusicsViewModel(
     /**
      * Fetch new musics with folders settings.
      */
-    private fun fetchNewMusics(
-        updateProgress: (Float) -> Unit,
+    private suspend fun fetchNewMusics(
+        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem> {

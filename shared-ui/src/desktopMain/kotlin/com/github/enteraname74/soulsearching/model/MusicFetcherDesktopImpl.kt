@@ -29,6 +29,7 @@ import org.jaudiotagger.tag.Tag
 import org.jetbrains.skia.Image
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -81,9 +82,21 @@ class MusicFetcherDesktopImpl(
     /**
      * Extract mp3 files from current directory.
      */
-    private suspend fun extractMusicsFromCurrentDirectory(directory: File) {
+    private suspend fun extractMusicsFromCurrentDirectory(
+        directory: File,
+        updateProgress: (Float, String?) -> Unit,
+        onMusicFetched: suspend (Music, ImageBitmap?) -> Unit,
+    ) {
+
+        // If the folder is hidden, we skip it:
+        if (directory.isHidden) return
+
         val files = directory.listFiles() ?: return
+
+        var count = 0f
         for (file in files) {
+            count += 1f
+            updateProgress(count / files.size, file.parent)
             if (file.isHidden || !file.canRead()) {
                 continue
             }
@@ -101,22 +114,31 @@ class MusicFetcherDesktopImpl(
                         folder = file.parent
                     )
                     val musicCover = fetchMusicCoverFromMetadata(tag)
-                    addMusic(musicToAdd, musicCover)
+                    onMusicFetched(musicToAdd, musicCover)
                 } catch (_: Exception) {
                     println("Failed to access information about the following file: ${file.path}")
                 }
             }
 
             if (file.isDirectory) {
-                extractMusicsFromCurrentDirectory(file)
+                extractMusicsFromCurrentDirectory(
+                    directory = file,
+                    updateProgress = updateProgress,
+                    onMusicFetched = onMusicFetched,
+                )
             }
 
         }
     }
 
-    override suspend fun fetchMusics(updateProgress: (Float) -> Unit, finishAction: () -> Unit) {
-        val root = File("/home")
-        extractMusicsFromCurrentDirectory(root)
+    override suspend fun fetchMusics(updateProgress: (Float, String?) -> Unit, finishAction: () -> Unit) {
+        val root = File(System.getProperty("user.home"))
+
+        extractMusicsFromCurrentDirectory(
+            directory = root,
+            updateProgress = updateProgress,
+            onMusicFetched = ::addMusic
+        )
         upsertPlaylistUseCase(
             Playlist(
                 playlistId = UUID.randomUUID(),
@@ -127,11 +149,30 @@ class MusicFetcherDesktopImpl(
         finishAction()
     }
 
-    override fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float) -> Unit,
+    override suspend fun fetchMusicsFromSelectedFolders(
+        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem> {
-        return ArrayList()
+        val newMusics = ArrayList<SelectableMusicItem>()
+        val root = File(System.getProperty("user.home"))
+
+        extractMusicsFromCurrentDirectory(
+            directory = root,
+            updateProgress = updateProgress,
+            onMusicFetched = { music, cover ->
+                if (!alreadyPresentMusicsPaths.any { it == music.path } && !hiddenFoldersPaths.any { it == music.folder }) {
+                    newMusics.add(
+                        SelectableMusicItem(
+                            music = music,
+                            cover = cover,
+                            isSelected = true,
+                        )
+                    )
+                }
+            }
+        )
+
+        return newMusics
     }
 }

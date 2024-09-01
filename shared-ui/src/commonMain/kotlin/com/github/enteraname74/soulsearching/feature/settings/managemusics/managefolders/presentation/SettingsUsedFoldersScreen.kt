@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -125,7 +123,8 @@ fun SettingsUsedFoldersScreenView(
             FolderState.Saving -> {
                 LoadingComposable(
                     progressIndicator = savingAnimatedProgress,
-                    progressMessage = strings.deletingMusicsFromUnselectedFolders
+                    progressMessage = strings.deletingMusicsFromUnselectedFolders,
+                    subText = null,
                 )
             }
         }

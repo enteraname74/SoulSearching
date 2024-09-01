@@ -199,4 +199,9 @@ interface Strings {
      * Shows a text indicating the total play of an element.
      */
     fun plays(total: Int): String
+
+    /**
+     * Shows a text indicating the current folder where songs are fetched.
+     */
+    fun fetchingMusicsFrom(path: String): String
 }

@@ -197,4 +197,7 @@ object FrStrings : Strings {
             1 -> "1 écoute"
             else -> "$total écoutes"
         }
+
+    override fun fetchingMusicsFrom(path: String): String =
+        "Récupération de musiques dans le dossier : $path"
 }
