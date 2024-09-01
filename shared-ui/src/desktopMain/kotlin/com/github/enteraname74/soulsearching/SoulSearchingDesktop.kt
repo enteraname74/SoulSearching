@@ -10,19 +10,12 @@ import org.koin.compose.KoinApplication
 @Composable
 fun SoulSearchingDesktop() {
     LocalDatabaseInitializer.init()
-    KoinApplication(
-        application = {
-            modules(appModule)
-        }
-    ) {
-        val mainActivityViewModel = injectElement<MainActivityViewModel>()
+    val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
-        with(mainActivityViewModel) {
-            isReadPermissionGranted = true
-            isPostNotificationGranted = true
-        }
-
-        SoulSearchingApplication()
+    with(mainActivityViewModel) {
+        isReadPermissionGranted = true
+        isPostNotificationGranted = true
     }
 
+    SoulSearchingApplication()
 }

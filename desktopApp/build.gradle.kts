@@ -1,4 +1,6 @@
+import org.gradle.configurationcache.DefaultConfigurationCache
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.internal.de.undercouch.gradle.tasks.download.org.apache.hc.core5.net.Host
 
 plugins {
     kotlin("jvm")
@@ -23,17 +25,48 @@ dependencies {
     implementation(libs.material3.desktop)
     implementation(libs.material.desktop)
     implementation(libs.foundation.desktop)
+    implementation(compose.components.resources)
     implementation(project(":shared-ui"))
+
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
 }
 
 compose.desktop {
     application {
         mainClass = "MainKt"
 
+        buildTypes.release.proguard {
+            configurationFiles.from(project.file("proguard-rules.pro"))
+        }
+
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+
+            modules(
+                "java.instrument",
+                "java.management",
+                "java.prefs",
+                "java.sql",
+                "jdk.security.auth",
+                "jdk.unsupported"
+            )
+
+            targetFormats(TargetFormat.Rpm)
+
             packageName = "SoulSearching"
-            packageVersion = "1.0.0"
+            packageVersion = libs.versions.desktop.version.name.get()
+            description = "Music player application."
+
+            linux {
+
+                packageName = "SoulSearching"
+                packageVersion = libs.versions.desktop.version.name.get()
+                appCategory = "AudioVideo;Player;"
+                appRelease = "1"
+                rpmLicenseType = "GPL-3.0-or-later"
+                iconFile.set(project.file("src/main/composeResources/drawable/app_icon.png"))
+            }
+
         }
     }
 }

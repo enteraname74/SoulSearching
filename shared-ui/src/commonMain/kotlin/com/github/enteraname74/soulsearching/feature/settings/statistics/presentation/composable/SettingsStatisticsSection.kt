@@ -39,7 +39,6 @@ fun LazyListScope.settingsStatisticsSection(
     }
     if (elements.isNotEmpty()) {
         items(
-            key = { elements[it].id },
             contentType = { SECTION_LIST_CONTENT_TYPE },
             count = elements.size,
         ) { index ->

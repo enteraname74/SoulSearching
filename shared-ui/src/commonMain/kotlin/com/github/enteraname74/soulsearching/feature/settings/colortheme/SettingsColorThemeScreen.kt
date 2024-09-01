@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FormatPaint
@@ -21,9 +20,10 @@ import com.github.enteraname74.soulsearching.feature.settings.colortheme.composa
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.*
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_main
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
-import com.github.enteraname74.soulsearching.theme.isInDarkTheme
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -90,8 +90,10 @@ fun SettingsColorThemeScreenView(
                 text = strings.dynamicThemeText,
                 onClick = { updateColorTheme(ColorThemeType.DYNAMIC) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.DynamicTheme,
-                firstImage = Res.drawable.dynamic_main,
-                secondImage = Res.drawable.dynamic_player,
+                images = listOf(
+                    Res.drawable.dynamic_main,
+                    Res.drawable.dynamic_player
+                ),
             )
         }
         item {
@@ -100,16 +102,7 @@ fun SettingsColorThemeScreenView(
                 text = strings.systemThemeText,
                 onClick = { updateColorTheme(ColorThemeType.SYSTEM) },
                 isSelected = state.colorThemeSettings is ColorThemeSettings.FromSystem,
-                firstImage = if (isInDarkTheme()) {
-                    Res.drawable.system_dark_theme_main
-                } else {
-                    Res.drawable.system_light_theme_main
-                },
-                secondImage = if (isInDarkTheme()) {
-                    Res.drawable.system_dark_theme_player
-                } else {
-                    Res.drawable.system_light_theme_player
-                }
+                images = emptyList(),
             )
         }
         item {

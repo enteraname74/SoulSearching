@@ -115,7 +115,9 @@ class ColorThemeManager(
             }
 
             /*
-            Dynamic theme enabled for the other views
+            If we have the dynamic theme enabled for the others views
+            (dynamic theme OR personalized with other view checked)
+            we build a dynamic theme.
              */
             colorThemeSettings.canShowDynamicOtherViewsTheme() ->
                 buildDynamicTheme(
@@ -288,14 +290,22 @@ class ColorThemeManager(
         isInDarkTheme: Boolean,
         defaultThemeSettings: DefaultThemeSettings
     ): SoulSearchingPalette =
-        if (playlistDetailCover is PlaylistDetailCover.Cover && colorThemeSettings.canShowDynamicPlaylistsTheme()) {
+        // If we have enabled the dynamic theme for playlist, we use the playlist cover for building a theme
+        if (colorThemeSettings.canShowDynamicPlaylistsTheme() && playlistDetailCover != null) {
             buildDynamicTheme(
-                palette = playlistDetailCover.palette,
+                palette = (playlistDetailCover as? PlaylistDetailCover.Cover)?.palette,
                 isInDarkTheme = isInDarkTheme,
                 defaultThemeSettings = defaultThemeSettings,
             )
         } else if (colorThemeSettings.canShowDynamicOtherViewsTheme() && playlistDetailCover == null) {
-            // To fix abrupt transition
+            // To fix abrupt transition before the playlist cover is set and if we have a dynamic other view theme
+            buildDynamicTheme(
+                palette = palette,
+                isInDarkTheme = isInDarkTheme,
+                defaultThemeSettings = defaultThemeSettings,
+            )
+        } else if (colorThemeSettings is ColorThemeSettings.DynamicTheme) {
+            // If we are simply in the dynamic theme, we use it.
             buildDynamicTheme(
                 palette = palette,
                 isInDarkTheme = isInDarkTheme,

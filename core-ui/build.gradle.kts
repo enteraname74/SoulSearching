@@ -30,7 +30,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.ui)
             implementation(libs.androidx.annotation)
-            implementation(compose.components.resources)
 
             implementation(libs.kmpalette)
         }

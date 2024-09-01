@@ -19,8 +19,7 @@ fun ColorThemeCard(
     text: String,
     onClick: () -> Unit,
     isSelected: Boolean,
-    firstImage: DrawableResource,
-    secondImage: DrawableResource,
+    images: List<DrawableResource>,
 ) {
     ColorCard(
         title = title,
@@ -33,18 +32,14 @@ fun ColorThemeCard(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Image(
-                modifier = Modifier
-                    .size(120.dp, 360.dp),
-                painter = painterResource(firstImage),
-                contentDescription = ""
-            )
-            Image(
-                modifier = Modifier
-                    .size(120.dp, 360.dp),
-                painter = painterResource(secondImage),
-                contentDescription = ""
-            )
+            images.forEach {
+                Image(
+                    modifier = Modifier
+                        .size(120.dp, 360.dp),
+                    painter = painterResource(it),
+                    contentDescription = ""
+                )
+            }
         }
     }
 }

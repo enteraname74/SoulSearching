@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.input.key.*
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -795,6 +796,20 @@ abstract class PlaybackManager(
      */
     fun setCallback(callback: Callback) {
         this.callback = callback
+    }
+
+    fun handleKeyEvent(event: KeyEvent) {
+        if (event.isCtrlPressed && event.type == KeyEventType.KeyUp) {
+            // If no music is being played, we do nothing
+            if (currentMusic == null) return
+
+            when(event.key) {
+                Key.P -> togglePlayPause()
+                Key.B, Key.DirectionLeft -> previous()
+                Key.N, Key.DirectionRight -> next()
+                else -> { /*no-op*/ }
+            }
+        }
     }
 
     /**
