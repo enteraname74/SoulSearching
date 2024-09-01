@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.presen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Text
@@ -24,6 +25,7 @@ fun LazyListScope.settingsStatisticsSection(
     ) {
         Text(
             modifier = Modifier
+                .fillMaxWidth()
                 .background(
                     color = SoulSearchingColorTheme.colorScheme.primary,
                 )
