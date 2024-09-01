@@ -37,7 +37,6 @@ class ImageCoverRetriever(
                         covers.forEach { cover ->
                             deleteImageIfNotUsed(coverId = cover.coverId)
                         }
-                        println("CLEAN FINISHED")
                     }
                 }
             }

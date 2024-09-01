@@ -60,7 +60,8 @@ fun PlayerPanelContent(
                     noLyricsColor = subTextColor,
                     lyricsState = playerState.currentMusicLyrics,
                     currentMusic = playerState.currentMusic,
-                    onRetrieveLyrics = onRetrieveLyrics
+                    onRetrieveLyrics = onRetrieveLyrics,
+                    isExpanded = isExpanded,
                 )
             }
         )

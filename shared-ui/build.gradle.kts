@@ -103,9 +103,25 @@ android {
                 "VERSION_NAME",
                 "\"" + libs.versions.android.version.name.get() + "-dev" + "\""
             )
-            manifestPlaceholders["appName"] = "Soul Searching Dev"
+            manifestPlaceholders["appName"] = "SSDDebug"
             versionNameSuffix = "-dev"
             applicationIdSuffix = ".dev"
+        }
+        create("dev-release") {
+            buildConfigField(
+                "String",
+                "VERSION_NAME",
+                "\"" + libs.versions.android.version.name.get() + "-dev.release" + "\""
+            )
+            manifestPlaceholders["appName"] = "SSDRelease"
+            versionNameSuffix = "-dev.release"
+            applicationIdSuffix = ".dev.release"
+            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         release {

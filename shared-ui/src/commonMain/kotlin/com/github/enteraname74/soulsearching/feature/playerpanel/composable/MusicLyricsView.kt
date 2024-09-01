@@ -32,7 +32,8 @@ fun MusicLyricsView(
     contentColor: Color,
     lyricsState: LyricsFetchState,
     onRetrieveLyrics: () -> Unit,
-    currentMusic: Music?
+    currentMusic: Music?,
+    isExpanded: Boolean,
 ) {
 
     var currentMusicId by rememberSaveable {
@@ -45,20 +46,26 @@ fun MusicLyricsView(
 
     currentMusicId = currentMusic?.musicId
 
-    when (lyricsState) {
-        LyricsFetchState.FetchingLyrics -> FetchingLyricsView(
+    if (!isExpanded) {
+        FetchingLyricsView(
             contentColor = contentColor
         )
+    } else {
+        when (lyricsState) {
+            LyricsFetchState.FetchingLyrics -> FetchingLyricsView(
+                contentColor = contentColor
+            )
 
-        is LyricsFetchState.FoundLyrics -> LyricsView(
-            contentColor = contentColor,
-            subTextColor = noLyricsColor,
-            lyrics = lyricsState.lyrics
-        )
+            is LyricsFetchState.FoundLyrics -> LyricsView(
+                contentColor = contentColor,
+                subTextColor = noLyricsColor,
+                lyrics = lyricsState.lyrics
+            )
 
-        LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
-            contentColor = noLyricsColor
-        )
+            LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
+                contentColor = noLyricsColor
+            )
+        }
     }
 }
 

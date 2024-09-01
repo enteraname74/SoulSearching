@@ -258,7 +258,6 @@ class MainPageViewModel(
                     CoroutineScope(Dispatchers.IO).launch {
                         cleanMusicsLaunched = true
                         checkAndDeleteMusicIfNotExist()
-                        println("CLEAN MUSICS FINISHED")
                     }
                 }
             }
