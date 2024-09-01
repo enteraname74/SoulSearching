@@ -138,6 +138,7 @@ interface Strings {
     val mostPlayedSongs: String
     val mostPlayedAlbums: String
     val mostPlayedArtists: String
+    val artistsWithMostSongs: String
     val mostPlayedPlaylists: String
     val themeSelectionTitle: String
     val themeSelectionText: String

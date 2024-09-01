@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.Res
-import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.saxophone_svg
+import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.saxophone_png
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -26,7 +26,7 @@ fun SoulSearchingLogo() {
     ) {
         Image(
             modifier = Modifier.size(UiConstants.ImageSize.veryLarge),
-            painter = painterResource(Res.drawable.saxophone_svg),
+            painter = painterResource(Res.drawable.saxophone_png),
             contentDescription = strings.appLogo,
             colorFilter = ColorFilter.tint(color = SoulSearchingColorTheme.colorScheme.onPrimary)
         )

@@ -55,7 +55,6 @@ data class SelectedFolderScreen(
         }
 
         if (!isFolderFetched) {
-            println("Will init")
             screenModel.init(folderPath = folderPath)
             isFolderFetched = true
         }

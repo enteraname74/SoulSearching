@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
@@ -29,7 +28,6 @@ fun LazyListScope.settingsStatisticsSection(
                     color = SoulSearchingColorTheme.colorScheme.primary,
                 )
                 .padding(
-                    top = UiConstants.Spacing.large,
                     bottom = UiConstants.Spacing.medium,
                 ),
             text = title,
@@ -47,7 +45,7 @@ fun LazyListScope.settingsStatisticsSection(
             LinearPreviewComposable(
                 modifier = if (index == elements.lastIndex) {
                     Modifier.padding(
-                        bottom = UiConstants.Spacing.huge
+                        bottom = UiConstants.Spacing.veryHuge
                     )
                 } else {
                     Modifier
@@ -56,7 +54,7 @@ fun LazyListScope.settingsStatisticsSection(
                     vertical = UiConstants.Spacing.small,
                 ),
                 title = listenedElement.title,
-                text = strings.plays(total = listenedElement.totalListened),
+                text = listenedElement.text(),
                 coverId = listenedElement.coverId,
                 onClick = null,
                 onLongClick = null,

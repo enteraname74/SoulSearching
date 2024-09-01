@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedByMostSongsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
@@ -21,7 +22,8 @@ class SettingsStatisticsViewModel(
     getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
     getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
-): ScreenModel {
+    getAllArtistWithMusicsSortedByMostSongsUseCase: GetAllArtistWithMusicsSortedByMostSongsUseCase,
+) : ScreenModel {
     val state: StateFlow<SettingsStatisticsState> = combine(
         getAllMusicsSortedUseCase(
             sortDirection = SortDirection.DESC,
@@ -39,12 +41,15 @@ class SettingsStatisticsViewModel(
             sortDirection = SortDirection.DESC,
             sortType = SortType.NB_PLAYED,
         ),
-    ) { allMusics, allAlbums, allPlaylists, allArtists ->
+        getAllArtistWithMusicsSortedByMostSongsUseCase(),
+    ) { allMusics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
         SettingsStatisticsState(
             mostListenedMusics = allMusics.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
             mostListenedArtists = allArtists.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
             mostListenedPlaylists = allPlaylists.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
             mostListenedAlbums = allAlbums.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
+            artistsWithMostSongs = allArtistsWithMostSongs.getFirstsOrMax(MAX_TO_SHOW)
+                .map { it.toMostSongsListenedElement() },
         )
     }.stateIn(
         scope = screenModelScope.plus(Dispatchers.IO),

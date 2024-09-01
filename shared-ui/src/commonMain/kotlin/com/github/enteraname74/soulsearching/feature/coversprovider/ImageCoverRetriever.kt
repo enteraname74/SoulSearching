@@ -26,17 +26,18 @@ class ImageCoverRetriever(
         )
 
     private val cachedCovers: ArrayList<ImageCover> = arrayListOf()
-    private var deleteJob: Job? = null
     private var cleanImageLaunched: Boolean = false
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
             allCovers.collect { covers ->
                 if (covers.isNotEmpty() && !cleanImageLaunched) {
-                    deleteJob = CoroutineScope(Dispatchers.IO).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        cleanImageLaunched = true
                         covers.forEach { cover ->
                             deleteImageIfNotUsed(coverId = cover.coverId)
                         }
+                        println("CLEAN FINISHED")
                     }
                 }
             }

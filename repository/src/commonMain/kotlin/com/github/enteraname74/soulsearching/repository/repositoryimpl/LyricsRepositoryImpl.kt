@@ -34,7 +34,6 @@ class LyricsRepositoryImpl: LyricsRepository {
                 null
             }
         } catch (e: Exception) {
-            println("LYRICS PROVIDER: ERROR : $e")
             null
         }
     }

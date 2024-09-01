@@ -21,7 +21,6 @@ class SoulSearchingDesktopPlayerImpl(
     private var positionToReachWhenLoadingMusic: Int = 0
 
     override fun finished(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER FINISHED")
         super.finished(mediaPlayer)
         CoroutineScope(Dispatchers.IO).launch {
             playbackManager.next()
@@ -29,34 +28,28 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun playing(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER PLAYING")
         super.playing(mediaPlayer)
         playbackManager.update()
     }
 
     override fun paused(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER PAUSED")
         playbackManager.update()
     }
 
     override fun stopped(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER STOPPED")
         super.stopped(mediaPlayer)
     }
 
     override fun mediaPlayerReady(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER READY")
         super.mediaPlayerReady(mediaPlayer)
     }
 
     override fun error(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- PLAYER ERROR")
         super.error(mediaPlayer)
         playbackManager.skipAndRemoveCurrentSong()
     }
 
     override fun opening(mediaPlayer: MediaPlayer?) {
-        println("PLAYER CALLBACK -- OPENING")
         super.opening(mediaPlayer)
     }
 
@@ -101,17 +94,14 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     override fun play() {
-        println("PLAYER -- PLAY")
         player.controls().play()
     }
 
     override fun pause() {
-        println("PLAYER -- PAUSE")
         player.controls().pause()
     }
 
     override fun seekToPosition(position: Int) {
-        println("PLAYER -- SEEK TO $position")
         try {
             player.controls().setTime(position.toLong())
         } catch (_: Exception) {

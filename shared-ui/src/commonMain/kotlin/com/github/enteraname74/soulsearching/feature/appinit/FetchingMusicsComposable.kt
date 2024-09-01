@@ -8,9 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.composables.ProgressIndicatorComposable
+import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
+import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -38,18 +42,48 @@ fun FetchingMusicsComposable(
         label = "PROGRESS_BAR_FETCHING_MUSICS_COMPOSABLE"
     )
 
+    SoulSearchingContext.setSystemBarsColor(
+        statusBarColor = Color.Transparent,
+        navigationBarColor = Color.Transparent,
+        isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.primary.isDark()
+    )
+
     val windowSize = rememberWindowSize()
-    when {
-        windowSize != WindowSize.Small-> {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
-            ) {
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1F),
-                    verticalArrangement = Arrangement.SpaceEvenly,
+    SoulScreen(
+        modifier = Modifier
+            .navigationBarsPadding()
+            .statusBarsPadding()
+    ) {
+        when {
+            windowSize != WindowSize.Small -> {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1F),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        SoulSearchingLogo()
+                        ProgressIndicatorComposable(
+                            progress = animatedProgress,
+                            progressMessage = strings.searchingSongsFromYourDevice
+                        )
+                    }
+                    FetchingMusicTabLayoutComposable(
+                        modifier = Modifier.weight(1F)
+                    )
+                }
+            }
+
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = UiConstants.Spacing.large),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SoulSearchingLogo()
@@ -57,26 +91,8 @@ fun FetchingMusicsComposable(
                         progress = animatedProgress,
                         progressMessage = strings.searchingSongsFromYourDevice
                     )
+                    FetchingMusicTabLayoutComposable()
                 }
-                FetchingMusicTabLayoutComposable(
-                    modifier = Modifier.weight(1F)
-                )
-            }
-        }
-        else -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                    .padding(top = UiConstants.Spacing.large),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SoulSearchingLogo()
-                ProgressIndicatorComposable(
-                    progress = animatedProgress,
-                    progressMessage = strings.searchingSongsFromYourDevice
-                )
-                FetchingMusicTabLayoutComposable()
             }
         }
     }

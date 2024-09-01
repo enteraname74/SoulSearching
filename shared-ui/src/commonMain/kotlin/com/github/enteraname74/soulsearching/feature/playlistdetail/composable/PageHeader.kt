@@ -65,9 +65,7 @@ fun PageHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = UiConstants.Spacing.large,
-                    end = UiConstants.Spacing.large,
-                    bottom = UiConstants.Spacing.large
+                    horizontal = UiConstants.Spacing.large,
                 ),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally

@@ -128,6 +128,7 @@ object FrStrings : Strings {
     override val mostPlayedSongs = "Musiques les plus écoutées"
     override val mostPlayedAlbums = "Albums les plus écoutés"
     override val mostPlayedArtists = "Artistes les plus écoutés"
+    override val artistsWithMostSongs = "Artistes avec le plus de musiques"
     override val mostPlayedPlaylists = "Playlists les plus écoutées"
     override val themeSelectionTitle = "Thème principal"
     override val themeSelectionText = "Définir le thème principal de l'application"

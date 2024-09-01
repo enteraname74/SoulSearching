@@ -127,6 +127,7 @@ object EnStrings : Strings {
     override val mostPlayedSongs = "Most played songs"
     override val mostPlayedAlbums = "Most played albums"
     override val mostPlayedArtists = "Most played artists"
+    override val artistsWithMostSongs = "Artists with the most songs"
     override val mostPlayedPlaylists = "Most played playlists"
     override val themeSelectionTitle = "Principal theme"
     override val themeSelectionText = "Choose the principal theme of the app"

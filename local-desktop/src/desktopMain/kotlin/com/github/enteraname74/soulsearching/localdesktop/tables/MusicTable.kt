@@ -43,8 +43,5 @@ internal fun ResultRow.toMusic(): Music? =
             isHidden = this[MusicTable.isHidden]
         )
     } catch (e: Exception) {
-//        println("Got exception!: $e")
-//        this.fieldIndex.forEach { (t, u) -> println("$t, $u") }
-//        println("ID: ${this[MusicTable.id]}")
         null
     }

@@ -54,6 +54,10 @@ class SettingsStatisticsScreen: Screen {
                 elements = state.mostListenedArtists,
             )
             settingsStatisticsSection(
+                title = strings.artistsWithMostSongs,
+                elements = state.artistsWithMostSongs,
+            )
+            settingsStatisticsSection(
                 title = strings.mostPlayedAlbums,
                 elements = state.mostListenedAlbums,
             )

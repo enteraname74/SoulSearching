@@ -51,7 +51,6 @@ fun SoulSearchingApplication(
     val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
-    val musicState by mainPageViewModel.allMusicsState.collectAsState()
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
     val allImages by imageCoverRetriever.allCovers.collectAsState()
@@ -71,28 +70,24 @@ fun SoulSearchingApplication(
         }
     }
 
-    if (!mainActivityViewModel.hasMusicsBeenFetched) {
-        FetchingMusicsComposable(
-            finishAddingMusicsAction = {
-                settings.set(
-                    SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
-                    true
-                )
-                mainActivityViewModel.hasMusicsBeenFetched = true
-            },
-            mainPageViewModel = mainPageViewModel
-        )
-        return
-    }
-
-    if (musicState.musics.isNotEmpty() && !mainActivityViewModel.cleanMusicsLaunched) {
-        mainPageViewModel.checkAndDeleteMusicIfNotExist()
-        mainActivityViewModel.cleanMusicsLaunched = true
-    }
-
     var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
     SoulSearchingAppTheme {
+
+        if (!mainActivityViewModel.hasMusicsBeenFetched) {
+            FetchingMusicsComposable(
+                finishAddingMusicsAction = {
+                    settings.set(
+                        SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
+                        true
+                    )
+                    mainActivityViewModel.hasMusicsBeenFetched = true
+                },
+                mainPageViewModel = mainPageViewModel
+            )
+            return@SoulSearchingAppTheme
+        }
+
         FeedbackPopUpScaffold(
             feedbackPopUpManager = feedbackPopUpManager,
         ) {

@@ -15,11 +15,12 @@ fun SoulScreen(
     content: @Composable () -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(
                 color = containerColor,
             )
+            .then(modifier)
     ) {
         content()
     }

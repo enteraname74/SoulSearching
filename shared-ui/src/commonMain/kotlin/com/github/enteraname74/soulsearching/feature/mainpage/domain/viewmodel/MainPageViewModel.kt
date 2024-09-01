@@ -223,6 +223,8 @@ class MainPageViewModel(
         _navigationState.value = MainPageNavigationState.Idle
     }
 
+    private var cleanMusicsLaunched: Boolean = false
+
     init {
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
@@ -249,6 +251,18 @@ class MainPageViewModel(
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) }
         )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            allMusicsState.collect { musicState ->
+                if (musicState.musics.isNotEmpty() && !cleanMusicsLaunched) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        cleanMusicsLaunched = true
+                        checkAndDeleteMusicIfNotExist()
+                        println("CLEAN MUSICS FINISHED")
+                    }
+                }
+            }
+        }
     }
 
     fun setCurrentPage(page: ElementEnum) {
@@ -311,7 +325,7 @@ class MainPageViewModel(
         )
     }
 
-    fun showSoulMixDialog() {
+    private fun showSoulMixDialog() {
         _dialogState.value = SoulMixDialog(
             onDismiss = { _dialogState.value = null },
         )

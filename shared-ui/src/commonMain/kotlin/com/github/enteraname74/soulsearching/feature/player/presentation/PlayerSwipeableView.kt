@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -20,7 +19,6 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
-import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors

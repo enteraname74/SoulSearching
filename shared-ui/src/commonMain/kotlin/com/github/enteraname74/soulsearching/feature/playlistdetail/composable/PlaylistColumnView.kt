@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -15,13 +14,12 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.topbar.checkTopBarElevation
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -38,18 +36,15 @@ fun PlaylistColumnView(
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val lazyListState = rememberLazyListState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         SoulTopBar(
-            leftAction = TopBarNavigationAction(onClick = navigateBack),
-            isElevated = checkTopBarElevation(lazyListState = lazyListState)
+            leftAction = TopBarNavigationAction(onClick = navigateBack)
         )
         LazyColumn(
-            state = lazyListState,
             modifier = Modifier
                 .fillMaxSize()
         ) {
