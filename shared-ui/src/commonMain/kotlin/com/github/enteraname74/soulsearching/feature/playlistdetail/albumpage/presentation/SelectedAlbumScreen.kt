@@ -10,6 +10,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumState
@@ -80,7 +81,9 @@ data class SelectedAlbumScreen(
         SelectedAlbumScreenView(
             selectedAlbumViewModel = screenModel,
             navigateBack = {
-                colorThemeManager.removePlaylistTheme()
+                if (!navigator.isPreviousScreenAPlaylistDetails()) {
+                    colorThemeManager.removePlaylistTheme()
+                }
                 navigator.pop()
             },
         )

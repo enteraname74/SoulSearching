@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
@@ -29,11 +30,10 @@ fun PlayerPanelContent(
     playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
-    primaryColor: Color,
-    buttonTextColor: Color,
     textColor: Color,
     subTextColor: Color,
     isExpanded: Boolean,
+    buttonColors: SoulButtonColors,
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -47,9 +47,8 @@ fun PlayerPanelContent(
                     playedList = playerState.playedList,
                     onSelectedMusic = onSelectedMusic,
                     secondaryColor = textColor,
-                    primaryColor = primaryColor,
                     isExpanded = isExpanded,
-                    buttonTextColor = buttonTextColor,
+                    buttonColors = buttonColors,
                 )
             }
         ),

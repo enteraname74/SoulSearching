@@ -27,6 +27,7 @@ fun MainMenuHeaderComposable(
 ) {
     Row(
         modifier = Modifier
+            .statusBarsPadding()
             .fillMaxWidth()
             .padding(
                 start = UiConstants.Spacing.medium,

@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.soulsearching.coreui.ext.toPx
 
 /**
  * Constants used throughout the application.
@@ -15,10 +16,6 @@ import androidx.compose.ui.unit.sp
 object UiConstants {
 
     object Player {
-        val TopPanelSize: Float
-            @Composable
-            get() = with(LocalDensity.current) { 64.dp.toPx() }
-
         val playerPlayerButtonSize: Dp = 78.dp
     }
 

@@ -28,7 +28,6 @@ class ColorThemeManager(
     private val palette: MutableStateFlow<Palette.Swatch?> = MutableStateFlow(null)
     private val playlistDetailCover: MutableStateFlow<PlaylistDetailCover?> = MutableStateFlow(null)
 
-
     val currentDefaultThemeSettings: StateFlow<DefaultThemeSettings> = combine(
         settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY),
         settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.FORCE_DARK_THEME_KEY),

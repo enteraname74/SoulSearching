@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.topbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,15 +22,14 @@ fun SoulTopBar(
     title: String? = null,
     leftAction: TopBarActionSpec,
     rightAction: TopBarActionSpec? = null,
+    isElevated: Boolean = false,
     colors: TopBarColors = SoulTopBarDefaults.colors(),
 ) {
     Row(
         modifier = modifier
-            .then(
-                Modifier
-                    .fillMaxWidth()
-                    .background(colors.containerColor)
-            ),
+            .fillMaxWidth()
+            .background(colors.containerColorWithElevation(isElevated))
+            .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -37,7 +37,7 @@ fun SoulTopBar(
             icon = leftAction.icon,
             contentDescription = leftAction.contentDescription,
             colors = SoulButtonDefaults.colors(
-                contentColor = colors.contentColor,
+                contentColor = colors.contentColorWithElevation(isElevated),
                 containerColor = Color.Transparent,
             ),
             onClick = leftAction.onClick,
@@ -49,7 +49,7 @@ fun SoulTopBar(
                 text = it,
                 maxLines = 2,
                 style = UiConstants.Typography.bodyMediumTitle,
-                color = colors.contentColor,
+                color = colors.contentColorWithElevation(isElevated),
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
             )
@@ -60,7 +60,7 @@ fun SoulTopBar(
                 icon = rightAction.icon,
                 contentDescription = rightAction.contentDescription,
                 colors = SoulButtonDefaults.colors(
-                    contentColor = colors.contentColor,
+                    contentColor = colors.contentColorWithElevation(isElevated),
                     containerColor = Color.Transparent,
                 ),
                 onClick = rightAction.onClick,
@@ -76,15 +76,30 @@ object SoulTopBarDefaults {
     @Composable
     fun colors(
         containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
-        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     ): TopBarColors =
         TopBarColors(
             contentColor = contentColor,
             containerColor = containerColor,
+            elevatedContainerColor = elevatedContainerColor,
+            elevatedContentColor = elevatedContentColor,
         )
 }
+
+fun checkTopBarElevation(lazyListState: LazyListState): Boolean =
+    lazyListState.firstVisibleItemScrollOffset > 0
 
 data class TopBarColors(
     val containerColor: Color,
     val contentColor: Color,
-)
+    val elevatedContainerColor: Color,
+    val elevatedContentColor: Color,
+) {
+    fun contentColorWithElevation(isElevated: Boolean): Color =
+        if (isElevated) elevatedContentColor else contentColor
+
+    fun containerColorWithElevation(isElevated: Boolean): Color =
+        if (isElevated) elevatedContainerColor else containerColor
+}

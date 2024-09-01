@@ -84,6 +84,7 @@ fun SearchView(
                     0f to BottomSheetStates.EXPANDED
                 )
             )
+            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier

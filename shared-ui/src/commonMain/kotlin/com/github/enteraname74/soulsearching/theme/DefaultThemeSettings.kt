@@ -18,10 +18,10 @@ data class DefaultThemeSettings(
 fun isInDarkTheme(
     colorThemeManager: ColorThemeManager = injectElement()
 ): Boolean {
-    val state by colorThemeManager.currentDefaultThemeSettings.collectAsState()
+    val currentDefaultSettings by colorThemeManager.currentDefaultThemeSettings.collectAsState()
 
-    if (state.forceLightTheme) return false
-    if (state.forceDarkTheme) return true
+    if (currentDefaultSettings.forceLightTheme) return false
+    if (currentDefaultSettings.forceDarkTheme) return true
 
     return isSystemInDarkTheme()
 }

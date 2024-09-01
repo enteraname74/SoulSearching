@@ -3,8 +3,9 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
@@ -47,7 +48,8 @@ object PlayerUiUtils {
         return if (maxHeightDp <= minHeightForRowView) {
             0f
         } else {
-            UiConstants.Player.TopPanelSize
+            val baseHeight = 64.dp.toPx()
+            baseHeight + getNavigationBarPadding()
         }
     }
 }

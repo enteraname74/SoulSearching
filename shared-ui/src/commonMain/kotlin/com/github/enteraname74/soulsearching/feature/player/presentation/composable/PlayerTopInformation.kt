@@ -24,6 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -55,10 +56,14 @@ fun PlayerTopInformation(
 
     Row(
         modifier = modifier
+            .statusBarsPadding()
             .fillMaxWidth()
             .alpha(alphaTransition),
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+        val statusBarPadding: Int = getStatusBarPadding()
+
         Image(
             imageVector = Icons.Rounded.KeyboardArrowDown,
             contentDescription = "",
@@ -83,7 +88,7 @@ fun PlayerTopInformation(
                 .weight(1f)
                 .onGloballyPositioned { layoutCoordinates ->
                     onTopInformationHeightChange(
-                        layoutCoordinates.size.height,
+                        layoutCoordinates.size.height + statusBarPadding,
                     )
                 },
             horizontalAlignment = Alignment.CenterHorizontally,

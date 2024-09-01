@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
     override
     fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // For JAudiotagger to work on android.

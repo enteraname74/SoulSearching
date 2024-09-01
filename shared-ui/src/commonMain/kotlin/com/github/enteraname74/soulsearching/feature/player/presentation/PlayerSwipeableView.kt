@@ -1,11 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation
 
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.swipeable
@@ -15,11 +12,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.*
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
@@ -44,7 +43,6 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import com.github.enteraname74.soulsearching.theme.isInDarkTheme
 import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -74,7 +72,6 @@ fun PlayerDraggableView(
     val addToPlaylistBottomSheet by playerViewModel.addToPlaylistBottomSheet.collectAsState()
 
     val playerColorTheme by colorThemeManager.playerColorTheme.collectAsState()
-    val colorThemeSettings by colorThemeManager.currentColorThemeSettings.collectAsState()
 
     bottomSheetState?.BottomSheet()
     dialogState?.Dialog()
@@ -147,38 +144,10 @@ fun PlayerDraggableView(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme.orDefault())
     ) {
 
-        val statusBarColor: Color by animateColorAsState(
-            targetValue = SoulSearchingColorTheme.colorScheme.primary,
-            tween(UiConstants.AnimationDuration.normal),
-            label = "STATUS_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-        )
-
-        val navigationBarColor: Color by animateColorAsState(
-            targetValue = when (playerViewManager.currentValue) {
-                BottomSheetStates.COLLAPSED -> SoulSearchingColorTheme.colorScheme.primary
-                BottomSheetStates.MINIMISED -> SoulSearchingColorTheme.colorScheme.secondary
-                BottomSheetStates.EXPANDED -> {
-                    if (!PlayerUiUtils.canShowSidePanel()) {
-                        SoulSearchingColorTheme.colorScheme.secondary
-                    } else {
-                        SoulSearchingColorTheme.colorScheme.primary
-                    }
-                }
-            }, tween(UiConstants.AnimationDuration.normal),
-            label = "NAVIGATION_BAR_COLOR_COLOR_PLAYER_DRAGGABLE_VIEW"
-        )
-        val isUsingDarkIcons = if (state.allCovers.getFromCoverId(state.currentMusic?.coverId) == null
-            || !colorThemeSettings.canShowDynamicPlayerTheme()
-        ) {
-            !isInDarkTheme()
-        } else {
-            false
-        }
-
         SoulSearchingContext.setSystemBarsColor(
-            statusBarColor = statusBarColor,
-            navigationBarColor = navigationBarColor,
-            isUsingDarkIcons = isUsingDarkIcons
+            statusBarColor = Color.Transparent,
+            navigationBarColor = Color.Transparent,
+            isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.primary.isDark()
         )
 
         Box(
@@ -193,7 +162,7 @@ fun PlayerDraggableView(
                     state = playerViewManager.playerDraggableState,
                     orientation = Orientation.Vertical,
                     anchors = mapOf(
-                        (maxHeight - PlayerHeight) to BottomSheetStates.MINIMISED,
+                        (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
                         maxHeight to BottomSheetStates.COLLAPSED,
                         0f to BottomSheetStates.EXPANDED
                     )
@@ -335,6 +304,17 @@ fun PlayerDraggableView(
 
                         if (PlayerUiUtils.canShowSidePanel()) {
                             PlayerPanelContent(
+                                playerState = state,
+                                onSelectedMusic = playerViewModel::showMusicBottomSheet,
+                                onRetrieveLyrics = {
+                                    playerViewModel.onEvent(
+                                        PlayerEvent.GetLyrics,
+                                    )
+                                },
+                                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                                isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                                buttonColors = SoulButtonDefaults.secondaryColors(),
                                 modifier = Modifier
                                     .padding(
                                         top = imageTopPadding,
@@ -346,29 +326,10 @@ fun PlayerDraggableView(
                                         min = MinPlayerSidePanelWidth,
                                         max = MaxPlayerSidePanelWidth,
                                     ),
-                                playerState = state,
-                                onSelectedMusic = playerViewModel::showMusicBottomSheet,
-                                onRetrieveLyrics = {
-                                    playerViewModel.onEvent(
-                                        PlayerEvent.GetLyrics,
-                                    )
-                                },
-                                primaryColor = SoulSearchingColorTheme.colorScheme.primary,
-                                textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                                subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                                buttonTextColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                                isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                             )
                         }
                     }
                 }
-
-                PlayerMinimisedMainInfo(
-                    imageSize = imageSize,
-                    currentMusic = state.currentMusic,
-                    isPlaying = state.isPlaying,
-                    alphaTransition = 1f - alphaTransition,
-                )
 
 
                 if (!PlayerUiUtils.canShowSidePanel()) {
@@ -382,10 +343,9 @@ fun PlayerDraggableView(
                             )
                         },
                         secondaryColor = SoulSearchingColorTheme.colorScheme.secondary,
-                        primaryColor = SoulSearchingColorTheme.colorScheme.primary,
                         textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                         subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                        buttonTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        buttonColors = SoulButtonDefaults.primaryColors(),
                     )
                 } else if (!PlayerUiUtils.canShowRowControlPanel()) {
                     BoxWithConstraints(
@@ -398,11 +358,6 @@ fun PlayerDraggableView(
                         contentAlignment = Alignment.TopEnd,
                     ) {
                         PlayerPanelContent(
-                            modifier = Modifier
-                                .alpha(alphaTransition)
-                                .width(
-                                    this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
-                                ),
                             playerState = state,
                             onSelectedMusic = playerViewModel::showMusicBottomSheet,
                             onRetrieveLyrics = {
@@ -410,14 +365,25 @@ fun PlayerDraggableView(
                                     PlayerEvent.GetLyrics,
                                 )
                             },
-                            primaryColor = SoulSearchingColorTheme.colorScheme.secondary,
                             textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                             subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                             isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
-                            buttonTextColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                            buttonColors = SoulButtonDefaults.secondaryColors(),
+                            modifier = Modifier
+                                .alpha(alphaTransition)
+                                .width(
+                                    this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
+                                ),
                         )
                     }
                 }
+
+                PlayerMinimisedMainInfo(
+                    imageSize = imageSize,
+                    currentMusic = state.currentMusic,
+                    isPlaying = state.isPlaying,
+                    alphaTransition = 1f - alphaTransition,
+                )
             }
         }
     }
@@ -431,7 +397,7 @@ private fun getTransitionRatio(
     val maxHeight: Float = rememberWindowHeight()
     val currentOffset = playerViewManager.offset
 
-    val maxOffset: Float = maxHeight - PlayerHeight
+    val maxOffset: Float = maxHeight - PlayerMinimisedHeight
     return currentOffset / maxOffset
 }
 
@@ -558,10 +524,6 @@ private fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): 
         maximumValue = MaxPlayerSidePanelWidth,
     )
 }
-
-private val PlayerHeight: Float
-    @Composable
-    get() = 70.dp.toPx()
 
 private val MinImageSize: Dp = UiConstants.CoverSize.small
 private val MinImagePaddingStart: Dp = 4.dp

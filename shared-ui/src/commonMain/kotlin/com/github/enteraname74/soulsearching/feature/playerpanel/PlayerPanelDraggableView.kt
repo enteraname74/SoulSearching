@@ -12,7 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
+import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
@@ -32,11 +34,10 @@ fun PlayerPanelDraggableView(
     playerState: PlayerState,
     onSelectedMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
-    primaryColor: Color,
     secondaryColor: Color,
     textColor: Color,
-    buttonTextColor: Color,
-    subTextColor: Color
+    subTextColor: Color,
+    buttonColors: SoulButtonColors,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -53,6 +54,7 @@ fun PlayerPanelDraggableView(
     }
 
     val collapsedSize: Float = PlayerUiUtils.getDraggablePanelCollapsedOffset()
+    val statusParPadding: Int = getStatusBarPadding()
 
     Box(
         modifier = Modifier
@@ -67,7 +69,7 @@ fun PlayerPanelDraggableView(
                 state = playerMusicListViewManager.musicListDraggableState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
-                    0f to BottomSheetStates.EXPANDED,
+                    statusParPadding.toFloat() to BottomSheetStates.EXPANDED,
                     (maxHeight - collapsedSize) to BottomSheetStates.COLLAPSED,
                 )
             )
@@ -85,14 +87,13 @@ fun PlayerPanelDraggableView(
         ) {
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
-                subTextColor = subTextColor,
                 playerState = playerState,
                 onSelectedMusic = onSelectedMusic,
                 onRetrieveLyrics = onRetrieveLyrics,
-                primaryColor = primaryColor,
                 textColor = textColor,
+                subTextColor = subTextColor,
                 isExpanded = isExpanded,
-                buttonTextColor = buttonTextColor,
+                buttonColors = buttonColors,
             )
         }
     }

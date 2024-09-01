@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistScreen
@@ -72,7 +73,9 @@ data class SelectedPlaylistScreen(
         SelectedPlaylistScreenView(
             selectedPlaylistViewModel = screenModel,
             navigateBack = {
-                colorThemeManager.removePlaylistTheme()
+                if (!navigator.isPreviousScreenAPlaylistDetails()) {
+                    colorThemeManager.removePlaylistTheme()
+                }
                 navigator.pop()
             },
         )

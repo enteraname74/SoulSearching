@@ -25,11 +25,12 @@ fun LazyListScope.settingsStatisticsSection(
     ) {
         Text(
             modifier = Modifier
-                .padding(
-                    bottom = UiConstants.Spacing.medium,
-                )
                 .background(
                     color = SoulSearchingColorTheme.colorScheme.primary,
+                )
+                .padding(
+                    top = UiConstants.Spacing.large,
+                    bottom = UiConstants.Spacing.medium,
                 ),
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -46,7 +47,7 @@ fun LazyListScope.settingsStatisticsSection(
             LinearPreviewComposable(
                 modifier = if (index == elements.lastIndex) {
                     Modifier.padding(
-                        bottom = UiConstants.Spacing.veryHuge
+                        bottom = UiConstants.Spacing.huge
                     )
                 } else {
                     Modifier

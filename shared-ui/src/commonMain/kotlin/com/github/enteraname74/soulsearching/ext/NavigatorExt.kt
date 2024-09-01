@@ -15,3 +15,8 @@ fun Navigator.safePush(screen: Screen) {
 
 fun Navigator.isComingFromPlaylistDetails(): Boolean =
     this.lastItem is PlaylistDetailScreen
+
+fun Navigator.isPreviousScreenAPlaylistDetails(): Boolean {
+    val screens = this.items
+    return screens.getOrNull(screens.lastIndex - 1) is PlaylistDetailScreen
+}
