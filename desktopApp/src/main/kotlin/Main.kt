@@ -27,7 +27,7 @@ fun main() = application {
             icon = painterResource(Res.drawable.app_icon),
             onPreviewKeyEvent = {
                 playbackManager.handleKeyEvent(event = it)
-                true
+                false
             }
         ) {
             MaterialTheme {
