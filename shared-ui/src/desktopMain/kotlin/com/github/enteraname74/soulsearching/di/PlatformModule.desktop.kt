@@ -24,7 +24,7 @@ actual val platformModule: Module = module {
     single<SoulSearchingSettings> {
         SoulSearchingSettingsImpl(
             settings = PreferencesSettings(
-                delegate = Preferences.userRoot()
+                delegate = Preferences.userRoot().node("com/github/enteraname74/soulsearching")
             )
         )
     }
