@@ -64,9 +64,65 @@ compose.desktop {
                 appCategory = "AudioVideo;Player;"
                 appRelease = "1"
                 rpmLicenseType = "GPL-3.0-or-later"
-                iconFile.set(project.file("src/main/composeResources/drawable/app_icon.png"))
+                iconFile.set(project.file("src/main/composeResources/drawable/app_icon_bg.png"))
             }
 
+        }
+    }
+}
+tasks {
+    register<Tar>("packageTarReleaseDistributable") {
+        group = "compose desktop"
+        from(named("createReleaseDistributable"))
+        archiveBaseName = "soulsearching"
+        archiveClassifier = "linux"
+        compression = Compression.GZIP
+        archiveExtension = "tar.gz"
+
+        val version = libs.versions.desktop.version.name.get()
+
+        archiveFileName = "soulsearching-$version-linux.tar.gz"
+    }
+
+    task("packageFlatpakReleaseDistributable") {
+        group = "compose desktop"
+        description = "Builds a flatpak and stores it in the build/flatpak folder."
+        dependsOn("packageTarReleaseDistributable")
+
+        val appId = "io.github.enteraname74.soulsearching"
+
+        doLast {
+            println("packageFlatpakReleaseDistributable -- INFO -- Building manifest")
+            exec {
+                commandLine(
+                    "flatpak-builder",
+                    "--user",
+                    "--force-clean",
+                    "build-dir",
+                    "$appId.yml"
+                )
+            }
+            println("packageFlatpakReleaseDistributable -- INFO -- Creating flatpak executable")
+            exec {
+                commandLine(
+                    "flatpak",
+                    "build-export",
+                    "repo",
+                    "build-dir"
+                )
+            }
+            val outputDir = file("$buildDir/flatpak")
+            outputDir.mkdirs()
+            println("packageFlatpakReleaseDistributable -- Will install flatpak in: $outputDir")
+            exec {
+                commandLine(
+                    "flatpak",
+                    "build-bundle",
+                    "repo",
+                    "${outputDir.absolutePath}/$appId.flatpak",
+                    appId
+                )
+            }
         }
     }
 }

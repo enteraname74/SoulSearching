@@ -2,3 +2,9 @@
 .gradle
 
 soulSearchingDatabase.db
+
+# Flatpak
+build-dir
+repo
+.flatpak-builder
+*.flatpak
