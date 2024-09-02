@@ -52,7 +52,7 @@ class MusicFetcherDesktopImpl(
     upsertFolderUseCase: UpsertFolderUseCase,
     upsertMusicIntoAlbumUseCase: UpsertMusicIntoAlbumUseCase,
     upsertMusicIntoArtistUseCase: UpsertMusicIntoArtistUseCase,
-): MusicFetcher(
+) : MusicFetcher(
     isMusicAlreadySavedUseCase = isMusicAlreadySavedUseCase,
     getArtistFromNameUseCase = getArtistFromNameUseCase,
     getCorrespondingAlbumUseCase = getCorrespondingAlbumUseCase,
@@ -84,12 +84,25 @@ class MusicFetcherDesktopImpl(
         val mimeType: String = URLConnection.guessContentTypeFromName(file.name) ?: return false
         val authorizedMimeTypes =
             listOf(
-                "audio/mpeg",
-                "audio/mp3",
-                "audio/wav",
-                "audio/flac",
-                "audio/ogg",
-                "audio/m4a",
+                "audio/mpeg",        // MP3 files
+                "audio/mp4",         // MP4 files with audio (M4A)
+                "audio/wav",         // WAV files
+                "audio/ogg",         // Ogg Vorbis files
+                "audio/flac",        // FLAC files
+                "audio/aac",         // AAC files
+                "audio/opus",        // Opus files
+                "audio/x-ms-wma",    // Windows Media Audio files
+                "audio/aiff",        // AIFF files
+                "audio/webm",        // WebM files with audio
+                "audio/amr",         // AMR files
+                "audio/vnd.rn-realaudio", // RealAudio files
+                "audio/midi",        // MIDI files
+                "audio/3gpp",        // 3GP files with audio
+                "audio/x-m4a",       // M4A files
+                "audio/x-xmf",       // XMF files
+                "audio/x-ms-asf",    // ASF files with audio
+                "audio/x-wav",       // RAW audio format (often used for WAV)
+                "audio/eac3"         // Enhanced AC-3 files
             )
         return authorizedMimeTypes.contains(mimeType)
     }
@@ -114,8 +127,7 @@ class MusicFetcherDesktopImpl(
             updateProgress(count / files.size, file.parent)
             if (file.isHidden || !file.canRead()) {
                 continue
-            }
-            else if (isMusicFile(file = file)) {
+            } else if (isMusicFile(file = file)) {
                 try {
                     val audioFile: AudioFile = AudioFileIO.read(file)
                     val tag: Tag = audioFile.tag
