@@ -28,6 +28,7 @@ import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
 import org.jetbrains.skia.Image
 import java.io.File
+import java.net.URLConnection
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -79,6 +80,20 @@ class MusicFetcherDesktopImpl(
         }
     }
 
+    private fun isMusicFile(file: File): Boolean {
+        val mimeType: String = URLConnection.guessContentTypeFromName(file.name) ?: return false
+        val authorizedMimeTypes =
+            listOf(
+                "audio/mpeg",
+                "audio/mp3",
+                "audio/wav",
+                "audio/flac",
+                "audio/ogg",
+                "audio/m4a",
+            )
+        return authorizedMimeTypes.contains(mimeType)
+    }
+
     /**
      * Extract mp3 files from current directory.
      */
@@ -100,7 +115,7 @@ class MusicFetcherDesktopImpl(
             if (file.isHidden || !file.canRead()) {
                 continue
             }
-            else if (file.name.endsWith(".mp3") || file.name.endsWith(".m4a")) {
+            else if (isMusicFile(file = file)) {
                 try {
                     val audioFile: AudioFile = AudioFileIO.read(file)
                     val tag: Tag = audioFile.tag
