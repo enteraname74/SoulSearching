@@ -14,7 +14,9 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -68,6 +70,10 @@ private fun LargeView(
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
 ) {
+
+    val windowHeight = rememberWindowHeightDp()
+    val windowWidth = rememberWindowWidthDp()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +84,10 @@ private fun LargeView(
             contentAlignment = Alignment.Center,
         ) {
             Content(
-                modifier = Modifier.fillMaxSize(0.8f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = windowWidth * 0.1f)
+                    .padding(top = windowHeight * 0.1f),
                 shuffleAction = shuffleAction,
                 searchAction = searchAction,
                 onShowMusicBottomSheet = onShowMusicBottomSheet,
@@ -162,9 +171,7 @@ private fun Content(
                     searchAction = searchAction,
                 )
             }
-            LazyColumn(
-                modifier = modifier
-            ) {
+            LazyColumn {
                 item {
                     optionalContent()
                 }
