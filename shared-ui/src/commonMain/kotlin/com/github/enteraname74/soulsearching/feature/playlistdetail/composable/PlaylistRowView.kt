@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -140,6 +142,7 @@ private fun Content(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
 
     Row(
         modifier = modifier,
@@ -153,7 +156,7 @@ private fun Content(
                 playlistDetail = playlistDetail,
                 onSubTitleClicked = playlistDetailListener::onSubtitleClicked
             )
-            if (PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
+            if (canShowVerticalInformation) {
                 PlaylistPanel(
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
@@ -164,7 +167,7 @@ private fun Content(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            if (!PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
+            if (!canShowVerticalInformation) {
                 PlaylistPanel(
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
@@ -172,9 +175,23 @@ private fun Content(
                 )
             }
             LazyColumn {
-                item {
-                    optionalContent()
+                if (canShowVerticalInformation) {
+                    stickyHeader {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = SoulSearchingColorTheme.colorScheme.primary
+                                )
+                        ) {
+                            optionalContent()
+                        }
+                    }
+                } else {
+                    item {
+                        optionalContent()
+                    }
                 }
+
                 items(
                     items = playlistDetail.musics,
                     key = { it.musicId },
