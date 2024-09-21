@@ -131,8 +131,9 @@ fun PlayerDraggableView(
     }
 
     if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED
-        && !playerViewManager.isAnimationRunning
+        && !playerViewManager.isAnimationRunning && playbackManager.currentMusic != null
     ) {
+        println("4")
         playbackManager.stopPlayback()
     }
 
@@ -523,7 +524,10 @@ private fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): 
     )
 }
 
-private val MinImageSize: Dp = UiConstants.CoverSize.small
+private val MinImageSize: Dp
+@Composable
+get() = UiConstants.CoverSize.small
+
 private val MinImagePaddingStart: Dp = 4.dp
 private val MinImagePaddingTop: Dp = 4.dp
 
