@@ -115,11 +115,12 @@ fun SoulSearchingApplication(
                     if (!hasLastPlayedMusicsBeenFetched) {
                         LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
                             val playerSavedMusics = playbackManager.getSavedPlayedList()
+                            println("App - got saved musics: $playerSavedMusics")
                             if (playerSavedMusics.isNotEmpty()) {
-                                playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                                 playerViewManager.animateTo(
                                     newState = BottomSheetStates.MINIMISED,
                                 )
+                                playbackManager.initializePlayerFromSavedList(playerSavedMusics)
                             }
                             hasLastPlayedMusicsBeenFetched = true
                         }
@@ -188,6 +189,9 @@ private fun navigationRows(
                     onClick = {
                         setCurrentPage(tab.type)
                         playerAction()
+                        if (generalNavigator?.isComingFromPlaylistDetails() == true) {
+                            colorThemeManager.removePlaylistTheme()
+                        }
                         generalNavigator?.safePush(
                             MainPageScreen()
                         )
