@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.composables
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import java.util.*
@@ -23,34 +23,30 @@ import java.util.*
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BigPreviewComposable(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     coverId: UUID?,
-    title : String,
-    text : String = "",
-    onClick : () -> Unit,
-    onLongClick : () -> Unit = {},
-    imageSize : Dp = UiConstants.ImageSize.veryLarge,
-    titleStyle : TextStyle = MaterialTheme.typography.labelLarge,
-    textStyle : TextStyle = MaterialTheme.typography.labelSmall,
-    roundedPercent : Int = 4,
+    title: String,
+    text: String = "",
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {},
+    imageSize: Dp = UiConstants.ImageSize.veryLarge,
+    titleStyle: TextStyle = MaterialTheme.typography.labelLarge,
+    textStyle: TextStyle = MaterialTheme.typography.labelSmall,
+    roundedPercent: Int = 4,
     isFavoritePlaylist: Boolean = false,
 ) {
 
+    Modifier
+        .width(imageSize)
+        .composed {
+            modifier
+        }
     Column(
         modifier = Modifier
-            .width(imageSize)
-            .composed {
-                modifier
-            }
-            .combinedClickable(
-                onClick = {
-                    onClick()
-                },
-                onLongClick = {
-                    onLongClick()
-                }
+            .combinedClickableWithRightClick(
+                onClick = onClick,
+                onLongClick = onLongClick
             )
-
     ) {
         SoulImage(
             coverId = coverId,

@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -14,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -36,7 +36,7 @@ fun PlayerMusicCover(
     onLongClick: () -> Unit,
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-        Modifier.combinedClickable(
+        Modifier.combinedClickableWithRightClick(
             onLongClick = onLongClick,
             onClick = { }
         )
