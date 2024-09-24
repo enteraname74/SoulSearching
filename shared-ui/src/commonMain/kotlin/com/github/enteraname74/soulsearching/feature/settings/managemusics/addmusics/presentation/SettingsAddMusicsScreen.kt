@@ -190,6 +190,7 @@ fun SettingsAddMusicsScreenView(
                         ) {
                             MusicSelectableComposable(
                                 music = it.music,
+                                cover = it.cover,
                                 onClick = {
                                     addMusicsViewModel.onAddMusicEvent(
                                         AddMusicsEvent.SetSelectedMusic(
