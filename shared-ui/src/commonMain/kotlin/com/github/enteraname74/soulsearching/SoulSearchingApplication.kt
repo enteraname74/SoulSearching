@@ -115,7 +115,6 @@ fun SoulSearchingApplication(
                     if (!hasLastPlayedMusicsBeenFetched) {
                         LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
                             val playerSavedMusics = playbackManager.getSavedPlayedList()
-                            println("App - got saved musics: $playerSavedMusics")
                             if (playerSavedMusics.isNotEmpty()) {
                                 playerViewManager.animateTo(
                                     newState = BottomSheetStates.MINIMISED,
