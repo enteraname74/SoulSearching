@@ -787,8 +787,11 @@ abstract class PlaybackManager(
             currentMusicPosition = currentMusicPosition
         )
 
-        setNewCurrentMusicInformation(playedList[0])
-        setAndPlayMusic(playedList[0])
+        playedList.getOrNull(0)?.let {
+            setNewCurrentMusicInformation(it)
+            setAndPlayMusic(it)
+        }
+
     }
 
     /**
