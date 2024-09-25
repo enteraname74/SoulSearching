@@ -20,10 +20,15 @@ class DeleteMusicUseCase(
 ) {
     suspend operator fun invoke(musicId: UUID) {
         val musicToRemove: Music = musicRepository.getFromId(musicId = musicId).first() ?: return
-        musicRepository.delete(music = musicToRemove)
+        deleteMusic(music = musicToRemove)
+    }
 
-        val artist: Artist? = getCorrespondingArtistUseCase(musicId = musicToRemove.musicId)
-        val album: Album? = getCorrespondingAlbumUseCase(musicId = musicToRemove.musicId)
+    private suspend fun deleteMusic(music: Music) {
+        val artist: Artist? = getCorrespondingArtistUseCase(musicId = music.musicId)
+        val album: Album? = getCorrespondingAlbumUseCase(musicId = music.musicId)
+
+        musicRepository.delete(music = music)
+
         album?.let { musicAlbum ->
             deleteAlbumIfEmptyUseCase(albumId = musicAlbum.albumId)
         }
@@ -33,6 +38,6 @@ class DeleteMusicUseCase(
     }
 
     suspend operator fun invoke(music: Music) {
-        musicRepository.delete(music = music)
+        deleteMusic(music = music)
     }
 }
