@@ -3,7 +3,10 @@ package com.github.enteraname74.soulsearching.coreui.button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -18,6 +21,8 @@ fun SoulIconButton(
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
     IconButton(
+        modifier = Modifier
+            .pointerHoverIcon(PointerIcon.Hand),
         onClick = onClick,
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(

@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.composables
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -30,7 +30,7 @@ fun PlaylistSelectableComposable(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
+            .clickableWithHandCursor {
                 onClick()
             }
             .padding(UiConstants.Spacing.medium),

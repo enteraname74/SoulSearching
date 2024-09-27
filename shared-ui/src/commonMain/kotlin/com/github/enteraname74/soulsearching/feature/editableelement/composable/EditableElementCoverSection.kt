@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -44,7 +44,7 @@ fun EditableElementCoverSection(
         SoulBitmapImage(
             bitmap = editableElement.newCover ?: legacyCover,
             size = UiConstants.CoverSize.huge,
-            modifier = Modifier.clickable { onSelectImage() }
+            modifier = Modifier.clickableWithHandCursor { onSelectImage() }
         )
     }
 }

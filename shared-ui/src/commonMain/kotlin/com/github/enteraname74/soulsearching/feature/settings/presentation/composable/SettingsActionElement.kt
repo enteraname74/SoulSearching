@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -12,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -27,7 +27,7 @@ fun SettingsActionElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
+            .clickableWithHandCursor {
                 clickAction()
             }
             .padding(padding),

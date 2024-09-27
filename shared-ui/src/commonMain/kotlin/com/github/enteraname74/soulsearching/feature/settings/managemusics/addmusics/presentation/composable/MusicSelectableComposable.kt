@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import java.util.UUID
@@ -75,7 +75,7 @@ private fun InnerContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
+            .clickableWithHandCursor {
                 onClick()
             }
             .padding(UiConstants.Spacing.medium),

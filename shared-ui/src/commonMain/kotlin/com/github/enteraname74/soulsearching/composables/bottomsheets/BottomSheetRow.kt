@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -23,7 +23,7 @@ fun BottomSheetRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
+            .clickableWithHandCursor {
                 onClick()
             }
             .padding(

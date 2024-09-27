@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsActionElement
 
@@ -24,7 +24,7 @@ fun ColorCard(
 ) {
     Card(
         modifier = Modifier
-            .clickable { onClick() }
+            .clickableWithHandCursor { onClick() }
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(
             contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,

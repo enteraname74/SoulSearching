@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -55,7 +55,7 @@ fun SortOptionsComposable(
                             bottomStart = 10.dp,
                         )
                     )
-                    .clickable { setSortType(SortType.ADDED_DATE) },
+                    .clickableWithHandCursor { setSortType(SortType.ADDED_DATE) },
                 icon = Icons.Rounded.Schedule,
                 contentDescription = strings.sortByDateAdded,
                 tint = getSelectedColor(sortType == SortType.ADDED_DATE),
@@ -63,7 +63,7 @@ fun SortOptionsComposable(
             )
             SoulIcon(
                 modifier = Modifier
-                    .clickable { setSortType(SortType.NB_PLAYED) },
+                    .clickableWithHandCursor { setSortType(SortType.NB_PLAYED) },
                 icon = Icons.Rounded.Pin,
                 contentDescription = strings.sortByMostListened,
                 tint = getSelectedColor(sortType == SortType.NB_PLAYED),
@@ -71,7 +71,7 @@ fun SortOptionsComposable(
             )
             SoulIcon(
                 modifier = Modifier
-                    .clickable { setSortType(SortType.NAME) },
+                    .clickableWithHandCursor { setSortType(SortType.NAME) },
                 icon = Icons.Rounded.SortByAlpha,
                 contentDescription = strings.sortByName,
                 tint = getSelectedColor(sortType == SortType.NAME),
@@ -86,7 +86,7 @@ fun SortOptionsComposable(
                         bottomEnd = 10.dp,
                     )
                 )
-                .clickable { toggleSortDirection() },
+                .clickableWithHandCursor { toggleSortDirection() },
             icon = if (sortDirection == SortDirection.ASC) Icons.Rounded.North else Icons.Rounded.South,
             contentDescription = strings.sortByAscOrDesc,
             tint = SoulSearchingColorTheme.colorScheme.onSecondary,

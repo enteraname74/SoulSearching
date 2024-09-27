@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +28,8 @@ fun SoulButton(
     ) {
         Button(
             onClick = onClick,
-            modifier = modifier,
+            modifier = modifier
+                .pointerHoverIcon(PointerIcon.Hand),
             enabled = enabled,
             shape = shape,
             colors = ButtonDefaults.buttonColors(

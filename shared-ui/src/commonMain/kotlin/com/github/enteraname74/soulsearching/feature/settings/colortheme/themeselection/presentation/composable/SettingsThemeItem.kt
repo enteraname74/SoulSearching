@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.RadioButton
@@ -16,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightTheme
 import com.github.enteraname74.soulsearching.theme.isInDarkTheme
@@ -29,7 +28,7 @@ fun SettingsThemeItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickableWithHandCursor { onClick() }
             .padding(
                 horizontal = UiConstants.Spacing.large,
                 vertical = UiConstants.Spacing.medium,

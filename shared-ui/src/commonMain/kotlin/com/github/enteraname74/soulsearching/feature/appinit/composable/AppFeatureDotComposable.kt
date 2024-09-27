@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.appinit.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.RadioButtonChecked
@@ -11,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -27,7 +27,7 @@ fun AppFeatureDotComposable(
             modifier = Modifier
                 .size(UiConstants.ImageSize.small)
                 .align(Alignment.Center)
-                .clickable {
+                .clickableWithHandCursor {
                     onClick()
                 },
             colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),

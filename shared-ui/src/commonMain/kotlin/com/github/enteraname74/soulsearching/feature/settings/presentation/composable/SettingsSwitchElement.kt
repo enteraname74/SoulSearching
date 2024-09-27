@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -30,7 +30,7 @@ fun SettingsSwitchElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
+            .clickableWithHandCursor {
                 toggleAction()
             }
             .padding(padding),

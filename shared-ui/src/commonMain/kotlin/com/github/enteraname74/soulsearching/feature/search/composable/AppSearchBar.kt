@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.search.composable
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -75,7 +75,7 @@ fun AppSearchBar(
                         contentDescription = strings.cancel,
                         tint = SoulSearchingColorTheme.colorScheme.onSecondary,
                         modifier = Modifier
-                            .clickable {
+                            .clickableWithHandCursor {
                                 updateTextMethod("")
                             }
                     )

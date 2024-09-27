@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -41,7 +41,7 @@ fun MinimisedPlayerControlsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
-                .clickable {
+                .clickableWithHandCursor {
                     if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
                         playbackManager.previous()
                     }
@@ -54,7 +54,7 @@ fun MinimisedPlayerControlsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable {
+                    .clickableWithHandCursor {
                         if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
                             playbackManager.togglePlayPause()
                         }
@@ -67,7 +67,7 @@ fun MinimisedPlayerControlsComposable(
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable {
+                    .clickableWithHandCursor {
                         if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
                             playbackManager.togglePlayPause()
                         }
@@ -80,7 +80,7 @@ fun MinimisedPlayerControlsComposable(
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
-                .clickable {
+                .clickableWithHandCursor {
                     if (playerViewDraggableState.currentValue == BottomSheetStates.MINIMISED) {
                         playbackManager.next()
                     }
