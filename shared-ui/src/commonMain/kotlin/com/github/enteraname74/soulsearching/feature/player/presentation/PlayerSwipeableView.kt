@@ -133,7 +133,6 @@ fun PlayerDraggableView(
     if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED
         && !playerViewManager.isAnimationRunning && playbackManager.currentMusic != null
     ) {
-        println("4")
         playbackManager.stopPlayback()
     }
 

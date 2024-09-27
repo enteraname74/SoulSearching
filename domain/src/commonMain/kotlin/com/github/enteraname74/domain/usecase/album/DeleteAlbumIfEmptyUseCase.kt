@@ -17,7 +17,6 @@ class DeleteAlbumIfEmptyUseCase(
     suspend operator fun invoke(albumId: UUID) {
         val albumWithMusics: AlbumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
 
-        println("Got album to check: $albumWithMusics")
         if (albumWithMusics.musics.isEmpty()) {
             albumRepository.delete(album = albumWithMusics.album)
             albumArtistRepository.delete(albumId = albumWithMusics.album.albumId)

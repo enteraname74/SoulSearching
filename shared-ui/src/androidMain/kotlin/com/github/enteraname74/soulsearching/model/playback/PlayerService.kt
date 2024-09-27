@@ -6,10 +6,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
+import androidx.core.app.ServiceCompat
 import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotificationBuilder
 
@@ -57,7 +59,12 @@ class PlayerService : Service() {
                 mediaSessionToken = token
             )
             musicNotification!!.init(null)
-            startForeground(SoulSearchingNotification.CHANNEL_ID, musicNotification!!.notification)
+            ServiceCompat.startForeground(
+                this,
+                SoulSearchingNotification.CHANNEL_ID,
+                musicNotification!!.notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK,
+            )
         }
 
         return START_STICKY

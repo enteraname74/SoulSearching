@@ -104,10 +104,9 @@ class PlaybackManagerAndroidImpl(
     }
 
     override fun setAndPlayMusic(music: Music) {
+        super.setAndPlayMusic(music)
 
         if (shouldLaunchService) launchService()
-
-        super.setAndPlayMusic(music)
     }
 
     override fun stopPlayback(resetPlayedList: Boolean) {
@@ -133,6 +132,7 @@ class PlaybackManagerAndroidImpl(
 
         val intentForUpdatingNotification = Intent(PlayerService.SERVICE_BROADCAST)
         intentForUpdatingNotification.putExtra(PlayerService.UPDATE_WITH_PLAYING_STATE, isPlaying)
+        intentForUpdatingNotification.setPackage(context.packageName)
         context.sendBroadcast(intentForUpdatingNotification)
     }
 

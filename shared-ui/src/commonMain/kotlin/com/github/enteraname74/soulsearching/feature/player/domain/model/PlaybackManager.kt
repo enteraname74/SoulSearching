@@ -198,14 +198,6 @@ abstract class PlaybackManager(
     }
 
     /**
-     * Remove a song from all the lists used by the playback manager.
-     */
-    fun removeSongFromLists(musicId: UUID) {
-        initialList.removeIf { it.musicId == musicId }
-        removeSongFromPlayedPlaylist(musicId = musicId)
-    }
-
-    /**
      * Make the initial list the same as the played list.
      * The match will only occur if the player mode is set to NORMAL.
      */

@@ -24,7 +24,7 @@
         <service
             android:name="com.github.enteraname74.soulsearching.model.playback.PlayerService"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:foregroundServiceType="mediaPlayback"
             />
 
