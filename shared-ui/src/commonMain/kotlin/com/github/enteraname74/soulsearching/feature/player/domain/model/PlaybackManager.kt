@@ -2,7 +2,10 @@ package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.*
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.model.PlayerWithMusicItem
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -572,7 +575,6 @@ abstract class PlaybackManager(
 
         val index = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY)
         val position = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
-
         setMusicFromIndex(index)
         defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
 
@@ -712,19 +714,6 @@ abstract class PlaybackManager(
 
         setAndPlayMusic(music)
         savePlayedList()
-    }
-
-    /**
-     * Remove a music from the playlist if the playlist is the same as a specified one.
-     */
-    fun removeMusicIfSamePlaylist(musicId: UUID, playlistId: UUID?) {
-        if (playlistId == null && playedListId == null) {
-            removeSongFromPlayedPlaylist(musicId)
-        } else if (playlistId != null && playedListId != null) {
-            if (playlistId.compareTo(playedListId) == 0) {
-                removeSongFromPlayedPlaylist(musicId)
-            }
-        }
     }
 
     /**

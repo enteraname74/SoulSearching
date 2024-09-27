@@ -8,9 +8,8 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 
 class MainActivityViewModel(
-    settings: SoulSearchingSettings
+    settings: SoulSearchingSettings,
 ) : ScreenModel {
-    var cleanMusicsLaunched by mutableStateOf(false)
     var hasMusicsBeenFetched by mutableStateOf(
         settings.get(SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY)
     )
