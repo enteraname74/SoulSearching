@@ -23,10 +23,13 @@ fun BottomSheetRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
-                onClick = onClick
-            )
-            .padding(UiConstants.Spacing.large),
+            .clickable {
+                onClick()
+            }
+            .padding(
+                vertical = UiConstants.Spacing.large,
+                horizontal = UiConstants.Spacing.huge
+            ),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
