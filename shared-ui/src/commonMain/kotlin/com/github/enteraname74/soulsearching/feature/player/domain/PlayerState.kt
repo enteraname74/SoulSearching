@@ -20,5 +20,6 @@ data class PlayerState(
     val isPlaying: Boolean = false,
     val playerMode: PlayerMode = PlayerMode.Normal,
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
-    val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound
+    val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound,
+    val canSwipeCover: Boolean = true,
 )

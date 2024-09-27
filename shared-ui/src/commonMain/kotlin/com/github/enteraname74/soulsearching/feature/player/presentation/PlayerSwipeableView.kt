@@ -241,6 +241,7 @@ fun PlayerDraggableView(
                                 playerViewModel.showMusicBottomSheet(it)
                             }
                         },
+                        canSwipeCover = state.canSwipeCover,
                     )
 
                     if (!PlayerUiUtils.canShowRowControlPanel()) {

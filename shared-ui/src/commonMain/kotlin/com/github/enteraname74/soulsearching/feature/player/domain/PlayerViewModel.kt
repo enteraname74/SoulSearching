@@ -6,6 +6,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.music.*
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
@@ -35,6 +37,7 @@ import java.util.*
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     private val colorThemeManager: ColorThemeManager,
+    private val settings: SoulSearchingSettings,
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val getMusicUseCase: GetMusicUseCase,
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
@@ -43,7 +46,7 @@ class PlayerViewModel(
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    val imageCoverRetriever: ImageCoverRetriever,
+    imageCoverRetriever: ImageCoverRetriever,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _state = MutableStateFlow(PlayerState())
@@ -52,12 +55,14 @@ class PlayerViewModel(
         _state,
         getAllPlaylistWithMusicsUseCase(),
         imageCoverRetriever.allCovers,
-        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId)
-    ) { state, playlists, allCovers, currentMusicCover ->
+        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
+    ) { state, playlists, allCovers, currentMusicCover, isCoverSwipeEnabled ->
         state.copy(
             playlistsWithMusics = playlists,
             allCovers = allCovers,
             currentMusicCover = currentMusicCover,
+            canSwipeCover = isCoverSwipeEnabled,
         )
     }.stateIn(
         screenModelScope,

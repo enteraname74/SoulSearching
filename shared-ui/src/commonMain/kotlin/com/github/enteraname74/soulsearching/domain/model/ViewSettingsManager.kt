@@ -23,9 +23,6 @@ class ViewSettingsManager(
     var areMusicsByMonthsShown by mutableStateOf(false)
         private set
 
-    var isPlayerSwipeEnabled by mutableStateOf(true)
-        private set
-
     init {
         initializeManager()
     }

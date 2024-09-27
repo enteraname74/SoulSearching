@@ -24,16 +24,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerMusicCover(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
-    viewSettingsManager: ViewSettingsManager = injectElement(),
     imageSize: Dp,
     horizontalPadding: Dp,
     topPadding: Dp,
     onLongClick: () -> Unit,
+    canSwipeCover: Boolean,
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         Modifier.combinedClickableWithRightClick(
@@ -65,7 +65,7 @@ fun PlayerMusicCover(
             if (
                 aroundSongs.filterNotNull().size > 1
                 && playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                && viewSettingsManager.isPlayerSwipeEnabled
+                && canSwipeCover
             ) {
                 val pagerState = remember(aroundSongs) {
                     object : PagerState(currentPage = 1) {
