@@ -139,7 +139,7 @@ fun PlayerDraggableView(
     val alphaTransition = getAlphaTransition()
 
     CompositionLocalProvider(
-        LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme.orDefault())
+        LocalColors provides AnimatedColorPaletteBuilder.animate(palette = playerColorTheme.orDefault())
     ) {
 
         SoulSearchingContext.setSystemBarsColor(

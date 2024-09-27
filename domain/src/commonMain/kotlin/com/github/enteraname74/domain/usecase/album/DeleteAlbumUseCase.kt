@@ -15,16 +15,20 @@ class DeleteAlbumUseCase(
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
 
         // We first delete the musics of the album.
-        musicRepository.deleteAllMusicOfAlbum(
-            album = albumWithMusics.album.albumName,
-            artist = albumWithMusics.artist!!.artistName
-        )
+        if (albumWithMusics.musics.isNotEmpty()) {
+            musicRepository.deleteAllMusicOfAlbum(
+                album = albumWithMusics.album.albumName,
+                artist = albumWithMusics.artist!!.artistName
+            )
+        }
         // We then delete the album
         albumRepository.delete(albumWithMusics.album)
 
         // Finally we can check if we can delete the artist of the deleted album.
-        deleteArtistIfEmptyUseCase(
-            artistId = albumWithMusics.artist.artistId,
-        )
+        albumWithMusics.artist?.let {
+            deleteArtistIfEmptyUseCase(
+                artistId = it.artistId,
+            )
+        }
     }
 }

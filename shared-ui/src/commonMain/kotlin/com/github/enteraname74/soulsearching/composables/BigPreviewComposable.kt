@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.composables
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -9,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,7 +18,6 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BigPreviewComposable(
     modifier: Modifier = Modifier,
@@ -35,14 +32,9 @@ fun BigPreviewComposable(
     roundedPercent: Int = 4,
     isFavoritePlaylist: Boolean = false,
 ) {
-
-    Modifier
-        .width(imageSize)
-        .composed {
-            modifier
-        }
     Column(
-        modifier = Modifier
+        modifier = modifier
+            .width(IntrinsicSize.Min)
             .combinedClickableWithRightClick(
                 onClick = onClick,
                 onLongClick = onLongClick
@@ -54,7 +46,6 @@ fun BigPreviewComposable(
             roundedPercent = roundedPercent
         )
         Row(
-            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
@@ -65,7 +56,7 @@ fun BigPreviewComposable(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = title,
