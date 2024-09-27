@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -84,6 +85,7 @@ fun PlayerPanelDraggableView(
                         topEndPercent = 4
                     )
                 )
+                .navigationBarsPadding()
         ) {
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
