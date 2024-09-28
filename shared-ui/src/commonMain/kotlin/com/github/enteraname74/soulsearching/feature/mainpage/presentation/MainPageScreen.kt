@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -60,7 +60,7 @@ class MainPageScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        val mainPageViewModel = getScreenModel<MainPageViewModel>()
+        val mainPageViewModel = koinScreenModel<MainPageViewModel>()
 
         val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
         val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -23,7 +23,7 @@ class SettingsThemeSelectionScreen: Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: SettingsThemeSelectionViewModel = getScreenModel()
+        val screenModel: SettingsThemeSelectionViewModel = koinScreenModel()
         val navigator = LocalNavigator.currentOrThrow
         val defaultThemeSettings: DefaultThemeSettings by screenModel.state.collectAsState()
 

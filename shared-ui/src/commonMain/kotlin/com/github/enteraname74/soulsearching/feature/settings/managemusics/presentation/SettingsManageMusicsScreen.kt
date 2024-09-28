@@ -5,7 +5,7 @@ import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -27,7 +27,7 @@ class SettingsManageMusicsScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val addMusicsViewModel = getScreenModel<SettingsAddMusicsViewModel>()
+        val addMusicsViewModel = koinScreenModel<SettingsAddMusicsViewModel>()
 
         SettingsManageMusicsScreenView(
             finishAction = {

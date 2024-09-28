@@ -1,10 +1,9 @@
-import org.gradle.configurationcache.DefaultConfigurationCache
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.compose.internal.de.undercouch.gradle.tasks.download.org.apache.hc.core5.net.Host
 
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 group = "com.github.enteraname74.soulsearching.desktopapp"
@@ -28,8 +27,7 @@ dependencies {
     implementation(compose.components.resources)
     implementation(project(":shared-ui"))
 
-    implementation(libs.koin.core)
-    implementation(libs.koin.compose)
+    implementation(libs.bundles.koin)
 }
 
 compose.desktop {
@@ -111,7 +109,7 @@ tasks {
                     "build-dir"
                 )
             }
-            val outputDir = file("$buildDir/flatpak")
+            val outputDir = file("${layout.buildDirectory}/flatpak")
             outputDir.mkdirs()
             println("packageFlatpakReleaseDistributable -- Will install flatpak in: $outputDir")
             exec {

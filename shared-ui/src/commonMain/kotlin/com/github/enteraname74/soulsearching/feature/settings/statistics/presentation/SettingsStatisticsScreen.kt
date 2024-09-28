@@ -6,7 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -20,7 +20,7 @@ class SettingsStatisticsScreen: Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: SettingsStatisticsViewModel = getScreenModel()
+        val screenModel: SettingsStatisticsViewModel = koinScreenModel()
         val state: SettingsStatisticsState by screenModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 

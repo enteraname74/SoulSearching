@@ -21,7 +21,7 @@ fun SoulBottomSheetHandler(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val coroutineScope = rememberCoroutineScope()
 
-    val closeWithAnim = {
+    val closeWithAnim: () -> Unit = {
         coroutineScope.launch {
             bottomSheetState.hide()
         }.invokeOnCompletion {

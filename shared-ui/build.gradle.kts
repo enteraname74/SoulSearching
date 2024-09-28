@@ -2,10 +2,11 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    kotlin("multiplatform")
     id("com.android.application")
-    id("org.jetbrains.compose")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 group = "com.github.enteraname74.soulsearching"
@@ -36,8 +37,7 @@ kotlin {
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
 
-                implementation(libs.koin.core)
-                implementation(libs.koin.compose)
+                implementation(libs.bundles.koin)
 
                 implementation(libs.kotlinx.serialization)
 

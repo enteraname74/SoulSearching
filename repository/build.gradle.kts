@@ -1,8 +1,9 @@
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose")
-    kotlin("plugin.serialization") version "1.9.22"
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 group = "com.github.enteraname74.soulsearching.repository"

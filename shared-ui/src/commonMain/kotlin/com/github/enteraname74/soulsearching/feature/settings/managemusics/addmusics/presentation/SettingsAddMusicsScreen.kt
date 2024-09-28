@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Music
@@ -42,7 +42,7 @@ import kotlin.reflect.KSuspendFunction2
 class SettingsAddMusicsScreen : Screen {
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<SettingsAddMusicsViewModel>()
+        val screenModel = koinScreenModel<SettingsAddMusicsViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         SettingsAddMusicsScreenView(
