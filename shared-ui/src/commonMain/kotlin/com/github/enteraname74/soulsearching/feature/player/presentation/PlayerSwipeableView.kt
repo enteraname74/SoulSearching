@@ -241,6 +241,7 @@ fun PlayerDraggableView(
                             }
                         },
                         canSwipeCover = state.canSwipeCover,
+                        aroundSongs = state.aroundSongs,
                     )
 
                     if (!PlayerUiUtils.canShowRowControlPanel()) {

@@ -34,6 +34,7 @@ fun PlayerMusicCover(
     topPadding: Dp,
     onLongClick: () -> Unit,
     canSwipeCover: Boolean,
+    aroundSongs: List<Music?>,
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         Modifier.combinedClickableWithRightClick(
@@ -56,12 +57,6 @@ fun PlayerMusicCover(
                     end = horizontalPadding,
                 )
         ) {
-
-            var aroundSongs by remember {
-                mutableStateOf(listOf<Music?>())
-            }
-            aroundSongs = getAroundSongs(playbackManager = playbackManager)
-
             if (
                 aroundSongs.filterNotNull().size > 1
                 && playerViewManager.currentValue == BottomSheetStates.EXPANDED
@@ -88,7 +83,6 @@ fun PlayerMusicCover(
                     state = pagerState,
                     pageSpacing = 120.dp
                 ) { currentSongPos ->
-
                     SoulImage(
                         modifier = imageModifier,
                         coverId = aroundSongs.getOrNull(currentSongPos)?.coverId,
@@ -108,27 +102,4 @@ fun PlayerMusicCover(
             }
         }
     }
-}
-
-/**
- * Retrieve a list containing the current song and its around songs (previous and next).
- * If no songs are played, return a list containing null. If the played list contains only
- * the current song, it will return a list with only the current song.
- */
-private fun getAroundSongs(
-    playbackManager: PlaybackManager
-): List<Music?> {
-    val currentSongIndex = playbackManager.currentMusicIndex
-
-    if (currentSongIndex == -1) return listOf(null)
-
-    if (playbackManager.playedList.size == 1) return listOf(
-        playbackManager.currentMusic
-    )
-
-    return listOf(
-        playbackManager.getPreviousMusic(currentSongIndex),
-        playbackManager.currentMusic,
-        playbackManager.getNextMusic(currentSongIndex)
-    )
 }

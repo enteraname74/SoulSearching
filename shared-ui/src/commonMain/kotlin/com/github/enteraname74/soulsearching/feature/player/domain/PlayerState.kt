@@ -22,4 +22,5 @@ data class PlayerState(
     val playlistsWithMusics: List<PlaylistWithMusics> = emptyList(),
     val currentMusicLyrics: LyricsFetchState = LyricsFetchState.NoLyricsFound,
     val canSwipeCover: Boolean = true,
+    val aroundSongs: List<Music?> = emptyList(),
 )
