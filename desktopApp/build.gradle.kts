@@ -90,6 +90,7 @@ tasks {
         dependsOn("packageTarReleaseDistributable")
 
         val appId = "io.github.enteraname74.soulsearching"
+        val appVersion = libs.versions.desktop.version.name.get()
 
         doLast {
             println("packageFlatpakReleaseDistributable -- INFO -- Building manifest")
@@ -111,7 +112,7 @@ tasks {
                     "build-dir"
                 )
             }
-            val outputDir = file("${layout.buildDirectory}/flatpak")
+            val outputDir = file("${layout.buildDirectory.get().asFile.absolutePath}/flatpak")
             outputDir.mkdirs()
             println("packageFlatpakReleaseDistributable -- Will install flatpak in: $outputDir")
             exec {
@@ -119,7 +120,7 @@ tasks {
                     "flatpak",
                     "build-bundle",
                     "repo",
-                    "${outputDir.absolutePath}/$appId.flatpak",
+                    "${outputDir.absolutePath}/$appId-$appVersion.flatpak",
                     appId
                 )
             }
