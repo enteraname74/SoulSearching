@@ -8,7 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -34,7 +34,7 @@ class SettingsColorThemeScreen: Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel: SettingsColorThemeViewModel = getScreenModel()
+        val screenModel: SettingsColorThemeViewModel = koinScreenModel()
         val state: SettingsColorThemeState by screenModel.colorThemeSettingsState.collectAsState()
 
         SettingsColorThemeScreenView(

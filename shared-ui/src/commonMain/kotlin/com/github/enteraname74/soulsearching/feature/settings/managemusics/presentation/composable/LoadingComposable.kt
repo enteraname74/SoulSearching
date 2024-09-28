@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.composables.ProgressIndicatorComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
@@ -24,16 +25,30 @@ fun LoadingComposable(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = SoulSearchingColorTheme.colorScheme.primary),
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
+                    .padding(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                SoulSearchingLogo()
-                ProgressIndicatorComposable(
-                    progress = progressIndicator,
-                    progressMessage = progressMessage,
-                    subText = subText,
-                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SoulSearchingLogo()
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(2f),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    ProgressIndicatorComposable(
+                        progress = progressIndicator,
+                        progressMessage = progressMessage,
+                        subText = subText,
+                    )
+                }
+
             }
         }
         else -> {

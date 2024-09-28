@@ -188,6 +188,9 @@ private fun navigationRows(
                     onClick = {
                         setCurrentPage(tab.type)
                         playerAction()
+                        if (generalNavigator?.isComingFromPlaylistDetails() == true) {
+                            colorThemeManager.removePlaylistTheme()
+                        }
                         generalNavigator?.safePush(
                             MainPageScreen()
                         )

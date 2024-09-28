@@ -35,7 +35,7 @@ class SaveMusicUseCase(
 
         val correspondingArtist: Artist? = artistRepository.getFromName(artistName = music.artist)
 
-        // If the artist, we try to found a corresponding album
+        // If we found the artist, we try to found a corresponding album
         val correspondingAlbum: Album? = correspondingArtist?.let { artist ->
             getCorrespondingAlbumUseCase(
                 albumName = music.album,

@@ -1,20 +1,12 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.DoubleArrow
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun PlaylistBottomSheetMenu(
@@ -23,24 +15,12 @@ fun PlaylistBottomSheetMenu(
     deleteAction : () -> Unit,
     quickAccessAction : () -> Unit,
     isInQuickAccess: Boolean,
-    viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
-    Column(
-        modifier = Modifier
-            .background(color = SoulSearchingColorTheme.colorScheme.secondary)
-            .padding(UiConstants.Spacing.large)
+
+    QuickAccessBottomSheetMenu(
+        isElementInQuickAccess = isInQuickAccess,
+        quickAccessAction = quickAccessAction,
     ) {
-        if (viewSettingsManager.isQuickAccessShown) {
-            BottomSheetRow(
-                icon = Icons.Rounded.DoubleArrow,
-                text = if (isInQuickAccess) {
-                    strings.removeFromQuickAccess
-                } else {
-                    strings.addToQuickAccess
-                },
-                onClick = quickAccessAction
-            )
-        }
         BottomSheetRow(
             icon = Icons.Rounded.Edit,
             text = strings.modifyPlaylist,

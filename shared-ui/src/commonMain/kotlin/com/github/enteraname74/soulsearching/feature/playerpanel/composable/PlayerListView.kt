@@ -18,7 +18,9 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.launch
@@ -39,6 +41,7 @@ fun PlayerListView(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .navigationBarsPadding()
     ) {
         if (isExpanded) {
             Box(
@@ -70,7 +73,10 @@ fun PlayerListView(
             }
 
             LazyColumn(
-                state = playerListState
+                state = playerListState,
+                contentPadding = PaddingValues(
+                    bottom = getStatusBarPadding().toDp()
+                )
             ) {
                 items(
                     items = playedList,
@@ -94,7 +100,9 @@ fun PlayerListView(
             }
         } else {
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = getStatusBarPadding().toDp())
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),

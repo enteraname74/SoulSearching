@@ -2,8 +2,6 @@ package com.github.enteraname74.soulsearching.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -17,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -36,7 +36,7 @@ fun MusicItemComposable(
         modifier = modifier
             .fillMaxWidth()
             .background(color = backgroundColor)
-            .combinedClickable(
+            .combinedClickableWithRightClick(
                 onClick = { onClick(music) },
                 onLongClick = onLongClick
             )
@@ -78,7 +78,7 @@ fun MusicItemComposable(
 
             }
             SoulIcon(
-                modifier = Modifier.clickable { onLongClick() },
+                modifier = Modifier.clickableWithHandCursor { onLongClick() },
                 icon = Icons.Rounded.MoreVert,
                 contentDescription = strings.moreButton,
                 tint = textColor

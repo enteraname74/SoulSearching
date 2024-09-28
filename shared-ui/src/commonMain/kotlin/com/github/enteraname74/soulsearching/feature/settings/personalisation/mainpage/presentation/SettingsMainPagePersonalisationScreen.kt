@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -27,7 +27,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel: SettingsMainPagePersonalisationViewModel = getScreenModel()
+        val screenModel: SettingsMainPagePersonalisationViewModel = koinScreenModel()
 
         val state: SettingsMainPagePersonalisationState by screenModel.state.collectAsState()
 

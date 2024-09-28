@@ -44,11 +44,24 @@ class SettingsStatisticsViewModel(
         getAllArtistWithMusicsSortedByMostSongsUseCase(),
     ) { allMusics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
         SettingsStatisticsState(
-            mostListenedMusics = allMusics.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
-            mostListenedArtists = allArtists.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
-            mostListenedPlaylists = allPlaylists.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
-            mostListenedAlbums = allAlbums.getFirstsOrMax(MAX_TO_SHOW).map { it.toListenedElement() },
-            artistsWithMostSongs = allArtistsWithMostSongs.getFirstsOrMax(MAX_TO_SHOW)
+            mostListenedMusics = allMusics
+                .getFirstsOrMax(MAX_TO_SHOW)
+                .filter { it.nbPlayed >= 1 }
+                .map { it.toListenedElement() },
+            mostListenedArtists = allArtists
+                .getFirstsOrMax(MAX_TO_SHOW)
+                .filter { it.artist.nbPlayed >= 1 }
+                .map { it.toListenedElement() },
+            mostListenedPlaylists = allPlaylists
+                .getFirstsOrMax(MAX_TO_SHOW)
+                .filter { it.playlist.nbPlayed >= 1 }
+                .map { it.toListenedElement() },
+            mostListenedAlbums = allAlbums
+                .getFirstsOrMax(MAX_TO_SHOW)
+                .filter { it.album.nbPlayed >= 1 }
+                .map { it.toListenedElement() },
+            artistsWithMostSongs = allArtistsWithMostSongs
+                .getFirstsOrMax(MAX_TO_SHOW)
                 .map { it.toMostSongsListenedElement() },
         )
     }.stateIn(
@@ -58,6 +71,6 @@ class SettingsStatisticsViewModel(
     )
 
     companion object {
-        private const val MAX_TO_SHOW: Int = 5
+        private const val MAX_TO_SHOW: Int = 11
     }
 }

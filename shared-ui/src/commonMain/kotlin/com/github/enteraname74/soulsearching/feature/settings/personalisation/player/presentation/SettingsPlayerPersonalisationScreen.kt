@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
@@ -29,7 +29,7 @@ class SettingsPlayerPersonalisationScreen: Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel: SettingsPlayerPersonalisationViewModel = getScreenModel()
+        val screenModel: SettingsPlayerPersonalisationViewModel = koinScreenModel()
         val isPlayerSwipeEnabled: Boolean by screenModel.isPlayerSwipeEnabled.collectAsState()
 
         SettingsPlayerPersonalisationScreenView(

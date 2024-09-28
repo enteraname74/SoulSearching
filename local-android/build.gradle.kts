@@ -2,8 +2,9 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     kotlin("kapt")
 }
 

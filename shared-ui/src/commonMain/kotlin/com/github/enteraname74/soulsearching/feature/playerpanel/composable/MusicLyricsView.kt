@@ -1,11 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,8 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import java.util.UUID
 
 @Composable
@@ -74,7 +72,9 @@ private fun FetchingLyricsView(
     contentColor: Color
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = getStatusBarPadding().toDp())
     ) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
@@ -95,7 +95,11 @@ private fun LyricsView(
             .verticalScroll(
                 state = rememberScrollState()
             )
-            .padding(UiConstants.Spacing.medium),
+            .padding(
+                top = UiConstants.Spacing.medium,
+                start = UiConstants.Spacing.medium,
+                end = UiConstants.Spacing.medium,
+            ),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -112,6 +116,10 @@ private fun LyricsView(
             color = subTextColor,
             textAlign = TextAlign.End
         )
+        Spacer(
+            modifier = Modifier
+                .height(getStatusBarPadding().toDp())
+        )
     }
 }
 
@@ -123,6 +131,7 @@ private fun NoLyricsFoundView(
         modifier = Modifier
             .fillMaxSize()
             .padding(UiConstants.Spacing.small)
+            .padding(bottom = getStatusBarPadding().toDp())
     ) {
         Text(
             modifier = Modifier

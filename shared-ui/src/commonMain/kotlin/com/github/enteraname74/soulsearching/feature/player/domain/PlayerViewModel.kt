@@ -4,24 +4,24 @@ import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.music.*
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -34,16 +34,15 @@ import java.util.*
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
+    settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
-    private val getMusicUseCase: GetMusicUseCase,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    val imageCoverRetriever: ImageCoverRetriever,
+    imageCoverRetriever: ImageCoverRetriever,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _state = MutableStateFlow(PlayerState())
@@ -52,12 +51,14 @@ class PlayerViewModel(
         _state,
         getAllPlaylistWithMusicsUseCase(),
         imageCoverRetriever.allCovers,
-        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId)
-    ) { state, playlists, allCovers, currentMusicCover ->
+        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
+    ) { state, playlists, allCovers, currentMusicCover, isCoverSwipeEnabled ->
         state.copy(
             playlistsWithMusics = playlists,
             allCovers = allCovers,
             currentMusicCover = currentMusicCover,
+            canSwipeCover = isCoverSwipeEnabled,
         )
     }.stateIn(
         screenModelScope,
@@ -167,6 +168,31 @@ class PlayerViewModel(
     }
 
     /**
+     * Retrieve a list containing the current song and its around songs (previous and next).
+     * If no songs are played, return a list containing null. If the played list contains only
+     * the current song, it will return a list with only the current song.
+     */
+    private fun getAroundSongs(
+        currentSong: Music?,
+    ): List<Music?> {
+        if (currentSong == null || _state.value.canSwipeCover == false) return emptyList()
+
+        val currentSongIndex = playbackManager.currentMusicIndex
+
+        if (currentSongIndex == -1) return listOf(null)
+
+        if (playbackManager.playedList.size == 1) return listOf(
+            currentSong
+        )
+
+        return listOf(
+            playbackManager.getPreviousMusic(currentSongIndex),
+            currentSong,
+            playbackManager.getNextMusic(currentSongIndex)
+        )
+    }
+
+    /**
      * Retrieve the artist id of a music.
      */
     fun getArtistIdFromMusicId(musicId: UUID): UUID? {
@@ -208,30 +234,13 @@ class PlayerViewModel(
     }
 
     /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylistsIds: List<UUID>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in selectedPlaylistsIds) {
-                upsertMusicIntoPlaylistUseCase(
-                    MusicPlaylist(
-                        musicId = musicId,
-                        playlistId = selectedPlaylistId
-                    )
-                )
-            }
-            val music: Music = getMusicUseCase(musicId = musicId).first() ?: return@launch
-            playbackManager.updateMusic(music = music)
-        }
-    }
-
-    /**
      * Set the current music.
      */
     private fun setCurrentMusic(music: Music?) {
         _state.update {
             it.copy(
-                currentMusic = music
+                currentMusic = music,
+                aroundSongs = getAroundSongs(music)
             )
         }
         setFavoriteState()

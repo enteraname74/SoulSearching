@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
@@ -177,7 +178,7 @@ fun PlayerTopInformation(
                 contentDescription = "",
                 modifier = Modifier
                     .size(UiConstants.ImageSize.medium)
-                    .clickable { onShowPanel() },
+                    .clickableWithHandCursor { onShowPanel() },
                 colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
             )
         } else {

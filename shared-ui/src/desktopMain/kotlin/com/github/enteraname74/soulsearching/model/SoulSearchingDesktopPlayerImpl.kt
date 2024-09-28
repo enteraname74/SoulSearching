@@ -122,7 +122,7 @@ class SoulSearchingDesktopPlayerImpl(
             player.controls().stop()
 //            player.release()
         } catch (e: Exception) {
-            println("Exception while stopping: ${e}")
+            println("Exception while stopping: $e")
         }
     }
 

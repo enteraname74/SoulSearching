@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,10 +12,13 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -68,6 +72,10 @@ private fun LargeView(
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
 ) {
+
+    val windowHeight = rememberWindowHeightDp()
+    val windowWidth = rememberWindowWidthDp()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +86,10 @@ private fun LargeView(
             contentAlignment = Alignment.Center,
         ) {
             Content(
-                modifier = Modifier.fillMaxSize(0.8f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = windowWidth * 0.1f)
+                    .padding(top = windowHeight * 0.1f),
                 shuffleAction = shuffleAction,
                 searchAction = searchAction,
                 onShowMusicBottomSheet = onShowMusicBottomSheet,
@@ -131,6 +142,7 @@ private fun Content(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
 
     Row(
         modifier = modifier,
@@ -144,7 +156,7 @@ private fun Content(
                 playlistDetail = playlistDetail,
                 onSubTitleClicked = playlistDetailListener::onSubtitleClicked
             )
-            if (PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
+            if (canShowVerticalInformation) {
                 PlaylistPanel(
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
@@ -155,19 +167,31 @@ private fun Content(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            if (!PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
+            if (!canShowVerticalInformation) {
                 PlaylistPanel(
                     editAction = playlistDetailListener.onEdit,
                     shuffleAction = shuffleAction,
                     searchAction = searchAction,
                 )
             }
-            LazyColumn(
-                modifier = modifier
-            ) {
-                item {
-                    optionalContent()
+            LazyColumn {
+                if (canShowVerticalInformation) {
+                    stickyHeader {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = SoulSearchingColorTheme.colorScheme.primary
+                                )
+                        ) {
+                            optionalContent()
+                        }
+                    }
+                } else {
+                    item {
+                        optionalContent()
+                    }
                 }
+
                 items(
                     items = playlistDetail.musics,
                     key = { it.musicId },

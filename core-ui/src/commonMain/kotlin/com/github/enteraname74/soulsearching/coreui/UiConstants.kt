@@ -9,6 +9,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 /**
  * Constants used throughout the application.
@@ -41,16 +43,44 @@ object UiConstants {
         val medium: Dp = 32.dp
         val mediumPlus: Dp = 48.dp
         val large: Dp = 64.dp
-        val veryLarge: Dp = 128.dp
+        val veryLarge: Dp
+        @Composable
+        get() {
+            val windowSize = rememberWindowSize()
+            return if (windowSize == WindowSize.Large) {
+                148.dp
+            } else {
+                128.dp
+            }
+        }
         val huge: Dp = 160.dp
-        val veryHuge: Dp = 200.dp
+
+        val veryHuge: Dp
+            @Composable
+            get() {
+                val windowSize = rememberWindowSize()
+                return if (windowSize == WindowSize.Large) {
+                    300.dp
+                } else {
+                    200.dp
+                }
+            }
     }
 
     /**
      * Define the sizes of cover of elements (playlist, music...) in the application.
      */
     object CoverSize {
-        val small: Dp = 55.dp
+        val small: Dp
+        @Composable
+        get() {
+            val windowSize = rememberWindowSize()
+            return if (windowSize == WindowSize.Large) {
+                65.dp
+            } else {
+                55.dp
+            }
+        }
         val huge: Dp = 200.dp
     }
 
@@ -59,6 +89,7 @@ object UiConstants {
      */
     object AnimationDuration {
         const val short: Int = 100
+        const val medium: Int = 200
         const val normal: Int = 300
     }
 

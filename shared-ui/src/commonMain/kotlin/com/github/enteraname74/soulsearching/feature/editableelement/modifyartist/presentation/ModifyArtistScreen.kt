@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyarti
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
@@ -24,7 +24,7 @@ data class ModifyArtistScreen(
 
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<ModifyArtistViewModel>()
+        val screenModel = koinScreenModel<ModifyArtistViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         val state: ModifyArtistState by screenModel.state.collectAsState()

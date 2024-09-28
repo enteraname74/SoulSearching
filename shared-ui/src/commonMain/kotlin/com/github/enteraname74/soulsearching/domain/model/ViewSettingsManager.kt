@@ -14,16 +14,10 @@ import kotlinx.coroutines.flow.combine
 class ViewSettingsManager(
     private val settings: SoulSearchingSettings
 ) {
-    var isQuickAccessShown by mutableStateOf(true)
-        private set
-
     var isMusicFileModificationOn by mutableStateOf(true)
         private set
 
     var areMusicsByMonthsShown by mutableStateOf(false)
-        private set
-
-    var isPlayerSwipeEnabled by mutableStateOf(true)
         private set
 
     init {
@@ -51,7 +45,6 @@ class ViewSettingsManager(
      */
     private fun initializeManager() {
         with(settings) {
-            isQuickAccessShown = get(SoulSearchingSettingsKeys.MainPage.IS_QUICK_ACCESS_SHOWN)
             isMusicFileModificationOn = get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)
             areMusicsByMonthsShown = get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN)
         }

@@ -292,7 +292,7 @@ class MainPageViewModel(
                     playbackManager.removeSongFromPlayedPlaylist(
                         music.musicId
                     )
-                    deleteMusicUseCase(music)
+                    deleteMusicUseCase(music = music)
                     deleteCount += 1
                 }
             }

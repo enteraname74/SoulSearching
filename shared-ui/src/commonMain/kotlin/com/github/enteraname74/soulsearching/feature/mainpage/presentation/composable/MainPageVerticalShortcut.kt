@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,6 +15,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
@@ -49,7 +49,7 @@ fun MainPageVerticalShortcut(
                         start = UiConstants.Spacing.medium,
                         end = UiConstants.Spacing.large
                     )
-                    .clickable {
+                    .clickableWithHandCursor {
                         switchPageAction(pos)
                     },
                 verticalAlignment = Alignment.CenterVertically

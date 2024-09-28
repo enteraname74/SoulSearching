@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
@@ -32,7 +32,7 @@ data class SelectedArtistScreen(
 
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<SelectedArtistViewModel>()
+        val screenModel = koinScreenModel<SelectedArtistViewModel>()
 
         val navigator = LocalNavigator.currentOrThrow
         val colorThemeManager = injectElement<ColorThemeManager>()

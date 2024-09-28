@@ -131,7 +131,7 @@ fun PlayerDraggableView(
     }
 
     if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED
-        && !playerViewManager.isAnimationRunning
+        && !playerViewManager.isAnimationRunning && playbackManager.currentMusic != null
     ) {
         playbackManager.stopPlayback()
     }
@@ -139,7 +139,7 @@ fun PlayerDraggableView(
     val alphaTransition = getAlphaTransition()
 
     CompositionLocalProvider(
-        LocalColors provides AnimatedColorPaletteBuilder.animate(playerColorTheme.orDefault())
+        LocalColors provides AnimatedColorPaletteBuilder.animate(palette = playerColorTheme.orDefault())
     ) {
 
         SoulSearchingContext.setSystemBarsColor(
@@ -240,6 +240,8 @@ fun PlayerDraggableView(
                                 playerViewModel.showMusicBottomSheet(it)
                             }
                         },
+                        canSwipeCover = state.canSwipeCover,
+                        aroundSongs = state.aroundSongs,
                     )
 
                     if (!PlayerUiUtils.canShowRowControlPanel()) {
@@ -523,7 +525,10 @@ private fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): 
     )
 }
 
-private val MinImageSize: Dp = UiConstants.CoverSize.small
+private val MinImageSize: Dp
+@Composable
+get() = UiConstants.CoverSize.small
+
 private val MinImagePaddingStart: Dp = 4.dp
 private val MinImagePaddingTop: Dp = 4.dp
 

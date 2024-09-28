@@ -27,8 +27,10 @@ object AnimatedColorPaletteBuilder {
 }
 
 @Composable
-fun Color.animated(label: String) = animateColorAsState(
+fun Color.animated(
+    label: String,
+) = animateColorAsState(
     targetValue = this,
-    animationSpec = tween(UiConstants.AnimationDuration.short),
+    animationSpec = tween(UiConstants.AnimationDuration.medium),
     label = label,
 ).value

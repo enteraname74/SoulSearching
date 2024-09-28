@@ -93,6 +93,7 @@ private fun Buttons(
                 leftButtonSpec = SoulSegmentedTextButton(
                     data = strings.soulMix,
                     onClick = {
+                        if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
                         coroutineScope.launch {
                             playerViewManager.animateTo(
                                 newState = BottomSheetStates.EXPANDED,
@@ -112,6 +113,8 @@ private fun Buttons(
             SoulIconButton(
                 icon = Icons.Rounded.Shuffle,
                 onClick = {
+                    if (allMusicFolders.isEmpty()) return@SoulIconButton
+
                     coroutineScope.launch {
                         playerViewManager.animateTo(
                             newState = BottomSheetStates.EXPANDED,

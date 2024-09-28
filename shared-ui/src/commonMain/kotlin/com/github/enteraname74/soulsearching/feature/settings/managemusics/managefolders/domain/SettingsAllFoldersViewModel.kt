@@ -90,9 +90,7 @@ class SettingsAllFoldersViewModel(
                     }
                     var count = 0
                     musicsFromFolder.forEach { music ->
-                        deleteMusicUseCase(
-                            musicId = music.musicId
-                        )
+                        deleteMusicUseCase(music = music)
                         count++
                         updateProgress((count * 1F) / musicsFromFolder.size)
                     }

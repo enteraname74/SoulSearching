@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -14,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -24,19 +24,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerMusicCover(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
-    viewSettingsManager: ViewSettingsManager = injectElement(),
     imageSize: Dp,
     horizontalPadding: Dp,
     topPadding: Dp,
     onLongClick: () -> Unit,
+    canSwipeCover: Boolean,
+    aroundSongs: List<Music?>,
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-        Modifier.combinedClickable(
+        Modifier.combinedClickableWithRightClick(
             onLongClick = onLongClick,
             onClick = { }
         )
@@ -56,16 +57,10 @@ fun PlayerMusicCover(
                     end = horizontalPadding,
                 )
         ) {
-
-            var aroundSongs by remember {
-                mutableStateOf(listOf<Music?>())
-            }
-            aroundSongs = getAroundSongs(playbackManager = playbackManager)
-
             if (
                 aroundSongs.filterNotNull().size > 1
                 && playerViewManager.currentValue == BottomSheetStates.EXPANDED
-                && viewSettingsManager.isPlayerSwipeEnabled
+                && canSwipeCover
             ) {
                 val pagerState = remember(aroundSongs) {
                     object : PagerState(currentPage = 1) {
@@ -88,7 +83,6 @@ fun PlayerMusicCover(
                     state = pagerState,
                     pageSpacing = 120.dp
                 ) { currentSongPos ->
-
                     SoulImage(
                         modifier = imageModifier,
                         coverId = aroundSongs.getOrNull(currentSongPos)?.coverId,
@@ -108,27 +102,4 @@ fun PlayerMusicCover(
             }
         }
     }
-}
-
-/**
- * Retrieve a list containing the current song and its around songs (previous and next).
- * If no songs are played, return a list containing null. If the played list contains only
- * the current song, it will return a list with only the current song.
- */
-private fun getAroundSongs(
-    playbackManager: PlaybackManager
-): List<Music?> {
-    val currentSongIndex = playbackManager.currentMusicIndex
-
-    if (currentSongIndex == -1) return listOf(null)
-
-    if (playbackManager.playedList.size == 1) return listOf(
-        playbackManager.currentMusic
-    )
-
-    return listOf(
-        playbackManager.getPreviousMusic(currentSongIndex),
-        playbackManager.currentMusic,
-        playbackManager.getNextMusic(currentSongIndex)
-    )
 }

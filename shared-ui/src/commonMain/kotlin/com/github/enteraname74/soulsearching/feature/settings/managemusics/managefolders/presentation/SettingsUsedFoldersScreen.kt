@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Folder
@@ -35,7 +35,7 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 class SettingsUsedFoldersScreen : Screen {
     @Composable
     override fun Content() {
-        val screenModel = getScreenModel<SettingsAllFoldersViewModel>()
+        val screenModel = koinScreenModel<SettingsAllFoldersViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         val state: FolderState by screenModel.state.collectAsState()

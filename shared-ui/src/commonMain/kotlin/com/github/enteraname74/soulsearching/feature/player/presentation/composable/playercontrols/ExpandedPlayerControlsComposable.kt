@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.utils.Utils
@@ -140,7 +140,7 @@ private fun PlayerControls(
                 .weight(ExternalIconsWeight)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
-                .clickable {
+                .clickableWithHandCursor {
                     playbackManager.changePlayerMode()
                 },
             colorFilter = ColorFilter.tint(color = contentColor)
@@ -153,7 +153,7 @@ private fun PlayerControls(
                 .weight(InternalIconsWeight)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickable { playbackManager.previous() },
+                .clickableWithHandCursor { playbackManager.previous() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -168,7 +168,7 @@ private fun PlayerControls(
                 .weight(MainIconWeight)
                 .height(UiConstants.Player.playerPlayerButtonSize)
                 .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
-                .clickable { playbackManager.togglePlayPause() },
+                .clickableWithHandCursor { playbackManager.togglePlayPause() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -179,7 +179,7 @@ private fun PlayerControls(
                 .weight(InternalIconsWeight)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickable { playbackManager.next() },
+                .clickableWithHandCursor { playbackManager.next() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -194,7 +194,7 @@ private fun PlayerControls(
                 .weight(ExternalIconsWeight)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
-                .clickable {
+                .clickableWithHandCursor {
                     playbackManager.currentMusic?.let {
                         onSetFavoriteState()
                     }

@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -96,12 +95,25 @@ fun PlayerPanelContent(
                     isSelected = isExpanded && isSelected,
                     onSelected = {
                         coroutineScope.launch {
-                            onTabClicked(
-                                tabPos = index,
-                                pagerState = pagerState,
-                                onAnimatePanel = playerMusicListViewManager::animateTo,
-                                isExpanded = isExpanded,
-                            )
+                            val currentFocusedTab = pagerState.currentPage
+                            val isSameTab = index == currentFocusedTab
+                            if (isSameTab && isExpanded) {
+                                coroutineScope.launch {
+                                    playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
+                                }
+                            } else {
+                                if (!isExpanded) {
+                                    coroutineScope.launch {
+                                        playerMusicListViewManager.animateTo(BottomSheetStates.EXPANDED)
+                                    }
+
+                                }
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        page = index
+                                    )
+                                }
+                            }
                         }
                     }
                 )
@@ -112,32 +124,6 @@ fun PlayerPanelContent(
             userScrollEnabled = false
         ) { pagePosition ->
             pages[pagePosition].screen()
-        }
-    }
-}
-
-/**
- * Handles the click on a tab.
- * If the panel is expanded, and we click on the current tab,
- * it will close the panel.
- */
-@OptIn(ExperimentalFoundationApi::class)
-private suspend fun onTabClicked(
-    tabPos: Int,
-    pagerState: PagerState,
-    onAnimatePanel: suspend (newState: BottomSheetStates) -> Unit,
-    isExpanded: Boolean,
-) {
-    val currentFocusedTab = pagerState.currentPage
-    val isSameTab = tabPos == currentFocusedTab
-    if (isSameTab && isExpanded) {
-        onAnimatePanel(BottomSheetStates.COLLAPSED)
-    } else {
-        pagerState.animateScrollToPage(
-            page = tabPos
-        )
-        if (!isExpanded) {
-            onAnimatePanel(BottomSheetStates.EXPANDED)
         }
     }
 }

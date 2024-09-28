@@ -65,7 +65,7 @@ class MusicBottomSheetDelegateImpl(
                 musicToDelete = musicToDelete,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteMusicUseCase(musicToDelete)
+                        deleteMusicUseCase(music = musicToDelete)
                     }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.

@@ -1,6 +1,7 @@
 app-id: io.github.enteraname74.soulsearching
 runtime: org.freedesktop.Platform
-runtime-version: '22.08'
+runtime-version: '23.08'
+version: '0.8.0'
 sdk: org.freedesktop.Sdk
 command: SoulSearching
 build-options:
@@ -38,7 +39,7 @@ modules:
       - cp -ru * /app
     sources:
       - type: archive
-        path: build/distributions/soulsearching-0.7.0-linux.tar.gz
+        path: build/distributions/soulsearching-0.8.0-linux.tar.gz
       - type: file
         path: src/main/composeResources/drawable/app_icon_bg.png
       - type: file

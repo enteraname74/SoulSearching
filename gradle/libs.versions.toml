@@ -1,43 +1,37 @@
 [versions]
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
-agp = "8.2.1"
-android-version-name = "0.7.0"
-android-version-code = "17"
+agp = "8.5.2"
+android-version-name = "0.8.0"
+android-version-code = "18"
 android-target-sdk = "34"
 android-compile-sdk = "34"
 android-min-sdk = "26"
-androidx-activity-compose = "1.9.0"
+androidx-activity-compose = "1.9.2"
 androidx-core = "1.13.1"
-androidx-lifecycle = "2.7.0"
-annotation = "1.7.1"
-appcompat = "1.6.1"
-compose = "1.6.2"
-compose-ui = "1.5.1"
-compose-plugin = "1.6.2"
-coroutines-core = "1.8.0"
-desktop-version-name = "0.7.0"
-exposed = "0.46.0"
+androidx-lifecycle = "2.8.6"
+annotation = "1.8.2"
+appcompat = "1.7.0"
+compose = "1.6.11"
+coroutines-core = "1.9.0"
+desktop-version-name = "0.8.0"
+exposed = "0.53.0"
 file-kit = "0.8.1"
-foundation-desktop = "1.6.2"
-gradle = "8.2.1"
-gson = "2.10.1"
+gradle = "8.5.2"
+gson = "2.11.0"
 jaudiotagger = "3.0.1"
 kmpalette = "2.2.0"
-kotlin = "1.9.22"
-kotlinx-serialization = "1.6.3"
+kotlin = "2.0.20"
+kotlinx-serialization = "1.7.3"
 koin = "3.5.3"
 koin-compose = "1.1.2"
-ktor = "2.3.10"
-material-desktop = "1.6.2"
-material3-desktop = "1.6.2"
+ktor = "2.3.12"
 media = "1.7.0"
 multiplatform-settings = "1.1.1"
-org-jetbrains-kotlin-jvm = "1.9.22"
 room = "2.6.1"
 sqlite-jdbc = "3.41.2.2"
 vlcj = "4.8.3"
-voyager = "1.1.0-alpha03"
+voyager = "1.1.0-beta02"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -52,7 +46,7 @@ androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-cor
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
 
-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-plugin" }
+components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines-core" }
 coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines-core" }
@@ -64,7 +58,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 
-foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "foundation-desktop" }
+foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "compose" }
 file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -81,8 +75,8 @@ ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negot
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
-material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "material-desktop" }
-material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "material3-desktop" }
+material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "compose" }
+material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "compose" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 
 vlcj = { module  = "uk.co.caprica:vlcj", version.ref = "vlcj"}
@@ -98,9 +92,11 @@ sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
 koin = ["koin-compose", "koin-core"]

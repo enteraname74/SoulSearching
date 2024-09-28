@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -62,7 +62,7 @@ private fun ImagesButton(
                     color = primaryColor,
                     shape = CircleShape
                 )
-                .clickable {
+                .clickableWithHandCursor {
                     it()
                 }
                 .padding(10.dp),
@@ -78,7 +78,7 @@ private fun ImagesButton(
                 color = primaryColor,
                 shape = CircleShape
             )
-            .clickable {
+            .clickableWithHandCursor {
                 shuffleAction()
             }
             .padding(10.dp),
@@ -93,7 +93,7 @@ private fun ImagesButton(
                 color = primaryColor,
                 shape = CircleShape
             )
-            .clickable {
+            .clickableWithHandCursor {
                 searchAction()
             }
             .padding(10.dp),
