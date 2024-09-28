@@ -64,6 +64,7 @@ fun FetchingMusicsComposable(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = UiConstants.Spacing.medium)
                 ) {
                     Column(
                         modifier = Modifier
@@ -80,7 +81,9 @@ fun FetchingMusicsComposable(
                         )
                     }
                     FetchingMusicTabLayoutComposable(
-                        modifier = Modifier.weight(1F)
+                        modifier = Modifier
+                            .weight(1F)
+                            .padding(end = UiConstants.Spacing.large)
                     )
                 }
             }
@@ -89,7 +92,7 @@ fun FetchingMusicsComposable(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = UiConstants.Spacing.large),
+                        .padding(vertical = UiConstants.Spacing.large),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SoulSearchingLogo()

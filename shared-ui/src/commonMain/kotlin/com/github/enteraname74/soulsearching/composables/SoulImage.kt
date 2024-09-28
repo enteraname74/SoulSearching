@@ -34,6 +34,7 @@ fun SoulImage(
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     imageCoverRetriever: ImageCoverRetriever = injectElement(),
+    contentScale: ContentScale = ContentScale.Crop,
 ) {
     val bitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = coverId).collectAsState(
         imageCoverRetriever.getDefaultImageBitmap(coverId = coverId)
@@ -51,13 +52,13 @@ fun SoulImage(
             modifier = modifierBase,
             bitmap = it,
             contentDescription = strings.image,
-            contentScale = ContentScale.Crop
+            contentScale = contentScale,
         )
     } ?: Image(
         modifier = modifierBase,
         painter = painterResource(Res.drawable.saxophone_png),
         contentDescription = strings.image,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         colorFilter = ColorFilter.tint(tint)
     )
 }

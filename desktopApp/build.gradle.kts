@@ -34,6 +34,8 @@ compose.desktop {
     application {
         mainClass = "MainKt"
 
+        val appVersion = libs.versions.desktop.version.name.get()
+
         buildTypes.release.proguard {
             configurationFiles.from(project.file("proguard-rules.pro"))
         }
@@ -52,13 +54,13 @@ compose.desktop {
             targetFormats(TargetFormat.Rpm)
 
             packageName = "SoulSearching"
-            packageVersion = libs.versions.desktop.version.name.get()
+            packageVersion = appVersion
             description = "Music player application."
 
             linux {
 
                 packageName = "SoulSearching"
-                packageVersion = libs.versions.desktop.version.name.get()
+                packageVersion = appVersion
                 appCategory = "AudioVideo;Player;"
                 appRelease = "1"
                 rpmLicenseType = "GPL-3.0-or-later"

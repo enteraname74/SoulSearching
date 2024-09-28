@@ -1,73 +1,126 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
-import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.ListenedElement
 
 @OptIn(ExperimentalFoundationApi::class)
-fun LazyListScope.settingsStatisticsSection(
+@Composable
+fun SettingsStatisticsSection(
     title: String,
     elements: List<ListenedElement>
 ) {
-    stickyHeader(
-        key = title,
-        contentType = SECTION_TITLE_CONTENT_TYPE,
-    ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = SoulSearchingColorTheme.colorScheme.primary,
-                )
-                .padding(
-                    bottom = UiConstants.Spacing.medium,
-                ),
-            text = title,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
-        )
-    }
-    if (elements.isNotEmpty()) {
-        items(
-            contentType = { SECTION_LIST_CONTENT_TYPE },
-            count = elements.size,
-        ) { index ->
-            val listenedElement = elements[index]
-            LinearPreviewComposable(
-                modifier = if (index == elements.lastIndex) {
-                    Modifier.padding(
-                        bottom = UiConstants.Spacing.veryHuge
-                    )
-                } else {
-                    Modifier
-                },
-                padding = PaddingValues(
-                    vertical = UiConstants.Spacing.small,
-                ),
-                title = listenedElement.title,
-                text = listenedElement.text(),
-                coverId = listenedElement.coverId,
-                onClick = null,
-                onLongClick = null,
+    val windowSize = rememberWindowSize()
+
+    when (windowSize) {
+        WindowSize.Small -> {
+            SmallScreen(
+                title = title,
+                elements = elements,
             )
         }
-    } else {
-        item {
-            NoElementView()
+
+        else -> {
+            LargeScreen(
+                title = title,
+                elements = elements,
+            )
         }
     }
 }
 
+@Composable
+private fun SmallScreen(
+    title: String,
+    elements: List<ListenedElement>
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = UiConstants.Spacing.large),
+        contentPadding = PaddingValues(
+            horizontal = UiConstants.Spacing.large,
+        ),
+    ) {
+        with(SettingsStatisticsSectionFactory) {
+            title(title = title)
+            if (elements.isNotEmpty()) {
+                header(
+                    element = elements.first(),
+                    modifier = Modifier
+                        .padding(vertical = UiConstants.Spacing.large)
+                )
+                list(elements.drop(1))
+            } else {
+                emptyContent()
+            }
+            item {
+                SoulPlayerSpacer()
+            }
+        }
+    }
+}
 
-private const val SECTION_TITLE_CONTENT_TYPE: String = "SECTION_TITLE_CONTENT_TYPE"
-private const val SECTION_LIST_CONTENT_TYPE: String = "SECTION_LIST_CONTENT_TYPE"
+@Composable
+private fun LargeScreen(
+    title: String,
+    elements: List<ListenedElement>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = UiConstants.Spacing.veryLarge
+            )
+            .padding(top = UiConstants.Spacing.veryLarge)
+    ) {
+        SettingsStatisticsSectionTitle(title = title)
+        if (elements.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    SettingsStatisticsSectionHeader(
+                        element = elements.first(),
+                    )
+                }
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    with(SettingsStatisticsSectionFactory) {
+                        if (elements.isNotEmpty()) {
+                            list(elements.drop(1))
+                        } else {
+                            emptyContent()
+                        }
+                        item {
+                            SoulPlayerSpacer()
+                        }
+                    }
+                }
+            }
+        } else {
+            NoElementView()
+        }
+    }
+}

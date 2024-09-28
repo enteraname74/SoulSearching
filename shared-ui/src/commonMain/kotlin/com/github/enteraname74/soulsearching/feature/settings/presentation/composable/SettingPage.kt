@@ -25,7 +25,6 @@ fun SettingPage(
     ),
     content: LazyListScope.() -> Unit
 ) {
-
     SoulScreen(
         modifier = modifier,
     ) {

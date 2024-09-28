@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.navigation.SoulPageIndicator
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
@@ -22,7 +23,9 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class)
 @Composable
-fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
+fun FetchingMusicTabLayoutComposable(
+    modifier: Modifier = Modifier
+) {
     val pagerScreens = listOf(
         TabData(
             title = strings.completeApplicationTitle,
@@ -106,12 +109,8 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
     when {
         windowSize != WindowSize.Small -> {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = UiConstants.Spacing.small)
-                    .composed {
-                        modifier
-                    },
+                modifier = modifier
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
             ) {
                 VerticalPager(
@@ -123,12 +122,13 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                     pagerScreens[it].screen()
                 }
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     pagerScreens.forEachIndexed { index, _ ->
-                        AppFeatureDotComposable(
+                        SoulPageIndicator(
                             isSelected = pagerState.currentPage == index,
                             onClick = {
                                 coroutineScope.launch {
@@ -144,11 +144,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
         }
         else -> {
             Column(
-                modifier = Modifier
-                    .padding(bottom = UiConstants.Spacing.small)
-                    .composed {
-                        modifier
-                    },
+                modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
             ) {
                 HorizontalPager(
@@ -165,7 +161,7 @@ fun FetchingMusicTabLayoutComposable(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     pagerScreens.forEachIndexed { index, _ ->
-                        AppFeatureDotComposable(
+                        SoulPageIndicator(
                             isSelected = pagerState.currentPage == index,
                             onClick = {
                                 coroutineScope.launch {
