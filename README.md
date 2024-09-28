@@ -1,8 +1,13 @@
 # Soul Searching
 
-Soul Searching is an **offline music application** for Android 8 and above.
+Soul Searching is an **offline music application** for the following platforms:
+- Android 8 and above
+- Desktop (Linux)
 
-The application is **KMP ready** and a **Desktop version** of it is currently being worked on.
+<div align="enter">
+    <img title="" src="screenshots/soul_searching_android.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/soul_searching_desktop.png" alt="" data-align="center" width="960">
+</div>
 
 ## Functionalities:
 
@@ -24,28 +29,18 @@ You can have a theme that depends on your system settings or the current music c
 ### II. Music related functionnalities:
 
 - Listen all the songs on your device
-
 - See **lyrics** of songs
-
 - Multiple **playing modes**
-
 - Modify songs, albums and artists on app and on the **device**
-
 - Create and manage **playlists**
-
-- Add an album, artist, playlist or even a song in a **quick access**
-
-- Smart system for managing albums and musics without covers
-
+- Add an album, artist, playlist or even a song in **quick access**
+- Smart system for managing albums and songs without covers
 - Manage current played music list
-
 - Current played music list and current played music are saved when closing the app
-
 - Search throughout all your elements
-
 - See songs by **added month** or **folders**
-
 - A **music notification** and an **audio manager** are used to improve the user's experience
+- See statistics about your most listened songs, artists...
 
 <div align="center">
     <img title="" src="screenshots/modify_album.png" alt="" data-align="center" width="270">
