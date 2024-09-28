@@ -9,9 +9,8 @@ Soul Searching is an **offline music application** for the following platforms:
     <img title="" src="screenshots/soul_searching_desktop.png" alt="" data-align="center" width="960">
 </div>
 
-## Functionalities:
-
-### I. General look:
+## Functionalities
+### General look
 
 Soul Searching gives you multiple options regarding the color theme of the application.
 
@@ -26,7 +25,7 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="270">
 </div>
 
-### II. Music related functionnalities:
+### Music related functionalities
 
 - Listen all the songs on your device
 - See **lyrics** of songs
@@ -48,7 +47,7 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="270">
 </div>
 
-### III. Settings:
+### Settings
 
 <div align="center">
     <img title="" src="screenshots/settings_view.png" alt="" data-align="center" width="270">
@@ -56,9 +55,8 @@ You can have a theme that depends on your system settings or the current music c
 
 Soul Searching provides multiple ways for customizing the application the way you want it to be.
 
-#### Music management:
-
-##### 1. Manage used folders:
+#### Music management
+##### 1. Manage used folders
 
 You can manage used folders by choosing those you want to use for the application.
 
@@ -74,11 +72,11 @@ You can search new songs to add from your device.
     <img title="" src="screenshots/add_new_songs_settings.png" alt="" data-align="center" width="270">
 </div>
 
-#### Color theme:
+#### Color theme
 
 You can choose between three options:
 
-##### 1. Dynamic theme:
+##### 1. Dynamic theme
 
 The color palette used for the application is based on the current played music.
 
@@ -86,7 +84,7 @@ The color palette used for the application is based on the current played music.
     <img title="" src="screenshots/theme_settings_dynamic.png" alt="" data-align="center" width="270">
 </div>
 
-##### 2. System theme:
+##### 2. System theme
 
 The color palette used for the application is based on the theme of your device (light or dark theme).
 
@@ -96,7 +94,7 @@ The color palette used for the application is based on the theme of your device 
     <img title="" src="screenshots/main_light_theme.png" alt="" data-align="center" width="270">
 </div>
 
-##### 3. Personalized theme:
+##### 3. Personalized theme
 
 The default theme used is the system one, but you can choose to use a dynamic theme for the player view, the playlist/album/artist view and for all the other views of the app.
 
@@ -104,7 +102,7 @@ The default theme used is the system one, but you can choose to use a dynamic th
     <img title="" src="screenshots/theme_settings_perso.png" alt="" data-align="center" width="270">
 </div>
 
-#### Customization:
+#### Customization
 
 Currently, you can customize the elements shown on the main screen.
 
