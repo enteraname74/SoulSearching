@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -19,6 +20,7 @@ fun SettingsActionElement(
     title: String,
     subTitle: String,
     clickAction: () -> Unit,
+    clickEnabled: Boolean = true,
     isSelected: Boolean,
     padding: Dp = UiConstants.Spacing.veryLarge,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
@@ -27,7 +29,7 @@ fun SettingsActionElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickableWithHandCursor {
+            .clickableIf(enabled = clickEnabled) {
                 clickAction()
             }
             .padding(padding),

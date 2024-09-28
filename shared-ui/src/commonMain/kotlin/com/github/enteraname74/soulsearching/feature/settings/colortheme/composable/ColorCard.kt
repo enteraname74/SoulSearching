@@ -24,7 +24,6 @@ fun ColorCard(
 ) {
     Card(
         modifier = Modifier
-            .clickableWithHandCursor { onClick() }
             .alpha(if (isSelected) 1.0f else ContentAlpha.disabled),
         colors = CardDefaults.cardColors(
             contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -33,11 +32,13 @@ fun ColorCard(
     ) {
         Column(
             modifier = Modifier
+                .clickableWithHandCursor { onClick() }
                 .padding(
                     all = UiConstants.Spacing.large,
                 )
         ) {
             SettingsActionElement(
+                clickEnabled = false,
                 title = title,
                 subTitle = text,
                 clickAction = onClick,
