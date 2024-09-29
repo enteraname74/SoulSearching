@@ -12,13 +12,18 @@ import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import androidx.core.app.ServiceCompat
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.model.notification.SoulSearchingNotificationBuilder
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Service used for the playback.
  */
-class PlayerService : Service() {
+class PlayerService : Service(), KoinComponent {
+    private val playbackManager by inject<PlaybackManager>()
+
     private var musicNotification: SoulSearchingNotification? = null
 
     private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -44,7 +49,7 @@ class PlayerService : Service() {
             applicationContext.registerReceiver(
                 broadcastReceiver,
                 IntentFilter(SERVICE_BROADCAST),
-                Context.RECEIVER_NOT_EXPORTED
+                RECEIVER_NOT_EXPORTED
             )
         } else {
             applicationContext.registerReceiver(
@@ -58,7 +63,9 @@ class PlayerService : Service() {
                 context = this,
                 mediaSessionToken = token
             )
-            musicNotification!!.init(null)
+            musicNotification?.init(
+                currentMusic = playbackManager.currentMusic,
+            )
             ServiceCompat.startForeground(
                 this,
                 SoulSearchingNotification.CHANNEL_ID,
