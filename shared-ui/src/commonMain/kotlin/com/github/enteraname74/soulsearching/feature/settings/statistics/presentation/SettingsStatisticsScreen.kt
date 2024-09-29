@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -98,6 +97,7 @@ private fun SettingsStatisticsState.elements(index: Int): List<ListenedElement> 
         1 -> mostListenedArtists
         2 -> artistsWithMostSongs
         3 -> mostListenedAlbums
+        4 -> mostListenedPlaylists
         else -> mostListenedMusics
     }
 
@@ -108,6 +108,7 @@ private fun SettingsStatisticsState.title(index: Int): String =
         1 -> strings.mostPlayedArtists
         2 -> strings.artistsWithMostSongs
         3 -> strings.mostPlayedAlbums
+        4 -> strings.mostPlayedPlaylists
         else -> strings.mostPlayedSongs
     }
 

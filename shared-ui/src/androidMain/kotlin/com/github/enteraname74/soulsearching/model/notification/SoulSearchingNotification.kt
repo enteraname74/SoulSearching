@@ -31,7 +31,7 @@ abstract class SoulSearchingNotification(
         get() = _notification
 
 
-    private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
+    protected val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
         1,
         Intent(context, MainActivity::class.java).apply {
@@ -42,7 +42,7 @@ abstract class SoulSearchingNotification(
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    private val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
+    protected val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
         context,
         5,
         Intent(context, DeletedNotificationIntentReceiver::class.java),
@@ -54,7 +54,8 @@ abstract class SoulSearchingNotification(
      * It will show the information of the current played song if there is one.
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    fun init(currentMusic: Music?) {
+    open fun init(currentMusic: Music?) {
+        println("INIT NOTIFICATION WITH MUSIC: $currentMusic")
         notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)
             .setContentTitle(currentMusic?.name.orEmpty())

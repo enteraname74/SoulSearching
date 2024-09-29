@@ -1,11 +1,18 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.ModifierLocal
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
 import com.github.enteraname74.domain.model.getFromCoverId
@@ -125,16 +132,24 @@ fun SoulSearchingApplication(
                         }
                     }
 
-                    Navigator(MainPageScreen()) { navigator ->
-                        generalNavigator = navigator
+                    Box(
+                        modifier = Modifier
+                            .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
+                    ) {
+                        Navigator(
+                            screen = MainPageScreen()
+                        ) { navigator ->
+                            generalNavigator = navigator
 
-                        CrossfadeTransition(
-                            navigator = navigator,
-                            animationSpec = tween(UiConstants.AnimationDuration.normal)
-                        ) { screen ->
-                            screen.Content()
+                            CrossfadeTransition(
+                                navigator = navigator,
+                                animationSpec = tween(UiConstants.AnimationDuration.normal)
+                            ) { screen ->
+                                screen.Content()
+                            }
                         }
                     }
+
                 }
             }
         }

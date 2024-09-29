@@ -16,5 +16,6 @@ local.properties
 .idea/
 database.db
 
+.kotlin
 
 desktopApp/*.log

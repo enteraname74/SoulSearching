@@ -4,9 +4,12 @@ package com.github.enteraname74.soulsearching.feature.player.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -179,6 +182,7 @@ fun PlayerDraggableView(
                     .background(
                         color = animatedBackgroundColor
                     )
+                    .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.MINIMISED) {
                         coroutineScope.launch {
                             playerViewManager.animateTo(
