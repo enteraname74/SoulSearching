@@ -25,6 +25,10 @@ internal class RoomAlbumDataSourceImpl(
         )
     }
 
+    override suspend fun upsertAll(albums: List<Album>) {
+        appDatabase.albumDao.upsertAll(albums.map { it.toRoomAlbum() })
+    }
+
     override suspend fun delete(album: Album) {
         appDatabase.albumDao.delete(
             roomAlbum = album.toRoomAlbum()

@@ -15,6 +15,10 @@ class FolderRepositoryImpl(
         folder = folder
     )
 
+    override suspend fun upsertAll(folders: List<Folder>) {
+        folderDataSource.upsertAll(folders)
+    }
+
     override suspend fun delete(folder: Folder) = folderDataSource.delete(
         folder = folder
     )

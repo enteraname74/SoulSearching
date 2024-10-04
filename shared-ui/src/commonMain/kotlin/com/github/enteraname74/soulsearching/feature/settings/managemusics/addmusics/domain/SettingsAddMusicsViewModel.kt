@@ -106,5 +106,5 @@ class SettingsAddMusicsViewModel(
     /**
      * Persist a music and its cover.
      */
-    suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) = musicFetcher.addMusic(musicToAdd, musicCover)
+    suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) = musicFetcher.addMusic(musicToAdd)
 }

@@ -16,6 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.request.crossfade
+import coil3.util.DebugLogger
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
@@ -62,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalCoilApi::class)
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
     override
     fun onCreate(savedInstanceState: Bundle?) {
@@ -167,3 +174,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+private fun getAsyncImageLoader(context: PlatformContext)=
+    ImageLoader.Builder(context).crossfade(true).logger(DebugLogger()).build()

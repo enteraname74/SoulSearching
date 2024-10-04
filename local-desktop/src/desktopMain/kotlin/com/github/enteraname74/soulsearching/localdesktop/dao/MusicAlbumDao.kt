@@ -4,7 +4,11 @@ import com.github.enteraname74.domain.model.MusicAlbum
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.albumId
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.id
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.musicId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -18,6 +22,16 @@ internal class MusicAlbumDao {
                 if (musicAlbum.id != 0L) it[id] = musicAlbum.id
                 it[musicId] = musicAlbum.musicId
                 it[albumId] = musicAlbum.albumId
+            }
+        }
+    }
+
+    suspend fun upsertAll(musicAlbums: List<MusicAlbum>) {
+        flowTransactionOn {
+            MusicAlbumTable.batchUpsert(musicAlbums) {musicAlbum ->
+                if (musicAlbum.id != 0L) this[id] = musicAlbum.id
+                this[musicId] = musicAlbum.musicId
+                this[albumId] = musicAlbum.albumId
             }
         }
     }
@@ -38,7 +52,7 @@ internal class MusicAlbumDao {
 
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         flowTransactionOn {
-            MusicAlbumTable.update({ MusicAlbumTable.albumId eq legacyAlbumId }) {
+            MusicAlbumTable.update({ albumId eq legacyAlbumId }) {
                 it[albumId] = newAlbumId
             }
         }
@@ -48,14 +62,14 @@ internal class MusicAlbumDao {
         MusicAlbumTable
             .selectAll()
             .where { MusicAlbumTable.albumId eq albumId }
-            .map { it[MusicAlbumTable.musicId].value }
+            .map { it[musicId].value }
     }
 
     suspend fun getAlbumIdFromMusicId(musicId: UUID): UUID? = dbQuery {
         MusicAlbumTable
             .selectAll()
             .where { MusicAlbumTable.musicId eq musicId }
-            .map { it[MusicAlbumTable.albumId].value }
+            .map { it[albumId].value }
             .firstOrNull()
     }
 }

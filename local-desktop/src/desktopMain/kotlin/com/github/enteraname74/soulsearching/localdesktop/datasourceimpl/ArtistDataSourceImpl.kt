@@ -14,6 +14,12 @@ internal class ArtistDataSourceImpl(
         artistDao.upsert(artist)
     }
 
+    override suspend fun upsertAll(artists: List<Artist>) {
+        artistDao.upsertAll(
+            artists = artists,
+        )
+    }
+
     override suspend fun delete(artist: Artist) {
         artistDao.delete(artist)
     }

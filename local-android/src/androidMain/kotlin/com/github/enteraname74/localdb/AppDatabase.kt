@@ -9,6 +9,7 @@ import com.github.enteraname74.localdb.model.*
 
 
 @Database(
+    version = 16,
     entities = [
         RoomMusic::class,
         RoomAlbum::class,
@@ -22,7 +23,6 @@ import com.github.enteraname74.localdb.model.*
         RoomPlayerMusic::class,
         RoomFolder::class
     ],
-    version = 16
 )
 @TypeConverters(Converters::class)
 internal abstract class AppDatabase : RoomDatabase() {

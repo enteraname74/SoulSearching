@@ -8,13 +8,22 @@ import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.folder
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.id
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isHidden
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isInQuickAccess
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.nbPlayed
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.path
+import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,6 +49,25 @@ internal class MusicDao {
         }
     }
 
+    suspend fun upsertAll(musics: List<Music>) {
+        flowTransactionOn {
+            MusicTable.batchUpsert(musics) {music ->
+                this[id] = music.musicId
+                this[MusicTable.name] = music.name
+                this[album] = music.album
+                this[artist] = music.artist
+                this[coverId] = music.coverId?.toString()
+                this[duration] = music.duration
+                this[path] = music.path
+                this[folder] = music.folder
+                this[addedDate] = music.addedDate
+                this[nbPlayed] = music.nbPlayed
+                this[isInQuickAccess] = music.isInQuickAccess
+                this[isHidden] = music.isHidden
+            }
+        }
+    }
+
     suspend fun delete(music: Music) {
         flowTransactionOn {
             MusicTable.deleteWhere { id eq music.musicId }
@@ -56,7 +84,7 @@ internal class MusicDao {
     suspend fun getFromPath(musicPath: String): Music? = dbQuery {
         MusicTable
             .selectAll()
-            .where { MusicTable.path eq musicPath }
+            .where { path eq musicPath }
             .map { it.toMusic() }
             .firstOrNull()
     }
@@ -84,7 +112,7 @@ internal class MusicDao {
             joinType = JoinType.INNER,
             onColumn = MusicTable.id,
             otherColumn = MusicAlbumTable.musicId,
-            additionalConstraint = { (MusicAlbumTable.albumId eq albumId) and (MusicTable.isHidden eq false) }
+            additionalConstraint = { (MusicAlbumTable.albumId eq albumId) and (isHidden eq false) }
         )
             .selectAll()
             .asFlow()
@@ -98,7 +126,7 @@ internal class MusicDao {
             joinType = JoinType.INNER,
             onColumn = MusicTable.id,
             otherColumn = MusicArtistTable.musicId,
-            additionalConstraint = { (MusicArtistTable.artistId eq artistId) and (MusicTable.isHidden eq false) }
+            additionalConstraint = { (MusicArtistTable.artistId eq artistId) and (isHidden eq false) }
         )
             .selectAll()
             .asFlow()
@@ -112,7 +140,7 @@ internal class MusicDao {
             joinType = JoinType.INNER,
             onColumn = MusicTable.id,
             otherColumn = MusicPlaylistTable.musicId,
-            additionalConstraint = { (MusicPlaylistTable.playlistId eq playlistId) and (MusicTable.isHidden eq false) }
+            additionalConstraint = { (MusicPlaylistTable.playlistId eq playlistId) and (isHidden eq false) }
         )
             .selectAll()
             .asFlow()

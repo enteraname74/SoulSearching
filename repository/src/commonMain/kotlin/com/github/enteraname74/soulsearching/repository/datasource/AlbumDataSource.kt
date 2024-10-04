@@ -16,6 +16,8 @@ interface AlbumDataSource {
      */
     suspend fun upsert(album: Album)
 
+    suspend fun upsertAll(albums: List<Album>)
+
     /**
      * Deletes an Album.
      */

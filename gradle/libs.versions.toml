@@ -12,6 +12,7 @@ androidx-core = "1.13.1"
 androidx-lifecycle = "2.8.6"
 annotation = "1.8.2"
 appcompat = "1.7.0"
+coil = "3.0.0-alpha01"
 compose = "1.6.11"
 coroutines-core = "1.9.0"
 desktop-version-name = "0.8.1"
@@ -45,6 +46,9 @@ androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resource
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
+
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 

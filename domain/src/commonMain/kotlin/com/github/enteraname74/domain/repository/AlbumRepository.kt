@@ -20,6 +20,8 @@ interface AlbumRepository {
      */
     suspend fun upsert(album: Album)
 
+    suspend fun upsertAll(albums: List<Album>)
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */

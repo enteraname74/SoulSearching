@@ -12,6 +12,8 @@ interface ArtistRepository {
      */
     suspend fun upsert(artist: Artist)
 
+    suspend fun upsertAll(artists: List<Artist>)
+
     /**
      * Deletes an Artist.
      */

@@ -16,6 +16,7 @@ internal data class RoomMusic(
     var name: String = "",
     val album: String = "",
     val artist: String = "",
+    val initialCoverPath: String? = null,
     var coverId: UUID? = null,
     var duration: Long = 0L,
     var path: String = "",
@@ -41,7 +42,8 @@ internal fun RoomMusic.toMusic(): Music = Music(
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
-    isHidden = isHidden
+    isHidden = isHidden,
+    initialCoverPath = initialCoverPath,
 )
 
 /**
@@ -59,5 +61,6 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
-    isHidden = isHidden
+    isHidden = isHidden,
+    initialCoverPath = initialCoverPath,
 )

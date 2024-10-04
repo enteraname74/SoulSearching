@@ -8,6 +8,12 @@ import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.nbPlayed
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.toArtist
 import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
@@ -15,6 +21,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTabl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +42,19 @@ internal class ArtistDao(
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
+            }
+        }
+    }
+
+    suspend fun upsertAll(artists: List<Artist>) {
+        flowTransactionOn {
+            ArtistTable.batchUpsert(artists) {
+                this[id] = it.artistId
+                this[artistName] = it.artistName
+                this[coverId] = it.coverId?.toString()
+                this[addedDate] = it.addedDate
+                this[nbPlayed] = it.nbPlayed
+                this[isInQuickAccess] = it.isInQuickAccess
             }
         }
     }

@@ -15,6 +15,9 @@ internal interface FolderDao {
     @Upsert
     suspend fun upsert(roomFolder : RoomFolder)
 
+    @Upsert
+    suspend fun upsertAll(roomFolders : List<RoomFolder>)
+
     @Delete
     suspend fun delete(roomFolder: RoomFolder)
 

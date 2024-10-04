@@ -18,6 +18,10 @@ internal class RoomMusicArtistDataSourceImpl(
         )
     }
 
+    override suspend fun upsertAll(musicArtists: List<MusicArtist>) {
+        appDatabase.musicArtistDao.upsertAll(musicArtists.map { it.toRoomMusicArtist() })
+    }
+
     override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) {
         appDatabase.musicArtistDao.updateArtistOfMusic(
             musicId = musicId,

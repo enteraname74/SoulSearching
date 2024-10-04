@@ -33,9 +33,22 @@ internal class AlbumDao(
         }
     }
 
+    suspend fun upsertAll(albums: List<Album>) {
+        flowTransactionOn {
+            AlbumTable.batchUpsert(albums) {
+                this[AlbumTable.id] = it.albumId
+                this[AlbumTable.albumName] = it.albumName
+                this[AlbumTable.coverId] = it.coverId?.toString()
+                this[AlbumTable.addedDate] = it.addedDate
+                this[AlbumTable.nbPlayed] = it.nbPlayed
+                this[AlbumTable.isInQuickAccess] = it.isInQuickAccess
+            }
+        }
+    }
+
     suspend fun delete(album: Album) {
         flowTransactionOn {
-            AlbumTable.deleteWhere { AlbumTable.id eq album.albumId }
+            AlbumTable.deleteWhere { id eq album.albumId }
         }
     }
 

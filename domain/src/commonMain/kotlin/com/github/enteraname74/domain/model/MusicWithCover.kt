@@ -5,6 +5,6 @@ package com.github.enteraname74.domain.model
  * The cover can be null (the song doesn't possess a cover).
  */
 data class MusicWithCover(
-    val music : Music = Music(),
-    val cover : ImageCover? = null
+    val music : Music,
+    val cover : ImageCover,
 )

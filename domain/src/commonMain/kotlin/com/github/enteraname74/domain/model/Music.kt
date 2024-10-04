@@ -12,6 +12,7 @@ data class Music(
     var name: String = "",
     val album: String = "",
     val artist: String = "",
+    var initialCoverPath: String?,
     var coverId: UUID? = null,
     var duration: Long = 0L,
     var path: String = "",

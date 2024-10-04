@@ -11,6 +11,8 @@ interface MusicRepository {
      */
     suspend fun upsert(music: Music)
 
+    suspend fun upsertAll(musics: List<Music>)
+
     /**
      * Delete a music.
      */

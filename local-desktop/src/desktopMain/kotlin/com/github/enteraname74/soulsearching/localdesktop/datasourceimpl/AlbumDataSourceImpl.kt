@@ -15,6 +15,12 @@ internal class AlbumDataSourceImpl(
         albumDao.upsert(album = album)
     }
 
+    override suspend fun upsertAll(albums: List<Album>) {
+        albumDao.upsertAll(
+            albums = albums,
+        )
+    }
+
     override suspend fun delete(album: Album) {
         albumDao.delete(album = album)
     }

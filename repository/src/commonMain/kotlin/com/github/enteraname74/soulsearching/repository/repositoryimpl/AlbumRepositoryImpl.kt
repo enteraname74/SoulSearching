@@ -19,6 +19,10 @@ class AlbumRepositoryImpl(
         albumDataSource.delete(album = album)
     }
 
+    override suspend fun upsertAll(albums: List<Album>) {
+        albumDataSource.upsertAll(albums)
+    }
+
     override suspend fun upsert(album: Album) = albumDataSource.upsert(
         album = album
     )

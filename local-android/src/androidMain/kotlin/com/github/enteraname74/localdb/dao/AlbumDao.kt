@@ -20,6 +20,9 @@ internal interface AlbumDao {
     @Upsert
     suspend fun upsert(roomAlbum: RoomAlbum)
 
+    @Upsert
+    suspend fun upsertAll(roomAlbums: List<RoomAlbum>)
+
     @Delete
     suspend fun delete(roomAlbum: RoomAlbum)
 

@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
@@ -60,6 +61,9 @@ kotlin {
                 implementation(libs.coroutines.core)
 
                 implementation(libs.file.kit)
+
+                implementation(libs.coil)
+                implementation(libs.coil.compose)
             }
         }
         androidMain {

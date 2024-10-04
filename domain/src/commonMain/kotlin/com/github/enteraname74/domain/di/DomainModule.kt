@@ -16,7 +16,7 @@ import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
 import com.github.enteraname74.domain.usecase.month.*
 import com.github.enteraname74.domain.usecase.musicfolder.*
-import com.github.enteraname74.domain.util.MusicFileUpdater
+import com.github.enteraname74.domain.util.*
 
 val domainModule = module {
     // USE CASES
@@ -38,9 +38,11 @@ val domainModule = module {
     singleOf(::UpdateAlbumNbPlayedUseCase)
     singleOf(::UpdateAlbumUseCase)
     singleOf(::UpsertAlbumUseCase)
+    singleOf(::UpsertAllAlbumsUseCase)
 
     // AlbumArtist
     singleOf(::UpsertAlbumArtistUseCase)
+    singleOf(::UpsertAllAlbumArtistUseCase)
 
     // Artist
     singleOf(::DeleteArtistIfEmptyUseCase)
@@ -56,12 +58,14 @@ val domainModule = module {
     singleOf(::UpdateArtistCoverUseCase)
     singleOf(::UpdateArtistNbPlayedUseCase)
     singleOf(::UpdateArtistUseCase)
+    singleOf(::UpsertAllArtistsUseCase)
     singleOf(::UpsertArtistUseCase)
 
     // Folder
     singleOf(::DeleteFolderUseCase)
     singleOf(::GetAllFoldersUseCase)
     singleOf(::GetHiddenFoldersPathUseCase)
+    singleOf(::UpsertAllFoldersUseCase)
     singleOf(::UpsertFolderUseCase)
 
     // ImageCover
@@ -93,14 +97,17 @@ val domainModule = module {
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)
     singleOf(::UpdateMusicUseCase)
+    singleOf(::UpsertAllMusicsUseCase)
     singleOf(::UpsertMusicUseCase)
 
     // MusicAlbum
     singleOf(::GetAlbumIdFromMusicIdUseCase)
+    singleOf(::UpsertAllMusicAlbumUseCase)
     singleOf(::UpsertMusicIntoAlbumUseCase)
 
     // MusicArtist
     singleOf(::GetArtistIdFromMusicIdUseCase)
+    singleOf(::UpsertAllMusicArtistsUseCase)
     singleOf(::UpsertMusicIntoArtistUseCase)
 
     // MusicFolder

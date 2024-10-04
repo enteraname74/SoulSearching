@@ -21,6 +21,10 @@ internal class RoomMusicDataSourceImpl(
         )
     }
 
+    override suspend fun upsertAll(musics: List<Music>) {
+        appDatabase.musicDao.upsertAll(musics.map { it.toRoomMusic() })
+    }
+
     override suspend fun delete(music: Music) {
         appDatabase.musicDao.delete(
             roomMusic = music.toRoomMusic()

@@ -15,6 +15,9 @@ internal interface ArtistDao {
     @Upsert
     suspend fun upsert(roomArtist: RoomArtist)
 
+    @Upsert
+    suspend fun upsertAll(roomArtists: List<RoomArtist>)
+
     @Delete
     suspend fun delete(roomArtist: RoomArtist)
 

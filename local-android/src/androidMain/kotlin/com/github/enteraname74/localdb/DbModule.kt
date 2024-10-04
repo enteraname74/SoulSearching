@@ -23,7 +23,7 @@ val localAndroidModule: Module = module {
             androidApplication(),
             AppDatabase::class.java,
             "SoulSearching.db"
-        ).fallbackToDestructiveMigration().build()
+        ).build()
     }
 
     single<AlbumArtistDataSource> { RoomAlbumArtistDataSourceImpl(get()) }
