@@ -55,6 +55,7 @@ class ModifyMusicViewModel(
                 initialMusic = initialMusic,
                 editableElement = EditableElement(
                     initialCoverId = initialMusic.coverId,
+                    initialCoverPath = initialMusic.initialCoverPath,
                     newCover = newCover
                 )
             )
