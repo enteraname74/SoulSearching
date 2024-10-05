@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -31,35 +33,105 @@ import java.util.*
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SoulImage(
-    initialCoverPath: String? = null,
-    coverId: UUID?,
+    cover: Cover?,
     size: Dp,
     modifier: Modifier = Modifier,
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
 ) {
-
-    val modifierBase = Modifier
+    val baseModifier = Modifier
         .size(size)
         .clip(RoundedCornerShape(percent = roundedPercent))
         .then(modifier)
 
-    if (coverId == null) {
-        CoverPathImage(
-            modifier = modifierBase,
-            initialCoverPath = initialCoverPath,
-            tint = tint,
-            contentScale = contentScale,
-        )
-    } else {
-        CoverIdImage(
-            modifier = modifierBase,
-            coverId = coverId,
-            tint = tint,
-            contentScale = contentScale,
-        )
+    when (cover) {
+        null -> {
+            TemplateImage(
+                modifier = baseModifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+
+        is Cover.FileCover -> {
+            FileCover(
+                cover = cover,
+                modifier = baseModifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
     }
+}
+
+@Composable
+private fun FileCover(
+    cover: Cover.FileCover,
+    modifier: Modifier,
+    contentScale: ContentScale,
+    tint: Color,
+) {
+    when {
+        cover.isEmpty() -> {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+
+        cover.fileCoverId != null -> {
+            CoverIdImage(
+                coverId = cover.fileCoverId,
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+
+        cover.initialCoverPath != null -> {
+            CoverPathImage(
+                initialCoverPath = cover.initialCoverPath,
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+    }
+}
+
+@Composable
+fun TemplateImage(
+    modifier: Modifier,
+    contentScale: ContentScale,
+    tint: Color,
+) {
+    Image(
+        modifier = modifier,
+        painter = painterResource(Res.drawable.saxophone_png),
+        contentDescription = strings.image,
+        contentScale = contentScale,
+        colorFilter = ColorFilter.tint(tint)
+    )
+}
+
+@Composable
+fun DataImage(
+    data: Any?,
+    modifier: Modifier,
+    contentScale: ContentScale,
+) {
+    AsyncImage(
+        error = painterResource(Res.drawable.saxophone_png),
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .data(data)
+            .crossfade(true)
+            .build(),
+        contentDescription = "",
+        modifier = modifier,
+        contentScale = contentScale,
+    )
 }
 
 @Composable
@@ -68,8 +140,10 @@ private fun CoverIdImage(
     modifier: Modifier = Modifier,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
-    coverFileManager: CoverFileManager = injectElement(),
 ) {
+
+    val coverFileManager: CoverFileManager = injectElement()
+
     var coverPath: String? by rememberSaveable {
         mutableStateOf(null)
     }
@@ -83,23 +157,16 @@ private fun CoverIdImage(
     }
 
     if (coverPath != null) {
-        AsyncImage(
-            error = painterResource(Res.drawable.saxophone_png),
-            placeholder = painterResource(Res.drawable.saxophone_png),
-            model = ImageRequest.Builder(LocalPlatformContext.current)
-                .data(coverPath)
-                .build(),
-            contentDescription = "",
+        DataImage(
+            data = coverPath,
             modifier = modifier,
             contentScale = contentScale,
         )
     } else {
-        Image(
+        TemplateImage(
             modifier = modifier,
-            painter = painterResource(Res.drawable.saxophone_png),
-            contentDescription = strings.image,
             contentScale = contentScale,
-            colorFilter = ColorFilter.tint(tint)
+            tint = tint,
         )
     }
 }

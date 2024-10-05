@@ -85,7 +85,7 @@ fun PlayerMusicCover(
                 ) { currentSongPos ->
                     SoulImage(
                         modifier = imageModifier,
-                        coverId = aroundSongs.getOrNull(currentSongPos)?.coverId,
+                        cover = aroundSongs.getOrNull(currentSongPos)?.cover,
                         size = imageSize,
                         roundedPercent = (playerViewManager.offset / 100).roundToInt()
                             .coerceIn(3, 10)
@@ -94,7 +94,7 @@ fun PlayerMusicCover(
             } else {
                 SoulImage(
                     modifier = imageModifier,
-                    coverId = playbackManager.currentMusic?.coverId,
+                    cover = playbackManager.currentMusic?.cover,
                     size = imageSize,
                     roundedPercent = (playerViewManager.offset / 100).roundToInt()
                         .coerceIn(3, 10)

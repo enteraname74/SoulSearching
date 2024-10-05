@@ -49,8 +49,7 @@ fun MusicItemComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SoulImage(
-                initialCoverPath = music.initialCoverPath,
-                coverId = music.coverId,
+                cover = music.cover,
                 size = UiConstants.CoverSize.small,
                 tint = textColor
             )

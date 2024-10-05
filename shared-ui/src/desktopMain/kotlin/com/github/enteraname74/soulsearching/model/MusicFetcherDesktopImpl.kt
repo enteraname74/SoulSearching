@@ -12,8 +12,7 @@ import com.github.enteraname74.domain.usecase.artist.GetArtistFromNameUseCase
 import com.github.enteraname74.domain.usecase.artist.UpdateArtistCoverUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
-import com.github.enteraname74.domain.usecase.imagecover.GetCoverOfElementUseCase
-import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicAlreadySavedUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpsertMusicIntoAlbumUseCase

@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumArtist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
@@ -39,7 +40,9 @@ class UpdateAlbumOfMusicUseCase(
         if (newMusicAlbum == null) {
             newMusicAlbum = Album(
                 albumName = newAlbumName,
-                coverId = legacyMusic.coverId
+                cover = (legacyMusic.cover as? Cover.FileCover)?.fileCoverId?.let {
+                    Cover.FileCover(fileCoverId = it)
+                }
             )
             albumRepository.upsert(album = newMusicAlbum)
 

@@ -5,7 +5,6 @@ import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumArtistDataSourceI
 import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomImageCoverDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicAlbumDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
 import com.github.enteraname74.localdb.datasourceimpl.RoomMusicDataSourceImpl
@@ -30,7 +29,6 @@ val localAndroidModule: Module = module {
     single<AlbumDataSource> { RoomAlbumDataSourceImpl(get()) }
     single<ArtistDataSource> { RoomArtistDataSourceImpl(get()) }
     single<FolderDataSource> { RoomFolderDataSourceImpl(get()) }
-    single<ImageCoverDataSource> { RoomImageCoverDataSourceImpl(get()) }
     single<MusicAlbumDataSource> { RoomMusicAlbumDataSourceImpl(get()) }
     single<MusicArtistDataSource> { RoomMusicArtistDataSourceImpl(get()) }
     single<MusicDataSource> { RoomMusicDataSourceImpl(get()) }

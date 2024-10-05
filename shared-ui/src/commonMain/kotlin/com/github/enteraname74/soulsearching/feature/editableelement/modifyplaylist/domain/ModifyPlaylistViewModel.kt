@@ -1,12 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.ext.toImageBitmap
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
@@ -39,7 +37,7 @@ class ModifyPlaylistViewModel(
         }
     }
 
-    private val newCover: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
+    private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
 
     val state: StateFlow<ModifyPlaylistState> = combine(
         initialPlaylist,
@@ -50,7 +48,7 @@ class ModifyPlaylistViewModel(
             else -> ModifyPlaylistState.Data(
                 initialPlaylist = initialPlaylist,
                 editableElement = EditableElement(
-                    initialCoverId = initialPlaylist.coverId,
+                    initialCover = initialPlaylist.cover,
                     newCover = newCover,
                 )
             )
@@ -84,18 +82,19 @@ class ModifyPlaylistViewModel(
 
             if (!form.isFormValid()) return@launch
 
-            val coverId = if (state.editableElement.newCover != null) {
-                val imageCover = ImageCover(
-                    cover = state.editableElement.newCover
+            val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: UUID = UUID.randomUUID()
+                upsertImageCoverUseCase(
+                    id = newCoverId,
+                    data = coverData,
                 )
-                upsertImageCoverUseCase(imageCover = imageCover)
-                imageCover.coverId
-            } else {
-                state.initialPlaylist.coverId
-            }
+                newCoverId
+            } ?: (state.initialPlaylist.cover as? Cover.FileCover)?.fileCoverId
 
             val newPlaylistInformation = state.initialPlaylist.copy(
-                coverId = coverId,
+                cover = (state.initialPlaylist.cover as? Cover.FileCover)?.copy(
+                    fileCoverId = coverId,
+                ) ?: coverId?.let { Cover.FileCover(fileCoverId = it) },
                 name = form.getPlaylistName().trim(),
             )
 
@@ -113,11 +112,11 @@ class ModifyPlaylistViewModel(
 
     fun setNewCover(imageFile: PlatformFile) {
         screenModelScope.launch {
-            newCover.value = imageFile.readBytes().toImageBitmap()
+            newCover.value = imageFile.readBytes()
         }
     }
 
-     fun init(playlistId: UUID) {
+    fun init(playlistId: UUID) {
         this.playlistId.value = playlistId
     }
 }

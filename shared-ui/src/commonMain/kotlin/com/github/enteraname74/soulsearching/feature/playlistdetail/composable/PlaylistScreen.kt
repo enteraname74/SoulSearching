@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -22,7 +24,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
@@ -31,6 +32,7 @@ import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
+import com.github.enteraname74.domain.ext.toImageBitmap
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -44,13 +46,20 @@ fun PlaylistScreen(
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
-    imageCoverRetriever: ImageCoverRetriever = injectElement(),
+    coverFileManager: CoverFileManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val playlistImageBitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = playlistDetail.coverId)
-        .collectAsState(initial = null)
+    var playlistImageBitmap: ImageBitmap? by remember {
+        mutableStateOf(null)
+    }
+
+    LaunchedEffect(playlistDetail.cover) {
+        playlistImageBitmap = (playlistDetail.cover as? Cover.FileCover)?.fileCoverId?.let { coverId ->
+            coverFileManager.getCoverData(coverId = coverId)?.toImageBitmap()
+        }
+    }
 
     LaunchedEffect(playlistImageBitmap) {
         colorThemeManager.setNewPlaylistCover(

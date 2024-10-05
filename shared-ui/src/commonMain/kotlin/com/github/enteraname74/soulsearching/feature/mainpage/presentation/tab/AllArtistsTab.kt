@@ -45,7 +45,7 @@ fun allArtistsTab(
             BigPreviewComposable(
                 modifier = Modifier
                     .animateItemPlacement(),
-                coverId = element.artist.coverId,
+                cover = element.cover,
                 title = element.artist.artistName,
                 text = strings.musics(element.musics.size),
                 onClick = {

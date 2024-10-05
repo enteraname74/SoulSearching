@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import java.time.LocalDateTime
 import java.util.UUID
@@ -35,7 +36,10 @@ internal fun RoomMusic.toMusic(): Music = Music(
     name = name,
     album = album,
     artist = artist,
-    coverId = coverId,
+    cover = Cover.FileCover(
+        initialCoverPath = initialCoverPath,
+        fileCoverId = coverId,
+    ),
     duration = duration,
     path = path,
     folder = folder,
@@ -43,7 +47,6 @@ internal fun RoomMusic.toMusic(): Music = Music(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     isHidden = isHidden,
-    initialCoverPath = initialCoverPath,
 )
 
 /**
@@ -54,7 +57,7 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     name = name,
     album = album,
     artist = artist,
-    coverId = coverId,
+    coverId = (cover as? Cover.FileCover)?.fileCoverId,
     duration = duration,
     path = path,
     folder = folder,
@@ -62,5 +65,5 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     isHidden = isHidden,
-    initialCoverPath = initialCoverPath,
+    initialCoverPath = (cover as? Cover.FileCover)?.initialCoverPath,
 )

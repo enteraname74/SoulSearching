@@ -62,7 +62,7 @@ private fun QuickAccessible.toPreview(
         is AlbumWithArtist -> {
             BigPreviewComposable(
                 modifier = modifier,
-                coverId = this.album.coverId,
+                cover = this.cover,
                 title = this.album.albumName,
                 text = this.artist?.artistName.orEmpty(),
                 onClick = { onClick(this) },
@@ -72,7 +72,7 @@ private fun QuickAccessible.toPreview(
         is ArtistWithMusics -> {
             BigPreviewComposable(
                 modifier = modifier,
-                coverId = this.artist.coverId,
+                cover = this.cover,
                 title = this.artist.artistName,
                 text = strings.musics(total = this.musics.size),
                 onClick = { onClick(this) },
@@ -82,7 +82,7 @@ private fun QuickAccessible.toPreview(
         is Music -> {
             BigPreviewComposable(
                 modifier = modifier,
-                coverId = this.coverId,
+                cover = this.cover,
                 title = this.name,
                 text = this.album,
                 onClick = {
@@ -107,7 +107,7 @@ private fun QuickAccessible.toPreview(
         is PlaylistWithMusicsNumber -> {
             BigPreviewComposable(
                 modifier = modifier,
-                coverId = this.playlist.coverId,
+                cover = this.playlist.cover,
                 title = this.playlist.name,
                 text = strings.musics(total = this.musicsNumber),
                 onClick = { onClick(this) },

@@ -10,6 +10,7 @@ import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.database.getLongOrNull
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
@@ -30,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 /**
@@ -139,7 +139,9 @@ class MusicFetcherAndroidImpl(
                             duration = cursor.getLong(3),
                             path = cursor.getString(4),
                             folder = File(cursor.getString(4)).parent ?: "",
-                            initialCoverPath = cursor.getLongOrNull(5)?.let(::getMusicFileCoverPath)
+                            cover = Cover.FileCover(
+                                initialCoverPath = cursor.getLongOrNull(5)?.let(::getMusicFileCoverPath)
+                            ),
                         )
                         addMusic(music)
                     } catch (e: Exception) {
@@ -197,7 +199,9 @@ class MusicFetcherAndroidImpl(
                                 duration = cursor.getLong(3),
                                 path = cursor.getString(4),
                                 folder = File(cursor.getString(4)).parent ?: "",
-                                initialCoverPath = cursor.getLongOrNull(5)?.let(::getMusicFileCoverPath),
+                                cover = Cover.FileCover(
+                                    initialCoverPath = cursor.getLongOrNull(5)?.let(::getMusicFileCoverPath)
+                                ),
                             )
                             newMusics.add(
                                 SelectableMusicItem(

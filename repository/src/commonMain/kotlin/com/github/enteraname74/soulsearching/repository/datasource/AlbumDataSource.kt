@@ -28,6 +28,8 @@ interface AlbumDataSource {
      */
     fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>>
 
+    fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>>
+
     /**
      * Retrieves an Album from its id.
      */

@@ -18,7 +18,6 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddT
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -42,7 +41,6 @@ class PlayerViewModel(
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    imageCoverRetriever: ImageCoverRetriever,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
     private val _state = MutableStateFlow(PlayerState())
@@ -50,14 +48,10 @@ class PlayerViewModel(
     val state = combine(
         _state,
         getAllPlaylistWithMusicsUseCase(),
-        imageCoverRetriever.allCovers,
-        imageCoverRetriever.getImageBitmap(_state.value.currentMusic?.coverId),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
-    ) { state, playlists, allCovers, currentMusicCover, isCoverSwipeEnabled ->
+    ) { state, playlists, isCoverSwipeEnabled ->
         state.copy(
             playlistsWithMusics = playlists,
-            allCovers = allCovers,
-            currentMusicCover = currentMusicCover,
             canSwipeCover = isCoverSwipeEnabled,
         )
     }.stateIn(

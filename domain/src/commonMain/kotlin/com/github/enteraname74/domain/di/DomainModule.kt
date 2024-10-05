@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.usecase.album.*
 import com.github.enteraname74.domain.usecase.albumartist.*
 import com.github.enteraname74.domain.usecase.artist.*
 import com.github.enteraname74.domain.usecase.folder.*
-import com.github.enteraname74.domain.usecase.imagecover.*
+import com.github.enteraname74.domain.usecase.cover.*
 import com.github.enteraname74.domain.usecase.lyrics.*
 import com.github.enteraname74.domain.usecase.music.*
 import com.github.enteraname74.domain.usecase.musicalbum.*
@@ -25,6 +25,7 @@ val domainModule = module {
     singleOf(::DeleteAlbumUseCase)
     singleOf(::GetAlbumsNameFromSearchStringUseCase)
     singleOf(::GetAlbumsOfArtistsUseCase)
+    singleOf(::GetAlbumsWithMusicsOfArtistUseCase)
     singleOf(::GetAlbumUseCase)
     singleOf(::GetAlbumWithMusicsUseCase)
     singleOf(::GetAllAlbumsUseCase)
@@ -69,10 +70,8 @@ val domainModule = module {
     singleOf(::UpsertFolderUseCase)
 
     // ImageCover
-    singleOf(::DeleteImageCoverUseCase)
-    singleOf(::GetAllImageCoverUseCase)
-    singleOf(::GetCoverOfElementUseCase)
-    singleOf(::IsImageCoverUsedUseCase)
+    singleOf(::DeleteCoverUseCase)
+    singleOf(::IsCoverUsedUseCase)
     singleOf(::UpsertImageCoverUseCase)
 
     // Lyrics
@@ -92,7 +91,6 @@ val domainModule = module {
     singleOf(::IsMusicAlreadySavedUseCase)
     singleOf(::IsMusicInFavoritePlaylistUseCase)
     singleOf(::SaveMusicAndCreateMissingArtistAndAlbumUseCase)
-    singleOf(::SaveMusicUseCase)
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)

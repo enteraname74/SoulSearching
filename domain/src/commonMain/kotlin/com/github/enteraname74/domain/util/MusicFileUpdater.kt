@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.util
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -17,12 +18,13 @@ import java.io.File
 class MusicFileUpdater : KoinComponent {
 
     private val settings by inject<SoulSearchingSettings>()
+    private val coverFileManager by inject<CoverFileManager>()
 
     /**
      * Updates the file metadata of a music.
      * Does nothing if the user has not accepted files to be modified.
      */
-    fun updateMusic(music: Music, cover: ImageBitmap?) {
+    suspend fun updateMusic(music: Music) {
         if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
         try {
             val musicFile = File(music.path)
@@ -35,14 +37,18 @@ class MusicFileUpdater : KoinComponent {
             tag.setField(FieldKey.ALBUM, music.album)
             tag.setField(FieldKey.ARTIST, music.artist)
 
-            cover?.let { currentArtwork ->
-                try {
-                    val artwork = ArtworkFactory.getNew()
-                    tag.deleteArtworkField()
-                    artwork.binaryData = currentArtwork.toBytes()
-                    tag.setField(artwork)
-                } catch (e: Exception) {
-                    println("MUSIC FILE UPDATER: Exception while writing cover: ${e.localizedMessage}")
+            (music.cover as? Cover.FileCover)?.fileCoverId?.let { coverId ->
+                val coverData: ByteArray? = coverFileManager.getCoverData(coverId = coverId)
+
+                coverData?.let { currentArtwork ->
+                    try {
+                        val artwork = ArtworkFactory.getNew()
+                        tag.deleteArtworkField()
+                        artwork.binaryData = currentArtwork
+                        tag.setField(artwork)
+                    } catch (e: Exception) {
+                        println("MUSIC FILE UPDATER: Exception while writing cover: ${e.localizedMessage}")
+                    }
                 }
             }
 

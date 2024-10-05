@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
@@ -15,6 +16,7 @@ import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsS
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -35,6 +37,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.io.File
+import java.util.UUID
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -45,6 +48,7 @@ class MainPageViewModel(
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val isCoverUsedUseCase: IsCoverUsedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
@@ -53,6 +57,7 @@ class MainPageViewModel(
     private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
+    private val coverFileManager: CoverFileManager,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
@@ -259,6 +264,15 @@ class MainPageViewModel(
                         cleanMusicsLaunched = true
                         checkAndDeleteMusicIfNotExist()
                     }
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val allCoverIds: List<UUID> = coverFileManager.getAllCoverIds()
+            allCoverIds.forEach { coverId ->
+                if (!isCoverUsedUseCase(coverId = coverId)) {
+                    coverFileManager.deleteFromId(id = coverId)
                 }
             }
         }

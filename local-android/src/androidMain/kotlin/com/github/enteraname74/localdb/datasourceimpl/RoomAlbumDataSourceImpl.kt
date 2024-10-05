@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toAlbum
-import com.github.enteraname74.localdb.model.toAlbumWithArtist
 import com.github.enteraname74.localdb.model.toAlbumWithMusics
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
@@ -45,6 +44,16 @@ internal class RoomAlbumDataSourceImpl(
         }
     }
 
+    override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+        appDatabase.albumDao.getAllAlbumsWithMusicsFromArtist(
+            artistId = artistId
+        ).map { list ->
+            list.map {
+                it.toAlbumWithMusics()
+            }
+        }
+
+
     override fun getFromId(albumId: UUID): Flow<Album?> {
         return appDatabase.albumDao.getFromId(
             albumId = albumId
@@ -70,7 +79,7 @@ internal class RoomAlbumDataSourceImpl(
     }
 
     override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> {
-        return appDatabase.albumDao.getAllAlbumsWithArtist().map { list ->
+        return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
             list.map { it.toAlbumWithArtist() }
         }
     }

@@ -26,6 +26,45 @@ interface CoverFileManager {
         }
     }
 
+    suspend fun getAllCoverIds(): List<UUID> {
+        val coverFolder = getCoverFolder()
+        val allCoverFiles = coverFolder.listFiles() ?: return emptyList()
+
+        return buildList {
+            allCoverFiles.forEach { cover ->
+                cover.coverId()?.let {
+                    add(it)
+                }
+            }
+        }
+    }
+
+    suspend fun getCoverData(coverId: UUID): ByteArray? {
+        val coverFolder = getCoverFolder()
+        val coverFile = File(coverFolder, buildFileName(id = coverId))
+
+        return if (coverFile.exists()) {
+            return coverFile.readBytes()
+        } else {
+            null
+        }
+    }
+
+    suspend fun deleteFromId(id: UUID) {
+        val coverFolder = getCoverFolder()
+        val coverToDelete = File(coverFolder, buildFileName(id = id))
+        coverToDelete.delete()
+    }
+
+    private fun File.coverId(): UUID? =
+        this.name.split(".").firstOrNull()?.let { cover ->
+            try {
+                UUID.fromString(cover)
+            } catch (_: Exception) {
+                null
+            }
+        }
+
     fun buildFileName(id: UUID): String =
         "$id.jpg"
 }

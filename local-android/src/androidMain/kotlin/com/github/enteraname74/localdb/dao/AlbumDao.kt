@@ -29,6 +29,10 @@ internal interface AlbumDao {
     @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
     fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomAlbum>>
 
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
+    fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomAlbumWithMusics>>
+
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAll(): Flow<List<RoomAlbum>>
 

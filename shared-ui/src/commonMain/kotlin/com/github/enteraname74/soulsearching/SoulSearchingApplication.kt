@@ -12,10 +12,8 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.ModifierLocal
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
@@ -33,7 +31,6 @@ import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsComposable
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
@@ -53,26 +50,20 @@ fun SoulSearchingApplication(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
-    imageCoverRetriever: ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-    val allImages by imageCoverRetriever.allCovers.collectAsState()
 
-    playbackManager.retrieveCoverMethod = allImages::getFromCoverId
-
-    if (allImages.isNotEmpty()) {
-        LaunchedEffect("Covers check") {
-            CoroutineScope(Dispatchers.IO).launch {
-                playbackManager.currentMusic?.let { currentMusic ->
-                    playbackManager.defineCoverAndPaletteFromCoverId(
-                        coverId = currentMusic.coverId
-                    )
-                    playbackManager.update()
-                }
+    LaunchedEffect("Covers check") {
+        CoroutineScope(Dispatchers.IO).launch {
+            playbackManager.currentMusic?.let { currentMusic ->
+                playbackManager.defineCoverAndPaletteFromCoverId(
+                    cover = currentMusic.cover
+                )
+                playbackManager.update()
             }
         }
     }

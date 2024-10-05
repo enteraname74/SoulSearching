@@ -19,7 +19,6 @@ import com.github.enteraname74.localdb.model.*
         RoomMusicAlbum::class,
         RoomMusicArtist::class,
         RoomAlbumArtist::class,
-        RoomImageCover::class,
         RoomPlayerMusic::class,
         RoomFolder::class
     ],
@@ -34,7 +33,6 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract val musicAlbumDao: MusicAlbumDao
     abstract val musicArtistDao: MusicArtistDao
     abstract val albumArtistDao: AlbumArtistDao
-    abstract val imageCoverDao: ImageCoverDao
     abstract val playerMusicDao: PlayerMusicDao
     abstract val folderDao: FolderDao
 }

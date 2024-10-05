@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.*
+import com.github.enteraname74.domain.ext.toImageBitmap
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.PlayerMusic
@@ -10,6 +12,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
+import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.feature.player.ext.getFirstsOrMax
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -21,7 +24,8 @@ import java.util.*
 abstract class PlaybackManager(
     protected val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
-    private val musicRepository: MusicRepository
+    private val musicRepository: MusicRepository,
+    private val coverFileManager: CoverFileManager,
 ) {
     /**
      * Callback for letting other elements of the application listen to playback changes.
@@ -407,11 +411,17 @@ abstract class PlaybackManager(
     /**
      * Define the current music cover and the current color palette from the cover.
      */
-    fun defineCoverAndPaletteFromCoverId(coverId: UUID?) {
-        _currentMusicCover = retrieveCoverMethod(coverId)
-        callback.onCurrentMusicCoverChanged(
-            cover = _currentMusicCover
-        )
+    fun defineCoverAndPaletteFromCoverId(cover: Cover?) {
+        (cover as? Cover.FileCover)?.fileCoverId?.let { fileCoverId ->
+            CoroutineScope(Dispatchers.IO).launch {
+                _currentMusicCover = coverFileManager
+                    .getCoverData(coverId = fileCoverId)
+                    ?.toImageBitmap()
+                callback.onCurrentMusicCoverChanged(
+                    cover = _currentMusicCover
+                )
+            }
+        }
     }
 
     /**
@@ -422,7 +432,7 @@ abstract class PlaybackManager(
         callback.onCurrentPlayedMusicChanged(
             music = currentMusic
         )
-        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
+        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
     }
 
     /**
@@ -576,7 +586,7 @@ abstract class PlaybackManager(
         val index = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY)
         val position = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
         setMusicFromIndex(index)
-        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
+        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
 
         setPlayerMode(settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY))
         onlyLoadMusic(seekTo = position)
@@ -818,7 +828,7 @@ abstract class PlaybackManager(
      */
     open fun update() {
         launchDurationJobIfNecessary()
-        defineCoverAndPaletteFromCoverId(currentMusic?.coverId)
+        defineCoverAndPaletteFromCoverId(currentMusic?.cover)
         callback.onCurrentPlayedMusicChanged(music = currentMusic)
         callback.onPlayingStateChanged(isPlaying = isPlaying)
         callback.onPlayedListUpdated(playedList = playedList)

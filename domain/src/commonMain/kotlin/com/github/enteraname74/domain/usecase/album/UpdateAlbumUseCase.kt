@@ -1,9 +1,9 @@
 package com.github.enteraname74.domain.usecase.album
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import com.github.enteraname74.domain.util.MusicFileUpdater
@@ -13,7 +13,6 @@ class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
-    private val imageCoverRepository: ImageCoverRepository,
     private val musicAlbumRepository: MusicAlbumRepository,
     private val musicArtistRepository: MusicArtistRepository,
     private val albumArtistRepository: AlbumArtistRepository,
@@ -41,7 +40,7 @@ class UpdateAlbumUseCase(
             if (newArtist == null) {
                 newArtist = Artist(
                     artistName = newAlbumWithArtistInformation.artist.artistName,
-                    coverId = newAlbumWithArtistInformation.album.coverId
+                    cover = newAlbumWithArtistInformation.album.cover,
                 )
                 artistRepository.upsert(
                     artist = newArtist
@@ -70,22 +69,17 @@ class UpdateAlbumUseCase(
             albumId = newAlbumWithArtistInformation.album.albumId
         )
 
-        var albumCover: ImageBitmap? = null
-        newAlbumWithArtistInformation.album.coverId?.let { coverId ->
-            albumCover = imageCoverRepository.getCoverOfElement(coverId = coverId)?.cover
-        }
-
         for (music in musicsFromAlbum) {
             val newMusic = music.copy(
                 album = newAlbumWithArtistInformation.album.albumName,
-                coverId = newAlbumWithArtistInformation.album.coverId,
+                cover = (music.cover as? Cover.FileCover)?.copy(
+                    fileCoverId = (newAlbumWithArtistInformation.album.cover as? Cover.FileCover)?.fileCoverId
+                        ?: (music.cover as? Cover.FileCover)?.fileCoverId
+                ) ?: music.cover,
                 artist = newAlbumWithArtistInformation.artist.artistName
             )
             musicRepository.upsert(newMusic)
-            musicFileUpdater.updateMusic(
-                music = newMusic,
-                cover = albumCover
-            )
+            musicFileUpdater.updateMusic(music = newMusic)
             musicArtistRepository.updateArtistOfMusic(
                 musicId = music.musicId,
                 newArtistId = albumArtistToSave.artistId

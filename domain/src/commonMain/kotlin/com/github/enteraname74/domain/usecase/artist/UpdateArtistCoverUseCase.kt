@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.artist
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.repository.ArtistRepository
 import kotlinx.coroutines.flow.first
 import java.util.*
@@ -15,7 +16,7 @@ class UpdateArtistCoverUseCase(
         val artist: Artist = artistRepository.getFromId(artistId = artistId).first() ?: return
         artistRepository.upsert(
             artist = artist.copy(
-                coverId = newCoverId,
+                cover = Cover.FileCover(fileCoverId = newCoverId),
             )
         )
     }

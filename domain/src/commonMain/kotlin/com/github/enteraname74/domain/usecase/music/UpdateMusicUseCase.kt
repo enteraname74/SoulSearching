@@ -1,17 +1,13 @@
 package com.github.enteraname74.domain.usecase.music
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.UpdateAlbumCoverUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.GetCorrespondingArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpdateArtistCoverUseCase
-import com.github.enteraname74.domain.usecase.imagecover.GetCoverOfElementUseCase
 import com.github.enteraname74.domain.util.MusicFileUpdater
 
 class UpdateMusicUseCase(
@@ -19,12 +15,8 @@ class UpdateMusicUseCase(
     private val artistRepository: ArtistRepository,
     private val musicArtistRepository: MusicArtistRepository,
     private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
-    private val updateArtistCoverUseCase: UpdateArtistCoverUseCase,
-    private val updateAlbumCoverUseCase: UpdateAlbumCoverUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
     private val getCorrespondingArtistUseCase: GetCorrespondingArtistUseCase,
-    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
-    private val getCoverOfElementUseCase: GetCoverOfElementUseCase,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
     /**
@@ -47,7 +39,11 @@ class UpdateMusicUseCase(
             if (newArtist == null) {
                 newArtist = Artist(
                     artistName = newMusicInformation.artist,
-                    coverId = newMusicInformation.coverId
+                    cover = (newMusicInformation.cover as? Cover.FileCover)?.fileCoverId?.let { fileCoverId ->
+                        Cover.FileCover(
+                            fileCoverId = fileCoverId,
+                        )
+                    }
                 )
                 artistRepository.upsert(artist = newArtist)
             }
@@ -77,42 +73,8 @@ class UpdateMusicUseCase(
                 )
             }
         }
-        // We update the cover of the artist and album of the music.
-        val artist = artistRepository.getFromName(
-            newMusicInformation.artist
-        )
-        val album = getCorrespondingAlbumUseCase(
-            albumName = newMusicInformation.album,
-            artistId = artist!!.artistId
-        )
-        // If the artist does not have a cover, we give him the one of the music if it has one.
-        if (artist.coverId == null && newMusicInformation.coverId != null) {
-            updateArtistCoverUseCase(
-                newCoverId = newMusicInformation.coverId!!,
-                artistId =  artist.artistId
-            )
-        }
-        // We do the same for the album.
-        if (album!!.coverId == null && newMusicInformation.coverId != null) {
-            updateAlbumCoverUseCase(
-                newCoverId = newMusicInformation.coverId!!,
-                albumId = album.albumId
-            )
-        }
+
         musicRepository.upsert(newMusicInformation)
-
-        // We only set a new cover if the previous one has been changed.
-        val musicCover: ImageBitmap? = if (legacyMusic.coverId != newMusicInformation.coverId) {
-            newMusicInformation.coverId?.let { coverId ->
-                getCoverOfElementUseCase(coverId = coverId)?.cover
-            }
-        } else {
-            null
-        }
-
-        musicFileUpdater.updateMusic(
-            music = newMusicInformation,
-            cover = musicCover
-        )
+        musicFileUpdater.updateMusic(music = newMusicInformation)
     }
 }

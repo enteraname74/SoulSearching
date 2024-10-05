@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.month
 
+import com.github.enteraname74.domain.ext.coverFromSongs
 import com.github.enteraname74.domain.model.MonthMusics
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.domain.util.DateUtils
@@ -17,7 +18,7 @@ class GetAllMonthMusicUseCase(
                 MonthMusics(
                     month = date,
                     allMusicsSize = musics.size,
-                    coverId = musics.firstOrNull { it.coverId != null }?.coverId
+                    cover = musics.coverFromSongs()
                 )
             }
         }

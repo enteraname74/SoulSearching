@@ -19,10 +19,7 @@ class UpdateArtistUseCase(
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
         artistRepository.upsert(
-            newArtistWithMusicsInformation.artist.copy(
-                artistName = newArtistWithMusicsInformation.artist.artistName,
-                coverId = newArtistWithMusicsInformation.artist.coverId
-            )
+            newArtistWithMusicsInformation.artist
         )
 
         // We redirect the possible artists albums that do not share the same artist id.
@@ -69,10 +66,7 @@ class UpdateArtistUseCase(
             musicRepository.upsert(
                 newMusicInformation
             )
-            musicFileUpdater.updateMusic(
-                music = newMusicInformation,
-                cover = null
-            )
+            musicFileUpdater.updateMusic(music = newMusicInformation)
         }
     }
 

@@ -15,8 +15,6 @@ import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpsertAllMusicAlbumUseCase
 import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
 import com.github.enteraname74.domain.util.CoverFileManager
-import org.jaudiotagger.audio.AudioFileIO
-import java.io.File
 import java.util.UUID
 
 /**
@@ -81,38 +79,14 @@ abstract class MusicFetcher(
         musicAlbums.clear()
     }
 
-    private fun getCoverFromPath(musicPath: String): ByteArray? =
-        try {
-            val audioFile = AudioFileIO.read(File(musicPath))
-            audioFile.tag.firstArtwork.binaryData.takeUnless { it.isEmpty() }
-        } catch (_: Exception) {
-            null
-        }
-
-    private suspend fun saveCoverOfSong(musicPath: String): UUID? {
-        val cover: ByteArray? = getCoverFromPath(musicPath = musicPath)
-        val coverId: UUID? = cover?.let {data ->
-            val id = UUID.randomUUID()
-            coverFileManager.saveCover(
-                id = id,
-                data = data
-            )
-            id
-        }
-
-        return coverId
-    }
-
 
     private fun createAlbumOfSong(
         music: Music,
         albumId: UUID,
-        coverId: UUID?,
     ) {
         val albumToAdd = Album(
-            coverId = coverId,
             albumId = albumId,
-            albumName = music.album
+            albumName = music.album,
         )
         albumsByInfo.put(
             key = AlbumInformation(
@@ -123,13 +97,12 @@ abstract class MusicFetcher(
         )
     }
 
+
     private fun createArtistOfSong(
         music: Music,
-        coverId: UUID?,
         artistId: UUID,
     ) {
         val artistToAdd = Artist(
-            coverId = coverId,
             artistId = artistId,
             artistName = music.artist
         )
@@ -142,7 +115,7 @@ abstract class MusicFetcher(
     /**
      * Persist a music and its cover.
      */
-    suspend fun addMusic(musicToAdd: Music) {
+    fun addMusic(musicToAdd: Music) {
         // If the song has already been saved once, we do nothing.
         if (musicsByPath[musicToAdd.path] != null) return
 
@@ -158,21 +131,19 @@ abstract class MusicFetcher(
         val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()
         val artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
 
-
         if (correspondingAlbum == null) {
-            val coverId: UUID? = saveCoverOfSong(musicPath = musicToAdd.path)
 
             createAlbumOfSong(
                 music = musicToAdd,
                 albumId = albumId,
-                coverId = coverId
             )
 
-            createArtistOfSong(
-                music = musicToAdd,
-                coverId = coverId,
-                artistId = artistId,
-            )
+            if (correspondingArtist == null) {
+                createArtistOfSong(
+                    music = musicToAdd,
+                    artistId = artistId,
+                )
+            }
 
             albumArtists.add(
                 AlbumArtist(
@@ -180,37 +151,8 @@ abstract class MusicFetcher(
                     artistId = artistId,
                 )
             )
-        } else {
-            // We add, if possible, the cover art of the corresponding album to the music.
-            if (correspondingAlbum.coverId != null && musicToAdd.initialCoverPath == null) {
-                musicToAdd.coverId = correspondingAlbum.coverId
-            }
-
-            // In this case, the album has no cover, so we add the one from the music.
-            if (correspondingAlbum.coverId == null && musicToAdd.initialCoverPath != null) {
-                val coverId: UUID? = saveCoverOfSong(musicToAdd.path)
-
-                albumsByInfo.put(
-                    key = AlbumInformation(
-                        name = correspondingAlbum.albumName,
-                        artist = musicToAdd.artist,
-                    ),
-                    value = correspondingAlbum.copy(
-                        coverId = coverId,
-                    )
-                )
-
-                // If the artist has no cover, we can give it one:
-                if (correspondingArtist.coverId == null) {
-                    artistsByName.put(
-                        key = correspondingArtist.artistName,
-                        value = correspondingArtist.copy(
-                            coverId = coverId,
-                        )
-                    )
-                }
-            }
         }
+
         musicsByPath.put(
             key = musicToAdd.path,
             value = musicToAdd,

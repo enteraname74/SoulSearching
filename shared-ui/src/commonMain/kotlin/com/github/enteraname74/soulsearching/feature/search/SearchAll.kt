@@ -80,7 +80,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedPlaylistForBottomSheet(playlistWithMusics.playlist)
                     },
-                    coverId = playlistWithMusics.playlist.coverId,
+                    cover = playlistWithMusics.cover,
                 )
             }
         }
@@ -116,7 +116,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedArtistForBottomSheet(artistWithMusics)
                     },
-                    coverId = artistWithMusics.artist.coverId,
+                    cover = artistWithMusics.cover,
                 )
             }
         }
@@ -155,7 +155,7 @@ fun SearchAll(
                             onSelectedAlbumForBottomSheet(albumWithArtist.album)
                         }
                     },
-                    coverId = albumWithArtist.album.coverId,
+                    cover = albumWithArtist.cover,
                 )
             }
         }

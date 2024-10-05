@@ -14,6 +14,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.Playbac
 import com.github.enteraname74.soulsearching.model.player.MediaSessionManager
 import com.github.enteraname74.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.util.CoverFileManager
 
 /**
  * Implementation of a MusicPlayerManager for Android.
@@ -23,11 +24,13 @@ class PlaybackManagerAndroidImpl(
     private val context: Context,
     settings: SoulSearchingSettings,
     playerMusicRepository: PlayerMusicRepository,
-    musicRepository: MusicRepository
+    musicRepository: MusicRepository,
+    coverFileManager: CoverFileManager,
 ): PlaybackManager(
     settings = settings,
     playerMusicRepository = playerMusicRepository,
-    musicRepository = musicRepository
+    musicRepository = musicRepository,
+    coverFileManager = coverFileManager,
 ) {
     private var shouldLaunchService: Boolean = true
 
@@ -99,7 +102,7 @@ class PlaybackManagerAndroidImpl(
 
     override suspend fun initializePlayerFromSavedList(savedList: List<Music>) {
         super.initializePlayerFromSavedList(savedList)
-        defineCoverAndPaletteFromCoverId(coverId = currentMusic?.coverId)
+        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
         launchService()
     }
 
