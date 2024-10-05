@@ -12,12 +12,13 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    singleOf(::MusicFetcherAndroidImpl) bind MusicFetcher::class
+    factoryOf(::MusicFetcherAndroidImpl) bind MusicFetcher::class
     singleOf(::PlaybackManagerAndroidImpl) bind PlaybackManager::class
     singleOf(::FeedbackPopUpAndroidManager) bind FeedbackPopUpManager::class
     single<SoulSearchingSettings> {

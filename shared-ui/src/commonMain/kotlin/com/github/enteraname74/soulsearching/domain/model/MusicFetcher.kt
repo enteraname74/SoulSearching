@@ -14,22 +14,22 @@ import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpsertAllMusicAlbumUseCase
 import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
-import com.github.enteraname74.domain.util.CoverFileManager
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.UUID
 
 /**
  * Utilities for fetching musics on current device.
  */
-abstract class MusicFetcher(
-    private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
-    private val upsertAllAlbumsUseCase: UpsertAllAlbumsUseCase,
-    private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
-    private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase,
-    private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase,
-    private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase,
-    private val upsertAllMusicAlbumUseCase: UpsertAllMusicAlbumUseCase,
-    private val coverFileManager: CoverFileManager,
-) {
+abstract class MusicFetcher: KoinComponent {
+    private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase by inject()
+    private val upsertAllAlbumsUseCase: UpsertAllAlbumsUseCase by inject()
+    private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase by inject()
+    private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase by inject()
+    private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
+    private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase by inject()
+    private val upsertAllMusicAlbumUseCase: UpsertAllMusicAlbumUseCase by inject()
+
     /**
      * Fetch all musics on the device.
      */
@@ -112,10 +112,26 @@ abstract class MusicFetcher(
         )
     }
 
+    suspend fun saveAllMusics(
+        musics: List<Music>,
+        onSongSaved: () -> Unit,
+    ) {
+        musics.forEach { music ->
+            addMusic(
+                musicToAdd = music,
+                onSongSaved = onSongSaved,
+            )
+        }
+        saveAll()
+    }
+
     /**
      * Persist a music and its cover.
      */
-    fun addMusic(musicToAdd: Music) {
+    fun addMusic(
+        musicToAdd: Music,
+        onSongSaved: () -> Unit = {},
+    ) {
         // If the song has already been saved once, we do nothing.
         if (musicsByPath[musicToAdd.path] != null) return
 
@@ -169,5 +185,6 @@ abstract class MusicFetcher(
                 artistId = artistId,
             )
         )
+        onSongSaved()
     }
 }

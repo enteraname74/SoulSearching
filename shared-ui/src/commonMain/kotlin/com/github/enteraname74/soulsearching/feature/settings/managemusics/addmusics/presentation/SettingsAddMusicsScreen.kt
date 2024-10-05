@@ -13,12 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -34,7 +32,6 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.prese
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.reflect.KSuspendFunction2
 
 /**
  * Represent the view of the add musics screen in the settings.
@@ -50,7 +47,7 @@ class SettingsAddMusicsScreen : Screen {
             finishAction = {
                 navigator.pop()
             },
-            saveMusicFunction = screenModel::addMusic
+            saveAll = screenModel::saveAll
         )
     }
 }
@@ -59,7 +56,7 @@ class SettingsAddMusicsScreen : Screen {
 fun SettingsAddMusicsScreenView(
     addMusicsViewModel: SettingsAddMusicsViewModel,
     finishAction: () -> Unit,
-    saveMusicFunction: KSuspendFunction2<Music, ImageBitmap?, Unit>
+    saveAll: (onSongSaved: () -> Unit) -> Unit,
 ) {
     val addMusicsState by addMusicsViewModel.state.collectAsState()
 
@@ -154,8 +151,7 @@ fun SettingsAddMusicsScreenView(
                             CoroutineScope(Dispatchers.IO).launch {
                                 isSavingMusics = true
                                 var count = 0
-                                addMusicsState.fetchedMusics.filter { it.isSelected }.forEach{
-                                    saveMusicFunction(it.music, it.cover)
+                                saveAll {
                                     count ++
                                     progress = (count * 1F) / addMusicsState.fetchedMusics.size
                                 }
@@ -190,7 +186,6 @@ fun SettingsAddMusicsScreenView(
                         ) {
                             MusicSelectableComposable(
                                 music = it.music,
-                                cover = it.cover,
                                 onClick = {
                                     addMusicsViewModel.onAddMusicEvent(
                                         AddMusicsEvent.SetSelectedMusic(

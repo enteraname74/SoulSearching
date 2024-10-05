@@ -24,6 +24,10 @@ class MusicRepositoryImpl(
         musicDataSource.delete(music = music)
     }
 
+    override suspend fun deleteAll(ids: List<UUID>) {
+        musicDataSource.deleteAll(ids = ids)
+    }
+
     override suspend fun deleteAllMusicOfAlbum(album: String, artist: String) =
         musicDataSource.deleteMusicFromAlbum(
             album = album,

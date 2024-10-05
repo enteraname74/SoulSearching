@@ -4,19 +4,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.UpdateAlbumCoverUseCase
-import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
-import com.github.enteraname74.domain.usecase.albumartist.UpsertAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistFromNameUseCase
-import com.github.enteraname74.domain.usecase.artist.UpdateArtistCoverUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
-import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
-import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.music.IsMusicAlreadySavedUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
-import com.github.enteraname74.domain.usecase.musicalbum.UpsertMusicIntoAlbumUseCase
-import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
@@ -37,36 +24,7 @@ import kotlin.collections.ArrayList
  */
 class MusicFetcherDesktopImpl(
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
-    isMusicAlreadySavedUseCase: IsMusicAlreadySavedUseCase,
-    getArtistFromNameUseCase: GetArtistFromNameUseCase,
-    getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
-    upsertImageCoverUseCase: UpsertImageCoverUseCase,
-    upsertAlbumUseCase: UpsertAlbumUseCase,
-    upsertArtistUseCase: UpsertArtistUseCase,
-    upsertAlbumArtistUseCase: UpsertAlbumArtistUseCase,
-    getCoverOfElementUseCase: GetCoverOfElementUseCase,
-    updateAlbumCoverUseCase: UpdateAlbumCoverUseCase,
-    updateArtistCoverUseCase: UpdateArtistCoverUseCase,
-    upsertMusicUseCase: UpsertMusicUseCase,
-    upsertFolderUseCase: UpsertFolderUseCase,
-    upsertMusicIntoAlbumUseCase: UpsertMusicIntoAlbumUseCase,
-    upsertMusicIntoArtistUseCase: UpsertMusicIntoArtistUseCase,
-) : MusicFetcher(
-    isMusicAlreadySavedUseCase = isMusicAlreadySavedUseCase,
-    getArtistFromNameUseCase = getArtistFromNameUseCase,
-    getCorrespondingAlbumUseCase = getCorrespondingAlbumUseCase,
-    upsertImageCoverUseCase = upsertImageCoverUseCase,
-    upsertAlbumUseCase = upsertAlbumUseCase,
-    upsertArtistUseCase = upsertArtistUseCase,
-    getCoverOfElementUseCase = getCoverOfElementUseCase,
-    upsertMusicIntoAlbumUseCase = upsertMusicIntoAlbumUseCase,
-    upsertFolderUseCase = upsertFolderUseCase,
-    upsertMusicIntoArtistUseCase = upsertMusicIntoArtistUseCase,
-    upsertMusicUseCase = upsertMusicUseCase,
-    updateArtistCoverUseCase = updateArtistCoverUseCase,
-    upsertAlbumArtistUseCase = upsertAlbumArtistUseCase,
-    updateAlbumCoverUseCase = updateAlbumCoverUseCase,
-) {
+) : MusicFetcher() {
 
     /**
      * Tries to retrieve the cover of a music from its metadata.

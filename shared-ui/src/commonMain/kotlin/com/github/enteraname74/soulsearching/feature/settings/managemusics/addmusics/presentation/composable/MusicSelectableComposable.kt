@@ -48,23 +48,6 @@ private sealed interface CoverType{
 }
 
 @Composable
-fun MusicSelectableComposable(
-    music: Music,
-    cover: ImageBitmap?,
-    onClick: () -> Unit,
-    isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
-) {
-    InnerContent(
-        music = music,
-        coverType = CoverType.Bitmap(bitmap = cover),
-        isSelected = isSelected,
-        textColor = textColor,
-        onClick = onClick,
-    )
-}
-
-@Composable
 private fun InnerContent(
     music: Music,
     coverType: CoverType,

@@ -23,6 +23,8 @@ interface AlbumDataSource {
      */
     suspend fun delete(album: Album)
 
+    suspend fun deleteAll(ids: List<UUID>)
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */

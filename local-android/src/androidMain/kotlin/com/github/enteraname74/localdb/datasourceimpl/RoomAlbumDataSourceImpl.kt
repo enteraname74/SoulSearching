@@ -34,6 +34,12 @@ internal class RoomAlbumDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(ids: List<UUID>) {
+        appDatabase.albumDao.deleteAll(
+            ids = ids,
+        )
+    }
+
     override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> {
         return appDatabase.albumDao.getAllAlbumsFromArtist(
             artistId = artistId

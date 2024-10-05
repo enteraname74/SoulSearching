@@ -18,6 +18,8 @@ interface MusicRepository {
      */
     suspend fun delete(music: Music)
 
+    suspend fun deleteAll(ids: List<UUID>)
+
     /**
      * Remove all songs of an Album.
      */

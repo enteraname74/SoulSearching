@@ -15,6 +15,8 @@ interface AlbumRepository {
      */
     suspend fun delete(album: Album)
 
+    suspend fun deleteAll(ids: List<UUID>)
+
     /**
      * Inserts a new Album.
      */

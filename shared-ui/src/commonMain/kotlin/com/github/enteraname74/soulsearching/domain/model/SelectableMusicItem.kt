@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.domain.model
 
-import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 
 /**
@@ -8,6 +7,5 @@ import com.github.enteraname74.domain.model.Music
  */
 data class SelectableMusicItem(
     val music: Music,
-    val cover: ImageBitmap?,
     var isSelected: Boolean
 )

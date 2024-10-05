@@ -11,13 +11,14 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.russhwolf.settings.PreferencesSettings
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.util.prefs.Preferences
 
 actual val platformModule: Module = module {
-    singleOf(::MusicFetcherDesktopImpl) bind MusicFetcher::class
+    factoryOf(::MusicFetcherDesktopImpl) bind MusicFetcher::class
     singleOf(::PlaybackManagerDesktopImpl) bind PlaybackManager::class
     singleOf(::SoulSearchingDesktopPlayerImpl)
     singleOf(::FeedbackPopUpDesktopManager) bind FeedbackPopUpManager::class

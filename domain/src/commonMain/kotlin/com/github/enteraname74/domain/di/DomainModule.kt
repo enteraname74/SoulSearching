@@ -82,6 +82,7 @@ val domainModule = module {
     singleOf(::GetMonthMusicListUseCase)
 
     // Music
+    singleOf(::DeleteAllMusicsUseCase)
     singleOf(::DeleteMusicUseCase)
     singleOf(::GetAllMusicFromFolderPathUseCase)
     singleOf(::GetAllMusicFromQuickAccessUseCase)

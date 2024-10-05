@@ -1,10 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.FolderRepository
-import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
@@ -103,8 +99,16 @@ class SettingsAddMusicsViewModel(
         )
     }
 
-    /**
-     * Persist a music and its cover.
-     */
-    suspend fun addMusic(musicToAdd: Music, musicCover: ImageBitmap?) = musicFetcher.addMusic(musicToAdd)
+    fun saveAll(
+        onSongSaved: () -> Unit,
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            musicFetcher.saveAllMusics(
+                musics = _state.value.fetchedMusics
+                    .filter { it.isSelected }
+                    .map { it.music },
+                onSongSaved = onSongSaved,
+            )
+        }
+    }
 }

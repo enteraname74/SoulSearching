@@ -19,6 +19,10 @@ class AlbumRepositoryImpl(
         albumDataSource.delete(album = album)
     }
 
+    override suspend fun deleteAll(ids: List<UUID>) {
+        albumDataSource.deleteAll(ids = ids)
+    }
+
     override suspend fun upsertAll(albums: List<Album>) {
         albumDataSource.upsertAll(albums)
     }
