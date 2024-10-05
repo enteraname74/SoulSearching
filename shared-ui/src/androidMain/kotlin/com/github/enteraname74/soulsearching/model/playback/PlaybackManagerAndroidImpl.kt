@@ -22,16 +22,7 @@ import com.github.enteraname74.domain.util.CoverFileManager
  */
 class PlaybackManagerAndroidImpl(
     private val context: Context,
-    settings: SoulSearchingSettings,
-    playerMusicRepository: PlayerMusicRepository,
-    musicRepository: MusicRepository,
-    coverFileManager: CoverFileManager,
-): PlaybackManager(
-    settings = settings,
-    playerMusicRepository = playerMusicRepository,
-    musicRepository = musicRepository,
-    coverFileManager = coverFileManager,
-) {
+): PlaybackManager() {
     private var shouldLaunchService: Boolean = true
 
     private val mediaSessionManager = MediaSessionManager(

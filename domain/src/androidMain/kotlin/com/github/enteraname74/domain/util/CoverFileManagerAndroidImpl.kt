@@ -10,7 +10,7 @@ class CoverFileManagerAndroidImpl(
 
     override fun getCoverFolder(): File {
         val filesDir: File = context.filesDir
-        val folder: File = File(filesDir, "covers")
+        val folder: File = File(filesDir, COVER_FOLDER)
         if (!folder.exists()) {
             folder.mkdirs()
         }

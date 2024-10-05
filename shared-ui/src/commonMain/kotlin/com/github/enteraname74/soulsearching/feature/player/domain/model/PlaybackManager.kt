@@ -16,17 +16,19 @@ import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.feature.player.ext.getFirstsOrMax
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Used to manage the music playback of the application.
  */
-abstract class PlaybackManager(
-    protected val settings: SoulSearchingSettings,
-    private val playerMusicRepository: PlayerMusicRepository,
-    private val musicRepository: MusicRepository,
-    private val coverFileManager: CoverFileManager,
-) {
+abstract class PlaybackManager : KoinComponent{
+    protected val settings: SoulSearchingSettings by inject()
+    private val playerMusicRepository: PlayerMusicRepository by inject()
+    private val musicRepository: MusicRepository by inject()
+    private val coverFileManager: CoverFileManager by inject()
+
     /**
      * Callback for letting other elements of the application listen to playback changes.
      */

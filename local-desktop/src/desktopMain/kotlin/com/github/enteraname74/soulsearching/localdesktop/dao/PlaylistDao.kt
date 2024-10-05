@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.localdesktop.dao
 
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.exposedflows.asFlow
@@ -33,7 +34,7 @@ internal class PlaylistDao(
             PlaylistTable.upsert {
                 it[id] = playlist.playlistId
                 it[name] = playlist.name
-                it[coverId] = playlist.coverId?.toString()
+                it[coverId] = (playlist.cover as? Cover.FileCover)?.fileCoverId
                 it[isFavorite] = playlist.isFavorite
                 it[addedDate] = playlist.addedDate
                 it[nbPlayed] = playlist.nbPlayed

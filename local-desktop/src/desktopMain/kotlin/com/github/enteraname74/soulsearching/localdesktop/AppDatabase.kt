@@ -4,7 +4,6 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTabl
 import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.ImageCoverTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
@@ -28,12 +27,11 @@ object AppDatabase {
     fun connectToDatabase() {
         Database.connect("jdbc:sqlite:soulSearchingDatabase.db?foreign_keys=on", "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 AlbumArtistTable,
                 AlbumTable,
                 ArtistTable,
                 FolderTable,
-                ImageCoverTable,
                 MusicAlbumTable,
                 MusicArtistTable,
                 MusicPlaylistTable,

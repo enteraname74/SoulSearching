@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.model
 
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.toComposeImageBitmap
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
@@ -12,9 +11,9 @@ import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
-import org.jetbrains.skia.Image
 import java.io.File
 import java.net.URLConnection
+import java.nio.file.Files
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -25,18 +24,6 @@ import kotlin.collections.ArrayList
 class MusicFetcherDesktopImpl(
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
 ) : MusicFetcher() {
-
-    /**
-     * Tries to retrieve the cover of a music from its metadata.
-     */
-    private fun fetchMusicCoverFromMetadata(tag: Tag): ImageBitmap? {
-        return try {
-            Image.makeFromEncoded(tag.firstArtwork.binaryData).toComposeImageBitmap()
-        } catch (_: Exception) {
-            null
-        }
-    }
-
     private fun isMusicFile(file: File): Boolean {
         val mimeType: String = URLConnection.guessContentTypeFromName(file.name) ?: return false
         val authorizedMimeTypes =
@@ -70,7 +57,7 @@ class MusicFetcherDesktopImpl(
     private suspend fun extractMusicsFromCurrentDirectory(
         directory: File,
         updateProgress: (Float, String?) -> Unit,
-        onMusicFetched: suspend (Music, ImageBitmap?) -> Unit,
+        onMusicFetched: suspend (Music) -> Unit,
     ) {
 
         // If the folder is hidden, we skip it:
@@ -82,7 +69,7 @@ class MusicFetcherDesktopImpl(
         for (file in files) {
             count += 1f
             updateProgress(count / files.size, file.parent)
-            if (file.isHidden || !file.canRead()) {
+            if (file.isHidden || !file.canRead() || Files.isSymbolicLink(file.toPath())) {
                 continue
             } else if (isMusicFile(file = file)) {
                 try {
@@ -95,10 +82,12 @@ class MusicFetcherDesktopImpl(
                         artist = tag.getFirst(FieldKey.ARTIST),
                         duration = audioFile.audioHeader.trackLength.toLong(),
                         path = file.path,
-                        folder = file.parent
+                        folder = file.parent,
+                        cover = Cover.FileCover(
+                            initialCoverPath = file.path,
+                        )
                     )
-                    val musicCover = fetchMusicCoverFromMetadata(tag)
-                    onMusicFetched(musicToAdd, musicCover)
+                    onMusicFetched(musicToAdd)
                 } catch (_: Exception) {
                     println("Failed to access information about the following file: ${file.path}")
                 }
@@ -115,7 +104,10 @@ class MusicFetcherDesktopImpl(
         }
     }
 
-    override suspend fun fetchMusics(updateProgress: (Float, String?) -> Unit, finishAction: () -> Unit) {
+    override suspend fun fetchMusics(
+        updateProgress: (Float, String?) -> Unit,
+        finishAction: () -> Unit
+    ) {
         val root = File(System.getProperty("user.home"))
 
         extractMusicsFromCurrentDirectory(
@@ -123,6 +115,7 @@ class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::addMusic
         )
+        saveAll()
         upsertPlaylistUseCase(
             Playlist(
                 playlistId = UUID.randomUUID(),
@@ -144,12 +137,11 @@ class MusicFetcherDesktopImpl(
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = updateProgress,
-            onMusicFetched = { music, cover ->
+            onMusicFetched = { music ->
                 if (!alreadyPresentMusicsPaths.any { it == music.path } && !hiddenFoldersPaths.any { it == music.folder }) {
                     newMusics.add(
                         SelectableMusicItem(
                             music = music,
-                            cover = cover,
                             isSelected = true,
                         )
                     )

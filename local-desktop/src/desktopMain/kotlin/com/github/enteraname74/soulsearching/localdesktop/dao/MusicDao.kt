@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.localdesktop.dao
 
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
@@ -37,7 +38,7 @@ internal class MusicDao {
                 it[name] = music.name
                 it[album] = music.album
                 it[artist] = music.artist
-                it[coverId] = music.coverId?.toString()
+                it[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
                 it[duration] = music.duration
                 it[path] = music.path
                 it[folder] = music.folder
@@ -56,7 +57,7 @@ internal class MusicDao {
                 this[MusicTable.name] = music.name
                 this[album] = music.album
                 this[artist] = music.artist
-                this[coverId] = music.coverId?.toString()
+                this[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
                 this[duration] = music.duration
                 this[path] = music.path
                 this[folder] = music.folder
@@ -71,6 +72,12 @@ internal class MusicDao {
     suspend fun delete(music: Music) {
         flowTransactionOn {
             MusicTable.deleteWhere { id eq music.musicId }
+        }
+    }
+
+    suspend fun deleteAll(ids: List<UUID>) {
+        flowTransactionOn {
+            MusicTable.deleteWhere { Op.build { id inList ids } }
         }
     }
 

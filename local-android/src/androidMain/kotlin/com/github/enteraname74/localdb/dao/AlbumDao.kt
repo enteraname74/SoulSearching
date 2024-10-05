@@ -49,8 +49,4 @@ internal interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAllAlbumWithMusics(): Flow<List<RoomAlbumWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomAlbum")
-    fun getAllAlbumsWithArtist(): Flow<List<RoomAlbumWithArtist>>
 }
