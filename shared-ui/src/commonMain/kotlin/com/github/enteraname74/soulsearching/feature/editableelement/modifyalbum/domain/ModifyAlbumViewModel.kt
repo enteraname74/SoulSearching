@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStrin
 import com.github.enteraname74.domain.usecase.album.UpdateAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
@@ -26,7 +27,8 @@ class ModifyAlbumViewModel(
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
-    private val playbackManager: PlaybackManager
+    private val playbackManager: PlaybackManager,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -113,6 +115,8 @@ class ModifyAlbumViewModel(
 
             if (!form.isFormValid()) return@launch
 
+            loadingManager.startLoading()
+
             // If the image has changed, we need to save it and retrieve its id.
             val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
@@ -150,6 +154,8 @@ class ModifyAlbumViewModel(
 
             // We need to update the album's songs that are in the played list.
             for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
+
+            loadingManager.stopLoading()
 
             _navigationState.value = ModifyAlbumNavigationState.Back
         }

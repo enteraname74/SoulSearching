@@ -19,6 +19,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import com.github.enteraname74.domain.ext.toImageBitmap
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
@@ -27,6 +28,7 @@ class ModifyMusicViewModel(
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -113,6 +115,8 @@ class ModifyMusicViewModel(
 
             if (!form.isFormValid()) return@launch
 
+            loadingManager.startLoading()
+
             val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
@@ -146,6 +150,8 @@ class ModifyMusicViewModel(
                     )
                 }
             }
+
+            loadingManager.stopLoading()
 
             _navigationState.value = ModifyMusicNavigationState.Back
         }

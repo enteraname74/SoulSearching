@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.UpdateArtistUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
@@ -22,6 +23,7 @@ class ModifyArtistViewModel(
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateArtistUseCase: UpdateArtistUseCase,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -100,6 +102,8 @@ class ModifyArtistViewModel(
 
             if (!form.isFormValid()) return@launch
 
+            loadingManager.startLoading()
+
             val coverId: UUID? =
                 state.editableElement.newCover?.let { coverData ->
                     val newCoverId: UUID = UUID.randomUUID()
@@ -120,6 +124,9 @@ class ModifyArtistViewModel(
             )
 
             updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+
+            loadingManager.stopLoading()
+
             _navigationState.value = ModifyArtistNavigationState.Back
         }
     }

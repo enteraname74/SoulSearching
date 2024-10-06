@@ -21,6 +21,8 @@ import com.github.enteraname74.soulsearching.composables.navigation.NavigationRo
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpScaffold
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingScaffold
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
@@ -50,6 +52,7 @@ fun SoulSearchingApplication(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
+    loadingManager: LoadingManager = injectElement(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
@@ -89,58 +92,65 @@ fun SoulSearchingApplication(
         FeedbackPopUpScaffold(
             feedbackPopUpManager = feedbackPopUpManager,
         ) {
-            Row {
-                val windowSize = rememberWindowSize()
+            LoadingScaffold(
+                loadingManager = loadingManager
+            ) { isLoading ->
+                Row {
+                    val windowSize = rememberWindowSize()
 
-                if (windowSize == WindowSize.Large) {
-                    NavigationPanel(
-                        rows = navigationRows(
-                            generalNavigator = generalNavigator,
-                            setCurrentPage = mainPageViewModel::setCurrentPage,
-                            tabs = tabs,
-                            currentPage = currentElementPage,
+                    if (windowSize == WindowSize.Large) {
+                        NavigationPanel(
+                            rows = navigationRows(
+                                generalNavigator = generalNavigator,
+                                setCurrentPage = mainPageViewModel::setCurrentPage,
+                                tabs = tabs,
+                                currentPage = currentElementPage,
+                            )
                         )
-                    )
-                }
-
-                PlayerViewScaffold(
-                    generalNavigator = generalNavigator,
-                ) {
-                    var hasLastPlayedMusicsBeenFetched by rememberSaveable {
-                        mutableStateOf(false)
                     }
 
-                    if (!hasLastPlayedMusicsBeenFetched) {
-                        LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                            val playerSavedMusics = playbackManager.getSavedPlayedList()
-                            if (playerSavedMusics.isNotEmpty()) {
-                                playbackManager.initializePlayerFromSavedList(playerSavedMusics)
-                                playerViewManager.animateTo(
-                                    newState = BottomSheetStates.MINIMISED,
-                                )
-                            }
-                            hasLastPlayedMusicsBeenFetched = true
-                        }
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
+                    PlayerViewScaffold(
+                        generalNavigator = generalNavigator,
                     ) {
-                        Navigator(
-                            screen = MainPageScreen()
-                        ) { navigator ->
-                            generalNavigator = navigator
+                        var hasLastPlayedMusicsBeenFetched by rememberSaveable {
+                            mutableStateOf(false)
+                        }
 
-                            CrossfadeTransition(
-                                navigator = navigator,
-                                animationSpec = tween(UiConstants.AnimationDuration.normal)
-                            ) { screen ->
-                                screen.Content()
+                        if (!hasLastPlayedMusicsBeenFetched) {
+                            LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
+                                val playerSavedMusics = playbackManager.getSavedPlayedList()
+                                if (playerSavedMusics.isNotEmpty()) {
+                                    playbackManager.initializePlayerFromSavedList(playerSavedMusics)
+                                    playerViewManager.animateTo(
+                                        newState = BottomSheetStates.MINIMISED,
+                                    )
+                                }
+                                hasLastPlayedMusicsBeenFetched = true
                             }
                         }
-                    }
 
+                        Box(
+                            modifier = Modifier
+                                .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
+                        ) {
+                            Navigator(
+                                screen = MainPageScreen(),
+                                onBackPressed = {
+                                    !isLoading
+                                }
+                            ) { navigator ->
+                                generalNavigator = navigator
+
+                                CrossfadeTransition(
+                                    navigator = navigator,
+                                    animationSpec = tween(UiConstants.AnimationDuration.normal)
+                                ) { screen ->
+                                    screen.Content()
+                                }
+                            }
+                        }
+
+                    }
                 }
             }
         }

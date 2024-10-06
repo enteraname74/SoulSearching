@@ -4,9 +4,12 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
@@ -17,9 +20,10 @@ import kotlinx.coroutines.flow.*
 import java.util.*
 
 class ModifyPlaylistViewModel(
-    private val getPlaylistUseCase: GetPlaylistUseCase,
+    private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
 
     private val playlistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
@@ -29,11 +33,11 @@ class ModifyPlaylistViewModel(
     val navigationState: StateFlow<ModifyPlaylistNavigationState> = _navigationState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val initialPlaylist: Flow<Playlist?> = playlistId.flatMapLatest { id ->
+    private val initialPlaylist: Flow<PlaylistWithMusics?> = playlistId.flatMapLatest { id ->
         if (id == null) {
             flowOf(null)
         } else {
-            getPlaylistUseCase(playlistId = id)
+            getPlaylistWithMusicsUseCase(playlistId = id)
         }
     }
 
@@ -46,7 +50,7 @@ class ModifyPlaylistViewModel(
         when {
             initialPlaylist == null -> ModifyPlaylistState.Loading
             else -> ModifyPlaylistState.Data(
-                initialPlaylist = initialPlaylist,
+                initialPlaylist = initialPlaylist.playlist,
                 editableElement = EditableElement(
                     initialCover = initialPlaylist.cover,
                     newCover = newCover,
@@ -60,11 +64,11 @@ class ModifyPlaylistViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val formState: StateFlow<ModifyPlaylistFormState> = initialPlaylist.mapLatest { playlist ->
-        if (playlist == null) {
+    val formState: StateFlow<ModifyPlaylistFormState> = initialPlaylist.mapLatest { playlistWithMusics ->
+        if (playlistWithMusics == null) {
             ModifyPlaylistFormState.NoData
         } else {
-            ModifyPlaylistFormState.Data(initialPlaylist = playlist)
+            ModifyPlaylistFormState.Data(initialPlaylist = playlistWithMusics.playlist)
         }
     }.stateIn(
         scope = screenModelScope.plus(Dispatchers.IO),
@@ -81,6 +85,8 @@ class ModifyPlaylistViewModel(
             val form = (formState.value as? ModifyPlaylistFormState.Data) ?: return@launch
 
             if (!form.isFormValid()) return@launch
+
+            loadingManager.startLoading()
 
             val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
@@ -101,6 +107,8 @@ class ModifyPlaylistViewModel(
             upsertPlaylistUseCase(
                 playlist = newPlaylistInformation,
             )
+
+            loadingManager.stopLoading()
 
             _navigationState.value = ModifyPlaylistNavigationState.Back
         }
