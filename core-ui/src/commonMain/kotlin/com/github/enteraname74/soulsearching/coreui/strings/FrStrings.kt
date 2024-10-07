@@ -175,6 +175,8 @@ object FrStrings : Strings {
 
     override val noNewMusics = "Aucune nouvelle musique à ajouter !"
     override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
+    override val songsSaved = "Musiques sauvegardées!"
+    override val searchForNewSongs = "Rechercher de nouvelles musiques"
 
     override fun musics(total: Int): String {
         return when (total) {

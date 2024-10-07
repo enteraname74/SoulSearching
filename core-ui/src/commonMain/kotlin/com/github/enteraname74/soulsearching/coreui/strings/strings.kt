@@ -184,6 +184,8 @@ interface Strings {
 
     val noNewMusics: String
     val savingNewMusics: String
+    val songsSaved: String
+    val searchForNewSongs: String
 
     /**
      * Shows a text indicating the number of musics.

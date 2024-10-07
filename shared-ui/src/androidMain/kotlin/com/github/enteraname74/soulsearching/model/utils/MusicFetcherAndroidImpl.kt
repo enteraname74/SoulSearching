@@ -118,7 +118,6 @@ class MusicFetcherAndroidImpl(
      * Fetch new musics.
      */
     override suspend fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem> {
@@ -135,7 +134,6 @@ class MusicFetcherAndroidImpl(
             }
 
             else -> {
-                var count = 0
                 while (cursor.moveToNext()) {
                     val musicPath = cursor.getString(4)
                     val musicFolder = File(musicPath).parent ?: ""
@@ -154,8 +152,6 @@ class MusicFetcherAndroidImpl(
                             println("MusicFetcher -- Exception while fetching song: $e")
                         }
                     }
-                    count++
-                    updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
             }

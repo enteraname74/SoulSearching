@@ -42,7 +42,6 @@ abstract class MusicFetcher: KoinComponent {
      * Fetch musics from specified folders on the device.
      */
     abstract suspend fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem>
@@ -114,12 +113,16 @@ abstract class MusicFetcher: KoinComponent {
 
     suspend fun saveAllMusics(
         musics: List<Music>,
-        onSongSaved: () -> Unit,
+        onSongSaved: (progress: Float) -> Unit,
     ) {
-        musics.forEach { music ->
+        musics.forEachIndexed { index, music ->
             addMusic(
                 musicToAdd = music,
-                onSongSaved = onSongSaved,
+                onSongSaved = {
+                    onSongSaved(
+                        (index.toFloat() / musics.size)
+                    )
+                },
             )
         }
         saveAll()

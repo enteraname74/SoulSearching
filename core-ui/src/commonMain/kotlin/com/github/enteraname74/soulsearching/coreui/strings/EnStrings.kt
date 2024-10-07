@@ -174,6 +174,9 @@ object EnStrings : Strings {
     override val noNewMusics = "No new songs to add!"
     override val savingNewMusics = "Saving new songs…"
 
+    override val songsSaved = "Songs saved successfully!"
+    override val searchForNewSongs = "Search for new songs"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

@@ -127,7 +127,6 @@ class MusicFetcherDesktopImpl(
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(
-        updateProgress: (Float, String?) -> Unit,
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
     ): ArrayList<SelectableMusicItem> {
@@ -136,7 +135,7 @@ class MusicFetcherDesktopImpl(
 
         extractMusicsFromCurrentDirectory(
             directory = root,
-            updateProgress = updateProgress,
+            updateProgress = { _, _ -> },
             onMusicFetched = { music ->
                 if (!alreadyPresentMusicsPaths.any { it == music.path } && !hiddenFoldersPaths.any { it == music.folder }) {
                     newMusics.add(
