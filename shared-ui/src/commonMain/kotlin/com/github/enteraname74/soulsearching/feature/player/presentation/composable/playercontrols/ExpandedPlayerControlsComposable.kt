@@ -1,28 +1,26 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable.playercontrols
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
-import kotlin.math.max
-import kotlin.math.min
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,35 +39,11 @@ fun ExpandedPlayerControlsComposable(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val interactionSource = remember { MutableInteractionSource() }
-        val sliderColors = SliderDefaults.colors(
-            thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-            activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-            inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
-        )
-
-        println()
-        Slider(
-            modifier = Modifier
-                .fillMaxWidth(),
+        SoulSlider(
+            maxValue = playbackManager.currentMusicDuration.toFloat(),
             value = currentMusicPosition.toFloat(),
-            onValueChange = {
+            onValueChanged = {
                 playbackManager.seekToPosition(it.toInt())
-            },
-            colors = sliderColors,
-            valueRange = 0f..max(playbackManager.currentMusicDuration.toFloat(), 0f),
-            interactionSource = interactionSource,
-            thumb = {
-                SliderDefaults.Thumb(
-                    interactionSource = interactionSource,
-                    modifier = Modifier
-                        .size(UiConstants.ImageSize.small)
-                        .padding(
-                            start = 4.dp,
-                            top = 4.dp
-                        ),
-                    colors = sliderColors
-                )
             }
         )
 
