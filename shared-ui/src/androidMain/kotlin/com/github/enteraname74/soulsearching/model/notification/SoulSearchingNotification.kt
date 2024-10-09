@@ -55,7 +55,6 @@ abstract class SoulSearchingNotification(
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     open fun init(currentMusic: Music?) {
-        println("INIT NOTIFICATION WITH MUSIC: $currentMusic")
         notificationBuilder
             .setSmallIcon(R.drawable.ic_saxophone_svg)
             .setContentTitle(currentMusic?.name.orEmpty())

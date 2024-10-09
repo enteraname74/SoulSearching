@@ -8,13 +8,9 @@ import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.model.player.MediaSessionManager
 import com.github.enteraname74.soulsearching.model.player.SoulSearchingAndroidPlayerImpl
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.util.CoverFileManager
 
 /**
  * Implementation of a MusicPlayerManager for Android.

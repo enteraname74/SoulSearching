@@ -90,10 +90,10 @@ data class SelectedArtistScreen(
         SelectedArtistScreenView(
             selectedArtistViewModel = screenModel,
             navigateBack = {
+                navigator.pop()
                 if (!navigator.isPreviousScreenAPlaylistDetails()) {
                     colorThemeManager.removePlaylistTheme()
                 }
-                navigator.pop()
             },
         )
     }

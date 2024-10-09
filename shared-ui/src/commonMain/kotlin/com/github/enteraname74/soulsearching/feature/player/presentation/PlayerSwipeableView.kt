@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.*
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -44,6 +45,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 import com.github.enteraname74.soulsearching.feature.playerpanel.PlayerPanelDraggableView
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -81,6 +83,20 @@ fun PlayerDraggableView(
     val canShowPanel = PlayerUiUtils.canShowSidePanel()
     val shouldCloseMusicListDraggableView: () -> Boolean = {
         !canShowPanel && playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED
+    }
+
+    var bitmap: ImageBitmap? by remember {
+        mutableStateOf(null)
+    }
+
+    val onCoverLoaded: (ImageBitmap?) -> Unit = {
+        bitmap = it
+    }
+
+    LaunchedEffect(bitmap) {
+        colorThemeManager.setCurrentCover(
+            cover = bitmap
+        )
     }
 
     LaunchedEffect(navigationState) {
@@ -246,6 +262,7 @@ fun PlayerDraggableView(
                         },
                         canSwipeCover = state.canSwipeCover,
                         aroundSongs = state.aroundSongs,
+                        onCoverLoaded = onCoverLoaded,
                     )
 
                     if (!PlayerUiUtils.canShowRowControlPanel()) {

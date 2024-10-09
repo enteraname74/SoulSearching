@@ -3,18 +3,19 @@ package com.github.enteraname74.soulsearching.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import coil3.BitmapImage
+import coil3.Image
+import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
@@ -39,6 +40,7 @@ fun SoulImage(
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
 ) {
     val baseModifier = Modifier
         .size(size)
@@ -60,6 +62,7 @@ fun SoulImage(
                 modifier = baseModifier,
                 contentScale = contentScale,
                 tint = tint,
+                onSuccess = onSuccess,
             )
         }
     }
@@ -71,6 +74,7 @@ private fun FileCover(
     modifier: Modifier,
     contentScale: ContentScale,
     tint: Color,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
 ) {
     when {
         cover.isEmpty() -> {
@@ -96,6 +100,7 @@ private fun FileCover(
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
+                onSuccess = onSuccess,
             )
         }
     }
@@ -116,13 +121,35 @@ fun TemplateImage(
     )
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun DataImage(
     data: Any?,
     modifier: Modifier,
     contentScale: ContentScale,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
 ) {
+
+
+    var previousSavedImage: Image? by remember {
+        mutableStateOf(null)
+    }
+
     AsyncImage(
+        onSuccess = { result ->
+            if (result.result.image != previousSavedImage) {
+                previousSavedImage = result.result.image
+                onSuccess?.let {
+                    it((result.result.image as? BitmapImage)?.bitmap?.asImageBitmap())
+                }
+            }
+        },
+        onError = {
+            onSuccess?.let {
+                previousSavedImage = null
+                it(null)
+            }
+        },
         error = painterResource(Res.drawable.saxophone_png),
         model = ImageRequest.Builder(LocalPlatformContext.current)
             .data(data)

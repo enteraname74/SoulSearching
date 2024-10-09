@@ -12,27 +12,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
-import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.*
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
-import com.github.enteraname74.domain.ext.toImageBitmap
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -46,25 +46,34 @@ fun PlaylistScreen(
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
-    coverFileManager: CoverFileManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var playlistImageBitmap: ImageBitmap? by remember {
-        mutableStateOf(null)
-    }
-
     LaunchedEffect(playlistDetail.cover) {
-        playlistImageBitmap = (playlistDetail.cover as? Cover.FileCover)?.fileCoverId?.let { coverId ->
-            coverFileManager.getCoverData(coverId = coverId)?.toImageBitmap()
+        if (playlistDetail.cover?.isEmpty() != false) {
+            colorThemeManager.setNewPlaylistCover(
+                playlistDetailCover = PlaylistDetailCover.NoCover
+            )
         }
     }
 
-    LaunchedEffect(playlistImageBitmap) {
+    var bitmap: ImageBitmap? by remember {
+        mutableStateOf(null)
+    }
+
+    val hasFoundImage by derivedStateOf {
+        bitmap != null
+    }
+
+    LaunchedEffect(hasFoundImage) {
         colorThemeManager.setNewPlaylistCover(
-            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(imageBitmap = playlistImageBitmap)
+            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
         )
+    }
+
+    val onCoverLoaded: (ImageBitmap?) -> Unit = {
+        bitmap = it
     }
 
     SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
@@ -129,6 +138,7 @@ fun PlaylistScreen(
                         playlistDetail = playlistDetail,
                         playlistDetailListener = playlistDetailListener,
                         optionalContent = optionalContent,
+                        onCoverLoaded = onCoverLoaded,
                     )
                 }
                 else -> {
@@ -140,6 +150,7 @@ fun PlaylistScreen(
                         playlistDetail = playlistDetail,
                         playlistDetailListener = playlistDetailListener,
                         optionalContent = optionalContent,
+                        onCoverLoaded = onCoverLoaded,
                     )
                 }
             }

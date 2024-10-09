@@ -8,6 +8,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
@@ -35,6 +36,7 @@ fun PlayerMusicCover(
     onLongClick: () -> Unit,
     canSwipeCover: Boolean,
     aroundSongs: List<Music?>,
+    onCoverLoaded: (ImageBitmap?) -> Unit,
 ) {
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         Modifier.combinedClickableWithRightClick(
@@ -88,7 +90,8 @@ fun PlayerMusicCover(
                         cover = aroundSongs.getOrNull(currentSongPos)?.cover,
                         size = imageSize,
                         roundedPercent = (playerViewManager.offset / 100).roundToInt()
-                            .coerceIn(3, 10)
+                            .coerceIn(3, 10),
+                        onSuccess = onCoverLoaded,
                     )
                 }
             } else {
@@ -97,7 +100,8 @@ fun PlayerMusicCover(
                     cover = playbackManager.currentMusic?.cover,
                     size = imageSize,
                     roundedPercent = (playerViewManager.offset / 100).roundToInt()
-                        .coerceIn(3, 10)
+                        .coerceIn(3, 10),
+                    onSuccess = onCoverLoaded,
                 )
             }
         }

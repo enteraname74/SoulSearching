@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
@@ -35,6 +36,7 @@ fun PlaylistRowView(
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
 ) {
@@ -48,6 +50,7 @@ fun PlaylistRowView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     } else {
         MediumView(
@@ -58,6 +61,7 @@ fun PlaylistRowView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     }
 }
@@ -68,6 +72,7 @@ private fun LargeView(
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
@@ -96,6 +101,7 @@ private fun LargeView(
                 playlistDetail = playlistDetail,
                 playlistDetailListener = playlistDetailListener,
                 optionalContent = optionalContent,
+                onCoverLoaded = onCoverLoaded,
             )
         }
     }
@@ -108,6 +114,7 @@ private fun MediumView(
     navigateBack: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
@@ -124,6 +131,7 @@ private fun MediumView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     }
 }
@@ -136,6 +144,7 @@ private fun Content(
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
     playbackManager: PlaybackManager = injectElement(),
@@ -154,7 +163,8 @@ private fun Content(
         ) {
             PageHeader(
                 playlistDetail = playlistDetail,
-                onSubTitleClicked = playlistDetailListener::onSubtitleClicked
+                onSubTitleClicked = playlistDetailListener::onSubtitleClicked,
+                onCoverLoaded = onCoverLoaded,
             )
             if (canShowVerticalInformation) {
                 PlaylistPanel(

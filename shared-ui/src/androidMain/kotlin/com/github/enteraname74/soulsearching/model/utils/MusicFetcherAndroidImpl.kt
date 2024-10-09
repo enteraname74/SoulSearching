@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.model.utils
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.os.Build
 import android.provider.MediaStore
 import androidx.core.database.getLongOrNull
 import com.github.enteraname74.domain.model.Cover
@@ -52,9 +53,28 @@ class MusicFetcherAndroidImpl(
         )
     }
 
-    private fun getMusicFileCoverPath(albumId: Long): String {
+    private fun getMusicFileCoverPath(albumId: Long): String? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // For Android 10 and above, use the content URI
+            ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId).toString()
+        } else {
+            // For older versions, use the direct file path via ALBUM_ART
+            getMusicFileCoverPathForOldDevices(albumId)
+        }
+    }
+
+    private fun getMusicFileCoverPathForOldDevices(albumId: Long): String? {
+        val projection = arrayOf(MediaStore.Audio.Albums.ALBUM_ART)
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId)
-        return uri.toString()
+        var albumArtPath: String? = null
+
+        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                albumArtPath = it.getString(it.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART))
+            }
+        }
+        return albumArtPath
     }
 
     private fun Cursor.toMusic(): Music? =
@@ -67,6 +87,7 @@ class MusicFetcherAndroidImpl(
                 path = this.getString(4),
                 folder = File(this.getString(4)).parent ?: "",
                 cover = Cover.FileCover(
+//                    initialCoverPath = this.getString(4)
                     initialCoverPath = this.getLongOrNull(5)?.let(::getMusicFileCoverPath)
                 ),
             )
@@ -93,7 +114,9 @@ class MusicFetcherAndroidImpl(
                 while (cursor.moveToNext()) {
                     try {
                         val music: Music? = cursor.toMusic()
-                        music?.let { addMusic(musicToAdd = it) }
+                        music?.let {
+                            addMusic(musicToAdd = it)
+                        }
                     } catch (e: Exception) {
                         println("MusicFetcher -- Exception while saving song: $e")
                     }

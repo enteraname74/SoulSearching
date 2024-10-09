@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
@@ -31,6 +32,7 @@ fun PlaylistColumnView(
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
@@ -52,6 +54,7 @@ fun PlaylistColumnView(
                 PageHeader(
                     playlistDetail = playlistDetail,
                     onSubTitleClicked = playlistDetailListener::onSubtitleClicked,
+                    onCoverLoaded = onCoverLoaded,
                 )
             }
             stickyHeader {
