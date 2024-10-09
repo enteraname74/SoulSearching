@@ -63,9 +63,9 @@ fun SoulSearchingApplication(
     LaunchedEffect("Covers check") {
         CoroutineScope(Dispatchers.IO).launch {
             playbackManager.currentMusic?.let { currentMusic ->
-                playbackManager.defineCoverAndPaletteFromCoverId(
-                    cover = currentMusic.cover
-                )
+//                playbackManager.defineCoverAndPaletteFromCoverId(
+//                    cover = currentMusic.cover
+//                )
                 playbackManager.update()
             }
         }

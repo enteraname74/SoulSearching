@@ -89,7 +89,7 @@ class PlaybackManagerAndroidImpl(
 
     override suspend fun initializePlayerFromSavedList(savedList: List<Music>) {
         super.initializePlayerFromSavedList(savedList)
-        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
+//        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
         launchService()
     }
 

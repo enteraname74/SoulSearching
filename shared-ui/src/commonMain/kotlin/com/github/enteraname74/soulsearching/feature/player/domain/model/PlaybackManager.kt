@@ -2,8 +2,6 @@ package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.*
-import com.github.enteraname74.domain.ext.toImageBitmap
-import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.PlayerMusic
@@ -27,7 +25,6 @@ abstract class PlaybackManager : KoinComponent{
     protected val settings: SoulSearchingSettings by inject()
     private val playerMusicRepository: PlayerMusicRepository by inject()
     private val musicRepository: MusicRepository by inject()
-    private val coverFileManager: CoverFileManager by inject()
 
     /**
      * Callback for letting other elements of the application listen to playback changes.
@@ -408,21 +405,18 @@ abstract class PlaybackManager : KoinComponent{
         callback.onCurrentMusicCoverChanged(
             cover = _currentMusicCover
         )
+        updateNotification()
     }
 
     /**
      * Define the current music cover and the current color palette from the cover.
      */
-    fun defineCoverAndPaletteFromCoverId(cover: Cover?) {
-        (cover as? Cover.FileCover)?.fileCoverId?.let { fileCoverId ->
-            CoroutineScope(Dispatchers.IO).launch {
-                _currentMusicCover = coverFileManager
-                    .getCoverData(coverId = fileCoverId)
-                    ?.toImageBitmap()
-                callback.onCurrentMusicCoverChanged(
-                    cover = _currentMusicCover
-                )
-            }
+    fun defineCoverAndPaletteFromCoverId(cover: ImageBitmap?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _currentMusicCover = cover
+            callback.onCurrentMusicCoverChanged(
+                cover = _currentMusicCover
+            )
         }
     }
 
@@ -434,7 +428,7 @@ abstract class PlaybackManager : KoinComponent{
         callback.onCurrentPlayedMusicChanged(
             music = currentMusic
         )
-        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
+//        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
     }
 
     /**
@@ -588,7 +582,7 @@ abstract class PlaybackManager : KoinComponent{
         val index = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY)
         val position = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
         setMusicFromIndex(index)
-        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
+//        defineCoverAndPaletteFromCoverId(cover = currentMusic?.cover)
 
         setPlayerMode(settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY))
         onlyLoadMusic(seekTo = position)
@@ -830,7 +824,7 @@ abstract class PlaybackManager : KoinComponent{
      */
     open fun update() {
         launchDurationJobIfNecessary()
-        defineCoverAndPaletteFromCoverId(currentMusic?.cover)
+//        defineCoverAndPaletteFromCoverId(currentMusic?.cover)
         callback.onCurrentPlayedMusicChanged(music = currentMusic)
         callback.onPlayingStateChanged(isPlaying = isPlaying)
         callback.onPlayedListUpdated(playedList = playedList)

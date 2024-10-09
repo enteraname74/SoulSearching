@@ -97,6 +97,7 @@ fun PlayerDraggableView(
         colorThemeManager.setCurrentCover(
             cover = bitmap
         )
+        playbackManager.updateCover(cover = bitmap)
     }
 
     LaunchedEffect(navigationState) {
