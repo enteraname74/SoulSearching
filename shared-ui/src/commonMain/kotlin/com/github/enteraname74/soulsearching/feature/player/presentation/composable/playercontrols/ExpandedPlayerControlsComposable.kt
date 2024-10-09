@@ -21,6 +21,8 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.utils.Utils
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
+import kotlin.math.max
+import kotlin.math.min
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +48,7 @@ fun ExpandedPlayerControlsComposable(
             inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
         )
 
+        println()
         Slider(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -54,7 +57,7 @@ fun ExpandedPlayerControlsComposable(
                 playbackManager.seekToPosition(it.toInt())
             },
             colors = sliderColors,
-            valueRange = 0f..playbackManager.currentMusicDuration.toFloat(),
+            valueRange = 0f..max(playbackManager.currentMusicDuration.toFloat(), 0f),
             interactionSource = interactionSource,
             thumb = {
                 SliderDefaults.Thumb(
