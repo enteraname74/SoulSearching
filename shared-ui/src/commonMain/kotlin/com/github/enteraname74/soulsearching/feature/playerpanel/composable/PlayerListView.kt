@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,19 +24,22 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun PlayerListView(
     playbackManager: PlaybackManager = injectElement(),
+    currentMusicIndex: Int,
     isExpanded: Boolean,
     playedList: List<Music>,
     onSelectedMusic: (Music) -> Unit,
     secondaryColor: Color,
     buttonColors: SoulButtonColors,
 ) {
-    
+
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
     
@@ -54,9 +59,9 @@ fun PlayerListView(
                     colors = buttonColors,
                     onClick = {
                         coroutineScope.launch {
-                            if (playbackManager.currentMusicIndex != -1) {
+                            if (currentMusicIndex != -1) {
                                 playerListState.animateScrollToItem(
-                                    playbackManager.currentMusicIndex
+                                    currentMusicIndex
                                 )
                             }
                         }
@@ -72,6 +77,8 @@ fun PlayerListView(
                 }
             }
 
+            val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+
             LazyColumn(
                 state = playerListState,
                 contentPadding = PaddingValues(
@@ -86,7 +93,9 @@ fun PlayerListView(
                     MusicItemComposable(
                         music = elt,
                         onClick = { music ->
-                            playbackManager.setAndPlayMusic(music)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                playbackManager.setAndPlayMusic(music)
+                            }
                         },
                         onLongClick = {
                             coroutineScope.launch {
@@ -94,7 +103,7 @@ fun PlayerListView(
                             }
                         },
                         textColor = secondaryColor,
-                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
                     )
                 }
             }

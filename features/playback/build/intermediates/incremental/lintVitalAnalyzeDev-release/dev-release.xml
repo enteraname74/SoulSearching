@@ -1,0 +1,31 @@
+<variant
+    name="dev-release"
+    package="com.github.enteraname74.soulsearching.features.playback"
+    minSdkVersion="26"
+    targetSdkVersion="26"
+    mergedManifest="build/intermediates/merged_manifest/dev-release/processDev-releaseManifest/AndroidManifest.xml"
+    proguardFiles="build/intermediates/default_proguard_files/global/proguard-android.txt-8.5.2"
+    partialResultsDir="build/intermediates/lint_vital_partial_results/dev-release/lintVitalAnalyzeDev-release/out"
+    desugaredMethodsFiles="/home/noah/.gradle/caches/transforms-4/5a6b85945ff4f06ff3522dbc1a2bdb60/transformed/D8BackportedDesugaredMethods.txt">
+  <buildFeatures
+      namespacing="REQUIRED"/>
+  <sourceProviders>
+    <sourceProvider
+        manifests="src/androidMain/AndroidManifest.xml"
+        javaDirectories="src/main/java:src/dev-release/java:src/androidMain/kotlin:build/generated/compose/resourceGenerator/kotlin/androidMainResourceAccessors:src/main/kotlin:src/dev-release/kotlin"
+        resDirectories="src/main/res:src/androidMain/res:src/dev-release/res:src/androidDev-release/res"
+        assetsDirectories="src/main/assets:src/androidMain/assets:src/dev-release/assets:src/androidDev-release/assets"/>
+  </sourceProviders>
+  <testSourceProviders>
+  </testSourceProviders>
+  <testFixturesSourceProviders>
+  </testFixturesSourceProviders>
+  <artifact
+      classOutputs="build/intermediates/javac/dev-release/compileDev-releaseJavaWithJavac/classes:build/tmp/kotlin-classes/dev-release:build/intermediates/compile_r_class_jar/dev-release/generateDev-releaseRFile/R.jar"
+      type="MAIN"
+      applicationId="com.github.enteraname74.soulsearching.features.playback"
+      generatedSourceFolders="build/generated/ap_generated_sources/dev-release/out"
+      generatedResourceFolders="build/generated/res/resValues/dev-release"
+      desugaredMethodsFiles="/home/noah/.gradle/caches/transforms-4/5a6b85945ff4f06ff3522dbc1a2bdb60/transformed/D8BackportedDesugaredMethods.txt">
+  </artifact>
+</variant>

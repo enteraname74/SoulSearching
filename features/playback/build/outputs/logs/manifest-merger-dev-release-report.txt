@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml:2:13-83
+INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml:2:13-83
+	package
+		INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml
+	xmlns:android
+		ADDED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml:2:23-81
+uses-sdk
+INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml reason: use-sdk injection requested
+INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml
+INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml
+	android:targetSdkVersion
+		INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml
+	android:minSdkVersion
+		INJECTED from /home/noah/Documents/Projets/SoulSearching/features/playback/build/intermediates/tmp/ProcessLibraryManifest/dev-release/tempAndroidManifest8041524026436845060.xml

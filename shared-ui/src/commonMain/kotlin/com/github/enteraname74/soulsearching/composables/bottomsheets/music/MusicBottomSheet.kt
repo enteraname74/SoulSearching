@@ -1,15 +1,18 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +38,9 @@ class MusicBottomSheet(
         if (playerMusicListViewManager.currentValue == BottomSheetStates.EXPANDED) {
             playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
         }
-        playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+            playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+        }
     }
 
     @Composable
@@ -52,6 +57,7 @@ class MusicBottomSheet(
         closeWithAnim: () -> Unit,
     ) {
         val coroutineScope = rememberCoroutineScope()
+        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
 
         MusicBottomSheetMenu(
             musicBottomSheetState = musicBottomSheetState,
@@ -85,14 +91,17 @@ class MusicBottomSheet(
                         playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                     }
                 }.invokeOnCompletion {
-                    playbackManager.addMusicToPlayNext(
-                        music = selectedMusic
-                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.addMusicToPlayNext(
+                            music = selectedMusic
+                        )
+                    }
                 }
                 closeWithAnim()
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,
-            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId)
+            isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId),
+            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() == true,
         )
     }
 }

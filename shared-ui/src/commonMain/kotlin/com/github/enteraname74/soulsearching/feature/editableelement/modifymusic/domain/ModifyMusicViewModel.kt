@@ -13,13 +13,13 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import com.github.enteraname74.domain.ext.toImageBitmap
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
@@ -141,14 +141,13 @@ class ModifyMusicViewModel(
             )
 
             playbackManager.updateMusic(newMusicInformation)
-            playbackManager.currentMusic?.let {
-                if (it.musicId.compareTo(newMusicInformation.musicId) == 0
-                    && state.editableElement.newCover != null
-                ) {
-                    playbackManager.updateCover(
-                        cover = state.editableElement.newCover.toImageBitmap()
-                    )
-                }
+            if (
+                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = newMusicInformation.musicId)
+                && state.editableElement.newCover != null
+            ) {
+                playbackManager.updateCover(
+                    cover = state.editableElement.newCover.toImageBitmap()
+                )
             }
 
             loadingManager.stopLoading()

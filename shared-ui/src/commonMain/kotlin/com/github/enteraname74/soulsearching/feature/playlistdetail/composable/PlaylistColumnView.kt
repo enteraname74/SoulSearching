@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -17,10 +19,12 @@ import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -38,6 +42,7 @@ fun PlaylistColumnView(
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     Column(
         modifier = Modifier
@@ -79,22 +84,23 @@ fun PlaylistColumnView(
                     music = elt,
                     onClick = { music ->
                         coroutineScope.launch {
+                            playlistDetailListener.onUpdateNbPlayed()
+                            CoroutineScope(Dispatchers.IO).launch {
+                                playbackManager.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    musicList = playlistDetail.musics,
+                                    playlistId = playlistDetail.id,
+                                    isMainPlaylist = false
+                                )
+                            }
                             playerViewManager.animateTo(
                                 newState = BottomSheetStates.EXPANDED,
-                            )
-                        }.invokeOnCompletion {
-                            playlistDetailListener.onUpdateNbPlayed()
-                            playbackManager.setCurrentPlaylistAndMusic(
-                                music = music,
-                                musicList = playlistDetail.musics,
-                                playlistId = playlistDetail.id,
-                                isMainPlaylist = false
                             )
                         }
                     },
                     onLongClick = { onShowMusicBottomSheet(elt) },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
                 )
             }
             item { SoulPlayerSpacer() }

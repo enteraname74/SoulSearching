@@ -6,7 +6,6 @@ import com.github.enteraname74.soulsearching.domain.model.SelectableMusicItem
  * State for managing adding musics.
  */
 sealed interface SettingsAddMusicsState {
-
     data object Fetching: SettingsAddMusicsState
     data class SavingSongs(
         val progress: Float,

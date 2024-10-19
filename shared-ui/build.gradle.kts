@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -37,6 +35,7 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
+                implementation(project(":features:playback"))
 
                 implementation(libs.bundles.koin)
 

@@ -16,8 +16,10 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -87,17 +89,18 @@ private fun QuickAccessible.toPreview(
                 text = this.album,
                 onClick = {
                     coroutineScope.launch {
+                        val musicListSingleton = arrayListOf(this@toPreview)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            playbackManager.setCurrentPlaylistAndMusic(
+                                music = this@toPreview,
+                                musicList = musicListSingleton,
+                                isMainPlaylist = false,
+                                playlistId = null,
+                                isForcingNewPlaylist = true
+                            )
+                        }
                         playerViewManager.animateTo(
                             newState = BottomSheetStates.EXPANDED,
-                        )
-                    }.invokeOnCompletion {
-                        val musicListSingleton = arrayListOf(this)
-                        playbackManager.setCurrentPlaylistAndMusic(
-                            music = this,
-                            musicList = musicListSingleton,
-                            isMainPlaylist = false,
-                            playlistId = null,
-                            isForcingNewPlaylist = true
                         )
                     }
                 },

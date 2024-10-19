@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import coil3.request.ImageRequest
 import coil3.toUri
 
 @Composable
@@ -14,6 +15,7 @@ actual fun CoverPathImage(
     tint: Color,
     contentScale: ContentScale,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
 ) {
     if (initialCoverPath != null) {
         DataImage(
@@ -21,6 +23,7 @@ actual fun CoverPathImage(
             modifier = modifier,
             contentScale = contentScale,
             onSuccess = onSuccess,
+            builderOptions = builderOptions,
         )
     } else {
         TemplateImage(

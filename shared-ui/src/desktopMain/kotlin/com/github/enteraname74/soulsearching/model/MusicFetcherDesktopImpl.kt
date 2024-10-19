@@ -80,7 +80,7 @@ class MusicFetcherDesktopImpl(
                         name = tag.getFirst(FieldKey.TITLE),
                         album = tag.getFirst(FieldKey.ALBUM),
                         artist = tag.getFirst(FieldKey.ARTIST),
-                        duration = audioFile.audioHeader.trackLength.toLong(),
+                        duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
                         folder = file.parent,
                         cover = Cover.FileCover(

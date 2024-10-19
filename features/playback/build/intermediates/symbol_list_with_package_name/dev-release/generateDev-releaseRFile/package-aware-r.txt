@@ -1,0 +1,7 @@
+com.github.enteraname74.soulsearching.features.playback
+drawable ic_pause
+drawable ic_play_arrow
+drawable ic_saxophone_svg
+drawable ic_skip_next
+drawable ic_skip_previous
+drawable notification_default

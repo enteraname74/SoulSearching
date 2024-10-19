@@ -4,11 +4,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.PlayerMode
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
-import com.github.enteraname74.domain.usecase.music.*
+import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
@@ -19,13 +20,11 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 /**
@@ -43,21 +42,61 @@ class PlayerViewModel(
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
 ) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
-    private val _state = MutableStateFlow(PlayerState())
 
-    val state = combine(
-        _state,
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val currentMusicFavoriteStatusState: Flow<Boolean> =
+        playbackManager.mainState.flatMapLatest { playbackState ->
+            when (playbackState) {
+                is PlaybackManagerState.Data -> {
+                    isMusicInFavoritePlaylistUseCase(
+                        musicId = playbackState.currentMusic.musicId,
+                    )
+                }
+
+                PlaybackManagerState.Stopped -> {
+                    flowOf(false)
+                }
+            }
+        }
+
+    private val currentMusicLyrics: MutableStateFlow<LyricsFetchState> =
+        MutableStateFlow(LyricsFetchState.NoLyricsFound)
+
+    val currentSongProgressionState = playbackManager.currentSongProgressionState
+
+    val state: StateFlow<PlayerViewState> = combine(
+        playbackManager.mainState,
         getAllPlaylistWithMusicsUseCase(),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
-    ) { state, playlists, isCoverSwipeEnabled ->
-        state.copy(
-            playlistsWithMusics = playlists,
-            canSwipeCover = isCoverSwipeEnabled,
-        )
+        currentMusicFavoriteStatusState,
+        currentMusicLyrics,
+    ) { playbackMainState, playlists, isCoverSwipeEnabled,isCurrentMusicInFavorite, currentMusicLyrics ->
+        when (playbackMainState) {
+            is PlaybackManagerState.Data -> {
+                PlayerViewState.Data(
+                    currentMusic = playbackMainState.currentMusic,
+                    currentMusicIndex = playbackMainState.currentMusicIndex,
+                    isCurrentMusicInFavorite = isCurrentMusicInFavorite,
+                    playedList = playbackMainState.playedList,
+                    playerMode = playbackMainState.playerMode,
+                    isPlaying = playbackMainState.isPlaying,
+                    playlistsWithMusics = playlists,
+                    currentMusicLyrics = currentMusicLyrics,
+                    canSwipeCover = isCoverSwipeEnabled,
+                    aroundSongs = getAroundSongs(playbackMainState.currentMusic),
+                    initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
+                )
+            }
+
+            PlaybackManagerState.Stopped -> {
+                colorThemeManager.setCurrentCover(cover = null)
+                PlayerViewState.Closed
+            }
+        }
     }.stateIn(
         screenModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        PlayerState()
+        SharingStarted.Eagerly,
+        PlayerViewState.Closed
     )
 
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
@@ -83,106 +122,40 @@ class PlayerViewModel(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyMusic = { _navigationState.value = PlayerNavigationState.ToModifyMusic(it) },
-            getAllPlaylistsWithMusics = { state.value.playlistsWithMusics },
+            getAllPlaylistsWithMusics = ::getPlaylistsWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
         )
-
-        playbackManager.setCallback(callback = object : PlaybackManager.Companion.Callback {
-            override fun onPlayedListUpdated(playedList: List<Music>) {
-                super.onPlayedListUpdated(playedList)
-                onEvent(
-                    PlayerEvent.SetPlayedList(
-                        playedList = playedList
-                    )
-                )
-            }
-
-            override fun onPlayerModeChanged(playerMode: PlayerMode) {
-                super.onPlayerModeChanged(playerMode)
-                onEvent(
-                    PlayerEvent.SetPlayerMode(
-                        playerMode = playerMode
-                    )
-                )
-            }
-
-            override fun onCurrentPlayedMusicChanged(music: Music?) {
-                super.onCurrentPlayedMusicChanged(music)
-                onEvent(
-                    PlayerEvent.SetCurrentMusic(
-                        currentMusic = music
-                    )
-                )
-            }
-
-            override fun onCurrentMusicPositionChanged(position: Int) {
-                super.onCurrentMusicPositionChanged(position)
-                onEvent(
-                    PlayerEvent.SetCurrentMusicPosition(
-                        position = position
-                    )
-                )
-            }
-
-            override fun onPlayingStateChanged(isPlaying: Boolean) {
-                super.onPlayingStateChanged(isPlaying)
-                onEvent(
-                    PlayerEvent.SetIsPlaying(
-                        isPlaying = isPlaying
-                    )
-                )
-            }
-
-            override fun onCurrentMusicCoverChanged(cover: ImageBitmap?) {
-                super.onCurrentMusicCoverChanged(cover)
-                onEvent(
-                    PlayerEvent.SetCurrentMusicCover(
-                        cover = cover
-                    )
-                )
-            }
-        })
     }
 
-    /**
-     * Manage music events.
-     */
-    fun onEvent(event: PlayerEvent) {
-        when (event) {
-            PlayerEvent.ToggleFavoriteState -> toggleFavoriteState()
-            PlayerEvent.GetLyrics -> setLyricsOfCurrentMusic()
-            is PlayerEvent.SetCurrentMusic -> setCurrentMusic(music = event.currentMusic)
-            is PlayerEvent.SetCurrentMusicCover -> setCurrentMusicCover(cover = event.cover)
-            is PlayerEvent.SetCurrentMusicPosition -> setCurrentMusicPosition(position = event.position)
-            is PlayerEvent.SetIsPlaying -> setIsPlaying(isPlaying = event.isPlaying)
-            is PlayerEvent.SetPlayedList -> setPlayedList(playedList = event.playedList)
-            is PlayerEvent.SetPlayerMode -> setPlayerMode(playerMode = event.playerMode)
-        }
-    }
+    private fun getPlaylistsWithMusics(): List<PlaylistWithMusics> =
+        (state.value as? PlayerViewState.Data)?.playlistsWithMusics ?: emptyList()
 
     /**
      * Retrieve a list containing the current song and its around songs (previous and next).
      * If no songs are played, return a list containing null. If the played list contains only
      * the current song, it will return a list with only the current song.
      */
-    private fun getAroundSongs(
-        currentSong: Music?,
+    private suspend fun getAroundSongs(
+        currentSong: Music,
     ): List<Music?> {
-        if (currentSong == null || _state.value.canSwipeCover == false) return emptyList()
+        val playerState = (state.value as? PlayerViewState.Data) ?: return emptyList()
+        if (!playerState.canSwipeCover) return emptyList()
 
-        val currentSongIndex = playbackManager.currentMusicIndex
+        val currentSongIndex = playerState.currentMusicIndex
 
-        if (currentSongIndex == -1) return listOf(null)
+        if (currentSongIndex == -1) return emptyList()
 
-        if (playbackManager.playedList.size == 1) return listOf(
-            currentSong
+        if (playerState.playedList.size == 1) return listOf(
+            null,
+            currentSong,
+            null,
         )
 
         return listOf(
-            playbackManager.getPreviousMusic(currentSongIndex),
+            playbackManager.getPreviousMusic(),
             currentSong,
-            playbackManager.getNextMusic(currentSongIndex)
+            playbackManager.getNextMusic()
         )
     }
 
@@ -207,118 +180,101 @@ class PlayerViewModel(
     /**
      * Set the lyrics of the current music.
      */
-    private fun setLyricsOfCurrentMusic() {
-        _state.value.currentMusic?.let { currentMusic ->
-            CoroutineScope(Dispatchers.IO).launch {
-                _state.update {
-                    it.copy(
-                        currentMusicLyrics = LyricsFetchState.FetchingLyrics
-                    )
-                }
-                val lyrics = getLyricsOfSongUseCase(music = currentMusic)
-                _state.update {
-                    it.copy(
-                        currentMusicLyrics = if (lyrics == null) LyricsFetchState.NoLyricsFound else LyricsFetchState.FoundLyrics(
-                            lyrics = lyrics
-                        )
-                    )
-                }
+    fun setLyricsOfCurrentMusic() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val currentMusic: Music = (state.value as? PlayerViewState.Data)?.currentMusic ?: return@launch
+            currentMusicLyrics.value = LyricsFetchState.FetchingLyrics
+            val lyrics = getLyricsOfSongUseCase(music = currentMusic)
+            currentMusicLyrics.value = if (lyrics == null) {
+                LyricsFetchState.NoLyricsFound
+            } else {
+                LyricsFetchState.FoundLyrics(
+                    lyrics = lyrics
+                )
             }
         }
     }
 
     /**
-     * Set the current music.
-     */
-    private fun setCurrentMusic(music: Music?) {
-        _state.update {
-            it.copy(
-                currentMusic = music,
-                aroundSongs = getAroundSongs(music)
-            )
-        }
-        setFavoriteState()
-    }
-
-    /**
      * Set the current music cover.
      */
-    private fun setCurrentMusicCover(cover: ImageBitmap?) {
-        if (_state.value.currentMusicCover?.equals(cover) == true) return
-
-        _state.update {
-            it.copy(
-                currentMusicCover = cover
-            )
-        }
+    fun setCurrentMusicCover(cover: ImageBitmap?) {
+        playbackManager.updateCover(cover = cover)
         colorThemeManager.setCurrentCover(cover = cover)
     }
 
     /**
      * Set the current music position.
      */
-    private fun setCurrentMusicPosition(position: Int) {
-        _state.update {
-            it.copy(
-                currentMusicPosition = position
-            )
-        }
+    fun seekTo(position: Int) {
+        playbackManager.seekToPosition(position = position)
     }
 
     /**
      * Set the playing state.
      */
-    private fun setIsPlaying(isPlaying: Boolean) {
-        _state.update {
-            it.copy(
-                isPlaying = isPlaying
-            )
-        }
+    fun togglePlayPause() {
+        playbackManager.togglePlayPause()
     }
 
     /**
      * Set the player mode.
      */
-    private fun setPlayerMode(playerMode: PlayerMode) {
-        _state.update {
-            it.copy(
-                playerMode = playerMode
-            )
+    fun changePlayerMode() {
+        CoroutineScope(Dispatchers.IO).launch {
+            playbackManager.changePlayerMode()
         }
     }
 
-    /**
-     * Set the played list.
-     */
-    private fun setPlayedList(playedList: List<Music>) {
-        _state.update {
-            it.copy(
-                playedList = playedList
-            )
+    fun next() {
+        CoroutineScope(Dispatchers.IO).launch {
+            playbackManager.next()
+        }
+    }
+
+    fun previous() {
+        CoroutineScope(Dispatchers.IO).launch {
+            playbackManager.previous()
+        }
+    }
+
+    fun stopPlayback() {
+        CoroutineScope(Dispatchers.IO).launch {
+            playbackManager.stopPlayback(resetPlayedList = true)
         }
     }
 
     /**
      * Toggle the favorite status of the current music if there is one.
      */
-    private fun toggleFavoriteState() {
-        _state.value.currentMusic?.let { music ->
+    fun toggleFavoriteState() {
+        (state.value as? PlayerViewState.Data)?.currentMusic?.let {
             CoroutineScope(Dispatchers.IO).launch {
-                toggleMusicFavoriteStatusUseCase(musicId = music.musicId)
-                setFavoriteState()
+                toggleMusicFavoriteStatusUseCase(musicId = it.musicId)
             }
         }
     }
 
-    /**
-     * Sets the value of the favorite state of the current music in the UI.
-     */
-    private fun setFavoriteState() {
-        _state.value.currentMusic?.let { music ->
-            CoroutineScope(Dispatchers.IO).launch {
-                _state.update {
-                    it.copy(
-                        isCurrentMusicInFavorite = isMusicInFavoritePlaylistUseCase(musicId = music.musicId)
+    fun navigateToArtist() {
+        (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
+            screenModelScope.launch {
+                val artistId: UUID? = getArtistIdFromMusicId(musicId = currentMusic.musicId)
+                artistId?.let {
+                    _navigationState.value = PlayerNavigationState.ToArtist(
+                        artistId = it,
+                    )
+                }
+            }
+        }
+    }
+
+    fun navigateToAlbum() {
+        (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
+            screenModelScope.launch {
+                val albumId: UUID? = getAlbumIdFromMusicId(musicId = currentMusic.musicId)
+                albumId?.let {
+                    _navigationState.value = PlayerNavigationState.ToAlbum(
+                        albumId = it,
                     )
                 }
             }

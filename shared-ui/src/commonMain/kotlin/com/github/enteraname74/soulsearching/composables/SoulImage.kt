@@ -20,6 +20,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.size.Scale
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -27,11 +28,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import java.util.*
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SoulImage(
     cover: Cover?,
@@ -41,6 +40,7 @@ fun SoulImage(
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     val baseModifier = Modifier
         .size(size)
@@ -63,6 +63,7 @@ fun SoulImage(
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
+                builderOptions = builderOptions,
             )
         }
     }
@@ -75,6 +76,7 @@ private fun FileCover(
     contentScale: ContentScale,
     tint: Color,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     when {
         cover.isEmpty() -> {
@@ -91,6 +93,7 @@ private fun FileCover(
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
+                builderOptions = builderOptions,
             )
         }
 
@@ -101,6 +104,7 @@ private fun FileCover(
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
+                builderOptions = builderOptions,
             )
         }
     }
@@ -127,10 +131,9 @@ fun DataImage(
     data: Any?,
     modifier: Modifier,
     contentScale: ContentScale,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
 ) {
-
-
     var previousSavedImage: Image? by remember {
         mutableStateOf(null)
     }
@@ -150,8 +153,10 @@ fun DataImage(
                 it(null)
             }
         },
+        placeholder = painterResource(Res.drawable.saxophone_png),
         error = painterResource(Res.drawable.saxophone_png),
         model = ImageRequest.Builder(LocalPlatformContext.current)
+            .builderOptions()
             .data(data)
             .crossfade(true)
             .build(),
@@ -167,6 +172,7 @@ private fun CoverIdImage(
     modifier: Modifier = Modifier,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
 
     val coverFileManager: CoverFileManager = injectElement()
@@ -188,6 +194,7 @@ private fun CoverIdImage(
             data = coverPath,
             modifier = modifier,
             contentScale = contentScale,
+            builderOptions = builderOptions,
         )
     } else {
         TemplateImage(

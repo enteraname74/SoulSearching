@@ -6,12 +6,10 @@ import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.res
 import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.resources.app_icon
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
 
-@OptIn(ExperimentalResourceApi::class)
 fun main() = application {
 
     KoinApplication(

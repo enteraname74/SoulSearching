@@ -24,15 +24,17 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -83,15 +85,12 @@ fun PlaylistScreen(
     val shuffleAction = {
         if (playlistDetail.musics.isNotEmpty()) {
             playlistDetailListener.onUpdateNbPlayed()
-            coroutineScope
-                .launch {
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                    )
-                }
-                .invokeOnCompletion {
-                    playbackManager.playShuffle(musicList = playlistDetail.musics)
-                }
+            coroutineScope.launch {
+                playbackManager.playShuffle(musicList = playlistDetail.musics)
+                playerViewManager.animateTo(
+                    newState = BottomSheetStates.EXPANDED,
+                )
+            }
         }
     }
 
@@ -122,7 +121,6 @@ fun PlaylistScreen(
                         BottomSheetStates.EXPANDED,
                         tween(UiConstants.AnimationDuration.normal)
                     )
-                }.invokeOnCompletion {
                     searchBarFocusRequester.requestFocus()
                 }
             }
@@ -141,6 +139,7 @@ fun PlaylistScreen(
                         onCoverLoaded = onCoverLoaded,
                     )
                 }
+
                 else -> {
                     PlaylistColumnView(
                         navigateBack = navigateBack,

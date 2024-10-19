@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import coil3.request.ImageRequest
 import org.jaudiotagger.audio.AudioFileIO
 import java.io.File
 
@@ -20,6 +21,7 @@ actual fun CoverPathImage(
     tint: Color,
     contentScale: ContentScale,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
 ) {
 
     var fileData: ByteArray? by remember { mutableStateOf(null) }
@@ -43,6 +45,7 @@ actual fun CoverPathImage(
             modifier = modifier,
             contentScale = contentScale,
             onSuccess = onSuccess,
+            builderOptions = builderOptions,
         )
     } else {
         TemplateImage(

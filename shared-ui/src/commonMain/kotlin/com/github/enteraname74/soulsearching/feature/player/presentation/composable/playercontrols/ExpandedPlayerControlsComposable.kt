@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,22 +16,22 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.utils.Utils
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedPlayerControlsComposable(
     modifier: Modifier = Modifier,
-    onSetFavoriteState: () -> Unit,
-    isMusicInFavorite: Boolean,
-    currentMusicPosition: Int,
-    playerMode: PlayerMode,
-    isPlaying: Boolean,
-    playbackManager: PlaybackManager = injectElement()
+    currentMusicProgression: Int,
+    toggleFavoriteState: () -> Unit,
+    state: PlayerViewState.Data,
+    seekTo: (newPosition: Int) -> Unit,
+    changePlayerMode: () -> Unit,
+    previous: () -> Unit,
+    togglePlayPause: () -> Unit,
+    next: () -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -40,11 +39,9 @@ fun ExpandedPlayerControlsComposable(
     ) {
 
         SoulSlider(
-            maxValue = playbackManager.currentMusicDuration.toFloat(),
-            value = currentMusicPosition.toFloat(),
-            onValueChanged = {
-                playbackManager.seekToPosition(it.toInt())
-            }
+            maxValue = state.currentMusic.duration.toFloat(),
+            value = currentMusicProgression.toFloat(),
+            onValueChanged = { seekTo(it.toInt()) },
         )
 
         Column(
@@ -56,27 +53,32 @@ fun ExpandedPlayerControlsComposable(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
 
-            SliderMusidPositionAndDuration(
+            SliderMusicPositionAndDuration(
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                currentMusicPosition = currentMusicPosition,
+                currentMusicPosition = currentMusicProgression,
+                currentMusicDuration = state.currentMusic.duration.toInt(),
             )
 
             PlayerControls(
-                playerMode = playerMode,
-                isPlaying = isPlaying,
-                isMusicInFavorite = isMusicInFavorite,
-                onSetFavoriteState = onSetFavoriteState,
+                playerMode = state.playerMode,
+                isPlaying = state.isPlaying,
+                isMusicInFavorite = state.isCurrentMusicInFavorite,
+                toggleFavoriteState = toggleFavoriteState,
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                previous = previous,
+                next = next,
+                togglePlayPause = togglePlayPause,
+                changePlayerMode = changePlayerMode,
             )
         }
     }
 }
 
 @Composable
-private fun SliderMusidPositionAndDuration(
+private fun SliderMusicPositionAndDuration(
     contentColor: Color,
     currentMusicPosition: Int,
-    playbackManager: PlaybackManager = injectElement(),
+    currentMusicDuration: Int,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -89,7 +91,7 @@ private fun SliderMusidPositionAndDuration(
             style = MaterialTheme.typography.labelLarge,
         )
         Text(
-            text = Utils.convertDuration(playbackManager.currentMusicDuration),
+            text = Utils.convertDuration(currentMusicDuration),
             color = contentColor,
             style = MaterialTheme.typography.labelLarge,
         )
@@ -98,11 +100,14 @@ private fun SliderMusidPositionAndDuration(
 
 @Composable
 private fun PlayerControls(
-    playbackManager: PlaybackManager = injectElement(),
     playerMode: PlayerMode,
     isMusicInFavorite: Boolean,
     isPlaying: Boolean,
-    onSetFavoriteState: () -> Unit,
+    changePlayerMode: () -> Unit,
+    previous: () -> Unit,
+    togglePlayPause: () -> Unit,
+    toggleFavoriteState: () -> Unit,
+    next: () -> Unit,
     contentColor: Color,
 ) {
     Row(
@@ -118,7 +123,7 @@ private fun PlayerControls(
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
                 .clickableWithHandCursor {
-                    playbackManager.changePlayerMode()
+                    changePlayerMode()
                 },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
@@ -130,7 +135,7 @@ private fun PlayerControls(
                 .weight(InternalIconsWeight)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickableWithHandCursor { playbackManager.previous() },
+                .clickableWithHandCursor { previous() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -145,7 +150,7 @@ private fun PlayerControls(
                 .weight(MainIconWeight)
                 .height(UiConstants.Player.playerPlayerButtonSize)
                 .widthIn(max = UiConstants.Player.playerPlayerButtonSize)
-                .clickableWithHandCursor { playbackManager.togglePlayPause() },
+                .clickableWithHandCursor { togglePlayPause() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -156,7 +161,7 @@ private fun PlayerControls(
                 .weight(InternalIconsWeight)
                 .height(UiConstants.ImageSize.large)
                 .widthIn(max = UiConstants.ImageSize.large)
-                .clickableWithHandCursor { playbackManager.next() },
+                .clickableWithHandCursor { next() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
         Spacer(modifier = Modifier.weight(SpacerWeight))
@@ -171,11 +176,7 @@ private fun PlayerControls(
                 .weight(ExternalIconsWeight)
                 .height(UiConstants.ImageSize.medium)
                 .widthIn(max = UiConstants.ImageSize.medium)
-                .clickableWithHandCursor {
-                    playbackManager.currentMusic?.let {
-                        onSetFavoriteState()
-                    }
-                },
+                .clickableWithHandCursor { toggleFavoriteState() },
             colorFilter = ColorFilter.tint(color = contentColor)
         )
     }

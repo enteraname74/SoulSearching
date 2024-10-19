@@ -15,7 +15,7 @@ class ToggleMusicFavoriteStatusUseCase(
     suspend operator fun invoke(musicId: UUID) {
         val favoritePlaylist: PlaylistWithMusics = getFavoritePlaylistWithMusicsUseCase().first() ?: return
 
-        if (isMusicInFavoritePlaylistUseCase(musicId = musicId)) {
+        if (isMusicInFavoritePlaylistUseCase(musicId = musicId).first()) {
             musicPlaylistRepository.deleteMusicFromPlaylist(
                 musicId = musicId,
                 playlistId = favoritePlaylist.playlist.playlistId,

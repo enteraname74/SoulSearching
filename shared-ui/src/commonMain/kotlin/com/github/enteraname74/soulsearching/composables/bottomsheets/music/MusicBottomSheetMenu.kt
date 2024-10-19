@@ -10,9 +10,7 @@ import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetRow
 import com.github.enteraname74.soulsearching.composables.bottomsheets.QuickAccessBottomSheetMenu
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 
 @Composable
 fun MusicBottomSheetMenu(
@@ -26,7 +24,7 @@ fun MusicBottomSheetMenu(
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isInQuickAccess: Boolean,
     isCurrentlyPlaying: Boolean,
-    playbackManager: PlaybackManager = injectElement(),
+    isPlayedListEmpty: Boolean,
 ) {
     QuickAccessBottomSheetMenu(
         isElementInQuickAccess = isInQuickAccess,
@@ -56,7 +54,7 @@ fun MusicBottomSheetMenu(
                 onClick = removeFromPlaylistAction,
             )
         }
-        if (playbackManager.playedList.isNotEmpty()) {
+        if (!isPlayedListEmpty) {
             BottomSheetRow(
                 icon = Icons.Rounded.PlaylistRemove,
                 text = strings.removeFromPlayedList,

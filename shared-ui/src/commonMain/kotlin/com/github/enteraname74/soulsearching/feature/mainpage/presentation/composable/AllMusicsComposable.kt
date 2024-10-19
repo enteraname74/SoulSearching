@@ -1,15 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -17,13 +18,14 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -40,6 +42,7 @@ fun AllMusicsComposable(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -81,10 +84,8 @@ fun AllMusicsComposable(
                             if (musicState.musics.isNotEmpty()) {
                                 coroutineScope
                                     .launch {
-                                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                                    }
-                                    .invokeOnCompletion {
                                         playbackManager.playShuffle(musicList = musicState.musics)
+                                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                                     }
                             }
                         }
@@ -104,14 +105,13 @@ fun AllMusicsComposable(
                     music = elt,
                     onClick = {
                         coroutineScope.launch {
-                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                        }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = elt,
                                 musicList = musicState.musics,
                                 isMainPlaylist = true,
                                 playlistId = null,
                             )
+                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                         }
                     },
                     onLongClick = {
@@ -119,7 +119,7 @@ fun AllMusicsComposable(
                             onLongClick(elt)
                         }
                     },
-                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(elt.musicId)
+                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
                 )
             }
             item(

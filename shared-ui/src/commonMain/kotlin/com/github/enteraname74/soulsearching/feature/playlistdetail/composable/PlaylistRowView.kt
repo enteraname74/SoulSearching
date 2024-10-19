@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,11 +24,13 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -152,6 +156,7 @@ private fun Content(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     Row(
         modifier = modifier,
@@ -213,19 +218,20 @@ private fun Content(
                         music = music,
                         onClick = {
                             coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                            }.invokeOnCompletion {
                                 playlistDetailListener.onUpdateNbPlayed()
-                                playbackManager.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    musicList = playlistDetail.musics,
-                                    playlistId = playlistDetail.id,
-                                    isMainPlaylist = false,
-                                )
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    playbackManager.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        musicList = playlistDetail.musics,
+                                        playlistId = playlistDetail.id,
+                                        isMainPlaylist = false,
+                                    )
+                                }
+                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                             }
                         },
                         onLongClick = { onShowMusicBottomSheet(music) },
-                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
+                        isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                     )
                 }
                 item {

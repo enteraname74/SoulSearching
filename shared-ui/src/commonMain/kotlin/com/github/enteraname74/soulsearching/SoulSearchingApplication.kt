@@ -1,16 +1,10 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
@@ -38,40 +32,29 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
-    playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
     loadingManager: LoadingManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
     val mainActivityViewModel = injectElement<MainActivityViewModel>()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-
-    LaunchedEffect("Covers check") {
-        CoroutineScope(Dispatchers.IO).launch {
-            playbackManager.currentMusic?.let { currentMusic ->
-//                playbackManager.defineCoverAndPaletteFromCoverId(
-//                    cover = currentMusic.cover
-//                )
-                playbackManager.update()
-            }
-        }
-    }
-
     var generalNavigator: Navigator? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        playbackManager.initFromSavedData()
+    }
 
     SoulSearchingAppTheme {
 
@@ -112,23 +95,6 @@ fun SoulSearchingApplication(
                     PlayerViewScaffold(
                         generalNavigator = generalNavigator,
                     ) {
-                        var hasLastPlayedMusicsBeenFetched by rememberSaveable {
-                            mutableStateOf(false)
-                        }
-
-                        if (!hasLastPlayedMusicsBeenFetched) {
-                            LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                                val playerSavedMusics = playbackManager.getSavedPlayedList()
-                                if (playerSavedMusics.isNotEmpty()) {
-                                    playbackManager.initializePlayerFromSavedList(playerSavedMusics)
-                                    playerViewManager.animateTo(
-                                        newState = BottomSheetStates.MINIMISED,
-                                    )
-                                }
-                                hasLastPlayedMusicsBeenFetched = true
-                            }
-                        }
-
                         Box(
                             modifier = Modifier
                                 .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
@@ -149,7 +115,6 @@ fun SoulSearchingApplication(
                                 }
                             }
                         }
-
                     }
                 }
             }
