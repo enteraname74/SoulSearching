@@ -9,7 +9,7 @@ import com.github.enteraname74.localdb.model.*
 
 
 @Database(
-    version = 16,
+    version = 17,
     entities = [
         RoomMusic::class,
         RoomAlbum::class,
