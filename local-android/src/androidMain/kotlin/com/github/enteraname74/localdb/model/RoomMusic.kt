@@ -31,23 +31,25 @@ internal data class RoomMusic(
 /**
  * Converts a RoomMusic to a Music.
  */
-internal fun RoomMusic.toMusic(): Music = Music(
-    musicId = musicId,
-    name = name,
-    album = album,
-    artist = artist,
-    cover = Cover.FileCover(
-        initialCoverPath = initialCoverPath,
-        fileCoverId = coverId,
-    ),
-    duration = duration,
-    path = path,
-    folder = folder,
-    addedDate = addedDate,
-    nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess,
-    isHidden = isHidden,
-)
+internal fun RoomMusic.toMusic(): Music {
+    return Music(
+        musicId = musicId,
+        name = name,
+        album = album,
+        artist = artist,
+        cover = Cover.FileCover(
+            initialCoverPath = initialCoverPath,
+            fileCoverId = coverId,
+        ),
+        duration = duration,
+        path = path,
+        folder = folder,
+        addedDate = addedDate,
+        nbPlayed = nbPlayed,
+        isInQuickAccess = isInQuickAccess,
+        isHidden = isHidden,
+    )
+}
 
 /**
  * Converts a Music to a RoomMusic.

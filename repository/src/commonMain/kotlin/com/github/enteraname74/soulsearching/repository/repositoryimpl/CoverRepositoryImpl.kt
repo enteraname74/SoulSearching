@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.repository.CoverRepository
-import com.github.enteraname74.domain.util.CoverFileManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import java.util.*
 
 /**

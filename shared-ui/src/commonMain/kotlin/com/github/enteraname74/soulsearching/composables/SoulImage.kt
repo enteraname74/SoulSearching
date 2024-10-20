@@ -21,10 +21,10 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
 import org.jetbrains.compose.resources.painterResource
@@ -191,7 +191,6 @@ private fun CoverIdImage(
     }
 
     if (coverPath != null) {
-        println("THERE")
         DataImage(
             data = coverPath,
             modifier = modifier,

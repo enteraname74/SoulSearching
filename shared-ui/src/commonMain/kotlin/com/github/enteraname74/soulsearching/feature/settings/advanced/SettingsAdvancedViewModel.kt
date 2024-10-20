@@ -11,6 +11,7 @@ import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertAllPlaylistsUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,8 @@ class SettingsAdvancedViewModel(
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
     private val upsertAllPlaylistsUseCase: UpsertAllPlaylistsUseCase,
-): ScreenModel {
+    private val coverFileManager: CoverFileManager
+) : ScreenModel {
     private val _state: MutableStateFlow<SettingsAdvancedState> = MutableStateFlow(SettingsAdvancedState())
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
 
@@ -80,12 +82,8 @@ class SettingsAdvancedViewModel(
             val allSongs: List<Music> = getAllMusicUseCase().first()
             upsertAllMusicsUseCase(
                 allMusics = allSongs.map { music ->
-                    (music.cover as? Cover.FileCover)?.let {cover ->
-                        music.cover = cover.copy(
-                            fileCoverId = null,
-                        )
-                        music
-                    } ?: music
+                    music.cover = coverFileManager.getCleanFileCoverForMusic(music)
+                    music
                 }
             )
         }
@@ -96,12 +94,8 @@ class SettingsAdvancedViewModel(
             val allPlaylists: List<Playlist> = getAllPlaylistsUseCase().first()
             upsertAllPlaylistsUseCase(
                 playlists = allPlaylists.map { playlist ->
-                    (playlist.cover as? Cover.FileCover)?.let {cover ->
-                        playlist.cover = cover.copy(
-                            fileCoverId = null,
-                        )
-                        playlist
-                    } ?: playlist
+                    playlist.cover = null
+                    playlist
                 }
             )
         }
@@ -112,12 +106,8 @@ class SettingsAdvancedViewModel(
             val allAlbums: List<Album> = getAllAlbumsUseCase().first()
             upsertAllAlbumsUseCase(
                 albums = allAlbums.map { album ->
-                    (album.cover as? Cover.FileCover)?.let {cover ->
-                        album.cover = cover.copy(
-                            fileCoverId = null,
-                        )
-                        album
-                    } ?: album
+                    album.cover = null
+                    album
                 }
             )
         }
@@ -128,12 +118,8 @@ class SettingsAdvancedViewModel(
             val allArtists: List<Artist> = getAllArtistsUseCase().first()
             upsertAllArtistsUseCase(
                 allArtists = allArtists.map { artist ->
-                    (artist.cover as? Cover.FileCover)?.let {cover ->
-                        artist.cover = cover.copy(
-                            fileCoverId = null,
-                        )
-                        artist
-                    } ?: artist
+                    artist.cover = null
+                    artist
                 }
             )
         }

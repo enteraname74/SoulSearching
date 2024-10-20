@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
-import com.github.enteraname74.soulsearching.domain.model.SelectableMusicItem
+import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.SelectableMusicItem
 
 /**
  * State for managing adding musics.

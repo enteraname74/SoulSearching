@@ -1,20 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
-import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
+import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,

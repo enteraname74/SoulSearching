@@ -37,7 +37,6 @@ val domainModule = module {
     singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
     singleOf(::UpdateAlbumCoverUseCase)
     singleOf(::UpdateAlbumNbPlayedUseCase)
-    singleOf(::UpdateAlbumUseCase)
     singleOf(::UpsertAlbumUseCase)
     singleOf(::UpsertAllAlbumsUseCase)
 
@@ -59,7 +58,6 @@ val domainModule = module {
     singleOf(::GetDuplicatedArtistUseCase)
     singleOf(::UpdateArtistCoverUseCase)
     singleOf(::UpdateArtistNbPlayedUseCase)
-    singleOf(::UpdateArtistUseCase)
     singleOf(::UpsertAllArtistsUseCase)
     singleOf(::UpsertArtistUseCase)
 
@@ -96,7 +94,6 @@ val domainModule = module {
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)
-    singleOf(::UpdateMusicUseCase)
     singleOf(::UpsertAllMusicsUseCase)
     singleOf(::UpsertMusicUseCase)
 
@@ -134,8 +131,4 @@ val domainModule = module {
 
     // QuickAccess
     singleOf(::GetAllQuickAccessElementsUseCase)
-
-
-    // OTHERS
-    singleOf(::MusicFileUpdater)
 }

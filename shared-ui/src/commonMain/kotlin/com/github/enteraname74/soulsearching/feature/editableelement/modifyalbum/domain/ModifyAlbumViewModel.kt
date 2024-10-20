@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
-import com.github.enteraname74.domain.usecase.album.UpdateAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -15,6 +14,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
+import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*

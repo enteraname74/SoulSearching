@@ -36,6 +36,7 @@ kotlin {
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
                 implementation(project(":features:playback"))
+                implementation(project(":features:filemanager"))
 
                 implementation(libs.bundles.koin)
 
