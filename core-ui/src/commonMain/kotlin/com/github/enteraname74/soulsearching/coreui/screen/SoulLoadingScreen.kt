@@ -51,3 +51,29 @@ fun SoulLoadingScreen(
         }
     }
 }
+
+@Composable
+fun SoulLoadingScreen(
+    text: String? = null,
+) {
+    SoulScreen {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SoulCircularProgressIndicator()
+            text?.let {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            top = UiConstants.Spacing.medium,
+                        ),
+                    text = it,
+                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    }
+}

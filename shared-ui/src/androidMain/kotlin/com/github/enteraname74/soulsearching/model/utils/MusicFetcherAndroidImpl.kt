@@ -55,14 +55,13 @@ class MusicFetcherAndroidImpl(
 
     private fun getMusicFileCoverPath(albumId: Long): String? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // For Android 10 and above, use the content URI
             ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId).toString()
         } else {
-            // For older versions, use the direct file path via ALBUM_ART
             getMusicFileCoverPathForOldDevices(albumId)
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun getMusicFileCoverPathForOldDevices(albumId: Long): String? {
         val projection = arrayOf(MediaStore.Audio.Albums.ALBUM_ART)
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId)

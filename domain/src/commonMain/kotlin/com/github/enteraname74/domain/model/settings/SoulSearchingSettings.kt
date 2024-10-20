@@ -174,4 +174,11 @@ object SoulSearchingSettingsKeys {
             defaultValue = true,
         )
     }
+
+    object System {
+        val CURRENT_DB_VERSION = settingElementOf(
+            key = "CURRENT_DB_VERSION",
+            defaultValue = 0,
+        )
+    }
 }

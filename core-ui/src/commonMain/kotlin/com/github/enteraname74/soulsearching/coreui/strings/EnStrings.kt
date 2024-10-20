@@ -177,6 +177,8 @@ object EnStrings : Strings {
     override val songsSaved = "Songs saved successfully!"
     override val searchForNewSongs = "Search for new songs"
 
+    override val appMigration = "Updating application data"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

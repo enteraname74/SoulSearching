@@ -1,16 +1,8 @@
 package com.github.enteraname74.localdb
 
 import androidx.room.Room
-import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumArtistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomMusicAlbumDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomMusicDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerMusicDataSourceImpl
-import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.*
+import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
 import com.github.enteraname74.soulsearching.repository.datasource.*
 import org.koin.android.ext.koin.androidApplication
@@ -28,6 +20,11 @@ val localAndroidModule: Module = module {
                 Migration16To17(
                     context = androidApplication(),
                     coverFileManager = get(),
+                )
+            )
+            .addCallback(
+                EndMigrationCallback(
+                    settings = get(),
                 )
             )
             .build()

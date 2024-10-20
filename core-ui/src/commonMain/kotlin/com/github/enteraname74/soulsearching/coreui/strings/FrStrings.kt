@@ -178,6 +178,8 @@ object FrStrings : Strings {
     override val songsSaved = "Musiques sauvegardées !"
     override val searchForNewSongs = "Rechercher de nouvelles musiques"
 
+    override val appMigration = "Mise à jour des données de l'application"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

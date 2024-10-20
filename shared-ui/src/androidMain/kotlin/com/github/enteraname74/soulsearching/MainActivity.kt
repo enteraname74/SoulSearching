@@ -20,7 +20,7 @@ import coil3.annotation.ExperimentalCoilApi
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
@@ -34,7 +34,7 @@ import org.koin.core.context.unloadKoinModules
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private val mainPageViewModel: MainPageViewModel by inject()
-    private val mainActivityViewModel: MainActivityViewModel by inject()
+    private val applicationViewModel: ApplicationViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
 
@@ -78,29 +78,29 @@ class MainActivity : AppCompatActivity() {
         FileKit.init(this)
 
         setContent {
-            mainActivityViewModel.isReadPermissionGranted =
+            applicationViewModel.isReadPermissionGranted =
                 SoulSearchingContext.checkIfReadPermissionGranted()
-            mainActivityViewModel.isPostNotificationGranted =
+            applicationViewModel.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isReadPermissionGranted = isGranted
+                    applicationViewModel.isReadPermissionGranted = isGranted
                 }
 
                 val postNotificationLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isPostNotificationGranted = isGranted
+                    applicationViewModel.isPostNotificationGranted = isGranted
                 }
 
                 if (
-                    !mainActivityViewModel.isReadPermissionGranted ||
-                    !mainActivityViewModel.isPostNotificationGranted
+                    !applicationViewModel.isReadPermissionGranted ||
+                    !applicationViewModel.isPostNotificationGranted
                 ) {
                     MissingPermissionsComposable()
                     SideEffect {
                         checkAndAskMissingPermissions(
-                            isReadPermissionGranted = mainActivityViewModel.isReadPermissionGranted,
-                            isPostNotificationGranted = mainActivityViewModel.isPostNotificationGranted,
+                            isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
+                            isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
                             readPermissionLauncher = readPermissionLauncher,
                             postNotificationLauncher = postNotificationLauncher,
                         )

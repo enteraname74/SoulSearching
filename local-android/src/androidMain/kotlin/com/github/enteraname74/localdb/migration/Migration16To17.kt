@@ -13,12 +13,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+import kotlin.uuid.toJavaUuid
 
 internal class Migration16To17(
     private val context: Context,
     private val coverFileManager: CoverFileManager
 ): Migration(16, 17) {
 
+    @OptIn(ExperimentalUuidApi::class)
     @SuppressLint("Range")
     private fun imageCoverMigration(db: SupportSQLiteDatabase) {
         // Step 2: Migrate data from ImageCover table
@@ -26,16 +30,15 @@ internal class Migration16To17(
 
         // Step 3: Loop through the ImageCover table and save bitmaps to internal storage
         while (cursor.moveToNext()) {
-            val coverId = UUID.fromString(
-                cursor.getString(cursor.getColumnIndex("coverId"))
-            )
-            println("DATABASE -- Analyzing cover id: $coverId")
-            val coverBase64 = cursor.getString(cursor.getColumnIndex("cover"))
+            val coverIdBlob: ByteArray = cursor.getBlob(cursor.getColumnIndex("coverId"))
+            val coverId = Uuid.fromByteArray(coverIdBlob).toJavaUuid()
 
-            if (!coverBase64.isNullOrEmpty()) {
-                println("DATABASE -- Got cover to save")
+            val coverAsString = cursor.getString(cursor.getColumnIndex("cover"))
+
+            if (!coverAsString.isNullOrEmpty()) {
+                println("GOT COVER TO SAVE")
+                val imageBytes = Base64.decode(coverAsString, 0)
                 CoroutineScope(Dispatchers.IO).launch {
-                    val imageBytes = Base64.decode(coverBase64,0)
                     coverFileManager.saveCover(
                         id = coverId,
                         data = imageBytes,
@@ -49,6 +52,7 @@ internal class Migration16To17(
         db.execSQL("DROP TABLE IF EXISTS ImageCover")
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     @SuppressLint("Range")
     private fun musicInitialCoverPathMigration(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN initialCoverPath TEXT")
@@ -58,13 +62,12 @@ internal class Migration16To17(
 
         // Step 3: Loop through the Music table and update 'initialCoverPath'
         while (musicCursor.moveToNext()) {
-            val id = musicCursor.getString(musicCursor.getColumnIndex("musicId"))
+            val blobId = musicCursor.getBlob(musicCursor.getColumnIndex("musicId"))
+            val id: UUID = Uuid.fromByteArray(blobId).toJavaUuid()
             val musicFilePath = musicCursor.getString(musicCursor.getColumnIndex("path"))
 
             // Retrieve the album cover path using the music file path
             val initialCoverPath = getInitialCoverPathOfSong(musicFilePath)
-
-            println("DATABASE -- Got cover path of song $musicFilePath: $initialCoverPath")
 
             // Update the 'initialCoverPath' column for each row in the Music table
             if (initialCoverPath != null) {
@@ -97,6 +100,7 @@ internal class Migration16To17(
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun getMusicFileCoverPathForOldDevices(albumId: Long): String? {
         val projection = arrayOf(MediaStore.Audio.Albums.ALBUM_ART)
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId)

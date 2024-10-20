@@ -37,7 +37,7 @@ internal val viewModelModule: Module = module {
 
     // Main page
     singleOf(::MainPageViewModel)
-    singleOf(::MainActivityViewModel)
+    singleOf(::ApplicationViewModel)
 
     // Modify elements
     factoryOf(::ModifyAlbumViewModel)

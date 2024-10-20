@@ -187,6 +187,8 @@ interface Strings {
     val songsSaved: String
     val searchForNewSongs: String
 
+    val appMigration: String
+
     /**
      * Shows a text indicating the number of musics.
      */

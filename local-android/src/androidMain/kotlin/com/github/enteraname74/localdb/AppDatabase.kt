@@ -3,13 +3,14 @@ package com.github.enteraname74.localdb
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.github.enteraname74.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.Converters
 import com.github.enteraname74.localdb.dao.*
 import com.github.enteraname74.localdb.model.*
 
 
 @Database(
-    version = 17,
+    version = LocalDatabaseVersion.version,
     entities = [
         RoomMusic::class,
         RoomAlbum::class,

@@ -29,9 +29,11 @@ import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ApplicationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
+import com.github.enteraname74.soulsearching.feature.migration.MigrationScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -46,7 +48,9 @@ fun SoulSearchingApplication(
     playbackManager: PlaybackManager = injectElement(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
-    val mainActivityViewModel = injectElement<MainActivityViewModel>()
+    val applicationViewModel = injectElement<ApplicationViewModel>()
+
+    val state: ApplicationState by applicationViewModel.state.collectAsState()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
@@ -58,60 +62,65 @@ fun SoulSearchingApplication(
 
     SoulSearchingAppTheme {
 
-        if (!mainActivityViewModel.hasMusicsBeenFetched) {
-            FetchingMusicsComposable(
-                finishAddingMusicsAction = {
-                    settings.set(
-                        SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
-                        true
-                    )
-                    mainActivityViewModel.hasMusicsBeenFetched = true
-                },
-                mainPageViewModel = mainPageViewModel
-            )
-            return@SoulSearchingAppTheme
-        }
-
-        FeedbackPopUpScaffold(
-            feedbackPopUpManager = feedbackPopUpManager,
-        ) {
-            LoadingScaffold(
-                loadingManager = loadingManager
-            ) { isLoading ->
-                Row {
-                    val windowSize = rememberWindowSize()
-
-                    if (windowSize == WindowSize.Large) {
-                        NavigationPanel(
-                            rows = navigationRows(
-                                generalNavigator = generalNavigator,
-                                setCurrentPage = mainPageViewModel::setCurrentPage,
-                                tabs = tabs,
-                                currentPage = currentElementPage,
-                            )
+        when (state) {
+            ApplicationState.AppMigration -> {
+                MigrationScreen()
+            }
+            ApplicationState.FetchingSongs -> {
+                FetchingMusicsComposable(
+                    finishAddingMusicsAction = {
+                        settings.set(
+                            SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
+                            true
                         )
-                    }
+                    },
+                    mainPageViewModel = mainPageViewModel
+                )
+            }
 
-                    PlayerViewScaffold(
-                        generalNavigator = generalNavigator,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-                        ) {
-                            Navigator(
-                                screen = MainPageScreen(),
-                                onBackPressed = {
-                                    !isLoading
-                                }
-                            ) { navigator ->
-                                generalNavigator = navigator
+            ApplicationState.Data -> {
+                FeedbackPopUpScaffold(
+                    feedbackPopUpManager = feedbackPopUpManager,
+                ) {
+                    LoadingScaffold(
+                        loadingManager = loadingManager
+                    ) { isLoading ->
+                        Row {
+                            val windowSize = rememberWindowSize()
 
-                                CrossfadeTransition(
-                                    navigator = navigator,
-                                    animationSpec = tween(UiConstants.AnimationDuration.normal)
-                                ) { screen ->
-                                    screen.Content()
+                            if (windowSize == WindowSize.Large) {
+                                NavigationPanel(
+                                    rows = navigationRows(
+                                        generalNavigator = generalNavigator,
+                                        setCurrentPage = mainPageViewModel::setCurrentPage,
+                                        tabs = tabs,
+                                        currentPage = currentElementPage,
+                                    )
+                                )
+                            }
+
+                            PlayerViewScaffold(
+                                generalNavigator = generalNavigator,
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
+                                ) {
+                                    Navigator(
+                                        screen = MainPageScreen(),
+                                        onBackPressed = {
+                                            !isLoading
+                                        }
+                                    ) { navigator ->
+                                        generalNavigator = navigator
+
+                                        CrossfadeTransition(
+                                            navigator = navigator,
+                                            animationSpec = tween(UiConstants.AnimationDuration.normal)
+                                        ) { screen ->
+                                            screen.Content()
+                                        }
+                                    }
                                 }
                             }
                         }
