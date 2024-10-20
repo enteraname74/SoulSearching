@@ -20,7 +20,6 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import coil3.size.Scale
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.util.CoverFileManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -93,6 +92,7 @@ private fun FileCover(
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
+                onSuccess = onSuccess,
                 builderOptions = builderOptions,
             )
         }
@@ -172,6 +172,7 @@ private fun CoverIdImage(
     modifier: Modifier = Modifier,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     contentScale: ContentScale = ContentScale.Crop,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
 
@@ -190,11 +191,13 @@ private fun CoverIdImage(
     }
 
     if (coverPath != null) {
+        println("THERE")
         DataImage(
             data = coverPath,
             modifier = modifier,
             contentScale = contentScale,
             builderOptions = builderOptions,
+            onSuccess = onSuccess,
         )
     } else {
         TemplateImage(

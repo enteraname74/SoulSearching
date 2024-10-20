@@ -162,7 +162,7 @@ class PlayerViewModel(
     /**
      * Retrieve the artist id of a music.
      */
-    fun getArtistIdFromMusicId(musicId: UUID): UUID? {
+    private fun getArtistIdFromMusicId(musicId: UUID): UUID? {
         return runBlocking(context = Dispatchers.IO) {
             getArtistIdFromMusicIdUseCase(musicId)
         }
@@ -171,7 +171,7 @@ class PlayerViewModel(
     /**
      * Retrieve the album id of a music.
      */
-    fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
+    private fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
         return runBlocking(context = Dispatchers.IO) {
             getAlbumIdFromMusicIdUseCase(musicId)
         }

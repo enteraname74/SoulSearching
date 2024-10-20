@@ -36,7 +36,6 @@ internal class Migration16To17(
             val coverAsString = cursor.getString(cursor.getColumnIndex("cover"))
 
             if (!coverAsString.isNullOrEmpty()) {
-                println("GOT COVER TO SAVE")
                 val imageBytes = Base64.decode(coverAsString, 0)
                 CoroutineScope(Dispatchers.IO).launch {
                     coverFileManager.saveCover(
