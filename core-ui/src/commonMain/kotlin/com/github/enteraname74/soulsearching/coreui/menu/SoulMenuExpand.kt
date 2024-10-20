@@ -66,6 +66,7 @@ fun SoulMenuExpand(
                 )
             }
             SoulIcon(
+                tint = textColor,
                 icon = Icons.Filled.ArrowDropDown,
                 contentDescription = null,
                 modifier = Modifier.rotate(rotation),

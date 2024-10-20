@@ -91,8 +91,8 @@ private fun ColumnScope.TemplateScreenContent(
                 Text(
                     text = buttonText,
                     textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    fontSize = 12.sp
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    fontSize = 14.sp
                 )
             }
         }

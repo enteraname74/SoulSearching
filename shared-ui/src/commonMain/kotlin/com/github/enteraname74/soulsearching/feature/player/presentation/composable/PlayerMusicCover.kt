@@ -65,7 +65,6 @@ fun PlayerMusicCover(
         ) {
             if (
                 aroundSongs.filterNotNull().size > 1
-//                && playerViewManager.currentValue == BottomSheetStates.EXPANDED
                 && canSwipeCover
             ) {
                 val pagerState = remember(aroundSongs) {

@@ -12,6 +12,7 @@ import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertAllPlaylistsUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,8 @@ class SettingsAdvancedViewModel(
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
     private val upsertAllPlaylistsUseCase: UpsertAllPlaylistsUseCase,
-    private val coverFileManager: CoverFileManager
+    private val coverFileManager: CoverFileManager,
+    private val playbackManager: PlaybackManager,
 ) : ScreenModel {
     private val _state: MutableStateFlow<SettingsAdvancedState> = MutableStateFlow(SettingsAdvancedState())
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
@@ -80,8 +82,10 @@ class SettingsAdvancedViewModel(
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
             val allSongs: List<Music> = getAllMusicUseCase().first()
+
             upsertAllMusicsUseCase(
                 allMusics = allSongs.map { music ->
+                    playbackManager.updateMusic(music)
                     music.cover = coverFileManager.getCleanFileCoverForMusic(music)
                     music
                 }

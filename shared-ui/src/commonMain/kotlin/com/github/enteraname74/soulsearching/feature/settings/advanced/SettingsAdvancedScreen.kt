@@ -16,7 +16,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
@@ -100,6 +99,8 @@ class SettingsAdvancedScreen: Screen {
                 )
         ) {
             SoulMenuSwitch(
+                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 title = strings.reloadMusicsCovers,
                 toggleAction = toggleMusics,
                 isChecked = state.shouldReloadSongsCovers,
@@ -108,6 +109,8 @@ class SettingsAdvancedScreen: Screen {
                 ),
             )
             SoulMenuSwitch(
+                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 title = strings.deletePlaylistsCovers,
                 toggleAction = togglePlaylists,
                 isChecked = state.shouldDeletePlaylistsCovers,
@@ -116,6 +119,8 @@ class SettingsAdvancedScreen: Screen {
                 ),
             )
             SoulMenuSwitch(
+                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 title = strings.reloadAlbumsCovers,
                 toggleAction = toggleAlbums,
                 isChecked = state.shouldReloadAlbumsCovers,
@@ -124,6 +129,8 @@ class SettingsAdvancedScreen: Screen {
                 ),
             )
             SoulMenuSwitch(
+                titleColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 title = strings.reloadArtistsCovers,
                 toggleAction = toggleArtists,
                 isChecked = state.shouldReloadArtistsCovers,
