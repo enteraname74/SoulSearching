@@ -19,3 +19,6 @@ database.db
 .kotlin
 
 desktopApp/*.log
+
+features/filemanager/build
+features/playback/build

@@ -73,6 +73,7 @@ class PlayerViewModel(
     ) { playbackMainState, playlists, isCoverSwipeEnabled,isCurrentMusicInFavorite, currentMusicLyrics ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
+                println("PLAYER VM -- Got data")
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
@@ -89,6 +90,7 @@ class PlayerViewModel(
             }
 
             PlaybackManagerState.Stopped -> {
+                println("PLAYER VM -- STOPPED")
                 colorThemeManager.setCurrentCover(cover = null)
                 PlayerViewState.Closed
             }

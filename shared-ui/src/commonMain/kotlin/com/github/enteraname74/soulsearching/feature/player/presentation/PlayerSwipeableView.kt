@@ -108,23 +108,6 @@ fun PlayerDraggableView(
         }
     }
 
-    // If no music is being played, and the player view is still shown, we need to hide it.
-//    if (state.playedList.isEmpty() &&
-//        playerViewManager.currentValue != BottomSheetStates.COLLAPSED &&
-//        !playerViewManager.isAnimationRunning
-//    ) {
-//        coroutineScope.launch {
-//            if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-//                playerMusicListViewManager.animateTo(
-//                    newState = BottomSheetStates.COLLAPSED,
-//                )
-//            }
-//            playerViewManager.animateTo(
-//                newState = BottomSheetStates.COLLAPSED,
-//            )
-//        }
-//    }
-
     CompositionLocalProvider(
         LocalColors provides AnimatedColorPaletteBuilder.animate(palette = playerColorTheme.orDefault())
     ) {
@@ -199,6 +182,7 @@ fun PlayerDraggableView(
                                 playerViewModel.stopPlayback()
                             }
                         }
+                        println("PLAYER VIEW -- View has been showed")
                         hasViewBeenShown = true
                     }
 

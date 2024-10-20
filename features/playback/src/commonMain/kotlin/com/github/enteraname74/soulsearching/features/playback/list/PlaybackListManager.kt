@@ -65,11 +65,29 @@ internal class PlaybackListManager(
      * It will remove the previous apparition of the music if there was one.
      */
     suspend fun addMusicToPlayNext(music: Music) {
+        if (_state.value is PlaybackListState.NoData) {
+            // We will initialize the player:
+            init(
+                musics = listOf(music),
+                currentMusic = music,
+            )
+
+            callback.onlyLoadMusic(music = music)
+            savePlayedList()
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = 0,
+                currentMusicPosition = 0,
+            )
+            return
+        }
+
         withDataState {
             // If same music than the one played, does nothing :
             if (music.musicId.compareTo(currentMusic.musicId) == 0) {
                 return@withDataState
             }
+
+            println("PLAYER PB -- HERE")
 
             // We make sure to remove the music if it's already in the playlist :
             val updatedPlayedList = ArrayList(playedList)
@@ -77,6 +95,7 @@ internal class PlaybackListManager(
 
             // If the current playlist is empty, we load the music :
             if (updatedPlayedList.isEmpty()) {
+                println("PLAYER PB -- EMPTY LIST, WILL INIT")
                 updatedPlayedList.add(music)
                 init(
                     musics = updatedPlayedList,

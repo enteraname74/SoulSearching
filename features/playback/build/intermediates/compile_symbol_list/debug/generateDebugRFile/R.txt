@@ -1,6 +1,0 @@
-int drawable ic_pause 0x0
-int drawable ic_play_arrow 0x0
-int drawable ic_saxophone_svg 0x0
-int drawable ic_skip_next 0x0
-int drawable ic_skip_previous 0x0
-int drawable notification_default 0x0
