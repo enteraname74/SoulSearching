@@ -14,12 +14,12 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
 /**
  * Represent the view of the player personalisation screen in the settings.
@@ -57,7 +57,7 @@ class SettingsPlayerPersonalisationScreen: Screen {
             title = strings.managePlayerTitle,
         ) {
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.playerSwipeTitle,
                     toggleAction = togglePlayerSwipe,
                     isChecked = isPlayerSwipeEnabled,

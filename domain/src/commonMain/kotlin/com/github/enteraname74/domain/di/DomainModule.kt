@@ -48,6 +48,7 @@ val domainModule = module {
     // Artist
     singleOf(::DeleteArtistIfEmptyUseCase)
     singleOf(::DeleteArtistUseCase)
+    singleOf(::GetAllArtistsUseCase)
     singleOf(::GetAllArtistWithMusicsFromQuickAccessUseCase)
     singleOf(::GetAllArtistWithMusicsSortedByMostSongsUseCase)
     singleOf(::GetAllArtistWithMusicsSortedUseCase)
@@ -119,6 +120,7 @@ val domainModule = module {
 
     // Playlist
     singleOf(::DeletePlaylistUseCase)
+    singleOf(::GetAllPlaylistsUseCase)
     singleOf(::GetAllPlaylistWithMusicsNumberFromQuickAccessUseCase)
     singleOf(::GetAllPlaylistWithMusicsSortedUseCase)
     singleOf(::GetAllPlaylistWithMusicsUseCase)
@@ -127,6 +129,7 @@ val domainModule = module {
     singleOf(::GetPlaylistWithMusicsUseCase)
     singleOf(::GetSelectablePlaylistWithMusicsForMusicUseCase)
     singleOf(::UpdatePlaylistNbPlayedUseCase)
+    singleOf(::UpsertAllPlaylistsUseCase)
     singleOf(::UpsertPlaylistUseCase)
 
     // QuickAccess

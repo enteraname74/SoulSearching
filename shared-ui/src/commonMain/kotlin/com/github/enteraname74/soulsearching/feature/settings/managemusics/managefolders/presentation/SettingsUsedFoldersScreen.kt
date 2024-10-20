@@ -18,6 +18,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -27,7 +28,6 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.manag
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.composable.LoadingComposable
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
 /**
  * Represent the view of the used folders in the settings.
@@ -93,7 +93,7 @@ fun SettingsUsedFoldersScreenView(
                         key = { it.folderPath },
                         contentType = { USED_FOLDERS_CONTENT_TYPE }
                     ) {
-                        SettingsSwitchElement(
+                        SoulMenuSwitch(
                             title = it.folderPath,
                             toggleAction = {
                                 setFolderSelectionStatus(it, !it.isSelected)

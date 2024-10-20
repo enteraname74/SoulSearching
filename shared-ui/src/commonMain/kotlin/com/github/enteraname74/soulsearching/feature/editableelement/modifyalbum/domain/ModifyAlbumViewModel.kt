@@ -108,8 +108,6 @@ class ModifyAlbumViewModel(
      */
     fun updateAlbum() {
         CoroutineScope(Dispatchers.IO).launch {
-
-
             val state = (state.value as? ModifyAlbumState.Data) ?: return@launch
             val form = (formState.value as? ModifyAlbumFormState.Data) ?: return@launch
 

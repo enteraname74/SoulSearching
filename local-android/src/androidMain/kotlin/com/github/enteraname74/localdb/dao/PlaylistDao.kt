@@ -15,6 +15,9 @@ internal interface PlaylistDao {
     @Upsert
     suspend fun upsert(roomPlaylist : RoomPlaylist)
 
+    @Upsert
+    suspend fun upsertAll(roomPlaylists : List<RoomPlaylist>)
+
     @Delete
     suspend fun delete(roomPlaylist : RoomPlaylist)
 

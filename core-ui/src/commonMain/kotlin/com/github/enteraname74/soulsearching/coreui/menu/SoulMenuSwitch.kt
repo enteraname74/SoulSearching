@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.presentation.composable
+package com.github.enteraname74.soulsearching.coreui.menu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Switch
@@ -14,7 +14,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
-fun SettingsSwitchElement(
+fun SoulMenuSwitch(
     title: String,
     subTitle: String? = null,
     toggleAction: () -> Unit,
@@ -43,29 +43,13 @@ fun SettingsSwitchElement(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = UiConstants.Spacing.small),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = title,
-                    color = titleColor,
-                    style = UiConstants.Typography.bodyTitle,
-                    maxLines = maxLines,
-                    overflow = TextOverflow.Ellipsis
-                )
-                subTitle?.let {
-                    Text(
-                        text = it,
-                        color = textColor,
-                        style = UiConstants.Typography.bodySmall,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
+            SoulMenuBody(
+                title = title,
+                text = subTitle,
+                titleColor = titleColor,
+                textColor = textColor,
+                titleMaxLines = maxLines,
+            )
         }
         Switch(
             checked = isChecked,
