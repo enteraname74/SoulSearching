@@ -29,6 +29,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(project(":domain"))
+            implementation(compose.runtime)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
             implementation(libs.coroutines.core)

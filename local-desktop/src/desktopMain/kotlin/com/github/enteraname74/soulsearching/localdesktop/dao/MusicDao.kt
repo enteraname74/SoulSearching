@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.cove
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.folder
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.id
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.initialCoverPath
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isHidden
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.nbPlayed
@@ -39,6 +40,7 @@ internal class MusicDao {
                 it[album] = music.album
                 it[artist] = music.artist
                 it[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
+                it[initialCoverPath] = (music.cover as? Cover.FileCover)?.initialCoverPath
                 it[duration] = music.duration
                 it[path] = music.path
                 it[folder] = music.folder
@@ -58,6 +60,7 @@ internal class MusicDao {
                 this[album] = music.album
                 this[artist] = music.artist
                 this[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
+                this[initialCoverPath] = (music.cover as? Cover.FileCover)?.initialCoverPath
                 this[duration] = music.duration
                 this[path] = music.path
                 this[folder] = music.folder
