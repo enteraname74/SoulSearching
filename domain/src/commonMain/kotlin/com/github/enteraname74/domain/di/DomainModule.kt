@@ -16,7 +16,6 @@ import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
 import com.github.enteraname74.domain.usecase.month.*
 import com.github.enteraname74.domain.usecase.musicfolder.*
-import com.github.enteraname74.domain.util.*
 
 val domainModule = module {
     // USE CASES
@@ -24,7 +23,7 @@ val domainModule = module {
     singleOf(::DeleteAlbumIfEmptyUseCase)
     singleOf(::DeleteAlbumUseCase)
     singleOf(::GetAlbumsNameFromSearchStringUseCase)
-    singleOf(::GetAlbumsOfArtistsUseCase)
+    singleOf(::GetAlbumsOfArtistUseCase)
     singleOf(::GetAlbumsWithMusicsOfArtistUseCase)
     singleOf(::GetAlbumUseCase)
     singleOf(::GetAlbumWithMusicsUseCase)

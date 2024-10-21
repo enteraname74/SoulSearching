@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.first
 import java.util.*
 
 internal class PlaybackListManager(
-    private val callback: PlaybackListCallbacks,
+    private val playbackCallback: PlaybackListCallbacks,
     private val player: SoulSearchingPlayer,
     private val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
@@ -40,21 +40,13 @@ internal class PlaybackListManager(
     /**
      * Save the played list to the database.
      */
-    private fun savePlayedList() {
+    private fun savePlayedList(list: List<Music>) {
         playedListSavingJob?.cancel()
         playedListSavingJob = CoroutineScope(Dispatchers.IO).launch {
-            withDataState {
-                playedListSavingJob = CoroutineScope(Dispatchers.IO).launch {
-                    playerMusicRepository.deleteAll()
-                    for (id in playedList.map { it.musicId }) {
-                        playerMusicRepository.upsertMusicToPlayerList(
-                            playerMusic = PlayerMusic(
-                                playerMusicId = id
-                            )
-                        )
-                    }
-                }
-            }
+            playerMusicRepository.deleteAll()
+            playerMusicRepository.upsertAll(
+                playlist = list.map { PlayerMusic(playerMusicId = it.musicId) }
+            )
         }
     }
 
@@ -67,13 +59,15 @@ internal class PlaybackListManager(
     suspend fun addMusicToPlayNext(music: Music) {
         if (_state.value is PlaybackListState.NoData) {
             // We will initialize the player:
+            val singletonList = listOf(music)
+
             init(
-                musics = listOf(music),
+                musics = singletonList,
                 currentMusic = music,
             )
 
-            callback.onlyLoadMusic(music = music)
-            savePlayedList()
+            playbackCallback.onlyLoadMusic(music = music)
+            savePlayedList(list = singletonList)
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = 0,
                 currentMusicPosition = 0,
@@ -87,21 +81,18 @@ internal class PlaybackListManager(
                 return@withDataState
             }
 
-            println("PLAYER PB -- HERE")
-
             // We make sure to remove the music if it's already in the playlist :
             val updatedPlayedList = ArrayList(playedList)
             updatedPlayedList.removeIf { it.musicId == music.musicId }
 
             // If the current playlist is empty, we load the music :
             if (updatedPlayedList.isEmpty()) {
-                println("PLAYER PB -- EMPTY LIST, WILL INIT")
                 updatedPlayedList.add(music)
                 init(
                     musics = updatedPlayedList,
                     currentMusic = music,
                 )
-                callback.onlyLoadMusic(music = music)
+                playbackCallback.onlyLoadMusic(music = music)
             } else {
                 // Finally, we add the new next music :
                 updatedPlayedList.add(currentMusicIndex + 1, music)
@@ -111,10 +102,10 @@ internal class PlaybackListManager(
                 matchInitialListToPlayedListIfNormalPlayerMode()
             }
 
-            savePlayedList()
+            savePlayedList(list = updatedPlayedList)
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = currentMusicIndex,
-                currentMusicPosition = callback.getMusicPosition(),
+                currentMusicPosition = playbackCallback.getMusicPosition(),
             )
         }
     }
@@ -124,7 +115,6 @@ internal class PlaybackListManager(
      */
     suspend fun changePlayerMode() {
         withDataState {
-
             val playerMode: PlayerMode = when (playerMode) {
                 PlayerMode.Normal -> {
                     // to shuffle mode :
@@ -156,7 +146,7 @@ internal class PlaybackListManager(
 
                 PlayerMode.Loop -> {
                     // to normal mode :
-                    val mode =PlayerMode.Normal
+                    val mode = PlayerMode.Normal
                     _state.value = this.copy(
                         playlistId = null,
                         playedList = initialList.map { it.copy() },
@@ -171,9 +161,11 @@ internal class PlaybackListManager(
             )
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = currentMusicIndex,
-                currentMusicPosition = callback.getMusicPosition(),
+                currentMusicPosition = playbackCallback.getMusicPosition(),
             )
-            savePlayedList()
+            savePlayedList(
+                list = (_state.value as? PlaybackListState.Data)?.playedList ?: emptyList()
+            )
         }
     }
 
@@ -213,7 +205,7 @@ internal class PlaybackListManager(
                 playerMode = playerMode,
                 minimisePlayer = true,
             )
-            callback.onlyLoadMusic(
+            playbackCallback.onlyLoadMusic(
                 seekTo = position,
                 music = currentMusic,
             )
@@ -275,7 +267,7 @@ internal class PlaybackListManager(
 
             // If no songs is left in the queue, stop playing :
             if (playedList.isEmpty()) {
-                callback.stopPlayback()
+                playbackCallback.stopPlayback()
             } else {
                 // If same music than the one played, play next song :
                 if (currentMusic.musicId.compareTo(musicId) == 0) {
@@ -288,17 +280,16 @@ internal class PlaybackListManager(
 
                     _state.value = this.copy(
                         currentMusic = newCurrentSong,
+                        playedList = playedList,
                     )
-
-                    callback.next()
+                    settings.saveCurrentMusicInformation(
+                        currentMusicIndex = currentMusicIndex,
+                        currentMusicPosition = playbackCallback.getMusicPosition(),
+                    )
+                    savePlayedList(list = playedList)
+                    playbackCallback.next()
                 }
             }
-            settings.saveCurrentMusicInformation(
-                currentMusicIndex = currentMusicIndex,
-                currentMusicPosition = callback.getMusicPosition(),
-            )
-
-            savePlayedList()
         }
     }
 
@@ -398,7 +389,7 @@ internal class PlaybackListManager(
         }
 
         setAndPlayMusic(music)
-        savePlayedList()
+        savePlayedList(musicList)
     }
 
     /**
@@ -429,7 +420,7 @@ internal class PlaybackListManager(
         )
 
         setAndPlayMusic(playerList[0])
-        savePlayedList()
+        savePlayedList(list = playerList)
     }
 
     suspend fun removeCurrentSongInAllLists() {
@@ -482,7 +473,7 @@ internal class PlaybackListManager(
     }
 
     fun hasData(): Boolean =
-       (_state.value as? PlaybackListState.Data)?.playedList?.isNotEmpty() == false
+        (_state.value as? PlaybackListState.Data)?.playedList?.isNotEmpty() == false
 
     /**
      * Reset the saved played list in the db.
@@ -528,6 +519,6 @@ internal class PlaybackListManager(
         }
 
         setAndPlayMusic(music = musicList[0])
-        savePlayedList()
+        savePlayedList(list = musicList)
     }
 }

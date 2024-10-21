@@ -87,14 +87,9 @@ class MusicBottomSheet(
             },
             playNextAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    println("PLAYER BS -- HERE")
                     playbackManager.addMusicToPlayNext(
                         music = selectedMusic
                     )
-                    println("PLAYER BS -- END")
-//                    if (playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-//                        playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-//                    }
                 }
                 closeWithAnim()
             },

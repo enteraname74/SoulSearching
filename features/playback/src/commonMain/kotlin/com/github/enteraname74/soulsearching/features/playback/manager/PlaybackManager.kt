@@ -44,7 +44,7 @@ abstract class PlaybackManager : KoinComponent {
     private val playbackListManager: PlaybackListManager by lazy {
         PlaybackListManager(
             settings = settings,
-            callback = object : PlaybackListCallbacks {
+            playbackCallback = object : PlaybackListCallbacks {
                 override suspend fun onlyLoadMusic(seekTo: Int, music: Music) =
                     this@PlaybackManager.onlyLoadMusic(seekTo, music)
 

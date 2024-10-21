@@ -1,8 +1,10 @@
 package com.github.enteraname74.soulsearching.features.filemanager.musicfetching
 
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistFromNameUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
@@ -23,6 +25,9 @@ abstract class MusicFetcher: KoinComponent {
     private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
     private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase by inject()
     private val upsertAllMusicAlbumUseCase: UpsertAllMusicAlbumUseCase by inject()
+
+    private val getArtistFromNameUseCase: GetArtistFromNameUseCase by inject()
+    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase by inject()
 
     /**
      * Fetch all musics on the device.
@@ -71,7 +76,6 @@ abstract class MusicFetcher: KoinComponent {
         musicArtists.clear()
         musicAlbums.clear()
     }
-
 
     private fun createAlbumOfSong(
         music: Music,
@@ -125,20 +129,23 @@ abstract class MusicFetcher: KoinComponent {
     /**
      * Persist a music and its cover.
      */
-    fun addMusic(
+    suspend fun addMusic(
         musicToAdd: Music,
         onSongSaved: () -> Unit = {},
     ) {
         // If the song has already been saved once, we do nothing.
         if (musicsByPath[musicToAdd.path] != null) return
 
-        val correspondingArtist: Artist? = artistsByName[musicToAdd.artist]
+        val correspondingArtist: Artist? = artistsByName[musicToAdd.artist] ?: getArtistFromNameUseCase(musicToAdd.artist)
         val correspondingAlbum: Album? = correspondingArtist?.let { artist ->
             val info = AlbumInformation(
                 name = musicToAdd.album,
                 artist = artist.artistName,
             )
-            albumsByInfo[info]
+            albumsByInfo[info] ?: getCorrespondingAlbumUseCase(
+                albumName = musicToAdd.album,
+                artistId = artist.artistId,
+            )
         }
 
         val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()

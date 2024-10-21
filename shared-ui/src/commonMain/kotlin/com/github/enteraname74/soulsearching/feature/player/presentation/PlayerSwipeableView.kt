@@ -182,7 +182,6 @@ fun PlayerDraggableView(
                                 playerViewModel.stopPlayback()
                             }
                         }
-                        println("PLAYER VIEW -- View has been showed")
                         hasViewBeenShown = true
                     }
 
