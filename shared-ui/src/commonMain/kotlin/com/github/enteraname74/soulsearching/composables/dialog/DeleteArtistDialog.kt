@@ -30,11 +30,9 @@ class DeleteArtistDialog(
             confirmAction = {
                 onDelete()
                 CoroutineScope(Dispatchers.IO).launch {
-                    artistToDelete.musics.forEach {
-                        playbackManager.removeSongFromPlayedPlaylist(
-                            musicId = it.musicId
-                        )
-                    }
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = artistToDelete.musics.map { it.musicId }
+                    )
                 }
             },
             dismissAction = onClose,

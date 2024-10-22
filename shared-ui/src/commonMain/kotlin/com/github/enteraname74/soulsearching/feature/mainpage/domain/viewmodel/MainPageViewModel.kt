@@ -303,8 +303,8 @@ class MainPageViewModel(
             var deleteCount = 0
             for (music in allMusicsState.value.musics) {
                 if (!File(music.path).exists()) {
-                    playbackManager.removeSongFromPlayedPlaylist(
-                        music.musicId
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = listOf(music.musicId)
                     )
                     deleteMusicUseCase(music = music)
                     deleteCount += 1

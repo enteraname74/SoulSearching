@@ -32,8 +32,8 @@ class DeleteMusicDialog(
             confirmAction = {
                 onDelete()
                 CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeSongFromPlayedPlaylist(
-                        musicId = musicToDelete.musicId
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = listOf(musicToDelete.musicId)
                     )
                 }
             },

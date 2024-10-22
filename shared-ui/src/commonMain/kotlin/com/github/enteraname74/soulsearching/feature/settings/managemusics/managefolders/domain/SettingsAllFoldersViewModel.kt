@@ -5,30 +5,31 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
-import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
+import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicFromFolderPathUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import java.util.UUID
 
 class SettingsAllFoldersViewModel(
     private val getAllFoldersUseCase: GetAllFoldersUseCase,
     private val upsertFolderUseCase: UpsertFolderUseCase,
     private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,
-    private val deleteMusicUseCase: DeleteMusicUseCase,
+    private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
+    private val loadingManager: LoadingManager,
+    private val playbackManager: PlaybackManager,
 ): ScreenModel {
-    private val isSavingFolders: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val isFetchingFolders: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val folders: MutableStateFlow<List<Folder>> = MutableStateFlow(emptyList())
     val state: StateFlow<FolderState> = combine(
-        isSavingFolders,
         isFetchingFolders,
         folders,
-    ) { isSavingFolders, isFetchingFolders, folders ->
+    ) { isFetchingFolders, folders ->
         when {
-            isSavingFolders -> FolderState.Saving
             isFetchingFolders -> FolderState.Fetching
             else -> FolderState.Data(folders)
         }
@@ -71,32 +72,26 @@ class SettingsAllFoldersViewModel(
         }
     }
 
-    fun saveSelection(
-        updateProgress: (Float) -> Unit
-    ) {
+    fun saveSelection() {
         CoroutineScope(Dispatchers.IO).launch {
-            isSavingFolders.value = true
-            folders.value.forEach { folder ->
-                upsertFolderUseCase(
-                    Folder(
-                        folderPath = folder.folderPath,
-                        isSelected = folder.isSelected
+            loadingManager.withLoading {
+                folders.value.forEach { folder ->
+                    upsertFolderUseCase(
+                        Folder(
+                            folderPath = folder.folderPath,
+                            isSelected = folder.isSelected
+                        )
                     )
-                )
 
-                if (!folder.isSelected) {
-                    val musicsFromFolder = runBlocking {
-                        getAllMusicFromFolderPathUseCase(folder.folderPath).first()
-                    }
-                    var count = 0
-                    musicsFromFolder.forEach { music ->
-                        deleteMusicUseCase(music = music)
-                        count++
-                        updateProgress((count * 1F) / musicsFromFolder.size)
+                    if (!folder.isSelected) {
+                        val musicsFromFolder: List<UUID> = getAllMusicFromFolderPathUseCase(folder.folderPath)
+                            .first()
+                            .map { it.musicId }
+                        deleteAllMusicsUseCase(ids = musicsFromFolder)
+                        playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
                     }
                 }
             }
-            isSavingFolders.value = false
             updateFolders()
         }
     }

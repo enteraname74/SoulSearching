@@ -246,8 +246,8 @@ abstract class PlaybackManager : KoinComponent {
         playbackListManager.changePlayerMode()
     }
 
-    suspend fun removeSongFromPlayedPlaylist(musicId: UUID) {
-        playbackListManager.removeSongFromPlayedPlaylist(musicId = musicId)
+    suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>) {
+        playbackListManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
     }
 
     suspend fun addMusicToPlayNext(music: Music) {

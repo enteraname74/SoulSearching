@@ -79,8 +79,8 @@ class MusicBottomSheet(
             removeFromPlaylistAction = onRemoveFromPlaylist,
             removeFromPlayedListAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeSongFromPlayedPlaylist(
-                        musicId = selectedMusic.musicId
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = listOf(selectedMusic.musicId)
                     )
                 }
                 closeWithAnim()

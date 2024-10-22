@@ -254,24 +254,24 @@ internal class PlaybackListManager(
     } ?: false
 
     /**
-     * Remove a song from the current playlist.
+     * Remove songs from the current playlist.
      * If no songs are left in the played list, the playback will stop.
      */
-    suspend fun removeSongFromPlayedPlaylist(musicId: UUID) {
+    suspend fun removeSongsFromPlayedPlaylist(musicIds: List<UUID>) {
         withDataState {
             val actualIndex = currentMusicIndex
             val playedList = ArrayList(playedList)
 
-            playedList.removeIf { it.musicId == musicId }
+            playedList.removeIf { it.musicId in musicIds }
             matchInitialListToPlayedListIfNormalPlayerMode()
 
             // If no songs is left in the queue, stop playing :
             if (playedList.isEmpty()) {
                 playbackCallback.stopPlayback()
             } else {
-                // If same music than the one played, play next song :
-                val newCurrentSong = if (currentMusic.musicId.compareTo(musicId) == 0) {
-                    // We place ourselves in the previous music :
+                // If the current song is in the deleted one, we play the next song.
+                val newCurrentSong = if (currentMusic.musicId in musicIds) {
+                    // We first place ourselves in the previous music :
                     if (actualIndex == 0) {
                         playedList[playedList.lastIndex]
                     } else {

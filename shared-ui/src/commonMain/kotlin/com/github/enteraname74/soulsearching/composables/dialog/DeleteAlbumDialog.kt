@@ -37,11 +37,9 @@ class DeleteAlbumDialog(
                     val albumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
                         albumId = selectedAlbum.albumId,
                     ).first() ?: return@launch
-                    albumWithMusics.musics.forEach {
-                        playbackManager.removeSongFromPlayedPlaylist(
-                            musicId = it.musicId
-                        )
-                    }
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = albumWithMusics.musics.map { it.musicId }
+                    )
                 }
             },
             dismissAction = onClose,
