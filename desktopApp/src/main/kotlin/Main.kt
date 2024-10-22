@@ -17,7 +17,6 @@ fun main() = application {
             modules(appModule)
         }
     ) {
-        println("DEV MODE? ${System.getenv("SOUL_DEV").toBoolean()}")
         val playbackManager: PlaybackManager = injectElement()
 
         Window(
