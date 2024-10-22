@@ -162,8 +162,18 @@ fun PlayerDraggableView(
                     PlayerSwipeableDataScreen(
                         maxHeight = maxHeight,
                         state = state as PlayerViewState.Data,
-                        onArtistClicked = playerViewModel::navigateToArtist,
-                        onAlbumClicked = playerViewModel::navigateToAlbum,
+                        onArtistClicked = {
+                            coroutineScope.launch {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                            }
+                            playerViewModel.navigateToArtist()
+                        },
+                        onAlbumClicked = {
+                            coroutineScope.launch {
+                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                            }
+                            playerViewModel.navigateToAlbum()
+                        },
                         showMusicBottomSheet = playerViewModel::showMusicBottomSheet,
                         toggleFavoriteState = playerViewModel::toggleFavoriteState,
                         seekTo = playerViewModel::seekTo,
