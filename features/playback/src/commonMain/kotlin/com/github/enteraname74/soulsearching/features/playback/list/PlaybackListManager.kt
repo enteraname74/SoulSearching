@@ -270,25 +270,27 @@ internal class PlaybackListManager(
                 playbackCallback.stopPlayback()
             } else {
                 // If same music than the one played, play next song :
-                if (currentMusic.musicId.compareTo(musicId) == 0) {
+                val newCurrentSong = if (currentMusic.musicId.compareTo(musicId) == 0) {
                     // We place ourselves in the previous music :
-                    val newCurrentSong = if (actualIndex == 0) {
+                    if (actualIndex == 0) {
                         playedList[playedList.lastIndex]
                     } else {
                         playedList[actualIndex - 1]
                     }
-
-                    _state.value = this.copy(
-                        currentMusic = newCurrentSong,
-                        playedList = playedList,
-                    )
-                    settings.saveCurrentMusicInformation(
-                        currentMusicIndex = currentMusicIndex,
-                        currentMusicPosition = playbackCallback.getMusicPosition(),
-                    )
-                    savePlayedList(list = playedList)
-                    playbackCallback.next()
+                } else {
+                    this.currentMusic
                 }
+
+                _state.value = this.copy(
+                    currentMusic = newCurrentSong,
+                    playedList = playedList,
+                )
+                settings.saveCurrentMusicInformation(
+                    currentMusicIndex = currentMusicIndex,
+                    currentMusicPosition = playbackCallback.getMusicPosition(),
+                )
+                savePlayedList(list = playedList)
+                playbackCallback.next()
             }
         }
     }
