@@ -45,6 +45,7 @@ class SelectedPlaylistViewModel(
                     playlistWithMusics == null -> SelectedPlaylistState.Loading
                     else -> SelectedPlaylistState.Data(
                         playlistDetail = playlistWithMusics.toPlaylistDetail(),
+                        selectedPlaylist = playlistWithMusics.playlist,
                     )
                 }
             }.stateIn(
