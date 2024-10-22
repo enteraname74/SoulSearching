@@ -22,6 +22,7 @@ val domainModule = module {
     // Album
     singleOf(::DeleteAlbumIfEmptyUseCase)
     singleOf(::DeleteAlbumUseCase)
+    singleOf(::DeleteAllAlbumsUseCase)
     singleOf(::GetAlbumsNameFromSearchStringUseCase)
     singleOf(::GetAlbumsOfArtistUseCase)
     singleOf(::GetAlbumsWithMusicsOfArtistUseCase)
@@ -29,6 +30,7 @@ val domainModule = module {
     singleOf(::GetAlbumWithMusicsUseCase)
     singleOf(::GetAllAlbumsUseCase)
     singleOf(::GetAllAlbumsWithArtistFromQuickAccessUseCase)
+    singleOf(::GetAllAlbumsWithArtistUseCase)
     singleOf(::GetAllAlbumsWithMusicsUseCase)
     singleOf(::GetAllAlbumWithMusicsSortedUseCase)
     singleOf(::GetCorrespondingAlbumUseCase)
@@ -44,12 +46,14 @@ val domainModule = module {
     singleOf(::UpsertAllAlbumArtistUseCase)
 
     // Artist
+    singleOf(::DeleteAllArtistsUseCase)
     singleOf(::DeleteArtistIfEmptyUseCase)
     singleOf(::DeleteArtistUseCase)
     singleOf(::GetAllArtistsUseCase)
     singleOf(::GetAllArtistWithMusicsFromQuickAccessUseCase)
     singleOf(::GetAllArtistWithMusicsSortedByMostSongsUseCase)
     singleOf(::GetAllArtistWithMusicsSortedUseCase)
+    singleOf(::GetAllArtistWithMusicsUseCase)
     singleOf(::GetArtistFromNameUseCase)
     singleOf(::GetArtistsNameFromSearchStringUseCase)
     singleOf(::GetArtistWithMusicsUseCase)

@@ -3,6 +3,13 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
+import com.github.enteraname74.domain.usecase.album.GetAllAlbumsUseCase
+import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
+import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
@@ -20,6 +27,10 @@ class SettingsAllFoldersViewModel(
     private val upsertFolderUseCase: UpsertFolderUseCase,
     private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
+    private val getAllAlbumWithMusicsUseCase: GetAllAlbumsWithMusicsUseCase,
+    private val getAllArtistWithMusicsUseCase: GetAllArtistWithMusicsUseCase,
+    private val deleteAllAlbumUseCase: DeleteAllAlbumsUseCase,
+    private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): ScreenModel {
@@ -89,6 +100,19 @@ class SettingsAllFoldersViewModel(
                             .map { it.musicId }
                         deleteAllMusicsUseCase(ids = musicsFromFolder)
                         playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
+
+                        val albumsToDelete = getAllAlbumWithMusicsUseCase()
+                            .first()
+                            .filter { it.musics.isEmpty() }
+                            .map { it.album.albumId }
+
+                        val artistsToDelete = getAllArtistWithMusicsUseCase()
+                            .first()
+                            .filter { it.musics.isEmpty() }
+                            .map { it.artist.artistId }
+
+                        deleteAllAlbumUseCase(albumsIds = albumsToDelete)
+                        deleteAllArtistsUseCase(artistsIds = artistsToDelete)
                     }
                 }
             }

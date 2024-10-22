@@ -27,9 +27,15 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.upsertAll(artists.map { it.toRoomArtist() })
     }
 
-    override suspend fun delete(artist: Artist) {
+    override suspend fun deleteAll(artist: Artist) {
         appDatabase.artistDao.delete(
             roomArtist = artist.toRoomArtist()
+        )
+    }
+
+    override suspend fun deleteAll(artistsIds: List<UUID>) {
+        appDatabase.artistDao.deleteAll(
+            ids = artistsIds,
         )
     }
 

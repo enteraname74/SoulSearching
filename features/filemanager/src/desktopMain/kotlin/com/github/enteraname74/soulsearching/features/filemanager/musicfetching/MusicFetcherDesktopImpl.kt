@@ -107,7 +107,7 @@ internal class MusicFetcherDesktopImpl(
         finishAction: () -> Unit
     ) {
         val root = File(System.getProperty("user.home"))
-
+        init()
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = updateProgress,

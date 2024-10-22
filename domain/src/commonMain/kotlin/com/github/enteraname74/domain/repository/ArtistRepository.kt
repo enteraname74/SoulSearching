@@ -19,6 +19,8 @@ interface ArtistRepository {
      */
     suspend fun delete(artist: Artist)
 
+    suspend fun deleteAll(artistsIds: List<UUID>)
+
     /**
      * Retrieves an Artist from its id.
      */

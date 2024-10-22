@@ -8,25 +8,18 @@ import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
-import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.nbPlayed
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toArtist
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.batchUpsert
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
 import java.util.*
 
 
@@ -63,6 +56,12 @@ internal class ArtistDao(
     suspend fun delete(artist: Artist) {
         flowTransactionOn {
             ArtistTable.deleteWhere { id eq artist.artistId }
+        }
+    }
+
+    suspend fun deleteAll(artistsIds: List<UUID>) {
+        flowTransactionOn {
+            ArtistTable.deleteWhere { Op.build { id inList artistsIds } }
         }
     }
 

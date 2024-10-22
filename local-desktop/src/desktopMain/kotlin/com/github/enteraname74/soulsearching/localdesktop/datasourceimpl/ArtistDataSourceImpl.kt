@@ -20,8 +20,12 @@ internal class ArtistDataSourceImpl(
         )
     }
 
-    override suspend fun delete(artist: Artist) {
+    override suspend fun deleteAll(artist: Artist) {
         artistDao.delete(artist)
+    }
+
+    override suspend fun deleteAll(artistsIds: List<UUID>) {
+        artistDao.deleteAll(artistsIds)
     }
 
     override fun getFromId(artistId: UUID): Flow<Artist?> =

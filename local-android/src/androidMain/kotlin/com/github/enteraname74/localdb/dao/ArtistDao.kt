@@ -21,6 +21,9 @@ internal interface ArtistDao {
     @Delete
     suspend fun delete(roomArtist: RoomArtist)
 
+    @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
+    suspend fun deleteAll(ids: List<UUID>)
+
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
 
