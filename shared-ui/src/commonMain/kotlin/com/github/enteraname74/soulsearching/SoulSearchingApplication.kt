@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
@@ -56,8 +57,15 @@ fun SoulSearchingApplication(
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
     var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(Unit) {
-        playbackManager.initFromSavedData()
+    var hasPlaybackBeenInitialized: Boolean by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(hasPlaybackBeenInitialized) {
+        if (!hasPlaybackBeenInitialized) {
+            playbackManager.initFromSavedData()
+            hasPlaybackBeenInitialized = true
+        }
     }
 
     SoulSearchingAppTheme {

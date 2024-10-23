@@ -141,7 +141,6 @@ class MusicBottomSheetDelegateImpl(
                 onDeleteMusic = { showDeleteMusicDialog(musicToDelete = selectedMusic) },
                 onModifyMusic = { onModifyMusic(selectedMusic)},
                 onRemoveFromPlaylist = {
-                    println("REMOVE FROM PLAYLIST CLICKED, currentPlaylist: $currentPlaylist")
                     currentPlaylist?.let {
                         removeMusicFromPlaylistDialog(
                             musicToRemove = selectedMusic,

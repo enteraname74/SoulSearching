@@ -124,8 +124,6 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun dismiss() {
         pause()
-//        player.release()
-//        audioManager.release()
     }
 
     override fun getMusicPosition(): Int {
@@ -164,6 +162,7 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPrepared(mp: MediaPlayer?) {
         if (isOnlyLoadingMusic) {
+            MediaPlayer.MEDIA_ERROR_UNKNOWN
             /*
              * When only loading the music, we try to seek to the last music position
              * (when loading a previous song which was at a given position)

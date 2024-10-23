@@ -89,8 +89,6 @@ abstract class MusicFetcher: KoinComponent {
                 artist = it.artist?.artistName.orEmpty(),
             ) to it.album
         } as HashMap<AlbumInformation, Album>
-
-        println("GOT ALBUMS INFO: $albumsByInfo")
     }
 
     private fun createAlbumOfSong(
