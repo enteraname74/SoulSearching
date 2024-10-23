@@ -9,7 +9,7 @@ data class PlaylistDetail(
     val id: UUID?,
     val title: String,
     val subTitle: String?,
-    val coverId: UUID?,
+    val cover: Cover?,
     val musics: List<Music>
 )
 
@@ -18,7 +18,7 @@ fun PlaylistWithMusics.toPlaylistDetail(): PlaylistDetail =
         id = this.playlist.playlistId,
         title = this.playlist.name,
         subTitle = strings.musics(this.musics.size),
-        coverId = this.playlist.coverId,
+        cover = this.cover,
         musics = this.musics,
     )
 
@@ -27,7 +27,7 @@ fun AlbumWithMusics.toPlaylistDetail(): PlaylistDetail =
         id = this.album.albumId,
         title = this.album.albumName,
         subTitle = this.artist?.artistName,
-        coverId = this.album.coverId,
+        cover = this.cover,
         musics = this.musics,
     )
 
@@ -36,7 +36,7 @@ fun ArtistWithMusics.toPlaylistDetail(): PlaylistDetail =
         id = this.artist.artistId,
         title = this.artist.artistName,
         subTitle = strings.musics(this.musics.size),
-        coverId = this.artist.coverId,
+        cover = this.cover,
         musics = this.musics,
     )
 
@@ -45,7 +45,7 @@ fun MonthMusicList.toPlaylistDetail(): PlaylistDetail =
         id = null,
         title = this.month,
         subTitle = strings.musics(this.musics.size),
-        coverId = this.coverId,
+        cover = this.cover,
         musics = this.musics,
     )
 
@@ -54,6 +54,6 @@ fun MusicFolderList.toPlaylistDetail(): PlaylistDetail =
         id = null,
         title = this.path,
         subTitle = strings.musics(this.musics.size),
-        coverId = this.coverId,
+        cover = this.cover,
         musics = this.musics,
     )

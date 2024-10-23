@@ -16,6 +16,10 @@ class MusicArtistRepositoryImpl(
             musicArtist = musicArtist
         )
 
+    override suspend fun upsertAll(musicArtists: List<MusicArtist>) {
+        musicArtistDataSource.upsertAll(musicArtists)
+    }
+
     override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
         musicArtistDataSource.updateArtistOfMusic(
             musicId = musicId,

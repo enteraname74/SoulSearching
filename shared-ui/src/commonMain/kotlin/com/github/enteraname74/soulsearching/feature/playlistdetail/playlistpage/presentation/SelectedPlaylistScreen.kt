@@ -99,7 +99,12 @@ fun SelectedPlaylistScreenView(
             playlistDetail = (state as SelectedPlaylistState.Data).playlistDetail,
             playlistDetailListener = selectedPlaylistViewModel,
             navigateBack = navigateBack,
-            onShowMusicBottomSheet = selectedPlaylistViewModel::showMusicBottomSheet,
+            onShowMusicBottomSheet = { selectedMusic ->
+                selectedPlaylistViewModel.showMusicBottomSheet(
+                    selectedMusic = selectedMusic,
+                    currentPlaylist = (state as SelectedPlaylistState.Data).selectedPlaylist,
+                )
+            },
         )
     }
 }

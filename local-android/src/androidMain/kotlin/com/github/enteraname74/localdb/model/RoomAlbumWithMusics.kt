@@ -3,6 +3,8 @@ package com.github.enteraname74.localdb.model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import com.github.enteraname74.domain.ext.coverFromSongs
+import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 
 /**
@@ -23,13 +25,22 @@ internal data class RoomAlbumWithMusics(
     )
     val roomArtist: RoomArtist? = RoomArtist()
 ) {
-    /**
-     * Converts a RoomAlbumWithMusics to a RoomAlbumWithArtist.
-     */
-    fun toAlbumWithArtist() : RoomAlbumWithArtist = RoomAlbumWithArtist(
-        roomAlbum = roomAlbum,
-        roomArtist = roomArtist
-    )
+
+    fun toAlbumWithArtist(): AlbumWithArtist {
+        val album = roomAlbum.toAlbum()
+
+        return AlbumWithArtist(
+            album = album,
+            artist = roomArtist?.toArtist(),
+            cover = if (album.cover?.isEmpty() == false) {
+                album.cover
+            } else {
+                roomMusics
+                    .map { it.toMusic() }
+                    .coverFromSongs()
+            }
+        )
+    }
 }
 
 /**
@@ -39,13 +50,4 @@ internal fun RoomAlbumWithMusics.toAlbumWithMusics(): AlbumWithMusics = AlbumWit
     album = roomAlbum.toAlbum(),
     musics = roomMusics.map { it.toMusic() },
     artist = roomArtist?.toArtist()
-)
-
-/**
- * Converts an AlbumWithMusics to a RoomAlbumWithMusics.
- */
-internal fun AlbumWithMusics.toRoomAlbumWithMusics(): RoomAlbumWithMusics = RoomAlbumWithMusics(
-    roomAlbum = album.toRoomAlbum(),
-    roomMusics = musics.map { it.toRoomMusic() },
-    roomArtist = artist?.toRoomArtist()
 )

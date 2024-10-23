@@ -6,13 +6,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import kotlinx.coroutines.launch
 
 /**
@@ -47,14 +47,14 @@ private fun SettingsAboutComposable(
         title = strings.aboutTitle,
     ) {
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.developersTitle,
                 subTitle = strings.developersText,
                 onClick = navigateToDevelopers
             )
         }
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.versionNameTitle,
                 subTitle = AppVersion.versionName,
                 onClick = {

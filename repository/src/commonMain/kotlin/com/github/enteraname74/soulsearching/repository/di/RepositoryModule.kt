@@ -11,7 +11,7 @@ val repositoryModule = module {
     singleOf(::AlbumRepositoryImpl) bind AlbumRepository::class
     singleOf(::ArtistRepositoryImpl) bind ArtistRepository::class
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
-    singleOf(::ImageCoverRepositoryImpl) bind ImageCoverRepository::class
+    singleOf(::CoverRepositoryImpl) bind CoverRepository::class
     singleOf(::LyricsRepositoryImpl) bind LyricsRepository::class
     singleOf(::MusicAlbumRepositoryImpl) bind MusicAlbumRepository::class
     singleOf(::MusicArtistRepositoryImpl) bind MusicArtistRepository::class

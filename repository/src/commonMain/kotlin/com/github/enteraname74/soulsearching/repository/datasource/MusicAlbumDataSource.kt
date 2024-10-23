@@ -13,6 +13,8 @@ interface MusicAlbumDataSource {
      */
     suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum)
 
+    suspend fun upsertAll(musicAlbums: List<MusicAlbum>)
+
     /**
      * Deletes a MusicAlbum.
      * It is the equivalent of deleting a Music from an Album.

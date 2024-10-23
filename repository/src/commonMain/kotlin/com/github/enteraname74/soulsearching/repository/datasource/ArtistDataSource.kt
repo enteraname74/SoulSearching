@@ -15,10 +15,14 @@ interface ArtistDataSource {
      */
     suspend fun upsert(artist: Artist)
 
+    suspend fun upsertAll(artists: List<Artist>)
+
     /**
      * Deletes an Artist.
      */
-    suspend fun delete(artist: Artist)
+    suspend fun deleteAll(artist: Artist)
+
+    suspend fun deleteAll(artistsIds: List<UUID>)
 
     /**
      * Retrieves an Artist from its id.

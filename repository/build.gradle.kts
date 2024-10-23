@@ -24,6 +24,7 @@ kotlin {
                 implementation(libs.jaudiotagger)
                 implementation(libs.bundles.ktor)
                 implementation(project(":domain"))
+                implementation(project(":features:filemanager"))
             }
         }
     }

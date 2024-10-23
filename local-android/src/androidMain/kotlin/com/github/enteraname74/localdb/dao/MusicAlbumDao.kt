@@ -14,6 +14,9 @@ internal interface MusicAlbumDao {
     @Upsert
     suspend fun insertMusicIntoAlbum(roomMusicAlbum : RoomMusicAlbum)
 
+    @Upsert
+    suspend fun upsertAll(roomMusicAlbums: List<RoomMusicAlbum>)
+
     @Query("DELETE FROM RoomMusicAlbum WHERE musicId = :musicId")
     suspend fun deleteMusicFromAlbum(musicId : UUID)
 

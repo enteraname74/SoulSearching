@@ -10,7 +10,7 @@ import java.util.UUID
 data class Artist(
     val artistId: UUID = UUID.randomUUID(),
     var artistName: String = "",
-    var coverId: UUID? = null,
+    var cover: Cover? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false

@@ -3,12 +3,14 @@ package com.github.enteraname74.localdb
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.github.enteraname74.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.Converters
 import com.github.enteraname74.localdb.dao.*
 import com.github.enteraname74.localdb.model.*
 
 
 @Database(
+    version = LocalDatabaseVersion.version,
     entities = [
         RoomMusic::class,
         RoomAlbum::class,
@@ -18,11 +20,9 @@ import com.github.enteraname74.localdb.model.*
         RoomMusicAlbum::class,
         RoomMusicArtist::class,
         RoomAlbumArtist::class,
-        RoomImageCover::class,
         RoomPlayerMusic::class,
         RoomFolder::class
     ],
-    version = 16
 )
 @TypeConverters(Converters::class)
 internal abstract class AppDatabase : RoomDatabase() {
@@ -34,7 +34,6 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract val musicAlbumDao: MusicAlbumDao
     abstract val musicArtistDao: MusicArtistDao
     abstract val albumArtistDao: AlbumArtistDao
-    abstract val imageCoverDao: ImageCoverDao
     abstract val playerMusicDao: PlayerMusicDao
     abstract val folderDao: FolderDao
 }

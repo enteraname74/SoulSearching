@@ -7,6 +7,5 @@ import com.github.enteraname74.domain.model.Folder
  */
 sealed interface FolderState {
     data object Fetching: FolderState
-    data object Saving: FolderState
     data class Data(val folders: List<Folder>): FolderState
 }

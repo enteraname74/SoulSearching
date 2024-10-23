@@ -75,7 +75,7 @@ fun AddToPlaylistMenuBottomSheet(
                     PlaylistSelectableComposable(
                         modifier = Modifier
                             .animateItemPlacement(),
-                        playlist = playlistWithMusics.playlist,
+                        playlistWithMusics = playlistWithMusics,
                         onClick = {
                             if (playlistWithMusics.playlist.playlistId in selectedPlaylistIds)
                                 selectedPlaylistIds.remove(playlistWithMusics.playlist.playlistId)

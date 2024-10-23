@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.player.presentation.compos
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
@@ -29,29 +28,23 @@ import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerTopInformation(
     modifier: Modifier = Modifier,
     alphaTransition: Float,
-    playbackManager: PlaybackManager = injectElement(),
+    onTopInformationHeightChange: (Int) -> Unit,
+    state: PlayerViewState.Data,
+    onShowPanel: (() -> Unit)?,
+    onArtistClicked: () -> Unit,
+    onAlbumClicked: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
-    navigateToAlbum: (String) -> Unit,
-    navigateToArtist: (String) -> Unit,
-    onTopInformationHeightChange: (Int) -> Unit,
-    state: PlayerState,
-    playerViewModel: PlayerViewModel,
-    onShowPanel: (() -> Unit)?,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -95,7 +88,7 @@ fun PlayerTopInformation(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = state.currentMusic?.name.orEmpty(),
+                text = state.currentMusic.name,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
@@ -111,30 +104,14 @@ fun PlayerTopInformation(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = state.currentMusic?.artist?.formatTextForEllipsis().orEmpty(),
+                    text = state.currentMusic.artist.formatTextForEllipsis(),
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                            playbackManager.currentMusic?.let {
-                                coroutineScope.launch {
-                                    val artistId = withContext(Dispatchers.IO) {
-                                        playerViewModel.getArtistIdFromMusicId(it.musicId)
-                                    }
-                                    artistId?.let { id ->
-                                        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                            navigateToArtist(id.toString())
-
-                                            playerViewManager.animateTo(
-                                                newState = BottomSheetStates.MINIMISED,
-                                            )
-                                        }
-                                    }
-
-                                }
-                            }
+                            onArtistClicked()
                         },
                     overflow = TextOverflow.Ellipsis
                 )
@@ -144,29 +121,13 @@ fun PlayerTopInformation(
                     fontSize = 15.sp,
                 )
                 Text(
-                    text = state.currentMusic?.album?.formatTextForEllipsis().orEmpty(),
+                    text = state.currentMusic.album.formatTextForEllipsis(),
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     fontSize = 15.sp,
                     maxLines = 1,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                        playbackManager.currentMusic?.let {
-                            coroutineScope.launch {
-                                val albumId = withContext(Dispatchers.IO) {
-                                    playerViewModel.getAlbumIdFromMusicId(it.musicId)
-                                }
-                                albumId?.let { id ->
-                                    if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                                        navigateToAlbum(id.toString())
-
-                                        playerViewManager.animateTo(
-                                            newState = BottomSheetStates.MINIMISED,
-                                        )
-                                    }
-                                }
-
-                            }
-                        }
+                        onAlbumClicked()
                     },
                     overflow = TextOverflow.Ellipsis
                 )

@@ -2,8 +2,8 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.5.2"
-android-version-name = "0.8.1"
-android-version-code = "19"
+android-version-name = "0.9.0"
+android-version-code = "20"
 android-target-sdk = "34"
 android-compile-sdk = "34"
 android-min-sdk = "26"
@@ -12,9 +12,10 @@ androidx-core = "1.13.1"
 androidx-lifecycle = "2.8.6"
 annotation = "1.8.2"
 appcompat = "1.7.0"
+coil = "3.0.0-alpha01"
 compose = "1.6.11"
 coroutines-core = "1.9.0"
-desktop-version-name = "0.8.1"
+desktop-version-name = "0.9.0"
 exposed = "0.53.0"
 file-kit = "0.8.1"
 gradle = "8.5.2"
@@ -45,6 +46,9 @@ androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resource
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
+
+coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 

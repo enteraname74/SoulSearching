@@ -13,8 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -22,7 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun PlaylistSelectableComposable(
     modifier: Modifier = Modifier,
-    playlist: Playlist,
+    playlistWithMusics: PlaylistWithMusics,
     onClick: () -> Unit,
     isSelected: Boolean,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -44,12 +43,12 @@ fun PlaylistSelectableComposable(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
             SoulImage(
-                coverId = playlist.coverId,
+                cover = playlistWithMusics.cover,
                 size = UiConstants.CoverSize.small,
                 tint = textColor
             )
             Text(
-                text = playlist.name,
+                text = playlistWithMusics.playlist.name,
                 color = textColor,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,

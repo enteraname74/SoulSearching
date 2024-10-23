@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Playlist
 import java.time.LocalDateTime
 import java.util.*
@@ -27,7 +28,7 @@ internal data class RoomPlaylist(
 internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
     playlistId = playlistId,
     name = name,
-    coverId = coverId,
+    cover = Cover.FileCover(fileCoverId = coverId),
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
@@ -40,7 +41,7 @@ internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
 internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     playlistId = playlistId,
     name = name,
-    coverId = coverId,
+    coverId = (cover as? Cover.FileCover)?.fileCoverId,
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,

@@ -15,7 +15,6 @@ import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromP
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +32,6 @@ class MusicBottomSheetDelegateImpl(
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
     private val upsertMusicUseCase: UpsertMusicUseCase,
-    private val playbackManager: PlaybackManager,
 ) : MusicBottomSheetDelegate {
 
     private var setDialogState: (SoulDialog?) -> Unit = {}
@@ -111,7 +109,6 @@ class MusicBottomSheetDelegateImpl(
                     )
                 )
             }
-            playbackManager.updateMusic(music = music)
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -20,7 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun SoulTopBar(
     modifier: Modifier = Modifier,
     title: String? = null,
-    leftAction: TopBarActionSpec,
+    leftAction: TopBarActionSpec?,
     rightAction: TopBarActionSpec? = null,
     isElevated: Boolean = false,
     colors: TopBarColors = SoulTopBarDefaults.colors(),
@@ -33,16 +34,20 @@ fun SoulTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SoulIconButton(
-            icon = leftAction.icon,
-            contentDescription = leftAction.contentDescription,
-            colors = SoulButtonDefaults.colors(
-                contentColor = colors.contentColorWithElevation(isElevated),
-                containerColor = Color.Transparent,
-            ),
-            onClick = leftAction.onClick,
-            enabled = leftAction.isEnabled
-        )
+        if (leftAction != null) {
+            SoulIconButton(
+                icon = leftAction.icon,
+                contentDescription = leftAction.contentDescription,
+                colors = SoulButtonDefaults.colors(
+                    contentColor = colors.contentColorWithElevation(isElevated),
+                    containerColor = Color.Transparent,
+                ),
+                onClick = leftAction.onClick,
+                enabled = leftAction.isEnabled
+            )
+        } else {
+            Spacer(modifier = Modifier.size(TOP_BAR_BUTTON_SIZE))
+        }
         title?.let {
             Text(
                 modifier = Modifier.weight(1f),
@@ -67,7 +72,7 @@ fun SoulTopBar(
                 enabled = rightAction.isEnabled
             )
         } else {
-            Spacer(modifier = Modifier.size(48.dp))
+            Spacer(modifier = Modifier.size(TOP_BAR_BUTTON_SIZE))
         }
     }
 }
@@ -103,3 +108,5 @@ data class TopBarColors(
     fun containerColorWithElevation(isElevated: Boolean): Color =
         if (isElevated) elevatedContainerColor else containerColor
 }
+
+private val TOP_BAR_BUTTON_SIZE: Dp = 48.dp

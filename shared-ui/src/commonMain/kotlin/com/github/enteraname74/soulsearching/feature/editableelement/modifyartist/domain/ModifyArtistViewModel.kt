@@ -1,19 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.ext.toImageBitmap
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
-import com.github.enteraname74.domain.usecase.artist.UpdateArtistUseCase
-import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
+import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -24,9 +23,10 @@ class ModifyArtistViewModel(
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateArtistUseCase: UpdateArtistUseCase,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
-    private val newCover: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
+    private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyArtistNavigationState> = MutableStateFlow(
         ModifyArtistNavigationState.Idle,
     )
@@ -50,7 +50,7 @@ class ModifyArtistViewModel(
             else -> ModifyArtistState.Data(
                 initialArtist = initialArtist,
                 editableElement = EditableElement(
-                    initialCoverId = initialArtist.artist.coverId,
+                    initialCover = initialArtist.cover,
                     newCover = newCover,
                 )
             )
@@ -87,7 +87,7 @@ class ModifyArtistViewModel(
 
     fun setNewCover(imageFile: PlatformFile) {
         screenModelScope.launch {
-            newCover.value = imageFile.readBytes().toImageBitmap()
+            newCover.value = imageFile.readBytes()
         }
     }
 
@@ -102,25 +102,31 @@ class ModifyArtistViewModel(
 
             if (!form.isFormValid()) return@launch
 
-            val coverId =
-                if (state.editableElement.newCover != null) {
-                    val imageCover = ImageCover(
-                        cover = state.editableElement.newCover,
+            loadingManager.startLoading()
+
+            val coverId: UUID? =
+                state.editableElement.newCover?.let { coverData ->
+                    val newCoverId: UUID = UUID.randomUUID()
+                    upsertImageCoverUseCase(
+                        id = newCoverId,
+                        data = coverData,
                     )
-                    upsertImageCoverUseCase(imageCover = imageCover)
-                    imageCover.coverId
-                } else {
-                    state.initialArtist.artist.coverId
-                }
+                    newCoverId
+                } ?: (state.initialArtist.artist.cover as? Cover.FileCover)?.fileCoverId
 
             val newArtistInformation = state.initialArtist.copy(
                 artist = state.initialArtist.artist.copy(
-                    coverId = coverId,
+                    cover = (state.initialArtist.artist.cover as? Cover.FileCover)?.copy(
+                        fileCoverId = coverId
+                    ) ?: coverId?.let { Cover.FileCover(fileCoverId = it) },
                     artistName = form.getArtistName().trim(),
                 )
             )
 
             updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+
+            loadingManager.stopLoading()
+
             _navigationState.value = ModifyArtistNavigationState.Back
         }
     }

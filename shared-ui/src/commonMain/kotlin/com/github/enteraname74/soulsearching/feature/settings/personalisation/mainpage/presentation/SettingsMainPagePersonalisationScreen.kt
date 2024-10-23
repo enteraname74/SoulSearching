@@ -4,20 +4,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
 /**
  * Represent the view of the main page personalisation screen in the settings.
@@ -72,7 +70,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
             )
         ) {
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.showQuickAccess,
                     toggleAction = { screenModel.toggleQuickAccessVisibility() },
                     isChecked = elementsVisibility.isQuickAccessShown,
@@ -83,7 +81,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
                 )
             }
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.showPlaylists,
                     toggleAction = { screenModel.togglePlaylistsVisibility() },
                     isChecked = elementsVisibility.arePlaylistsShown,
@@ -94,7 +92,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
                 )
             }
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.showAlbums,
                     toggleAction = { screenModel.toggleAlbumsVisibility() },
                     isChecked = elementsVisibility.areAlbumsShown,
@@ -105,7 +103,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
                 )
             }
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.showArtists,
                     toggleAction = { screenModel.toggleArtistsVisibility() },
                     isChecked = elementsVisibility.areArtistsShown,
@@ -116,7 +114,7 @@ class SettingsMainPagePersonalisationScreen: Screen {
                 )
             }
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.showMusicsByFolders,
                     toggleAction = { screenModel.toggleMusicFoldersVisibility() },
                     isChecked = elementsVisibility.areMusicFoldersShown,

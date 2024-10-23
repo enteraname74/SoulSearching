@@ -7,8 +7,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.MonthMusics
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -55,7 +53,7 @@ fun MusicMonthsHorizontalList(
                         contentType = { MUSIC_MONTH_CONTENT_TYPE }
                     ) { element ->
                         BigPreviewComposable(
-                            coverId = element.coverId,
+                            cover = element.cover,
                             title = element.month,
                             text = strings.musics(total = element.allMusicsSize),
                             onClick = {

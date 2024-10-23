@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.model
 
+import com.github.enteraname74.domain.ext.coverFromSongs
 import java.util.UUID
 
 /**
@@ -8,5 +9,6 @@ import java.util.UUID
 data class MusicFolderList(
     val path: String = "",
     val musics: List<Music> = emptyList(),
-    val coverId: UUID? = null
-)
+) {
+    val cover: Cover? = musics.coverFromSongs()
+}

@@ -17,6 +17,10 @@ class PlaylistRepositoryImpl(
         playlist = playlist
     )
 
+    override suspend fun upsertAll(playlists: List<Playlist>) {
+        playlistDataSource.upsertAll(playlists)
+    }
+
     override suspend fun delete(playlist: Playlist) = playlistDataSource.delete(
         playlist = playlist
     )

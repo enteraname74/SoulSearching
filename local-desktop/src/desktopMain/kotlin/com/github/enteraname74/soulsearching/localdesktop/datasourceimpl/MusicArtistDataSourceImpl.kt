@@ -12,6 +12,12 @@ internal class MusicArtistDataSourceImpl(
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) =
         musicArtistDao.upsertMusicIntoArtist(musicArtist = musicArtist)
 
+    override suspend fun upsertAll(musicArtists: List<MusicArtist>) {
+        musicArtistDao.upsertAll(
+            musicArtists = musicArtists,
+        )
+    }
+
     override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
         musicArtistDao.updateArtistOfMusic(
             musicId = musicId,

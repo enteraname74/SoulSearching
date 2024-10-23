@@ -5,6 +5,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,6 +22,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 fun PageHeader(
     playlistDetail: PlaylistDetail,
     onSubTitleClicked: () -> Unit = {},
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
 ) {
     if (!PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
         Row(
@@ -30,9 +32,10 @@ fun PageHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                coverId = playlistDetail.coverId,
+                cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
-                roundedPercent = 5
+                roundedPercent = 5,
+                onSuccess = onCoverLoaded,
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
@@ -71,9 +74,10 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
-                coverId = playlistDetail.coverId,
+                cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.veryHuge,
-                roundedPercent = 5
+                roundedPercent = 5,
+                onSuccess = onCoverLoaded,
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),

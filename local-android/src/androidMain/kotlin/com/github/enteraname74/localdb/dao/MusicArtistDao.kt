@@ -12,6 +12,9 @@ internal interface MusicArtistDao {
     @Upsert
     suspend fun upsertMusicIntoArtist(roomMusicArtist: RoomMusicArtist)
 
+    @Upsert
+    suspend fun upsertAll(roomMusicArtists: List<RoomMusicArtist>)
+
     @Query("UPDATE RoomMusicArtist SET artistId = :newArtistId WHERE musicId = :musicId")
     suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID)
 

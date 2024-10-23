@@ -16,7 +16,6 @@ class GetMusicFolderListUseCase(
             MusicFolderList(
                 path = path,
                 musics = musics,
-                coverId = musics.firstOrNull { it.coverId != null }?.coverId
             )
         }
 }

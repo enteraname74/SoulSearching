@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.statistics.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.ext.getFirstsOrMax
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
@@ -9,7 +10,6 @@ import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSorte
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
-import com.github.enteraname74.soulsearching.feature.player.ext.getFirstsOrMax
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

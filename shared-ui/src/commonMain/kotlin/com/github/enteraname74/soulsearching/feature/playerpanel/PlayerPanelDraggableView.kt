@@ -13,13 +13,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ import kotlin.math.roundToInt
 fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
-    playerState: PlayerState,
+    playerState: PlayerViewState.Data,
     onSelectedMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
     secondaryColor: Color,

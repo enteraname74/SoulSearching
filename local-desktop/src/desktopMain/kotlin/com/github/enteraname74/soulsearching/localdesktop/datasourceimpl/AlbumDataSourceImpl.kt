@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.localdesktop.dao.AlbumDao
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.*
 
 internal class AlbumDataSourceImpl(
@@ -15,9 +16,22 @@ internal class AlbumDataSourceImpl(
         albumDao.upsert(album = album)
     }
 
+    override suspend fun upsertAll(albums: List<Album>) {
+        albumDao.upsertAll(
+            albums = albums,
+        )
+    }
+
     override suspend fun delete(album: Album) {
         albumDao.delete(album = album)
     }
+
+    override suspend fun deleteAll(ids: List<UUID>) {
+        albumDao.deleteAll(ids = ids)
+    }
+
+    override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
+        albumDao.getAlbumsWithMusicsOfArtist(artistId)
 
     override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = albumDao.getAlbumsOfArtist(
         artistId = artistId
@@ -38,5 +52,7 @@ internal class AlbumDataSourceImpl(
         )
 
     override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> =
-        albumDao.getAllAlbumsWithArtist()
+        albumDao.getAllAlbumsWithMusics().map { list ->
+            list.map { it.toAlbumWithArtist() }
+        }
 }

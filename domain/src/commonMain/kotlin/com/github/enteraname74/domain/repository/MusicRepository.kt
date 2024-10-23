@@ -11,10 +11,14 @@ interface MusicRepository {
      */
     suspend fun upsert(music: Music)
 
+    suspend fun upsertAll(musics: List<Music>)
+
     /**
      * Delete a music.
      */
     suspend fun delete(music: Music)
+
+    suspend fun deleteAll(ids: List<UUID>)
 
     /**
      * Remove all songs of an Album.

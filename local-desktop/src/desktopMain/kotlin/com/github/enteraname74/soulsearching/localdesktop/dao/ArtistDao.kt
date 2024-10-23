@@ -2,23 +2,24 @@ package com.github.enteraname74.soulsearching.localdesktop.dao
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
-import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toArtist
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.*
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.nbPlayed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
 import java.util.*
 
 
@@ -31,7 +32,7 @@ internal class ArtistDao(
             ArtistTable.upsert {
                 it[id] = artist.artistId
                 it[artistName] = artist.artistName
-                it[coverId] = artist.coverId?.toString()
+                it[coverId] = (artist.cover as? Cover.FileCover)?.fileCoverId
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
@@ -39,9 +40,28 @@ internal class ArtistDao(
         }
     }
 
+    suspend fun upsertAll(artists: List<Artist>) {
+        flowTransactionOn {
+            ArtistTable.batchUpsert(artists) {
+                this[id] = it.artistId
+                this[artistName] = it.artistName
+                this[coverId] = (it.cover as? Cover.FileCover)?.fileCoverId
+                this[addedDate] = it.addedDate
+                this[nbPlayed] = it.nbPlayed
+                this[isInQuickAccess] = it.isInQuickAccess
+            }
+        }
+    }
+
     suspend fun delete(artist: Artist) {
         flowTransactionOn {
             ArtistTable.deleteWhere { id eq artist.artistId }
+        }
+    }
+
+    suspend fun deleteAll(artistsIds: List<UUID>) {
+        flowTransactionOn {
+            ArtistTable.deleteWhere { Op.build { id inList artistsIds } }
         }
     }
 

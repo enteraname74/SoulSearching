@@ -26,3 +26,8 @@ include(":local-desktop")
 include("core-ui")
 include("repository")
 include("shared-di")
+include("features")
+include("features:playback")
+findProject(":features:playback")?.name = "playback"
+include("features:filemanager")
+findProject(":features:filemanager")?.name = "filemanager"

@@ -12,16 +12,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.combinedClickableWithRightClick
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import java.util.*
 
 @Composable
 fun BigPreviewComposable(
     modifier: Modifier = Modifier,
-    coverId: UUID?,
+    cover: Cover?,
     title: String,
     text: String = "",
     onClick: () -> Unit,
@@ -41,7 +41,7 @@ fun BigPreviewComposable(
             )
     ) {
         SoulImage(
-            coverId = coverId,
+            cover = cover,
             size = imageSize,
             roundedPercent = roundedPercent
         )

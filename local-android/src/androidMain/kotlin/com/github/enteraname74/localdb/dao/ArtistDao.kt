@@ -15,8 +15,14 @@ internal interface ArtistDao {
     @Upsert
     suspend fun upsert(roomArtist: RoomArtist)
 
+    @Upsert
+    suspend fun upsertAll(roomArtists: List<RoomArtist>)
+
     @Delete
     suspend fun delete(roomArtist: RoomArtist)
+
+    @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
+    suspend fun deleteAll(ids: List<UUID>)
 
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>

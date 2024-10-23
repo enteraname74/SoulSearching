@@ -1,5 +1,13 @@
 package com.github.enteraname74.soulsearching.domain
 
+import com.github.enteraname74.domain.util.AppEnvironment
+
 actual object AppVersion {
-    actual val versionName = "0.8.1"
+    private val suffix: String = if (AppEnvironment.IS_IN_DEVELOPMENT) {
+        "-dev"
+    } else {
+        ""
+    }
+
+    actual val versionName = "0.9.0$suffix"
 }

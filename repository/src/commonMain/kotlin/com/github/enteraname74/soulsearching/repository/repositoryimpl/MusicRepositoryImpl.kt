@@ -16,8 +16,16 @@ class MusicRepositoryImpl(
         musicDataSource.upsert(music = music)
     }
 
+    override suspend fun upsertAll(musics: List<Music>) {
+        musicDataSource.upsertAll(musics = musics)
+    }
+
     override suspend fun delete(music: Music) {
         musicDataSource.delete(music = music)
+    }
+
+    override suspend fun deleteAll(ids: List<UUID>) {
+        musicDataSource.deleteAll(ids = ids)
     }
 
     override suspend fun deleteAllMusicOfAlbum(album: String, artist: String) =

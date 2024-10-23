@@ -16,15 +16,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import coil3.annotation.ExperimentalCoilApi
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.feature.appinit.MissingPermissionsComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.model.playback.PlayerService
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.ui.theme.SoulSearchingTheme
 import io.github.vinceglb.filekit.core.FileKit
+import kotlinx.coroutines.runBlocking
 import org.jaudiotagger.tag.TagOptionSingleton
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
@@ -33,7 +34,7 @@ import org.koin.core.context.unloadKoinModules
 class MainActivity : AppCompatActivity() {
     // Main page view models
     private val mainPageViewModel: MainPageViewModel by inject()
-    private val mainActivityViewModel: MainActivityViewModel by inject()
+    private val applicationViewModel: ApplicationViewModel by inject()
     private val playbackManager: PlaybackManager by inject()
 
 
@@ -54,14 +55,15 @@ class MainActivity : AppCompatActivity() {
     private fun initializeBroadcastReceive() {
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(
-                serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE),
+                serviceReceiver, IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE),
                 RECEIVER_NOT_EXPORTED
             )
         } else {
-            registerReceiver(serviceReceiver, IntentFilter(PlayerService.RESTART_SERVICE))
+            registerReceiver(serviceReceiver, IntentFilter(com.github.enteraname74.soulsearching.features.playback.PlayerService.RESTART_SERVICE))
         }
     }
 
+    @OptIn(ExperimentalCoilApi::class)
     @SuppressLint("CoroutineCreationDuringComposition", "UnspecifiedRegisterReceiverFlag")
     override
     fun onCreate(savedInstanceState: Bundle?) {
@@ -76,29 +78,29 @@ class MainActivity : AppCompatActivity() {
         FileKit.init(this)
 
         setContent {
-            mainActivityViewModel.isReadPermissionGranted =
+            applicationViewModel.isReadPermissionGranted =
                 SoulSearchingContext.checkIfReadPermissionGranted()
-            mainActivityViewModel.isPostNotificationGranted =
+            applicationViewModel.isPostNotificationGranted =
                 SoulSearchingContext.checkIfPostNotificationGranted()
 
             SoulSearchingTheme {
                 val readPermissionLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isReadPermissionGranted = isGranted
+                    applicationViewModel.isReadPermissionGranted = isGranted
                 }
 
                 val postNotificationLauncher = permissionLauncher { isGranted ->
-                    mainActivityViewModel.isPostNotificationGranted = isGranted
+                    applicationViewModel.isPostNotificationGranted = isGranted
                 }
 
                 if (
-                    !mainActivityViewModel.isReadPermissionGranted ||
-                    !mainActivityViewModel.isPostNotificationGranted
+                    !applicationViewModel.isReadPermissionGranted ||
+                    !applicationViewModel.isPostNotificationGranted
                 ) {
                     MissingPermissionsComposable()
                     SideEffect {
                         checkAndAskMissingPermissions(
-                            isReadPermissionGranted = mainActivityViewModel.isReadPermissionGranted,
-                            isPostNotificationGranted = mainActivityViewModel.isPostNotificationGranted,
+                            isReadPermissionGranted = applicationViewModel.isReadPermissionGranted,
+                            isPostNotificationGranted = applicationViewModel.isPostNotificationGranted,
                             readPermissionLauncher = readPermissionLauncher,
                             postNotificationLauncher = postNotificationLauncher,
                         )
@@ -161,7 +163,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            playbackManager.stopPlayback(resetPlayedList = false)
+            runBlocking {
+                playbackManager.stopPlayback(resetPlayedList = false)
+            }
             unloadKoinModules(appModule)
             loadKoinModules(appModule)
         }

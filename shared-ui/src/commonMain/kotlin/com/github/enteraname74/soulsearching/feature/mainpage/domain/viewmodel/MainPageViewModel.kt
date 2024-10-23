@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
@@ -22,7 +23,6 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
-import com.github.enteraname74.soulsearching.domain.model.MusicFetcher
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -31,10 +31,13 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.io.File
+import java.util.*
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -45,6 +48,7 @@ class MainPageViewModel(
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val isCoverUsedUseCase: IsCoverUsedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
@@ -53,6 +57,7 @@ class MainPageViewModel(
     private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
+    private val coverFileManager: CoverFileManager,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
@@ -262,6 +267,15 @@ class MainPageViewModel(
                 }
             }
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val allCoverIds: List<UUID> = coverFileManager.getAllCoverIds()
+            allCoverIds.forEach { coverId ->
+                if (!isCoverUsedUseCase(coverId = coverId)) {
+                    coverFileManager.deleteFromId(id = coverId)
+                }
+            }
+        }
     }
 
     fun setCurrentPage(page: ElementEnum) {
@@ -289,8 +303,8 @@ class MainPageViewModel(
             var deleteCount = 0
             for (music in allMusicsState.value.musics) {
                 if (!File(music.path).exists()) {
-                    playbackManager.removeSongFromPlayedPlaylist(
-                        music.musicId
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = listOf(music.musicId)
                     )
                     deleteMusicUseCase(music = music)
                     deleteCount += 1

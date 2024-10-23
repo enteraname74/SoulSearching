@@ -13,8 +13,14 @@ internal interface MusicDao {
     @Upsert
     suspend fun upsert(roomMusic : RoomMusic)
 
+    @Upsert
+    suspend fun upsertAll(roomMusics : List<RoomMusic>)
+
     @Delete
     suspend fun delete(roomMusic : RoomMusic)
+
+    @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
+    suspend fun deleteAll(ids: List<UUID>)
 
     @Query("DELETE FROM RoomMusic WHERE album = :album AND artist = :artist")
     suspend fun deleteMusicFromAlbum(album : String, artist : String)

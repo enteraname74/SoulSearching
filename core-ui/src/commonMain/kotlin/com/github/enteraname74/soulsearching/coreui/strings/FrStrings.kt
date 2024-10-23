@@ -112,6 +112,14 @@ object FrStrings : Strings {
     override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
 
     override val settings = "Paramètres"
+    override val advancedSettingsTitle = "Paramètres avancées"
+    override val advancedSettingsText = "Gérer les images utilisées dans l'application"
+    override val reloadCoversTitle = "Recharger les images"
+    override val reloadCoversText = "Recharger les images depuis les informations des fichiers"
+    override val reloadMusicsCovers = "Recharger les images des musiques"
+    override val deletePlaylistsCovers = "Supprimer les images des playlists"
+    override val reloadAlbumsCovers = "Recharger les images des albums"
+    override val reloadArtistsCovers = "Recharger les images des artistes"
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
     override val modifyMusicFileTitle = "Modifier les fichiers sur l'appareil"
@@ -175,6 +183,10 @@ object FrStrings : Strings {
 
     override val noNewMusics = "Aucune nouvelle musique à ajouter !"
     override val savingNewMusics = "Sauvegarde des nouvelles musiques…"
+    override val songsSaved = "Musiques sauvegardées !"
+    override val searchForNewSongs = "Rechercher de nouvelles musiques"
+
+    override val appMigration = "Mise à jour des données de l'application"
 
     override fun musics(total: Int): String {
         return when (total) {

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
@@ -12,7 +13,7 @@ import java.util.*
  */
 internal object ArtistTable: UUIDTable() {
     val artistName = varchar("artistName", 128)
-    val coverId = varchar("coverId", 128).nullable()
+    val coverId = uuid("coverId").nullable()
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
@@ -26,7 +27,11 @@ internal fun ResultRow.toArtist(): Artist? =
         Artist(
             artistId = this[ArtistTable.id].value,
             artistName = this[ArtistTable.artistName],
-            coverId = this[ArtistTable.coverId]?.let { UUID.fromString(it) },
+            cover = this[ArtistTable.coverId]?.let { coverId ->
+                Cover.FileCover(
+                    fileCoverId = coverId,
+                )
+            },
             addedDate = this[ArtistTable.addedDate],
             nbPlayed = this[ArtistTable.nbPlayed],
             isInQuickAccess = this[ArtistTable.isInQuickAccess]

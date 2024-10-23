@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
@@ -21,11 +24,13 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -35,6 +40,7 @@ fun PlaylistRowView(
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
 ) {
@@ -48,6 +54,7 @@ fun PlaylistRowView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     } else {
         MediumView(
@@ -58,6 +65,7 @@ fun PlaylistRowView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     }
 }
@@ -68,6 +76,7 @@ private fun LargeView(
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     optionalContent: @Composable () -> Unit = {},
@@ -96,6 +105,7 @@ private fun LargeView(
                 playlistDetail = playlistDetail,
                 playlistDetailListener = playlistDetailListener,
                 optionalContent = optionalContent,
+                onCoverLoaded = onCoverLoaded,
             )
         }
     }
@@ -108,6 +118,7 @@ private fun MediumView(
     navigateBack: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
@@ -124,6 +135,7 @@ private fun MediumView(
             playlistDetail = playlistDetail,
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
         )
     }
 }
@@ -136,6 +148,7 @@ private fun Content(
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
     playbackManager: PlaybackManager = injectElement(),
@@ -143,6 +156,7 @@ private fun Content(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     Row(
         modifier = modifier,
@@ -154,7 +168,8 @@ private fun Content(
         ) {
             PageHeader(
                 playlistDetail = playlistDetail,
-                onSubTitleClicked = playlistDetailListener::onSubtitleClicked
+                onSubTitleClicked = playlistDetailListener::onSubtitleClicked,
+                onCoverLoaded = onCoverLoaded,
             )
             if (canShowVerticalInformation) {
                 PlaylistPanel(
@@ -203,19 +218,20 @@ private fun Content(
                         music = music,
                         onClick = {
                             coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                            }.invokeOnCompletion {
                                 playlistDetailListener.onUpdateNbPlayed()
-                                playbackManager.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    musicList = playlistDetail.musics,
-                                    playlistId = playlistDetail.id,
-                                    isMainPlaylist = false,
-                                )
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    playbackManager.setCurrentPlaylistAndMusic(
+                                        music = music,
+                                        musicList = playlistDetail.musics,
+                                        playlistId = playlistDetail.id,
+                                        isMainPlaylist = false,
+                                    )
+                                }
+                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                             }
                         },
                         onLongClick = { onShowMusicBottomSheet(music) },
-                        isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
+                        isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                     )
                 }
                 item {

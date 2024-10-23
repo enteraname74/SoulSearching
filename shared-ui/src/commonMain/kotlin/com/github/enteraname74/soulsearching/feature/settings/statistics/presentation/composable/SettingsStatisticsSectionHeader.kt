@@ -41,7 +41,7 @@ fun SettingsStatisticsSectionHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                coverId = element.coverId,
+                cover = element.cover,
                 size = if (windowSize == WindowSize.Small) {
                     UiConstants.ImageSize.huge
                 } else {

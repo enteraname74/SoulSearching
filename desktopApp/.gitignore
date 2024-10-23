@@ -1,7 +1,7 @@
 /build
 .gradle
 
-soulSearchingDatabase.db
+*.db
 
 # Flatpak
 build-dir

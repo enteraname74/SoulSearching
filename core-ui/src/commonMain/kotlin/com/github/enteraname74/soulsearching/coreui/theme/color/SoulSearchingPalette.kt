@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 /**

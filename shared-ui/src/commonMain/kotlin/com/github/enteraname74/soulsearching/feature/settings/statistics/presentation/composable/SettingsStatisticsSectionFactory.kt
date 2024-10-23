@@ -56,7 +56,7 @@ object SettingsStatisticsSectionFactory {
                 ),
                 title = element.title,
                 text = element.text(),
-                coverId = element.coverId,
+                cover = element.cover,
                 onClick = null,
                 onLongClick = null,
             )

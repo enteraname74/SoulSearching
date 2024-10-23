@@ -10,13 +10,13 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.composable.SettingsThemeItem
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 import com.github.enteraname74.soulsearching.theme.DefaultThemeSettings
 
 class SettingsThemeSelectionScreen: Screen {
@@ -49,7 +49,7 @@ class SettingsThemeSelectionScreen: Screen {
             title = strings.themeSelectionTitle
         ) {
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.forceLightThemeTitle,
                     isChecked = defaultThemeSettings.forceLightTheme,
                     toggleAction = {
@@ -62,7 +62,7 @@ class SettingsThemeSelectionScreen: Screen {
                 )
             }
             item {
-                SettingsSwitchElement(
+                SoulMenuSwitch(
                     title = strings.forceDarkThemeTitle,
                     isChecked = defaultThemeSettings.forceDarkTheme,
                     toggleAction = {

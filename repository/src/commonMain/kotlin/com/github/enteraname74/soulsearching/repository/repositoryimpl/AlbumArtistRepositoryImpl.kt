@@ -11,6 +11,10 @@ class AlbumArtistRepositoryImpl(
     override suspend fun upsert(albumArtist: AlbumArtist) =
         albumArtistDataSource.upsert(albumArtist = albumArtist)
 
+    override suspend fun upsertAll(albumArtists: List<AlbumArtist>) {
+        albumArtistDataSource.upsertAll(albumArtists)
+    }
+
     override suspend fun update(albumId: UUID, newArtistId: UUID) {
         albumArtistDataSource.update(
             albumId = albumId,

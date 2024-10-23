@@ -10,6 +10,8 @@ interface MusicArtistRepository {
      */
     suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist)
 
+    suspend fun upsertAll(musicArtists: List<MusicArtist>)
+
     /**
      * Change the Artist of a Music.
      */

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 @Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class)
 class PlayerViewManager {
+
     val playerDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
