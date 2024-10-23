@@ -95,7 +95,13 @@ internal class PlaybackListManager(
                 playbackCallback.onlyLoadMusic(music = music)
             } else {
                 // Finally, we add the new next music :
-                updatedPlayedList.add(currentMusicIndex + 1, music)
+
+                val currentMusicIndexInUpdatedPlaylist = updatedPlayedList
+                    .indexOf(
+                        updatedPlayedList.find { it.musicId == currentMusic.musicId }
+                    )
+
+                updatedPlayedList.add(currentMusicIndexInUpdatedPlaylist + 1, music)
                 _state.value = this.copy(
                     playedList = updatedPlayedList,
                 )
