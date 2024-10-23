@@ -17,19 +17,3 @@ internal data class RoomAlbumWithArtist(
     )
     val roomArtist: RoomArtist? = RoomArtist()
 )
-
-/**
- * Converts a RoomAlbumWithArtist to an AlbumWithArtist.
- */
-internal fun RoomAlbumWithArtist.toAlbumWithArtist(): AlbumWithArtist = AlbumWithArtist(
-    album = roomAlbum.toAlbum(),
-    artist = roomArtist?.toArtist()
-)
-
-/**
- * Converts an AlbumWithArtist to a RoomAlbumWithArtist.
- */
-internal fun AlbumWithArtist.toRoomAlbumWithArtist(): RoomAlbumWithArtist = RoomAlbumWithArtist(
-    roomAlbum = album.toRoomAlbum(),
-    roomArtist = artist?.toRoomArtist()
-)

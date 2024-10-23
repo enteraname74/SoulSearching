@@ -1,21 +1,14 @@
 package com.github.enteraname74.soulsearching
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.ModifierLocal
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.CrossfadeTransition
-import com.github.enteraname74.domain.model.getFromCoverId
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.composables.navigation.NavigationPanel
@@ -23,6 +16,8 @@ import com.github.enteraname74.soulsearching.composables.navigation.NavigationRo
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpScaffold
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingScaffold
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
@@ -33,123 +28,111 @@ import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.FetchingMusicsComposable
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainActivityViewModel
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ApplicationState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.migration.MigrationScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun SoulSearchingApplication(
     settings: SoulSearchingSettings = injectElement(),
-    playbackManager: PlaybackManager = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
     feedbackPopUpManager: FeedbackPopUpManager = injectElement(),
-    imageCoverRetriever: ImageCoverRetriever = injectElement<ImageCoverRetriever>(),
+    loadingManager: LoadingManager = injectElement(),
+    playbackManager: PlaybackManager = injectElement(),
 ) {
     val mainPageViewModel = injectElement<MainPageViewModel>()
-    val mainActivityViewModel = injectElement<MainActivityViewModel>()
+    val applicationViewModel = injectElement<ApplicationViewModel>()
+
+    val state: ApplicationState by applicationViewModel.state.collectAsState()
 
     val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
     val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-    val allImages by imageCoverRetriever.allCovers.collectAsState()
+    var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
-    playbackManager.retrieveCoverMethod = allImages::getFromCoverId
+    var hasPlaybackBeenInitialized: Boolean by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    if (allImages.isNotEmpty()) {
-        LaunchedEffect("Covers check") {
-            CoroutineScope(Dispatchers.IO).launch {
-                playbackManager.currentMusic?.let { currentMusic ->
-                    playbackManager.defineCoverAndPaletteFromCoverId(
-                        coverId = currentMusic.coverId
-                    )
-                    playbackManager.update()
-                }
-            }
+    LaunchedEffect(hasPlaybackBeenInitialized) {
+        if (!hasPlaybackBeenInitialized) {
+            playbackManager.initFromSavedData()
+            hasPlaybackBeenInitialized = true
         }
     }
 
-    var generalNavigator: Navigator? by remember { mutableStateOf(null) }
-
     SoulSearchingAppTheme {
 
-        if (!mainActivityViewModel.hasMusicsBeenFetched) {
-            FetchingMusicsComposable(
-                finishAddingMusicsAction = {
-                    settings.set(
-                        SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
-                        true
-                    )
-                    mainActivityViewModel.hasMusicsBeenFetched = true
-                },
-                mainPageViewModel = mainPageViewModel
-            )
-            return@SoulSearchingAppTheme
-        }
-
-        FeedbackPopUpScaffold(
-            feedbackPopUpManager = feedbackPopUpManager,
-        ) {
-            Row {
-                val windowSize = rememberWindowSize()
-
-                if (windowSize == WindowSize.Large) {
-                    NavigationPanel(
-                        rows = navigationRows(
-                            generalNavigator = generalNavigator,
-                            setCurrentPage = mainPageViewModel::setCurrentPage,
-                            tabs = tabs,
-                            currentPage = currentElementPage,
+        when (state) {
+            ApplicationState.AppMigration -> {
+                MigrationScreen()
+            }
+            ApplicationState.FetchingSongs -> {
+                FetchingMusicsComposable(
+                    finishAddingMusicsAction = {
+                        settings.set(
+                            SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
+                            true
                         )
-                    )
-                }
+                    },
+                    mainPageViewModel = mainPageViewModel
+                )
+            }
 
-                PlayerViewScaffold(
-                    generalNavigator = generalNavigator,
+            ApplicationState.Data -> {
+                FeedbackPopUpScaffold(
+                    feedbackPopUpManager = feedbackPopUpManager,
                 ) {
-                    var hasLastPlayedMusicsBeenFetched by rememberSaveable {
-                        mutableStateOf(false)
-                    }
+                    LoadingScaffold(
+                        loadingManager = loadingManager
+                    ) { isLoading ->
+                        Row {
+                            val windowSize = rememberWindowSize()
 
-                    if (!hasLastPlayedMusicsBeenFetched) {
-                        LaunchedEffect(key1 = "FETCH_LAST_PLAYED_LIST") {
-                            val playerSavedMusics = playbackManager.getSavedPlayedList()
-                            if (playerSavedMusics.isNotEmpty()) {
-                                playbackManager.initializePlayerFromSavedList(playerSavedMusics)
-                                playerViewManager.animateTo(
-                                    newState = BottomSheetStates.MINIMISED,
+                            if (windowSize == WindowSize.Large) {
+                                NavigationPanel(
+                                    rows = navigationRows(
+                                        generalNavigator = generalNavigator,
+                                        setCurrentPage = mainPageViewModel::setCurrentPage,
+                                        tabs = tabs,
+                                        currentPage = currentElementPage,
+                                    )
                                 )
                             }
-                            hasLastPlayedMusicsBeenFetched = true
-                        }
-                    }
 
-                    Box(
-                        modifier = Modifier
-                            .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-                    ) {
-                        Navigator(
-                            screen = MainPageScreen()
-                        ) { navigator ->
-                            generalNavigator = navigator
+                            PlayerViewScaffold(
+                                generalNavigator = generalNavigator,
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
+                                ) {
+                                    Navigator(
+                                        screen = MainPageScreen(),
+                                        onBackPressed = {
+                                            !isLoading
+                                        }
+                                    ) { navigator ->
+                                        generalNavigator = navigator
 
-                            CrossfadeTransition(
-                                navigator = navigator,
-                                animationSpec = tween(UiConstants.AnimationDuration.normal)
-                            ) { screen ->
-                                screen.Content()
+                                        CrossfadeTransition(
+                                            navigator = navigator,
+                                            animationSpec = tween(UiConstants.AnimationDuration.normal)
+                                        ) { screen ->
+                                            screen.Content()
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-
                 }
             }
         }

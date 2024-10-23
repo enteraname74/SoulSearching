@@ -16,18 +16,7 @@ internal data class RoomPlaylistWithMusics(
         associateBy = Junction(RoomMusicPlaylist::class)
     )
     val roomMusics: List<RoomMusic> = emptyList()
-) {
-
-    /**
-     * Converts a RoomPlaylistWithMusics to a RoomPlaylistWithMusicsNumber.
-     */
-    fun toPlaylistWithMusicsNumber(): RoomPlaylistWithMusicsNumber {
-        return RoomPlaylistWithMusicsNumber(
-            roomPlaylist = roomPlaylist,
-            musicsNumber = roomMusics.filter { !it.isHidden }.size
-        )
-    }
-}
+)
 
 /**
  * Converts a RoomPlaylistWithMusics to a PlaylistWithMusics.
@@ -36,12 +25,3 @@ internal fun RoomPlaylistWithMusics.toPlaylistWIthMusics(): PlaylistWithMusics =
     playlist = roomPlaylist.toPlaylist(),
     musics = roomMusics.map { it.toMusic() }
 )
-
-/**
- * Converts a PlaylistWithMusics to a RoomPlaylistWithMusics.
- */
-internal fun PlaylistWithMusics.toRoomPlaylistWithMusics(): RoomPlaylistWithMusics =
-    RoomPlaylistWithMusics(
-        roomPlaylist = playlist.toRoomPlaylist(),
-        roomMusics = musics.map { it.toRoomMusic() }
-    )

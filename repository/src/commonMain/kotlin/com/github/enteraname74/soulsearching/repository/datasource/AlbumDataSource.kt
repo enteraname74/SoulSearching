@@ -16,15 +16,21 @@ interface AlbumDataSource {
      */
     suspend fun upsert(album: Album)
 
+    suspend fun upsertAll(albums: List<Album>)
+
     /**
      * Deletes an Album.
      */
     suspend fun delete(album: Album)
 
+    suspend fun deleteAll(ids: List<UUID>)
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */
     fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>>
+
+    fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>>
 
     /**
      * Retrieves an Album from its id.

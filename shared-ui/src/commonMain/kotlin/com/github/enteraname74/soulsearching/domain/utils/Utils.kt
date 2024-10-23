@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.domain.utils
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 /**
  * All kind of different methods.
  */

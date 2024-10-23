@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.album.GetAlbumsOfArtistsUseCase
+import com.github.enteraname74.domain.usecase.album.GetAlbumsWithMusicsOfArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.UpdateArtistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
@@ -26,7 +26,7 @@ import java.util.*
 class SelectedArtistViewModel(
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
-    private val getAlbumsOfArtistsUseCase: GetAlbumsOfArtistsUseCase,
+    private val getAlbumsWithMusicsOfArtistUseCase: GetAlbumsWithMusicsOfArtistUseCase,
     private val updateArtistNbPlayedUseCase: UpdateArtistNbPlayedUseCase,
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
@@ -51,7 +51,7 @@ class SelectedArtistViewModel(
             flowOf(SelectedArtistState.Loading)
         } else {
             combine(
-                getAlbumsOfArtistsUseCase(artistId = artistId),
+                getAlbumsWithMusicsOfArtistUseCase(artistId = artistId),
                 getArtistWithMusicsUseCase(artistId = artistId),
             ) { albums, artistWithMusics ->
                 when {

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.optionalClickable
@@ -24,7 +25,7 @@ import java.util.*
 fun LinearPreviewComposable(
     title: String,
     text: String,
-    coverId: UUID?,
+    cover: Cover?,
     onLongClick: (() -> Unit)?,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -46,7 +47,7 @@ fun LinearPreviewComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SoulImage(
-                coverId = coverId,
+                cover = cover,
                 size = UiConstants.CoverSize.small
             )
             Column(

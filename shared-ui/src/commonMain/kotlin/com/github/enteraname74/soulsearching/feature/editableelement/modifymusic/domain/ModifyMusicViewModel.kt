@@ -1,21 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.ext.toImageBitmap
-import com.github.enteraname74.domain.model.ImageCover
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
-import com.github.enteraname74.domain.usecase.imagecover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpdateMusicUseCase
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -28,9 +28,10 @@ class ModifyMusicViewModel(
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
+    private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
-    private val newCover: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
+    private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyMusicNavigationState> = MutableStateFlow(
         ModifyMusicNavigationState.Idle
     )
@@ -54,7 +55,7 @@ class ModifyMusicViewModel(
             else -> ModifyMusicState.Data(
                 initialMusic = initialMusic,
                 editableElement = EditableElement(
-                    initialCoverId = initialMusic.coverId,
+                    initialCover = initialMusic.cover,
                     newCover = newCover
                 )
             )
@@ -99,7 +100,7 @@ class ModifyMusicViewModel(
      */
     fun setNewCover(imageFile: PlatformFile) {
         screenModelScope.launch {
-            newCover.value = imageFile.readBytes().toImageBitmap()
+            newCover.value = imageFile.readBytes()
         }
     }
 
@@ -114,18 +115,21 @@ class ModifyMusicViewModel(
 
             if (!form.isFormValid()) return@launch
 
-            val coverId = if (state.editableElement.newCover != null) {
-                val imageCover = ImageCover(
-                    cover = state.editableElement.newCover
+            loadingManager.startLoading()
+
+            val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
+                val newCoverId: UUID = UUID.randomUUID()
+                upsertImageCoverUseCase(
+                    id = newCoverId,
+                    data = coverData,
                 )
-                upsertImageCoverUseCase(imageCover = imageCover)
-                imageCover.coverId
-            } else {
-                state.initialMusic.coverId
-            }
+                newCoverId
+            } ?: (state.initialMusic.cover as? Cover.FileCover)?.fileCoverId
 
             val newMusicInformation = state.initialMusic.copy(
-                coverId = coverId,
+                cover = (state.initialMusic.cover as? Cover.FileCover)?.copy(
+                    fileCoverId = coverId,
+                ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
                 artist = form.getArtistName().trim(),
@@ -137,14 +141,16 @@ class ModifyMusicViewModel(
             )
 
             playbackManager.updateMusic(newMusicInformation)
-            playbackManager.currentMusic?.let {
-                if (it.musicId.compareTo(newMusicInformation.musicId) == 0
-                    && state.editableElement.newCover != null) {
-                    playbackManager.updateCover(
-                        cover = state.editableElement.newCover
-                    )
-                }
+            if (
+                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = newMusicInformation.musicId)
+                && state.editableElement.newCover != null
+            ) {
+                playbackManager.updateCover(
+                    cover = state.editableElement.newCover.toImageBitmap()
+                )
             }
+
+            loadingManager.stopLoading()
 
             _navigationState.value = ModifyMusicNavigationState.Back
         }

@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.composables
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,6 +7,8 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +22,6 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicItemComposable(
     modifier: Modifier = Modifier,
@@ -49,7 +49,7 @@ fun MusicItemComposable(
             verticalAlignment = Alignment.CenterVertically
         ) {
             SoulImage(
-                coverId = music.coverId,
+                cover = music.cover,
                 size = UiConstants.CoverSize.small,
                 tint = textColor
             )

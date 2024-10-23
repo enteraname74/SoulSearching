@@ -4,6 +4,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -20,10 +22,12 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAl
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -47,6 +51,7 @@ fun SearchAll(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumn {
         val foundedPlaylists = allPlaylistsState.playlists.filter {
@@ -80,7 +85,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedPlaylistForBottomSheet(playlistWithMusics.playlist)
                     },
-                    coverId = playlistWithMusics.playlist.coverId,
+                    cover = playlistWithMusics.cover,
                 )
             }
         }
@@ -116,7 +121,7 @@ fun SearchAll(
                     onLongClick = {
                         onSelectedArtistForBottomSheet(artistWithMusics)
                     },
-                    coverId = artistWithMusics.artist.coverId,
+                    cover = artistWithMusics.cover,
                 )
             }
         }
@@ -155,7 +160,7 @@ fun SearchAll(
                             onSelectedAlbumForBottomSheet(albumWithArtist.album)
                         }
                     },
-                    coverId = albumWithArtist.album.coverId,
+                    cover = albumWithArtist.cover,
                 )
             }
         }
@@ -189,17 +194,16 @@ fun SearchAll(
                     music = music,
                     onClick = {
                         coroutineScope.launch {
-                            focusManager.clearFocus()
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
-                            )
-                        }.invokeOnCompletion {
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = music,
                                 musicList = foundedMusics as ArrayList<Music>,
                                 playlistId = null,
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
+                            )
+                            focusManager.clearFocus()
+                            playerViewManager.animateTo(
+                                newState = BottomSheetStates.EXPANDED,
                             )
                         }
                     },
@@ -208,7 +212,7 @@ fun SearchAll(
                             onSelectedMusicForBottomSheet(music)
                         }
                     },
-                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
+                    isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                 )
             }
         }

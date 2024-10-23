@@ -17,6 +17,9 @@ internal interface AlbumArtistDao {
     @Upsert
     suspend fun insertAlbumIntoArtist(roomAlbumArtist: RoomAlbumArtist)
 
+    @Upsert
+    suspend fun upsertAll(roomAlbumArtists: List<RoomAlbumArtist>)
+
     @Query("UPDATE RoomAlbumArtist SET artistId = :newArtistId WHERE albumId = :albumId")
     suspend fun updateArtistOfAlbum(albumId: UUID, newArtistId: UUID)
 

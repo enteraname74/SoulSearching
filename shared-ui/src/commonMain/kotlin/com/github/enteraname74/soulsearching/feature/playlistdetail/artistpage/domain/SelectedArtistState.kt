@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 
 /**
@@ -11,6 +10,6 @@ sealed interface SelectedArtistState {
     data object Loading : SelectedArtistState
     data class Data(
         val playlistDetail: PlaylistDetail,
-        val artistAlbums: List<Album>,
+        val artistAlbums: List<AlbumWithMusics>,
     ): SelectedArtistState
 }

@@ -11,8 +11,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuAction
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsActionElement
 
 @Composable
 fun ColorCard(
@@ -37,7 +37,7 @@ fun ColorCard(
                     all = UiConstants.Spacing.large,
                 )
         ) {
-            SettingsActionElement(
+            SoulMenuAction(
                 clickEnabled = false,
                 title = title,
                 subTitle = text,

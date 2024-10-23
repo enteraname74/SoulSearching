@@ -14,8 +14,20 @@ internal class MusicDataSourceImpl(
         musicDao.upsert(music)
     }
 
+    override suspend fun upsertAll(musics: List<Music>) {
+        musicDao.upsertAll(
+            musics = musics,
+        )
+    }
+
     override suspend fun delete(music: Music) {
         musicDao.delete(music)
+    }
+
+    override suspend fun deleteAll(ids: List<UUID>) {
+        musicDao.deleteAll(
+            ids = ids,
+        )
     }
 
     override suspend fun deleteMusicFromAlbum(album: String, artist: String) {

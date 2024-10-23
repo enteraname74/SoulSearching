@@ -20,6 +20,10 @@ internal class RoomFolderDataSourceImpl(
         )
     }
 
+    override suspend fun upsertAll(folders: List<Folder>) {
+        appDatabase.folderDao.upsertAll(folders.map { it.toRoomFolder() })
+    }
+
     override suspend fun delete(folder: Folder) {
         appDatabase.folderDao.delete(
             roomFolder = folder.toRoomFolder()

@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import java.time.LocalDateTime
 import java.util.UUID
@@ -16,6 +17,7 @@ internal data class RoomMusic(
     var name: String = "",
     val album: String = "",
     val artist: String = "",
+    val initialCoverPath: String? = null,
     var coverId: UUID? = null,
     var duration: Long = 0L,
     var path: String = "",
@@ -29,20 +31,25 @@ internal data class RoomMusic(
 /**
  * Converts a RoomMusic to a Music.
  */
-internal fun RoomMusic.toMusic(): Music = Music(
-    musicId = musicId,
-    name = name,
-    album = album,
-    artist = artist,
-    coverId = coverId,
-    duration = duration,
-    path = path,
-    folder = folder,
-    addedDate = addedDate,
-    nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess,
-    isHidden = isHidden
-)
+internal fun RoomMusic.toMusic(): Music {
+    return Music(
+        musicId = musicId,
+        name = name,
+        album = album,
+        artist = artist,
+        cover = Cover.FileCover(
+            initialCoverPath = initialCoverPath,
+            fileCoverId = coverId,
+        ),
+        duration = duration,
+        path = path,
+        folder = folder,
+        addedDate = addedDate,
+        nbPlayed = nbPlayed,
+        isInQuickAccess = isInQuickAccess,
+        isHidden = isHidden,
+    )
+}
 
 /**
  * Converts a Music to a RoomMusic.
@@ -52,12 +59,13 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     name = name,
     album = album,
     artist = artist,
-    coverId = coverId,
+    coverId = (cover as? Cover.FileCover)?.fileCoverId,
     duration = duration,
     path = path,
     folder = folder,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
-    isHidden = isHidden
+    isHidden = isHidden,
+    initialCoverPath = (cover as? Cover.FileCover)?.initialCoverPath,
 )

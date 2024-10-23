@@ -26,8 +26,10 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -57,7 +59,7 @@ fun allMusicFoldersTab(
             BigPreviewComposable(
                 modifier = Modifier
                     .animateItemPlacement(),
-                coverId = element.coverId,
+                cover = element.cover,
                 title = element.path,
                 text = strings.musics(total = element.musics.size),
                 onClick = {
@@ -95,12 +97,11 @@ private fun Buttons(
                     onClick = {
                         if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
                         coroutineScope.launch {
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
-                            )
-                        }.invokeOnCompletion {
                             playbackManager.playSoulMix(
                                 musicLists = allMusicFolders.map { it.musics },
+                            )
+                            playerViewManager.animateTo(
+                                newState = BottomSheetStates.EXPANDED,
                             )
                         }
                     }
@@ -116,16 +117,15 @@ private fun Buttons(
                     if (allMusicFolders.isEmpty()) return@SoulIconButton
 
                     coroutineScope.launch {
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                        )
-                    }.invokeOnCompletion {
                         playbackManager.playShuffle(
                             musicList = buildList {
                                 allMusicFolders.forEach { musicFolder ->
                                     addAll(musicFolder.musics)
                                 }
                             }
+                        )
+                        playerViewManager.animateTo(
+                            newState = BottomSheetStates.EXPANDED,
                         )
                     }
                 }

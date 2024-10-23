@@ -17,7 +17,6 @@ class GetMonthMusicListUseCase(
             MonthMusicList(
                 month = month,
                 musics = musics,
-                coverId = musics.firstOrNull { it.coverId != null }?.coverId
             )
         }
 }

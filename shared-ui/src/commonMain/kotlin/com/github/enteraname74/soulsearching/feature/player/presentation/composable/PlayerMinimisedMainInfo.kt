@@ -26,6 +26,9 @@ fun PlayerMinimisedMainInfo(
     currentMusic: Music?,
     isPlaying: Boolean,
     alphaTransition: Float,
+    previous: () -> Unit,
+    togglePlayPause: () -> Unit,
+    next: () -> Unit,
 ) {
 
     Row(
@@ -64,6 +67,9 @@ fun PlayerMinimisedMainInfo(
         MinimisedPlayerControlsComposable(
             playerViewState = playerViewManager.playerDraggableState.currentValue,
             isPlaying = isPlaying,
+            next = next,
+            previous = previous,
+            togglePlayPause = togglePlayPause,
         )
     }
 }

@@ -6,14 +6,15 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutScreen
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsScreen
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.SettingsStatisticsScreen
 
 /**
@@ -52,6 +53,11 @@ class SettingsScreen : Screen {
                 navigator.safePush(
                     SettingsStatisticsScreen()
                 )
+            },
+            navigateToAdvanced = {
+                navigator.safePush(
+                    SettingsAdvancedScreen()
+                )
             }
         )
     }
@@ -64,14 +70,15 @@ fun SettingsScreenView(
     navigateToColorTheme: () -> Unit,
     navigateToPersonalisation: () -> Unit,
     navigateToStatistics: () -> Unit,
-    navigateToAbout: () -> Unit
+    navigateToAbout: () -> Unit,
+    navigateToAdvanced: () -> Unit,
 ) {
     SettingPage(
         navigateBack = finishAction,
         title = strings.settings,
     ) {
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.manageMusicsTitle,
                 subTitle = strings.manageMusicsText,
                 icon = Icons.Rounded.MusicNote,
@@ -79,7 +86,7 @@ fun SettingsScreenView(
             )
         }
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.colorThemeTitle,
                 subTitle = strings.colorThemeText,
                 icon = Icons.Rounded.Palette,
@@ -87,7 +94,7 @@ fun SettingsScreenView(
             )
         }
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.personalizationTitle,
                 subTitle = strings.personalizationText,
                 icon = Icons.Rounded.Edit,
@@ -95,7 +102,7 @@ fun SettingsScreenView(
             )
         }
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.statisticsTitle,
                 subTitle = strings.statisticsText,
                 icon = Icons.Rounded.BarChart,
@@ -103,7 +110,15 @@ fun SettingsScreenView(
             )
         }
         item {
-            SettingsElement(
+            SoulMenuElement(
+                title = strings.advancedSettingsTitle,
+                subTitle = strings.advancedSettingsText,
+                icon = Icons.Rounded.Handyman,
+                onClick = navigateToAdvanced,
+            )
+        }
+        item {
+            SoulMenuElement(
                 title = strings.aboutTitle,
                 subTitle = strings.aboutText,
                 icon = Icons.Rounded.Info,

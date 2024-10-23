@@ -111,6 +111,14 @@ object EnStrings : Strings {
     override val dynamicOtherView = "Use dynamic theme for the other views"
 
     override val settings = "Settings"
+    override val advancedSettingsTitle = "Advanced settings"
+    override val advancedSettingsText = "Manage covers used in the app"
+    override val reloadCoversTitle = "Reload covers"
+    override val reloadCoversText = "Reload covers from files data"
+    override val reloadMusicsCovers = "Reload songs cover"
+    override val deletePlaylistsCovers = "Delete playlists covers"
+    override val reloadAlbumsCovers = "Reload albums covers"
+    override val reloadArtistsCovers = "Reload artists covers"
     override val manageMusicsTitle = "Manage songs"
     override val manageMusicsText = "Modify and add new songs, manage used folders"
     override val modifyMusicFileTitle = "Modify files on the device"
@@ -173,6 +181,11 @@ object EnStrings : Strings {
 
     override val noNewMusics = "No new songs to add!"
     override val savingNewMusics = "Saving new songs…"
+
+    override val songsSaved = "Songs saved successfully!"
+    override val searchForNewSongs = "Search for new songs"
+
+    override val appMigration = "Updating application data"
 
     override fun musics(total: Int): String {
         return when (total) {

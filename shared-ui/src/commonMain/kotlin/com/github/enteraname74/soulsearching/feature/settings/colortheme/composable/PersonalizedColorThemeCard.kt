@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsSwitchElement
 
 @Composable
 fun PersonalizedColorThemeCard(
@@ -32,7 +32,7 @@ fun PersonalizedColorThemeCard(
                 .padding(top = UiConstants.Spacing.large),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {
-            SettingsSwitchElement(
+            SoulMenuSwitch(
                 title = strings.dynamicPlayerView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlayerTheme() },
                 isChecked = hasPlayerTheme,
@@ -40,7 +40,7 @@ fun PersonalizedColorThemeCard(
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 padding = PaddingValues(all = 0.dp),
             )
-            SettingsSwitchElement(
+            SoulMenuSwitch(
                 title = strings.dynamicPlaylistView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicPlaylistTheme() },
                 isChecked = hasPlaylistTheme,
@@ -48,7 +48,7 @@ fun PersonalizedColorThemeCard(
                 textColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 padding = PaddingValues(all = 0.dp),
             )
-            SettingsSwitchElement(
+            SoulMenuSwitch(
                 title = strings.dynamicOtherView,
                 toggleAction = { if (isSelected) togglePersonalizedDynamicOtherViewsTheme() },
                 isChecked = hasOtherViewsTheme,

@@ -7,13 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ColorFilter
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -38,11 +37,9 @@ class DeleteAlbumDialog(
                     val albumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
                         albumId = selectedAlbum.albumId,
                     ).first() ?: return@launch
-                    albumWithMusics.musics.forEach {
-                        playbackManager.removeSongFromPlayedPlaylist(
-                            musicId = it.musicId
-                        )
-                    }
+                    playbackManager.removeSongsFromPlayedPlaylist(
+                        musicIds = albumWithMusics.musics.map { it.musicId }
+                    )
                 }
             },
             dismissAction = onClose,

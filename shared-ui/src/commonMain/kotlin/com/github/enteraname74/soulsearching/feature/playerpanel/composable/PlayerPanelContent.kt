@@ -16,9 +16,9 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerState
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
+import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun PlayerPanelContent(
     playbackManager: PlaybackManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
-    playerState: PlayerState,
+    playerState: PlayerViewState.Data,
     onSelectedMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
     textColor: Color,
@@ -48,6 +48,7 @@ fun PlayerPanelContent(
                     secondaryColor = textColor,
                     isExpanded = isExpanded,
                     buttonColors = buttonColors,
+                    currentMusicIndex = playerState.currentMusicIndex,
                 )
             }
         ),

@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.domain
 
-import androidx.compose.ui.graphics.ImageBitmap
-import java.util.UUID
+import com.github.enteraname74.domain.model.Cover
 
 data class EditableElement(
-    val initialCoverId: UUID?,
-    val newCover: ImageBitmap?,
+    val initialCover: Cover?,
+    val newCover: ByteArray?,
 )

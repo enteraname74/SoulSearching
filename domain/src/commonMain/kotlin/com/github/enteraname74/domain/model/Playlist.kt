@@ -10,7 +10,7 @@ import java.util.UUID
 data class Playlist(
     val playlistId: UUID = UUID.randomUUID(),
     var name: String = "",
-    var coverId: UUID? = null,
+    var cover: Cover? = null,
     val isFavorite: Boolean = false,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,

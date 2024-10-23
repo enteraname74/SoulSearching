@@ -28,6 +28,7 @@ dependencies {
     implementation(project(":shared-ui"))
 
     implementation(libs.bundles.koin)
+    implementation(project(":features:playback"))
 }
 
 compose.desktop {

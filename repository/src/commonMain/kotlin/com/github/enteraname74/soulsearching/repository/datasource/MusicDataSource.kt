@@ -13,10 +13,14 @@ interface MusicDataSource {
      */
     suspend fun upsert(music: Music)
 
+    suspend fun upsertAll(musics: List<Music>)
+
     /**
      * Deletes a Music.
      */
     suspend fun delete(music: Music)
+
+    suspend fun deleteAll(ids: List<UUID>)
 
     /**
      * Remove a Music from an Album.

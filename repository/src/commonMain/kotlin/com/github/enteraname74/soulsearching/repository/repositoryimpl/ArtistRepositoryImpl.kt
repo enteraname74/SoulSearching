@@ -21,12 +21,20 @@ class ArtistRepositoryImpl(
         artist = artist
     )
 
+    override suspend fun upsertAll(artists: List<Artist>) {
+        artistDataSource.upsertAll(artists)
+    }
+
     /**
      * Deletes an Artist.
      */
-    override suspend fun delete(artist: Artist) = artistDataSource.delete(
+    override suspend fun delete(artist: Artist) = artistDataSource.deleteAll(
         artist = artist
     )
+
+    override suspend fun deleteAll(artistsIds: List<UUID>) {
+        artistDataSource.deleteAll(artistsIds)
+    }
 
     /**
      * Retrieves an Artist from its id.

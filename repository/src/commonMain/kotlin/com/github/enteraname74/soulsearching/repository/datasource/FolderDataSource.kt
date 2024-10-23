@@ -12,6 +12,8 @@ interface FolderDataSource {
      */
     suspend fun upsert(folder : Folder)
 
+    suspend fun upsertAll(folders: List<Folder>)
+
     /**
      * Deletes a Folder.
      */

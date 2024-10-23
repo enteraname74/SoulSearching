@@ -14,8 +14,18 @@ internal class ArtistDataSourceImpl(
         artistDao.upsert(artist)
     }
 
-    override suspend fun delete(artist: Artist) {
+    override suspend fun upsertAll(artists: List<Artist>) {
+        artistDao.upsertAll(
+            artists = artists,
+        )
+    }
+
+    override suspend fun deleteAll(artist: Artist) {
         artistDao.delete(artist)
+    }
+
+    override suspend fun deleteAll(artistsIds: List<UUID>) {
+        artistDao.deleteAll(artistsIds)
     }
 
     override fun getFromId(artistId: UUID): Flow<Artist?> =

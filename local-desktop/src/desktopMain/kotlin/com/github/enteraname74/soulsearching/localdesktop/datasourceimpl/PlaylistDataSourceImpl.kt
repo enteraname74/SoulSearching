@@ -11,7 +11,11 @@ internal class PlaylistDataSourceImpl(
     private val playlistDao: PlaylistDao
 ) : PlaylistDataSource {
     override suspend fun upsert(playlist: Playlist) {
-        playlistDao.upsert(playlist)
+        playlistDao.upsertAll(playlist)
+    }
+
+    override suspend fun upsertAll(playlists: List<Playlist>) {
+        playlistDao.upsertAll(playlists)
     }
 
     override suspend fun delete(playlist: Playlist) {

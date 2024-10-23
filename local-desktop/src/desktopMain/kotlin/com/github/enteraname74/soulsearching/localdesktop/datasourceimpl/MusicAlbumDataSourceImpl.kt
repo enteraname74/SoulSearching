@@ -11,6 +11,12 @@ internal class MusicAlbumDataSourceImpl(
     override suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) =
         musicAlbumDao.insertMusicIntoAlbum(musicAlbum = musicAlbum)
 
+    override suspend fun upsertAll(musicAlbums: List<MusicAlbum>) {
+        musicAlbumDao.upsertAll(
+            musicAlbums = musicAlbums,
+        )
+    }
+
     override suspend fun deleteMusicFromAlbum(musicId: UUID) =
         musicAlbumDao.deleteMusicFromAlbum(musicId = musicId)
 

@@ -5,10 +5,13 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTable.albumId
+import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTable.artistId
 import com.github.enteraname74.soulsearching.localdesktop.tables.toAlbumArtist
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -22,6 +25,15 @@ internal class AlbumArtistDao {
             AlbumArtistTable.upsert {
                 it[albumId] = albumArtist.albumId
                 it[artistId] = albumArtist.artistId
+            }
+        }
+    }
+
+    suspend fun upsertAll(albumArtists: List<AlbumArtist>) {
+        flowTransactionOn {
+            AlbumArtistTable.batchUpsert(albumArtists) {
+                this[albumId] = it.albumId
+                this[artistId] = it.artistId
             }
         }
     }

@@ -4,21 +4,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -35,6 +36,7 @@ fun SearchMusics(
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumn {
         val foundedMusics = allMusics.filter {
@@ -68,9 +70,6 @@ fun SearchMusics(
                     music = music,
                     onClick = { selectedMusic ->
                         coroutineScope.launch {
-                            focusManager.clearFocus()
-                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                        }.invokeOnCompletion { _ ->
                             playbackManager.setCurrentPlaylistAndMusic(
                                 music = selectedMusic,
                                 musicList = foundedMusics as ArrayList<Music>,
@@ -78,6 +77,8 @@ fun SearchMusics(
                                 isMainPlaylist = isMainPlaylist,
                                 isForcingNewPlaylist = true
                             )
+                            focusManager.clearFocus()
+                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
                     onLongClick = {
@@ -86,7 +87,7 @@ fun SearchMusics(
                         }
                     },
                     textColor = textColor,
-                    isPlayedMusic = playbackManager.isSameMusicAsCurrentPlayedOne(music.musicId)
+                    isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                 )
             }
         }

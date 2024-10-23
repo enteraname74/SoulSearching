@@ -123,6 +123,14 @@ interface Strings {
     val dynamicOtherView: String
 
     val settings: String
+    val advancedSettingsTitle: String
+    val advancedSettingsText: String
+    val reloadCoversTitle: String
+    val reloadCoversText: String
+    val reloadMusicsCovers: String
+    val deletePlaylistsCovers: String
+    val reloadAlbumsCovers: String
+    val reloadArtistsCovers: String
     val manageMusicsTitle: String
     val manageMusicsText: String
     val modifyMusicFileTitle: String
@@ -184,6 +192,10 @@ interface Strings {
 
     val noNewMusics: String
     val savingNewMusics: String
+    val songsSaved: String
+    val searchForNewSongs: String
+
+    val appMigration: String
 
     /**
      * Shows a text indicating the number of musics.

@@ -20,11 +20,21 @@ internal interface AlbumDao {
     @Upsert
     suspend fun upsert(roomAlbum: RoomAlbum)
 
+    @Upsert
+    suspend fun upsertAll(roomAlbums: List<RoomAlbum>)
+
     @Delete
     suspend fun delete(roomAlbum: RoomAlbum)
 
+    @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
+    suspend fun deleteAll(ids: List<UUID>)
+
     @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
     fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomAlbum>>
+
+    @Transaction
+    @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
+    fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomAlbumWithMusics>>
 
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAll(): Flow<List<RoomAlbum>>
@@ -39,8 +49,4 @@ internal interface AlbumDao {
     @Transaction
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")
     fun getAllAlbumWithMusics(): Flow<List<RoomAlbumWithMusics>>
-
-    @Transaction
-    @Query("SELECT * FROM RoomAlbum")
-    fun getAllAlbumsWithArtist(): Flow<List<RoomAlbumWithArtist>>
 }

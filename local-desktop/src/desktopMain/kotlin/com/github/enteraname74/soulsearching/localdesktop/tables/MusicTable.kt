@@ -1,10 +1,10 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
-import java.util.*
 
 /**
  * Table for storing Musics.
@@ -13,9 +13,10 @@ internal object MusicTable : UUIDTable() {
     val name = varchar("name", 128)
     val album = varchar("album", 128)
     val artist = varchar("artist", 128)
-    val coverId = varchar("coverId", 128).nullable()
+    val coverId = uuid("coverId").nullable()
     val duration = long("duration")
     val path = mediumText("path")
+    val initialCoverPath = text("initialCoverPath").nullable().default(null)
     val folder = varchar("folder", 128)
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
@@ -33,7 +34,10 @@ internal fun ResultRow.toMusic(): Music? =
             name = this[MusicTable.name],
             album = this[MusicTable.album],
             artist = this[MusicTable.artist],
-            coverId = this[MusicTable.coverId]?.let { UUID.fromString(it) },
+            cover = Cover.FileCover(
+                fileCoverId = this[MusicTable.coverId],
+                initialCoverPath = this[MusicTable.initialCoverPath],
+            ),
             duration = this[MusicTable.duration],
             path = this[MusicTable.path],
             folder = this[MusicTable.folder],

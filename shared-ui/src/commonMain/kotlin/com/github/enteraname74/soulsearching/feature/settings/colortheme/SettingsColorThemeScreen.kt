@@ -12,6 +12,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -19,7 +20,6 @@ import com.github.enteraname74.soulsearching.feature.settings.colortheme.composa
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_main
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_player
@@ -76,7 +76,7 @@ fun SettingsColorThemeScreenView(
         )
     ) {
         item {
-            SettingsElement(
+            SoulMenuElement(
                 title = strings.themeSelectionTitle,
                 subTitle = strings.themeSelectionText,
                 icon = Icons.Rounded.FormatPaint,

@@ -13,6 +13,8 @@ interface AlbumArtistDataSource {
      */
     suspend fun upsert(albumArtist: AlbumArtist)
 
+    suspend fun upsertAll(albumArtists: List<AlbumArtist>)
+
     /**
      * Update the artist of an album.
      */

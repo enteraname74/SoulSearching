@@ -6,9 +6,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingsElement
 
 /**
  * Represent the view of the developers screen.
@@ -44,7 +44,7 @@ class SettingsDevelopersScreen : Screen {
             title = strings.developersTitle,
         ) {
             items(developers) { developer ->
-                SettingsElement(
+                SoulMenuElement(
                     title = developer.name,
                     subTitle = developer.function,
                     onClick = {

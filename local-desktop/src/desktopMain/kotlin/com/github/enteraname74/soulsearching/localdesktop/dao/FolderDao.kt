@@ -5,10 +5,13 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable.folderPath
+import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable.isSelected
 import com.github.enteraname74.soulsearching.localdesktop.tables.toFolder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -20,6 +23,15 @@ internal class FolderDao {
             FolderTable.upsert {
                 it[folderPath] = folder.folderPath
                 it[isSelected] = folder.isSelected
+            }
+        }
+    }
+
+    suspend fun upsertAll(folders: List<Folder>) {
+        flowTransactionOn {
+            FolderTable.batchUpsert(folders) {
+                this[folderPath] = it.folderPath
+                this[isSelected] = it.isSelected
             }
         }
     }

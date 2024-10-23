@@ -11,6 +11,8 @@ interface PlaylistRepository {
      */
     suspend fun upsert(playlist: Playlist)
 
+    suspend fun upsertAll(playlists: List<Playlist>)
+
     /**
      * Deletes a Playlist.
      */

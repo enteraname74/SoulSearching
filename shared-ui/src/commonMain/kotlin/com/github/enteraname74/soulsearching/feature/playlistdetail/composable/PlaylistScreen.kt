@@ -16,21 +16,25 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.*
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
+import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
+import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.coversprovider.ImageCoverRetriever
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlaybackManager
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -44,18 +48,34 @@ fun PlaylistScreen(
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
-    imageCoverRetriever: ImageCoverRetriever = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val playlistImageBitmap: ImageBitmap? by imageCoverRetriever.getImageBitmap(coverId = playlistDetail.coverId)
-        .collectAsState(initial = null)
+    LaunchedEffect(playlistDetail.cover) {
+        if (playlistDetail.cover?.isEmpty() != false) {
+            colorThemeManager.setNewPlaylistCover(
+                playlistDetailCover = PlaylistDetailCover.NoCover
+            )
+        }
+    }
 
-    LaunchedEffect(playlistImageBitmap) {
+    var bitmap: ImageBitmap? by remember {
+        mutableStateOf(null)
+    }
+
+    val hasFoundImage by derivedStateOf {
+        bitmap != null
+    }
+
+    LaunchedEffect(hasFoundImage) {
         colorThemeManager.setNewPlaylistCover(
-            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(imageBitmap = playlistImageBitmap)
+            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
         )
+    }
+
+    val onCoverLoaded: (ImageBitmap?) -> Unit = {
+        bitmap = it
     }
 
     SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
@@ -65,15 +85,12 @@ fun PlaylistScreen(
     val shuffleAction = {
         if (playlistDetail.musics.isNotEmpty()) {
             playlistDetailListener.onUpdateNbPlayed()
-            coroutineScope
-                .launch {
-                    playerViewManager.animateTo(
-                        newState = BottomSheetStates.EXPANDED,
-                    )
-                }
-                .invokeOnCompletion {
-                    playbackManager.playShuffle(musicList = playlistDetail.musics)
-                }
+            coroutineScope.launch {
+                playbackManager.playShuffle(musicList = playlistDetail.musics)
+                playerViewManager.animateTo(
+                    newState = BottomSheetStates.EXPANDED,
+                )
+            }
         }
     }
 
@@ -104,7 +121,6 @@ fun PlaylistScreen(
                         BottomSheetStates.EXPANDED,
                         tween(UiConstants.AnimationDuration.normal)
                     )
-                }.invokeOnCompletion {
                     searchBarFocusRequester.requestFocus()
                 }
             }
@@ -120,8 +136,10 @@ fun PlaylistScreen(
                         playlistDetail = playlistDetail,
                         playlistDetailListener = playlistDetailListener,
                         optionalContent = optionalContent,
+                        onCoverLoaded = onCoverLoaded,
                     )
                 }
+
                 else -> {
                     PlaylistColumnView(
                         navigateBack = navigateBack,
@@ -131,6 +149,7 @@ fun PlaylistScreen(
                         playlistDetail = playlistDetail,
                         playlistDetailListener = playlistDetailListener,
                         optionalContent = optionalContent,
+                        onCoverLoaded = onCoverLoaded,
                     )
                 }
             }

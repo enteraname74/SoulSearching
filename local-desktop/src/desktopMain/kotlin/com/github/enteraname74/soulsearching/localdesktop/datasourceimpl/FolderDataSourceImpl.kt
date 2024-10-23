@@ -12,6 +12,12 @@ internal class FolderDataSourceImpl(
         folderDao.upsert(folder)
     }
 
+    override suspend fun upsertAll(folders: List<Folder>) {
+        folderDao.upsertAll(
+            folders = folders,
+        )
+    }
+
     override suspend fun delete(folder: Folder) {
         folderDao.delete(folder)
     }

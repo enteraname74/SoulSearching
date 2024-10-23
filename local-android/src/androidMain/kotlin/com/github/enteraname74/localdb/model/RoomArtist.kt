@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Cover
 import java.time.LocalDateTime
 import java.util.*
 
@@ -26,7 +27,7 @@ internal data class RoomArtist(
 internal fun RoomArtist.toArtist(): Artist = Artist(
     artistId = artistId,
     artistName = artistName,
-    coverId = coverId,
+    cover = Cover.FileCover(fileCoverId = coverId),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess
@@ -38,7 +39,7 @@ internal fun RoomArtist.toArtist(): Artist = Artist(
 internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     artistId = artistId,
     artistName = artistName,
-    coverId = coverId,
+    coverId = (cover as? Cover.FileCover)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess

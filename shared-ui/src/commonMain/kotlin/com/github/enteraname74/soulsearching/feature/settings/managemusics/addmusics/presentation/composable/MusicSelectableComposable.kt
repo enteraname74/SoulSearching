@@ -18,13 +18,13 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import java.util.UUID
 
 @Composable
 fun MusicSelectableComposable(
@@ -35,7 +35,7 @@ fun MusicSelectableComposable(
 ) {
     InnerContent(
         music = music,
-        coverType = CoverType.Id(music.coverId),
+        coverType = CoverType.CoverData(music.cover),
         isSelected = isSelected,
         textColor = textColor,
         onClick = onClick,
@@ -43,25 +43,8 @@ fun MusicSelectableComposable(
 }
 
 private sealed interface CoverType{
-    data class Id(val id: UUID?): CoverType
+    data class CoverData(val cover: Cover?): CoverType
     data class Bitmap(val bitmap: ImageBitmap?): CoverType
-}
-
-@Composable
-fun MusicSelectableComposable(
-    music: Music,
-    cover: ImageBitmap?,
-    onClick: () -> Unit,
-    isSelected: Boolean,
-    textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
-) {
-    InnerContent(
-        music = music,
-        coverType = CoverType.Bitmap(bitmap = cover),
-        isSelected = isSelected,
-        textColor = textColor,
-        onClick = onClick,
-    )
 }
 
 @Composable
@@ -94,9 +77,9 @@ private fun InnerContent(
                         tint = textColor
                     )
                 }
-                is CoverType.Id -> {
+                is CoverType.CoverData -> {
                     SoulImage(
-                        coverId = music.coverId,
+                        cover = music.cover,
                         size = UiConstants.CoverSize.small,
                         tint = textColor
                     )

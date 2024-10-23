@@ -1,19 +1,13 @@
 package com.github.enteraname74.soulsearching.localdesktop
 
-import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.ImageCoverTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.PlayerMusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.PlaylistTable
+import com.github.enteraname74.domain.util.AppEnvironment
+import com.github.enteraname74.soulsearching.localdesktop.migration.ExposedMigrationHandler
+import com.github.enteraname74.soulsearching.localdesktop.migration.impl.Migration16To17
+import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -22,18 +16,27 @@ import org.jetbrains.exposed.sql.transactions.transaction
  */
 object AppDatabase {
 
+    private val migrationHandler = ExposedMigrationHandler(
+        Migration16To17()
+    )
+
     /**
      * Establish a connection with the database.
      */
     fun connectToDatabase() {
-        Database.connect("jdbc:sqlite:soulSearchingDatabase.db?foreign_keys=on", "org.sqlite.JDBC")
+        val databaseName = if (AppEnvironment.IS_IN_DEVELOPMENT) {
+            "soulSearchingDevDatabase.db"
+        } else {
+            "soulSearchingDatabase.db"
+        }
+        Database.connect("jdbc:sqlite:$databaseName?foreign_keys=on", "org.sqlite.JDBC")
+        migrationHandler.doMigrations()
         transaction {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 AlbumArtistTable,
                 AlbumTable,
                 ArtistTable,
                 FolderTable,
-                ImageCoverTable,
                 MusicAlbumTable,
                 MusicArtistTable,
                 MusicPlaylistTable,
@@ -45,5 +48,5 @@ object AppDatabase {
     }
 }
 
-suspend fun <T> dbQuery(block: suspend () -> T): T =
+suspend fun <T> dbQuery(block: suspend Transaction.() -> T): T =
     newSuspendedTransaction(Dispatchers.IO) { block() }

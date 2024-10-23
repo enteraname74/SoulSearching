@@ -10,8 +10,14 @@ internal class AlbumArtistDataSourceImpl(
 ) : AlbumArtistDataSource {
     override suspend fun upsert(albumArtist: AlbumArtist) =
         albumArtistDao.upsertAlbumIntoArtist(
-            albumArtist = albumArtist
+            albumArtist = albumArtist,
         )
+
+    override suspend fun upsertAll(albumArtists: List<AlbumArtist>) {
+        albumArtistDao.upsertAll(
+            albumArtists = albumArtists,
+        )
+    }
 
     override suspend fun update(albumId: UUID, newArtistId: UUID) =
         albumArtistDao.updateArtistOfAlbum(
