@@ -95,13 +95,16 @@ internal class PlaybackListManager(
                 playbackCallback.onlyLoadMusic(music = music)
             } else {
                 // Finally, we add the new next music :
-
-                val currentMusicIndexInUpdatedPlaylist = updatedPlayedList
+                val nextSongIndex = updatedPlayedList
                     .indexOf(
                         updatedPlayedList.find { it.musicId == currentMusic.musicId }
-                    )
+                    ) + 1
+                if (nextSongIndex > updatedPlayedList.lastIndex) {
+                    updatedPlayedList.add(music)
+                } else {
+                    updatedPlayedList.add(nextSongIndex, music)
+                }
 
-                updatedPlayedList.add(currentMusicIndexInUpdatedPlaylist + 1, music)
                 _state.value = this.copy(
                     playedList = updatedPlayedList,
                 )
@@ -222,7 +225,7 @@ internal class PlaybackListManager(
      * Make the initial list the same as the played list.
      * The match will only occur if the player mode is set to NORMAL.
      */
-    suspend fun matchInitialListToPlayedListIfNormalPlayerMode() {
+    private suspend fun matchInitialListToPlayedListIfNormalPlayerMode() {
         withDataState {
             if (playerMode == PlayerMode.Normal) {
                 _state.value = this.copy(
@@ -249,7 +252,7 @@ internal class PlaybackListManager(
      * We can also check with a isMainPlaylist value (the main playlist, with all songs, does not have
      * a UUID).
      */
-    suspend fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean = withDataState {
+    private suspend fun isSamePlaylist(isMainPlaylist: Boolean, playlistId: UUID?): Boolean = withDataState {
         return@withDataState if (playlistId == null && this.playlistId == null) {
             isMainPlaylist == this.isMainPlaylist
         } else if (playlistId != null && this.playlistId != null) {
