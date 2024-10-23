@@ -121,7 +121,7 @@ class SoulSearchingDesktopPlayerImpl(
         try {
             player.controls().setTime(position.toLong())
         } catch (e: Exception) {
-            println("PLAYER -- Expection on seekToPosition: $e")
+            println("PLAYER -- Exception on seekToPosition: $e")
         }
     }
 
