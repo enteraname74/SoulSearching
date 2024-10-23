@@ -276,27 +276,34 @@ internal class PlaybackListManager(
                 playbackCallback.stopPlayback()
             } else {
                 // If the current song is in the deleted one, we play the next song.
-                val newCurrentSong = if (currentMusic.musicId in musicIds) {
+                if (currentMusic.musicId in musicIds) {
                     // We first place ourselves in the previous music :
-                    if (actualIndex == 0) {
+                    val newCurrentSong = if (actualIndex == 0) {
                         playedList[playedList.lastIndex]
                     } else {
                         playedList[actualIndex - 1]
                     }
-                } else {
-                    this.currentMusic
-                }
 
-                _state.value = this.copy(
-                    currentMusic = newCurrentSong,
-                    playedList = playedList,
-                )
-                settings.saveCurrentMusicInformation(
-                    currentMusicIndex = currentMusicIndex,
-                    currentMusicPosition = playbackCallback.getMusicPosition(),
-                )
+                    _state.value = this.copy(
+                        currentMusic = newCurrentSong,
+                        playedList = playedList,
+                    )
+                    settings.saveCurrentMusicInformation(
+                        currentMusicIndex = playedList.indexOf(newCurrentSong),
+                        currentMusicPosition = playbackCallback.getMusicPosition(),
+                    )
+                    playbackCallback.next()
+                } else {
+                    _state.value = this.copy(
+                        playedList = playedList,
+                    )
+                    settings.saveCurrentMusicInformation(
+                        currentMusicIndex = playedList.indexOf(currentMusic),
+                        currentMusicPosition = playbackCallback.getMusicPosition(),
+                    )
+                }
                 savePlayedList(list = playedList)
-                playbackCallback.next()
+
             }
         }
     }
