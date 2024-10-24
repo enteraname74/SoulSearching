@@ -65,6 +65,7 @@ val domainModule = module {
     singleOf(::UpsertArtistUseCase)
 
     // Folder
+    singleOf(::DeleteAllFoldersUseCase)
     singleOf(::DeleteFolderUseCase)
     singleOf(::GetAllFoldersUseCase)
     singleOf(::GetHiddenFoldersPathUseCase)

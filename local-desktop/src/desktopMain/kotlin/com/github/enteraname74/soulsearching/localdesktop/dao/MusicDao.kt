@@ -49,7 +49,7 @@ internal class MusicDao {
     suspend fun upsertAll(musics: List<Music>) {
         flowTransactionOn {
             MusicTable.batchUpsert(musics) {music ->
-                this[id] = music.musicId
+                this[MusicTable.id] = music.musicId
                 this[MusicTable.name] = music.name
                 this[album] = music.album
                 this[artist] = music.artist

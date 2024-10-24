@@ -30,6 +30,12 @@ internal class RoomFolderDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(folders: List<Folder>) {
+        appDatabase.folderDao.deleteAll(
+            folderPaths = folders.map { it.folderPath }
+        )
+    }
+
     override fun getAll(): Flow<List<Folder>> {
         return appDatabase.folderDao.getAll().map { list ->
             list.map { it.toFolder() }
