@@ -52,7 +52,10 @@ fun SoulDropdownTextField(
         TextField(
             interactionSource = interactionSource,
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(
+                    type = MenuAnchorType.PrimaryEditable,
+                    enabled = true
+                )
                 .focusRequester(focusRequester),
             value = value,
             onValueChange = {
