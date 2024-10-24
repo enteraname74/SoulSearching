@@ -27,7 +27,7 @@ internal fun ResultRow.toPlaylist(): Playlist? =
             playlistId = this[PlaylistTable.id].value,
             name = this[PlaylistTable.name],
             cover = this[PlaylistTable.coverId]?.let { coverId ->
-                Cover.FileCover(
+                Cover.CoverFile(
                     fileCoverId = coverId,
                 )
             },

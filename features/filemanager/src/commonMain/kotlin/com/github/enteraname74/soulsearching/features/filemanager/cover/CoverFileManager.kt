@@ -8,7 +8,10 @@ import java.util.UUID
 interface CoverFileManager {
     fun getCoverFolder(): File
 
-    fun getCleanFileCoverForMusic(music: Music): Cover.FileCover
+    fun getCleanFileCoverForMusic(music: Music): Cover.CoverFile =
+        Cover.CoverFile(
+            initialCoverPath = music.path,
+        )
 
     suspend fun saveCover(id: UUID, data: ByteArray) {
         val coverFolder = getCoverFolder()

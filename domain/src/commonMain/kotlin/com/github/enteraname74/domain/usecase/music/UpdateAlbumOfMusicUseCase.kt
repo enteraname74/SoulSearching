@@ -40,8 +40,8 @@ class UpdateAlbumOfMusicUseCase(
         if (newMusicAlbum == null) {
             newMusicAlbum = Album(
                 albumName = newAlbumName,
-                cover = (legacyMusic.cover as? Cover.FileCover)?.fileCoverId?.let {
-                    Cover.FileCover(fileCoverId = it)
+                cover = (legacyMusic.cover as? Cover.CoverFile)?.fileCoverId?.let {
+                    Cover.CoverFile(fileCoverId = it)
                 }
             )
             albumRepository.upsert(album = newMusicAlbum)

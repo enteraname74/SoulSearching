@@ -6,7 +6,7 @@ sealed interface Cover {
 
     fun isEmpty(): Boolean
 
-    data class FileCover(
+    data class CoverFile(
         val initialCoverPath: String? = null,
         val fileCoverId: UUID? = null,
     ): Cover {

@@ -25,7 +25,7 @@ internal class AlbumDao(
             AlbumTable.upsert {
                 it[id] = album.albumId
                 it[albumName] = album.albumName
-                it[coverId] = (album.cover as? Cover.FileCover)?.fileCoverId
+                it[coverId] = (album.cover as? Cover.CoverFile)?.fileCoverId
                 it[addedDate] = album.addedDate
                 it[nbPlayed] = album.nbPlayed
                 it[isInQuickAccess] = album.isInQuickAccess
@@ -38,7 +38,7 @@ internal class AlbumDao(
             AlbumTable.batchUpsert(albums) {
                 this[AlbumTable.id] = it.albumId
                 this[AlbumTable.albumName] = it.albumName
-                this[AlbumTable.coverId] = (it.cover as? Cover.FileCover)?.fileCoverId
+                this[AlbumTable.coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId
                 this[AlbumTable.addedDate] = it.addedDate
                 this[AlbumTable.nbPlayed] = it.nbPlayed
                 this[AlbumTable.isInQuickAccess] = it.isInQuickAccess

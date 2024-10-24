@@ -27,7 +27,7 @@ internal data class RoomArtist(
 internal fun RoomArtist.toArtist(): Artist = Artist(
     artistId = artistId,
     artistName = artistName,
-    cover = Cover.FileCover(fileCoverId = coverId),
+    cover = Cover.CoverFile(fileCoverId = coverId),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess
@@ -39,7 +39,7 @@ internal fun RoomArtist.toArtist(): Artist = Artist(
 internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     artistId = artistId,
     artistName = artistName,
-    coverId = (cover as? Cover.FileCover)?.fileCoverId,
+    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess

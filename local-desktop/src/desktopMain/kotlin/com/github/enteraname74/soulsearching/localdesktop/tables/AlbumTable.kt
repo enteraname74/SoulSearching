@@ -4,9 +4,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
-import java.util.*
 
 /**
  * Table for storing Albums.
@@ -28,7 +26,7 @@ internal fun ResultRow.toAlbum(): Album? =
             albumId = this[AlbumTable.id].value,
             albumName = this[AlbumTable.albumName],
             cover = this[AlbumTable.coverId]?.let { coverId ->
-                Cover.FileCover(
+                Cover.CoverFile(
                     fileCoverId = coverId,
                 )
             },

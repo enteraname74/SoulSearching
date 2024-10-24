@@ -28,8 +28,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -58,7 +56,7 @@ fun allMusicFoldersTab(
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
-                    .animateItemPlacement(),
+                    .animateItem(),
                 cover = element.cover,
                 title = element.path,
                 text = strings.musics(total = element.musics.size),

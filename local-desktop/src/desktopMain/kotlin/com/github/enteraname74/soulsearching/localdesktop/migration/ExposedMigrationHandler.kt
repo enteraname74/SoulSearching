@@ -17,7 +17,7 @@ class ExposedMigrationHandler(
             settingElement = SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION,
         )
 
-        while(currentDbVersion < LocalDatabaseVersion.version) {
+        while(currentDbVersion < LocalDatabaseVersion.VERSION) {
             println("EXPOSED MIGRATION -- Current DB version is $currentDbVersion")
             val migration: ExposedMigration? = migrations.find { it.forVersion == currentDbVersion }
 

@@ -53,7 +53,7 @@ fun SearchMusics(
             ) {
                 SearchType(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = strings.musics,
                     primaryColor = primaryColor,
                     textColor = textColor
@@ -66,7 +66,7 @@ fun SearchMusics(
             ) { music ->
                 MusicItemComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     music = music,
                     onClick = { selectedMusic ->
                         coroutineScope.launch {

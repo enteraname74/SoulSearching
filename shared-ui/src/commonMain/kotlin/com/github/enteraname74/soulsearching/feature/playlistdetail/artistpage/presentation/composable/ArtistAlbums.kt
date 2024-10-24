@@ -1,11 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.composable
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,7 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.list.SoulHorizontalScrollBar
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
-import java.util.UUID
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -66,7 +62,7 @@ fun ArtistAlbums(
                     ) { element ->
                         BigPreviewComposable(
                             modifier = Modifier
-                                .animateItemPlacement(),
+                                .animateItem(),
                             cover = element.cover,
                             title = element.album.albumName,
                             onClick = {

@@ -3,10 +3,8 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyplay
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -88,19 +86,19 @@ class ModifyPlaylistViewModel(
 
             loadingManager.startLoading()
 
-            val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
+            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
                     id = newCoverId,
                     data = coverData,
                 )
                 newCoverId
-            } ?: (state.initialPlaylist.cover as? Cover.FileCover)?.fileCoverId
+            } ?: (state.initialPlaylist.cover as? Cover.CoverFile)?.fileCoverId
 
             val newPlaylistInformation = state.initialPlaylist.copy(
-                cover = (state.initialPlaylist.cover as? Cover.FileCover)?.copy(
-                    fileCoverId = coverId,
-                ) ?: coverId?.let { Cover.FileCover(fileCoverId = it) },
+                cover = (state.initialPlaylist.cover as? Cover.CoverFile)?.copy(
+                    fileCoverId = coverFile,
+                ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
                 name = form.getPlaylistName().trim(),
             )
 

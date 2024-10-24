@@ -31,7 +31,7 @@ internal class PlaylistDao(
             PlaylistTable.upsert {
                 it[id] = playlist.playlistId
                 it[name] = playlist.name
-                it[coverId] = (playlist.cover as? Cover.FileCover)?.fileCoverId
+                it[coverId] = (playlist.cover as? Cover.CoverFile)?.fileCoverId
                 it[isFavorite] = playlist.isFavorite
                 it[addedDate] = playlist.addedDate
                 it[nbPlayed] = playlist.nbPlayed
@@ -45,7 +45,7 @@ internal class PlaylistDao(
             PlaylistTable.batchUpsert(playlists) { playlist ->
                 this[PlaylistTable.id] = playlist.playlistId
                 this[PlaylistTable.name] = playlist.name
-                this[PlaylistTable.coverId] = (playlist.cover as? Cover.FileCover)?.fileCoverId
+                this[PlaylistTable.coverId] = (playlist.cover as? Cover.CoverFile)?.fileCoverId
                 this[PlaylistTable.isFavorite] = playlist.isFavorite
                 this[PlaylistTable.addedDate] = playlist.addedDate
                 this[PlaylistTable.nbPlayed] = playlist.nbPlayed

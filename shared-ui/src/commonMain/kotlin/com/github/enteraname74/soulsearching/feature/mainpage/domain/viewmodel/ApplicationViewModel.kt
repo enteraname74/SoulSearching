@@ -23,7 +23,7 @@ class ApplicationViewModel(
         settings.getFlowOn(SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION),
     ) { hasSongsBeenFetched, currentDbVersion ->
         when {
-            currentDbVersion < LocalDatabaseVersion.version -> ApplicationState.AppMigration
+            currentDbVersion < LocalDatabaseVersion.VERSION -> ApplicationState.AppMigration
             !hasSongsBeenFetched -> ApplicationState.FetchingSongs
             else -> ApplicationState.Data
         }

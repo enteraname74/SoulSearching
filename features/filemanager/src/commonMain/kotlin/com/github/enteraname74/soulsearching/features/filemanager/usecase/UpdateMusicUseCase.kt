@@ -40,8 +40,8 @@ class UpdateMusicUseCase(
             if (newArtist == null) {
                 newArtist = Artist(
                     artistName = newMusicInformation.artist,
-                    cover = (newMusicInformation.cover as? Cover.FileCover)?.fileCoverId?.let { fileCoverId ->
-                        Cover.FileCover(
+                    cover = (newMusicInformation.cover as? Cover.CoverFile)?.fileCoverId?.let { fileCoverId ->
+                        Cover.CoverFile(
                             fileCoverId = fileCoverId,
                         )
                     }

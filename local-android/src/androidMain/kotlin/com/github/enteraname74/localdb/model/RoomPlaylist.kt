@@ -28,7 +28,7 @@ internal data class RoomPlaylist(
 internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
     playlistId = playlistId,
     name = name,
-    cover = Cover.FileCover(fileCoverId = coverId),
+    cover = Cover.CoverFile(fileCoverId = coverId),
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
@@ -41,7 +41,7 @@ internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
 internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     playlistId = playlistId,
     name = name,
-    coverId = (cover as? Cover.FileCover)?.fileCoverId,
+    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,

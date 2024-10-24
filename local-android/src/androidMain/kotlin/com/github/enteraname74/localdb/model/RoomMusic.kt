@@ -17,7 +17,6 @@ internal data class RoomMusic(
     var name: String = "",
     val album: String = "",
     val artist: String = "",
-    val initialCoverPath: String? = null,
     var coverId: UUID? = null,
     var duration: Long = 0L,
     var path: String = "",
@@ -37,8 +36,8 @@ internal fun RoomMusic.toMusic(): Music {
         name = name,
         album = album,
         artist = artist,
-        cover = Cover.FileCover(
-            initialCoverPath = initialCoverPath,
+        cover = Cover.CoverFile(
+            initialCoverPath = path,
             fileCoverId = coverId,
         ),
         duration = duration,
@@ -59,7 +58,7 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     name = name,
     album = album,
     artist = artist,
-    coverId = (cover as? Cover.FileCover)?.fileCoverId,
+    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     duration = duration,
     path = path,
     folder = folder,
@@ -67,5 +66,4 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     isHidden = isHidden,
-    initialCoverPath = (cover as? Cover.FileCover)?.initialCoverPath,
 )

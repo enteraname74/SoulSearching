@@ -16,7 +16,6 @@ internal object MusicTable : UUIDTable() {
     val coverId = uuid("coverId").nullable()
     val duration = long("duration")
     val path = mediumText("path")
-    val initialCoverPath = text("initialCoverPath").nullable().default(null)
     val folder = varchar("folder", 128)
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
@@ -34,9 +33,9 @@ internal fun ResultRow.toMusic(): Music? =
             name = this[MusicTable.name],
             album = this[MusicTable.album],
             artist = this[MusicTable.artist],
-            cover = Cover.FileCover(
+            cover = Cover.CoverFile(
                 fileCoverId = this[MusicTable.coverId],
-                initialCoverPath = this[MusicTable.initialCoverPath],
+                initialCoverPath = this[MusicTable.path],
             ),
             duration = this[MusicTable.duration],
             path = this[MusicTable.path],

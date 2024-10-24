@@ -15,8 +15,8 @@ class IsCoverUsedUseCase(
     private val getNumberOfAlbumsWithCoverIdUseCase: GetNumberOfAlbumsWithCoverIdUseCase,
 ) {
     suspend operator fun invoke(coverId: UUID): Boolean =
-        musicRepository.getAll().first().any { (it.cover as? Cover.FileCover)?.fileCoverId == coverId }
+        musicRepository.getAll().first().any { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }
                 || getNumberOfAlbumsWithCoverIdUseCase(coverId = coverId) > 0
-                || artistRepository.getAll().first().any { (it.cover as? Cover.FileCover)?.fileCoverId == coverId }
-                || playlistRepository.getAll().first().any { (it.cover as? Cover.FileCover)?.fileCoverId == coverId }
+                || artistRepository.getAll().first().any { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }
+                || playlistRepository.getAll().first().any { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }
 }

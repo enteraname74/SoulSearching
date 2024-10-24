@@ -81,7 +81,7 @@ internal class MusicFetcherDesktopImpl(
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
                         folder = file.parent,
-                        cover = Cover.FileCover(
+                        cover = Cover.CoverFile(
                             initialCoverPath = file.path,
                         )
                     )

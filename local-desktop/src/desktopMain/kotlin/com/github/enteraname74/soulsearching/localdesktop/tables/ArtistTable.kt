@@ -4,9 +4,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
-import java.util.*
 
 /**
  * Table for storing Artists.
@@ -28,7 +26,7 @@ internal fun ResultRow.toArtist(): Artist? =
             artistId = this[ArtistTable.id].value,
             artistName = this[ArtistTable.artistName],
             cover = this[ArtistTable.coverId]?.let { coverId ->
-                Cover.FileCover(
+                Cover.CoverFile(
                     fileCoverId = coverId,
                 )
             },

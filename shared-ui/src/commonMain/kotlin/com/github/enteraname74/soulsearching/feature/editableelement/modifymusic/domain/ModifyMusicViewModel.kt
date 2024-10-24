@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.ext.toImageBitmap
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
@@ -19,6 +18,8 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
 import java.util.*
 
 class ModifyMusicViewModel(
@@ -107,6 +108,7 @@ class ModifyMusicViewModel(
     /**
      * Update selected music information.
      */
+    @OptIn(ExperimentalResourceApi::class)
     fun updateMusic() {
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -117,18 +119,18 @@ class ModifyMusicViewModel(
 
             loadingManager.startLoading()
 
-            val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
+            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
                     id = newCoverId,
                     data = coverData,
                 )
                 newCoverId
-            } ?: (state.initialMusic.cover as? Cover.FileCover)?.fileCoverId
+            } ?: (state.initialMusic.cover as? Cover.CoverFile)?.fileCoverId
 
             val newMusicInformation = state.initialMusic.copy(
-                cover = (state.initialMusic.cover as? Cover.FileCover)?.copy(
-                    fileCoverId = coverId,
+                cover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
+                    fileCoverId = coverFile,
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
@@ -146,7 +148,7 @@ class ModifyMusicViewModel(
                 && state.editableElement.newCover != null
             ) {
                 playbackManager.updateCover(
-                    cover = state.editableElement.newCover.toImageBitmap()
+                    cover = state.editableElement.newCover.decodeToImageBitmap()
                 )
             }
 

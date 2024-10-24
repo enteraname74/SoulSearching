@@ -1,10 +1,15 @@
 package com.github.enteraname74.soulsearching.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -16,8 +21,9 @@ import androidx.compose.ui.unit.Dp
 import coil3.BitmapImage
 import coil3.Image
 import coil3.annotation.ExperimentalCoilApi
-import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.enteraname74.domain.model.Cover
@@ -25,8 +31,15 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.features.filemanager.util.CoverUtils
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.resources.painterResource
 import java.util.*
 
@@ -55,7 +68,7 @@ fun SoulImage(
             )
         }
 
-        is Cover.FileCover -> {
+        is Cover.CoverFile -> {
             FileCover(
                 cover = cover,
                 modifier = baseModifier,
@@ -70,7 +83,7 @@ fun SoulImage(
 
 @Composable
 private fun FileCover(
-    cover: Cover.FileCover,
+    cover: Cover.CoverFile,
     modifier: Modifier,
     contentScale: ContentScale,
     tint: Color,
@@ -78,14 +91,6 @@ private fun FileCover(
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     when {
-        cover.isEmpty() -> {
-            TemplateImage(
-                modifier = modifier,
-                contentScale = contentScale,
-                tint = tint,
-            )
-        }
-
         cover.fileCoverId != null -> {
             CoverIdImage(
                 coverId = cover.fileCoverId,
@@ -98,13 +103,76 @@ private fun FileCover(
         }
 
         cover.initialCoverPath != null -> {
-            CoverPathImage(
-                initialCoverPath = cover.initialCoverPath,
+            MusicFileImage(
+                musicPath = cover.initialCoverPath!!,
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
-                builderOptions = builderOptions,
+            )
+        }
+
+        else -> {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+private fun MusicFileImage(
+    musicPath: String,
+    modifier: Modifier,
+    contentScale: ContentScale,
+    tint: Color,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+) {
+    var fileData: ImageBitmap? by remember { mutableStateOf(null) }
+    var job: Job? by remember { mutableStateOf(null) }
+
+
+    LaunchedEffect(musicPath) {
+        if (job?.isActive == true) {
+            return@LaunchedEffect
+        }
+
+        job = CoroutineScope(Dispatchers.IO).launch {
+            fileData = CoverUtils.getCoverOfMusicFile(musicPath = musicPath)?.decodeToImageBitmap()
+            onSuccess?.let { it(fileData) }
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedVisibility(
+            visible = fileData != null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            if (fileData != null) {
+                Image(
+                    bitmap = fileData!!,
+                    contentDescription = null,
+                    modifier = modifier,
+                    contentScale = contentScale,
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = fileData == null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
             )
         }
     }
@@ -138,7 +206,13 @@ fun DataImage(
         mutableStateOf(null)
     }
 
-    AsyncImage(
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .builderOptions()
+            .data(data)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .crossfade(true)
+            .build(),
         onSuccess = { result ->
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
@@ -154,15 +228,14 @@ fun DataImage(
             }
         },
         placeholder = painterResource(Res.drawable.saxophone_png),
-        error = painterResource(Res.drawable.saxophone_png),
-        model = ImageRequest.Builder(LocalPlatformContext.current)
-            .builderOptions()
-            .data(data)
-            .crossfade(true)
-            .build(),
-        contentDescription = "",
-        modifier = modifier,
         contentScale = contentScale,
+        error = painterResource(Res.drawable.saxophone_png)
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = null,
+        modifier = modifier,
     )
 }
 
@@ -206,3 +279,5 @@ private fun CoverIdImage(
         )
     }
 }
+
+

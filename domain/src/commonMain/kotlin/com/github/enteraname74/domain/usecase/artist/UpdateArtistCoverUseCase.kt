@@ -16,7 +16,7 @@ class UpdateArtistCoverUseCase(
         val artist: Artist = artistRepository.getFromId(artistId = artistId).first() ?: return
         artistRepository.upsert(
             artist = artist.copy(
-                cover = Cover.FileCover(fileCoverId = newCoverId),
+                cover = Cover.CoverFile(fileCoverId = newCoverId),
             )
         )
     }

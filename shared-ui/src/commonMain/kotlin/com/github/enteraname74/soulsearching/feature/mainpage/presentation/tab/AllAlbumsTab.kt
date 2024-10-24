@@ -44,7 +44,7 @@ fun allAlbumsTab(
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
-                    .animateItemPlacement(),
+                    .animateItem(),
                 cover = element.cover,
                 title = element.album.albumName,
                 text = element.artist?.artistName.orEmpty(),
