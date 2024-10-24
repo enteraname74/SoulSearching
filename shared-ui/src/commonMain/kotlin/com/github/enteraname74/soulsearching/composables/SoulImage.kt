@@ -141,7 +141,9 @@ private fun MusicFileImage(
         }
 
         job = CoroutineScope(Dispatchers.IO).launch {
-            fileData = CoverUtils.getCoverOfMusicFile(musicPath = musicPath)?.decodeToImageBitmap()
+            fileData = runCatching {
+                CoverUtils.getCoverOfMusicFile(musicPath = musicPath)?.decodeToImageBitmap()
+            }.getOrNull()
             onSuccess?.let { it(fileData) }
         }
     }

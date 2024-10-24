@@ -148,7 +148,9 @@ class ModifyMusicViewModel(
                 && state.editableElement.newCover != null
             ) {
                 playbackManager.updateCover(
-                    cover = state.editableElement.newCover.decodeToImageBitmap()
+                    cover = runCatching {
+                        state.editableElement.newCover.decodeToImageBitmap()
+                    }.getOrNull()
                 )
             }
 

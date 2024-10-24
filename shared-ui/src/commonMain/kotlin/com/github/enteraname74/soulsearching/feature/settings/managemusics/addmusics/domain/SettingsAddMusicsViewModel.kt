@@ -1,10 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
+import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
+import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
 import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.SelectableMusicItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -15,6 +19,7 @@ class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,
     private val getHiddenFoldersPathUseCase: GetHiddenFoldersPathUseCase,
     private val getAllMusicUseCase: GetAllMusicUseCase,
+    private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase,
 ) : ScreenModel {
     private var _state: MutableStateFlow<SettingsAddMusicsState> = MutableStateFlow(
         SettingsAddMusicsState.Fetching
@@ -47,10 +52,18 @@ class SettingsAddMusicsViewModel(
 
             _state.value = SettingsAddMusicsState.Fetching
 
-            val newMusics = musicFetcher.fetchMusicsFromSelectedFolders(
+            val newMusics: List<SelectableMusicItem> = musicFetcher.fetchMusicsFromSelectedFolders(
                 alreadyPresentMusicsPaths = allMusicsPaths,
                 hiddenFoldersPaths = hiddenFoldersPaths
             )
+
+            // We save the folders to let the user easily removed unwanted one before adding new songs
+            val folders: List<Folder> = newMusics.map { Folder(it.music.folder) }.distinctBy { it.folderPath }
+
+            upsertAllFoldersUseCase(
+                allFolders = folders,
+            )
+
             _state.value = SettingsAddMusicsState.Data(
                 fetchedMusics = newMusics,
             )

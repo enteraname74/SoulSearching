@@ -127,7 +127,7 @@ internal class MusicFetcherDesktopImpl(
     override suspend fun fetchMusicsFromSelectedFolders(
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ): ArrayList<SelectableMusicItem> {
+    ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
         val root = File(System.getProperty("user.home"))
 
