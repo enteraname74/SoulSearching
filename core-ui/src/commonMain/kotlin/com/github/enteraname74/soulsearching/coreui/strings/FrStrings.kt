@@ -200,7 +200,7 @@ object FrStrings : Strings {
         when (total) {
             0 -> "Aucune musique supprimée"
             1 -> "1 musique a été supprimée car elle n'existe plus sur l'appareil"
-            else -> "$total musiques ont été supprimées car elles n\\'existent plus sur l\\'appareil"
+            else -> "$total musiques ont été supprimées car elles n'existent plus sur l'appareil"
         }
 
     override fun plays(total: Int): String =
