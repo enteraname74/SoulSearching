@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.size.Size
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
@@ -23,6 +22,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.util.CoverUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -133,9 +133,7 @@ private fun MusicCover(
             .coerceIn(3, 10),
         onSuccess = onCoverLoaded,
         builderOptions = {
-            this.size(IMAGE_SIZE)
+            this.size(CoverUtils.IMAGE_SIZE)
         }
     )
 }
-
-private const val IMAGE_SIZE: Int = 800

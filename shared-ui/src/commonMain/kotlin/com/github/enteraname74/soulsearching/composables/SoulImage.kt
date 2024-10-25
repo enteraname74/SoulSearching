@@ -30,16 +30,14 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.features.filemanager.util.CoverUtils
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.resources.painterResource
 import java.util.*
 
@@ -122,7 +120,6 @@ private fun FileCover(
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun MusicFileImage(
     musicPath: String,
@@ -130,8 +127,13 @@ private fun MusicFileImage(
     contentScale: ContentScale,
     tint: Color,
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    coverUtils: CachedCoverManager = injectElement(),
 ) {
-    var fileData: ImageBitmap? by remember { mutableStateOf(null) }
+    var fileData: ImageBitmap? by remember {
+        mutableStateOf(
+            coverUtils.getCachedImage(musicPath)
+        )
+    }
     var job: Job? by remember { mutableStateOf(null) }
 
 
@@ -141,10 +143,9 @@ private fun MusicFileImage(
         }
 
         job = CoroutineScope(Dispatchers.IO).launch {
-            fileData = runCatching {
-                CoverUtils.getCoverOfMusicFile(musicPath = musicPath)?.decodeToImageBitmap()
-            }.getOrNull()
-            onSuccess?.let { it(fileData) }
+            val fetchedCover = coverUtils.fetchCoverOfMusicFile(musicPath = musicPath)
+            fetchedCover?.let { fileData = it }
+            onSuccess?.let { it(fetchedCover) }
         }
     }
 
