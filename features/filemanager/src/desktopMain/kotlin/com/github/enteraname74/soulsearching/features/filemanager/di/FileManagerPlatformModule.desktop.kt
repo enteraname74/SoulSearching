@@ -15,5 +15,5 @@ import org.koin.dsl.module
 internal actual val fileManagerPlatformModule: Module = module {
     singleOf(::CoverFileManagerDesktopImpl) bind CoverFileManager::class
     singleOf(::MusicFetcherDesktopImpl) bind MusicFetcher::class
-    factoryOf(::CachedCoverManagerDesktopImpl) bind CachedCoverManager::class
+    singleOf(::CachedCoverManagerDesktopImpl) bind CachedCoverManager::class
 }

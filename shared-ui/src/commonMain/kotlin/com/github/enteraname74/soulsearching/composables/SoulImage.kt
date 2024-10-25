@@ -23,8 +23,6 @@ import coil3.Image
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
-import coil3.compose.rememberAsyncImagePainter
-import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.enteraname74.domain.model.Cover
@@ -136,7 +134,6 @@ private fun MusicFileImage(
         )
     }
     var job: Job? by remember { mutableStateOf(null) }
-
 
     LaunchedEffect(musicPath) {
         if (job?.isActive == true) {
