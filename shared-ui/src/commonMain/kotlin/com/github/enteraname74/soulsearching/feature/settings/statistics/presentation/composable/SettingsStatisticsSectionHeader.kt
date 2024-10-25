@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.ListenedElement
+import com.github.enteraname74.soulsearching.util.CoverUtils
 
 @Composable
 fun SettingsStatisticsSectionHeader(
@@ -48,7 +49,10 @@ fun SettingsStatisticsSectionHeader(
                     UiConstants.ImageSize.veryHuge
                 },
                 roundedPercent = 5,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                builderOptions = {
+                    this.size(CoverUtils.IMAGE_SIZE)
+                }
             )
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),

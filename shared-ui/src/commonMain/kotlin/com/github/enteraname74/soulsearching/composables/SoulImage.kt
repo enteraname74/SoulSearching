@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import coil3.BitmapImage
 import coil3.Image
 import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.CachePolicy
@@ -209,13 +210,7 @@ fun DataImage(
         mutableStateOf(null)
     }
 
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalPlatformContext.current)
-            .builderOptions()
-            .data(data)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .crossfade(true)
-            .build(),
+    AsyncImage(
         onSuccess = { result ->
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
@@ -231,14 +226,15 @@ fun DataImage(
             }
         },
         placeholder = painterResource(Res.drawable.saxophone_png),
-        contentScale = contentScale,
-        error = painterResource(Res.drawable.saxophone_png)
-    )
-
-    Image(
-        painter = painter,
-        contentDescription = null,
+        error = painterResource(Res.drawable.saxophone_png),
+        model = ImageRequest.Builder(LocalPlatformContext.current)
+            .builderOptions()
+            .data(data)
+            .crossfade(true)
+            .build(),
+        contentDescription = "",
         modifier = modifier,
+        contentScale = contentScale,
     )
 }
 
