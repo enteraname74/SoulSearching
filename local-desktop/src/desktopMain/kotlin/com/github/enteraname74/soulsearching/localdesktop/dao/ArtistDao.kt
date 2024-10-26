@@ -32,7 +32,7 @@ internal class ArtistDao(
             ArtistTable.upsert {
                 it[id] = artist.artistId
                 it[artistName] = artist.artistName
-                it[coverId] = (artist.cover as? Cover.FileCover)?.fileCoverId
+                it[coverId] = (artist.cover as? Cover.CoverFile)?.fileCoverId
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
@@ -45,7 +45,7 @@ internal class ArtistDao(
             ArtistTable.batchUpsert(artists) {
                 this[id] = it.artistId
                 this[artistName] = it.artistName
-                this[coverId] = (it.cover as? Cover.FileCover)?.fileCoverId
+                this[coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId
                 this[addedDate] = it.addedDate
                 this[nbPlayed] = it.nbPlayed
                 this[isInQuickAccess] = it.isInQuickAccess

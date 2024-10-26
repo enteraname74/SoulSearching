@@ -81,7 +81,7 @@ internal class MusicFetcherDesktopImpl(
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
                         folder = file.parent,
-                        cover = Cover.FileCover(
+                        cover = Cover.CoverFile(
                             initialCoverPath = file.path,
                         )
                     )
@@ -127,7 +127,7 @@ internal class MusicFetcherDesktopImpl(
     override suspend fun fetchMusicsFromSelectedFolders(
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ): ArrayList<SelectableMusicItem> {
+    ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
         val root = File(System.getProperty("user.home"))
 

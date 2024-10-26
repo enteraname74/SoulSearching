@@ -214,7 +214,7 @@ private fun Content(
                 ) { music ->
                     MusicItemComposable(
                         modifier = Modifier
-                            .animateItemPlacement(),
+                            .animateItem(),
                         music = music,
                         onClick = {
                             coroutineScope.launch {

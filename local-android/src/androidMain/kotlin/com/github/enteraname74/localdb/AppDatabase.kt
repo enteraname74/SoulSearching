@@ -10,7 +10,7 @@ import com.github.enteraname74.localdb.model.*
 
 
 @Database(
-    version = LocalDatabaseVersion.version,
+    version = LocalDatabaseVersion.VERSION,
     entities = [
         RoomMusic::class,
         RoomAlbum::class,
@@ -22,7 +22,7 @@ import com.github.enteraname74.localdb.model.*
         RoomAlbumArtist::class,
         RoomPlayerMusic::class,
         RoomFolder::class
-    ],
+    ]
 )
 @TypeConverters(Converters::class)
 internal abstract class AppDatabase : RoomDatabase() {

@@ -1,18 +1,14 @@
 package com.github.enteraname74.soulsearching.features.filemanager.musicfetching
 
-import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.os.Build
 import android.provider.MediaStore
-import androidx.core.database.getLongOrNull
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.features.filemanager.util.MusicCoverUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +33,6 @@ internal class MusicFetcherAndroidImpl(
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Albums.ALBUM_ID,
         )
 
         val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -52,7 +47,6 @@ internal class MusicFetcherAndroidImpl(
     }
 
 
-
     private fun Cursor.toMusic(): Music? =
         try {
             Music(
@@ -62,14 +56,7 @@ internal class MusicFetcherAndroidImpl(
                 duration = this.getLong(3),
                 path = this.getString(4),
                 folder = File(this.getString(4)).parent ?: "",
-                cover = Cover.FileCover(
-                    initialCoverPath = this.getLongOrNull(5)?.let {
-                        MusicCoverUtils.getMusicFileCoverPath(
-                            context = context,
-                            albumId = it,
-                        )
-                    }
-                ),
+                cover = Cover.CoverFile(initialCoverPath = this.getString(4)),
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")
@@ -94,9 +81,7 @@ internal class MusicFetcherAndroidImpl(
                 while (cursor.moveToNext()) {
                     try {
                         val music: Music? = cursor.toMusic()
-                        music?.let {
-                            addMusic(musicToAdd = it)
-                        }
+                        music?.let { addMusic(musicToAdd = it) }
                     } catch (e: Exception) {
                         println("MusicFetcher -- Exception while saving song: $e")
                     }
@@ -123,7 +108,7 @@ internal class MusicFetcherAndroidImpl(
     override suspend fun fetchMusicsFromSelectedFolders(
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ): ArrayList<SelectableMusicItem> {
+    ): List<SelectableMusicItem> {
         val newMusics = ArrayList<SelectableMusicItem>()
         val cursor = buildMusicCursor()
 

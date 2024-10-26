@@ -17,11 +17,6 @@ internal class CoverFileManagerDesktopImpl: CoverFileManager {
         return coverFolder
     }
 
-    override fun getCleanFileCoverForMusic(music: Music): Cover.FileCover =
-        Cover.FileCover(
-            initialCoverPath = music.path,
-        )
-
     companion object {
         private val SUFFIX = if (AppEnvironment.IS_IN_DEVELOPMENT) {
             "_dev"

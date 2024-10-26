@@ -38,6 +38,7 @@ object UiConstants {
      * Define the sizes of images in the application.
      */
     object ImageSize {
+        val verySmall: Dp = 12.dp
         val small: Dp = 16.dp
         val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp

@@ -27,7 +27,7 @@ internal data class RoomAlbum(
 internal fun RoomAlbum.toAlbum(): Album = Album(
     albumId = albumId,
     albumName = albumName,
-    cover = Cover.FileCover(fileCoverId = coverId),
+    cover = Cover.CoverFile(fileCoverId = coverId),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess
@@ -39,7 +39,7 @@ internal fun RoomAlbum.toAlbum(): Album = Album(
 internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     albumId = albumId,
     albumName = albumName,
-    coverId = (cover as? Cover.FileCover)?.fileCoverId,
+    coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess

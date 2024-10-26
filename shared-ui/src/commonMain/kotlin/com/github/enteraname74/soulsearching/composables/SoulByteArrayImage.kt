@@ -10,9 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SoulByteArrayImage(
     data: ByteArray?,

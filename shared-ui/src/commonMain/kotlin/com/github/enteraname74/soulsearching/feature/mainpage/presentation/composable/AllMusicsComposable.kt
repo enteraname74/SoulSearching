@@ -24,8 +24,6 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -101,7 +99,7 @@ fun AllMusicsComposable(
             ) { elt ->
                 MusicItemComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     music = elt,
                     onClick = {
                         coroutineScope.launch {

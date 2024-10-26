@@ -23,5 +23,9 @@ class FolderRepositoryImpl(
         folder = folder
     )
 
+    override suspend fun deleteAll(folders: List<Folder>) {
+        folderDataSource.deleteAll(folders)
+    }
+
     override fun getAll(): Flow<List<Folder>> = folderDataSource.getAll()
 }

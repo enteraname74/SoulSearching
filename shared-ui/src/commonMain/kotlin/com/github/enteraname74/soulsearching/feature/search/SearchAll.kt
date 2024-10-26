@@ -26,8 +26,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.search.composable.LinearPreviewComposable
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -64,7 +62,7 @@ fun SearchAll(
             ) {
                 SearchType(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = strings.playlists,
                 )
             }
@@ -75,7 +73,7 @@ fun SearchAll(
             ) { playlistWithMusics ->
                 LinearPreviewComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = playlistWithMusics.playlist.name,
                     text = strings.musics(playlistWithMusics.musicsNumber),
                     onClick = {
@@ -100,7 +98,7 @@ fun SearchAll(
             ) {
                 SearchType(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = strings.artists,
                 )
             }
@@ -111,7 +109,7 @@ fun SearchAll(
             ) { artistWithMusics ->
                 LinearPreviewComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = artistWithMusics.artist.artistName,
                     text = strings.musics(artistWithMusics.musics.size),
                     onClick = {
@@ -137,7 +135,7 @@ fun SearchAll(
             ) {
                 SearchType(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = strings.albums,
                 )
             }
@@ -148,7 +146,7 @@ fun SearchAll(
             ) { albumWithArtist ->
                 LinearPreviewComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = albumWithArtist.album.albumName,
                     text = if (albumWithArtist.artist != null) albumWithArtist.artist!!.artistName else "",
                     onClick = {
@@ -179,7 +177,7 @@ fun SearchAll(
             ) {
                 SearchType(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     title = strings.musics,
                 )
             }
@@ -190,7 +188,7 @@ fun SearchAll(
             ) { music ->
                 MusicItemComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     music = music,
                     onClick = {
                         coroutineScope.launch {

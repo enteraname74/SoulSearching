@@ -7,15 +7,14 @@ import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable.folderPath
 import com.github.enteraname74.soulsearching.localdesktop.tables.FolderTable.isSelected
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.toFolder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.batchUpsert
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
 
 internal class FolderDao {
     suspend fun upsert(folder: Folder) {
@@ -40,6 +39,12 @@ internal class FolderDao {
        flowTransactionOn {
            FolderTable.deleteWhere { folderPath eq folder.folderPath }
        }
+    }
+
+    suspend fun deleteAll(folderPaths: List<String>) {
+        flowTransactionOn {
+            FolderTable.deleteWhere { Op.build { folderPath inList folderPaths }  }
+        }
     }
 
     fun getAll(): Flow<List<Folder>> = transaction {

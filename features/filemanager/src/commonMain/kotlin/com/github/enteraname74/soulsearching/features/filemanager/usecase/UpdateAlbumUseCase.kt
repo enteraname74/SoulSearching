@@ -73,9 +73,9 @@ class UpdateAlbumUseCase(
         for (music in musicsFromAlbum) {
             val newMusic = music.copy(
                 album = newAlbumWithArtistInformation.album.albumName,
-                cover = (music.cover as? Cover.FileCover)?.copy(
-                    fileCoverId = (newAlbumWithArtistInformation.album.cover as? Cover.FileCover)?.fileCoverId
-                        ?: (music.cover as? Cover.FileCover)?.fileCoverId
+                cover = (music.cover as? Cover.CoverFile)?.copy(
+                    fileCoverId = (newAlbumWithArtistInformation.album.cover as? Cover.CoverFile)?.fileCoverId
+                        ?: (music.cover as? Cover.CoverFile)?.fileCoverId
                 ) ?: music.cover,
                 artist = newAlbumWithArtistInformation.artist!!.artistName
             )

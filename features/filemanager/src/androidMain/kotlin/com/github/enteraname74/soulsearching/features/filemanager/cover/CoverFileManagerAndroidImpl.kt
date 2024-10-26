@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.cover
 
 import android.content.Context
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.features.filemanager.util.MusicCoverUtils
 import java.io.File
 
 internal class CoverFileManagerAndroidImpl(
@@ -18,14 +15,6 @@ internal class CoverFileManagerAndroidImpl(
         }
 
         return folder
-    }
-
-    override fun getCleanFileCoverForMusic(music: Music): Cover.FileCover {
-        val albumId = MusicCoverUtils.getAlbumIdFromMusicPath(context, music.path) ?: return Cover.FileCover()
-        val path = MusicCoverUtils.getMusicFileCoverPath(context, albumId) ?: return Cover.FileCover()
-        return Cover.FileCover(
-            initialCoverPath = path,
-        )
     }
 
     companion object {

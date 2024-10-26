@@ -43,7 +43,7 @@ fun BigPreviewComposable(
         SoulImage(
             cover = cover,
             size = imageSize,
-            roundedPercent = roundedPercent
+            roundedPercent = roundedPercent,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

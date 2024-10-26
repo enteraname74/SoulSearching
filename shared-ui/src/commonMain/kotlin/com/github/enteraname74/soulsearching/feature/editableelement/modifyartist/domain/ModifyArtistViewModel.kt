@@ -104,7 +104,7 @@ class ModifyArtistViewModel(
 
             loadingManager.startLoading()
 
-            val coverId: UUID? =
+            val coverFile: UUID? =
                 state.editableElement.newCover?.let { coverData ->
                     val newCoverId: UUID = UUID.randomUUID()
                     upsertImageCoverUseCase(
@@ -112,13 +112,13 @@ class ModifyArtistViewModel(
                         data = coverData,
                     )
                     newCoverId
-                } ?: (state.initialArtist.artist.cover as? Cover.FileCover)?.fileCoverId
+                } ?: (state.initialArtist.artist.cover as? Cover.CoverFile)?.fileCoverId
 
             val newArtistInformation = state.initialArtist.copy(
                 artist = state.initialArtist.artist.copy(
-                    cover = (state.initialArtist.artist.cover as? Cover.FileCover)?.copy(
-                        fileCoverId = coverId
-                    ) ?: coverId?.let { Cover.FileCover(fileCoverId = it) },
+                    cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
+                        fileCoverId = coverFile
+                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
                     artistName = form.getArtistName().trim(),
                 )
             )

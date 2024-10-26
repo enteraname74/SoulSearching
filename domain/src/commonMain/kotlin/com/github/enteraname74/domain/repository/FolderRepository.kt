@@ -16,6 +16,8 @@ interface FolderRepository {
      */
     suspend fun delete(folder: Folder)
 
+    suspend fun deleteAll(folders: List<Folder>)
+
     /**
      * Retrieves a flow of all Folder.
      */

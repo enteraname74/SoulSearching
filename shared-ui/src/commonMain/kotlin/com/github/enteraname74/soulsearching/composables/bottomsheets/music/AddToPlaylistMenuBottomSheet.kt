@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.music
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +19,12 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.topbar.*
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddToPlaylistMenuBottomSheet(
     playlistsWithMusics: List<PlaylistWithMusics>,
@@ -36,63 +37,59 @@ fun AddToPlaylistMenuBottomSheet(
         mutableStateListOf<UUID>()
     }
 
-    Scaffold{ paddingValues ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(primaryColor)
+            .padding(UiConstants.Spacing.medium)
+    ) {
+        SoulTopBar(
+            title = strings.addToPlaylist,
+            leftAction = TopBarNavigationAction(
+                onClick = {
+                    onDismiss()
+                    selectedPlaylistIds.clear()
+                }
+            ),
+            rightAction = TopBarValidateAction(
+                onClick = {
+                    onConfirm(selectedPlaylistIds.toList())
+                    selectedPlaylistIds.clear()
+                }
+            ),
+            colors = SoulTopBarDefaults.colors(
+                containerColor = Color.Transparent,
+                contentColor = textColor,
+            ),
+        )
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .background(primaryColor)
-                .padding(paddingValues)
-                .padding(UiConstants.Spacing.medium)
+                .fillMaxWidth()
         ) {
-            SoulTopBar(
-                title = strings.addToPlaylist,
-                leftAction = TopBarNavigationAction(
+            items(
+                items = playlistsWithMusics,
+                key = { it.playlist.playlistId },
+                contentType = { ALL_PLAYLISTS_CONTENT_TYPE }
+            ) { playlistWithMusics ->
+                PlaylistSelectableComposable(
+                    modifier = Modifier.animateItem(),
+                    playlistWithMusics = playlistWithMusics,
                     onClick = {
-                        onDismiss()
-                        selectedPlaylistIds.clear()
-                    }
-                ),
-                rightAction = TopBarValidateAction(
-                    onClick = {
-                        onConfirm(selectedPlaylistIds.toList())
-                        selectedPlaylistIds.clear()
-                    }
-                ),
-                colors = SoulTopBarDefaults.colors(
-                    containerColor = Color.Transparent,
-                    contentColor = textColor,
-                ),
-            )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(
-                    items = playlistsWithMusics,
-                    key = { it.playlist.playlistId },
-                    contentType = { ALL_PLAYLISTS_CONTENT_TYPE }
-                ) { playlistWithMusics ->
-                    PlaylistSelectableComposable(
-                        modifier = Modifier
-                            .animateItemPlacement(),
-                        playlistWithMusics = playlistWithMusics,
-                        onClick = {
-                            if (playlistWithMusics.playlist.playlistId in selectedPlaylistIds)
-                                selectedPlaylistIds.remove(playlistWithMusics.playlist.playlistId)
-                            else
-                                selectedPlaylistIds.add(playlistWithMusics.playlist.playlistId)
-                        },
-                        isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
-                        textColor = textColor,
-                    )
-                }
+                        if (playlistWithMusics.playlist.playlistId in selectedPlaylistIds)
+                            selectedPlaylistIds.remove(playlistWithMusics.playlist.playlistId)
+                        else
+                            selectedPlaylistIds.add(playlistWithMusics.playlist.playlistId)
+                    },
+                    isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
+                    textColor = textColor,
+                )
+            }
 
-                item(
-                    key = ALL_PLAYLISTS_SPACER_KEY,
-                    contentType = ALL_PLAYLISTS_SPACER_CONTENT_TYPE,
-                ) {
-                    SoulPlayerSpacer()
-                }
+            item(
+                key = ALL_PLAYLISTS_SPACER_KEY,
+                contentType = ALL_PLAYLISTS_SPACER_CONTENT_TYPE,
+            ) {
+                SoulPlayerSpacer()
             }
         }
     }

@@ -31,6 +31,7 @@ fun ProgressIndicatorComposable(
             progress = { progress },
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             trackColor = SoulSearchingColorTheme.colorScheme.secondary,
+            drawStopIndicator = {},
         )
         subText?.let {
             Text(

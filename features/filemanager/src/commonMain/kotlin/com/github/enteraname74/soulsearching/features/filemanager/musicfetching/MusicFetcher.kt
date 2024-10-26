@@ -46,7 +46,7 @@ abstract class MusicFetcher: KoinComponent {
     abstract suspend fun fetchMusicsFromSelectedFolders(
         alreadyPresentMusicsPaths: List<String>,
         hiddenFoldersPaths: List<String>
-    ): ArrayList<SelectableMusicItem>
+    ): List<SelectableMusicItem>
 
 
     private data class AlbumInformation(
@@ -69,7 +69,7 @@ abstract class MusicFetcher: KoinComponent {
         upsertAllMusicAlbumUseCase(musicAlbums)
         upsertAllMusicArtistsUseCase(musicArtists)
         upsertAllFoldersUseCase(
-            musicsByPath.values.map { Folder(folderPath = it.folder) }
+            musicsByPath.values.map { Folder(folderPath = it.folder) }.distinctBy { it.folderPath }
         )
 
         musicsByPath.clear()

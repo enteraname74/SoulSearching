@@ -3,16 +3,15 @@ package com.github.enteraname74.soulsearching.coreui.button
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.unit.Dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SoulButton(
     onClick: () -> Unit,
@@ -24,7 +23,7 @@ fun SoulButton(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
-        LocalMinimumInteractiveComponentEnforcement provides false,
+        LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
     ) {
         Button(
             onClick = onClick,

@@ -21,6 +21,9 @@ internal interface FolderDao {
     @Delete
     suspend fun delete(roomFolder: RoomFolder)
 
+    @Query("DELETE FROM RoomFolder WHERE folderPath IN (:folderPaths)")
+    suspend fun deleteAll(folderPaths: List<String>)
+
     @Query("SELECT * FROM RoomFolder")
     fun getAll(): Flow<List<RoomFolder>>
 }

@@ -8,6 +8,8 @@ import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
+import com.github.enteraname74.domain.usecase.folder.DeleteAllFoldersUseCase
+import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
@@ -36,6 +38,8 @@ import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.io.File
 import java.util.*
 
@@ -62,12 +66,15 @@ class MainPageViewModel(
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
-) : ScreenModel,
+) : ScreenModel, KoinComponent,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl,
     SortingInformationDelegate by sortingInformationDelegateImpl {
+
+    private val getAllFoldersUseCase: GetAllFoldersUseCase by inject()
+    private val deleteAllFoldersUseCase: DeleteAllFoldersUseCase by inject()
 
     private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
@@ -154,15 +161,16 @@ class MainPageViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val allMusicFoldersState: StateFlow<AllMusicFoldersState> = getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
-        AllMusicFoldersState(
-            allMusicFolders = allMusicFolders,
+    val allMusicFoldersState: StateFlow<AllMusicFoldersState> =
+        getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
+            AllMusicFoldersState(
+                allMusicFolders = allMusicFolders,
+            )
+        }.stateIn(
+            scope = screenModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = AllMusicFoldersState()
         )
-    }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = AllMusicFoldersState()
-    )
 
     val allArtistsState: StateFlow<AllArtistsState> = combine(
         _artists,
@@ -275,6 +283,12 @@ class MainPageViewModel(
                     coverFileManager.deleteFromId(id = coverId)
                 }
             }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val allFolders = getAllFoldersUseCase().first()
+            val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
+            deleteAllFoldersUseCase(foldersToDelete)
         }
     }
 

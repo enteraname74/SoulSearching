@@ -30,6 +30,8 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":domain"))
             implementation(compose.runtime)
+            implementation(compose.ui)
+            implementation(libs.components.resources)
             implementation(libs.koin.core)
             implementation(libs.jaudiotagger)
             implementation(libs.coroutines.core)

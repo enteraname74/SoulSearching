@@ -41,7 +41,7 @@ fun allQuickAccessTab(
         ) { element ->
             element.toPreview(
                 modifier = Modifier
-                    .animateItemPlacement(),
+                    .animateItem(),
                 onClick = onClick,
                 onLongClick = showQuickAccessBottomSheet,
             )

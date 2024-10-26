@@ -13,7 +13,7 @@ class EndMigrationCallback(
         super.onOpen(db)
         settings.set(
             key = SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION.key,
-            value = LocalDatabaseVersion.version,
+            value = LocalDatabaseVersion.VERSION,
         )
     }
 }

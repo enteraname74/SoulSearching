@@ -1,10 +1,15 @@
 package com.github.enteraname74.soulsearching.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,9 +29,14 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import java.util.*
 
@@ -55,7 +65,7 @@ fun SoulImage(
             )
         }
 
-        is Cover.FileCover -> {
+        is Cover.CoverFile -> {
             FileCover(
                 cover = cover,
                 modifier = baseModifier,
@@ -70,7 +80,7 @@ fun SoulImage(
 
 @Composable
 private fun FileCover(
-    cover: Cover.FileCover,
+    cover: Cover.CoverFile,
     modifier: Modifier,
     contentScale: ContentScale,
     tint: Color,
@@ -78,14 +88,6 @@ private fun FileCover(
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     when {
-        cover.isEmpty() -> {
-            TemplateImage(
-                modifier = modifier,
-                contentScale = contentScale,
-                tint = tint,
-            )
-        }
-
         cover.fileCoverId != null -> {
             CoverIdImage(
                 coverId = cover.fileCoverId,
@@ -98,13 +100,80 @@ private fun FileCover(
         }
 
         cover.initialCoverPath != null -> {
-            CoverPathImage(
-                initialCoverPath = cover.initialCoverPath,
+            MusicFileImage(
+                musicPath = cover.initialCoverPath!!,
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
-                builderOptions = builderOptions,
+            )
+        }
+
+        else -> {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MusicFileImage(
+    musicPath: String,
+    modifier: Modifier,
+    contentScale: ContentScale,
+    tint: Color,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    coverUtils: CachedCoverManager = injectElement(),
+) {
+    var fileData: ImageBitmap? by remember {
+        mutableStateOf(
+            coverUtils.getCachedImage(musicPath)
+        )
+    }
+    var job: Job? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(musicPath) {
+        if (job?.isActive == true) {
+            return@LaunchedEffect
+        }
+
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val fetchedCover = coverUtils.fetchCoverOfMusicFile(musicPath = musicPath)
+            fetchedCover?.let { fileData = it }
+            onSuccess?.let { it(fetchedCover) }
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedVisibility(
+            visible = fileData != null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            if (fileData != null) {
+                Image(
+                    bitmap = fileData!!,
+                    contentDescription = null,
+                    modifier = modifier,
+                    contentScale = contentScale,
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = fileData == null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
             )
         }
     }
@@ -206,3 +275,5 @@ private fun CoverIdImage(
         )
     }
 }
+
+

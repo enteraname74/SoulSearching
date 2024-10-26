@@ -116,7 +116,7 @@ class ModifyAlbumViewModel(
             loadingManager.startLoading()
 
             // If the image has changed, we need to save it and retrieve its id.
-            val coverId: UUID? = state.editableElement.newCover?.let { coverData ->
+            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
 
                 upsertImageCoverUseCase(
@@ -124,7 +124,7 @@ class ModifyAlbumViewModel(
                     data = coverData,
                 )
                 newCoverId
-            } ?: (state.initialAlbum.album.cover as? Cover.FileCover)?.fileCoverId
+            } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
 
             val albumWithArtist: AlbumWithArtist = state.initialAlbum.toAlbumWithArtist().copy(
                 album = state.initialAlbum.album.copy(
@@ -136,9 +136,9 @@ class ModifyAlbumViewModel(
             )
             val newAlbumWithArtistInformation: AlbumWithArtist = albumWithArtist.copy(
                 album = albumWithArtist.album.copy(
-                    cover = (albumWithArtist.album.cover as? Cover.FileCover)?.copy(
-                        fileCoverId = coverId,
-                    ) ?: coverId?.let { Cover.FileCover(fileCoverId = it) }
+                    cover = (albumWithArtist.album.cover as? Cover.CoverFile)?.copy(
+                        fileCoverId = coverFile,
+                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
                 )
             )
 

@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
-import java.util.UUID
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 fun allArtistsTab(
@@ -44,7 +44,7 @@ fun allArtistsTab(
         ) { element ->
             BigPreviewComposable(
                 modifier = Modifier
-                    .animateItemPlacement(),
+                    .animateItem(),
                 cover = element.cover,
                 title = element.artist.artistName,
                 text = strings.musics(element.musics.size),

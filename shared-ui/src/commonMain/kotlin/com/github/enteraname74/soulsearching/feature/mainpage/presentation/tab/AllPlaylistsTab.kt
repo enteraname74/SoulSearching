@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.collectAsState
@@ -18,7 +17,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 fun allPlaylistsTab(
     mainPageViewModel: MainPageViewModel,
     navigateToPlaylist: (playlistId: UUID) -> Unit,
@@ -55,7 +53,7 @@ fun allPlaylistsTab(
             ) { element ->
                 BigPreviewComposable(
                     modifier = Modifier
-                        .animateItemPlacement(),
+                        .animateItem(),
                     cover = element.cover,
                     title = element.playlist.name,
                     text = strings.musics(element.musicsNumber),

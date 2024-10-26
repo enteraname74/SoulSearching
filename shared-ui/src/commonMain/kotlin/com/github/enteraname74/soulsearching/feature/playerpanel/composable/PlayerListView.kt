@@ -91,6 +91,8 @@ fun PlayerListView(
                     contentType = { PLAYER_LIST_CONTENT_TYPE }
                 ) { elt ->
                     MusicItemComposable(
+                        modifier = Modifier
+                            .animateItem(),
                         music = elt,
                         onClick = { music ->
                             CoroutineScope(Dispatchers.IO).launch {

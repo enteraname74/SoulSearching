@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.coreui.slider
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +11,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -45,13 +47,27 @@ fun SoulSlider(
             SliderDefaults.Thumb(
                 interactionSource = interactionSource,
                 modifier = Modifier
-                    .size(UiConstants.ImageSize.small)
                     .padding(
-                        start = 4.dp,
-                        top = 4.dp
+                        top = 2.dp,
                     ),
+                thumbSize = DpSize(
+                    width = UiConstants.ImageSize.verySmall,
+                    height = UiConstants.ImageSize.verySmall
+                ),
                 colors = sliderColors
+            )
+        },
+        track = {
+            SliderDefaults.Track(
+                sliderState = it,
+                trackInsideCornerSize = 0.dp,
+                drawStopIndicator = null,
+                thumbTrackGapSize = 0.dp,
+                modifier = Modifier.height(TrackHeight),
+                colors = sliderColors,
             )
         }
     )
 }
+
+private val TrackHeight = 3.dp

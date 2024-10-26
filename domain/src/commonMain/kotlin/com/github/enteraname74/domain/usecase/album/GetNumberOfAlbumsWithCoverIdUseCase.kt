@@ -10,6 +10,6 @@ class GetNumberOfAlbumsWithCoverIdUseCase(
 ) {
     suspend operator fun invoke(coverId: UUID): Int {
         val allAlbums = albumRepository.getAll().first()
-        return allAlbums.count { (it.cover as? Cover.FileCover)?.fileCoverId == coverId }
+        return allAlbums.count { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }
     }
 }

@@ -7,10 +7,7 @@ import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
+import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
@@ -18,12 +15,10 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.cove
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.folder
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.id
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.initialCoverPath
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isHidden
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.nbPlayed
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.path
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.*
@@ -39,8 +34,7 @@ internal class MusicDao {
                 it[name] = music.name
                 it[album] = music.album
                 it[artist] = music.artist
-                it[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
-                it[initialCoverPath] = (music.cover as? Cover.FileCover)?.initialCoverPath
+                it[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
                 it[duration] = music.duration
                 it[path] = music.path
                 it[folder] = music.folder
@@ -55,12 +49,11 @@ internal class MusicDao {
     suspend fun upsertAll(musics: List<Music>) {
         flowTransactionOn {
             MusicTable.batchUpsert(musics) {music ->
-                this[id] = music.musicId
+                this[MusicTable.id] = music.musicId
                 this[MusicTable.name] = music.name
                 this[album] = music.album
                 this[artist] = music.artist
-                this[coverId] = (music.cover as? Cover.FileCover)?.fileCoverId
-                this[initialCoverPath] = (music.cover as? Cover.FileCover)?.initialCoverPath
+                this[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
                 this[duration] = music.duration
                 this[path] = music.path
                 this[folder] = music.folder

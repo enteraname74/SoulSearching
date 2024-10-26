@@ -22,6 +22,10 @@ internal class FolderDataSourceImpl(
         folderDao.delete(folder)
     }
 
+    override suspend fun deleteAll(folders: List<Folder>) {
+        folderDao.deleteAll(folderPaths = folders.map { it.folderPath })
+    }
+
     override fun getAll(): Flow<List<Folder>> =
         folderDao.getAll()
 }
