@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 /**
  * Represent a song with information related to it.

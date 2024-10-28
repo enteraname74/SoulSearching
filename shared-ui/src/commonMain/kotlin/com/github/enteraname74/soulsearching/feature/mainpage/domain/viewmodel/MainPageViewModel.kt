@@ -300,13 +300,14 @@ class MainPageViewModel(
      * Fetch all musics.
      */
     suspend fun fetchMusics(
-        updateProgress: (Float, String?) -> Unit,
-        finishAction: () -> Unit
+        updateProgress: (Float, String?) -> Unit
     ) {
-        musicFetcher.fetchMusics(
-            updateProgress = updateProgress,
-            finishAction = finishAction
-        )
+        val hasSongsBeenSaved = musicFetcher.fetchMusics(updateProgress = updateProgress)
+        println("MainPageViewModel -- hasSongBeenSaved? $hasSongsBeenSaved")
+        if (!hasSongsBeenSaved) {
+            // We need to specify how to save songs with potential multiple artists
+            _navigationState.value = MainPageNavigationState.ToArtistChoice
+        }
     }
 
     /**

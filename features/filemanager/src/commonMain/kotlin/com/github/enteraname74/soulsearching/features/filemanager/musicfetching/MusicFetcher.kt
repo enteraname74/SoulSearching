@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.features.filemanager.musicfetching
 
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithArtistUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
@@ -19,7 +21,7 @@ import java.util.*
 /**
  * Utilities for fetching musics on current device.
  */
-abstract class MusicFetcher: KoinComponent {
+abstract class MusicFetcher : KoinComponent {
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase by inject()
     private val upsertAllAlbumsUseCase: UpsertAllAlbumsUseCase by inject()
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase by inject()
@@ -32,13 +34,14 @@ abstract class MusicFetcher: KoinComponent {
     private val getAllArtistsUseCase: GetAllArtistsUseCase by inject()
     private val getAllAlbumsWithArtistUseCase: GetAllAlbumsWithArtistUseCase by inject()
 
+    private val settings: SoulSearchingSettings by inject()
+
     /**
      * Fetch all musics on the device.
      */
     abstract suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
-        finishAction: () -> Unit
-    )
+    ): Boolean
 
     /**
      * Fetch musics from specified folders on the device.
@@ -61,7 +64,14 @@ abstract class MusicFetcher: KoinComponent {
     private val musicArtists: ArrayList<MusicArtist> = arrayListOf()
     private val musicAlbums: ArrayList<MusicAlbum> = arrayListOf()
 
-    suspend fun saveAll() {
+    private suspend fun saveAll() {
+
+        println("----")
+        albumsByInfo.forEach { (info, album) ->
+            println("KEY: ${info.artist} && ${info.name}, ALBUM: ${album.albumName}")
+        }
+        println("----")
+
         upsertAllArtistsUseCase(artistsByName.values.toList())
         upsertAllAlbumsUseCase(albumsByInfo.values.toList())
         upsertAllMusicsUseCase(musicsByPath.values.toList())
@@ -78,6 +88,133 @@ abstract class MusicFetcher: KoinComponent {
         albumArtists.clear()
         musicArtists.clear()
         musicAlbums.clear()
+
+        settings.set(
+            SoulSearchingSettingsKeys.HAS_MUSICS_BEEN_FETCHED_KEY.key,
+            true
+        )
+    }
+
+    fun getPotentialMultipleArtist(): List<Artist> =
+        artistsByName.values.filter { it.isComposedOfMultipleArtists() }
+
+    /**
+     * If songs with multiple artists are found, we do not save the songs directly.
+     */
+    suspend fun saveAllWithMultipleArtistsCheck(): Boolean =
+        if (artistsByName.values.any { it.isComposedOfMultipleArtists() }) {
+            // There are songs in the list that may have multiple artists, we will need choice from user:
+            false
+        } else {
+            saveAll()
+            true
+        }
+
+    suspend fun saveAllWithMultipleArtists(
+        artistsToDivide: List<Artist>
+    ) {
+        // We update the concerned cached artists
+        artistsToDivide.forEach { artist ->
+
+            // We then create new artists and link songs from the initial artist to it
+            val musicIdsOfInitialArtist: List<UUID> = musicArtists
+                .filter { it.artistId == artist.artistId }
+                .map { it.musicId }
+
+            val albumIdsOfInitialArtist: List<UUID> = albumArtists
+                .filter { it.artistId == artist.artistId }
+                .map { it.albumId }
+
+            val allArtists: List<String> = artist.getMultipleArtists()
+            allArtists.forEach { name ->
+                val alreadySavedArtist: Artist? = artistsByName[name]
+                val artistId: UUID = if (alreadySavedArtist == null) {
+                    val id = UUID.randomUUID()
+                    artistsByName[name] = Artist(
+                        artistId = id,
+                        artistName = name,
+                    )
+                    id
+                } else {
+                    alreadySavedArtist.artistId
+                }
+
+                musicIdsOfInitialArtist.forEach { musicId ->
+                    musicArtists.add(
+                        MusicArtist(
+                            musicId = musicId,
+                            artistId = artistId,
+                        )
+                    )
+                }
+                albumIdsOfInitialArtist.forEach { albumId ->
+                    albumArtists.add(
+                        AlbumArtist(
+                            albumId = albumId,
+                            artistId = artistId,
+                        )
+                    )
+                }
+            }
+
+            /*
+            For a song with multiple artists, its albums should be linked to the first artist.
+            If there is already an existing album, with the same name and artist,
+            we delete the album of the multiple artists and link its songs to the found one.
+             */
+            val albumsOfMultipleArtist: List<Album> = albumsByInfo.filter { (key, _) ->
+                key.artist == artist.artistName
+            }.values.toList()
+
+            println("For artist: ${artist.artistName}, got albums: $albumsOfMultipleArtist")
+
+            albumsOfMultipleArtist.forEach { album ->
+                /*
+                If we found an existing album with a single artist as the first one of the multiple artist,
+                we link the songs of the current album to it.
+                Else, we create it.
+                 */
+                val albumKey =  AlbumInformation(
+                    name = album.albumName,
+                    artist = allArtists.first(),
+                )
+                val albumWithSingleArtist: Album? = albumsByInfo[albumKey]
+                if (albumWithSingleArtist != null) {
+                    println("For album with muliptle artists, found single one: $albumWithSingleArtist")
+                    // We redirect the songs of the multiple artist album
+                    val musicsIdsOfAlbumWithMultipleArtists = musicAlbums.filter { it.albumId == album.albumId }.map { it.musicId }
+                    println("Musics ids of the multiple artists album to redirect to single music album (id ${album.albumId}): $musicsIdsOfAlbumWithMultipleArtists")
+                    musicsIdsOfAlbumWithMultipleArtists.forEach { musicId ->
+                        musicAlbums.add(
+                            MusicAlbum(
+                                musicId = musicId,
+                                albumId = albumWithSingleArtist.albumId,
+                            )
+                        )
+                    }
+                    // We delete the multiple artists album
+                    musicAlbums.removeIf { it.albumId == album.albumId }
+                    albumArtists.removeIf { it.albumId == album.albumId }
+                    albumsByInfo.remove(
+                        AlbumInformation(
+                            name = album.albumName,
+                            artist = artist.artistName,
+                        )
+                    )
+                }
+            }
+
+            // We need to delete the links and artist with the legacy information:
+            artistsByName.remove(artist.artistName)
+            musicIdsOfInitialArtist.forEach { musicId ->
+                musicArtists.removeIf { it.musicId == musicId && it.artistId == artist.artistId }
+            }
+            albumIdsOfInitialArtist.forEach { albumId ->
+                albumArtists.removeIf { it.albumId == albumId && it.artistId == artist.artistId }
+            }
+        }
+
+        saveAll()
     }
 
     suspend fun init() {
@@ -99,13 +236,10 @@ abstract class MusicFetcher: KoinComponent {
             albumId = albumId,
             albumName = music.album,
         )
-        albumsByInfo.put(
-            key = AlbumInformation(
-                name = albumToAdd.albumName,
-                artist = music.artist
-            ),
-            value = albumToAdd,
-        )
+        albumsByInfo[AlbumInformation(
+            name = albumToAdd.albumName,
+            artist = music.artist
+        )] = albumToAdd
     }
 
 
@@ -117,16 +251,13 @@ abstract class MusicFetcher: KoinComponent {
             artistId = artistId,
             artistName = music.artist
         )
-        artistsByName.put(
-            key = artistToAdd.artistName,
-            value = artistToAdd
-        )
+        artistsByName[artistToAdd.artistName] = artistToAdd
     }
 
     suspend fun saveAllMusics(
         musics: List<Music>,
         onSongSaved: (progress: Float) -> Unit,
-    ) {
+    ): Boolean {
         init()
         musics.forEachIndexed { index, music ->
             addMusic(
@@ -138,7 +269,7 @@ abstract class MusicFetcher: KoinComponent {
                 },
             )
         }
-        saveAll()
+        return saveAllWithMultipleArtistsCheck()
     }
 
     /**
@@ -185,10 +316,7 @@ abstract class MusicFetcher: KoinComponent {
             )
         }
 
-        musicsByPath.put(
-            key = musicToAdd.path,
-            value = musicToAdd,
-        )
+        musicsByPath[musicToAdd.path] = musicToAdd
         musicAlbums.add(
             MusicAlbum(
                 musicId = musicToAdd.musicId,

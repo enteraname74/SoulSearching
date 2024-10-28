@@ -3,8 +3,10 @@ package com.github.enteraname74.soulsearching.features.filemanager.musicfetching
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import kotlinx.coroutines.flow.first
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
@@ -13,7 +15,6 @@ import java.io.File
 import java.net.URLConnection
 import java.nio.file.Files
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -21,7 +22,13 @@ import kotlin.collections.ArrayList
  */
 internal class MusicFetcherDesktopImpl(
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
 ) : MusicFetcher() {
+
+    private val foldersNamesBlackList: List<String> = listOf(
+        "node_modules"
+    )
+
     private fun isMusicFile(file: File): Boolean {
         val mimeType: String = URLConnection.guessContentTypeFromName(file.name) ?: return false
         val authorizedMimeTypes =
@@ -58,8 +65,8 @@ internal class MusicFetcherDesktopImpl(
         onMusicFetched: suspend (Music) -> Unit,
     ) {
 
-        // If the folder is hidden, we skip it:
-        if (directory.isHidden) return
+        // If the folder is hidden or is in the black list, we skip it:
+        if (directory.isHidden || directory.name in foldersNamesBlackList) return
 
         val files = directory.listFiles() ?: return
 
@@ -104,8 +111,7 @@ internal class MusicFetcherDesktopImpl(
 
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
-        finishAction: () -> Unit
-    ) {
+    ): Boolean {
         val root = File(System.getProperty("user.home"))
         init()
         extractMusicsFromCurrentDirectory(
@@ -113,15 +119,16 @@ internal class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::addMusic
         )
-        saveAll()
-        upsertPlaylistUseCase(
-            Playlist(
-                playlistId = UUID.randomUUID(),
-                name = strings.favorite,
-                isFavorite = true
+        if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
+            upsertPlaylistUseCase(
+                Playlist(
+                    playlistId = UUID.randomUUID(),
+                    name = strings.favorite,
+                    isFavorite = true
+                )
             )
-        )
-        finishAction()
+        }
+        return saveAllWithMultipleArtistsCheck()
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(

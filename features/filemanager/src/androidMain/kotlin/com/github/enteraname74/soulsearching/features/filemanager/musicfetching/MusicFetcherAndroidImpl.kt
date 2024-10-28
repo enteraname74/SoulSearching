@@ -6,11 +6,13 @@ import android.provider.MediaStore
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -22,6 +24,7 @@ internal class MusicFetcherAndroidImpl(
     private val context: Context,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
 ) : MusicFetcher() {
     /**
      * Build a cursor for fetching musics on device.
@@ -65,15 +68,15 @@ internal class MusicFetcherAndroidImpl(
 
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
-        finishAction: () -> Unit
-    ) {
+    ): Boolean {
         val cursor = buildMusicCursor()
 
-        when (cursor?.count) {
+        return when (cursor?.count) {
             null -> {
                 feedbackPopUpManager.showFeedback(
                     feedback = strings.cannotRetrieveSongs
                 )
+                true
             }
 
             else -> {
@@ -89,15 +92,16 @@ internal class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
-                saveAll()
-                upsertPlaylistUseCase(
-                    Playlist(
-                        playlistId = UUID.randomUUID(),
-                        name = strings.favorite,
-                        isFavorite = true
+                if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
+                    upsertPlaylistUseCase(
+                        Playlist(
+                            playlistId = UUID.randomUUID(),
+                            name = strings.favorite,
+                            isFavorite = true
+                        )
                     )
-                )
-                finishAction()
+                }
+                saveAllWithMultipleArtistsCheck()
             }
         }
     }

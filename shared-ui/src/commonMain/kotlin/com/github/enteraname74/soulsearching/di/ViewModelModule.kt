@@ -21,6 +21,7 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.ma
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -40,6 +41,7 @@ internal val viewModelModule: Module = module {
     // Main page
     singleOf(::MainPageViewModel)
     singleOf(::ApplicationViewModel)
+    singleOf(::MultipleArtistsChoiceViewModel)
 
     // Modify elements
     factoryOf(::ModifyAlbumViewModel)

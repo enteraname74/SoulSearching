@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.appinit
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.*
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FetchingMusicsComposable(
-    finishAddingMusicsAction: () -> Unit,
     mainPageViewModel: MainPageViewModel
 ) {
     var isFetchingMusics by rememberSaveable {
@@ -115,8 +113,7 @@ fun FetchingMusicsComposable(
                     updateProgress = { progression, folder ->
                         progress = progression
                         currentFolder = folder
-                    },
-                    finishAction = finishAddingMusicsAction
+                    }
                 )
             }
         }

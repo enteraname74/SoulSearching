@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
 import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.SelectableMusicItem
@@ -28,17 +27,15 @@ class SettingsAddMusicsViewModel(
 
     fun toggleMusicSelectedState(musicId: UUID) {
         (_state.value as? SettingsAddMusicsState.Data)?.fetchedMusics?.let { songs ->
-            _state.update { currentState ->
-                SettingsAddMusicsState.Data(
-                    fetchedMusics = songs.map {
-                        if (it.music.musicId == musicId) {
-                            it.copy(isSelected = !it.isSelected)
-                        } else {
-                            it.copy()
-                        }
+            _state.value = SettingsAddMusicsState.Data(
+                fetchedMusics = songs.map {
+                    if (it.music.musicId == musicId) {
+                        it.copy(isSelected = !it.isSelected)
+                    } else {
+                        it.copy()
                     }
-                )
-            }
+                }
+            )
         }
     }
 

@@ -184,6 +184,10 @@ class MainPageScreen : Screen {
                     SelectedPlaylistScreen(selectedPlaylistId = navigationState.playlistId.toString())
                 )
             }
+
+            else -> {
+                /*no-op*/
+            }
         }
         consumeNavigation()
     }
