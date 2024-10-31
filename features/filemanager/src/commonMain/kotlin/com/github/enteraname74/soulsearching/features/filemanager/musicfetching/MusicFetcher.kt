@@ -65,13 +65,6 @@ abstract class MusicFetcher : KoinComponent {
     private val musicAlbums: ArrayList<MusicAlbum> = arrayListOf()
 
     private suspend fun saveAll() {
-
-        println("----")
-        albumsByInfo.forEach { (info, album) ->
-            println("KEY: ${info.artist} && ${info.name}, ALBUM: ${album.albumName}")
-        }
-        println("----")
-
         upsertAllArtistsUseCase(artistsByName.values.toList())
         upsertAllAlbumsUseCase(albumsByInfo.values.toList())
         upsertAllMusicsUseCase(musicsByPath.values.toList())
@@ -110,43 +103,82 @@ abstract class MusicFetcher : KoinComponent {
             true
         }
 
-    suspend fun saveAllWithMultipleArtists(
-        artistsToDivide: List<Artist>
+    private suspend fun manageMultipleArtistAlbums(
+        multipleArtist: Artist,
+        firstArtistName: String,
     ) {
-        // We update the concerned cached artists
-        artistsToDivide.forEach { artist ->
+        /*
+            For a song with multiple artists, its albums should be linked to the first artist.
+            If there is already an existing album, with the same name and artist,
+            we delete the album of the multiple artists and link its songs to the found one.
+             */
+        val albumsOfMultipleArtist: List<Album> = albumsByInfo.filter { (key, _) ->
+            key.artist == multipleArtist.artistName
+        }.values.toList()
 
-            // We then create new artists and link songs from the initial artist to it
-            val musicIdsOfInitialArtist: List<UUID> = musicArtists
-                .filter { it.artistId == artist.artistId }
-                .map { it.musicId }
-
-            val albumIdsOfInitialArtist: List<UUID> = albumArtists
-                .filter { it.artistId == artist.artistId }
-                .map { it.albumId }
-
-            val allArtists: List<String> = artist.getMultipleArtists()
-            allArtists.forEach { name ->
-                val alreadySavedArtist: Artist? = artistsByName[name]
-                val artistId: UUID = if (alreadySavedArtist == null) {
-                    val id = UUID.randomUUID()
-                    artistsByName[name] = Artist(
-                        artistId = id,
-                        artistName = name,
-                    )
-                    id
-                } else {
-                    alreadySavedArtist.artistId
-                }
-
-                musicIdsOfInitialArtist.forEach { musicId ->
-                    musicArtists.add(
-                        MusicArtist(
+        albumsOfMultipleArtist.forEach { album ->
+            /*
+            If we found an existing album with a single artist as the first one of the multiple artist,
+            we link the songs of the current album to it.
+            Else, we create it.
+             */
+            val albumKey =  AlbumInformation(
+                name = album.albumName,
+                artist = firstArtistName,
+            )
+            val albumWithSingleArtist: Album? = albumsByInfo[albumKey]
+            if (albumWithSingleArtist != null) {
+                // We redirect the songs of the multiple artist album
+                val musicsIdsOfAlbumWithMultipleArtists = musicAlbums.filter { it.albumId == album.albumId }.map { it.musicId }
+                musicsIdsOfAlbumWithMultipleArtists.forEach { musicId ->
+                    musicAlbums.add(
+                        MusicAlbum(
                             musicId = musicId,
-                            artistId = artistId,
+                            albumId = albumWithSingleArtist.albumId,
                         )
                     )
                 }
+                // We delete the multiple artists album
+                musicAlbums.removeIf { it.albumId == album.albumId }
+                albumArtists.removeIf { it.albumId == album.albumId }
+                albumsByInfo.remove(
+                    AlbumInformation(
+                        name = album.albumName,
+                        artist = multipleArtist.artistName,
+                    )
+                )
+            }
+        }
+    }
+
+    private fun divideArtistAndLinkSongsToThem(
+        musicIdsOfInitialArtist: List<UUID>,
+        albumIdsOfInitialArtist: List<UUID>,
+        allArtistsName: List<String>
+    ) {
+        allArtistsName.forEachIndexed { index, name ->
+            val alreadySavedArtist: Artist? = artistsByName[name]
+            val artistId: UUID = if (alreadySavedArtist == null) {
+                val id = UUID.randomUUID()
+                artistsByName[name] = Artist(
+                    artistId = id,
+                    artistName = name,
+                )
+                id
+            } else {
+                alreadySavedArtist.artistId
+            }
+
+            musicIdsOfInitialArtist.forEach { musicId ->
+                musicArtists.add(
+                    MusicArtist(
+                        musicId = musicId,
+                        artistId = artistId,
+                    )
+                )
+            }
+            // Only the first artist of the list keep its album
+            if (index == 0) {
                 albumIdsOfInitialArtist.forEach { albumId ->
                     albumArtists.add(
                         AlbumArtist(
@@ -156,61 +188,41 @@ abstract class MusicFetcher : KoinComponent {
                     )
                 }
             }
+        }
+    }
 
-            /*
-            For a song with multiple artists, its albums should be linked to the first artist.
-            If there is already an existing album, with the same name and artist,
-            we delete the album of the multiple artists and link its songs to the found one.
-             */
-            val albumsOfMultipleArtist: List<Album> = albumsByInfo.filter { (key, _) ->
-                key.artist == artist.artistName
-            }.values.toList()
+    suspend fun saveAllWithMultipleArtists(
+        artistsToDivide: List<Artist>
+    ) {
+        // We update the concerned cached artists
+        artistsToDivide.forEach { multipleArtist ->
+            val musicIdsOfInitialArtist: List<UUID> = musicArtists
+                .filter { it.artistId == multipleArtist.artistId }
+                .map { it.musicId }
 
-            println("For artist: ${artist.artistName}, got albums: $albumsOfMultipleArtist")
+            val albumIdsOfInitialArtist: List<UUID> = albumArtists
+                .filter { it.artistId == multipleArtist.artistId }
+                .map { it.albumId }
+            val allArtistsName: List<String> = multipleArtist.getMultipleArtists()
 
-            albumsOfMultipleArtist.forEach { album ->
-                /*
-                If we found an existing album with a single artist as the first one of the multiple artist,
-                we link the songs of the current album to it.
-                Else, we create it.
-                 */
-                val albumKey =  AlbumInformation(
-                    name = album.albumName,
-                    artist = allArtists.first(),
-                )
-                val albumWithSingleArtist: Album? = albumsByInfo[albumKey]
-                if (albumWithSingleArtist != null) {
-                    println("For album with muliptle artists, found single one: $albumWithSingleArtist")
-                    // We redirect the songs of the multiple artist album
-                    val musicsIdsOfAlbumWithMultipleArtists = musicAlbums.filter { it.albumId == album.albumId }.map { it.musicId }
-                    println("Musics ids of the multiple artists album to redirect to single music album (id ${album.albumId}): $musicsIdsOfAlbumWithMultipleArtists")
-                    musicsIdsOfAlbumWithMultipleArtists.forEach { musicId ->
-                        musicAlbums.add(
-                            MusicAlbum(
-                                musicId = musicId,
-                                albumId = albumWithSingleArtist.albumId,
-                            )
-                        )
-                    }
-                    // We delete the multiple artists album
-                    musicAlbums.removeIf { it.albumId == album.albumId }
-                    albumArtists.removeIf { it.albumId == album.albumId }
-                    albumsByInfo.remove(
-                        AlbumInformation(
-                            name = album.albumName,
-                            artist = artist.artistName,
-                        )
-                    )
-                }
-            }
+            divideArtistAndLinkSongsToThem(
+                musicIdsOfInitialArtist = musicIdsOfInitialArtist,
+                albumIdsOfInitialArtist = albumIdsOfInitialArtist,
+                allArtistsName = allArtistsName,
+            )
+
+            manageMultipleArtistAlbums(
+                multipleArtist = multipleArtist,
+                firstArtistName = allArtistsName.first(),
+            )
 
             // We need to delete the links and artist with the legacy information:
-            artistsByName.remove(artist.artistName)
+            artistsByName.remove(multipleArtist.artistName)
             musicIdsOfInitialArtist.forEach { musicId ->
-                musicArtists.removeIf { it.musicId == musicId && it.artistId == artist.artistId }
+                musicArtists.removeIf { it.musicId == musicId && it.artistId == multipleArtist.artistId }
             }
             albumIdsOfInitialArtist.forEach { albumId ->
-                albumArtists.removeIf { it.albumId == albumId && it.artistId == artist.artistId }
+                albumArtists.removeIf { it.albumId == albumId && it.artistId == multipleArtist.artistId }
             }
         }
 

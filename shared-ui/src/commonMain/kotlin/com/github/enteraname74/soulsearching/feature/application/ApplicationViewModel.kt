@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
+package com.github.enteraname74.soulsearching.feature.application
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +8,6 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.ApplicationState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
