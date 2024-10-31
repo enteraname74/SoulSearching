@@ -88,7 +88,7 @@ android {
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
         versionCode = libs.versions.android.version.code.get().toInt()
-        versionName = libs.versions.android.version.name.get()
+        versionName = libs.versions.application.version.name.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -96,7 +96,7 @@ android {
 
     this.buildOutputs.all {
         val variantOutputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-        val name = "com.github.enteraname74.soulsearching_${libs.versions.android.version.name.get()}.apk"
+        val name = "com.github.enteraname74.soulsearching_${libs.versions.application.version.name.get()}.apk"
         variantOutputImpl.outputFileName = name
     }
 
@@ -105,7 +105,7 @@ android {
             buildConfigField(
                 "String",
                 "VERSION_NAME",
-                "\"" + libs.versions.android.version.name.get() + "-dev" + "\""
+                "\"" + libs.versions.application.version.name.get() + "-dev" + "\""
             )
             manifestPlaceholders["appName"] = "SSDDebug"
             versionNameSuffix = "-dev"
@@ -115,7 +115,7 @@ android {
             buildConfigField(
                 "String",
                 "VERSION_NAME",
-                "\"" + libs.versions.android.version.name.get() + "-dev.release" + "\""
+                "\"" + libs.versions.application.version.name.get() + "-dev.release" + "\""
             )
             manifestPlaceholders["appName"] = "SSDRelease"
             versionNameSuffix = "-dev.release"
@@ -132,7 +132,7 @@ android {
             buildConfigField(
                 "String",
                 "VERSION_NAME",
-                "\"" + libs.versions.android.version.name.get() + "\""
+                "\"" + libs.versions.application.version.name.get() + "\""
             )
             manifestPlaceholders["appName"] = "Soul Searching"
             isMinifyEnabled = true

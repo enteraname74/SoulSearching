@@ -35,7 +35,7 @@ compose.desktop {
     application {
         mainClass = "MainKt"
 
-        val appVersion = libs.versions.desktop.version.name.get()
+        val appVersion = libs.versions.application.version.name.get()
 
         buildTypes.release.proguard {
             configurationFiles.from(project.file("proguard-rules.pro"))
@@ -80,7 +80,7 @@ tasks {
         compression = Compression.GZIP
         archiveExtension = "tar.gz"
 
-        val version = libs.versions.desktop.version.name.get()
+        val version = libs.versions.application.version.name.get()
 
         archiveFileName = "soulsearching-$version-linux.tar.gz"
     }
@@ -91,7 +91,7 @@ tasks {
         dependsOn("packageTarReleaseDistributable")
 
         val appId = "io.github.enteraname74.soulsearching"
-        val appVersion = libs.versions.desktop.version.name.get()
+        val appVersion = libs.versions.application.version.name.get()
 
         doLast {
             println("packageFlatpakReleaseDistributable -- INFO -- Building manifest")
