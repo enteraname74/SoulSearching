@@ -188,6 +188,12 @@ object FrStrings : Strings {
 
     override val appMigration = "Mise à jour des données de l'application"
 
+    override val multipleArtistsTitle = "Musiques avec plusieurs artistes"
+    override val multipleArtistsText =
+        "Des musiques avec plusieurs artistes ont été trouvées par l'application. " +
+                "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
+    override val multipleArtistsSelectionTitle = "Artistes sélectionnés à diviser :"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

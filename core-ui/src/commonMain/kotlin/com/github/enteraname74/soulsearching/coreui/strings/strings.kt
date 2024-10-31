@@ -197,6 +197,10 @@ interface Strings {
 
     val appMigration: String
 
+    val multipleArtistsTitle: String
+    val multipleArtistsText: String
+    val multipleArtistsSelectionTitle: String
+
     /**
      * Shows a text indicating the number of musics.
      */

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.*
@@ -103,10 +104,13 @@ class AppInitSongFetchingScreen : Screen {
                             verticalArrangement = Arrangement.SpaceEvenly,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            SoulSearchingLogo(
+                            Box(
                                 modifier = Modifier
-                                    .weight(1f)
-                            )
+                                    .weight(1f),
+                                contentAlignment = Alignment.BottomCenter,
+                            ) {
+                                SoulSearchingLogo()
+                            }
                             ProgressIndicatorComposable(
                                 modifier = Modifier
                                     .weight(1f),

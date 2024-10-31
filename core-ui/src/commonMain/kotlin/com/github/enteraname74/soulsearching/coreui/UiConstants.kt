@@ -42,7 +42,7 @@ object UiConstants {
         val small: Dp = 16.dp
         val smallPlus: Dp = 24.dp
         val medium: Dp = 32.dp
-        val mediumPlus: Dp = 48.dp
+        val mediumPlus: Dp = 40.dp
         val large: Dp = 64.dp
         val veryLarge: Dp
         @Composable
@@ -105,6 +105,9 @@ object UiConstants {
         )
         val bodyMediumTitle: TextStyle = TextStyle(
             fontSize = 18.sp,
+        )
+        val body: TextStyle = TextStyle(
+            fontSize = 15.sp,
         )
         val bodySmall: TextStyle
             @Composable

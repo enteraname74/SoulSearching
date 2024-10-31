@@ -187,6 +187,12 @@ object EnStrings : Strings {
 
     override val appMigration = "Updating application data"
 
+    override val multipleArtistsTitle = "Songs with multiple artists"
+    override val multipleArtistsText =
+        "Songs with multiple artists were found by the application. " +
+                "Choose whether you want to split these artists into multiple ones or keep them as one artist."
+    override val multipleArtistsSelectionTitle = "Selected artists to split:"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

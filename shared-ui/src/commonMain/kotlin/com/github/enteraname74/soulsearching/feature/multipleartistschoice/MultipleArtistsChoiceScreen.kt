@@ -1,16 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
@@ -88,18 +94,37 @@ class MultipleArtistsChoiceScreen: Screen {
         SoulScreen {
             Column {
                 SoulTopBar(
-                    title = "Test title",
+                    title = strings.multipleArtistsTitle,
                     rightAction = TopBarValidateAction(
                         onClick = onSaveSelection,
                     ),
                     leftAction = null,
                 )
-                LazyColumn {
-                    item {
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        all = UiConstants.Spacing.medium
+                    ),
+                ) {
+                    item(
+                        key = WarningCardContentKey,
+                        contentType = WarningCardContentType,
+                    ) {
                         MultipleArtistsWarningCard()
                     }
+                    item(
+                        key = SelectionTextKey,
+                        contentType = SelectionTextContentType,
+                    ) {
+                        Text(
+                            text = strings.multipleArtistsSelectionTitle,
+                            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            style = UiConstants.Typography.bodyTitle,
+                        )
+                    }
                     items(
-                        items = choices
+                        items = choices,
+                        contentType = { ArtistChoicesContentType },
+                        key = { it.artist.artistId }
                     ) { artistChoice ->
                         MultipleArtistsChoiceItem(
                             artistChoice = artistChoice,
@@ -113,3 +138,9 @@ class MultipleArtistsChoiceScreen: Screen {
         }
     }
 }
+
+private const val WarningCardContentType: String = "WarningCardContentType"
+private const val WarningCardContentKey: String = "WarningCardContentKey"
+private const val SelectionTextContentType: String = "SelectionTextContentType"
+private const val SelectionTextKey: String = "SelectionTextKey"
+private const val ArtistChoicesContentType: String = "ArtistChoicesContentType"
