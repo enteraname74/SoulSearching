@@ -29,8 +29,6 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -154,9 +152,9 @@ private fun Content(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = modifier,
@@ -217,17 +215,15 @@ private fun Content(
                             .animateItem(),
                         music = music,
                         onClick = {
+                            playlistDetailListener.onUpdateNbPlayed()
                             coroutineScope.launch {
-                                playlistDetailListener.onUpdateNbPlayed()
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    playbackManager.setCurrentPlaylistAndMusic(
-                                        music = music,
-                                        musicList = playlistDetail.musics,
-                                        playlistId = playlistDetail.id,
-                                        isMainPlaylist = false,
-                                    )
-                                }
-                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+                                playbackManager.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    musicList = playlistDetail.musics,
+                                    playlistId = playlistDetail.id,
+                                    isMainPlaylist = false,
+                                )
+                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                             }
                         },
                         onLongClick = { onShowMusicBottomSheet(music) },

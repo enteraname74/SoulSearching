@@ -33,8 +33,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.PlaylistDetailCover
 import com.github.enteraname74.soulsearching.theme.orDefault
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -87,9 +85,7 @@ fun PlaylistScreen(
             playlistDetailListener.onUpdateNbPlayed()
             coroutineScope.launch {
                 playbackManager.playShuffle(musicList = playlistDetail.musics)
-                playerViewManager.animateTo(
-                    newState = BottomSheetStates.EXPANDED,
-                )
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
     }
@@ -166,7 +162,6 @@ fun PlaylistScreen(
                     isMainPlaylist = false,
                     focusManager = focusManager,
                     onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
-                    playerViewManager = playerViewManager
                 )
             }
         }

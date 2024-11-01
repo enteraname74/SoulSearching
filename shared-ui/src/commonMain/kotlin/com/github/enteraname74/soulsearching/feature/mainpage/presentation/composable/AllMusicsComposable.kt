@@ -80,11 +80,10 @@ fun AllMusicsComposable(
                         enabled = musicState.musics.isNotEmpty(),
                         onClick = {
                             if (musicState.musics.isNotEmpty()) {
-                                coroutineScope
-                                    .launch {
-                                        playbackManager.playShuffle(musicList = musicState.musics)
-                                        playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
-                                    }
+                                coroutineScope.launch {
+                                    playbackManager.playShuffle(musicList = musicState.musics)
+                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                                }
                             }
                         }
                     )
@@ -109,7 +108,7 @@ fun AllMusicsComposable(
                                 isMainPlaylist = true,
                                 playlistId = null,
                             )
-//                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
                     onLongClick = {
@@ -127,10 +126,10 @@ fun AllMusicsComposable(
                 SoulPlayerSpacer()
             }
         } else {
-            item (
+            item(
                 key = ALL_MUSICS_NO_ELEMENT_KEY,
                 contentType = ALL_MUSICS_NO_ELEMENT_CONTENT_TYPE,
-            ){
+            ) {
                 NoElementView()
             }
         }

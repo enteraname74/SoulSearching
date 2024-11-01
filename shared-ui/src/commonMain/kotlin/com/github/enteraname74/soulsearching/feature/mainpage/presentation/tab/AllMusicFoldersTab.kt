@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
@@ -28,9 +27,11 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
-@OptIn(ExperimentalFoundationApi::class)
 fun allMusicFoldersTab(
     mainPageViewModel: MainPageViewModel,
     navigateToFolder: (folderPath: String) -> Unit,
@@ -98,9 +99,7 @@ private fun Buttons(
                             playbackManager.playSoulMix(
                                 musicLists = allMusicFolders.map { it.musics },
                             )
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
-                            )
+                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     }
                 ),
@@ -122,9 +121,7 @@ private fun Buttons(
                                 }
                             }
                         )
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                        )
+                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                     }
                 }
             )
