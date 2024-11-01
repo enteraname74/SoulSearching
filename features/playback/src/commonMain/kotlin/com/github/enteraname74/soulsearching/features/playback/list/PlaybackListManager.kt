@@ -282,22 +282,15 @@ internal class PlaybackListManager(
             } else {
                 // If the current song is in the deleted one, we play the next song.
                 if (currentMusic.musicId in musicIds) {
-                    // We first place ourselves in the previous music :
-                    val newCurrentSong = if (actualIndex == 0) {
-                        playedList[playedList.lastIndex]
+                    // We first place ourselves in the next music :
+                    val newCurrentSong = if (actualIndex > playedList.lastIndex) {
+                        playedList[0]
                     } else {
-                        playedList[actualIndex - 1]
+                        playedList[actualIndex]
                     }
 
-                    _state.value = this.copy(
-                        currentMusic = newCurrentSong,
-                        playedList = playedList,
-                    )
-                    settings.saveCurrentMusicInformation(
-                        currentMusicIndex = playedList.indexOf(newCurrentSong),
-                        currentMusicPosition = playbackCallback.getMusicPosition(),
-                    )
-                    playbackCallback.next()
+                    _state.value = this.copy(playedList = playedList)
+                    playbackCallback.setAndPlayMusic(newCurrentSong)
                 } else {
                     _state.value = this.copy(
                         playedList = playedList,
@@ -308,7 +301,6 @@ internal class PlaybackListManager(
                     )
                 }
                 savePlayedList(list = playedList)
-
             }
         }
     }
@@ -344,9 +336,13 @@ internal class PlaybackListManager(
             _state.value = this.copy(
                 currentMusic = music,
             )
-            settings.set(
-                key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
-                value = playedList.indexOfFirst { it.musicId == music.musicId }
+//            settings.set(
+//                key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
+//                value = playedList.indexOfFirst { it.musicId == music.musicId }
+//            )
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = playedList.indexOfFirst { it.musicId == music.musicId },
+                currentMusicPosition = 0,
             )
             player.setMusic(music)
             player.launchMusic()

@@ -56,6 +56,9 @@ abstract class PlaybackManager : KoinComponent {
 
                 override suspend fun next() =
                     this@PlaybackManager.next()
+
+                override suspend fun setAndPlayMusic(music: Music) =
+                    this@PlaybackManager.setAndPlayMusic(music)
             },
             player = player,
             playerMusicRepository = playerMusicRepository,
@@ -197,7 +200,6 @@ abstract class PlaybackManager : KoinComponent {
      */
     suspend fun next() {
         playbackListManager.getNextMusic()?.let {
-            playbackProgressJob.setPosition(pos = 0)
             player.pause()
             setAndPlayMusic(it)
         }
@@ -208,7 +210,6 @@ abstract class PlaybackManager : KoinComponent {
      */
     suspend fun previous() {
         playbackListManager.getPreviousMusic()?.let {
-            playbackProgressJob.setPosition(pos = 0)
             player.pause()
             setAndPlayMusic(it)
         }
