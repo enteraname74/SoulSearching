@@ -109,7 +109,7 @@ fun AllMusicsComposable(
                                 isMainPlaylist = true,
                                 playlistId = null,
                             )
-                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+//                            playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
                         }
                     },
                     onLongClick = {

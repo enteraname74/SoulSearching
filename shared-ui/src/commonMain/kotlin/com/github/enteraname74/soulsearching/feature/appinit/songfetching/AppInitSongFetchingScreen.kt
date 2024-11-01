@@ -24,6 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulSearchingLogo
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -41,15 +42,8 @@ class AppInitSongFetchingScreen : Screen {
 
         val navigator = LocalNavigator.currentOrThrow
 
-        var isFetchingMusics by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(key1 = isFetchingMusics) {
-            if (!isFetchingMusics) {
-                screenModel.fetchSongs()
-                isFetchingMusics = true
-            }
+        LaunchInit {
+            screenModel.fetchSongs()
         }
 
         LaunchedEffect(navigationState) {
