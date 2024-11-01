@@ -5,7 +5,7 @@ import androidx.compose.ui.input.key.*
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListCallbacks
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListManager
@@ -25,7 +25,7 @@ import java.util.*
 abstract class PlaybackManager : KoinComponent {
 
     private val playerMusicRepository: PlayerMusicRepository by inject()
-    private val upsertMusicUseCase: UpsertMusicUseCase by inject()
+    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
 
     abstract val player: SoulSearchingPlayer
@@ -59,7 +59,7 @@ abstract class PlaybackManager : KoinComponent {
             },
             player = player,
             playerMusicRepository = playerMusicRepository,
-            upsertMusicUseCase = upsertMusicUseCase,
+            updateMusicNbPlayedUseCase = updateMusicNbPlayedUseCase,
         )
     }
 

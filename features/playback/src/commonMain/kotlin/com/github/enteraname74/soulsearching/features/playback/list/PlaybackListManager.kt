@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,10 +21,12 @@ internal class PlaybackListManager(
     private val player: SoulSearchingPlayer,
     private val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
 ) {
     private val _state: MutableStateFlow<PlaybackListState> = MutableStateFlow(PlaybackListState.NoData)
     val state: StateFlow<PlaybackListState> = _state.asStateFlow()
+
+    private var updateMusicNbPlayedJob: Job? = null
 
     /**
      * Used to save the currently played list in the database for future uses after a relaunch
@@ -348,12 +350,11 @@ internal class PlaybackListManager(
             )
             player.setMusic(music)
             player.launchMusic()
-            CoroutineScope(Dispatchers.IO).launch {
-                upsertMusicUseCase(
-                    music = music.copy(
-                        nbPlayed = music.nbPlayed + 1,
-                    )
-                )
+
+            updateMusicNbPlayedJob?.cancel()
+            updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
+                delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+                updateMusicNbPlayedUseCase(musicId = music.musicId)
             }
         }
     }
@@ -538,5 +539,9 @@ internal class PlaybackListManager(
 
         setAndPlayMusic(music = musicList[0])
         savePlayedList(list = musicList)
+    }
+
+    companion object {
+        private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
     }
 }
