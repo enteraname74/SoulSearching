@@ -200,7 +200,6 @@ abstract class PlaybackManager : KoinComponent {
      */
     suspend fun next() {
         playbackListManager.getNextMusic()?.let {
-            player.pause()
             setAndPlayMusic(it)
         }
     }
@@ -210,7 +209,6 @@ abstract class PlaybackManager : KoinComponent {
      */
     suspend fun previous() {
         playbackListManager.getPreviousMusic()?.let {
-            player.pause()
             setAndPlayMusic(it)
         }
     }
