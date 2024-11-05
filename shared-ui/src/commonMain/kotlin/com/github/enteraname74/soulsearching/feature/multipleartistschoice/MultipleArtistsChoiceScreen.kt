@@ -1,13 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -19,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
@@ -35,15 +37,8 @@ class MultipleArtistsChoiceScreen: Screen {
 
         val navigator = LocalNavigator.currentOrThrow
 
-        var hasFetchArtists: Boolean by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(hasFetchArtists) {
-            if (!hasFetchArtists) {
-                screenModel.loadArtistsChoices()
-                hasFetchArtists = true
-            }
+        LaunchInit {
+            screenModel.loadArtistsChoices()
         }
 
         LaunchedEffect(navigationState) {

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ class SettingsPlayerPersonalisationScreen: Screen {
             togglePlayerSwipe = screenModel::togglePlayerSwipe,
             soulMixTextField = screenModel.soulMixTextField,
             toggleRewind = screenModel::toggleRewind,
+            toggleMinimisedProgression = screenModel::toggleMinimisedProgression,
         )
     }
 
@@ -50,6 +52,7 @@ class SettingsPlayerPersonalisationScreen: Screen {
         state: SettingsPlayerPersonalisationState,
         togglePlayerSwipe: () -> Unit,
         toggleRewind: () -> Unit,
+        toggleMinimisedProgression: () -> Unit,
         soulMixTextField: SoulTextFieldHolder
     ) {
 
@@ -64,7 +67,11 @@ class SettingsPlayerPersonalisationScreen: Screen {
                     title = strings.playerSwipeTitle,
                     toggleAction = togglePlayerSwipe,
                     isChecked = state.isPlayerSwipeEnabled,
-                    maxLines = 3
+                    maxLines = 3,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.large,
+                    ),
                 )
             }
             item {
@@ -72,7 +79,23 @@ class SettingsPlayerPersonalisationScreen: Screen {
                     title = strings.playerRewindTitle,
                     toggleAction = toggleRewind,
                     isChecked = state.isRewindEnabled,
-                    maxLines = 3
+                    maxLines = 3,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.large,
+                    ),
+                )
+            }
+            item {
+                SoulMenuSwitch(
+                    title = strings.playerMinimisedProgressionTitle,
+                    toggleAction = toggleMinimisedProgression,
+                    isChecked = state.isMinimisedSongProgressionShown,
+                    maxLines = 3,
+                    padding = PaddingValues(
+                        horizontal = UiConstants.Spacing.large,
+                        vertical = UiConstants.Spacing.large,
+                    ),
                 )
             }
             item {

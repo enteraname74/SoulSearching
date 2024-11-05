@@ -15,15 +15,17 @@ import kotlin.math.max
 
 class SettingsPlayerPersonalisationViewModel(
     private val settings: SoulSearchingSettings,
-): ScreenModel {
+) : ScreenModel {
     val state: StateFlow<SettingsPlayerPersonalisationState> = combine(
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED),
-    ) { isPlayerSwipeEnabled, isRewindEnabled ->
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN),
+    ) { isPlayerSwipeEnabled, isRewindEnabled, isMinimisedSongProgressionEnabled ->
         println("REWIND? $isRewindEnabled")
         SettingsPlayerPersonalisationState(
             isPlayerSwipeEnabled = isPlayerSwipeEnabled,
             isRewindEnabled = isRewindEnabled,
+            isMinimisedSongProgressionShown = isMinimisedSongProgressionEnabled,
         )
     }.stateIn(
         scope = screenModelScope,
@@ -31,6 +33,8 @@ class SettingsPlayerPersonalisationViewModel(
         initialValue = SettingsPlayerPersonalisationState(
             isPlayerSwipeEnabled = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
             isRewindEnabled = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.defaultValue,
+            isMinimisedSongProgressionShown =
+            SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.defaultValue,
         )
     )
 
@@ -60,6 +64,13 @@ class SettingsPlayerPersonalisationViewModel(
         settings.set(
             key = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.key,
             value = !state.value.isRewindEnabled,
+        )
+    }
+
+    fun toggleMinimisedProgression() {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.key,
+            value = !state.value.isMinimisedSongProgressionShown,
         )
     }
 

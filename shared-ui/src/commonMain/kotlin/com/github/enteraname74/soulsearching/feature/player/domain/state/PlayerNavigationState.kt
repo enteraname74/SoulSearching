@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.player.domain
+package com.github.enteraname74.soulsearching.feature.player.domain.state
 
 import com.github.enteraname74.domain.model.Music
 import java.util.*

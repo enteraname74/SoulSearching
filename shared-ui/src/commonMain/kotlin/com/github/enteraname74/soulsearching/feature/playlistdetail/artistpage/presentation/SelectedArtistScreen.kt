@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -76,15 +79,8 @@ data class SelectedArtistScreen(
             }
         }
 
-        var isArtistFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(isArtistFetched) {
-            if (!isArtistFetched) {
-                screenModel.init(artistId = artistId)
-                isArtistFetched = true
-            }
+        LaunchInit {
+            screenModel.init(artistId = artistId)
         }
 
         SelectedArtistScreenView(

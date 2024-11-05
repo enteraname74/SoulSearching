@@ -39,7 +39,8 @@ fun SoulMenuSwitch(
     ) {
         Row(
             modifier = Modifier
-                .weight(1f),
+                .weight(1f)
+                .padding(end = UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {

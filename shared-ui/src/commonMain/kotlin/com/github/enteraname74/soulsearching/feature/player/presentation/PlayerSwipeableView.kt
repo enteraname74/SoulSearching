@@ -19,10 +19,10 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerNavigationState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.screen.PlayerSwipeableDataScreen
@@ -49,6 +49,8 @@ fun PlayerDraggableView(
     val coroutineScope = rememberCoroutineScope()
 
     val state by playerViewModel.state.collectAsState()
+    val settingsState by playerViewModel.viewSettingsState.collectAsState()
+
     val currentMusicProgressionState by playerViewModel.currentSongProgressionState.collectAsState()
     val bottomSheetState by playerViewModel.bottomSheetState.collectAsState()
     val dialogState by playerViewModel.dialogState.collectAsState()
@@ -89,6 +91,7 @@ fun PlayerDraggableView(
                 val albumId = (navigationState as? PlayerNavigationState.ToAlbum)?.albumId ?: return@LaunchedEffect
                 navigateToAlbum(albumId.toString())
             }
+
             is PlayerNavigationState.ToArtist -> {
                 val artistId = (navigationState as? PlayerNavigationState.ToArtist)?.artistId ?: return@LaunchedEffect
                 navigateToArtist(artistId.toString())
@@ -137,7 +140,7 @@ fun PlayerDraggableView(
                     )
                 )
         ) {
-            when(state) {
+            when (state) {
                 PlayerViewState.Closed -> {
                     PlayerSwipeableLoadingScreen()
 
@@ -167,6 +170,7 @@ fun PlayerDraggableView(
                         }
                     }
                 }
+
                 is PlayerViewState.Data -> {
                     PlayerSwipeableDataScreen(
                         maxHeight = maxHeight,
@@ -193,6 +197,7 @@ fun PlayerDraggableView(
                         togglePlayPause = playerViewModel::togglePlayPause,
                         onRetrieveLyrics = playerViewModel::setLyricsOfCurrentMusic,
                         currentMusicProgression = currentMusicProgressionState,
+                        settingsState = settingsState,
                     )
 
                     /*

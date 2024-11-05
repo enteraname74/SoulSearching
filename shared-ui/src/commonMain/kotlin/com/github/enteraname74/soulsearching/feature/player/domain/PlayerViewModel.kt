@@ -20,6 +20,9 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -64,13 +67,29 @@ class PlayerViewModel(
 
     val currentSongProgressionState = playbackManager.currentSongProgressionState
 
+    val viewSettingsState: StateFlow<PlayerViewSettingsState> = combine(
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN),
+    ) { canSwipeCover, isMinimisedSongProgressionShown ->
+        PlayerViewSettingsState(
+            canSwipeCover = canSwipeCover,
+            isMinimisedSongProgressionShown = isMinimisedSongProgressionShown,
+        )
+    }.stateIn(
+        screenModelScope,
+        SharingStarted.Eagerly,
+        PlayerViewSettingsState(
+            canSwipeCover = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
+            isMinimisedSongProgressionShown = SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.defaultValue,
+        )
+    )
+
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.mainState,
         getAllPlaylistWithMusicsUseCase(),
-        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
         currentMusicFavoriteStatusState,
         currentMusicLyrics,
-    ) { playbackMainState, playlists, isCoverSwipeEnabled,isCurrentMusicInFavorite, currentMusicLyrics ->
+    ) { playbackMainState, playlists,isCurrentMusicInFavorite, currentMusicLyrics ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -82,7 +101,6 @@ class PlayerViewModel(
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
                     currentMusicLyrics = currentMusicLyrics,
-                    canSwipeCover = isCoverSwipeEnabled,
                     aroundSongs = getAroundSongs(playbackMainState.currentMusic),
                     initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
                 )
@@ -140,7 +158,7 @@ class PlayerViewModel(
         currentSong: Music,
     ): List<Music?> {
         val playerState = (state.value as? PlayerViewState.Data) ?: return emptyList()
-        if (!playerState.canSwipeCover) return emptyList()
+        if (!viewSettingsState.value.canSwipeCover) return emptyList()
 
         val currentSongIndex = playerState.currentMusicIndex
 

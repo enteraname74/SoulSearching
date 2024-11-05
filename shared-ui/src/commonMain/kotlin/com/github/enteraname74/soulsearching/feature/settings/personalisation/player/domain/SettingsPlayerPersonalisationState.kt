@@ -3,4 +3,5 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.p
 data class SettingsPlayerPersonalisationState(
     val isPlayerSwipeEnabled: Boolean,
     val isRewindEnabled: Boolean,
+    val isMinimisedSongProgressionShown: Boolean,
 )

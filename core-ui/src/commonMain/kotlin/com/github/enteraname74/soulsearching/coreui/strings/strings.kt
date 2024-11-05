@@ -59,6 +59,7 @@ interface Strings {
     val managePlayerText: String
     val playerSwipeTitle: String
     val playerRewindTitle: String
+    val playerMinimisedProgressionTitle: String
     val soulMixSettingsTitle: String
 
     val searchingSongsFromYourDevice: String

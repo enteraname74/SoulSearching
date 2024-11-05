@@ -123,6 +123,10 @@ object SoulSearchingSettingsKeys {
             key = "IS_REWIND_ENABLED",
             defaultValue = true,
         )
+        val IS_MINIMISED_SONG_PROGRESSION_SHOWN = settingElementOf(
+            key = "IS_MINIMISED_SONG_PROGRESSION_SHOWN",
+            defaultValue = false,
+        )
     }
 
     object ColorTheme {

@@ -6,6 +6,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -39,10 +40,6 @@ data class SelectedPlaylistScreen(
         val navigationState by screenModel.navigationState.collectAsState()
         val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
 
-        var isPlaylistFetched: Boolean by rememberSaveable {
-            mutableStateOf(false)
-        }
-
         bottomSheetState?.BottomSheet()
         dialogState?.Dialog()
         addToPlaylistBottomSheet?.BottomSheet()
@@ -63,11 +60,8 @@ data class SelectedPlaylistScreen(
             }
         }
 
-        LaunchedEffect(isPlaylistFetched) {
-            if (!isPlaylistFetched) {
-                screenModel.init(playlistId = playlistId)
-                isPlaylistFetched = true
-            }
+        LaunchInit {
+            screenModel.init(playlistId = playlistId)
         }
 
         SelectedPlaylistScreenView(

@@ -164,6 +164,7 @@ object FrStrings : Strings {
     override val playerSwipeTitle =
         "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
     override val playerRewindTitle = "Rembobiner la musique courante avant de jouer la précédente"
+    override val playerMinimisedProgressionTitle = "Afficher la progression de la musique sur le lecteur minimisé"
     override val soulMixSettingsTitle = "Total de musiques récupérées de chaque dossier pour le Soul Mix"
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"

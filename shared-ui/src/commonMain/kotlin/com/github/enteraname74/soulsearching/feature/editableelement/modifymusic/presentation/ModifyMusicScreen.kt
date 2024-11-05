@@ -1,19 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
+import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
-import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
@@ -34,15 +37,8 @@ data class ModifyMusicScreen(
         val formState: ModifyMusicFormState by screenModel.formState.collectAsState()
         val navigationState: ModifyMusicNavigationState by screenModel.navigationState.collectAsState()
 
-        var isSelectedMusicFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(isSelectedMusicFetched) {
-            if (!isSelectedMusicFetched) {
-                screenModel.init(musicId = musicId)
-                isSelectedMusicFetched = true
-            }
+        LaunchInit {
+            screenModel.init(musicId = musicId)
         }
 
         LaunchedEffect(navigationState) {

@@ -1,14 +1,18 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -20,9 +24,10 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MaxPlayerSidePanelWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MinPlayerSidePanelWidth
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMinimisedMainInfo
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerMusicCover
 import com.github.enteraname74.soulsearching.feature.player.presentation.composable.PlayerTopInformation
@@ -35,6 +40,7 @@ import kotlinx.coroutines.launch
 fun BoxScope.PlayerSwipeableDataScreen(
     maxHeight: Float,
     state: PlayerViewState.Data,
+    settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
     onArtistClicked: () -> Unit,
     onAlbumClicked: () -> Unit,
@@ -93,6 +99,24 @@ fun BoxScope.PlayerSwipeableDataScreen(
         val imageSize = PlayerUiUtils.getImageSize()
         var playerTopInformationHeight by rememberSaveable { mutableStateOf(0) }
 
+
+        AnimatedVisibility(
+            visible = settingsState.isMinimisedSongProgressionShown
+        ) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(1f - alphaTransition)
+                    .height(SONG_PROGRESSION_HEIGHT),
+                progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f,1f) },
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                drawStopIndicator = {},
+                strokeCap = StrokeCap.Square,
+                gapSize = 0.dp,
+            )
+        }
+
         PlayerTopInformation(
             modifier = Modifier
                 .align(Alignment.TopStart),
@@ -138,7 +162,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 onLongClick = {
                     showMusicBottomSheet(state.currentMusic)
                 },
-                canSwipeCover = state.canSwipeCover,
+                canSwipeCover = settingsState.canSwipeCover,
                 aroundSongs = state.aroundSongs,
                 onCoverLoaded = onCoverLoaded,
                 currentMusic = state.currentMusic,
@@ -286,3 +310,5 @@ fun BoxWithConstraintsScope.getSidePanelWidth(playerControlsWidth: Dp): Dp {
         maximumValue = MaxPlayerSidePanelWidth,
     )
 }
+
+private val SONG_PROGRESSION_HEIGHT: Dp = 2.dp

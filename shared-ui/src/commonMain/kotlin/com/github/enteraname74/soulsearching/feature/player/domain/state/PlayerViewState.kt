@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.player.domain
+package com.github.enteraname74.soulsearching.feature.player.domain.state
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlayerMode
@@ -16,7 +16,6 @@ sealed interface PlayerViewState {
         val isPlaying: Boolean,
         val playlistsWithMusics: List<PlaylistWithMusics>,
         val currentMusicLyrics: LyricsFetchState,
-        val canSwipeCover: Boolean,
         val aroundSongs: List<Music?>,
         val initPlayerWithMinimiseView: Boolean,
     ): PlayerViewState
