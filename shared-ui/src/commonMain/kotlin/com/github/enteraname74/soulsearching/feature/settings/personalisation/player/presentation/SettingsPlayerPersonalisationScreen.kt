@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
@@ -30,23 +31,25 @@ class SettingsPlayerPersonalisationScreen: Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel: SettingsPlayerPersonalisationViewModel = koinScreenModel()
-        val isPlayerSwipeEnabled: Boolean by screenModel.isPlayerSwipeEnabled.collectAsState()
+        val state: SettingsPlayerPersonalisationState by screenModel.state.collectAsState()
 
         SettingsPlayerPersonalisationScreenView(
             navigateBack = {
                 navigator.pop()
             },
-            isPlayerSwipeEnabled = isPlayerSwipeEnabled,
+            state = state,
             togglePlayerSwipe = screenModel::togglePlayerSwipe,
             soulMixTextField = screenModel.soulMixTextField,
+            toggleRewind = screenModel::toggleRewind,
         )
     }
 
     @Composable
     private fun SettingsPlayerPersonalisationScreenView(
         navigateBack: () -> Unit,
-        isPlayerSwipeEnabled: Boolean,
+        state: SettingsPlayerPersonalisationState,
         togglePlayerSwipe: () -> Unit,
+        toggleRewind: () -> Unit,
         soulMixTextField: SoulTextFieldHolder
     ) {
 
@@ -60,7 +63,15 @@ class SettingsPlayerPersonalisationScreen: Screen {
                 SoulMenuSwitch(
                     title = strings.playerSwipeTitle,
                     toggleAction = togglePlayerSwipe,
-                    isChecked = isPlayerSwipeEnabled,
+                    isChecked = state.isPlayerSwipeEnabled,
+                    maxLines = 3
+                )
+            }
+            item {
+                SoulMenuSwitch(
+                    title = strings.playerRewindTitle,
+                    toggleAction = toggleRewind,
+                    isChecked = state.isRewindEnabled,
                     maxLines = 3
                 )
             }

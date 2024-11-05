@@ -163,6 +163,7 @@ object FrStrings : Strings {
     override val managePlayerText = "Gérer le lecteur de musique"
     override val playerSwipeTitle =
         "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
+    override val playerRewindTitle = "Rembobiner la musique courante avant de jouer la précédente"
     override val soulMixSettingsTitle = "Total de musiques récupérées de chaque dossier pour le Soul Mix"
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
@@ -172,7 +173,7 @@ object FrStrings : Strings {
     override val deletingMusicsFromUnselectedFolders = "Suppression des musiques des dossiers désélectionnés…"
 
     override val dynamicThemeTitle = "Thème dynamique"
-    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d'album de la musique jouée courante"
+    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d'album de la musique jouée"
     override val systemThemeTitle = "Thème du système"
     override val systemThemeText = "Thème de couleur global basé sur le mode de couleur de votre système"
 

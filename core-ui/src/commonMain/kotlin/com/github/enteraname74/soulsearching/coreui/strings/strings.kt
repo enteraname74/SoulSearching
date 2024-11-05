@@ -58,6 +58,7 @@ interface Strings {
     val managePlayerTitle: String
     val managePlayerText: String
     val playerSwipeTitle: String
+    val playerRewindTitle: String
     val soulMixSettingsTitle: String
 
     val searchingSongsFromYourDevice: String

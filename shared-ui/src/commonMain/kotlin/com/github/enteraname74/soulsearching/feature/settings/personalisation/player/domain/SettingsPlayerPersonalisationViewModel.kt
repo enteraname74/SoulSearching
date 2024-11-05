@@ -5,23 +5,33 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlin.math.max
 
 class SettingsPlayerPersonalisationViewModel(
     private val settings: SoulSearchingSettings,
 ): ScreenModel {
-    val isPlayerSwipeEnabled: StateFlow<Boolean> = settings.getFlowOn(
-        SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED
-    ).stateIn(
+    val state: StateFlow<SettingsPlayerPersonalisationState> = combine(
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED),
+    ) { isPlayerSwipeEnabled, isRewindEnabled ->
+        println("REWIND? $isRewindEnabled")
+        SettingsPlayerPersonalisationState(
+            isPlayerSwipeEnabled = isPlayerSwipeEnabled,
+            isRewindEnabled = isRewindEnabled,
+        )
+    }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.Eagerly,
-        initialValue = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue
+        initialValue = SettingsPlayerPersonalisationState(
+            isPlayerSwipeEnabled = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
+            isRewindEnabled = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.defaultValue,
+        )
     )
 
     val soulMixTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
@@ -42,7 +52,14 @@ class SettingsPlayerPersonalisationViewModel(
     fun togglePlayerSwipe() {
         settings.set(
             key = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.key,
-            value = !isPlayerSwipeEnabled.value
+            value = !state.value.isPlayerSwipeEnabled,
+        )
+    }
+
+    fun toggleRewind() {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.key,
+            value = !state.value.isRewindEnabled,
         )
     }
 

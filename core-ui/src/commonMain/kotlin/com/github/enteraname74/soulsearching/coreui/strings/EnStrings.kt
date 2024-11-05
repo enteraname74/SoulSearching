@@ -161,6 +161,7 @@ object EnStrings : Strings {
     override val managePlayerTitle = "Music player"
     override val managePlayerText = "Manage music player"
     override val playerSwipeTitle = "Swipe the song cover to move forward or backward in the played list"
+    override val playerRewindTitle = "Rewind the current song before playing the previous one"
     override val soulMixSettingsTitle = "Total of songs fetched from each folder for the Soul Mix"
     override val usedFoldersTitle = "Used folders"
     override val usedFoldersText = "Define the folders used in the application"
