@@ -25,10 +25,13 @@ dependencies {
     implementation(libs.material.desktop)
     implementation(libs.foundation.desktop)
     implementation(compose.components.resources)
+
     implementation(project(":shared-ui"))
+    implementation(project(":domain"))
 
     implementation(libs.bundles.koin)
     implementation(project(":features:playback"))
+    implementation(project(":core-ui"))
 }
 
 compose.desktop {

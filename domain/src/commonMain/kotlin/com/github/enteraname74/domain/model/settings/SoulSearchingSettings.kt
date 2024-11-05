@@ -183,6 +183,21 @@ object SoulSearchingSettingsKeys {
         )
     }
 
+    object Desktop {
+        val WINDOW_HEIGHT = settingElementOf(
+            key = "WINDOW_HEIGHT",
+            defaultValue = 600,
+        )
+        val WINDOW_WIDTH = settingElementOf(
+            key = "WINDOW_WIDTH",
+            defaultValue = 800,
+        )
+        val IS_FULLSCREEN = settingElementOf(
+            key = "IS_FULLSCREEN",
+            defaultValue = false,
+        )
+    }
+
     object System {
         val CURRENT_DB_VERSION = settingElementOf(
             key = "CURRENT_DB_VERSION",
