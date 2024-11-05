@@ -140,6 +140,9 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 }
             } else {
                 null
+            },
+            onSongInfoClicked = {
+                showMusicBottomSheet(state.currentMusic)
             }
         )
 
