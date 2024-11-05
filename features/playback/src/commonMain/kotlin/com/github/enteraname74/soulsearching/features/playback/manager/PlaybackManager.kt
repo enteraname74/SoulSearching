@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.*
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
@@ -135,6 +136,9 @@ abstract class PlaybackManager : KoinComponent {
         player.onlyLoadMusic(seekTo = seekTo)
     }
 
+    /**
+     * Retrieves the current position in the current played song in milliseconds.
+     */
     fun getMusicPosition(): Int =
         player.getMusicPosition()
 
@@ -208,8 +212,17 @@ abstract class PlaybackManager : KoinComponent {
      * Play the previous song in queue.
      */
     suspend fun previous() {
-        playbackListManager.getPreviousMusic()?.let {
-            setAndPlayMusic(it)
+        (playbackListManager.state.first() as? PlaybackListState.Data)?.let { dataState ->
+//            playbackProgressJob.releaseDurationJob()
+//            playbackProgressJob.setPosition(pos = 0)
+
+            if (settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD) {
+                setAndPlayMusic(music = dataState.currentMusic)
+            } else {
+                playbackListManager.getPreviousMusic()?.let {
+                    setAndPlayMusic(it)
+                }
+            }
         }
     }
 
@@ -285,5 +298,9 @@ abstract class PlaybackManager : KoinComponent {
             isMainPlaylist = isMainPlaylist,
             isForcingNewPlaylist = isForcingNewPlaylist,
         )
+    }
+
+    companion object {
+        private const val REWIND_THRESHOLD: Long = 5_000
     }
 }

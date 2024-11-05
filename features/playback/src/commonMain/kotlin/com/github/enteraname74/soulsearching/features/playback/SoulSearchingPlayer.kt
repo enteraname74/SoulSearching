@@ -67,7 +67,7 @@ interface SoulSearchingPlayer {
     fun dismiss()
 
     /**
-     * Retrieve the current position in the current played song.
+     * Retrieve the current position in the current played song in milliseconds.
      */
     fun getMusicPosition(): Int
 

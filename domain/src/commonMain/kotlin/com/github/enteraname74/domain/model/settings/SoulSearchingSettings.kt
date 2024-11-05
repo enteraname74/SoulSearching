@@ -119,6 +119,10 @@ object SoulSearchingSettingsKeys {
             key = "SOUL_MIX_TOTAL_BY_LIST",
             defaultValue = 50
         )
+        val IS_REWIND_ENABLED = settingElementOf(
+            key = "IS_REWIND_ENABLED",
+            defaultValue = true,
+        )
     }
 
     object ColorTheme {
