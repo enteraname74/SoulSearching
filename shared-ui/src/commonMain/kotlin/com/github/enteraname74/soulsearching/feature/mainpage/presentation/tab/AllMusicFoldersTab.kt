@@ -10,13 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.MusicFolderList
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedTextButton
+import com.github.enteraname74.soulsearching.coreui.button.*
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -27,10 +25,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 fun allMusicFoldersTab(
     mainPageViewModel: MainPageViewModel,
@@ -92,22 +87,30 @@ private fun Buttons(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SoulSegmentedButton(
-                leftButtonSpec = SoulSegmentedTextButton(
-                    data = strings.soulMix,
-                    onClick = {
-                        if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
-                        coroutineScope.launch {
-                            playbackManager.playSoulMix(
-                                musicLists = allMusicFolders.map { it.musics },
-                            )
-                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                buttons = listOf(
+                    SoulSegmentedTextButton(
+                        data = strings.soulMix,
+                        contentPadding = SoulButtonDefaults.contentPadding(
+                            horizontal = UiConstants.Spacing.medium,
+                        ),
+                        onClick = {
+                            if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
+                            coroutineScope.launch {
+                                playbackManager.playSoulMix(
+                                    musicLists = allMusicFolders.map { it.musics },
+                                )
+                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                            }
                         }
-                    }
+                    ),
+                    SoulSegmentedIconButton(
+                        data = Icons.Rounded.Info,
+                        contentPadding = SoulButtonDefaults.contentPadding(
+                            horizontal = 0.dp,
+                        ),
+                        onClick = onSeeSoulMixInformation,
+                    )
                 ),
-                rightButtonSpec = SoulSegmentedIconButton(
-                    data = Icons.Rounded.Info,
-                    onClick = onSeeSoulMixInformation,
-                )
             )
             SoulIconButton(
                 icon = Icons.Rounded.Shuffle,
