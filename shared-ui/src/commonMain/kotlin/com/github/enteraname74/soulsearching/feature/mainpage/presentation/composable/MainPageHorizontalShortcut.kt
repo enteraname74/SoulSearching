@@ -25,9 +25,8 @@ fun MainPageHorizontalShortcut(
         modifier = Modifier
             .fillMaxWidth(),
         contentPadding = PaddingValues(
-            bottom = UiConstants.Spacing.medium,
-            start = UiConstants.Spacing.medium,
-            end = UiConstants.Spacing.medium,
+            horizontal = UiConstants.Spacing.medium,
+            vertical = UiConstants.Spacing.mediumPlus,
         ),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus),
     ) {
