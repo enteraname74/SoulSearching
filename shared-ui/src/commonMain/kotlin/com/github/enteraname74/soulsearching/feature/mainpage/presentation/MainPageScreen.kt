@@ -1,12 +1,13 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -39,6 +40,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
@@ -69,6 +71,7 @@ class MainPageScreen : Screen {
 
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
+        val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
 
         val searchDraggableState = mainPageViewModel.searchDraggableState
 
@@ -117,6 +120,7 @@ class MainPageScreen : Screen {
             allArtistsState = artistState,
             tabs = tabs,
             currentEnumPage = currentPage,
+            isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         )
     }
 
@@ -193,7 +197,7 @@ class MainPageScreen : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Suppress("Deprecation")
 fun MainPageScreenView(
@@ -209,9 +213,8 @@ fun MainPageScreenView(
     allArtistsState: AllArtistsState,
     tabs: List<PagerScreen>,
     currentEnumPage: ElementEnum?,
+    isUsingVerticalAccessBar: Boolean,
 ) {
-    val windowSize = rememberWindowSize()
-
     val pagerState = rememberPagerState(
         pageCount = { tabs.size }
     )
@@ -257,32 +260,58 @@ fun MainPageScreenView(
                 }
             )
 
-            Row(
-                modifier = Modifier.fillMaxSize()
-            ) {
-
-                // We only show the vertical shortcut if there is more than one panel to access.
-                if (tabs.size > 1 && windowSize != WindowSize.Large) {
-                    MainPageVerticalShortcut(
-                        currentPage = currentPage,
-                        visibleElements = tabs.map { it.type },
-                        switchPageAction = { newPage ->
-                            if (newPage == -1) return@MainPageVerticalShortcut
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(newPage)
-                            }.invokeOnCompletion {
-                                mainPageViewModel.setCurrentPage(tabs[newPage].type)
-                            }
-                        }
-                    )
-                }
-
-                VerticalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = false
+            if (isUsingVerticalAccessBar) {
+                Row(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    tabs[it].screen()
+                    // We only show the vertical shortcut if there is more than one panel to access.
+                    if (shouldShowShortcutAccess(tabs = tabs)) {
+                        MainPageVerticalShortcut(
+                            currentPage = currentPage,
+                            visibleElements = tabs.map { it.type },
+                            switchPageAction = { newPage ->
+                                if (newPage == -1) return@MainPageVerticalShortcut
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(newPage)
+                                }.invokeOnCompletion {
+                                    mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                                }
+                            }
+                        )
+                    }
+                    VerticalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize(),
+                        userScrollEnabled = false,
+                    ) {
+                        tabs[it].screen()
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    if (shouldShowShortcutAccess(tabs = tabs)) {
+                        MainPageHorizontalShortcut(
+                            currentPage = currentPage,
+                            visibleElements = tabs.map { it.type },
+                            switchPageAction = { newPage ->
+                                if (newPage == -1) return@MainPageHorizontalShortcut
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(newPage)
+                                }.invokeOnCompletion {
+                                    mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                                }
+                            }
+                        )
+                    }
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        tabs[it].screen()
+                    }
                 }
             }
         }
@@ -311,5 +340,11 @@ fun MainPageScreenView(
             )
         }
     }
+}
+
+@Composable
+private fun shouldShowShortcutAccess(tabs: List<PagerScreen>): Boolean {
+    val windowSize = rememberWindowSize()
+    return tabs.size > 1 && windowSize != WindowSize.Large
 }
 

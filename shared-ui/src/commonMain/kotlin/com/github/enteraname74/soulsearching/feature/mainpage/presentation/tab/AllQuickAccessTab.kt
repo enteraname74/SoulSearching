@@ -65,6 +65,7 @@ private fun QuickAccessible.toPreview(
                 cover = this.cover,
                 title = this.album.albumName,
                 text = this.artist?.artistName.orEmpty(),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )
@@ -75,6 +76,7 @@ private fun QuickAccessible.toPreview(
                 cover = this.cover,
                 title = this.artist.artistName,
                 text = strings.musics(total = this.musics.size),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )
@@ -85,6 +87,7 @@ private fun QuickAccessible.toPreview(
                 cover = this.cover,
                 title = this.name,
                 text = this.album,
+                imageSize = null,
                 onClick = {
                     val musicListSingleton = arrayListOf(this@toPreview)
                     coroutineScope.launch {
@@ -107,6 +110,7 @@ private fun QuickAccessible.toPreview(
                 cover = this.playlist.cover,
                 title = this.playlist.name,
                 text = strings.musics(total = this.musicsNumber),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )

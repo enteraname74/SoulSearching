@@ -51,6 +51,7 @@ fun allAlbumsTab(
                 onClick = {
                     navigateToAlbum(element.album.albumId)
                 },
+                imageSize = null,
                 onLongClick = {
                     mainPageViewModel.showAlbumBottomSheet(element.album)
                 }

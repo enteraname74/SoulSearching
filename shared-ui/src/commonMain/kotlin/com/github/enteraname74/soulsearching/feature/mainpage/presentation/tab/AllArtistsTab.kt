@@ -48,6 +48,7 @@ fun allArtistsTab(
                 cover = element.cover,
                 title = element.artist.artistName,
                 text = strings.musics(element.musics.size),
+                imageSize = null,
                 onClick = {
                     navigateToArtist(element.artist.artistId)
                 },

@@ -171,8 +171,8 @@ interface Strings {
     val manageMusicsViewText: String
     val showMusicsByFolders: String
     val showMusicsByMonths: String
-    val showVerticalAccessBarTitle: String
-    val showVerticalAccessBarText: String
+    val useVerticalAccessBarTitle: String
+    val useHorizontalAccessBarText: String
 
     val usedFoldersTitle: String
     val usedFoldersText: String

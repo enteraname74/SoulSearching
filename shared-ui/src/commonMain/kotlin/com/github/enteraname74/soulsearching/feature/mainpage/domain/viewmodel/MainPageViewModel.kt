@@ -5,6 +5,8 @@ import androidx.compose.material.SwipeableState
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
@@ -75,6 +77,7 @@ class MainPageViewModel(
 
     private val getAllFoldersUseCase: GetAllFoldersUseCase by inject()
     private val deleteAllFoldersUseCase: DeleteAllFoldersUseCase by inject()
+    private val settings: SoulSearchingSettings by inject()
 
     private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
@@ -87,6 +90,14 @@ class MainPageViewModel(
         scope = screenModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
+    )
+
+    val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
+        SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
+    ).stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = true,
     )
 
     @OptIn(ExperimentalMaterialApi::class)

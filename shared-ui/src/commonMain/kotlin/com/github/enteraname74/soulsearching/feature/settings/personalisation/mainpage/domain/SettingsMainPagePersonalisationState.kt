@@ -6,5 +6,6 @@ sealed interface SettingsMainPagePersonalisationState {
     data object Loading: SettingsMainPagePersonalisationState
     data class Data(
         val elementsVisibility: ElementsVisibility,
+        val isUsingVerticalAccessBar: Boolean,
     ): SettingsMainPagePersonalisationState
 }

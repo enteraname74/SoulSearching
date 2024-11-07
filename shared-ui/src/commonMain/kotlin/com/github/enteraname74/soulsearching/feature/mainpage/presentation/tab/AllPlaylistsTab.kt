@@ -57,6 +57,7 @@ fun allPlaylistsTab(
                     cover = element.cover,
                     title = element.playlist.name,
                     text = strings.musics(element.musicsNumber),
+                    imageSize = null,
                     onClick = {
                         navigateToPlaylist(element.playlist.playlistId)
                     },

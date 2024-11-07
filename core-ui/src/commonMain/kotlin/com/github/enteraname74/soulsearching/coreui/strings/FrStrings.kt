@@ -156,8 +156,8 @@ object FrStrings : Strings {
     override val manageMusicsViewText = "Gérer la vue des musiques"
     override val showMusicsByFolders = "Afficher les musiques par dossiers"
     override val showMusicsByMonths = "Afficher les musiques par mois"
-    override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
-    override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
+    override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
+    override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 
     override val managePlayerTitle = "Lecteur de musique"
     override val managePlayerText = "Gérer le lecteur de musique"

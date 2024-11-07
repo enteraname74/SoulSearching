@@ -155,8 +155,8 @@ object EnStrings : Strings {
     override val manageMusicsViewText = "Manage songs view"
     override val showMusicsByFolders = "Show songs by folders"
     override val showMusicsByMonths = "Show songs by months"
-    override val showVerticalAccessBarTitle = "Show vertical access bar"
-    override val showVerticalAccessBarText = "Gives quick access to all elements on the main page"
+    override val useVerticalAccessBarTitle = "Use vertical access bar"
+    override val useHorizontalAccessBarText = "Use horizontal access bar"
 
     override val managePlayerTitle = "Music player"
     override val managePlayerText = "Manage music player"

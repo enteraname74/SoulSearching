@@ -26,7 +26,7 @@ fun BigPreviewComposable(
     text: String = "",
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
-    imageSize: Dp = UiConstants.ImageSize.veryLarge,
+    imageSize: Dp? = UiConstants.ImageSize.veryLarge,
     titleStyle: TextStyle = MaterialTheme.typography.labelLarge,
     textStyle: TextStyle = MaterialTheme.typography.labelSmall,
     roundedPercent: Int = 4,
@@ -34,13 +34,15 @@ fun BigPreviewComposable(
 ) {
     Column(
         modifier = modifier
-            .width(IntrinsicSize.Min)
             .combinedClickableWithRightClick(
                 onClick = onClick,
                 onLongClick = onLongClick
             )
     ) {
         SoulImage(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
             cover = cover,
             size = imageSize,
             roundedPercent = roundedPercent,

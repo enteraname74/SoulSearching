@@ -181,6 +181,10 @@ object SoulSearchingSettingsKeys {
             key = "ARE_MUSICS_BY_FOLDERS_SHOWN",
             defaultValue = true,
         )
+        val IS_USING_VERTICAL_ACCESS_BAR = settingElementOf(
+            key = "IS_USING_VERTICAL_ACCESS_BAR",
+            defaultValue = true,
+        )
     }
 
     object Desktop {

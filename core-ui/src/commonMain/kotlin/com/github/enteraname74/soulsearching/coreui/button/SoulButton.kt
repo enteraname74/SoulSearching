@@ -17,7 +17,7 @@ fun SoulButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = SoulButtonDefaults.shape,
+    shape: Shape = SoulButtonDefaults.ROUND_SHAPE,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
     contentPadding: PaddingValues = SoulButtonDefaults.contentPadding(),
     content: @Composable () -> Unit,

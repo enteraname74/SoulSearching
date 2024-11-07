@@ -60,6 +60,7 @@ fun allMusicFoldersTab(
                     .animateItem(),
                 cover = element.cover,
                 title = element.path,
+                imageSize = null,
                 text = strings.musics(total = element.musics.size),
                 onClick = {
                     navigateToFolder(element.path)
