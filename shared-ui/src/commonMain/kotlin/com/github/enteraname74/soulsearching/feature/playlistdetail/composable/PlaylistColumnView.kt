@@ -92,7 +92,7 @@ fun PlaylistColumnView(
                             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
-                    onLongClick = { onShowMusicBottomSheet(elt) },
+                    onMoreClicked = { onShowMusicBottomSheet(elt) },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
                 )

@@ -17,6 +17,7 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -30,11 +31,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun AllMusicsComposable(
     musicState: AllMusicsState,
+    multiSelectionState: MultiSelectionState,
     navigateToMonth: (month: String) -> Unit,
     setSortType: (Int) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
     onLongClick: (Music) -> Unit,
+    onMoreClick: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     viewSettingsManager: ViewSettingsManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -111,12 +114,15 @@ fun AllMusicsComposable(
                             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
-                    onLongClick = {
+                    onMoreClicked = {
                         coroutineScope.launch {
-                            onLongClick(elt)
+                            onMoreClick(elt)
                         }
                     },
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
+                    onLongClick = { onLongClick(elt) },
+                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }
             item(

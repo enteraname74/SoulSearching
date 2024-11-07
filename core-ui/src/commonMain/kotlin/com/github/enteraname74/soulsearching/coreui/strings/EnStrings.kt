@@ -219,4 +219,11 @@ object EnStrings : Strings {
 
     override fun fetchingMusicsFrom(path: String): String =
         "Fetching songs in: $path"
+
+    override fun selectedElements(total: Int): String =
+        when (total) {
+            0 -> "No selected elements"
+            1 -> "1 selected element"
+            else -> "$total selected elements"
+        }
 }

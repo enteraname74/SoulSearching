@@ -226,7 +226,7 @@ private fun Content(
                                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                             }
                         },
-                        onLongClick = { onShowMusicBottomSheet(music) },
+                        onMoreClicked = { onShowMusicBottomSheet(music) },
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                     )
                 }

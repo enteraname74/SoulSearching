@@ -220,4 +220,11 @@ object FrStrings : Strings {
 
     override fun fetchingMusicsFrom(path: String): String =
         "Récupération de musiques dans le dossier : $path"
+
+    override fun selectedElements(total: Int): String =
+        when (total) {
+            0 -> "Aucun élément sélectionné"
+            1 -> "Un élément sélectionné"
+            else -> "$total éléments sélectionnés"
+        }
 }

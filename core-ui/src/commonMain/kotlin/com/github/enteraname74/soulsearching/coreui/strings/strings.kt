@@ -222,4 +222,9 @@ interface Strings {
      * Shows a text indicating the current folder where songs are fetched.
      */
     fun fetchingMusicsFrom(path: String): String
+
+    /**
+     * Shows a text indicating the total of selected elements.
+     */
+    fun selectedElements(total: Int): String
 }

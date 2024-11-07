@@ -1,3 +1,4 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 import androidx.compose.material.ExperimentalMaterialApi
@@ -25,6 +26,9 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddT
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -36,7 +40,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -50,7 +53,6 @@ class MainPageViewModel(
     viewSettingsManager: ViewSettingsManager,
     private val playbackManager: PlaybackManager,
     private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase,
-    private val musicFetcher: MusicFetcher,
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
@@ -78,6 +80,14 @@ class MainPageViewModel(
     private val getAllFoldersUseCase: GetAllFoldersUseCase by inject()
     private val deleteAllFoldersUseCase: DeleteAllFoldersUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
+
+    val multiSelectionManager = MultiSelectionManager()
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MultiSelectionState(emptyList())
+        )
 
     private var _currentPage: MutableStateFlow<ElementEnum?> = MutableStateFlow(null)
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
@@ -245,6 +255,7 @@ class MainPageViewModel(
 
     fun consumeNavigation() {
         _navigationState.value = MainPageNavigationState.Idle
+        multiSelectionManager.clear()
     }
 
     private var cleanMusicsLaunched: Boolean = false
@@ -305,19 +316,6 @@ class MainPageViewModel(
 
     fun setCurrentPage(page: ElementEnum) {
         _currentPage.value = page
-    }
-
-    /**
-     * Fetch all musics.
-     */
-    suspend fun fetchMusics(
-        updateProgress: (Float, String?) -> Unit
-    ) {
-        val hasSongsBeenSaved = musicFetcher.fetchMusics(updateProgress = updateProgress)
-        if (!hasSongsBeenSaved) {
-            // We need to specify how to save songs with potential multiple artists
-            _navigationState.value = MainPageNavigationState.ToArtistChoice
-        }
     }
 
     /**
@@ -485,5 +483,23 @@ class MainPageViewModel(
                 )
             }
         }
+    }
+
+    fun toggleSelection(
+        id: UUID,
+        mode: SelectionMode,
+    ) {
+        multiSelectionManager.toggle(
+            id = id,
+            mode = mode,
+        )
+    }
+
+    fun cancelSelection() {
+        multiSelectionManager.clear()
+    }
+
+    fun showSelectionBottomSheet() {
+        // TODO
     }
 }

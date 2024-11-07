@@ -99,13 +99,13 @@ fun PlayerListView(
                                 playbackManager.setAndPlayMusic(music)
                             }
                         },
-                        onLongClick = {
+                        onMoreClicked = {
                             coroutineScope.launch {
                                 onSelectedMusic(elt)
                             }
                         },
                         textColor = secondaryColor,
-                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
+                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
                     )
                 }
             }
