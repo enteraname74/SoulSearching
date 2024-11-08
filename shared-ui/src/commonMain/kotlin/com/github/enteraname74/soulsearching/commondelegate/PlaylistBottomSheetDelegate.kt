@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.usecase.playlist.DeletePlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheet
@@ -12,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 interface PlaylistBottomSheetDelegate {
-    fun showPlaylistBottomSheet(selectedPlaylist: Playlist)
+    fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusicsNumber)
 }
 
 class PlaylistBottomSheetDelegateImpl(
@@ -51,17 +52,17 @@ class PlaylistBottomSheetDelegateImpl(
         )
     }
 
-    override fun showPlaylistBottomSheet(selectedPlaylist: Playlist) {
+    override fun showPlaylistBottomSheet(selectedPlaylist: PlaylistWithMusicsNumber) {
         setBottomSheetState(
             PlaylistBottomSheet(
                 selectedPlaylist = selectedPlaylist,
                 onClose = { setBottomSheetState(null) },
-                onDeletePlaylist = { showDeletePlaylistDialog(playlistToDelete = selectedPlaylist) },
-                onModifyPlaylist = { onModifyPlaylist(selectedPlaylist) },
+                onDeletePlaylist = { showDeletePlaylistDialog(playlistToDelete = selectedPlaylist.playlist) },
+                onModifyPlaylist = { onModifyPlaylist(selectedPlaylist.playlist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         upsertPlaylistUseCase(
-                            playlist = selectedPlaylist.copy(
+                            playlist = selectedPlaylist.playlist.copy(
                                 isInQuickAccess = !selectedPlaylist.isInQuickAccess,
                             )
                         )

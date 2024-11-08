@@ -54,7 +54,7 @@ class ArtistBottomSheetDelegateImpl(
     override fun showArtistBottomSheet(selectedArtist: ArtistWithMusics) {
         setBottomSheetState(
             ArtistBottomSheet(
-                selectedArtist = selectedArtist.artist,
+                selectedArtist = selectedArtist,
                 onClose = { setBottomSheetState(null) },
                 onDeleteArtist = { showDeleteArtistDialog(artistWithMusics = selectedArtist) },
                 onModifyArtist = { onModifyArtist(selectedArtist.artist) },

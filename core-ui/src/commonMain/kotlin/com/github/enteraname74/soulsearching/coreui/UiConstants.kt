@@ -82,6 +82,7 @@ object UiConstants {
                 55.dp
             }
         }
+        val medium: Dp = 80.dp
         val huge: Dp = 200.dp
     }
 

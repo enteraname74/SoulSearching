@@ -61,7 +61,7 @@ fun allPlaylistsTab(
                     onClick = {
                         navigateToPlaylist(element.playlist.playlistId)
                     },
-                    onLongClick = { mainPageViewModel.showPlaylistBottomSheet(element.playlist) },
+                    onLongClick = { mainPageViewModel.showPlaylistBottomSheet(element) },
                     isFavoritePlaylist = element.playlist.isFavorite
                 )
             }

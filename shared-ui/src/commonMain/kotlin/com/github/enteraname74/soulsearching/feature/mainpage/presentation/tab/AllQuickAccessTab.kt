@@ -58,8 +58,8 @@ private fun QuickAccessible.toPreview(
 
     val coroutineScope = rememberCoroutineScope()
 
-    when(this) {
-        is AlbumWithArtist -> {
+    when (this) {
+        is AlbumWithMusics -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
@@ -70,6 +70,7 @@ private fun QuickAccessible.toPreview(
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is ArtistWithMusics -> {
             BigPreviewComposable(
                 modifier = modifier,
@@ -81,6 +82,7 @@ private fun QuickAccessible.toPreview(
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is Music -> {
             BigPreviewComposable(
                 modifier = modifier,
@@ -104,6 +106,7 @@ private fun QuickAccessible.toPreview(
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is PlaylistWithMusicsNumber -> {
             BigPreviewComposable(
                 modifier = modifier,

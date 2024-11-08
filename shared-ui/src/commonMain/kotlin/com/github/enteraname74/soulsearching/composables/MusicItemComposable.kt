@@ -82,7 +82,7 @@ fun MusicItemComposable(
                     fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
                 )
                 Text(
-                    text = "${music.artist} | ${music.album}",
+                    text = music.informationText,
                     color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,

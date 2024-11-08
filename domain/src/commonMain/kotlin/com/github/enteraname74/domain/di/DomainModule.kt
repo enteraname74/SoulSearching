@@ -29,7 +29,7 @@ val domainModule = module {
     singleOf(::GetAlbumUseCase)
     singleOf(::GetAlbumWithMusicsUseCase)
     singleOf(::GetAllAlbumsUseCase)
-    singleOf(::GetAllAlbumsWithArtistFromQuickAccessUseCase)
+    singleOf(::GetAllAlbumsWithMusicsFromQuickAccessUseCase)
     singleOf(::GetAllAlbumsWithArtistUseCase)
     singleOf(::GetAllAlbumsWithMusicsUseCase)
     singleOf(::GetAllAlbumWithMusicsSortedUseCase)

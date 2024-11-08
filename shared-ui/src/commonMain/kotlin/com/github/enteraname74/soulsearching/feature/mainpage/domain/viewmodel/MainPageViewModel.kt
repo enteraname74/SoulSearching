@@ -369,7 +369,7 @@ class MainPageViewModel(
 
     private fun navigateToQuickAccessible(quickAccessible: QuickAccessible) {
         _navigationState.value = when (quickAccessible) {
-            is AlbumWithArtist -> MainPageNavigationState.ToAlbum(
+            is AlbumWithMusics -> MainPageNavigationState.ToAlbum(
                 albumId = quickAccessible.album.albumId,
             )
 
@@ -386,8 +386,8 @@ class MainPageViewModel(
 
     private fun showQuickAccessBottomSheet(quickAccessible: QuickAccessible) {
         when (quickAccessible) {
-            is AlbumWithArtist -> showAlbumBottomSheet(
-                album = quickAccessible.album,
+            is AlbumWithMusics -> showAlbumBottomSheet(
+                albumWithMusics = quickAccessible,
             )
 
             is ArtistWithMusics -> showArtistBottomSheet(
@@ -399,7 +399,7 @@ class MainPageViewModel(
             )
 
             is PlaylistWithMusicsNumber -> showPlaylistBottomSheet(
-                selectedPlaylist = quickAccessible.playlist,
+                selectedPlaylist = quickAccessible,
             )
         }
     }

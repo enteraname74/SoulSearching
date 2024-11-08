@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
@@ -110,7 +111,10 @@ fun BoxScope.PlayerSwipeableDataScreen(
                     .height(SONG_PROGRESSION_HEIGHT),
                 progress = { (currentMusicProgression.toFloat() / state.currentMusic.duration.toFloat()).coerceIn(0f,1f) },
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
+                trackColor = SoulSearchingColorTheme.colorScheme.subSecondaryText.blend(
+                    other = SoulSearchingColorTheme.colorScheme.primary,
+                    ratio = 0.5f,
+                ),
                 drawStopIndicator = {},
                 strokeCap = StrokeCap.Square,
                 gapSize = 0.dp,

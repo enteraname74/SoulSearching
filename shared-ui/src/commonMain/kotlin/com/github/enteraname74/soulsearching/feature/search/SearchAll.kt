@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -37,8 +37,8 @@ fun SearchAll(
     allArtistsState: AllArtistsState,
     allPlaylistsState: AllPlaylistsState,
     onSelectedMusicForBottomSheet: (Music) -> Unit,
-    onSelectedAlbumForBottomSheet: (Album) -> Unit,
-    onSelectedPlaylistForBottomSheet: (Playlist) -> Unit,
+    onSelectedAlbumForBottomSheet: (AlbumWithMusics) -> Unit,
+    onSelectedPlaylistForBottomSheet: (PlaylistWithMusicsNumber) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
     navigateToPlaylist: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
@@ -81,7 +81,7 @@ fun SearchAll(
                         navigateToPlaylist(playlistWithMusics.playlist.playlistId.toString())
                     },
                     onLongClick = {
-                        onSelectedPlaylistForBottomSheet(playlistWithMusics.playlist)
+                        onSelectedPlaylistForBottomSheet(playlistWithMusics)
                     },
                     cover = playlistWithMusics.cover,
                 )
@@ -143,22 +143,22 @@ fun SearchAll(
                 items = foundedAlbums,
                 key = { it.album.albumId },
                 contentType = { SEARCH_ALL_ALBUM_CONTENT_TYPE },
-            ) { albumWithArtist ->
+            ) { albumWithMusics ->
                 LinearPreviewComposable(
                     modifier = Modifier
                         .animateItem(),
-                    title = albumWithArtist.album.albumName,
-                    text = if (albumWithArtist.artist != null) albumWithArtist.artist!!.artistName else "",
+                    title = albumWithMusics.album.albumName,
+                    text = if (albumWithMusics.artist != null) albumWithMusics.artist!!.artistName else "",
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToAlbum(albumWithArtist.album.albumId.toString())
+                        navigateToAlbum(albumWithMusics.album.albumId.toString())
                     },
                     onLongClick = {
                         coroutineScope.launch {
-                            onSelectedAlbumForBottomSheet(albumWithArtist.album)
+                            onSelectedAlbumForBottomSheet(albumWithMusics)
                         }
                     },
-                    cover = albumWithArtist.cover,
+                    cover = albumWithMusics.cover,
                 )
             }
         }

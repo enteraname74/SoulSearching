@@ -53,7 +53,7 @@ fun allAlbumsTab(
                 },
                 imageSize = null,
                 onLongClick = {
-                    mainPageViewModel.showAlbumBottomSheet(element.album)
+                    mainPageViewModel.showAlbumBottomSheet(element)
                 }
             )
         }

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheet
@@ -12,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 interface AlbumBottomSheetDelegate {
-    fun showAlbumBottomSheet(album: Album)
+    fun showAlbumBottomSheet(albumWithMusics: AlbumWithMusics)
 }
 
 class AlbumBottomSheetDelegateImpl(
@@ -50,18 +51,18 @@ class AlbumBottomSheetDelegateImpl(
         )
     }
 
-    override fun showAlbumBottomSheet(album: Album) {
+    override fun showAlbumBottomSheet(albumWithMusics: AlbumWithMusics) {
         setBottomSheetState(
             AlbumBottomSheet(
-                selectedAlbum = album,
+                selectedAlbum = albumWithMusics,
                 onClose = { setBottomSheetState(null) },
-                onDeleteAlbum = { showDeleteAlbumDialog(album = album) },
-                onModifyAlbum = { onModifyAlbum(album) },
+                onDeleteAlbum = { showDeleteAlbumDialog(album = albumWithMusics.album) },
+                onModifyAlbum = { onModifyAlbum(albumWithMusics.album) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         upsertAlbumUseCase(
-                            album = album.copy(
-                                isInQuickAccess = !album.isInQuickAccess,
+                            album = albumWithMusics.album.copy(
+                                isInQuickAccess = !albumWithMusics.album.isInQuickAccess,
                             )
                         )
                     }

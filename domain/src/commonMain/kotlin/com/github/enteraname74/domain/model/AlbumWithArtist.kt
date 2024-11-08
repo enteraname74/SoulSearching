@@ -7,5 +7,4 @@ data class AlbumWithArtist(
     val album: Album,
     val artist: Artist?,
     val cover: Cover?,
-    override var isInQuickAccess: Boolean = album.isInQuickAccess,
-): QuickAccessible
+)

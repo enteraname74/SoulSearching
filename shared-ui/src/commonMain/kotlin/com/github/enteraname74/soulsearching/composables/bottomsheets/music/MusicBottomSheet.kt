@@ -60,6 +60,7 @@ class MusicBottomSheet(
         val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
 
         MusicBottomSheetMenu(
+            selectedMusic = selectedMusic,
             musicBottomSheetState = musicBottomSheetState,
             modifyAction = {
                 closeWithAnim()

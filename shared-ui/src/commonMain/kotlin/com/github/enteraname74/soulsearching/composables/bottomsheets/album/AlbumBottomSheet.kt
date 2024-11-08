@@ -2,12 +2,14 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 
 class AlbumBottomSheet(
     private val onClose: () -> Unit,
-    private val selectedAlbum: Album,
+    private val selectedAlbum: AlbumWithMusics,
     private val onModifyAlbum: () -> Unit,
     private val onDeleteAlbum: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
@@ -36,7 +38,8 @@ class AlbumBottomSheet(
                closeWithAnim()
                 toggleQuickAccess()
             },
-            isInQuickAccess = selectedAlbum.isInQuickAccess
+            isInQuickAccess = selectedAlbum.isInQuickAccess,
+            selectedAlbum = selectedAlbum,
         )
     }
 }

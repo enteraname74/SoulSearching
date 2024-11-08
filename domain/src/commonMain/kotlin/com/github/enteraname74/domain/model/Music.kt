@@ -20,4 +20,6 @@ data class Music(
     var nbPlayed: Int = 0,
     override var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false
-): QuickAccessible
+): QuickAccessible {
+    val informationText: String = "$artist | $album"
+}
