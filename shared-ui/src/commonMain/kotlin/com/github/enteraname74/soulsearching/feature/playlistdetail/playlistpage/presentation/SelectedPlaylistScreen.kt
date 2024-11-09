@@ -1,10 +1,13 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -84,6 +87,7 @@ fun SelectedPlaylistScreenView(
 ) {
 
     val state by selectedPlaylistViewModel.state.collectAsState()
+    val multiSelectionState by selectedPlaylistViewModel.multiSelectionState.collectAsState()
 
     when (state) {
         SelectedPlaylistState.Loading -> SoulLoadingScreen(
@@ -99,6 +103,14 @@ fun SelectedPlaylistScreenView(
                     currentPlaylist = (state as SelectedPlaylistState.Data).selectedPlaylist,
                 )
             },
+            multiSelectionManager = selectedPlaylistViewModel.multiSelectionManager,
+            onLongSelectOnMusic = {
+                selectedPlaylistViewModel.toggleSelection(
+                    id = it.musicId,
+                    mode = SelectionMode.Music,
+                )
+            },
+            multiSelectionState = multiSelectionState,
         )
     }
 }

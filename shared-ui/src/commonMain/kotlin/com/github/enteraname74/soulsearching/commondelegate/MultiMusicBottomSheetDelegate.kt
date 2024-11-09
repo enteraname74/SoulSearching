@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -27,9 +28,15 @@ import java.util.*
 
 interface MultiMusicBottomSheetDelegate {
     fun showMultiMusicBottomSheet(
-        selectedIds: List<UUID>,
         currentPlaylist: Playlist? = null,
     )
+
+    fun toggleSelection(
+        id: UUID,
+        mode: SelectionMode,
+    )
+
+    fun cancelSelection()
 }
 
 class MultiMusicBottomSheetDelegateImpl(
@@ -154,9 +161,10 @@ class MultiMusicBottomSheetDelegateImpl(
     }
 
     override fun showMultiMusicBottomSheet(
-        selectedIds: List<UUID>,
         currentPlaylist: Playlist?
     ) {
+        val selectedIds = multiSelectionManager?.state?.value?.selectedIds ?: emptyList()
+
         setBottomSheetState(
             MultiMusicBottomSheet(
                 selectedIds = selectedIds,
@@ -181,5 +189,19 @@ class MultiMusicBottomSheetDelegateImpl(
                 multiSelectionManager = multiSelectionManager,
             )
         )
+    }
+
+    override fun toggleSelection(
+        id: UUID,
+        mode: SelectionMode
+    ) {
+        multiSelectionManager?.toggle(
+            id = id,
+            mode = mode,
+        )
+    }
+
+    override fun cancelSelection() {
+        multiSelectionManager?.clear()
     }
 }

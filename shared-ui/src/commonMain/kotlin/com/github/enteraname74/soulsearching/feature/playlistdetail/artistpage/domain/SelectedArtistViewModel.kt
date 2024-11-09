@@ -8,13 +8,12 @@ import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.UpdateArtistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
-import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -31,11 +30,22 @@ class SelectedArtistViewModel(
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
 ) :
     ScreenModel,
     PlaylistDetailListener,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
-    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
+    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl{
+
+    val multiSelectionManager = MultiSelectionManager()
+    val multiSelectionState = multiSelectionManager.state
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MultiSelectionState(emptyList()),
+        )
+
     private val _artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistWithMusicsUseCase()
@@ -98,9 +108,18 @@ class SelectedArtistViewModel(
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
         )
+
+        multiMusicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManager = multiSelectionManager,
+            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+        )
     }
 
     fun consumeNavigation() {
+        multiSelectionManager.clear()
         _navigationState.value = SelectedArtistNavigationState.Idle
     }
 
@@ -130,5 +149,13 @@ class SelectedArtistViewModel(
             val artistId: UUID = (state.value as? SelectedArtistState.Data)?.playlistDetail?.id ?: return@launch
             updateArtistNbPlayedUseCase(artistId = artistId)
         }
+    }
+
+    override fun onCloseSelection() {
+        cancelSelection()
+    }
+
+    override fun onMoreClickedOnSelection() {
+        showMultiMusicBottomSheet()
     }
 }

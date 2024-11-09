@@ -30,6 +30,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
@@ -43,6 +44,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderScreen
@@ -64,6 +66,7 @@ class MainPageScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val mainPageViewModel = koinScreenModel<MainPageViewModel>()
+        val playerViewManager: PlayerViewManager = injectElement()
 
         val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
         val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
@@ -83,6 +86,12 @@ class MainPageScreen : Screen {
         bottomSheetState?.BottomSheet()
         addToPlaylistsBottomSheetState?.BottomSheet()
         dialogState?.Dialog()
+
+        LaunchedEffect(playerViewManager.currentValue) {
+            if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                mainPageViewModel.cancelSelection()
+            }
+        }
 
         LaunchedEffect(navigationState) {
             handleMainPageNavigation(
@@ -233,7 +242,7 @@ fun MainPageScreenView(
     MultiSelectionScaffold(
         multiSelectionManager = mainPageViewModel.multiSelectionManager,
         onCancel = mainPageViewModel::cancelSelection,
-        onMore = mainPageViewModel::showSelectionBottomSheet,
+        onMore = mainPageViewModel::showMultiMusicBottomSheet,
     ) {
         BoxWithConstraints(
             modifier = Modifier

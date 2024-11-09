@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.utils.OptionalPaddingForPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
@@ -14,9 +15,7 @@ fun SoulPlayerSpacer() {
     Spacer(
         modifier = Modifier
             .height(
-                PlayerMinimisedHeight.toDp() + AddedPadding
+                PlayerMinimisedHeight.toDp() + OptionalPaddingForPlayerSpacer
             )
     )
 }
-
-private val AddedPadding: Dp = 10.dp

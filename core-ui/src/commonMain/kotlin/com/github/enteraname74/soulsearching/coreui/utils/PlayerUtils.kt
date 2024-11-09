@@ -12,6 +12,8 @@ val PlayerMinimisedHeight: Float
         return PlayerBasedMinimisedHeight.toPx() + getNavigationBarPadding().toFloat()
     }
 
+val OptionalPaddingForPlayerSpacer: Dp = 10.dp
+
 private val PlayerBasedMinimisedHeight: Dp
 @Composable
 get() = UiConstants.CoverSize.small + 15.dp

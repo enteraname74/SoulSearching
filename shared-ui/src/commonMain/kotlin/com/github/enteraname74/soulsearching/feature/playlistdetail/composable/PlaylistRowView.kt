@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -40,6 +41,8 @@ fun PlaylistRowView(
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val windowSize = rememberWindowSize()
@@ -53,6 +56,8 @@ fun PlaylistRowView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            multiSelectionState = multiSelectionState,
+            onLongSelectOnMusic = onLongSelectOnMusic
         )
     } else {
         MediumView(
@@ -64,6 +69,8 @@ fun PlaylistRowView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            multiSelectionState = multiSelectionState,
+            onLongSelectOnMusic = onLongSelectOnMusic,
         )
     }
 }
@@ -77,6 +84,8 @@ private fun LargeView(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
 
@@ -104,6 +113,8 @@ private fun LargeView(
                 playlistDetailListener = playlistDetailListener,
                 optionalContent = optionalContent,
                 onCoverLoaded = onCoverLoaded,
+                onLongSelectOnMusic = onLongSelectOnMusic,
+                multiSelectionState = multiSelectionState,
             )
         }
     }
@@ -118,6 +129,8 @@ private fun MediumView(
     searchAction: () -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     Column(
@@ -134,6 +147,8 @@ private fun MediumView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            onLongSelectOnMusic = onLongSelectOnMusic,
+            multiSelectionState = multiSelectionState,
         )
     }
 }
@@ -149,6 +164,8 @@ private fun Content(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
@@ -226,8 +243,11 @@ private fun Content(
                                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                             }
                         },
+                        onLongClick = { onLongSelectOnMusic(music) },
                         onMoreClicked = { onShowMusicBottomSheet(music) },
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(music.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                     )
                 }
                 item {

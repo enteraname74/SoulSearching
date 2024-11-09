@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.IntOffset
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
@@ -125,66 +126,66 @@ fun PlayerDraggableView(
             isUsingDarkIcons = !SoulSearchingColorTheme.colorScheme.primary.isDark()
         )
 
-        Box(
-            modifier = Modifier
-                .offset {
-                    IntOffset(
-                        x = 0,
-                        y = max(playerViewManager.offset.roundToInt(), 0)
-                    )
-                }
-                .swipeable(
-                    state = playerViewManager.playerDraggableState,
-                    orientation = Orientation.Vertical,
-                    anchors = mapOf(
-                        (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
-                        maxHeight to BottomSheetStates.COLLAPSED,
-                        0f to BottomSheetStates.EXPANDED
-                    )
-                )
+        MultiSelectionScaffold(
+            multiSelectionManager = playerViewModel.multiSelectionManager,
+            onCancel = playerViewModel::cancelSelection,
+            onMore = playerViewModel::showMultiMusicBottomSheet,
+            topBarColors = if (PlayerUiUtils.canShowSidePanel()) {
+                SoulTopBarDefaults.secondary()
+            } else {
+                SoulTopBarDefaults.primary()
+            }
         ) {
-            when (state) {
-                PlayerViewState.Closed -> {
-                    PlayerSwipeableLoadingScreen()
-
-                    LaunchedEffect(previousDraggableState) {
-                        if (previousDraggableState != null) {
-                            playerViewManager.consumePreviousState()
-                        }
+            Box(
+                modifier = Modifier
+                    .offset {
+                        IntOffset(
+                            x = 0,
+                            y = max(playerViewManager.offset.roundToInt(), 0)
+                        )
                     }
+                    .swipeable(
+                        state = playerViewManager.playerDraggableState,
+                        orientation = Orientation.Vertical,
+                        anchors = mapOf(
+                            (maxHeight - PlayerMinimisedHeight) to BottomSheetStates.MINIMISED,
+                            maxHeight to BottomSheetStates.COLLAPSED,
+                            0f to BottomSheetStates.EXPANDED
+                        )
+                    )
+            ) {
+                when (state) {
+                    PlayerViewState.Closed -> {
+                        PlayerSwipeableLoadingScreen()
 
-                    LaunchedEffect(playerMusicListViewManager.currentValue) {
-                        if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                            coroutineScope.launch {
-                                playerMusicListViewManager.animateTo(
-                                    newState = BottomSheetStates.COLLAPSED,
-                                )
+                        LaunchedEffect(previousDraggableState) {
+                            if (previousDraggableState != null) {
+                                playerViewManager.consumePreviousState()
+                            }
+                        }
+
+                        LaunchedEffect(playerMusicListViewManager.currentValue) {
+                            if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+                                coroutineScope.launch {
+                                    playerMusicListViewManager.animateTo(
+                                        newState = BottomSheetStates.COLLAPSED,
+                                    )
+                                }
+                            }
+                        }
+
+                        LaunchedEffect(playerViewManager.currentValue) {
+                            if (playerViewManager.currentValue != BottomSheetStates.COLLAPSED) {
+                                coroutineScope.launch {
+                                    playerViewManager.animateTo(
+                                        newState = BottomSheetStates.COLLAPSED
+                                    )
+                                }
                             }
                         }
                     }
 
-                    LaunchedEffect(playerViewManager.currentValue) {
-                        if (playerViewManager.currentValue != BottomSheetStates.COLLAPSED) {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(
-                                    newState = BottomSheetStates.COLLAPSED
-                                )
-                            }
-                        }
-                    }
-                }
-
-                is PlayerViewState.Data -> {
-                    MultiSelectionScaffold(
-                        multiSelectionManager = playerViewModel.multiSelectionManager,
-                        onCancel = playerViewModel::cancelSelection,
-                        onMore = playerViewModel::showSelectionBottomSheet,
-                        topBarColors = if (PlayerUiUtils.canShowSidePanel()) {
-                            SoulTopBarDefaults.secondary()
-                        } else {
-                            SoulTopBarDefaults.primary()
-                        }
-                    ) {
+                    is PlayerViewState.Data -> {
                         PlayerSwipeableDataScreen(
                             maxHeight = maxHeight,
                             state = state as PlayerViewState.Data,
@@ -212,32 +213,35 @@ fun PlayerDraggableView(
                             currentMusicProgression = currentMusicProgressionState,
                             settingsState = settingsState,
                             onLongSelectOnMusic = {
-                                playerViewModel.toggleSelection(id = it.musicId)
+                                playerViewModel.toggleSelection(
+                                    id = it.musicId,
+                                    mode = SelectionMode.Music,
+                                )
                             },
                             multiSelectionState = multiSelectionState,
                             closeSelection = playerViewModel::cancelSelection,
                         )
-                    }
 
-                    /*
-                    If the previous state was expanded/minimised and the current one is collapsed,
-                    then it indicates that the playback should stop (user action for example).
-                     */
-                    if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-                        LaunchedEffect(Unit) {
-                            playerViewModel.stopPlayback()
-                        }
-                    } else if ((previousDraggableState == BottomSheetStates.COLLAPSED || previousDraggableState == null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
-                        // In this case, the playback is on but the view has not been shown
-                        LaunchedEffect(Unit) {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(
-                                    if ((state as PlayerViewState.Data).initPlayerWithMinimiseView) {
-                                        BottomSheetStates.MINIMISED
-                                    } else {
-                                        BottomSheetStates.EXPANDED
-                                    }
-                                )
+                        /*
+                        If the previous state was expanded/minimised and the current one is collapsed,
+                        then it indicates that the playback should stop (user action for example).
+                         */
+                        if ((previousDraggableState != BottomSheetStates.COLLAPSED && previousDraggableState != null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
+                            LaunchedEffect(Unit) {
+                                playerViewModel.stopPlayback()
+                            }
+                        } else if ((previousDraggableState == BottomSheetStates.COLLAPSED || previousDraggableState == null) && playerViewManager.currentValue == BottomSheetStates.COLLAPSED) {
+                            // In this case, the playback is on but the view has not been shown
+                            LaunchedEffect(Unit) {
+                                coroutineScope.launch {
+                                    playerViewManager.animateTo(
+                                        if ((state as PlayerViewState.Data).initPlayerWithMinimiseView) {
+                                            BottomSheetStates.MINIMISED
+                                        } else {
+                                            BottomSheetStates.EXPANDED
+                                        }
+                                    )
+                                }
                             }
                         }
                     }

@@ -8,5 +8,4 @@ enum class MusicBottomSheetState {
     NORMAL,
     PLAYLIST,
     ALBUM_OR_ARTIST,
-    PLAYER
 }

@@ -24,6 +24,9 @@ class PlayerViewManager {
     private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val previousState = _previousState.asStateFlow()
 
+    val isAnimationRunning: Boolean
+        get() = playerDraggableState.isAnimationRunning
+
     val currentValue: BottomSheetStates
         get() = playerDraggableState.currentValue
     val offset: Float

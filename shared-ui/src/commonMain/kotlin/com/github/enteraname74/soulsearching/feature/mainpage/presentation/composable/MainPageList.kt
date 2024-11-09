@@ -10,10 +10,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.utils.OptionalPaddingForPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
 @Composable
 fun <T> MainPageList(
@@ -50,7 +54,9 @@ fun <T> MainPageList(
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(UiConstants.ImageSize.veryLarge),
                 contentPadding = PaddingValues(
-                    horizontal = UiConstants.Spacing.medium,
+                    start = UiConstants.Spacing.medium,
+                    end = UiConstants.Spacing.medium,
+                    bottom = PlayerMinimisedHeight.toDp() + OptionalPaddingForPlayerSpacer
                 ),
                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
@@ -61,10 +67,6 @@ fun <T> MainPageList(
                     contentType = contentType,
                 ) { element ->
                     item(element)
-                }
-
-                item {
-                    SoulPlayerSpacer()
                 }
             }
         } else {

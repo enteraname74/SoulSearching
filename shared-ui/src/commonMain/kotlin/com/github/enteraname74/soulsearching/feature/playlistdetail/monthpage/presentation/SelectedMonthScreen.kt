@@ -5,6 +5,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
@@ -77,6 +78,7 @@ fun SelectedMonthScreenView(
     navigateBack: () -> Unit,
 ) {
     val state by selectedMonthViewModel.state.collectAsState()
+    val multiSelectionState by selectedMonthViewModel.multiSelectionState.collectAsState()
 
     when (state) {
         SelectedMonthState.Loading -> SoulLoadingScreen(
@@ -87,6 +89,14 @@ fun SelectedMonthScreenView(
             playlistDetailListener = selectedMonthViewModel,
             navigateBack = navigateBack,
             onShowMusicBottomSheet = selectedMonthViewModel::showMusicBottomSheet,
+            multiSelectionManager = selectedMonthViewModel.multiSelectionManager,
+            onLongSelectOnMusic = {
+                selectedMonthViewModel.toggleSelection(
+                    id = it.musicId,
+                    mode = SelectionMode.Music,
+                )
+            },
+            multiSelectionState = multiSelectionState,
         )
     }
 }

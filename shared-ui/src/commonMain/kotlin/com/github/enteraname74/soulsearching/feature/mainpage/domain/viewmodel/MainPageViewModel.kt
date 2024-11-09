@@ -28,7 +28,6 @@ import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -492,25 +491,5 @@ class MainPageViewModel(
                 )
             }
         }
-    }
-
-    fun toggleSelection(
-        id: UUID,
-        mode: SelectionMode,
-    ) {
-        multiSelectionManager.toggle(
-            id = id,
-            mode = mode,
-        )
-    }
-
-    fun cancelSelection() {
-        multiSelectionManager.clear()
-    }
-
-    fun showSelectionBottomSheet() {
-        multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet(
-            selectedIds = multiSelectionState.value.selectedIds,
-        )
     }
 }

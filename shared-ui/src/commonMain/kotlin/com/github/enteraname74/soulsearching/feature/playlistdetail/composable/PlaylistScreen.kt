@@ -14,6 +14,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
@@ -41,14 +44,23 @@ import kotlinx.coroutines.launch
 fun PlaylistScreen(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    multiSelectionManager: MultiSelectionManager,
     navigateBack: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     colorThemeManager: ColorThemeManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
     optionalContent: @Composable () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(playerViewManager.currentValue) {
+        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+            playlistDetailListener.onCloseSelection()
+        }
+    }
 
     LaunchedEffect(playlistDetail.cover) {
         if (playlistDetail.cover?.isEmpty() != false) {
@@ -95,74 +107,84 @@ fun PlaylistScreen(
     CompositionLocalProvider(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
     ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(SoulSearchingColorTheme.colorScheme.primary)
+        MultiSelectionScaffold(
+            multiSelectionManager = multiSelectionManager,
+            onCancel = playlistDetailListener::onCloseSelection,
+            onMore = playlistDetailListener::onMoreClickedOnSelection,
         ) {
-            val searchDraggableState = rememberSwipeableState(
-                initialValue = BottomSheetStates.COLLAPSED
-            )
-
-            val constraintsScope = this
-            val maxHeight = with(LocalDensity.current) {
-                constraintsScope.maxHeight.toPx()
-            }
-
-            val searchBarFocusRequester = remember { FocusRequester() }
-
-            val searchAction: () -> Unit = {
-                coroutineScope.launch {
-                    searchDraggableState.animateTo(
-                        BottomSheetStates.EXPANDED,
-                        tween(UiConstants.AnimationDuration.normal)
-                    )
-                    searchBarFocusRequester.requestFocus()
-                }
-            }
-
-            val windowSize = rememberWindowSize()
-            when {
-                windowSize != WindowSize.Small -> {
-                    PlaylistRowView(
-                        navigateBack = navigateBack,
-                        shuffleAction = shuffleAction,
-                        searchAction = searchAction,
-                        onShowMusicBottomSheet = onShowMusicBottomSheet,
-                        playlistDetail = playlistDetail,
-                        playlistDetailListener = playlistDetailListener,
-                        optionalContent = optionalContent,
-                        onCoverLoaded = onCoverLoaded,
-                    )
-                }
-
-                else -> {
-                    PlaylistColumnView(
-                        navigateBack = navigateBack,
-                        shuffleAction = shuffleAction,
-                        searchAction = searchAction,
-                        onShowMusicBottomSheet = onShowMusicBottomSheet,
-                        playlistDetail = playlistDetail,
-                        playlistDetailListener = playlistDetailListener,
-                        optionalContent = optionalContent,
-                        onCoverLoaded = onCoverLoaded,
-                    )
-                }
-            }
-
-            SearchView(
-                draggableState = searchDraggableState,
-                placeholder = strings.searchForMusics,
-                maxHeight = maxHeight,
-                focusRequester = searchBarFocusRequester
-            ) { searchText, focusManager ->
-                SearchMusics(
-                    searchText = searchText,
-                    allMusics = playlistDetail.musics,
-                    isMainPlaylist = false,
-                    focusManager = focusManager,
-                    onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(SoulSearchingColorTheme.colorScheme.primary)
+            ) {
+                val searchDraggableState = rememberSwipeableState(
+                    initialValue = BottomSheetStates.COLLAPSED
                 )
+
+                val constraintsScope = this
+                val maxHeight = with(LocalDensity.current) {
+                    constraintsScope.maxHeight.toPx()
+                }
+
+                val searchBarFocusRequester = remember { FocusRequester() }
+
+                val searchAction: () -> Unit = {
+                    coroutineScope.launch {
+                        searchDraggableState.animateTo(
+                            BottomSheetStates.EXPANDED,
+                            tween(UiConstants.AnimationDuration.normal)
+                        )
+                        searchBarFocusRequester.requestFocus()
+                    }
+                }
+
+                val windowSize = rememberWindowSize()
+                when {
+                    windowSize != WindowSize.Small -> {
+                        PlaylistRowView(
+                            navigateBack = navigateBack,
+                            shuffleAction = shuffleAction,
+                            searchAction = searchAction,
+                            onShowMusicBottomSheet = onShowMusicBottomSheet,
+                            playlistDetail = playlistDetail,
+                            playlistDetailListener = playlistDetailListener,
+                            optionalContent = optionalContent,
+                            onCoverLoaded = onCoverLoaded,
+                            multiSelectionState = multiSelectionState,
+                            onLongSelectOnMusic = onLongSelectOnMusic,
+                        )
+                    }
+
+                    else -> {
+                        PlaylistColumnView(
+                            navigateBack = navigateBack,
+                            shuffleAction = shuffleAction,
+                            searchAction = searchAction,
+                            onShowMusicBottomSheet = onShowMusicBottomSheet,
+                            playlistDetail = playlistDetail,
+                            playlistDetailListener = playlistDetailListener,
+                            optionalContent = optionalContent,
+                            onCoverLoaded = onCoverLoaded,
+                            onLongSelectOnMusic = onLongSelectOnMusic,
+                            multiSelectionState = multiSelectionState,
+                        )
+                    }
+                }
+
+                SearchView(
+                    draggableState = searchDraggableState,
+                    placeholder = strings.searchForMusics,
+                    maxHeight = maxHeight,
+                    focusRequester = searchBarFocusRequester
+                ) { searchText, focusManager ->
+                    SearchMusics(
+                        searchText = searchText,
+                        allMusics = playlistDetail.musics,
+                        isMainPlaylist = false,
+                        focusManager = focusManager,
+                        onSelectedMusicForBottomSheet = onShowMusicBottomSheet,
+                    )
+                }
             }
         }
     }

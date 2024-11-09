@@ -62,6 +62,13 @@ fun BoxScope.PlayerSwipeableDataScreen(
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
 
+    LaunchedEffect(playerViewManager.currentValue) {
+        if (playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
+            closeSelection()
+        }
+    }
+
+
     val coroutineScope = rememberCoroutineScope()
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -37,6 +38,8 @@ fun PlaylistColumnView(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
@@ -92,9 +95,12 @@ fun PlaylistColumnView(
                             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
+                    onLongClick = { onLongSelectOnMusic(elt) },
                     onMoreClicked = { onShowMusicBottomSheet(elt) },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
+                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }
             item { SoulPlayerSpacer() }

@@ -39,27 +39,36 @@ fun BigPreviewComposable(
                 onLongClick = onLongClick
             )
     ) {
-        SoulImage(
-            modifier = Modifier
+
+        val imageModifier = if (imageSize == null) {
+            Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
+        } else {
+            Modifier
+        }
+
+        val infoModifier = if (imageSize == null) {
+            Modifier
+        } else {
+            Modifier.width(imageSize)
+        }
+
+        SoulImage(
+            modifier = imageModifier,
             cover = cover,
             size = imageSize,
             roundedPercent = roundedPercent,
         )
         Row(
+            modifier = infoModifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             if (isFavoritePlaylist) {
-                SoulIcon(
-                    icon = Icons.Rounded.Favorite,
-                    contentDescription = null,
-                )
+                SoulIcon(icon = Icons.Rounded.Favorite)
             }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column {
                 Text(
                     text = title,
                     color = SoulSearchingColorTheme.colorScheme.onPrimary,

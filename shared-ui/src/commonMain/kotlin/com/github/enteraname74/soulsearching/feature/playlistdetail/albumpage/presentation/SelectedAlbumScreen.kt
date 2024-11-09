@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -90,6 +91,7 @@ fun SelectedAlbumScreenView(
     navigateBack: () -> Unit,
 ) {
     val state by selectedAlbumViewModel.state.collectAsState()
+    val multiSelectionState by selectedAlbumViewModel.multiSelectionState.collectAsState()
 
     when (state) {
         is SelectedAlbumState.Data -> PlaylistScreen(
@@ -97,6 +99,14 @@ fun SelectedAlbumScreenView(
             playlistDetailListener = selectedAlbumViewModel,
             navigateBack = navigateBack,
             onShowMusicBottomSheet = selectedAlbumViewModel::showMusicBottomSheet,
+            multiSelectionManager = selectedAlbumViewModel.multiSelectionManager,
+            onLongSelectOnMusic = {
+                selectedAlbumViewModel.toggleSelection(
+                    id = it.musicId,
+                    mode = SelectionMode.Music,
+                )
+            },
+            multiSelectionState = multiSelectionState,
         )
         SelectedAlbumState.Loading -> SoulLoadingScreen(
             navigateBack = navigateBack,

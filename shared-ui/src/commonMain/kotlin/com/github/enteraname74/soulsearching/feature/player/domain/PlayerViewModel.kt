@@ -22,8 +22,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
-import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewSettingsState
@@ -148,6 +146,7 @@ class PlayerViewModel(
     val navigationState: StateFlow<PlayerNavigationState> = _navigationState.asStateFlow()
 
     fun consumeNavigation() {
+        multiSelectionManager.clear()
         _navigationState.value = PlayerNavigationState.Idle
     }
 
@@ -158,7 +157,6 @@ class PlayerViewModel(
             onModifyMusic = { _navigationState.value = PlayerNavigationState.ToModifyMusic(it) },
             getAllPlaylistsWithMusics = ::getPlaylistsWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
-            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(
@@ -320,24 +318,5 @@ class PlayerViewModel(
                 }
             }
         }
-    }
-
-    fun toggleSelection(
-        id: UUID,
-    ) {
-        multiSelectionManager.toggle(
-            id = id,
-            mode = SelectionMode.Music,
-        )
-    }
-
-    fun cancelSelection() {
-        multiSelectionManager.clear()
-    }
-
-    fun showSelectionBottomSheet() {
-        multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet(
-            selectedIds = multiSelectionState.value.selectedIds,
-        )
     }
 }

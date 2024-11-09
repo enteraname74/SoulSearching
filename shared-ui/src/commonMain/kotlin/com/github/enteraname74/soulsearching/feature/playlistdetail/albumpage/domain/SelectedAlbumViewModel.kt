@@ -7,11 +7,15 @@ import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.UpdateAlbumNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -26,7 +30,20 @@ class SelectedAlbumViewModel(
     private val updateAlbumNbPlayedUseCase: UpdateAlbumNbPlayedUseCase,
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl, PlaylistDetailListener{
+    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
+) :
+    ScreenModel,
+    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
+    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
+    PlaylistDetailListener {
+
+    val multiSelectionManager = MultiSelectionManager()
+    val multiSelectionState = multiSelectionManager.state
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MultiSelectionState(emptyList()),
+        )
     private var _albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistWithMusicsUseCase()
@@ -41,7 +58,7 @@ class SelectedAlbumViewModel(
         if (albumId == null) {
             flowOf(SelectedAlbumState.Loading)
         } else {
-            getAlbumWithMusicsUseCase(albumId = albumId).mapLatest {albumWithMusics ->
+            getAlbumWithMusicsUseCase(albumId = albumId).mapLatest { albumWithMusics ->
                 when {
                     albumWithMusics == null -> SelectedAlbumState.Loading
                     else -> SelectedAlbumState.Data(
@@ -80,9 +97,18 @@ class SelectedAlbumViewModel(
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
         )
+
+        multiMusicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManager = multiSelectionManager,
+            musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+        )
     }
 
     fun consumeNavigation() {
+        multiSelectionManager.clear()
         _navigationState.value = SelectedAlbumNavigationState.Idle
     }
 
@@ -113,5 +139,13 @@ class SelectedAlbumViewModel(
     override fun onSubtitleClicked() {
         val artistId: UUID = (state.value as? SelectedAlbumState.Data)?.artistId ?: return
         _navigationState.value = SelectedAlbumNavigationState.ToArtist(artistId = artistId)
+    }
+
+    override fun onCloseSelection() {
+        cancelSelection()
+    }
+
+    override fun onMoreClickedOnSelection() {
+        showMultiMusicBottomSheet()
     }
 }
