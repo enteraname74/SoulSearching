@@ -89,9 +89,19 @@ object EnStrings : Strings {
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"
     override val deletePlaylistDialogTitle = "Are you sure to delete this playlist?"
     override val deleteArtistDialogTitle = "Are you sure to delete this artist?"
+
+    override val deleteSelectedMusicsDialogTitle = "Are you sure to delete the selected songs?"
+    override val deleteSelectedMusicsDialogText = "They will be removed from the application."
+    override val deleteSelectedAlbumsDialogTitle = "Are you sure to delete the selected albums?"
+    override val deleteSelectedArtistsDialogTitle = "Are you sure to delete the selected artists?"
+    override val deleteSelectedPlaylistsDialogTitle = "Are you sure to delete the selected playlists?"
+
     override val removeMusicFromPlaylistTitle = "Are you sure to remove this song from this playlist?"
     override val removeMusicFromPlaylistText =
         "This song will be removed from this playlist but not deleted from the application."
+    override val removeSelectedMusicFromPlaylistTitle = "Are you sure to remove the selected songs from this playlist?"
+    override val removeSelectedMusicFromPlaylistText = "The selected songs will be removed from this playlist but not deleted from the application."
+
     override val modifyAlbum = "Modify this album"
     override val modifyArtist = "Modify this artist"
     override val modifyMusic = "Modify this song"
@@ -101,6 +111,10 @@ object EnStrings : Strings {
     override val deleteArtist = "Delete this artist"
     override val deleteMusic = "Delete this song"
     override val deletePlaylist = "Delete this playlist"
+    override val deleteSelectedAlbums = "Delete selected albums"
+    override val deleteSelectedArtists = "Delete selected artists"
+    override val deleteSelectedPlaylists = "Delete selected playlists"
+    override val deleteSelectedMusics = "Delete selected songs"
 
     override val playNext = "Play next"
 
@@ -194,6 +208,8 @@ object EnStrings : Strings {
         "Songs with multiple artists were found by the application. " +
                 "Choose whether you want to split these artists into multiple ones or keep them as one artist."
     override val multipleArtistsSelectionTitle = "Selected artists to split:"
+
+    override val multipleSelection = "Multiple selection"
 
     override fun musics(total: Int): String {
         return when (total) {

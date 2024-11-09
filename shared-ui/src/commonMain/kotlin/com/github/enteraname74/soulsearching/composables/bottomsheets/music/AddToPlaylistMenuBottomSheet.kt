@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -23,18 +22,17 @@ import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import java.util.*
 
 @Composable
 fun AddToPlaylistMenuBottomSheet(
     playlistsWithMusics: List<PlaylistWithMusics>,
     onDismiss: () -> Unit,
-    onConfirm: (selectedPlaylists: List<UUID>) -> Unit,
+    onConfirm: (selectedPlaylists: List<PlaylistWithMusics>) -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
 ) {
-    val selectedPlaylistIds = remember {
-        mutableStateListOf<UUID>()
+    val selectedPlaylists = remember {
+        mutableStateListOf<PlaylistWithMusics>()
     }
 
     Column(
@@ -48,13 +46,13 @@ fun AddToPlaylistMenuBottomSheet(
             leftAction = TopBarNavigationAction(
                 onClick = {
                     onDismiss()
-                    selectedPlaylistIds.clear()
+                    selectedPlaylists.clear()
                 }
             ),
             rightAction = TopBarValidateAction(
                 onClick = {
-                    onConfirm(selectedPlaylistIds.toList())
-                    selectedPlaylistIds.clear()
+                    onConfirm(selectedPlaylists.toList())
+                    selectedPlaylists.clear()
                 }
             ),
             colors = SoulTopBarDefaults.colors(
@@ -75,12 +73,12 @@ fun AddToPlaylistMenuBottomSheet(
                     modifier = Modifier.animateItem(),
                     playlistWithMusics = playlistWithMusics,
                     onClick = {
-                        if (playlistWithMusics.playlist.playlistId in selectedPlaylistIds)
-                            selectedPlaylistIds.remove(playlistWithMusics.playlist.playlistId)
+                        if (playlistWithMusics in selectedPlaylists)
+                            selectedPlaylists.remove(playlistWithMusics)
                         else
-                            selectedPlaylistIds.add(playlistWithMusics.playlist.playlistId)
+                            selectedPlaylists.add(playlistWithMusics)
                     },
-                    isSelected = playlistWithMusics.playlist.playlistId in selectedPlaylistIds,
+                    isSelected = playlistWithMusics in selectedPlaylists,
                     textColor = textColor,
                 )
             }

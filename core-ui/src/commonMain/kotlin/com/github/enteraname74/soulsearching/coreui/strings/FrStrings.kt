@@ -89,9 +89,20 @@ object FrStrings : Strings {
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
+
+    override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
+    override val deleteSelectedMusicsDialogText = "Elles seront supprimées de l'application."
+    override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
+    override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
+    override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
+
     override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
     override val removeMusicFromPlaylistText =
         "Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l'application."
+    override val removeSelectedMusicFromPlaylistTitle =
+        "Voulez-vous vraiment supprimer les musiques sélectionnées de cette playlist ?"
+    override val removeSelectedMusicFromPlaylistText = "" +
+            "Elles seront retirées de cette playlist mais ne seront pas supprimées de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
@@ -102,6 +113,10 @@ object FrStrings : Strings {
     override val deleteArtist = "Supprimer cet artiste"
     override val deleteMusic = "Supprimer cette musique"
     override val deletePlaylist = "Supprimer cette playlist"
+    override val deleteSelectedAlbums = "Supprimer les albums sélectionnés"
+    override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
+    override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
+    override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
 
     override val playNext = "Jouer ensuite"
 
@@ -195,6 +210,8 @@ object FrStrings : Strings {
         "Des musiques avec plusieurs artistes ont été trouvées par l'application. " +
                 "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
     override val multipleArtistsSelectionTitle = "Artistes sélectionnés à diviser :"
+
+    override val multipleSelection = "Sélection multiple"
 
     override fun musics(total: Int): String {
         return when (total) {

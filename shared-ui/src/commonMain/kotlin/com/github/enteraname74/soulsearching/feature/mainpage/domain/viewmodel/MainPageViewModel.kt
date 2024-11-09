@@ -65,7 +65,7 @@ class MainPageViewModel(
     private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
-    private val coverFileManager: CoverFileManager,
+    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
@@ -75,11 +75,13 @@ class MainPageViewModel(
     ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     PlaylistBottomSheetDelegate by playlistBottomSheetDelegateImpl,
-    SortingInformationDelegate by sortingInformationDelegateImpl {
+    SortingInformationDelegate by sortingInformationDelegateImpl,
+    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl {
 
     private val getAllFoldersUseCase: GetAllFoldersUseCase by inject()
     private val deleteAllFoldersUseCase: DeleteAllFoldersUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
+    private val coverFileManager: CoverFileManager by inject()
 
     val multiSelectionManager = MultiSelectionManager()
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
@@ -285,6 +287,13 @@ class MainPageViewModel(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
             onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) }
+        )
+
+        multiMusicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
+            multiSelectionManager = multiSelectionManager,
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -500,6 +509,8 @@ class MainPageViewModel(
     }
 
     fun showSelectionBottomSheet() {
-        // TODO
+        multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet(
+            selectedIds = multiSelectionState.value.selectedIds,
+        )
     }
 }

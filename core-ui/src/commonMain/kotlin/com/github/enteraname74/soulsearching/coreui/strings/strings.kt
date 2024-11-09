@@ -103,8 +103,17 @@ interface Strings {
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
     val deleteArtistDialogTitle: String
+
+    val deleteSelectedMusicsDialogTitle: String
+    val deleteSelectedMusicsDialogText: String
+    val deleteSelectedAlbumsDialogTitle: String
+    val deleteSelectedArtistsDialogTitle: String
+    val deleteSelectedPlaylistsDialogTitle: String
+
     val removeMusicFromPlaylistTitle: String
     val removeMusicFromPlaylistText: String
+    val removeSelectedMusicFromPlaylistTitle: String
+    val removeSelectedMusicFromPlaylistText: String
 
     val modifyAlbum: String
     val modifyArtist: String
@@ -115,6 +124,10 @@ interface Strings {
     val deleteArtist: String
     val deleteMusic: String
     val deletePlaylist: String
+    val deleteSelectedAlbums: String
+    val deleteSelectedArtists: String
+    val deleteSelectedPlaylists: String
+    val deleteSelectedMusics: String
 
     val playNext: String
 
@@ -202,6 +215,8 @@ interface Strings {
     val multipleArtistsTitle: String
     val multipleArtistsText: String
     val multipleArtistsSelectionTitle: String
+
+    val multipleSelection: String
 
     /**
      * Shows a text indicating the number of musics.

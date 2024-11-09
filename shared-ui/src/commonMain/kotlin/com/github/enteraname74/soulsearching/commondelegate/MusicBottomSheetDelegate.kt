@@ -18,7 +18,6 @@ import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 interface MusicBottomSheetDelegate {
     fun showMusicBottomSheet(
@@ -99,13 +98,13 @@ class MusicBottomSheetDelegateImpl(
     /**
      * Add a music to multiple playlists.
      */
-    private fun addMusicToPlaylists(music: Music, selectedPlaylistsIds: List<UUID>) {
+    private fun addMusicToPlaylists(music: Music, selectedPlaylists: List<PlaylistWithMusics>) {
         CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylistId in selectedPlaylistsIds) {
+            for (selectedPlaylist in selectedPlaylists) {
                 upsertMusicIntoPlaylistUseCase(
                     MusicPlaylist(
                         musicId = music.musicId,
-                        playlistId = selectedPlaylistId
+                        playlistId = selectedPlaylist.playlist.playlistId,
                     )
                 )
             }
@@ -116,10 +115,10 @@ class MusicBottomSheetDelegateImpl(
         setAddToPlaylistBottomSheetState(
             AddToPlaylistBottomSheet(
                 onClose = { setAddToPlaylistBottomSheetState(null) },
-                addMusicToSelectedPlaylists = { selectedPlaylistsIds ->
+                addMusicToSelectedPlaylists = { selectedPlaylists ->
                     addMusicToPlaylists(
                         music = musicToAdd,
-                        selectedPlaylistsIds = selectedPlaylistsIds,
+                        selectedPlaylists = selectedPlaylists,
                     )
                 },
                 playlistsWithMusics = getAllPlaylistsWithMusics().filter {

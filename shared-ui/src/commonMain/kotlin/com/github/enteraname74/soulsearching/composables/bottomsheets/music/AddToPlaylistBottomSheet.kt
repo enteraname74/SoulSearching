@@ -9,7 +9,7 @@ import java.util.*
 
 class AddToPlaylistBottomSheet(
     private val onClose: () -> Unit,
-    private val addMusicToSelectedPlaylists: (selectedPlaylistsIds: List<UUID>) -> Unit,
+    private val addMusicToSelectedPlaylists: (selectedPlaylists: List<PlaylistWithMusics>) -> Unit,
     private val playlistsWithMusics: List<PlaylistWithMusics>,
 ) : SoulBottomSheet {
     @Composable
