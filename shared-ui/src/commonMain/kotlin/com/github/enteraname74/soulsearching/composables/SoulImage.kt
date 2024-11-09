@@ -149,7 +149,7 @@ private fun MusicFileImage(
 
         job = CoroutineScope(Dispatchers.IO).launch {
             val fetchedCover = coverUtils.fetchCoverOfMusicFile(musicPath = musicPath)
-            fetchedCover?.let { fileData = it }
+            fileData = fetchedCover
             onSuccess?.let { it(fetchedCover) }
         }
     }
