@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -32,7 +34,10 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
-    onSelectedMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (Music) -> Unit,
+    onLongSelectOnMusic: (Music) -> Unit,
+    multiSelectionState: MultiSelectionState,
+    closeSelection: () -> Unit,
     onRetrieveLyrics: () -> Unit,
     secondaryColor: Color,
     textColor: Color,
@@ -49,6 +54,7 @@ fun PlayerPanelDraggableView(
 
     SoulBackHandler(isExpanded) {
         coroutineScope.launch {
+            closeSelection()
             playerMusicListViewManager.animateTo(BottomSheetStates.COLLAPSED)
         }
     }
@@ -89,12 +95,15 @@ fun PlayerPanelDraggableView(
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
                 playerState = playerState,
-                onSelectedMusic = onSelectedMusic,
+                onMoreClickedOnMusic = onMoreClickedOnMusic,
                 onRetrieveLyrics = onRetrieveLyrics,
                 textColor = textColor,
                 subTextColor = subTextColor,
                 isExpanded = isExpanded,
                 buttonColors = buttonColors,
+                onLongSelectOnMusic = onLongSelectOnMusic,
+                multiSelectionState = multiSelectionState,
+                selectedIconColors = SoulSelectedIconDefaults.primary(),
             )
         }
     }

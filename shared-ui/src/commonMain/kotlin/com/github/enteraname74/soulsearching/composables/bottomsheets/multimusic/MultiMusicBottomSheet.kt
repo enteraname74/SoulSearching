@@ -75,7 +75,7 @@ class MultiMusicBottomSheet(
                 closeWithAnim()
                 multiSelectionManager?.clear()
             },
-            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isNotEmpty() != false,
+            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
         )
     }
 }

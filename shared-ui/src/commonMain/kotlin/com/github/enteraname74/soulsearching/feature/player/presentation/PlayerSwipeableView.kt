@@ -12,10 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import com.github.enteraname74.soulsearching.coreui.SoulSearchingContext
 import com.github.enteraname74.soulsearching.coreui.ext.isDark
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
 import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -50,6 +52,7 @@ fun PlayerDraggableView(
 
     val state by playerViewModel.state.collectAsState()
     val settingsState by playerViewModel.viewSettingsState.collectAsState()
+    val multiSelectionState by playerViewModel.multiSelectionState.collectAsState()
 
     val currentMusicProgressionState by playerViewModel.currentSongProgressionState.collectAsState()
     val bottomSheetState by playerViewModel.bottomSheetState.collectAsState()
@@ -172,33 +175,49 @@ fun PlayerDraggableView(
                 }
 
                 is PlayerViewState.Data -> {
-                    PlayerSwipeableDataScreen(
-                        maxHeight = maxHeight,
-                        state = state as PlayerViewState.Data,
-                        onArtistClicked = {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            }
-                            playerViewModel.navigateToArtist()
-                        },
-                        onAlbumClicked = {
-                            coroutineScope.launch {
-                                playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
-                            }
-                            playerViewModel.navigateToAlbum()
-                        },
-                        showMusicBottomSheet = playerViewModel::showMusicBottomSheet,
-                        toggleFavoriteState = playerViewModel::toggleFavoriteState,
-                        seekTo = playerViewModel::seekTo,
-                        changePlayerMode = playerViewModel::changePlayerMode,
-                        previous = playerViewModel::previous,
-                        next = playerViewModel::next,
-                        updateCover = playerViewModel::setCurrentMusicCover,
-                        togglePlayPause = playerViewModel::togglePlayPause,
-                        onRetrieveLyrics = playerViewModel::setLyricsOfCurrentMusic,
-                        currentMusicProgression = currentMusicProgressionState,
-                        settingsState = settingsState,
-                    )
+                    MultiSelectionScaffold(
+                        multiSelectionManager = playerViewModel.multiSelectionManager,
+                        onCancel = playerViewModel::cancelSelection,
+                        onMore = playerViewModel::showSelectionBottomSheet,
+                        topBarColors = if (PlayerUiUtils.canShowSidePanel()) {
+                            SoulTopBarDefaults.secondary()
+                        } else {
+                            SoulTopBarDefaults.primary()
+                        }
+                    ) {
+                        PlayerSwipeableDataScreen(
+                            maxHeight = maxHeight,
+                            state = state as PlayerViewState.Data,
+                            onArtistClicked = {
+                                coroutineScope.launch {
+                                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                }
+                                playerViewModel.navigateToArtist()
+                            },
+                            onAlbumClicked = {
+                                coroutineScope.launch {
+                                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                                }
+                                playerViewModel.navigateToAlbum()
+                            },
+                            showMusicBottomSheet = playerViewModel::showMusicBottomSheet,
+                            toggleFavoriteState = playerViewModel::toggleFavoriteState,
+                            seekTo = playerViewModel::seekTo,
+                            changePlayerMode = playerViewModel::changePlayerMode,
+                            previous = playerViewModel::previous,
+                            next = playerViewModel::next,
+                            updateCover = playerViewModel::setCurrentMusicCover,
+                            togglePlayPause = playerViewModel::togglePlayPause,
+                            onRetrieveLyrics = playerViewModel::setLyricsOfCurrentMusic,
+                            currentMusicProgression = currentMusicProgressionState,
+                            settingsState = settingsState,
+                            onLongSelectOnMusic = {
+                                playerViewModel.toggleSelection(id = it.musicId)
+                            },
+                            multiSelectionState = multiSelectionState,
+                            closeSelection = playerViewModel::cancelSelection,
+                        )
+                    }
 
                     /*
                     If the previous state was expanded/minimised and the current one is collapsed,

@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.animated
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -45,7 +46,10 @@ fun BoxScope.PlayerSwipeableDataScreen(
     currentMusicProgression: Int,
     onArtistClicked: () -> Unit,
     onAlbumClicked: () -> Unit,
+    closeSelection: () -> Unit,
     showMusicBottomSheet: (music: Music) -> Unit,
+    onLongSelectOnMusic: (Music) -> Unit,
+    multiSelectionState: MultiSelectionState,
     toggleFavoriteState: () -> Unit,
     seekTo: (newPosition: Int) -> Unit,
     changePlayerMode: () -> Unit,
@@ -234,7 +238,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 if (PlayerUiUtils.canShowSidePanel()) {
                     PlayerPanelContent(
                         playerState = state,
-                        onSelectedMusic = showMusicBottomSheet,
+                        onMoreClickedOnMusic = showMusicBottomSheet,
                         onRetrieveLyrics = onRetrieveLyrics,
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
@@ -251,6 +255,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                                 min = MinPlayerSidePanelWidth,
                                 max = MaxPlayerSidePanelWidth,
                             ),
+                        multiSelectionState = multiSelectionState,
+                        onLongSelectOnMusic = onLongSelectOnMusic,
                     )
                 }
             }
@@ -261,12 +267,15 @@ fun BoxScope.PlayerSwipeableDataScreen(
             PlayerPanelDraggableView(
                 maxHeight = maxHeight,
                 playerState = state,
-                onSelectedMusic = showMusicBottomSheet,
+                onMoreClickedOnMusic = showMusicBottomSheet,
                 onRetrieveLyrics = onRetrieveLyrics,
                 secondaryColor = SoulSearchingColorTheme.colorScheme.secondary,
                 textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 buttonColors = SoulButtonDefaults.primaryColors(),
+                multiSelectionState = multiSelectionState,
+                onLongSelectOnMusic = onLongSelectOnMusic,
+                closeSelection = closeSelection,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -280,7 +289,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
             ) {
                 PlayerPanelContent(
                     playerState = state,
-                    onSelectedMusic = showMusicBottomSheet,
+                    onMoreClickedOnMusic = showMusicBottomSheet,
                     onRetrieveLyrics = onRetrieveLyrics,
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
@@ -291,6 +300,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         .width(
                             this.getSidePanelWidth(playerControlsWidth = playerControlsWidth)
                         ),
+                    onLongSelectOnMusic = onLongSelectOnMusic,
+                    multiSelectionState = multiSelectionState,
                 )
             }
         }

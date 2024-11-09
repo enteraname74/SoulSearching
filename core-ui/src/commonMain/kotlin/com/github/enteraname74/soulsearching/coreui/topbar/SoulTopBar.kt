@@ -24,7 +24,7 @@ fun SoulTopBar(
     leftAction: TopBarActionSpec?,
     rightAction: TopBarActionSpec? = null,
     isElevated: Boolean = false,
-    colors: TopBarColors = SoulTopBarDefaults.colors(),
+    colors: TopBarColors = SoulTopBarDefaults.primary(),
 ) {
     Row(
         modifier = modifier
@@ -79,11 +79,25 @@ fun SoulTopBar(
 
 object SoulTopBarDefaults {
     @Composable
-    fun colors(
+    fun primary(
         containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
         contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
         elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
         elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+    ): TopBarColors =
+        TopBarColors(
+            contentColor = contentColor,
+            containerColor = containerColor,
+            elevatedContainerColor = elevatedContainerColor,
+            elevatedContentColor = elevatedContentColor,
+        )
+
+    @Composable
+    fun secondary(
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+        elevatedContentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        elevatedContainerColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
     ): TopBarColors =
         TopBarColors(
             contentColor = contentColor,

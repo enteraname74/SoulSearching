@@ -55,7 +55,7 @@ fun AddToPlaylistMenuBottomSheet(
                     selectedPlaylists.clear()
                 }
             ),
-            colors = SoulTopBarDefaults.colors(
+            colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
                 contentColor = textColor,
             ),

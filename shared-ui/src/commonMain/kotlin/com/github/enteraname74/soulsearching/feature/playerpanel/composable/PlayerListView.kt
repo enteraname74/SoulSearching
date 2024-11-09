@@ -21,7 +21,12 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIcon
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -35,9 +40,12 @@ fun PlayerListView(
     currentMusicIndex: Int,
     isExpanded: Boolean,
     playedList: List<Music>,
-    onSelectedMusic: (Music) -> Unit,
+    onLongSelectOnMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (Music) -> Unit,
     secondaryColor: Color,
     buttonColors: SoulButtonColors,
+    multiSelectionState: MultiSelectionState,
+    selectedIconColors: SoulSelectedIconColors,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -101,11 +109,15 @@ fun PlayerListView(
                         },
                         onMoreClicked = {
                             coroutineScope.launch {
-                                onSelectedMusic(elt)
+                                onMoreClickedOnMusic(elt)
                             }
                         },
+                        onLongClick = { onLongSelectOnMusic(elt) },
                         textColor = secondaryColor,
                         isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        selectedIconColors = selectedIconColors,
                     )
                 }
             }

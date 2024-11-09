@@ -13,11 +13,16 @@ import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUse
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerNavigationState
@@ -43,8 +48,19 @@ class PlayerViewModel(
     private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
+    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-) : ScreenModel, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+) : ScreenModel,
+    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
+    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl {
+
+    val multiSelectionManager = MultiSelectionManager()
+    val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManager.state
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MultiSelectionState(emptyList()),
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val currentMusicFavoriteStatusState: Flow<Boolean> =
@@ -89,7 +105,7 @@ class PlayerViewModel(
         getAllPlaylistWithMusicsUseCase(),
         currentMusicFavoriteStatusState,
         currentMusicLyrics,
-    ) { playbackMainState, playlists,isCurrentMusicInFavorite, currentMusicLyrics ->
+    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicLyrics ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
@@ -143,6 +159,13 @@ class PlayerViewModel(
             getAllPlaylistsWithMusics = ::getPlaylistsWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
+        )
+
+        multiMusicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManager = multiSelectionManager,
         )
     }
 
@@ -297,5 +320,24 @@ class PlayerViewModel(
                 }
             }
         }
+    }
+
+    fun toggleSelection(
+        id: UUID,
+    ) {
+        multiSelectionManager.toggle(
+            id = id,
+            mode = SelectionMode.Music,
+        )
+    }
+
+    fun cancelSelection() {
+        multiSelectionManager.clear()
+    }
+
+    fun showSelectionBottomSheet() {
+        multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet(
+            selectedIds = multiSelectionState.value.selectedIds,
+        )
     }
 }

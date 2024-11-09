@@ -17,7 +17,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 
 @Composable
 fun SoulSelectedIcon(
-    colors: SoulSelectedIconColors = SoulSelectedIconDefaults.colors(),
+    colors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     size: Dp,
     modifier: Modifier = Modifier,
 ) {
@@ -45,9 +45,18 @@ data class SoulSelectedIconColors(
 
 object SoulSelectedIconDefaults {
     @Composable
-    fun colors(
+    fun secondary(
         containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
         contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    ): SoulSelectedIconColors = SoulSelectedIconColors(
+        containerColor = containerColor,
+        contentColor = contentColor,
+    )
+
+    @Composable
+    fun primary(
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     ): SoulSelectedIconColors = SoulSelectedIconColors(
         containerColor = containerColor,
         contentColor = contentColor,

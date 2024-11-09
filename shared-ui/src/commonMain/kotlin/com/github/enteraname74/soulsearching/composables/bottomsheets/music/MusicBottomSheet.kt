@@ -96,7 +96,7 @@ class MusicBottomSheet(
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,
             isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId),
-            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isNotEmpty() != false,
+            isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
         )
     }
 }
