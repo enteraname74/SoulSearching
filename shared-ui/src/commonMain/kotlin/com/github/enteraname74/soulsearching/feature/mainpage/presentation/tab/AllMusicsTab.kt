@@ -35,7 +35,7 @@ fun allMusicsTab(
             },
             onMoreClick = mainPageViewModel::showMusicBottomSheet,
             onLongClick = { selectedMusic ->
-                mainPageViewModel.toggleSelection(
+                mainPageViewModel.toggleElementInSelection(
                     id = selectedMusic.musicId,
                     mode = SelectionMode.Music,
                 )

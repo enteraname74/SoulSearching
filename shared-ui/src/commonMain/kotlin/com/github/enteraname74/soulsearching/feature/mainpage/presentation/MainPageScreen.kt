@@ -89,7 +89,7 @@ class MainPageScreen : Screen {
 
         LaunchedEffect(playerViewManager.currentValue) {
             if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                mainPageViewModel.cancelSelection()
+                mainPageViewModel.clearMultiSelection()
             }
         }
 
@@ -240,9 +240,9 @@ fun MainPageScreenView(
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
     MultiSelectionScaffold(
-        multiSelectionManager = mainPageViewModel.multiSelectionManager,
-        onCancel = mainPageViewModel::cancelSelection,
-        onMore = mainPageViewModel::showMultiMusicBottomSheet,
+        multiSelectionManagerImpl = mainPageViewModel.multiSelectionManagerImpl,
+        onCancel = mainPageViewModel::clearMultiSelection,
+        onMore = mainPageViewModel::handleMultiSelectionBottomSheet,
     ) {
         BoxWithConstraints(
             modifier = Modifier

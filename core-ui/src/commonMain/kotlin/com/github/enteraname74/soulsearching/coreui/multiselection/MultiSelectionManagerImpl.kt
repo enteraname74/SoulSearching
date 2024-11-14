@@ -5,7 +5,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.*
 
-class MultiSelectionManager {
+interface MultiSelectionManager {
+    /**
+     * Add or remove an element to the selection.
+     */
+    fun toggleElementInSelection(id: UUID, mode: SelectionMode)
+
+    fun clearMultiSelection()
+}
+
+class MultiSelectionManagerImpl: MultiSelectionManager {
     var selectionMode: SelectionMode = SelectionMode.Music
         private set
 
@@ -19,10 +28,10 @@ class MultiSelectionManager {
     /**
      * Add or remove an element to the selection.
      */
-    fun toggle(id: UUID, mode: SelectionMode) {
+    override fun toggleElementInSelection(id: UUID, mode: SelectionMode) {
 
         if (selectionMode != mode) {
-            clear()
+            clearMultiSelection()
             selectionMode  = mode
         }
 
@@ -41,7 +50,7 @@ class MultiSelectionManager {
         }
     }
 
-    fun clear() {
+    override fun clearMultiSelection() {
         _state.value = MultiSelectionState(
             selectedIds = emptyList(),
         )

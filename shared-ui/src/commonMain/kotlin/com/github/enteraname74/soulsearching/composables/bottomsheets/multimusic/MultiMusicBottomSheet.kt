@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
@@ -19,7 +19,7 @@ import org.koin.core.component.inject
 import java.util.*
 
 class MultiMusicBottomSheet(
-    private val multiSelectionManager: MultiSelectionManager?,
+    private val multiSelectionManagerImpl: MultiSelectionManagerImpl?,
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
     private val onDeleteAll: () -> Unit,
@@ -58,7 +58,7 @@ class MultiMusicBottomSheet(
                     )
                 }
                 closeWithAnim()
-                multiSelectionManager?.clear()
+                multiSelectionManagerImpl?.clearMultiSelection()
             },
             addToPlaylistAction = onAddToPlaylist,
             playNextAction = {
@@ -73,7 +73,7 @@ class MultiMusicBottomSheet(
                     }
                 }
                 closeWithAnim()
-                multiSelectionManager?.clear()
+                multiSelectionManagerImpl?.clearMultiSelection()
             },
             isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
         )

@@ -119,9 +119,9 @@ fun SelectedArtistScreenView(
                         onAlbumLongClick = selectedArtistViewModel::showAlbumBottomSheet,
                     )
                 },
-                multiSelectionManager = selectedArtistViewModel.multiSelectionManager,
+                multiSelectionManagerImpl = selectedArtistViewModel.multiSelectionManagerImpl,
                 onLongSelectOnMusic = {
-                    selectedArtistViewModel.toggleSelection(
+                    selectedArtistViewModel.toggleElementInSelection(
                         id = it.musicId,
                         mode = SelectionMode.Music,
                     )

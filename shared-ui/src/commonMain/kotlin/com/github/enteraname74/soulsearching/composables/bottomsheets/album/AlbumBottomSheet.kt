@@ -13,7 +13,7 @@ class AlbumBottomSheet(
     private val onModifyAlbum: () -> Unit,
     private val onDeleteAlbum: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
-): SoulBottomSheet {
+) : SoulBottomSheet {
 
     @Composable
     override fun BottomSheet() {
@@ -35,7 +35,7 @@ class AlbumBottomSheet(
             },
             deleteAction = onDeleteAlbum,
             quickAccessAction = {
-               closeWithAnim()
+                closeWithAnim()
                 toggleQuickAccess()
             },
             isInQuickAccess = selectedAlbum.isInQuickAccess,

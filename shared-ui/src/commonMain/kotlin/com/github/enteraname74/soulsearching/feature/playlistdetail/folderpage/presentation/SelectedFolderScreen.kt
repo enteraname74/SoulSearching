@@ -86,9 +86,9 @@ fun SelectedFolderScreenView(
             playlistDetailListener = selectedFolderViewModel,
             navigateBack = navigateBack,
             onShowMusicBottomSheet = selectedFolderViewModel::showMusicBottomSheet,
-            multiSelectionManager = selectedFolderViewModel.multiSelectionManager,
+            multiSelectionManagerImpl = selectedFolderViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
-                selectedFolderViewModel.toggleSelection(
+                selectedFolderViewModel.toggleElementInSelection(
                     id = it.musicId,
                     mode = SelectionMode.Music,
                 )

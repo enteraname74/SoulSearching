@@ -127,8 +127,8 @@ fun PlayerDraggableView(
         )
 
         MultiSelectionScaffold(
-            multiSelectionManager = playerViewModel.multiSelectionManager,
-            onCancel = playerViewModel::cancelSelection,
+            multiSelectionManagerImpl = playerViewModel.multiSelectionManagerImpl,
+            onCancel = playerViewModel::clearMultiSelection,
             onMore = playerViewModel::showMultiMusicBottomSheet,
             topBarColors = if (PlayerUiUtils.canShowSidePanel()) {
                 SoulTopBarDefaults.secondary()
@@ -213,13 +213,13 @@ fun PlayerDraggableView(
                             currentMusicProgression = currentMusicProgressionState,
                             settingsState = settingsState,
                             onLongSelectOnMusic = {
-                                playerViewModel.toggleSelection(
+                                playerViewModel.toggleElementInSelection(
                                     id = it.musicId,
                                     mode = SelectionMode.Music,
                                 )
                             },
                             multiSelectionState = multiSelectionState,
-                            closeSelection = playerViewModel::cancelSelection,
+                            closeSelection = playerViewModel::clearMultiSelection,
                         )
 
                         /*

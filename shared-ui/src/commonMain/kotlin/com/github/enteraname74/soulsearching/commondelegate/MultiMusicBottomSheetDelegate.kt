@@ -14,8 +14,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusic
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
-import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -28,15 +27,8 @@ import java.util.*
 
 interface MultiMusicBottomSheetDelegate {
     fun showMultiMusicBottomSheet(
-        currentPlaylist: Playlist? = null,
+        currentPlaylist: Playlist? = null
     )
-
-    fun toggleSelection(
-        id: UUID,
-        mode: SelectionMode,
-    )
-
-    fun cancelSelection()
 }
 
 class MultiMusicBottomSheetDelegateImpl(
@@ -46,7 +38,7 @@ class MultiMusicBottomSheetDelegateImpl(
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
-) : MultiMusicBottomSheetDelegate {
+): MultiMusicBottomSheetDelegate {
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistsWithMusicsUseCase()
         .stateIn(
             scope = CoroutineScope(Dispatchers.IO),
@@ -58,20 +50,20 @@ class MultiMusicBottomSheetDelegateImpl(
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit = {}
     private var musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL
-    private var multiSelectionManager: MultiSelectionManager? = null
+    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
 
     fun initDelegate(
         setDialogState: (SoulDialog?) -> Unit,
         setBottomSheetState: (SoulBottomSheet?) -> Unit,
         setAddToPlaylistBottomSheetState: (AddToPlaylistBottomSheet?) -> Unit,
         musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
-        multiSelectionManager: MultiSelectionManager,
+        multiSelectionManagerImpl: MultiSelectionManagerImpl,
     ) {
         this.setDialogState = setDialogState
         this.setBottomSheetState = setBottomSheetState
         this.setAddToPlaylistBottomSheetState = setAddToPlaylistBottomSheetState
         this.musicBottomSheetState = musicBottomSheetState
-        this.multiSelectionManager = multiSelectionManager
+        this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
 
     private fun showDeleteMultiMusicDialog(
@@ -84,7 +76,7 @@ class MultiMusicBottomSheetDelegateImpl(
                         loadingManager.withLoading {
                             deleteAllMusicsUseCase(selectedIdsToDelete)
                             playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
-                            multiSelectionManager?.clear()
+                            multiSelectionManagerImpl?.clearMultiSelection()
                         }
                     }
                     setDialogState(null)
@@ -163,7 +155,7 @@ class MultiMusicBottomSheetDelegateImpl(
     override fun showMultiMusicBottomSheet(
         currentPlaylist: Playlist?
     ) {
-        val selectedIds = multiSelectionManager?.state?.value?.selectedIds ?: emptyList()
+        val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: emptyList()
 
         setBottomSheetState(
             MultiMusicBottomSheet(
@@ -186,22 +178,8 @@ class MultiMusicBottomSheetDelegateImpl(
                     )
                 },
                 musicBottomSheetState = musicBottomSheetState,
-                multiSelectionManager = multiSelectionManager,
+                multiSelectionManagerImpl = multiSelectionManagerImpl,
             )
         )
-    }
-
-    override fun toggleSelection(
-        id: UUID,
-        mode: SelectionMode
-    ) {
-        multiSelectionManager?.toggle(
-            id = id,
-            mode = mode,
-        )
-    }
-
-    override fun cancelSelection() {
-        multiSelectionManager?.clear()
     }
 }

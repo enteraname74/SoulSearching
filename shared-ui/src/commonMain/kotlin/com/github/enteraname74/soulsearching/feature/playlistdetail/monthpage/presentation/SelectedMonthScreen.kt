@@ -89,9 +89,9 @@ fun SelectedMonthScreenView(
             playlistDetailListener = selectedMonthViewModel,
             navigateBack = navigateBack,
             onShowMusicBottomSheet = selectedMonthViewModel::showMusicBottomSheet,
-            multiSelectionManager = selectedMonthViewModel.multiSelectionManager,
+            multiSelectionManagerImpl = selectedMonthViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
-                selectedMonthViewModel.toggleSelection(
+                selectedMonthViewModel.toggleElementInSelection(
                     id = it.musicId,
                     mode = SelectionMode.Music,
                 )

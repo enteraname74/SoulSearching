@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 fun PlaylistScreen(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
-    multiSelectionManager: MultiSelectionManager,
+    multiSelectionManagerImpl: MultiSelectionManagerImpl,
     navigateBack: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
@@ -108,7 +108,7 @@ fun PlaylistScreen(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
     ) {
         MultiSelectionScaffold(
-            multiSelectionManager = multiSelectionManager,
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
             onCancel = playlistDetailListener::onCloseSelection,
             onMore = playlistDetailListener::onMoreClickedOnSelection,
         ) {

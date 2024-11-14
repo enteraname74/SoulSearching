@@ -20,14 +20,14 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarColors
 
 @Composable
 fun MultiSelectionScaffold(
-    multiSelectionManager: MultiSelectionManager,
+    multiSelectionManagerImpl: MultiSelectionManagerImpl,
     topBarColors: TopBarColors = SoulTopBarDefaults.secondary(),
     onCancel: () -> Unit,
     onMore: () -> Unit,
     content: @Composable () -> Unit,
 ) {
 
-    val state: MultiSelectionState by multiSelectionManager.state.collectAsState()
+    val state: MultiSelectionState by multiSelectionManagerImpl.state.collectAsState()
     val isMultiSelectionActive by remember {
         derivedStateOf {
             state.selectedIds.isNotEmpty()

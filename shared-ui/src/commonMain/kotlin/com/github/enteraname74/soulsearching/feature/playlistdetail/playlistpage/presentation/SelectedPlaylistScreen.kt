@@ -103,9 +103,9 @@ fun SelectedPlaylistScreenView(
                     currentPlaylist = (state as SelectedPlaylistState.Data).selectedPlaylist,
                 )
             },
-            multiSelectionManager = selectedPlaylistViewModel.multiSelectionManager,
+            multiSelectionManagerImpl = selectedPlaylistViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
-                selectedPlaylistViewModel.toggleSelection(
+                selectedPlaylistViewModel.toggleElementInSelection(
                     id = it.musicId,
                     mode = SelectionMode.Music,
                 )

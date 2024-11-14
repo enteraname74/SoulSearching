@@ -99,9 +99,9 @@ fun SelectedAlbumScreenView(
             playlistDetailListener = selectedAlbumViewModel,
             navigateBack = navigateBack,
             onShowMusicBottomSheet = selectedAlbumViewModel::showMusicBottomSheet,
-            multiSelectionManager = selectedAlbumViewModel.multiSelectionManager,
+            multiSelectionManagerImpl = selectedAlbumViewModel.multiSelectionManagerImpl,
             onLongSelectOnMusic = {
-                selectedAlbumViewModel.toggleSelection(
+                selectedAlbumViewModel.toggleElementInSelection(
                     id = it.musicId,
                     mode = SelectionMode.Music,
                 )
