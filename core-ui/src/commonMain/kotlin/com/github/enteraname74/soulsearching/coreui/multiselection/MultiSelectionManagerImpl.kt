@@ -12,11 +12,14 @@ interface MultiSelectionManager {
     fun toggleElementInSelection(id: UUID, mode: SelectionMode)
 
     fun clearMultiSelection()
+
+    val selectionMode: SelectionMode
 }
 
 class MultiSelectionManagerImpl: MultiSelectionManager {
-    var selectionMode: SelectionMode = SelectionMode.Music
-        private set
+    private var _selectionMode: SelectionMode = SelectionMode.Music
+    override val selectionMode: SelectionMode
+        get() = _selectionMode
 
     private val _state: MutableStateFlow<MultiSelectionState> = MutableStateFlow(
         MultiSelectionState(
@@ -30,9 +33,9 @@ class MultiSelectionManagerImpl: MultiSelectionManager {
      */
     override fun toggleElementInSelection(id: UUID, mode: SelectionMode) {
 
-        if (selectionMode != mode) {
+        if (_selectionMode != mode) {
             clearMultiSelection()
-            selectionMode  = mode
+            _selectionMode  = mode
         }
 
         if (!_state.value.selectedIds.contains(id)) {

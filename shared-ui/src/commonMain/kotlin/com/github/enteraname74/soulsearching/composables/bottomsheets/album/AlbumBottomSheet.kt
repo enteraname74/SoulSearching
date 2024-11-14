@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.album
 
 import androidx.compose.runtime.Composable
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler

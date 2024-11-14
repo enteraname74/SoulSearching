@@ -5,6 +5,7 @@ import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDel
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.SortingInformationDelegateImpl
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -17,6 +18,7 @@ internal val delegateModule = module {
     factoryOf(::ArtistBottomSheetDelegateImpl)
 
     factoryOf(::MultiMusicBottomSheetDelegateImpl)
+    factoryOf(::MultiAlbumBottomSheetDelegateImpl)
 
     singleOf(::SortingInformationDelegateImpl)
 }

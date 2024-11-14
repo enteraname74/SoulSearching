@@ -30,7 +30,7 @@ fun MultiAlbumBottomSheetMenu(
 
         BottomSheetRow(
             icon = Icons.Rounded.Delete,
-            text = strings.deleteAlbum,
+            text = strings.deleteSelectedAlbums,
             onClick = deleteAction
         )
     }
