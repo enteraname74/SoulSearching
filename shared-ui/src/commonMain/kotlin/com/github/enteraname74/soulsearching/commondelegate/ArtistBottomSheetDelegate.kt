@@ -8,6 +8,7 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.Art
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,15 +24,18 @@ class ArtistBottomSheetDelegateImpl(
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var onModifyArtist: (artist: Artist) -> Unit = {}
+    private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
 
     fun initDelegate(
         setDialogState: (SoulDialog?) -> Unit,
         setBottomSheetState: (SoulBottomSheet?) -> Unit,
         onModifyArtist: (artist: Artist) -> Unit,
+        multiSelectionManagerImpl: MultiSelectionManagerImpl,
     ) {
         this.setDialogState = setDialogState
         this.setBottomSheetState = setBottomSheetState
         this.onModifyArtist = onModifyArtist
+        this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
 
     private fun showDeleteArtistDialog(artistWithMusics: ArtistWithMusics) {

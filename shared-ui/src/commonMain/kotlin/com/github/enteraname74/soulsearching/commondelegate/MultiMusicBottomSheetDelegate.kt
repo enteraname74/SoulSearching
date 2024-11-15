@@ -155,7 +155,7 @@ class MultiMusicBottomSheetDelegateImpl(
     override fun showMultiMusicBottomSheet(
         currentPlaylist: Playlist?
     ) {
-        val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: emptyList()
+        val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: return
 
         setBottomSheetState(
             MultiMusicBottomSheet(

@@ -12,6 +12,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.DeleteAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
@@ -22,6 +23,7 @@ import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
@@ -88,9 +90,13 @@ class MainPageViewModel(
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
     private val getMusicUseCase: GetMusicUseCase by inject()
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase by inject()
+    private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
+    private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase by inject()
 
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl by inject()
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl by inject()
+    private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
+    private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
@@ -282,13 +288,15 @@ class MainPageViewModel(
         artistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyArtist = { _navigationState.value = MainPageNavigationState.ToModifyArtist(it.artistId) }
+            onModifyArtist = { _navigationState.value = MainPageNavigationState.ToModifyArtist(it.artistId) },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         albumBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = MainPageNavigationState.ToModifyAlbum(it.albumId) }
+            onModifyAlbum = { _navigationState.value = MainPageNavigationState.ToModifyAlbum(it.albumId) },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         playlistBottomSheetDelegateImpl.initDelegate(
@@ -305,6 +313,18 @@ class MainPageViewModel(
         )
 
         multiAlbumBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
+        )
+
+        multiArtistBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
+        )
+
+        multiPlaylistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
@@ -529,18 +549,35 @@ class MainPageViewModel(
         }
     }
 
+    private suspend fun handleMultiSelectionArtistBottomSheet() {
+        val selectedIds = multiSelectionState.value.selectedIds
+        if (selectedIds.size == 1) {
+            val selectedArtist: ArtistWithMusics =
+                getArtistWithMusicsUseCase(artistId = selectedIds[0]).firstOrNull() ?: return
+            showArtistBottomSheet(selectedArtist = selectedArtist)
+        } else {
+            multiArtistBottomSheetDelegateImpl.showMultiArtistBottomSheet()
+        }
+    }
+
+    private suspend fun handleMultiSelectionPlaylistBottomSheet() {
+        val selectedIds = multiSelectionState.value.selectedIds
+        if (selectedIds.size == 1) {
+            val selectedPlaylist: PlaylistWithMusics =
+                getPlaylistWithMusicsUseCase(playlistId = selectedIds[0]).firstOrNull() ?: return
+            showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist.toPlaylistWithMusicsNumber())
+        } else {
+            multiPlaylistBottomSheetDelegateImpl.showMultiPlaylistBottomSheet()
+        }
+    }
+
     fun handleMultiSelectionBottomSheet() {
         screenModelScope.launch {
             when (multiSelectionManagerImpl.selectionMode) {
                 SelectionMode.Music -> handleMultiSelectionMusicBottomSheet()
-                SelectionMode.Playlist -> {
-                    //TODO
-                }
-
+                SelectionMode.Playlist -> handleMultiSelectionPlaylistBottomSheet()
                 SelectionMode.Album -> handleMultiSelectionAlbumBottomSheet()
-                SelectionMode.Artist -> {
-                    //TODO
-                }
+                SelectionMode.Artist -> handleMultiSelectionArtistBottomSheet()
             }
         }
     }

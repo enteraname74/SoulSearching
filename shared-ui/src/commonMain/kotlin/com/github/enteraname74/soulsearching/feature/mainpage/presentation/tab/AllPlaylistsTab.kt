@@ -9,6 +9,8 @@ import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -25,6 +27,7 @@ fun allPlaylistsTab(
         type = ElementEnum.PLAYLISTS,
         screen = {
             val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
+            val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
 
             MainPageList(
                 list = playlistState.playlists,
@@ -61,8 +64,15 @@ fun allPlaylistsTab(
                     onClick = {
                         navigateToPlaylist(element.playlist.playlistId)
                     },
-                    onLongClick = { mainPageViewModel.showPlaylistBottomSheet(element) },
-                    isFavoritePlaylist = element.playlist.isFavorite
+                    onLongClick = {
+                        mainPageViewModel.toggleElementInSelection(
+                            id = element.playlist.playlistId,
+                            mode = SelectionMode.Playlist,
+                        )
+                    },
+                    isFavoritePlaylist = element.playlist.isFavorite,
+                    isSelected = multiSelectionState.selectedIds.contains(element.playlist.playlistId),
+                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }
         }

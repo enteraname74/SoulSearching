@@ -1,30 +1,25 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
-import com.github.enteraname74.soulsearching.composables.bottomsheets.multialbum.MultiAlbumBottomSheet
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
+import com.github.enteraname74.domain.usecase.playlist.DeleteAllPlaylistsUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.multiplaylist.MultiPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.*
 
-interface MultiAlbumBottomSheetDelegate {
-    fun showMultiAlbumBottomSheet()
+interface MultiPlaylistBottomSheetDelegate {
+    fun showMultiPlaylistBottomSheet()
 }
 
-class MultiAlbumBottomSheetDelegateImpl(
-    private val deleteAllAlbumsUseCase: DeleteAllAlbumsUseCase,
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
+class MultiPlaylistBottomSheetDelegateImpl(
+    private val deleteAllPlaylistsUseCase: DeleteAllPlaylistsUseCase,
     private val loadingManager: LoadingManager,
-    private val playbackManager: PlaybackManager,
-): MultiAlbumBottomSheetDelegate {
+): MultiPlaylistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
@@ -39,24 +34,15 @@ class MultiAlbumBottomSheetDelegateImpl(
         this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
 
-    private fun showDeleteMultiAlbumDialog(
+    private fun showDeleteMultiPlaylistDialog(
         selectedIdsToDelete: List<UUID>,
     ) {
         setDialogState(
-            DeleteMultiAlbumDialog(
+            DeleteMultiPlaylistDialog(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            selectedIdsToDelete.forEach { albumId ->
-                                getAlbumWithMusicsUseCase(
-                                    albumId = albumId
-                                ).firstOrNull()?.let { albumWithMusics ->
-                                    playbackManager.removeSongsFromPlayedPlaylist(
-                                        musicIds = albumWithMusics.musics.map { it.musicId },
-                                    )
-                                }
-                            }
-                            deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            deleteAllPlaylistsUseCase(selectedIdsToDelete)
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                         setDialogState(null)
@@ -68,14 +54,14 @@ class MultiAlbumBottomSheetDelegateImpl(
         )
     }
 
-    override fun showMultiAlbumBottomSheet() {
+    override fun showMultiPlaylistBottomSheet() {
         val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: return
 
         setBottomSheetState(
-            MultiAlbumBottomSheet(
+            MultiPlaylistBottomSheet(
                 onClose = { setBottomSheetState(null) },
                 selectedIds = selectedIds,
-                onDelete = { showDeleteMultiAlbumDialog(selectedIds) }
+                onDelete = { showDeleteMultiPlaylistDialog(selectedIds) }
             )
         )
     }

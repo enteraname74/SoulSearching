@@ -60,6 +60,12 @@ internal class PlaylistDao(
         }
     }
 
+    suspend fun deleteAll(playlistIds: List<UUID>) {
+        flowTransactionOn {
+            PlaylistTable.deleteWhere { Op.build { id inList playlistIds } and isFavorite eq Op.FALSE }
+        }
+    }
+
     fun getAll(): Flow<List<Playlist>> = transaction {
         PlaylistTable
             .selectAll()

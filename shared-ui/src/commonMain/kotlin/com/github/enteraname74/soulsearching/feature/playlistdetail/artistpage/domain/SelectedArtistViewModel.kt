@@ -102,7 +102,8 @@ class SelectedArtistViewModel(
         albumBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = SelectedArtistNavigationState.ToModifyAlbum(it) }
+            onModifyAlbum = { _navigationState.value = SelectedArtistNavigationState.ToModifyAlbum(it) },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         musicBottomSheetDelegateImpl.initDelegate(

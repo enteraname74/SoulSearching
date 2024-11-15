@@ -13,6 +13,7 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.SoulHorizontalScrollBar
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
@@ -21,6 +22,7 @@ import java.util.*
 @Composable
 fun ArtistAlbums(
     albums: List<AlbumWithMusics>,
+    multiSelectionState: MultiSelectionState,
     onAlbumClick: (albumId: UUID) -> Unit = {},
     onAlbumLongClick: (AlbumWithMusics) -> Unit = {},
 ) {
@@ -65,7 +67,9 @@ fun ArtistAlbums(
                             onClick = {
                                 onAlbumClick(element.album.albumId)
                             },
-                            onLongClick = { onAlbumLongClick(element) }
+                            onLongClick = { onAlbumLongClick(element) },
+                            isSelected = multiSelectionState.selectedIds.contains(element.album.albumId),
+                            isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                         )
                     }
                 }

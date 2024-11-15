@@ -120,6 +120,7 @@ val domainModule = module {
     singleOf(::UpsertMusicIntoPlaylistUseCase)
 
     // Playlist
+    singleOf(::DeleteAllPlaylistsUseCase)
     singleOf(::DeletePlaylistUseCase)
     singleOf(::GetAllPlaylistsUseCase)
     singleOf(::GetAllPlaylistWithMusicsNumberFromQuickAccessUseCase)

@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
-import com.github.enteraname74.soulsearching.composables.bottomsheets.multialbum.MultiAlbumBottomSheet
-import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
+import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.multiartist.MultiArtistBottomSheet
+import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -15,16 +15,16 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.*
 
-interface MultiAlbumBottomSheetDelegate {
-    fun showMultiAlbumBottomSheet()
+interface MultiArtistBottomSheetDelegate {
+    fun showMultiArtistBottomSheet()
 }
 
-class MultiAlbumBottomSheetDelegateImpl(
-    private val deleteAllAlbumsUseCase: DeleteAllAlbumsUseCase,
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
+class MultiArtistBottomSheetDelegateImpl(
+    private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase,
+    private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
-): MultiAlbumBottomSheetDelegate {
+) : MultiArtistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
     private var multiSelectionManagerImpl: MultiSelectionManagerImpl? = null
@@ -39,24 +39,24 @@ class MultiAlbumBottomSheetDelegateImpl(
         this.multiSelectionManagerImpl = multiSelectionManagerImpl
     }
 
-    private fun showDeleteMultiAlbumDialog(
+    private fun showDeleteMultiArtistDialog(
         selectedIdsToDelete: List<UUID>,
     ) {
         setDialogState(
-            DeleteMultiAlbumDialog(
+            DeleteMultiArtistDialog(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             selectedIdsToDelete.forEach { albumId ->
-                                getAlbumWithMusicsUseCase(
-                                    albumId = albumId
-                                ).firstOrNull()?.let { albumWithMusics ->
+                                getArtistWithMusicsUseCase(
+                                    artistId = albumId
+                                ).firstOrNull()?.let { artistWithMusics ->
                                     playbackManager.removeSongsFromPlayedPlaylist(
-                                        musicIds = albumWithMusics.musics.map { it.musicId },
+                                        musicIds = artistWithMusics.musics.map { it.musicId },
                                     )
                                 }
                             }
-                            deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            deleteAllArtistsUseCase(selectedIdsToDelete)
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                         setDialogState(null)
@@ -68,14 +68,14 @@ class MultiAlbumBottomSheetDelegateImpl(
         )
     }
 
-    override fun showMultiAlbumBottomSheet() {
+    override fun showMultiArtistBottomSheet() {
         val selectedIds = multiSelectionManagerImpl?.state?.value?.selectedIds ?: return
 
         setBottomSheetState(
-            MultiAlbumBottomSheet(
+            MultiArtistBottomSheet(
                 onClose = { setBottomSheetState(null) },
                 selectedIds = selectedIds,
-                onDelete = { showDeleteMultiAlbumDialog(selectedIds) }
+                onDelete = { showDeleteMultiArtistDialog(selectedIds) }
             )
         )
     }

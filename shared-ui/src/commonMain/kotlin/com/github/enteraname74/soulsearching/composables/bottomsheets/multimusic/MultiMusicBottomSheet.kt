@@ -63,7 +63,8 @@ class MultiMusicBottomSheet(
             addToPlaylistAction = onAddToPlaylist,
             playNextAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    selectedIds.forEach { musicId ->
+                    // We reversed the list to be sure that the first selected song appears as the first next song.
+                    selectedIds.reversed().forEach { musicId ->
                         getMusicUseCase(musicId).firstOrNull()?.let { music ->
                             playbackManager.addMusicToPlayNext(
                                 music = music
