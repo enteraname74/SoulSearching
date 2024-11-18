@@ -10,6 +10,7 @@ class PlaylistBottomSheet(
     private val onClose: () -> Unit,
     private val selectedPlaylist: PlaylistWithMusicsNumber,
     private val onModifyPlaylist: () -> Unit,
+    private val onPlayNext: () -> Unit,
     private val onDeletePlaylist: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
 ): SoulBottomSheet {
@@ -38,7 +39,8 @@ class PlaylistBottomSheet(
                 closeWithAnim()
                 toggleQuickAccess()
             },
-            isInQuickAccess = selectedPlaylist.isInQuickAccess
+            isInQuickAccess = selectedPlaylist.isInQuickAccess,
+            playNextAction = onPlayNext,
         )
     }
 }

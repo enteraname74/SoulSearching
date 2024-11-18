@@ -302,7 +302,8 @@ class MainPageViewModel(
         playlistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) }
+            onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(

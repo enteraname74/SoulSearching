@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 fun PlaylistBottomSheetMenu(
     selectedPlaylist: PlaylistWithMusicsNumber,
     modifyAction : () -> Unit,
+    playNextAction: () -> Unit,
     deleteAction : () -> Unit,
     quickAccessAction : () -> Unit,
     isInQuickAccess: Boolean,
@@ -35,6 +37,11 @@ fun PlaylistBottomSheetMenu(
                 icon = Icons.Rounded.Edit,
                 text = strings.modifyPlaylist,
                 onClick = modifyAction
+            )
+            BottomSheetRow(
+                icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+                text = strings.playNext,
+                onClick = playNextAction,
             )
             if (!selectedPlaylist.playlist.isFavorite) {
                 BottomSheetRow(
