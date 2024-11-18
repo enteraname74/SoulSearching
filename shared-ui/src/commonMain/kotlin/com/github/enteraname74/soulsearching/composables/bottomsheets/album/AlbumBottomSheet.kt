@@ -9,6 +9,7 @@ class AlbumBottomSheet(
     private val onClose: () -> Unit,
     private val selectedAlbum: AlbumWithMusics,
     private val onModifyAlbum: () -> Unit,
+    private val onPlayNext: () -> Unit,
     private val onDeleteAlbum: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
 ) : SoulBottomSheet {
@@ -38,6 +39,10 @@ class AlbumBottomSheet(
             },
             isInQuickAccess = selectedAlbum.isInQuickAccess,
             selectedAlbum = selectedAlbum,
+            playNextAction = {
+                closeWithAnim()
+                onPlayNext()
+            },
         )
     }
 }

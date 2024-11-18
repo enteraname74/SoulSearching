@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.SoulSearchingDesktop
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.resources.Res
 import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.resources.app_icon
@@ -36,14 +37,20 @@ fun main() = application {
             },
         )
 
-        LaunchedEffect(windowState.size) {
-            settings.set(
-                key = SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH.key,
-                value = windowState.size.width.value.toInt(),
-            )
+        val windowHeight = windowState.size.height.toPx()
+        val windowWidth = windowState.size.width.toPx()
+
+        LaunchedEffect(windowHeight) {
             settings.set(
                 key = SoulSearchingSettingsKeys.Desktop.WINDOW_HEIGHT.key,
-                value = windowState.size.height.value.toInt(),
+                value = windowHeight,
+            )
+        }
+
+        LaunchedEffect(windowWidth) {
+            settings.set(
+                key = SoulSearchingSettingsKeys.Desktop.WINDOW_WIDTH.key,
+                value = windowWidth,
             )
         }
 

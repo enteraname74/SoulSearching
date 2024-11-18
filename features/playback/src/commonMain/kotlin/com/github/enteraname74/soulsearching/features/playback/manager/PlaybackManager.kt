@@ -264,6 +264,10 @@ abstract class PlaybackManager : KoinComponent {
         playbackListManager.addMusicToPlayNext(music = music)
     }
 
+    suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
+        playbackListManager.addMultipleMusicsToPlayNext(musics = musics)
+    }
+
     fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =
         playbackListManager.isSameMusicAsCurrentPlayedOne(musicId = musicId)
 

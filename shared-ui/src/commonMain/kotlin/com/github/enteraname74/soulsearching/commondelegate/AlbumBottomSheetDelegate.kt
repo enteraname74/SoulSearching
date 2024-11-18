@@ -9,6 +9,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialo
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ interface AlbumBottomSheetDelegate {
 class AlbumBottomSheetDelegateImpl(
     private val deleteAlbumUseCase: DeleteAlbumUseCase,
     private val upsertAlbumUseCase: UpsertAlbumUseCase,
+    private val playbackManager: PlaybackManager,
 ) : AlbumBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -71,6 +73,15 @@ class AlbumBottomSheetDelegateImpl(
                                 isInQuickAccess = !albumWithMusics.album.isInQuickAccess,
                             )
                         )
+                    }
+                },
+                onPlayNext = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.addMultipleMusicsToPlayNext(
+                            musics = albumWithMusics.musics,
+                        )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
                     }
                 }
             )

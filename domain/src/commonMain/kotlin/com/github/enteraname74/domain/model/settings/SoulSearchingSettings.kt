@@ -190,11 +190,11 @@ object SoulSearchingSettingsKeys {
     object Desktop {
         val WINDOW_HEIGHT = settingElementOf(
             key = "WINDOW_HEIGHT",
-            defaultValue = 600,
+            defaultValue = 600f,
         )
         val WINDOW_WIDTH = settingElementOf(
             key = "WINDOW_WIDTH",
-            defaultValue = 800,
+            defaultValue = 800f,
         )
         val IS_FULLSCREEN = settingElementOf(
             key = "IS_FULLSCREEN",

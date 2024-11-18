@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.multimusi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
@@ -63,15 +64,10 @@ class MultiMusicBottomSheet(
             addToPlaylistAction = onAddToPlaylist,
             playNextAction = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    // We reversed the list to be sure that the first selected song appears as the first next song.
-                    selectedIds.reversed().forEach { musicId ->
-                        getMusicUseCase(musicId).firstOrNull()?.let { music ->
-                            playbackManager.addMusicToPlayNext(
-                                music = music
-                            )
-                        }
-
-                    }
+                    val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
+                    playbackManager.addMultipleMusicsToPlayNext(
+                        musics = selectedMusics,
+                    )
                 }
                 closeWithAnim()
                 multiSelectionManagerImpl?.clearMultiSelection()
