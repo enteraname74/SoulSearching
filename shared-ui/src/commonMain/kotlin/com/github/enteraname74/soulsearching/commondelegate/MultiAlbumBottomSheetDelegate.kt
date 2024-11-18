@@ -75,7 +75,24 @@ class MultiAlbumBottomSheetDelegateImpl(
             MultiAlbumBottomSheet(
                 onClose = { setBottomSheetState(null) },
                 selectedIds = selectedIds,
-                onDelete = { showDeleteMultiAlbumDialog(selectedIds) }
+                onDelete = { showDeleteMultiAlbumDialog(selectedIds) },
+                onPlayNext = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // We reverse the ids to keep the first selected album to be the first next.
+                        selectedIds.reversed().forEach { albumId ->
+                            getAlbumWithMusicsUseCase(
+                                albumId = albumId
+                            ).firstOrNull()?.let { albumWithMusics ->
+                                playbackManager.addMultipleMusicsToPlayNext(
+                                    musics = albumWithMusics.musics,
+                                )
+                            }
+                        }
+
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                }
             )
         )
     }

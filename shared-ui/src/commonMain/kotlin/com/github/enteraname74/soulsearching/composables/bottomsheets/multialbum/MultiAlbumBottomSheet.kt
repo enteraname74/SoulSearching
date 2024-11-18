@@ -8,6 +8,7 @@ import java.util.UUID
 class MultiAlbumBottomSheet(
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
+    private val onPlayNext: () -> Unit,
     private val onDelete: () -> Unit,
 ): SoulBottomSheet {
     @Composable
@@ -24,6 +25,7 @@ class MultiAlbumBottomSheet(
         MultiAlbumBottomSheetMenu(
             total = selectedIds.size,
             deleteAction = onDelete,
+            playNextAction = onPlayNext,
         )
     }
 }
