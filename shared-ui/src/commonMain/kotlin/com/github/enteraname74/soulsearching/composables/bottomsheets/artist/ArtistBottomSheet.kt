@@ -9,6 +9,7 @@ class ArtistBottomSheet(
     private val onClose: () -> Unit,
     private val selectedArtist: ArtistWithMusics,
     private val onModifyArtist: () -> Unit,
+    private val onPlayNext: () -> Unit,
     private val onDeleteArtist: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
 ): SoulBottomSheet {
@@ -37,6 +38,7 @@ class ArtistBottomSheet(
             },
             isInQuickAccess = selectedArtist.isInQuickAccess,
             selectedArtist = selectedArtist,
+            playNextAction = onPlayNext,
         )
     }
 }
