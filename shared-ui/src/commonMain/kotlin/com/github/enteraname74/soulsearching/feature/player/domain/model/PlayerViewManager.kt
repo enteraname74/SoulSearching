@@ -1,3 +1,4 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.animation.core.tween
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * Manages the view of the player draggable view.
  */
-@Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class)
 class PlayerViewManager {
 

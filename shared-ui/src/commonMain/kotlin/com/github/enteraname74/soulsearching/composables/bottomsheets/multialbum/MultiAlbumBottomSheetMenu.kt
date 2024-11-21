@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
@@ -18,6 +19,8 @@ fun MultiAlbumBottomSheetMenu(
     total: Int,
     deleteAction: () -> Unit,
     playNextAction: () -> Unit,
+    isPlayedListEmpty: Boolean,
+    removeFromPlayedListAction: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -34,6 +37,13 @@ fun MultiAlbumBottomSheetMenu(
             text = strings.playNext,
             onClick = playNextAction,
         )
+        if (!isPlayedListEmpty) {
+            BottomSheetRow(
+                icon = Icons.Rounded.PlaylistRemove,
+                text = strings.removeFromPlayedList,
+                onClick = removeFromPlayedListAction,
+            )
+        }
         BottomSheetRow(
             icon = Icons.Rounded.Delete,
             text = strings.deleteSelectedAlbums,

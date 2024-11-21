@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
@@ -15,6 +17,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun MultiPlaylistBottomSheetMenu(
     total: Int,
+    playNextAction: () -> Unit,
+    isPlayedListEmpty: Boolean,
+    removeFromPlayedListAction: () -> Unit,
     deleteAction: () -> Unit,
 ) {
     Column(
@@ -27,7 +32,18 @@ fun MultiPlaylistBottomSheetMenu(
             subTitle = strings.selectedElements(total = total),
             cover = null,
         )
-
+        BottomSheetRow(
+            icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
+            text = strings.playNext,
+            onClick = playNextAction,
+        )
+        if (!isPlayedListEmpty) {
+            BottomSheetRow(
+                icon = Icons.Rounded.PlaylistRemove,
+                text = strings.removeFromPlayedList,
+                onClick = removeFromPlayedListAction,
+            )
+        }
         BottomSheetRow(
             icon = Icons.Rounded.Delete,
             text = strings.deleteSelectedPlaylists,

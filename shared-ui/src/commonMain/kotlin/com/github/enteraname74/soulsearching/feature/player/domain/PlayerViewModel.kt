@@ -162,6 +162,7 @@ class PlayerViewModel(
             onModifyMusic = { _navigationState.value = PlayerNavigationState.ToModifyMusic(it) },
             getAllPlaylistsWithMusics = ::getPlaylistsWithMusics,
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(

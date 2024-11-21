@@ -1,9 +1,15 @@
 package com.github.enteraname74.soulsearching.composables.bottomsheets.playlist
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
 class PlaylistBottomSheet(
@@ -12,8 +18,10 @@ class PlaylistBottomSheet(
     private val onModifyPlaylist: () -> Unit,
     private val onPlayNext: () -> Unit,
     private val onDeletePlaylist: () -> Unit,
+    private val onRemoveFromPlayedList: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
-): SoulBottomSheet {
+): SoulBottomSheet, KoinComponent {
+    private val playbackManager: PlaybackManager by inject()
 
     @Composable
     override fun BottomSheet() {
@@ -28,6 +36,8 @@ class PlaylistBottomSheet(
     private fun Content(
         closeWithAnim: () -> Unit,
     ) {
+        val playbackState by playbackManager.mainState.collectAsState(PlaybackManagerState.Stopped)
+
         PlaylistBottomSheetMenu(
             selectedPlaylist = selectedPlaylist,
             modifyAction = {
@@ -41,6 +51,11 @@ class PlaylistBottomSheet(
             },
             isInQuickAccess = selectedPlaylist.isInQuickAccess,
             playNextAction = onPlayNext,
+            removeFromPlayedListAction = {
+                closeWithAnim()
+                onRemoveFromPlayedList()
+            },
+            isPlayedListEmpty = playbackState.isEmpty(),
         )
     }
 }

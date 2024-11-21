@@ -97,6 +97,7 @@ class SelectedFolderViewModel(
             onModifyMusic = { _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(

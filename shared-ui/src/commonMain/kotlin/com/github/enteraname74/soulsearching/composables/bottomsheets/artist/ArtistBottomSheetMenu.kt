@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.soulsearching.composables.bottomsheets.BottomSheetElementInformation
@@ -20,6 +21,8 @@ fun ArtistBottomSheetMenu(
     quickAccessAction: () -> Unit,
     isInQuickAccess: Boolean,
     selectedArtist: ArtistWithMusics,
+    isPlayedListEmpty: Boolean,
+    removeFromPlayedListAction: () -> Unit,
 ) {
     Column {
         BottomSheetElementInformation(
@@ -42,6 +45,13 @@ fun ArtistBottomSheetMenu(
                 text = strings.playNext,
                 onClick = playNextAction,
             )
+            if (!isPlayedListEmpty) {
+                BottomSheetRow(
+                    icon = Icons.Rounded.PlaylistRemove,
+                    text = strings.removeFromPlayedList,
+                    onClick = removeFromPlayedListAction,
+                )
+            }
             BottomSheetRow(
                 icon = Icons.Rounded.Delete,
                 text = strings.deleteArtist,

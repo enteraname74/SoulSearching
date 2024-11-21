@@ -282,7 +282,8 @@ class MainPageViewModel(
             setBottomSheetState = { _bottomSheetState.value = it },
             setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
             getAllPlaylistsWithMusics = { allPlaylistsForBottomSheet.value },
-            onModifyMusic = { _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId) }
+            onModifyMusic = { _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId) },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         artistBottomSheetDelegateImpl.initDelegate(

@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multiartist.MultiArtistBottomSheet
@@ -75,7 +76,44 @@ class MultiArtistBottomSheetDelegateImpl(
             MultiArtistBottomSheet(
                 onClose = { setBottomSheetState(null) },
                 selectedIds = selectedIds,
-                onDelete = { showDeleteMultiArtistDialog(selectedIds) }
+                onDelete = { showDeleteMultiArtistDialog(selectedIds) },
+                onPlayNext = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val musics: List<Music> = buildList {
+                            selectedIds
+                                .forEach { artistId ->
+                                    getArtistWithMusicsUseCase(
+                                        artistId = artistId
+                                    ).firstOrNull()?.let { artistWithMusics ->
+                                        addAll(artistWithMusics.musics)
+                                    }
+                                }
+                        }
+
+                        playbackManager.addMultipleMusicsToPlayNext(
+                            musics = musics,
+                        )
+
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                },
+                onRemoveFromPlayedList = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        selectedIds.forEach { artistId ->
+                            getArtistWithMusicsUseCase(
+                                artistId = artistId
+                            ).firstOrNull()?.let { artistWithMusics ->
+                                playbackManager.removeSongsFromPlayedPlaylist(
+                                    musicIds = artistWithMusics.musics.map { it.musicId },
+                                )
+                            }
+                        }
+
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                }
             )
         )
     }

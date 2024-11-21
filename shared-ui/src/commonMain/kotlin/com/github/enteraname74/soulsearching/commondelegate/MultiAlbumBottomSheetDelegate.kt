@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multialbum.MultiAlbumBottomSheet
@@ -78,13 +79,33 @@ class MultiAlbumBottomSheetDelegateImpl(
                 onDelete = { showDeleteMultiAlbumDialog(selectedIds) },
                 onPlayNext = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        // We reverse the ids to keep the first selected album to be the first next.
-                        selectedIds.reversed().forEach { albumId ->
+                        val musics: List<Music> = buildList {
+                            selectedIds
+                                .forEach { albumId ->
+                                    getAlbumWithMusicsUseCase(
+                                        albumId = albumId
+                                    ).firstOrNull()?.let { albumWithMusics ->
+                                        addAll(albumWithMusics.musics)
+                                    }
+                                }
+                        }
+
+                        playbackManager.addMultipleMusicsToPlayNext(
+                            musics = musics,
+                        )
+
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                },
+                onRemoveFromPlayedList = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        selectedIds.forEach { albumId ->
                             getAlbumWithMusicsUseCase(
                                 albumId = albumId
                             ).firstOrNull()?.let { albumWithMusics ->
-                                playbackManager.addMultipleMusicsToPlayNext(
-                                    musics = albumWithMusics.musics,
+                                playbackManager.removeSongsFromPlayedPlaylist(
+                                    musicIds = albumWithMusics.musics.map { it.musicId },
                                 )
                             }
                         }

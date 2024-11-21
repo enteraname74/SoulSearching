@@ -104,6 +104,7 @@ class SelectedPlaylistViewModel(
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(

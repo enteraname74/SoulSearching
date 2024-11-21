@@ -122,16 +122,18 @@ internal class PlaybackListManager(
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
+        if (musics.isEmpty()) return
         /*
         If we have not initialized the player and if we have more than 2 songs, we need to do the following :
         - Add the first song
         - Add all the other songs in reverse.
          */
-        if ((_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) && musics.size > 2) {
+        if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
             addMusicToPlayNext(music = musics[0])
-            musics.subList(1, musics.size).reversed().forEach { music ->
-                println("MUSIC TO ADD: $music")
-                addMusicToPlayNext(music = music)
+            if (musics.size > 1) {
+                musics.subList(1, musics.size).reversed().forEach { music ->
+                    addMusicToPlayNext(music = music)
+                }
             }
         }
 

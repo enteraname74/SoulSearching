@@ -81,6 +81,15 @@ class ArtistBottomSheetDelegateImpl(
                         multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
                     }
+                },
+                onRemoveFromPlayedList = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.removeSongsFromPlayedPlaylist(
+                            musicIds = selectedArtist.musics.map { it.musicId },
+                        )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
                 }
             )
         )

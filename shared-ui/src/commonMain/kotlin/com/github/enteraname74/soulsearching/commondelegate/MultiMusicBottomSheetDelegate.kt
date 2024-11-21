@@ -1,9 +1,11 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
+import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
@@ -21,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.*
@@ -36,6 +39,7 @@ class MultiMusicBottomSheetDelegateImpl(
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
     private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
+    private val getMusicUseCase: GetMusicUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): MultiMusicBottomSheetDelegate {
@@ -176,6 +180,25 @@ class MultiMusicBottomSheetDelegateImpl(
                     showAddToPlaylistsBottomSheet(
                         selectedIds = selectedIds,
                     )
+                },
+                onPlayNext = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
+                        playbackManager.addMultipleMusicsToPlayNext(
+                            musics = selectedMusics,
+                        )
+                    }
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
+                },
+                onRemoveFromPlayedList = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.removeSongsFromPlayedPlaylist(
+                            musicIds = selectedIds,
+                        )
+                    }
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
                 },
                 musicBottomSheetState = musicBottomSheetState,
                 multiSelectionManagerImpl = multiSelectionManagerImpl,

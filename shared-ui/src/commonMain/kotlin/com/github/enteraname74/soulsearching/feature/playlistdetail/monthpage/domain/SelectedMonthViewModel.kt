@@ -97,6 +97,7 @@ class SelectedMonthViewModel(
             onModifyMusic = { _navigationState.value = SelectedMonthNavigationState.ToModifyMusic(it) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         multiMusicBottomSheetDelegateImpl.initDelegate(

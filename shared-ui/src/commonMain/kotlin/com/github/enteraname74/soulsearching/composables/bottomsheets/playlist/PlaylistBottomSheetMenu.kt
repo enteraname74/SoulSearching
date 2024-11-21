@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
@@ -21,6 +22,8 @@ fun PlaylistBottomSheetMenu(
     deleteAction : () -> Unit,
     quickAccessAction : () -> Unit,
     isInQuickAccess: Boolean,
+    isPlayedListEmpty: Boolean,
+    removeFromPlayedListAction: () -> Unit,
 ) {
 
     Column {
@@ -43,6 +46,13 @@ fun PlaylistBottomSheetMenu(
                 text = strings.playNext,
                 onClick = playNextAction,
             )
+            if (!isPlayedListEmpty) {
+                BottomSheetRow(
+                    icon = Icons.Rounded.PlaylistRemove,
+                    text = strings.removeFromPlayedList,
+                    onClick = removeFromPlayedListAction,
+                )
+            }
             if (!selectedPlaylist.playlist.isFavorite) {
                 BottomSheetRow(
                     icon = Icons.Rounded.Delete,

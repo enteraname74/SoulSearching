@@ -15,4 +15,7 @@ sealed interface PlaybackManagerState {
     ): PlaybackManagerState {
         val currentMusicDuration: Int = currentMusic.duration.toInt()
     }
+
+    fun isEmpty(): Boolean =
+        (this as? Data)?.playedList?.isEmpty() != false
 }

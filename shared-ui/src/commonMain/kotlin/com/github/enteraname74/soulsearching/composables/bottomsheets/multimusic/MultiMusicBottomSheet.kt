@@ -24,13 +24,13 @@ class MultiMusicBottomSheet(
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
     private val onDeleteAll: () -> Unit,
+    private val onPlayNext: () -> Unit,
+    private val onRemoveFromPlayedList: () -> Unit,
     private val onRemoveFromPlaylist: () -> Unit,
     private val onAddToPlaylist: () -> Unit,
     private val musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
 ): SoulBottomSheet, KoinComponent {
     private val playbackManager: PlaybackManager by inject()
-
-    private val getMusicUseCase: GetMusicUseCase by inject()
 
     @Composable
     override fun BottomSheet() {
@@ -53,24 +53,13 @@ class MultiMusicBottomSheet(
             deleteAll = onDeleteAll,
             removeFromPlaylistAction = onRemoveFromPlaylist,
             removeFromPlayedListAction = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    playbackManager.removeSongsFromPlayedPlaylist(
-                        musicIds = selectedIds,
-                    )
-                }
                 closeWithAnim()
-                multiSelectionManagerImpl?.clearMultiSelection()
+                onRemoveFromPlayedList()
             },
             addToPlaylistAction = onAddToPlaylist,
             playNextAction = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
-                    playbackManager.addMultipleMusicsToPlayNext(
-                        musics = selectedMusics,
-                    )
-                }
                 closeWithAnim()
-                multiSelectionManagerImpl?.clearMultiSelection()
+                onPlayNext()
             },
             isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
         )

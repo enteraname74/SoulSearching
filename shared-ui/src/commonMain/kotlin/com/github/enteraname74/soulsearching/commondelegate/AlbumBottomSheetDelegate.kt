@@ -73,12 +73,23 @@ class AlbumBottomSheetDelegateImpl(
                                 isInQuickAccess = !albumWithMusics.album.isInQuickAccess,
                             )
                         )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
                     }
                 },
                 onPlayNext = {
                     CoroutineScope(Dispatchers.IO).launch {
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = albumWithMusics.musics,
+                        )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                },
+                onRemoveFromPlayedList = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.removeSongsFromPlayedPlaylist(
+                            musicIds = albumWithMusics.musics.map { it.musicId },
                         )
                         multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
