@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
@@ -26,7 +28,7 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 /**
  * Represent the view of the player personalisation screen in the settings.
  */
-class SettingsPlayerPersonalisationScreen: Screen {
+class SettingsPlayerPersonalisationScreen : Screen {
 
     @Composable
     override fun Content() {
@@ -59,6 +61,14 @@ class SettingsPlayerPersonalisationScreen: Screen {
         val focusManager = LocalFocusManager.current
 
         SettingPage(
+            modifier = Modifier
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                },
             navigateBack = navigateBack,
             title = strings.managePlayerTitle,
         ) {

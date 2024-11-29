@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,7 +51,8 @@ class SettingsPlayerPersonalisationViewModel(
                 key = SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST.key,
                 value = max(1, intValue),
             )
-        }
+        },
+        getError = { strings.fieldCannotBeEmpty },
     )
 
     fun togglePlayerSwipe() {

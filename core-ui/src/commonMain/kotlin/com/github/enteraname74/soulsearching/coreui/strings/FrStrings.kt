@@ -213,6 +213,8 @@ object FrStrings : Strings {
 
     override val multipleSelection = "Sélection multiple"
 
+    override val fieldCannotBeEmpty = "Ce champ ne peut pas être vide"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

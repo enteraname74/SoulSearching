@@ -107,11 +107,18 @@ object UiConstants {
         val bodyMediumTitle: TextStyle = TextStyle(
             fontSize = 18.sp,
         )
+        val bodyLarge: TextStyle = TextStyle(
+            fontSize = 17.sp,
+        )
         val body: TextStyle = TextStyle(
             fontSize = 15.sp,
         )
         val bodySmall: TextStyle
             @Composable
             get() = MaterialTheme.typography.bodyMedium
+
+        val bodyVerySmall: TextStyle
+            @Composable
+            get() = MaterialTheme.typography.bodySmall
     }
 }

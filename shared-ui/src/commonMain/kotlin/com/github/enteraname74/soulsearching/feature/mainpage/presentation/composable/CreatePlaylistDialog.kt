@@ -1,16 +1,19 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 
 
 class CreatePlaylistDialog(
@@ -32,6 +35,8 @@ class CreatePlaylistDialog(
             title = strings.createPlaylistDialogTitle,
             content = {
                 SoulTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     value = playlistName,
                     onValueChange = { playlistName = it },
                     labelName = strings.playlistName,
@@ -41,7 +46,10 @@ class CreatePlaylistDialog(
                             focusManager.clearFocus()
                             onConfirm(playlistName.trim())
                         }
-                    )
+                    ),
+                    style = SoulTextFieldStyle.Unique,
+                    error = strings.fieldCannotBeEmpty,
+                    isInError = playlistName.isBlank(),
                 )
             }
         )

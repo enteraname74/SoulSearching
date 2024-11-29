@@ -211,6 +211,8 @@ object EnStrings : Strings {
 
     override val multipleSelection = "Multiple selection"
 
+    override val fieldCannotBeEmpty = "Field cannot be empty"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

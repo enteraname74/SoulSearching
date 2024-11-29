@@ -218,6 +218,8 @@ interface Strings {
 
     val multipleSelection: String
 
+    val fieldCannotBeEmpty: String
+
     /**
      * Shows a text indicating the number of musics.
      */

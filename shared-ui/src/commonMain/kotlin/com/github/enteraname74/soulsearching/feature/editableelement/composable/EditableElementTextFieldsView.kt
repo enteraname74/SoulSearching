@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -24,8 +25,8 @@ fun EditableElementTextFieldsView(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(4F),
-            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
+                .weight(5F),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             textFields.forEach { textField ->
                 textField.TextField(
