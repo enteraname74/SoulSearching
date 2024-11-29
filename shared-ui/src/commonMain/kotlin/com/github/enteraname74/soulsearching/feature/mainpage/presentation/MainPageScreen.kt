@@ -321,11 +321,24 @@ fun MainPageScreenView(
                                 }
                             )
                         }
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            tabs[it].screen()
+
+                        val windowSize = rememberWindowSize()
+
+                        if (windowSize == WindowSize.Large) {
+                            VerticalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                                userScrollEnabled = false,
+                            ) {
+                                tabs[it].screen()
+                            }
+                        } else {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+                                tabs[it].screen()
+                            }
                         }
                     }
                 }

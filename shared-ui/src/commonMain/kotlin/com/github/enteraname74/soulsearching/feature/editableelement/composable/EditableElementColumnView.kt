@@ -2,14 +2,12 @@ package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -25,21 +23,26 @@ fun EditableElementColumnView(
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
-            .padding(top = UiConstants.Spacing.medium)
+            .verticalScroll(rememberScrollState())
+            .background(SoulSearchingColorTheme.colorScheme.primary)
+            .padding(
+                top = UiConstants.Spacing.small,
+                start = UiConstants.Spacing.medium,
+                end = UiConstants.Spacing.medium,
+            )
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus()
                 })
             },
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
     ) {
         EditableElementCoverSection(
-            modifier = Modifier
-                .padding(UiConstants.Spacing.medium),
             title = coverSectionTitle,
             editableElement = editableElement,
             onSelectImage = onSelectImage,
@@ -47,12 +50,8 @@ fun EditableElementColumnView(
         EditableElementTextFieldsView(
             focusManager = focusManager,
             textFields = textFields,
-            Modifier
-                .fillMaxSize()
-                .weight(1F)
-                .clip(RoundedCornerShape(topStart = 50f, topEnd = 50f))
-                .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                .padding(UiConstants.Spacing.medium),
+            modifier = Modifier
+                .fillMaxWidth(0.9f),
         )
     }
 }
