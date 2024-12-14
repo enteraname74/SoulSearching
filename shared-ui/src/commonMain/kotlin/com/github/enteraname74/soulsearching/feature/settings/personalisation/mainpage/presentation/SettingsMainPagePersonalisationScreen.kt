@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -27,7 +28,7 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 /**
  * Represent the view of the main page personalisation screen in the settings.
  */
-class SettingsMainPagePersonalisationScreen: Screen {
+class SettingsMainPagePersonalisationScreen: Screen, SettingPage {
 
     @Composable
     override fun Content() {

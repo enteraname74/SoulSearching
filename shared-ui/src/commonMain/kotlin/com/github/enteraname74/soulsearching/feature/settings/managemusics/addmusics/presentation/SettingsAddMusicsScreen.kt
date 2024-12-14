@@ -7,6 +7,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.SettingsAddMusicsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.screens.SettingsAddMusicsDataScreen
@@ -18,7 +19,7 @@ import java.util.UUID
 /**
  * Represent the view of the add musics screen in the settings.
  */
-class SettingsAddMusicsScreen : Screen {
+class SettingsAddMusicsScreen : Screen, SettingPage {
     @Composable
     override fun Content() {
         val screenModel = koinScreenModel<SettingsAddMusicsViewModel>()

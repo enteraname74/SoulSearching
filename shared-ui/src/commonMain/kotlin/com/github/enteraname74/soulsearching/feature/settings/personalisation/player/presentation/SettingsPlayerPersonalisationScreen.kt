@@ -21,6 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationState
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -28,7 +29,7 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 /**
  * Represent the view of the player personalisation screen in the settings.
  */
-class SettingsPlayerPersonalisationScreen : Screen {
+class SettingsPlayerPersonalisationScreen : Screen, SettingPage {
 
     @Composable
     override fun Content() {

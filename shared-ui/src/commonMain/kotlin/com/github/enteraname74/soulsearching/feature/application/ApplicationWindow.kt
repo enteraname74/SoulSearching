@@ -34,6 +34,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainP
 import com.github.enteraname74.soulsearching.feature.migration.MigrationScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -158,7 +159,7 @@ class ApplicationWindow: Screen {
                         )
                     },
                     icon = Icons.Rounded.Settings,
-                    isSelected = generalNavigator?.lastItem is SettingsScreen
+                    isSelected = generalNavigator?.lastItem is SettingPage
                 )
             )
             tabs.forEachIndexed { index, tab ->

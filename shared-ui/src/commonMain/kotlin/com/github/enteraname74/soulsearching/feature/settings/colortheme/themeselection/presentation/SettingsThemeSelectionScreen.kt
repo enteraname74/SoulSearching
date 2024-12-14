@@ -14,12 +14,13 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain.SettingsThemeSelectionViewModel
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.composable.SettingsThemeItem
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import com.github.enteraname74.soulsearching.theme.DefaultThemeSettings
 
-class SettingsThemeSelectionScreen: Screen {
+class SettingsThemeSelectionScreen: Screen, SettingPage {
 
     @Composable
     override fun Content() {

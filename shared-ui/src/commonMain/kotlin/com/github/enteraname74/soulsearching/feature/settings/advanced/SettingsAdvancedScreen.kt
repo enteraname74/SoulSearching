@@ -21,9 +21,10 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
-class SettingsAdvancedScreen: Screen {
+class SettingsAdvancedScreen: Screen, SettingPage {
 
     @Composable
     override fun Content() {

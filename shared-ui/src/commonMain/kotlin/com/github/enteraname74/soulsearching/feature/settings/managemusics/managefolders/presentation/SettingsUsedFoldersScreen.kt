@@ -23,6 +23,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
@@ -30,7 +31,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.manag
 /**
  * Represent the view of the used folders in the settings.
  */
-class SettingsUsedFoldersScreen : Screen {
+class SettingsUsedFoldersScreen : Screen, SettingPage {
     @Composable
     override fun Content() {
         val screenModel = koinScreenModel<SettingsAllFoldersViewModel>()
