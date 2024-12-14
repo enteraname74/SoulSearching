@@ -92,8 +92,6 @@ class SoulSearchingNotificationBelowAndroid13(
         return notificationBuilder
             .clearActions()
             .soulNotificationBuilder(state)
-            .setContentIntent(activityPendingIntent)
-            .setDeleteIntent(deleteNotificationIntent)
             .addAction(R.drawable.ic_skip_previous,"previous",previousMusicIntent)
             .addAction(pausePlayIcon,"pausePlay",pausePlayIntent)
             .addAction(R.drawable.ic_skip_next,"next",nextMusicIntent)
