@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.musicfetching
 
 import com.github.enteraname74.domain.feature.multipleartistsmanager.MultipleArtistManager
-import com.github.enteraname74.domain.feature.multipleartistsmanager.MultipleArtistManagerCache
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
