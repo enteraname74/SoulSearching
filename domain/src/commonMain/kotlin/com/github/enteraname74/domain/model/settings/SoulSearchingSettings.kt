@@ -127,6 +127,10 @@ object SoulSearchingSettingsKeys {
             key = "IS_MINIMISED_SONG_PROGRESSION_SHOWN",
             defaultValue = false,
         )
+        val PLAYER_VOLUME = settingElementOf(
+            key = "PLAYER_VOLUME",
+            defaultValue = 1f,
+        )
     }
 
     object ColorTheme {

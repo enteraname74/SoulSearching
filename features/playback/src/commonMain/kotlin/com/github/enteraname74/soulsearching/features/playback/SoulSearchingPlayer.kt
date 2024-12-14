@@ -76,4 +76,9 @@ interface SoulSearchingPlayer {
      * Returns 0 if no song is being played.
      */
     fun getMusicDuration(): Int
+
+    /**
+     * Set the volume of the player between 0.1 and 1.0.
+     */
+    fun setPlayerVolume(volume: Float)
 }

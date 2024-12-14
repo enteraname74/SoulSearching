@@ -153,6 +153,13 @@ class SoulSearchingDesktopPlayerImpl(
             0
         }
 
+    override fun setPlayerVolume(volume: Float) {
+
+        // On desktop impl, the volume is set from 0 to 200 ,but we will keep the max at 100.
+        val fixedVolume: Int = (volume * 100).toInt().coerceIn(1, 100)
+        player.audio().setVolume(fixedVolume)
+    }
+
     /**
      * Returns the integer or 0 if it is negative.
      */

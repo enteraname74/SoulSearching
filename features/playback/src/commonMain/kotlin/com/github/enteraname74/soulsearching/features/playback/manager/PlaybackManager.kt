@@ -213,13 +213,20 @@ abstract class PlaybackManager : KoinComponent {
      */
     suspend fun previous() {
         (playbackListManager.state.first() as? PlaybackListState.Data)?.let { dataState ->
-            println("Enabled? ${settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED)}")
             if (settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD) {
                 setAndPlayMusic(music = dataState.currentMusic)
             } else {
                 playbackListManager.getPreviousMusic()?.let {
                     setAndPlayMusic(it)
                 }
+            }
+        }
+    }
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME).collectLatest { volume ->
+                player.setPlayerVolume(volume)
             }
         }
     }

@@ -213,6 +213,8 @@ object EnStrings : Strings {
 
     override val fieldCannotBeEmpty = "Field cannot be empty"
 
+    override val playerVolume = "Player volume"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

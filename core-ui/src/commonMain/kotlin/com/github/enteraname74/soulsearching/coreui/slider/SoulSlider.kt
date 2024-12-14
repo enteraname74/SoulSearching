@@ -24,6 +24,7 @@ fun SoulSlider(
     value: Float,
     onThumbDragged: (tmpPosition: Float?) -> Unit,
     onValueChanged: (newValue: Float) -> Unit,
+    steps: Int = 0,
 ) {
     val fixedMin = max(0f, minValue)
     val fixedMax = max(maxValue, 0f)
@@ -33,6 +34,8 @@ fun SoulSlider(
         thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
+        activeTickColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+        inactiveTickColor = SoulSearchingColorTheme.colorScheme.secondary,
     )
 
 
@@ -54,7 +57,7 @@ fun SoulSlider(
             onThumbDragged(null)
         },
         colors = sliderColors,
-        valueRange = 0f..fixedMax,
+        valueRange = fixedMin..fixedMax,
         interactionSource = interactionSource,
         thumb = {
             SliderDefaults.Thumb(
@@ -70,6 +73,7 @@ fun SoulSlider(
                 colors = sliderColors
             )
         },
+        steps = steps,
         track = {
             SliderDefaults.Track(
                 sliderState = it,

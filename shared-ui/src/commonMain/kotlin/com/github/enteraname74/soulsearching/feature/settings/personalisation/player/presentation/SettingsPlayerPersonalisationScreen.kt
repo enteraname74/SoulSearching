@@ -1,13 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -18,6 +17,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
+import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -45,6 +45,7 @@ class SettingsPlayerPersonalisationScreen : Screen {
             soulMixTextField = screenModel.soulMixTextField,
             toggleRewind = screenModel::toggleRewind,
             toggleMinimisedProgression = screenModel::toggleMinimisedProgression,
+            setVolumePlayer = screenModel::setVolumePlayer,
         )
     }
 
@@ -55,6 +56,7 @@ class SettingsPlayerPersonalisationScreen : Screen {
         togglePlayerSwipe: () -> Unit,
         toggleRewind: () -> Unit,
         toggleMinimisedProgression: () -> Unit,
+        setVolumePlayer: (Float) -> Unit,
         soulMixTextField: SoulTextFieldHolder
     ) {
 
@@ -114,7 +116,8 @@ class SettingsPlayerPersonalisationScreen : Screen {
                         .padding(
                             horizontal = UiConstants.Spacing.large,
                             vertical = UiConstants.Spacing.veryLarge,
-                        )
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
                 ) {
                     Text(
                         text = strings.soulMixSettingsTitle,
@@ -122,6 +125,52 @@ class SettingsPlayerPersonalisationScreen : Screen {
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     )
                     soulMixTextField.TextField(focusManager = focusManager)
+                }
+            }
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = UiConstants.Spacing.large,
+                            vertical = UiConstants.Spacing.veryLarge,
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
+                ) {
+
+                    val uiVolume = state.playerVolume * 10
+
+                    Text(
+                        text = strings.playerVolume,
+                        style = UiConstants.Typography.bodyTitle,
+                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            UiConstants.Spacing.small,
+                        )
+                    ) {
+                        Text(
+                            text = "${uiVolume.toInt()}",
+                            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                            style = UiConstants.Typography.body,
+                        )
+                        SoulSlider(
+                            minValue = 1f,
+                            maxValue = 10f,
+                            steps = 8,
+                            value = uiVolume,
+                            onThumbDragged = { playerVolume ->
+                                playerVolume?.let {
+                                    val fixedVolume = (it / 10).coerceIn(0.1f, 1f)
+                                    setVolumePlayer(fixedVolume)
+                                }
+                            },
+                            onValueChanged = {
+                                // update done on drag
+                            }
+                        )
+                    }
                 }
             }
             item {

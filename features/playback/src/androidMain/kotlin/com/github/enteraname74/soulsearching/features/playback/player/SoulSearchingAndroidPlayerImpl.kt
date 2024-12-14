@@ -55,7 +55,8 @@ class SoulSearchingAndroidPlayerImpl(
         try {
             player.stop()
             player.reset()
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
         if (File(music.path).exists()) {
             player.setDataSource(music.path)
         }
@@ -176,8 +177,13 @@ class SoulSearchingAndroidPlayerImpl(
                     player.start()
                     _state.value = true
                 }
+
                 else -> {}
             }
         }
+    }
+
+    override fun setPlayerVolume(volume: Float) {
+        player.setVolume(volume,volume)
     }
 }

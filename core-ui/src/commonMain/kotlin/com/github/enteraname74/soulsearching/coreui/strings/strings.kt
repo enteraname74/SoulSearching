@@ -220,6 +220,8 @@ interface Strings {
 
     val fieldCannotBeEmpty: String
 
+    val playerVolume: String
+
     /**
      * Shows a text indicating the number of musics.
      */

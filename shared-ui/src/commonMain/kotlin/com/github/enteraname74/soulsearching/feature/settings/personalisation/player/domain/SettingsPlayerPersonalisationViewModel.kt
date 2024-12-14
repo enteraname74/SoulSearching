@@ -21,12 +21,13 @@ class SettingsPlayerPersonalisationViewModel(
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN),
-    ) { isPlayerSwipeEnabled, isRewindEnabled, isMinimisedSongProgressionEnabled ->
-        println("REWIND? $isRewindEnabled")
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.PLAYER_VOLUME),
+    ) { isPlayerSwipeEnabled, isRewindEnabled, isMinimisedSongProgressionEnabled, playerVolume ->
         SettingsPlayerPersonalisationState(
             isPlayerSwipeEnabled = isPlayerSwipeEnabled,
             isRewindEnabled = isRewindEnabled,
             isMinimisedSongProgressionShown = isMinimisedSongProgressionEnabled,
+            playerVolume = playerVolume,
         )
     }.stateIn(
         scope = screenModelScope,
@@ -36,6 +37,7 @@ class SettingsPlayerPersonalisationViewModel(
             isRewindEnabled = SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED.defaultValue,
             isMinimisedSongProgressionShown =
             SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.defaultValue,
+            playerVolume = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.defaultValue,
         )
     )
 
@@ -73,6 +75,13 @@ class SettingsPlayerPersonalisationViewModel(
         settings.set(
             key = SoulSearchingSettingsKeys.Player.IS_MINIMISED_SONG_PROGRESSION_SHOWN.key,
             value = !state.value.isMinimisedSongProgressionShown,
+        )
+    }
+
+    fun setVolumePlayer(newVolume: Float) {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.PLAYER_VOLUME.key,
+            value = newVolume,
         )
     }
 
