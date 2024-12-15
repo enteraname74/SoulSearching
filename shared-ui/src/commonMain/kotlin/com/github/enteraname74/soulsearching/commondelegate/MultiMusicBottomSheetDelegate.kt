@@ -125,7 +125,8 @@ class MultiMusicBottomSheetDelegateImpl(
                             selectedPlaylists = selectedPlaylists,
                         )
                     }
-
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
                 },
                 playlistsWithMusics = allPlaylists.value,
             )
@@ -147,6 +148,7 @@ class MultiMusicBottomSheetDelegateImpl(
                             )
                         }
                     }
+                    multiSelectionManagerImpl?.clearMultiSelection()
                     setDialogState(null)
                     // We make sure to close the bottom sheet after removing the selected music from the playlist.
                     setBottomSheetState(null)
