@@ -17,7 +17,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.FETCHED_MUSICS_SPACER_CONTENT_TYPE
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable.MusicSelectableComposable
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.SelectableMusicItem
+import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import java.util.UUID
 
 @Composable

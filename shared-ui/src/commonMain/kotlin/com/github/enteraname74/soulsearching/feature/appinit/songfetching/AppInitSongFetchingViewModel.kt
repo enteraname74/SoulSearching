@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

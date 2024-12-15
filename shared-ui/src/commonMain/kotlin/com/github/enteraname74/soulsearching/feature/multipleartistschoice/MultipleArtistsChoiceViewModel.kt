@@ -2,11 +2,12 @@ package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +36,9 @@ class MultipleArtistsChoiceViewModel(
     )
     val navigationState: StateFlow<MultipleArtistsChoiceNavigationState> = _navigationState.asStateFlow()
 
-    fun loadArtistsChoices() {
+    fun loadArtistsChoices(
+        multipleArtists: List<Artist>
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             artists.value = musicFetcher.getPotentialMultipleArtist().map {
                 ArtistChoice(artist = it)

@@ -6,8 +6,8 @@ import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.MusicFetcher
-import com.github.enteraname74.soulsearching.features.filemanager.musicfetching.SelectableMusicItem
+import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

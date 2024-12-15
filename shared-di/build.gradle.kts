@@ -26,6 +26,7 @@ kotlin {
             implementation(project(":repository"))
             implementation(project(":features:playback"))
             implementation(project(":features:filemanager"))
+            implementation(project(":features:musicmanager"))
         }
         androidMain.dependencies {
             implementation(project(":local-android"))

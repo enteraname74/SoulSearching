@@ -52,7 +52,7 @@ class AppInitSongFetchingScreen : Screen {
                     /*no-op*/
                 }
                 AppInitSongFetchingNavigationState.ToMultipleArtists -> {
-                    navigator.replaceAll(MultipleArtistsChoiceScreen())
+                    navigator.replaceAll(MultipleArtistsChoiceScreen(emptyList()))
                     screenModel.consumeNavigation()
                 }
             }

@@ -13,6 +13,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
@@ -28,7 +29,9 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
 
-class MultipleArtistsChoiceScreen: Screen {
+class MultipleArtistsChoiceScreen(
+    duplicateArtists: List<Artist>
+): Screen {
     @Composable
     override fun Content() {
         val screenModel: MultipleArtistsChoiceViewModel = koinScreenModel()
@@ -38,7 +41,7 @@ class MultipleArtistsChoiceScreen: Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchInit {
-            screenModel.loadArtistsChoices()
+            screenModel.loadArtistsChoices(emptyList())
         }
 
         LaunchedEffect(navigationState) {
