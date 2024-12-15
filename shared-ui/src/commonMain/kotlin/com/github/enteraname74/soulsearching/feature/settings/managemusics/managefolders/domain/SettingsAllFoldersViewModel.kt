@@ -42,7 +42,7 @@ class SettingsAllFoldersViewModel(
     ) { isFetchingFolders, folders ->
         when {
             isFetchingFolders -> FolderState.Fetching
-            else -> FolderState.Data(folders)
+            else -> FolderState.Data(folders.sortedBy { it.folderPath })
         }
     }.stateIn(
         scope = screenModelScope,
