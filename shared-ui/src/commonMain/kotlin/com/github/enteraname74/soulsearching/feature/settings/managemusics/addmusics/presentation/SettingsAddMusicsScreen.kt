@@ -38,8 +38,6 @@ class SettingsAddMusicsScreen(
         val state: SettingsAddMusicsState by screenModel.state.collectAsState()
         val navigationState: SettingsAddMusicsNavigationState by screenModel.navigationState.collectAsState()
 
-        println("STATE -- $state")
-
         LaunchInit {
             if (shouldShowSaveScreen) {
                 screenModel.showSaveScreen()
@@ -95,6 +93,7 @@ fun SettingsAddMusicsScreenView(
                     fetchedMusics = state.fetchedMusics,
                     toggleMusicSelectedState = toggleMusicSelectedState,
                     saveSelectedSongs = saveSelectedSongs,
+                    fetchSongs = fetchSongs,
                 )
             }
 

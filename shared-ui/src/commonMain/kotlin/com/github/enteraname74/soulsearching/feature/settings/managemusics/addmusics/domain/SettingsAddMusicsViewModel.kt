@@ -124,7 +124,6 @@ class SettingsAddMusicsViewModel(
     }
 
     fun saveSelectedSongs() {
-        println("State? ${state.value}")
         val fetchedMusics = (state.value as? SettingsAddMusicsState.Data)?.fetchedMusics ?: return
         val selectedMusics = fetchedMusics
             .filter { it.isSelected }
@@ -150,7 +149,6 @@ class SettingsAddMusicsViewModel(
                 optimizedCachedData = musicFetcher.optimizedCachedData,
             )
             if (multipleArtistManager.doMusicsHaveMultipleArtists(musics = selectedMusics)) {
-                println("THERE")
                 _navigationState.value = SettingsAddMusicsNavigationState.ToMultipleArtists(
                     multipleArtists = getMultipleArtists(selectedMusics)
                 )

@@ -5,11 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DownloadDone
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
+import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -23,6 +27,7 @@ import java.util.UUID
 @Composable
 fun SettingsAddMusicsDataScreen(
     navigateBack: () -> Unit,
+    fetchSongs: () -> Unit,
     fetchedMusics: List<SelectableMusicItem>,
     toggleMusicSelectedState: (musicId: UUID) -> Unit,
     saveSelectedSongs: () -> Unit
@@ -33,20 +38,16 @@ fun SettingsAddMusicsDataScreen(
     ) {
 
         if (fetchedMusics.isEmpty()) {
-            SoulTopBar(
-                title = strings.addMusicsTitle,
+            SoulTemplateScreen(
                 leftAction = TopBarNavigationAction(onClick = navigateBack),
+                icon = Icons.Rounded.DownloadDone,
+                title = strings.addMusicsTitle,
+                text = strings.noNewMusics,
+                buttonSpec = TemplateScreenButtonSpec(
+                    text = strings.searchForNewSongs,
+                    onClick = fetchSongs,
+                ),
             )
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = strings.noNewMusics,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary
-                )
-            }
         } else {
             SoulTopBar(
                 title = strings.addMusicsTitle,
