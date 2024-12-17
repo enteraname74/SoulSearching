@@ -8,17 +8,22 @@ import java.util.UUID
  * Multiple artist are Artist with multiple artists found in it (names separated by a comma).
  */
 abstract class MultipleArtistManager {
-    protected abstract suspend fun getAlbumsOfMultipleArtist(artistName: String): List<Album>
+    protected abstract suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album>
     protected abstract suspend fun getArtistFromName(artistName: String): Artist?
     protected abstract suspend fun createNewArtist(artistName: String): Artist
+
+    /**
+     * Should only delete the Artist and not its songs, nor its albums
+     * (each of the mentioned elements are managed by others functions)
+     */
     protected abstract suspend fun deleteArtist(
         artist: Artist,
         musicIdsOfInitialArtist: List<UUID>,
         albumIdsOfInitialArtist: List<UUID>,
     )
 
-    protected abstract suspend fun getMusicIdsOfArtist(artistName: String): List<UUID>
-    protected abstract suspend fun getAlbumIdsOfArtist(artistName: String): List<UUID>
+    protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
+    protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
 
     protected abstract suspend fun linkMusicToArtist(
         musicId: UUID,
@@ -58,7 +63,7 @@ abstract class MultipleArtistManager {
     ) {
 
         val albumsOfMultipleArtist: List<Album> = getAlbumsOfMultipleArtist(
-            artistName = multipleArtist.artistName,
+            artist = multipleArtist,
         )
 
         albumsOfMultipleArtist.forEach { album ->
@@ -82,7 +87,6 @@ abstract class MultipleArtistManager {
 
     /**
      * Divide a multiple artist into separated artists and link songs of the multiple artist to each of them.
-     *
      */
     private suspend fun divideArtistAndLinkSongsToThem(
         musicIdsOfInitialArtist: List<UUID>,
@@ -117,10 +121,10 @@ abstract class MultipleArtistManager {
         // We update the concerned cached artists
         artistsToDivide.forEach { multipleArtist ->
             val musicIdsOfInitialArtist: List<UUID> = getMusicIdsOfArtist(
-                artistName = multipleArtist.artistName,
+                artist = multipleArtist,
             )
             val albumIdsOfInitialArtist: List<UUID> = getAlbumIdsOfArtist(
-                artistName = multipleArtist.artistName,
+                artist = multipleArtist,
             )
 
             val allArtistsName: List<String> = multipleArtist.getMultipleArtists()

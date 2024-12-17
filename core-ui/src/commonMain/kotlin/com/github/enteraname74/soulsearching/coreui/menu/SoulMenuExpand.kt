@@ -25,6 +25,7 @@ fun SoulMenuExpand(
     title: String,
     subTitle: String,
     clickAction: () -> Unit,
+    modifier: Modifier = Modifier,
     clickEnabled: Boolean = true,
     isExpanded: Boolean,
     padding: Dp = UiConstants.Spacing.veryLarge,
@@ -36,7 +37,7 @@ fun SoulMenuExpand(
     val rotation by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = containerColor,
                 shape = RoundedCornerShape(size = RoundedCornerShapeValue)

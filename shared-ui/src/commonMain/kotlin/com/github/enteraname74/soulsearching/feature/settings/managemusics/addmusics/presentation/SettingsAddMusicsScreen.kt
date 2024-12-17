@@ -38,6 +38,8 @@ class SettingsAddMusicsScreen(
         val state: SettingsAddMusicsState by screenModel.state.collectAsState()
         val navigationState: SettingsAddMusicsNavigationState by screenModel.navigationState.collectAsState()
 
+        println("STATE -- $state")
+
         LaunchInit {
             if (shouldShowSaveScreen) {
                 screenModel.showSaveScreen()
@@ -55,9 +57,11 @@ class SettingsAddMusicsScreen(
                 is SettingsAddMusicsNavigationState.ToMultipleArtists -> {
                     navigator.safePush(
                         MultipleArtistsChoiceScreen(
-                            multipleArtists = (navigationState as SettingsAddMusicsNavigationState.ToMultipleArtists)
-                                .multipleArtists,
-                            mode = MultipleArtistsChoiceMode.NewSongs,
+                            mode = MultipleArtistsChoiceMode.NewSongs(
+                                multipleArtists =
+                                (navigationState as SettingsAddMusicsNavigationState.ToMultipleArtists)
+                                    .multipleArtists
+                            ),
                         )
                     )
                     screenModel.consumeNavigation()

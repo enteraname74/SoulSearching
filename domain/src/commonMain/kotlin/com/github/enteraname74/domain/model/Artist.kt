@@ -20,7 +20,4 @@ data class Artist(
 
     fun getMultipleArtists(): List<String> =
         artistName.split(",").map { it.trim() }
-
-    fun getFirstArtist(): String =
-        artistName.split(",").first()
 }

@@ -135,6 +135,10 @@ object FrStrings : Strings {
     override val deletePlaylistsCovers = "Supprimer les images des playlists"
     override val reloadAlbumsCovers = "Recharger les images des albums"
     override val reloadArtistsCovers = "Recharger les images des artistes"
+
+    override val splitMultipleArtistsTitle = "Séparer les artistes"
+    override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
+
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
     override val modifyMusicFileTitle = "Modifier les fichiers sur l'appareil"
@@ -210,6 +214,7 @@ object FrStrings : Strings {
         "Des musiques avec plusieurs artistes ont été trouvées par l'application. " +
                 "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
     override val multipleArtistsSelectionTitle = "Artistes sélectionnés à diviser :"
+    override val noMultipleArtists = "Aucun artiste à diviser"
 
     override val multipleSelection = "Sélection multiple"
 

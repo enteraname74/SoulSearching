@@ -146,6 +146,10 @@ interface Strings {
     val deletePlaylistsCovers: String
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
+
+    val splitMultipleArtistsTitle: String
+    val splitMultipleArtistsText: String
+
     val manageMusicsTitle: String
     val manageMusicsText: String
     val modifyMusicFileTitle: String
@@ -215,6 +219,7 @@ interface Strings {
     val multipleArtistsTitle: String
     val multipleArtistsText: String
     val multipleArtistsSelectionTitle: String
+    val noMultipleArtists: String
 
     val multipleSelection: String
 

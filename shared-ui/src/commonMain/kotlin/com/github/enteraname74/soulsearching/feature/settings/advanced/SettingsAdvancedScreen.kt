@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,10 +19,14 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpand
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceMode
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceScreen
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
@@ -41,6 +47,13 @@ class SettingsAdvancedScreen: Screen, SettingPage {
             toggleAlbumsCovers = screenModel::toggleReloadAlbumsCovers,
             toggleMusicsCovers = screenModel::toggleReloadMusicsCovers,
             reloadImages = screenModel::reloadImages,
+            toMultipleArtists = {
+                navigator.safePush(
+                    MultipleArtistsChoiceScreen(
+                        mode = MultipleArtistsChoiceMode.GeneralCheck,
+                    )
+                )
+            }
         )
     }
 
@@ -49,6 +62,7 @@ class SettingsAdvancedScreen: Screen, SettingPage {
         state: SettingsAdvancedState,
         onToggleExpandReloadImage: () -> Unit,
         navigateBack: () -> Unit,
+        toMultipleArtists: () -> Unit,
         toggleMusicsCovers: () -> Unit,
         togglePlaylistsCovers: () -> Unit,
         toggleAlbumsCovers: () -> Unit,
@@ -58,12 +72,13 @@ class SettingsAdvancedScreen: Screen, SettingPage {
         SettingPage(
             navigateBack = navigateBack,
             title = strings.advancedSettingsTitle,
-            contentPadding = PaddingValues(
-                all = UiConstants.Spacing.large,
-            )
         ) {
             item {
                 SoulMenuExpand(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = UiConstants.Spacing.large,
+                        ),
                     title = strings.reloadCoversTitle,
                     subTitle = strings.reloadCoversText,
                     clickAction = onToggleExpandReloadImage,
@@ -78,6 +93,14 @@ class SettingsAdvancedScreen: Screen, SettingPage {
                         state = state,
                     )
                 }
+            }
+            item {
+                SoulMenuElement(
+                    title = strings.splitMultipleArtistsTitle,
+                    subTitle = strings.splitMultipleArtistsText,
+                    icon = Icons.Rounded.Groups,
+                    onClick = toMultipleArtists,
+                )
             }
         }
     }

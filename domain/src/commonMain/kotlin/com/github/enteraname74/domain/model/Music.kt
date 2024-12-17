@@ -23,5 +23,5 @@ data class Music(
 ): QuickAccessible {
     val informationText: String = "$artist | $album"
 
-    fun hasPotentialMultipleArtists(): Boolean = artist.split(",").isNotEmpty()
+    fun hasPotentialMultipleArtists(): Boolean = artist.split(",").size > 1
 }

@@ -54,10 +54,7 @@ class AppInitSongFetchingScreen : Screen {
 
                 AppInitSongFetchingNavigationState.ToMultipleArtists -> {
                     navigator.replaceAll(
-                        MultipleArtistsChoiceScreen(
-                            multipleArtists = emptyList(),
-                            mode = MultipleArtistsChoiceMode.InitialFetch,
-                        )
+                        MultipleArtistsChoiceScreen(mode = MultipleArtistsChoiceMode.InitialFetch)
                     )
                     screenModel.consumeNavigation()
                 }

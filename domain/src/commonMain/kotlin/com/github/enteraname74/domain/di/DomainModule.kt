@@ -105,6 +105,7 @@ val domainModule = module {
     // MusicAlbum
     singleOf(::GetAlbumIdFromMusicIdUseCase)
     singleOf(::GetAllMusicAlbumUseCase)
+    singleOf(::UpdateMusicsAlbumUseCase)
     singleOf(::UpsertAllMusicAlbumUseCase)
     singleOf(::UpsertMusicIntoAlbumUseCase)
 

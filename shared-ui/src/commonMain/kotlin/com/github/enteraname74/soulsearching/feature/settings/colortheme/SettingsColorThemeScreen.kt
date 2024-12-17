@@ -25,7 +25,6 @@ import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_main
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * Represent the view of the color theme screen.
@@ -56,7 +55,6 @@ class SettingsColorThemeScreen: Screen, SettingPage {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SettingsColorThemeScreenView(
     navigateBack: () -> Unit,

@@ -9,6 +9,7 @@ sealed interface SettingsAddMusicsState {
     data object Fetching: SettingsAddMusicsState
     data class SavingSongs(
         val progress: Float,
+        val fetchedMusics: List<SelectableMusicItem>,
     ): SettingsAddMusicsState
     data object SongsSaved: SettingsAddMusicsState
 

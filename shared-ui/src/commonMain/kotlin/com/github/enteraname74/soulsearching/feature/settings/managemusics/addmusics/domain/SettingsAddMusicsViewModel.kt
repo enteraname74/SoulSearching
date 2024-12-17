@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
@@ -16,10 +17,7 @@ import com.github.enteraname74.soulsearching.features.musicmanager.multipleartis
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -28,11 +26,32 @@ class SettingsAddMusicsViewModel(
     private val getHiddenFoldersPathUseCase: GetHiddenFoldersPathUseCase,
     private val getAllMusicUseCase: GetAllMusicUseCase,
     private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase,
+    private val multipleArtistListener: MultipleArtistListener,
 ) : ScreenModel {
     private val _state: MutableStateFlow<SettingsAddMusicsState> = MutableStateFlow(
         SettingsAddMusicsState.Fetching
     )
-    val state: StateFlow<SettingsAddMusicsState> = _state.asStateFlow()
+    val state: StateFlow<SettingsAddMusicsState> = combine(
+        _state,
+        multipleArtistListener.state,
+    ) { state, multipleArtistListenerState ->
+        when (state) {
+            is SettingsAddMusicsState.Data -> state
+            SettingsAddMusicsState.Fetching -> state
+            is SettingsAddMusicsState.SavingSongs -> {
+                when(multipleArtistListenerState) {
+                    MultipleArtistHandlingStep.Idle -> state
+                    MultipleArtistHandlingStep.UserChoice -> SettingsAddMusicsState.Data(state.fetchedMusics)
+                    MultipleArtistHandlingStep.SongsSaved -> SettingsAddMusicsState.SongsSaved
+                }
+            }
+            SettingsAddMusicsState.SongsSaved -> state
+        }
+    }.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = SettingsAddMusicsState.Fetching
+    )
 
     private val _navigationState: MutableStateFlow<SettingsAddMusicsNavigationState> = MutableStateFlow(
         SettingsAddMusicsNavigationState.Idle
@@ -62,6 +81,8 @@ class SettingsAddMusicsViewModel(
      */
     fun fetchSongs() {
         CoroutineScope(Dispatchers.IO).launch {
+            multipleArtistListener.consumeStep()
+
             val hiddenFoldersPaths: List<String> = getHiddenFoldersPathUseCase()
             val allMusicsPaths: List<String> = getAllMusicUseCase().first().map { it.path }
 
@@ -103,21 +124,24 @@ class SettingsAddMusicsViewModel(
     }
 
     fun saveSelectedSongs() {
-        val fetchedMusics = (_state.value as? SettingsAddMusicsState.Data)?.fetchedMusics ?: return
+        println("State? ${state.value}")
+        val fetchedMusics = (state.value as? SettingsAddMusicsState.Data)?.fetchedMusics ?: return
         val selectedMusics = fetchedMusics
             .filter { it.isSelected }
             .map { it.music }
 
         CoroutineScope(Dispatchers.IO).launch {
             _state.value = SettingsAddMusicsState.SavingSongs(
-                progress = 0f
+                progress = 0f,
+                fetchedMusics = fetchedMusics,
             )
 
             musicFetcher.cacheSelectedMusics(
                 musics = selectedMusics,
                 onSongSaved = { progress ->
                     _state.value = SettingsAddMusicsState.SavingSongs(
-                        progress = progress.coerceForProgressBar()
+                        progress = progress.coerceForProgressBar(),
+                        fetchedMusics = fetchedMusics,
                     )
                 },
             )
@@ -126,9 +150,7 @@ class SettingsAddMusicsViewModel(
                 optimizedCachedData = musicFetcher.optimizedCachedData,
             )
             if (multipleArtistManager.doMusicsHaveMultipleArtists(musics = selectedMusics)) {
-                _state.value = SettingsAddMusicsState.Data(
-                    fetchedMusics = fetchedMusics,
-                )
+                println("THERE")
                 _navigationState.value = SettingsAddMusicsNavigationState.ToMultipleArtists(
                     multipleArtists = getMultipleArtists(selectedMusics)
                 )

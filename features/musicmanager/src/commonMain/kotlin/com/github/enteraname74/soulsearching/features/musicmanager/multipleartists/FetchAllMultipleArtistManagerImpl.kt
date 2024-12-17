@@ -8,8 +8,8 @@ import java.util.*
 open class FetchAllMultipleArtistManagerImpl(
     private val optimizedCachedData: OptimizedCachedData
 ): MultipleArtistManager() {
-    override suspend fun getAlbumsOfMultipleArtist(artistName: String): List<Album> =
-        optimizedCachedData.albumsByInfo.filter { (key, _) -> key.artist == artistName }.values.toList()
+    override suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album> =
+        optimizedCachedData.albumsByInfo.filter { (key, _) -> key.artist == artist.artistName }.values.toList()
 
     override suspend fun getArtistFromName(artistName: String): Artist? =
         optimizedCachedData.artistsByName[artistName]
@@ -37,14 +37,14 @@ open class FetchAllMultipleArtistManagerImpl(
         }
     }
 
-    override suspend fun getMusicIdsOfArtist(artistName: String): List<UUID> =
+    override suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID> =
         optimizedCachedData.musicsByPath
-            .filter{ it.value.artist == artistName }
+            .filter{ it.value.artist == artist.artistName }
             .map { it.value.musicId }
 
-    override suspend fun getAlbumIdsOfArtist(artistName: String): List<UUID> =
+    override suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID> =
         optimizedCachedData.albumsByInfo
-            .filter { it.key.artist == artistName }
+            .filter { it.key.artist == artist.artistName }
             .map { it.value.albumId }
 
     override suspend fun linkMusicToArtist(musicId: UUID, artistId: UUID) {

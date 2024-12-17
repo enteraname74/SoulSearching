@@ -133,6 +133,10 @@ object EnStrings : Strings {
     override val deletePlaylistsCovers = "Delete playlists covers"
     override val reloadAlbumsCovers = "Reload albums covers"
     override val reloadArtistsCovers = "Reload artists covers"
+
+    override val splitMultipleArtistsTitle = "Split artists"
+    override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
+
     override val manageMusicsTitle = "Manage songs"
     override val manageMusicsText = "Modify and add new songs, manage used folders"
     override val modifyMusicFileTitle = "Modify files on the device"
@@ -208,6 +212,7 @@ object EnStrings : Strings {
         "Songs with multiple artists were found by the application. " +
                 "Choose whether you want to split these artists into multiple ones or keep them as one artist."
     override val multipleArtistsSelectionTitle = "Selected artists to split:"
+    override val noMultipleArtists = "No artists to split"
 
     override val multipleSelection = "Multiple selection"
 

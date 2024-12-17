@@ -7,9 +7,12 @@ import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistHandlingStep
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistListener
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
+import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.RepositoryMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +23,19 @@ import kotlinx.coroutines.launch
 class MultipleArtistsChoiceViewModel(
     private val musicFetcher: MusicFetcher,
     private val loadingManager: LoadingManager,
+    private val multipleArtistListener: MultipleArtistListener,
 ): ScreenModel {
     private val artists: MutableStateFlow<List<ArtistChoice>?> = MutableStateFlow(null)
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<MultipleArtistChoiceState> = artists.mapLatest { artists ->
         when {
-            artists != null -> MultipleArtistChoiceState.UserAction(artists)
+            artists != null -> {
+                if (artists.isEmpty()) {
+                    MultipleArtistChoiceState.NoMultipleArtists
+                } else {
+                    MultipleArtistChoiceState.UserAction(artists)
+                }
+            }
             else -> MultipleArtistChoiceState.Loading
         }
     }.stateIn(
@@ -39,20 +49,27 @@ class MultipleArtistsChoiceViewModel(
     )
     val navigationState: StateFlow<MultipleArtistsChoiceNavigationState> = _navigationState.asStateFlow()
 
-    private var multipleArtists: List<Artist> = emptyList()
+    private var mode: MultipleArtistsChoiceMode = MultipleArtistsChoiceMode.InitialFetch
 
-    fun loadArtistsChoices(
-        multipleArtists: List<Artist>
+    fun init(
+        mode: MultipleArtistsChoiceMode
     ) {
-        this.multipleArtists = multipleArtists
+        this.mode = mode
 
         CoroutineScope(Dispatchers.IO).launch {
-            artists.value = multipleArtists.ifEmpty {
-                FetchAllMultipleArtistManagerImpl(
+            artists.value = when (mode) {
+                MultipleArtistsChoiceMode.GeneralCheck -> RepositoryMultipleArtistManagerImpl()
+                    .getPotentialMultipleArtists()
+                MultipleArtistsChoiceMode.InitialFetch -> FetchAllMultipleArtistManagerImpl(
                     optimizedCachedData = musicFetcher.optimizedCachedData,
                 ).getPotentialMultipleArtists()
+                is MultipleArtistsChoiceMode.NewSongs -> mode.multipleArtists
             }.map {
                 ArtistChoice(artist = it)
+            }
+
+            if (mode is MultipleArtistsChoiceMode.NewSongs) {
+                multipleArtistListener.toStep(MultipleArtistHandlingStep.UserChoice)
             }
         }
     }
@@ -87,14 +104,24 @@ class MultipleArtistsChoiceViewModel(
                     .filter { it.isSelected }
                     .map { it.artist }
 
-                val multipleArtistManager = if (multipleArtists.isEmpty()) {
-                    FetchAllMultipleArtistManagerImpl(musicFetcher.optimizedCachedData)
-                } else {
-                    AddNewSongsMultipleArtistManagerImpl(musicFetcher.optimizedCachedData)
+                val multipleArtistManager = when(mode) {
+                    MultipleArtistsChoiceMode.GeneralCheck -> RepositoryMultipleArtistManagerImpl()
+                    MultipleArtistsChoiceMode.InitialFetch -> FetchAllMultipleArtistManagerImpl(
+                        optimizedCachedData = musicFetcher.optimizedCachedData,
+                    )
+                    is MultipleArtistsChoiceMode.NewSongs -> AddNewSongsMultipleArtistManagerImpl(
+                        optimizedCachedData = musicFetcher.optimizedCachedData,
+                    )
                 }
 
                 multipleArtistManager.handleMultipleArtists(artistsToDivide = artistsToDivide)
-                MusicPersistence(musicFetcher.optimizedCachedData).saveAll()
+                if (mode != MultipleArtistsChoiceMode.GeneralCheck) {
+                    MusicPersistence(musicFetcher.optimizedCachedData).saveAll()
+                }
+            }
+
+            if (mode is MultipleArtistsChoiceMode.NewSongs) {
+                multipleArtistListener.toStep(MultipleArtistHandlingStep.SongsSaved)
             }
             _navigationState.value = MultipleArtistsChoiceNavigationState.Quit
         }
