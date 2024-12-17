@@ -5,6 +5,8 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import java.util.*
 
 class DeleteArtistUseCase(
     private val albumRepository: AlbumRepository,
@@ -27,5 +29,11 @@ class DeleteArtistUseCase(
 
         // And we finally delete the artist.
         artistRepository.delete(artistWithMusics.artist)
+    }
+
+    suspend operator fun invoke(artistId: UUID) {
+        artistRepository.getArtistWithMusics(artistId).firstOrNull()?.let {
+            artistRepository.delete(it.artist)
+        }
     }
 }

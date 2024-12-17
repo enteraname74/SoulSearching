@@ -68,15 +68,14 @@ internal class MusicFetcherAndroidImpl(
 
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
-    ): Boolean {
+    ) {
         val cursor = buildMusicCursor()
 
-        return when (cursor?.count) {
+        when (cursor?.count) {
             null -> {
                 feedbackPopUpManager.showFeedback(
                     feedback = strings.cannotRetrieveSongs
                 )
-                true
             }
 
             else -> {
@@ -84,7 +83,7 @@ internal class MusicFetcherAndroidImpl(
                 while (cursor.moveToNext()) {
                     try {
                         val music: Music? = cursor.toMusic()
-                        music?.let { addMusic(musicToAdd = it) }
+                        music?.let { cacheMusic(musicToAdd = it) }
                     } catch (e: Exception) {
                         println("MusicFetcher -- Exception while saving song: $e")
                     }
@@ -101,7 +100,6 @@ internal class MusicFetcherAndroidImpl(
                         )
                     )
                 }
-                saveAllWithMultipleArtistsCheck()
             }
         }
     }

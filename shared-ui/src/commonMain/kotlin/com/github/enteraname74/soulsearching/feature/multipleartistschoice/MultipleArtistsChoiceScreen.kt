@@ -20,17 +20,21 @@ import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
+import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageScreen
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsChoiceItem
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.composable.MultipleArtistsWarningCard
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsScreen
 
 class MultipleArtistsChoiceScreen(
-    duplicateArtists: List<Artist>
+    private val multipleArtists: List<Artist>,
+    private val mode: MultipleArtistsChoiceMode,
 ): Screen {
     @Composable
     override fun Content() {
@@ -41,7 +45,7 @@ class MultipleArtistsChoiceScreen(
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchInit {
-            screenModel.loadArtistsChoices(emptyList())
+            screenModel.loadArtistsChoices(multipleArtists = multipleArtists)
         }
 
         LaunchedEffect(navigationState) {
@@ -49,8 +53,16 @@ class MultipleArtistsChoiceScreen(
                 MultipleArtistsChoiceNavigationState.Idle -> {
                     /*no-op*/
                 }
-                MultipleArtistsChoiceNavigationState.ToMainScreen -> {
-                    navigator.replaceAll(MainPageScreen())
+                MultipleArtistsChoiceNavigationState.Quit -> {
+                    when (mode) {
+                        MultipleArtistsChoiceMode.InitialFetch -> navigator.replaceAll(MainPageScreen())
+                        MultipleArtistsChoiceMode.NewSongs -> navigator.safePush(
+                            SettingsAddMusicsScreen(
+                                shouldShowSaveScreen = true,
+                            )
+                        )
+                        MultipleArtistsChoiceMode.GeneralCheck -> navigator.pop()
+                    }
                     screenModel.consumeNavigation()
                 }
             }
@@ -60,6 +72,7 @@ class MultipleArtistsChoiceScreen(
             state = state,
             onToggleArtistChoice = screenModel::toggleSelection,
             onSaveSelection = screenModel::saveSelection,
+            navigateBack = navigator::pop,
         )
     }
 
@@ -67,6 +80,7 @@ class MultipleArtistsChoiceScreen(
     private fun MainComposable(
         state: MultipleArtistChoiceState,
         onSaveSelection: () -> Unit,
+        navigateBack: () -> Unit,
         onToggleArtistChoice: (ArtistChoice) -> Unit,
     ) {
         when (state) {
@@ -78,6 +92,7 @@ class MultipleArtistsChoiceScreen(
                     choices = state.artists,
                     onSaveSelection = onSaveSelection,
                     onToggleArtistChoice = onToggleArtistChoice,
+                    navigateBack = navigateBack,
                 )
             }
         }
@@ -87,6 +102,7 @@ class MultipleArtistsChoiceScreen(
     private fun UserActionScreen(
         choices: List<ArtistChoice>,
         onSaveSelection: () -> Unit,
+        navigateBack: () -> Unit,
         onToggleArtistChoice: (ArtistChoice) -> Unit,
     ) {
         SoulScreen {
@@ -96,7 +112,11 @@ class MultipleArtistsChoiceScreen(
                     rightAction = TopBarValidateAction(
                         onClick = onSaveSelection,
                     ),
-                    leftAction = null,
+                    leftAction = if (mode == MultipleArtistsChoiceMode.InitialFetch) {
+                        null
+                    } else {
+                        TopBarNavigationAction(onClick = navigateBack)
+                    },
                 )
                 LazyColumn(
                     contentPadding = PaddingValues(

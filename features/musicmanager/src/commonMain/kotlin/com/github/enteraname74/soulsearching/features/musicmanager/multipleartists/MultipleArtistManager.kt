@@ -8,23 +8,23 @@ import java.util.UUID
  * Multiple artist are Artist with multiple artists found in it (names separated by a comma).
  */
 abstract class MultipleArtistManager {
-    abstract suspend fun getAlbumsOfMultipleArtist(artistName: String): List<Album>
-    abstract suspend fun getArtistFromName(artistName: String): Artist?
-    abstract suspend fun createNewArtist(artistName: String): Artist
-    abstract suspend fun deleteArtist(
+    protected abstract suspend fun getAlbumsOfMultipleArtist(artistName: String): List<Album>
+    protected abstract suspend fun getArtistFromName(artistName: String): Artist?
+    protected abstract suspend fun createNewArtist(artistName: String): Artist
+    protected abstract suspend fun deleteArtist(
         artist: Artist,
         musicIdsOfInitialArtist: List<UUID>,
         albumIdsOfInitialArtist: List<UUID>,
     )
 
-    abstract suspend fun getMusicIdsOfArtist(artistId: UUID): List<UUID>
-    abstract suspend fun getAlbumIdsOfArtist(artistId: UUID): List<UUID>
+    protected abstract suspend fun getMusicIdsOfArtist(artistName: String): List<UUID>
+    protected abstract suspend fun getAlbumIdsOfArtist(artistName: String): List<UUID>
 
-    abstract suspend fun linkMusicToArtist(
+    protected abstract suspend fun linkMusicToArtist(
         musicId: UUID,
         artistId: UUID,
     )
-    abstract suspend fun linkAlbumToArtist(
+    protected abstract suspend fun linkAlbumToArtist(
         albumId: UUID,
         artistId: UUID,
     )
@@ -32,7 +32,7 @@ abstract class MultipleArtistManager {
     /**
      * Retrieve an album that has a specific name and is possessed by the first artist of the multiple artist.
      */
-    abstract suspend fun getExistingAlbumOfFirstArtist(
+    protected abstract suspend fun getExistingAlbumOfFirstArtist(
         albumName: String,
         firstArtistName: String,
     ): Album?
@@ -41,7 +41,7 @@ abstract class MultipleArtistManager {
      * Move the songs of an album to another.
      * fromAlbum should be deleted after the move.
      */
-    abstract suspend fun moveSongsOfAlbum(
+    protected abstract suspend fun moveSongsOfAlbum(
         fromAlbum: Album,
         toAlbum: Album,
         multipleArtistName: String,
@@ -117,10 +117,10 @@ abstract class MultipleArtistManager {
         // We update the concerned cached artists
         artistsToDivide.forEach { multipleArtist ->
             val musicIdsOfInitialArtist: List<UUID> = getMusicIdsOfArtist(
-                artistId = multipleArtist.artistId,
+                artistName = multipleArtist.artistName,
             )
             val albumIdsOfInitialArtist: List<UUID> = getAlbumIdsOfArtist(
-                artistId = multipleArtist.artistId,
+                artistName = multipleArtist.artistName,
             )
 
             val allArtistsName: List<String> = multipleArtist.getMultipleArtists()
@@ -144,4 +144,10 @@ abstract class MultipleArtistManager {
             )
         }
     }
+
+    fun doMusicsHaveMultipleArtists(musics: List<Music>): Boolean =
+        musics.any { it.hasPotentialMultipleArtists() }
+
+    fun doArtistsHaveMultipleArtists(artists: List<Artist>): Boolean =
+        artists.any { it.isComposedOfMultipleArtists() }
 }

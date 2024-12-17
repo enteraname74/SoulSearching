@@ -8,6 +8,9 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistChoiceState
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.AddNewSongsMultipleArtistManagerImpl
+import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
+import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,11 +39,19 @@ class MultipleArtistsChoiceViewModel(
     )
     val navigationState: StateFlow<MultipleArtistsChoiceNavigationState> = _navigationState.asStateFlow()
 
+    private var multipleArtists: List<Artist> = emptyList()
+
     fun loadArtistsChoices(
         multipleArtists: List<Artist>
     ) {
+        this.multipleArtists = multipleArtists
+
         CoroutineScope(Dispatchers.IO).launch {
-            artists.value = musicFetcher.getPotentialMultipleArtist().map {
+            artists.value = multipleArtists.ifEmpty {
+                FetchAllMultipleArtistManagerImpl(
+                    optimizedCachedData = musicFetcher.optimizedCachedData,
+                ).getPotentialMultipleArtists()
+            }.map {
                 ArtistChoice(artist = it)
             }
         }
@@ -71,14 +82,21 @@ class MultipleArtistsChoiceViewModel(
 
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
-                musicFetcher.saveAllWithMultipleArtists(
-                    artistsToDivide = (state.value as MultipleArtistChoiceState.UserAction)
-                        .artists
-                        .filter { it.isSelected }
-                        .map { it.artist }
-                )
+                val artistsToDivide: List<Artist> = (state.value as MultipleArtistChoiceState.UserAction)
+                    .artists
+                    .filter { it.isSelected }
+                    .map { it.artist }
+
+                val multipleArtistManager = if (multipleArtists.isEmpty()) {
+                    FetchAllMultipleArtistManagerImpl(musicFetcher.optimizedCachedData)
+                } else {
+                    AddNewSongsMultipleArtistManagerImpl(musicFetcher.optimizedCachedData)
+                }
+
+                multipleArtistManager.handleMultipleArtists(artistsToDivide = artistsToDivide)
+                MusicPersistence(musicFetcher.optimizedCachedData).saveAll()
             }
-            _navigationState.value = MultipleArtistsChoiceNavigationState.ToMainScreen
+            _navigationState.value = MultipleArtistsChoiceNavigationState.Quit
         }
     }
 }

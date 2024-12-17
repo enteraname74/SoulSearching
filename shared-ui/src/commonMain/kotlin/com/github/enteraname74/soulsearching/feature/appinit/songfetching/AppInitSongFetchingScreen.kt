@@ -1,12 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ProgressIndicatorDefaults
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,10 +27,10 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.appinit.composable.FetchingMusicTabLayoutComposable
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceMode
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceScreen
 
 class AppInitSongFetchingScreen : Screen {
@@ -51,8 +51,14 @@ class AppInitSongFetchingScreen : Screen {
                 AppInitSongFetchingNavigationState.Idle -> {
                     /*no-op*/
                 }
+
                 AppInitSongFetchingNavigationState.ToMultipleArtists -> {
-                    navigator.replaceAll(MultipleArtistsChoiceScreen(emptyList()))
+                    navigator.replaceAll(
+                        MultipleArtistsChoiceScreen(
+                            multipleArtists = emptyList(),
+                            mode = MultipleArtistsChoiceMode.InitialFetch,
+                        )
+                    )
                     screenModel.consumeNavigation()
                 }
             }

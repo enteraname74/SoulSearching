@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import java.util.UUID
 
 class DeleteAlbumUseCase(
@@ -29,6 +30,12 @@ class DeleteAlbumUseCase(
             deleteArtistIfEmptyUseCase(
                 artistId = it.artistId,
             )
+        }
+    }
+
+    suspend fun onlyAlbum(albumId: UUID) {
+        albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {
+            albumRepository.delete(it.album)
         }
     }
 }

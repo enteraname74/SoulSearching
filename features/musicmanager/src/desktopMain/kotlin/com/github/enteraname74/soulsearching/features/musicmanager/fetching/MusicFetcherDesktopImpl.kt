@@ -111,13 +111,12 @@ internal class MusicFetcherDesktopImpl(
 
     override suspend fun fetchMusics(
         updateProgress: (Float, String?) -> Unit,
-    ): Boolean {
+    ) {
         val root = File(System.getProperty("user.home"))
-        init()
         extractMusicsFromCurrentDirectory(
             directory = root,
             updateProgress = updateProgress,
-            onMusicFetched = ::addMusic
+            onMusicFetched = ::cacheMusic
         )
         if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
             upsertPlaylistUseCase(
@@ -128,7 +127,6 @@ internal class MusicFetcherDesktopImpl(
                 )
             )
         }
-        return saveAllWithMultipleArtistsCheck()
     }
 
     override suspend fun fetchMusicsFromSelectedFolders(

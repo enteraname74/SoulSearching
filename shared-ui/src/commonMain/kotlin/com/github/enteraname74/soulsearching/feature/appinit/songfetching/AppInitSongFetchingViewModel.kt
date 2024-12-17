@@ -4,6 +4,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
+import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
+import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,7 @@ class AppInitSongFetchingViewModel(
 
     fun fetchSongs() {
         CoroutineScope(Dispatchers.IO).launch {
-            val hasSongsBeenSaved = musicFetcher.fetchMusics(
+            musicFetcher.fetchMusics(
                 updateProgress = { progression, folder ->
                     _state.value = AppInitSongFetchingState(
                         currentProgression = progression,
@@ -38,8 +40,14 @@ class AppInitSongFetchingViewModel(
                 }
             )
 
-            if (!hasSongsBeenSaved) {
+            val multipleArtistManager = FetchAllMultipleArtistManagerImpl(
+                optimizedCachedData = musicFetcher.optimizedCachedData,
+            )
+
+            if (multipleArtistManager.doDataHaveMultipleArtists()) {
                 _navigationState.value = AppInitSongFetchingNavigationState.ToMultipleArtists
+            } else {
+                MusicPersistence(optimizedCachedData = musicFetcher.optimizedCachedData).saveAll()
             }
         }
     }

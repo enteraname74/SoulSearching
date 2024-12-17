@@ -8,6 +8,9 @@ import java.util.*
 class AlbumArtistRepositoryImpl(
     private val albumArtistDataSource: AlbumArtistDataSource
 ): AlbumArtistRepository {
+    override suspend fun getAll(): List<AlbumArtist> =
+        albumArtistDataSource.getAll()
+
     override suspend fun upsert(albumArtist: AlbumArtist) =
         albumArtistDataSource.upsert(albumArtist = albumArtist)
 

@@ -7,6 +7,7 @@ import java.util.UUID
  * Data source of an AlbumArtist.
  */
 interface AlbumArtistDataSource {
+    suspend fun getAll(): List<AlbumArtist>
 
     /**
      * Insert or updates an AlbumArtist.

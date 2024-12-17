@@ -4,6 +4,8 @@ import com.github.enteraname74.domain.model.MusicArtist
 import java.util.*
 
 interface MusicArtistRepository {
+    suspend fun getAll(): List<MusicArtist>
+
     /**
      * Inserts or updates a MusicArtist.
      * It is the equivalent of adding a Music to an Artist.

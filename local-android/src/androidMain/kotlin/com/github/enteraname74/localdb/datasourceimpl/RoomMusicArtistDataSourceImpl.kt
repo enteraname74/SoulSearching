@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.localdb.AppDatabase
+import com.github.enteraname74.localdb.model.toMusicArtist
 import com.github.enteraname74.localdb.model.toRoomMusicArtist
 import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
 import java.util.*
@@ -12,6 +13,9 @@ import java.util.*
 internal class RoomMusicArtistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicArtistDataSource {
+    override suspend fun getAll(): List<MusicArtist> =
+        appDatabase.musicArtistDao.getAll().map { it.toMusicArtist() }
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) {
         appDatabase.musicArtistDao.upsertMusicIntoArtist(
             roomMusicArtist = musicArtist.toRoomMusicArtist()

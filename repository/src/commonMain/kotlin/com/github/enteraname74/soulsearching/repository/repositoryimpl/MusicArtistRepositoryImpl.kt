@@ -11,6 +11,9 @@ import java.util.*
 class MusicArtistRepositoryImpl(
     private val musicArtistDataSource: MusicArtistDataSource
 ): MusicArtistRepository {
+    override suspend fun getAll(): List<MusicArtist> =
+        musicArtistDataSource.getAll()
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) =
         musicArtistDataSource.upsertMusicIntoArtist(
             musicArtist = musicArtist

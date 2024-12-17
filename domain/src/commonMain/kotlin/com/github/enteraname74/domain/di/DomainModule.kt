@@ -42,6 +42,7 @@ val domainModule = module {
     singleOf(::UpsertAllAlbumsUseCase)
 
     // AlbumArtist
+    singleOf(::GetAllAlbumArtistUseCase)
     singleOf(::UpsertAlbumArtistUseCase)
     singleOf(::UpsertAllAlbumArtistUseCase)
 
@@ -103,10 +104,12 @@ val domainModule = module {
 
     // MusicAlbum
     singleOf(::GetAlbumIdFromMusicIdUseCase)
+    singleOf(::GetAllMusicAlbumUseCase)
     singleOf(::UpsertAllMusicAlbumUseCase)
     singleOf(::UpsertMusicIntoAlbumUseCase)
 
     // MusicArtist
+    singleOf(::GetAllMusicArtistUseCase)
     singleOf(::GetArtistIdFromMusicIdUseCase)
     singleOf(::UpsertAllMusicArtistsUseCase)
     singleOf(::UpsertMusicIntoArtistUseCase)
