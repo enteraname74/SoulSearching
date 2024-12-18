@@ -129,4 +129,20 @@ internal class ArtistDao(
                 )
             }
         }
+
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> = transaction {
+        ArtistTable.join(
+            otherTable = MusicArtistTable,
+            joinType = JoinType.INNER,
+            onColumn = ArtistTable.id,
+            otherColumn = MusicArtistTable.artistId,
+            additionalConstraint = {
+                MusicArtistTable.musicId eq musicId
+            }
+        )
+            .selectAll()
+            .asFlow()
+            .mapResultRow { it.toArtist() }
+            .map { list -> list.filterNotNull() }
+    }
 }

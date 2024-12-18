@@ -57,6 +57,7 @@ val domainModule = module {
     singleOf(::GetAllArtistWithMusicsUseCase)
     singleOf(::GetArtistFromNameUseCase)
     singleOf(::GetArtistsNameFromSearchStringUseCase)
+    singleOf(::GetArtistsOfMusicUseCase)
     singleOf(::GetArtistWithMusicsUseCase)
     singleOf(::GetCorrespondingArtistUseCase)
     singleOf(::GetDuplicatedArtistUseCase)

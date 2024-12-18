@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -27,6 +28,7 @@ class ModifyMusicViewModel(
     private val getMusicUseCase: GetMusicUseCase,
     private val getAlbumsNameFromSearchStringUseCase: GetAlbumsNameFromSearchStringUseCase,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
+    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
@@ -68,15 +70,18 @@ class ModifyMusicViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val formState: StateFlow<ModifyMusicFormState> = initialMusic.mapLatest { music ->
+    val formState: StateFlow<ModifyMusicFormState> = initialMusic.flatMapLatest { music ->
         if (music == null) {
-            ModifyMusicFormState.NoData
+            flowOf(ModifyMusicFormState.NoData)
         } else {
-            ModifyMusicFormState.Data(
-                initialMusic = music,
-                updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
-                updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
-            )
+            getArtistsOfMusicUseCase(music.musicId).mapLatest { artists ->
+                ModifyMusicFormState.Data(
+                    initialMusic = music,
+                    updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
+                    updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
+                    artistsOfMusic = artists,
+                )
+            }
         }
     }.stateIn(
         scope = screenModelScope.plus(Dispatchers.IO),
@@ -134,7 +139,9 @@ class ModifyMusicViewModel(
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
-                artist = form.getArtistName().trim(),
+                artist = form.getArtistsName().joinToString(separator = ", ") {
+                    it.trim()
+                },
             )
 
             updateMusicUseCase(
