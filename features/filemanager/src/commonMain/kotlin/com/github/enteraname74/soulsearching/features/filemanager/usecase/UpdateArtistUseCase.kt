@@ -7,6 +7,7 @@ import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.domain.usecase.artist.GetDuplicatedArtistUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
@@ -15,10 +16,11 @@ class UpdateArtistUseCase(
     private val musicAlbumRepository: MusicAlbumRepository,
     private val albumArtistRepository: AlbumArtistRepository,
     private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
-    private val musicArtistRepository: MusicArtistRepository,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
+        val legacyArtist: Artist = artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
+
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
         )
@@ -48,6 +50,7 @@ class UpdateArtistUseCase(
         )
 
         updateArtistNameOfArtistSongs(
+            legacyArtistName = legacyArtist.artistName,
             newArtistName = newArtistWithMusicsInformation.artist.artistName,
             artistMusics = newArtistWithMusicsInformation.musics
         )
@@ -57,13 +60,19 @@ class UpdateArtistUseCase(
      * Update the artist name of the artist songs.
      */
     private suspend fun updateArtistNameOfArtistSongs(
+        legacyArtistName: String,
         newArtistName: String,
         artistMusics: List<Music>
     ) {
         for (music in artistMusics) {
+            println("Got music: ${music.artist}")
             val newMusicInformation = music.copy(
-                artist = newArtistName
+                artist = music.artist.replace(
+                    oldValue = legacyArtistName,
+                    newValue = newArtistName,
+                )
             )
+            println("Updated to: ${newMusicInformation.artist}")
             musicRepository.upsert(
                 newMusicInformation
             )

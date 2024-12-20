@@ -98,34 +98,30 @@ class ModifyArtistViewModel(
         CoroutineScope(Dispatchers.IO).launch {
 
             val state = (state.value as? ModifyArtistState.Data) ?: return@launch
-            val form = (formState.value as? ModifyArtistFormState.Data) ?: return@launch
+            val form = (formState.value as? ModifyArtistFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
-            if (!form.isFormValid()) return@launch
+            loadingManager.withLoading {
+                val coverFile: UUID? =
+                    state.editableElement.newCover?.let { coverData ->
+                        val newCoverId: UUID = UUID.randomUUID()
+                        upsertImageCoverUseCase(
+                            id = newCoverId,
+                            data = coverData,
+                        )
+                        newCoverId
+                    } ?: (state.initialArtist.artist.cover as? Cover.CoverFile)?.fileCoverId
 
-            loadingManager.startLoading()
-
-            val coverFile: UUID? =
-                state.editableElement.newCover?.let { coverData ->
-                    val newCoverId: UUID = UUID.randomUUID()
-                    upsertImageCoverUseCase(
-                        id = newCoverId,
-                        data = coverData,
+                val newArtistInformation = state.initialArtist.copy(
+                    artist = state.initialArtist.artist.copy(
+                        cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
+                            fileCoverId = coverFile
+                        ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
+                        artistName = form.getArtistName().trim(),
                     )
-                    newCoverId
-                } ?: (state.initialArtist.artist.cover as? Cover.CoverFile)?.fileCoverId
-
-            val newArtistInformation = state.initialArtist.copy(
-                artist = state.initialArtist.artist.copy(
-                    cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile
-                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
-                    artistName = form.getArtistName().trim(),
                 )
-            )
 
-            updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
-
-            loadingManager.stopLoading()
+                updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+            }
 
             _navigationState.value = ModifyArtistNavigationState.Back
         }
