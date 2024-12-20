@@ -18,8 +18,8 @@ class DeleteArtistUseCase(
 ) {
     suspend operator fun invoke(artistWithMusics: ArtistWithMusics) {
         /*
-        Artists may hold songs that are shared by other artists.
-        They will be deleted, but we must fetch all the related artists to check if we can delete them afterward.
+        Artist may hold songs that are shared by other artists.
+        These songs will be deleted, but we must fetch all the related artists to check if we can delete them afterward.
         (if they are empty).
          */
         val linkedArtists: List<Artist> = buildList {

@@ -23,11 +23,6 @@ interface MusicDataSource {
     suspend fun deleteAll(ids: List<UUID>)
 
     /**
-     * Remove a Music from an Album.
-     */
-    suspend fun deleteMusicFromAlbum(album: String, artist: String)
-
-    /**
      * Tries to retrieve a Music from its path.
      */
     suspend fun getFromPath(musicPath: String): Music?

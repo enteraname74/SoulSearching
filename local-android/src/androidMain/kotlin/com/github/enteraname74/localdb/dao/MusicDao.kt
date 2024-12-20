@@ -22,9 +22,6 @@ internal interface MusicDao {
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
-    @Query("DELETE FROM RoomMusic WHERE album = :album AND artist = :artist")
-    suspend fun deleteMusicFromAlbum(album : String, artist : String)
-
     @Query("SELECT * FROM RoomMusic WHERE path = :musicPath")
     suspend fun getMusicFromPath(musicPath : String) : RoomMusic?
 

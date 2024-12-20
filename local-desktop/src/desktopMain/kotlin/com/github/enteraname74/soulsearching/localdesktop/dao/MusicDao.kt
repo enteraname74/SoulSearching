@@ -14,7 +14,6 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.arti
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.folder
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isHidden
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.nbPlayed
@@ -74,13 +73,6 @@ internal class MusicDao {
     suspend fun deleteAll(ids: List<UUID>) {
         flowTransactionOn {
             MusicTable.deleteWhere { Op.build { id inList ids } }
-        }
-    }
-
-    suspend fun deleteMusicFromAlbum(album: String, artist: String) {
-        flowTransactionOn {
-            MusicTable
-                .deleteWhere { (MusicTable.album eq album) and (MusicTable.artist eq artist) }
         }
     }
 
