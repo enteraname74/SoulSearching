@@ -50,7 +50,6 @@ class UpdateMusicUseCase(
         previousArtist: String,
         newArtist: String,
     ) {
-        println("Comparing old artist: $previousArtist, with new one: $newArtist.")
         // It's the same artist, we got nothing to do.
         if (previousArtist == newArtist) return
 
@@ -59,9 +58,6 @@ class UpdateMusicUseCase(
             artistName = newArtist,
             music = newMusicInformation
         )
-
-        println("Got legacy: $legacyArtist and new: $existingNewArtist")
-        println("Will add link to new one: $existingNewArtist")
 
         // We update the link between the artist and the music.
         musicArtistRepository.upsertMusicIntoArtist(
@@ -110,7 +106,6 @@ class UpdateMusicUseCase(
 
         // We will remove the link of the music to all its other previous artists
         previousArtists.forEach { artist ->
-            println("Will delete link with artist: ${artist.artistName}")
             musicArtistRepository.deleteMusicArtist(
                 musicArtist = MusicArtist(
                     musicId = legacyMusic.musicId,
@@ -125,7 +120,6 @@ class UpdateMusicUseCase(
                 artistName = newArtistName,
                 music = newMusicInformation
             )
-            println("Will add link with artist: ${newArtist.artistName}")
             musicArtistRepository.upsertMusicIntoArtist(
                 musicArtist = MusicArtist(
                     musicId = newMusicInformation.musicId,
@@ -156,7 +150,6 @@ class UpdateMusicUseCase(
         newMusicInformation: Music,
     ) {
         if (previousArtistsNames != newArtistsNames) {
-            println("Artists have changed!")
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
                 newMusicInformation = newMusicInformation,

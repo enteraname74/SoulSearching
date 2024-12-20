@@ -23,39 +23,45 @@ fun EditableElementColumnView(
     textFields: List<SoulTextFieldHolder>,
     extraContent: @Composable (() -> Unit)? = null,
 ) {
-    LazyColumn(
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.primary)
-            .padding(
-                top = UiConstants.Spacing.small,
-                start = UiConstants.Spacing.medium,
-                end = UiConstants.Spacing.medium,
-            )
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    focusManager.clearFocus()
-                })
-            }
-            .fillMaxWidth(0.9f),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        item {
-            EditableElementCoverSection(
-                modifier = Modifier
-                    .animateItem()
-                    .padding(
-                        bottom = UiConstants.Spacing.large
-                    ),
-                title = coverSectionTitle,
-                editableElement = editableElement,
-                onSelectImage = onSelectImage,
+        LazyColumn(
+            modifier = Modifier
+                .background(SoulSearchingColorTheme.colorScheme.primary)
+                .padding(
+                    top = UiConstants.Spacing.small,
+                    start = UiConstants.Spacing.medium,
+                    end = UiConstants.Spacing.medium,
+                )
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
+                .fillMaxHeight()
+                .fillMaxWidth(0.9f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            item {
+                EditableElementCoverSection(
+                    modifier = Modifier
+                        .animateItem()
+                        .padding(
+                            bottom = UiConstants.Spacing.large
+                        ),
+                    title = coverSectionTitle,
+                    editableElement = editableElement,
+                    onSelectImage = onSelectImage,
+                )
+            }
+            editableElementTextFieldsView(
+                focusManager = focusManager,
+                textFields = textFields,
+                extraContent = extraContent,
             )
         }
-        editableElementTextFieldsView(
-            focusManager = focusManager,
-            textFields = textFields,
-            extraContent = extraContent,
-        )
     }
 }

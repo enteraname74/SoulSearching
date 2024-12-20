@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,7 +15,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 fun allArtistsTab(
     mainPageViewModel: MainPageViewModel,
     navigateToArtist: (artistId: UUID) -> Unit,
