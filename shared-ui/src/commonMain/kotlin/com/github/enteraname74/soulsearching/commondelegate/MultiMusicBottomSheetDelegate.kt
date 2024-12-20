@@ -80,12 +80,13 @@ class MultiMusicBottomSheetDelegateImpl(
                         loadingManager.withLoading {
                             deleteAllMusicsUseCase(selectedIdsToDelete)
                             playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
+
+                            setDialogState(null)
+                            // We make sure to close the bottom sheet after removing the selected musics.
+                            setBottomSheetState(null)
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                     }
-                    setDialogState(null)
-                    // We make sure to close the bottom sheet after removing the selected musics.
-                    setBottomSheetState(null)
                 },
                 onClose = { setDialogState(null) },
             )

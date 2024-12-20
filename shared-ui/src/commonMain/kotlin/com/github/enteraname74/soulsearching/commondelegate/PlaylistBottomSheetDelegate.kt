@@ -77,6 +77,8 @@ class PlaylistBottomSheetDelegateImpl(
                                 isInQuickAccess = !selectedPlaylist.isInQuickAccess,
                             )
                         )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
                     }
                 },
                 onPlayNext = {

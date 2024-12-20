@@ -52,6 +52,7 @@ class AlbumBottomSheetDelegateImpl(
                         setDialogState(null)
                         // We make sure to close the bottom sheet after deleting the selected music.
                         setBottomSheetState(null)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
                 onClose = { setDialogState(null) }

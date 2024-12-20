@@ -50,9 +50,9 @@ class MultiPlaylistBottomSheetDelegateImpl(
                         loadingManager.withLoading {
                             deleteAllPlaylistsUseCase(selectedIdsToDelete)
                             multiSelectionManagerImpl?.clearMultiSelection()
+                            setDialogState(null)
+                            setBottomSheetState(null)
                         }
-                        setDialogState(null)
-                        setBottomSheetState(null)
                     }
                 },
                 onClose = { setDialogState(null) }
