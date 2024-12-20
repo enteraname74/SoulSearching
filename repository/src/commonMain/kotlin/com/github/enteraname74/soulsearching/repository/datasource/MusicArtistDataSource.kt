@@ -8,6 +8,9 @@ import java.util.UUID
  */
 interface MusicArtistDataSource {
     suspend fun getAll(): List<MusicArtist>
+
+    suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
+
     /**
      * Inserts or updates a MusicArtist.
      * It is the equivalent of adding a Music to an Artist.

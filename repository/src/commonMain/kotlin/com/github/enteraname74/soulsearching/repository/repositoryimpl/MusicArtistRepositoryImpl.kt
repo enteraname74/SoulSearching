@@ -14,6 +14,9 @@ class MusicArtistRepositoryImpl(
     override suspend fun getAll(): List<MusicArtist> =
         musicArtistDataSource.getAll()
 
+    override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
+        musicArtistDataSource.get(artistId, musicId)
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) =
         musicArtistDataSource.upsertMusicIntoArtist(
             musicArtist = musicArtist

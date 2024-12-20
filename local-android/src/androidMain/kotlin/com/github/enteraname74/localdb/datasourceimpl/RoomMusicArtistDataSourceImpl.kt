@@ -16,6 +16,12 @@ internal class RoomMusicArtistDataSourceImpl(
     override suspend fun getAll(): List<MusicArtist> =
         appDatabase.musicArtistDao.getAll().map { it.toMusicArtist() }
 
+    override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
+        appDatabase.musicArtistDao.get(
+            artistId = artistId,
+            musicId = musicId,
+        )?.toMusicArtist()
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) {
         appDatabase.musicArtistDao.upsertMusicIntoArtist(
             roomMusicArtist = musicArtist.toRoomMusicArtist()

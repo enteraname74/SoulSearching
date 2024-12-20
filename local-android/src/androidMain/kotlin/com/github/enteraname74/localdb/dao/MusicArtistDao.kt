@@ -12,6 +12,9 @@ internal interface MusicArtistDao {
     @Query("SELECT * FROM RoomMusicArtist")
     suspend fun getAll(): List<RoomMusicArtist>
 
+    @Query("SELECT * FROM RoomMusicArtist WHERE artistId = :artistId AND musicId = :musicId")
+    suspend fun get(artistId: UUID, musicId: UUID): RoomMusicArtist?
+
     @Delete
     suspend fun delete(roomMusicArtist: RoomMusicArtist)
 

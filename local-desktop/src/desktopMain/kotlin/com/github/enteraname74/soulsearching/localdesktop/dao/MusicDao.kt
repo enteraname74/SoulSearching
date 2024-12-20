@@ -80,8 +80,8 @@ internal class MusicDao {
         MusicTable
             .selectAll()
             .where { path eq musicPath }
-            .map { it.toMusic() }
             .firstOrNull()
+            ?.toMusic()
     }
 
     fun getFromId(musicId: UUID): Flow<Music?> = transaction {
