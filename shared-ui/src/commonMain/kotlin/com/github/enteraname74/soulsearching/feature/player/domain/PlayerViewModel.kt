@@ -130,7 +130,7 @@ class PlayerViewModel(
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
-                    artistsOfCurrentMusic = currentMusicArtists,
+                    artistsOfCurrentMusic = currentMusicArtists.sortedBy { it.artistName },
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     playedList = playbackMainState.playedList,
