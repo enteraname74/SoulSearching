@@ -14,11 +14,8 @@ import com.github.enteraname74.soulsearching.features.musicmanager.multipleartis
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.RepositoryMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class MultipleArtistsChoiceViewModel(
     private val musicFetcher: MusicFetcher,
@@ -69,6 +66,8 @@ class MultipleArtistsChoiceViewModel(
             }
 
             if (mode is MultipleArtistsChoiceMode.NewSongs) {
+                // To fix clipping from previous screen when changing state while going to this screen
+                delay(500)
                 multipleArtistListener.toStep(MultipleArtistHandlingStep.UserChoice)
             }
         }
