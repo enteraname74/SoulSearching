@@ -125,7 +125,10 @@ class SettingsPlayerPersonalisationScreen : Screen, SettingPage {
                         style = UiConstants.Typography.bodyTitle,
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
                     )
-                    soulMixTextField.TextField(focusManager = focusManager)
+                    soulMixTextField.TextField(
+                        focusManager = focusManager,
+                        modifier = Modifier,
+                    )
                 }
             }
             item {

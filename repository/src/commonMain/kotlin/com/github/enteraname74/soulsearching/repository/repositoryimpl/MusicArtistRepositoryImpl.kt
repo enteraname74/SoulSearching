@@ -23,18 +23,7 @@ class MusicArtistRepositoryImpl(
         musicArtistDataSource.upsertAll(musicArtists)
     }
 
-    override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
-        musicArtistDataSource.updateArtistOfMusic(
-            musicId = musicId,
-            newArtistId = newArtistId
-        )
-
-    override suspend fun deleteMusicFromArtist(musicId: UUID) = musicArtistDataSource.deleteMusicFromArtist(
-        musicId = musicId
-    )
-
-    override suspend fun getArtistIdFromMusicId(musicId: UUID): UUID? =
-        musicArtistDataSource.getArtistIdFromMusicId(
-            musicId = musicId
-        )
+    override suspend fun deleteMusicArtist(musicArtist: MusicArtist) {
+        musicArtistDataSource.deleteMusicArtist(musicArtist)
+    }
 }

@@ -125,10 +125,11 @@ class UpdateArtistUseCase(
      */
     private suspend fun mergeArtists(from: ArtistWithMusics, to: Artist) {
         for (music in from.musics) {
-            musicArtistRepository.updateArtistOfMusic(
-                musicId = music.musicId,
-                newArtistId = to.artistId
-            )
+            TODO("Better system for merging artists")
+//            musicArtistRepository.updateArtistOfMusic(
+//                musicId = music.musicId,
+//                newArtistId = to.artistId
+//            )
         }
 
         // We delete the previous artist.

@@ -3,16 +3,17 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
-import com.github.enteraname74.domain.usecase.musicartist.GetArtistIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
@@ -45,7 +46,7 @@ class PlayerViewModel(
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val getArtistIdFromMusicIdUseCase: GetArtistIdFromMusicIdUseCase,
+    private val getArtistsOfMusicIdUseCase: GetArtistsOfMusicUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
@@ -81,6 +82,21 @@ class PlayerViewModel(
             }
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val currentMusicArtists: Flow<List<Artist>> =
+        playbackManager.mainState.flatMapLatest { playbackState ->
+            when (playbackState) {
+                is PlaybackManagerState.Data -> {
+                    getArtistsOfMusicIdUseCase(
+                        musicId = playbackState.currentMusic.musicId,
+                    )
+                }
+                PlaybackManagerState.Stopped -> {
+                    flowOf(emptyList())
+                }
+            }
+        }
+
     private val currentMusicLyrics: MutableStateFlow<LyricsFetchState> =
         MutableStateFlow(LyricsFetchState.NoLyricsFound)
 
@@ -108,11 +124,13 @@ class PlayerViewModel(
         getAllPlaylistWithMusicsUseCase(),
         currentMusicFavoriteStatusState,
         currentMusicLyrics,
-    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicLyrics ->
+        currentMusicArtists
+    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicLyrics, currentMusicArtists ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
+                    artistsOfCurrentMusic = currentMusicArtists,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     playedList = playbackMainState.playedList,
@@ -205,15 +223,6 @@ class PlayerViewModel(
     }
 
     /**
-     * Retrieve the artist id of a music.
-     */
-    private fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) {
-            getArtistIdFromMusicIdUseCase(musicId)
-        }
-    }
-
-    /**
      * Retrieve the album id of a music.
      */
     private fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
@@ -300,17 +309,10 @@ class PlayerViewModel(
         }
     }
 
-    fun navigateToArtist() {
-        (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
-            screenModelScope.launch {
-                val artistId: UUID? = getArtistIdFromMusicId(musicId = currentMusic.musicId)
-                artistId?.let {
-                    _navigationState.value = PlayerNavigationState.ToArtist(
-                        artistId = it,
-                    )
-                }
-            }
-        }
+    fun navigateToArtist(selectedArtist: Artist) {
+        _navigationState.value = PlayerNavigationState.ToArtist(
+            artistId = selectedArtist.artistId,
+        )
     }
 
     fun navigateToAlbum() {
@@ -326,7 +328,7 @@ class PlayerViewModel(
         }
     }
 
-    private fun handleMultiSelectionBottomSheet() {
+    fun handleMultiSelectionBottomSheet() {
         screenModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {

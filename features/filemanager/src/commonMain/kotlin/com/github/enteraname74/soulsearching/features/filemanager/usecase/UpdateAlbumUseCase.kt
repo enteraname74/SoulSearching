@@ -81,10 +81,11 @@ class UpdateAlbumUseCase(
             )
             musicRepository.upsert(newMusic)
             musicFileUpdater.updateMusic(music = newMusic)
-            musicArtistRepository.updateArtistOfMusic(
-                musicId = music.musicId,
-                newArtistId = albumArtistToSave.artistId
-            )
+            TODO("Implement multiple artists for albums")
+//            musicArtistRepository.updateArtistOfMusic(
+//                musicId = music.musicId,
+//                newArtistId = albumArtistToSave.artistId
+//            )
         }
 
         // We adapt the quick access status with the potential duplicate album.

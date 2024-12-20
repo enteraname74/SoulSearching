@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -38,7 +39,7 @@ fun PlayerTopInformation(
     onTopInformationHeightChange: (Int) -> Unit,
     state: PlayerViewState.Data,
     onShowPanel: (() -> Unit)?,
-    onArtistClicked: () -> Unit,
+    onArtistClicked: (selectedArtist: Artist) -> Unit,
     onAlbumClicked: () -> Unit,
     onSongInfoClicked: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
@@ -95,28 +96,34 @@ fun PlayerTopInformation(
                     .basicMarquee()
             )
 
-            Row(
+            Column (
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = state.currentMusic.artist.formatTextForEllipsis(),
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    fontSize = 15.sp,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                            onArtistClicked()
-                        },
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = " | ",
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    fontSize = 15.sp,
-                )
+                Row {
+                    state.artistsOfCurrentMusic.forEachIndexed { index, artist ->
+
+                        val formattedText = if (index == state.artistsOfCurrentMusic.lastIndex) {
+                            artist.artistName
+                        } else {
+                            "${artist.artistName}, "
+                        }
+
+                        Text(
+                            text = formattedText,
+                            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                            fontSize = 15.sp,
+                            maxLines = 1,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                                    onArtistClicked(artist)
+                                },
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
                 Text(
                     text = state.currentMusic.album.formatTextForEllipsis(),
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,

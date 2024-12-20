@@ -84,6 +84,8 @@ object EnStrings : Strings {
     override val artistInformation = "Artist's information"
     override val albumInformation = "Album's information"
 
+    override val addArtist = "Add artist"
+
     override val deleteMusicDialogTitle = "Are you sure to delete this song?"
     override val deleteMusicDialogText = "It will be removed from the application."
     override val deleteAlbumDialogTitle = "Are you sure to delete this album?"

@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementAddArtist
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.ModifyMusicViewModel
@@ -59,6 +60,7 @@ data class ModifyMusicScreen(
             navigateBack = { navigator.pop() },
             onNewImageSet = screenModel::setNewCover,
             onValidateModification = screenModel::updateMusic,
+            addArtistField = screenModel::addArtistField,
         )
     }
 }
@@ -70,6 +72,7 @@ private fun ModifyMusicScreenView(
     navigateBack: () -> Unit,
     onNewImageSet: (cover: PlatformFile) -> Unit,
     onValidateModification: () -> Unit,
+    addArtistField: () -> Unit,
 ) {
 
     when {
@@ -89,7 +92,11 @@ private fun ModifyMusicScreenView(
                     onNewImageSet = onNewImageSet,
                     onValidateModification = onSave,
                     textFields = formState.textFields,
-                )
+                ) {
+                    EditableElementAddArtist(
+                        onClick = addArtistField,
+                    )
+                }
             }
         }
 

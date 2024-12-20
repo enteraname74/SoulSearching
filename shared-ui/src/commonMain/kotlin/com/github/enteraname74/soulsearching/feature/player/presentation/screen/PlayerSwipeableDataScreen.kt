@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -44,7 +45,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     state: PlayerViewState.Data,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
-    onArtistClicked: () -> Unit,
+    onArtistClicked: (selectedArtist: Artist) -> Unit,
     onAlbumClicked: () -> Unit,
     closeSelection: () -> Unit,
     showMusicBottomSheet: (music: Music) -> Unit,

@@ -26,22 +26,7 @@ internal class RoomMusicArtistDataSourceImpl(
         appDatabase.musicArtistDao.upsertAll(musicArtists.map { it.toRoomMusicArtist() })
     }
 
-    override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) {
-        appDatabase.musicArtistDao.updateArtistOfMusic(
-            musicId = musicId,
-            newArtistId = newArtistId
-        )
-    }
-
-    override suspend fun deleteMusicFromArtist(musicId: UUID) {
-        appDatabase.musicArtistDao.deleteMusicFromArtist(
-            musicId = musicId
-        )
-    }
-
-    override suspend fun getArtistIdFromMusicId(musicId: UUID): UUID? {
-        return appDatabase.musicArtistDao.getArtistIdFromMusicId(
-            musicId = musicId
-        )
+    override suspend fun deleteMusicArtist(musicArtist: MusicArtist) {
+        appDatabase.musicArtistDao.delete(roomMusicArtist = musicArtist.toRoomMusicArtist())
     }
 }

@@ -84,6 +84,8 @@ object FrStrings : Strings {
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 
+    override val addArtist = "Ajouter un artiste"
+
     override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
     override val deleteMusicDialogText = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"

@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,7 @@ fun SoulDropdownTextField(
     modifier: Modifier = Modifier,
     colors : SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
     style: SoulTextFieldStyle,
+    leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     focusManager: FocusManager
 ) {
     var isExpanded by rememberSaveable {
@@ -88,6 +90,18 @@ fun SoulDropdownTextField(
                         modifier = Modifier.rotate(rotation),
                         tint = colors.contentColor,
                     )
+                },
+                leadingIcon = leadingIconSpec?.let {
+                    {
+                        SoulIcon(
+                            icon = it.icon,
+                            contentDescription = null,
+                            tint = colors.contentColor,
+                            modifier = Modifier.clickableWithHandCursor {
+                                it.onClick()
+                            }
+                        )
+                    }
                 }
             )
             ExposedDropdownMenu(
@@ -118,9 +132,11 @@ class SoulDropdownTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
+    onChange: (String) -> Unit = {},
 ): SoulTextFieldHolder(
     initialValue = initialValue,
     isValid = isValid,
@@ -128,6 +144,7 @@ class SoulDropdownTextFieldHolderImpl(
     getLabel = getLabel,
     getColors = getColors,
     getError = getError,
+    onChange = onChange,
 ) {
     private var values: List<String> by mutableStateOf(emptyList())
     private var updateJob: Job? = null
@@ -144,10 +161,11 @@ class SoulDropdownTextFieldHolderImpl(
 
     @Composable
     override fun TextField(
+        modifier: Modifier,
         focusManager: FocusManager,
     ) {
         SoulDropdownTextField(
-            modifier = modifier,
+            modifier = this.modifier.then(modifier),
             value = value,
             onValueChange = ::onValueChanged,
             labelName = label,
@@ -157,6 +175,7 @@ class SoulDropdownTextFieldHolderImpl(
             colors = colors,
             isInError = isInError,
             error = error,
+            leadingIconSpec = leadingIconSpec,
         )
     }
 }

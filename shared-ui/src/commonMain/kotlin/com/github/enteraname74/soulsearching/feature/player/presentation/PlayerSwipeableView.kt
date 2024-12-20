@@ -129,7 +129,7 @@ fun PlayerDraggableView(
         MultiSelectionScaffold(
             multiSelectionManagerImpl = playerViewModel.multiSelectionManagerImpl,
             onCancel = playerViewModel::clearMultiSelection,
-            onMore = playerViewModel::showMultiMusicBottomSheet,
+            onMore = playerViewModel::handleMultiSelectionBottomSheet,
             topBarColors = if (PlayerUiUtils.canShowSidePanel()) {
                 SoulTopBarDefaults.secondary()
             } else {
@@ -193,7 +193,7 @@ fun PlayerDraggableView(
                                 coroutineScope.launch {
                                     playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                                 }
-                                playerViewModel.navigateToArtist()
+                                playerViewModel.navigateToArtist(it)
                             },
                             onAlbumClicked = {
                                 coroutineScope.launch {

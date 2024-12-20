@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +47,7 @@ fun SoulTextField(
     keyboardActions: KeyboardActions = KeyboardActions(
         onDone = { focusManager.clearFocus() }
     ),
+    leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -63,29 +66,6 @@ fun SoulTextField(
             style = style,
             isFocused = isFocused,
         ) {
-//        Column {
-//            labelName?.let {
-//                Text(
-//                    text = it,
-//                    style = UiConstants.Typography.bodyVerySmall.copy(color = colors.labelColor),
-//                )
-//            }
-//            TextField(
-//                modifier = modifier,
-//                value = value,
-//                onValueChange = onValueChange,
-//            )
-//            AnimatedVisibility(
-//                enter = slideInVertically(),
-//                exit = slideOutVertically(),
-//                visible = isInError,
-//            ) {
-//                Text(
-//                    text = error.orEmpty(),
-//                    style = UiConstants.Typography.bodyVerySmall.copy(color = colors.labelColor),
-//                )
-//            }
-//        }
             BasicTextField(
                 modifier = modifier,
                 value = value,
@@ -112,6 +92,7 @@ fun SoulTextField(
                             horizontal = UiConstants.Spacing.mediumPlus,
                         ),
                         trailingIcon = trailingIcon,
+                        leadingIcon = leadingIcon,
                         innerTextField = {
                             Column(
                                 verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
@@ -165,10 +146,12 @@ class SoulTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
     private val onValueChange: ((String) -> Unit)? = null,
     private val keyboardType: KeyboardType = KeyboardType.Text,
+    onChange: (String) -> Unit = {},
 ) : SoulTextFieldHolder(
     initialValue = initialValue,
     isValid = isValid,
@@ -176,6 +159,7 @@ class SoulTextFieldHolderImpl(
     getLabel = getLabel,
     getColors = getColors,
     getError = getError,
+    onChange = onChange,
 ) {
 
     override fun onValueChanged(newValue: String) {
@@ -185,10 +169,11 @@ class SoulTextFieldHolderImpl(
 
     @Composable
     override fun TextField(
+        modifier: Modifier,
         focusManager: FocusManager
     ) {
         SoulTextField(
-            modifier = modifier,
+            modifier = this.modifier.then(modifier),
             value = value,
             onValueChange = ::onValueChanged,
             labelName = label,
@@ -198,6 +183,18 @@ class SoulTextFieldHolderImpl(
             colors = colors,
             error = error,
             isInError = isInError,
+            leadingIcon = leadingIconSpec?.let {
+                {
+                    SoulIcon(
+                        icon = it.icon,
+                        contentDescription = null,
+                        tint = colors.contentColor,
+                        modifier = Modifier.clickableWithHandCursor {
+                            it.onClick()
+                        }
+                    )
+                }
+            }
         )
     }
 }

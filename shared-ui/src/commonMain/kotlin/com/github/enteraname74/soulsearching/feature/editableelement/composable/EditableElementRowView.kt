@@ -3,8 +3,7 @@ package com.github.enteraname74.soulsearching.feature.editableelement.composable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +21,7 @@ fun EditableElementRowView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
+    extraContent: @Composable (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
@@ -46,18 +46,23 @@ fun EditableElementRowView(
         Box(
             modifier = Modifier
                 .weight(2f)
-                .verticalScroll(rememberScrollState())
                 .padding(
                     top = UiConstants.Spacing.medium
                 )
         ) {
-            EditableElementTextFieldsView(
-                focusManager = focusManager,
-                textFields = textFields,
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .align(Alignment.TopCenter),
-            )
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                editableElementTextFieldsView(
+                    focusManager = focusManager,
+                    textFields = textFields,
+                    extraContent = extraContent,
+                )
+            }
+
         }
     }
 }

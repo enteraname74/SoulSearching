@@ -98,6 +98,8 @@ interface Strings {
     val artistInformation: String
     val albumInformation: String
 
+    val addArtist: String
+
     val deleteMusicDialogTitle: String
     val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String

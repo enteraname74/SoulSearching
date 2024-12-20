@@ -1,14 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.textfield.*
+import java.util.UUID
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -17,6 +18,9 @@ sealed interface ModifyMusicFormState {
         private val artistsOfMusic: List<Artist>,
         private val updateFoundAlbums: suspend (name: String) -> List<String>,
         private val updateFoundArtists: suspend (name: String) -> List<String>,
+        private val onDeleteArtist: (artistId: UUID) -> Unit,
+        private val savedData: Map<String, String>,
+        private val onFieldChange: (id: String, value: String) -> Unit,
     ) : ModifyMusicFormState {
         val textFields: List<SoulTextFieldHolder> = buildList {
             add(
@@ -24,11 +28,14 @@ sealed interface ModifyMusicFormState {
                     modifier = Modifier
                         .fillMaxWidth(),
                     id = MUSIC_NAME,
-                    initialValue = initialMusic.name,
+                    initialValue = savedData[MUSIC_NAME] ?: initialMusic.name,
                     isValid = { it.isNotBlank() },
                     getLabel = { strings.musicName },
                     style = SoulTextFieldStyle.Top,
                     getError = { strings.fieldCannotBeEmpty },
+                    onChange = {
+                        onFieldChange(MUSIC_NAME, it)
+                    }
                 )
             )
             add(
@@ -37,22 +44,27 @@ sealed interface ModifyMusicFormState {
                         .fillMaxWidth(),
                     id = ALBUM_NAME,
                     isValid = { it.isNotBlank() },
-                    initialValue = initialMusic.album,
+                    initialValue = savedData[ALBUM_NAME] ?: initialMusic.album,
                     updateProposedValues = updateFoundAlbums,
                     getLabel = { strings.albumName },
                     style = SoulTextFieldStyle.Body,
                     getError = { strings.fieldCannotBeEmpty },
+                    onChange = {
+                        onFieldChange(ALBUM_NAME, it)
+                    }
                 )
             )
 
             artistsOfMusic.forEachIndexed { index, artist ->
+                val artistId = artist.artistId.toString()
+
                 add(
                     SoulDropdownTextFieldHolderImpl(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        id = artist.artistId.toString(),
+                        id = artistId,
                         isValid = { it.isNotBlank() },
-                        initialValue = artist.artistName,
+                        initialValue = savedData[artistId] ?: artist.artistName,
                         updateProposedValues = updateFoundArtists,
                         getLabel = { strings.artistName },
                         style = if (index == artistsOfMusic.lastIndex) {
@@ -61,6 +73,19 @@ sealed interface ModifyMusicFormState {
                             SoulTextFieldStyle.Body
                         },
                         getError = { strings.fieldCannotBeEmpty },
+                        leadingIconSpec = if (index == 0) {
+                            null
+                        } else {
+                            SoulTextFieldLeadingIconSpec(
+                                icon = Icons.Rounded.Delete,
+                                onClick = {
+                                    onDeleteArtist(artist.artistId)
+                                }
+                            )
+                        },
+                        onChange = {
+                            onFieldChange(artistId, it)
+                        }
                     )
                 )
             }
