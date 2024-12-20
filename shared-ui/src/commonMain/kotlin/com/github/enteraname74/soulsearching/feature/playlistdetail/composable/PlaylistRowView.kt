@@ -103,8 +103,8 @@ private fun LargeView(
         ) {
             Content(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = windowWidth * 0.1f)
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.9f)
                     .padding(top = windowHeight * 0.1f),
                 shuffleAction = shuffleAction,
                 searchAction = searchAction,
