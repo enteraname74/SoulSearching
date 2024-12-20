@@ -13,6 +13,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -24,6 +25,7 @@ class ModifyArtistViewModel(
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
+    private val playbackManager: PlaybackManager,
 ) : ScreenModel {
     private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -121,6 +123,13 @@ class ModifyArtistViewModel(
                 )
 
                 updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+
+                val newArtistWithMusics: ArtistWithMusics = getArtistWithMusicsUseCase(
+                    artistId = newArtistInformation.artist.artistId,
+                ).first() ?: return@withLoading
+
+                // We need to update the artist's songs that are in the played list.
+                for (music in newArtistWithMusics.musics) playbackManager.updateMusic(music)
             }
 
             _navigationState.value = ModifyArtistNavigationState.Back
