@@ -113,17 +113,19 @@ fun SelectedArtistScreenView(
                 navigateBack = navigateBack,
                 onShowMusicBottomSheet = selectedArtistViewModel::showMusicBottomSheet,
                 optionalContent = {
-                    ArtistAlbums(
-                        albums = dataState.artistAlbums,
-                        onAlbumClick = selectedArtistViewModel::toAlbum,
-                        onAlbumLongClick = { albumWithMusics ->
-                            selectedArtistViewModel.toggleElementInSelection(
-                                id = albumWithMusics.album.albumId,
-                                mode = SelectionMode.Album,
-                            )
-                        },
-                        multiSelectionState = multiSelectionState,
-                    )
+                    if (dataState.artistAlbums.isNotEmpty()) {
+                        ArtistAlbums(
+                            albums = dataState.artistAlbums,
+                            onAlbumClick = selectedArtistViewModel::toAlbum,
+                            onAlbumLongClick = { albumWithMusics ->
+                                selectedArtistViewModel.toggleElementInSelection(
+                                    id = albumWithMusics.album.albumId,
+                                    mode = SelectionMode.Album,
+                                )
+                            },
+                            multiSelectionState = multiSelectionState,
+                        )
+                    }
                 },
                 multiSelectionManagerImpl = selectedArtistViewModel.multiSelectionManagerImpl,
                 onLongSelectOnMusic = {
