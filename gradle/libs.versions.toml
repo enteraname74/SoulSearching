@@ -2,7 +2,7 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.5.2"
-android-version-code = "24"
+android-version-code = "25"
 android-target-sdk = "34"
 android-compile-sdk = "34"
 android-min-sdk = "26"

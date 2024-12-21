@@ -5,7 +5,6 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.util.Log
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +30,7 @@ class SoulSearchingAndroidPlayerImpl(
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
     private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
-    private val normalizer: AndroidPlayerNormalizer = AndroidPlayerNormalizer()
+//    private val normalizer: AndroidPlayerNormalizer = AndroidPlayerNormalizer()
 
     private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val state: Flow<Boolean> = _state.asStateFlow()

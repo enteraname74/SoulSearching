@@ -129,8 +129,8 @@ object FrStrings : Strings {
     override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
 
     override val settings = "Paramètres"
-    override val advancedSettingsTitle = "Paramètres avancées"
-    override val advancedSettingsText = "Gérer les images utilisées dans l'application"
+    override val advancedSettingsTitle = "Paramètres avancés"
+    override val advancedSettingsText = "Gérer les images, séparer les artistes"
     override val reloadCoversTitle = "Recharger les images"
     override val reloadCoversText = "Recharger les images depuis les informations des fichiers"
     override val reloadMusicsCovers = "Recharger les images des musiques"
