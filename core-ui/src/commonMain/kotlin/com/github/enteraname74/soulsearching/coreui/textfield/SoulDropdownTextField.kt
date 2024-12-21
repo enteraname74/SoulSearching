@@ -1,16 +1,12 @@
 package com.github.enteraname74.soulsearching.coreui.textfield
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -82,15 +78,6 @@ fun SoulDropdownTextField(
                         isExpanded = false
                     }
                 ),
-                trailingIcon = {
-                    val rotation by animateFloatAsState(targetValue = if (isExpanded && isFocused) 180f else 0f)
-                    SoulIcon(
-                        icon = Icons.Filled.ArrowDropDown,
-                        contentDescription = null,
-                        modifier = Modifier.rotate(rotation),
-                        tint = colors.contentColor,
-                    )
-                },
                 leadingIcon = leadingIconSpec?.let {
                     {
                         SoulIcon(
