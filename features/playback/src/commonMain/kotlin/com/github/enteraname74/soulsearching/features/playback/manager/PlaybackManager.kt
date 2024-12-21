@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
-import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
+import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListCallbacks
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListManager
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListState
@@ -23,14 +23,14 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
-abstract class PlaybackManager : KoinComponent {
+class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
 
     private val playerMusicRepository: PlayerMusicRepository by inject()
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
 
-    abstract val player: SoulSearchingPlayer
-    abstract val notification: SoulSearchingNotification
+    val player: SoulSearchingPlayer by inject()
+    val notification: SoulSearchingNotification by inject()
 
     private val playbackProgressJob: PlaybackProgressJob = PlaybackProgressJob(
         settings = settings,
@@ -42,7 +42,7 @@ abstract class PlaybackManager : KoinComponent {
                 this@PlaybackManager.getMusicPosition()
         },
     )
-    private val playbackListManager: PlaybackListManager by lazy {
+    private val playbackListManager: PlaybackListManager =
         PlaybackListManager(
             settings = settings,
             playbackCallback = object : PlaybackListCallbacks {
@@ -65,6 +65,9 @@ abstract class PlaybackManager : KoinComponent {
             playerMusicRepository = playerMusicRepository,
             updateMusicNbPlayedUseCase = updateMusicNbPlayedUseCase,
         )
+
+    init {
+        player.registerListener(this)
     }
 
     val mainState: StateFlow<PlaybackManagerState> by lazy {
@@ -307,6 +310,16 @@ abstract class PlaybackManager : KoinComponent {
             isMainPlaylist = isMainPlaylist,
             isForcingNewPlaylist = isForcingNewPlaylist,
         )
+    }
+
+    /**************** PLAYER LISTENER ******************/
+
+    override suspend fun onCompletion() {
+        next()
+    }
+
+    override suspend fun onError() {
+        skipAndRemoveCurrentSong()
     }
 
     companion object {

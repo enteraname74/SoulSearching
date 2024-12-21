@@ -16,6 +16,7 @@ coil = "3.0.0-alpha01"
 compose = "1.7.0"
 coroutines-core = "1.9.0"
 exposed = "0.55.0"
+ffmpeg = "6.0-2"
 file-kit = "0.8.1"
 gradle = "8.5.2"
 gson = "2.11.0"
@@ -32,6 +33,7 @@ room = "2.6.1"
 sqlite-jdbc = "3.41.2.2"
 vlcj = "4.8.3"
 voyager = "1.1.0-beta02"
+media3-exoplayer = "1.4.1"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -61,6 +63,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 
+ffmpeg = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpeg" }
 foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "compose" }
 file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -91,6 +94,7 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3-exoplayer" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

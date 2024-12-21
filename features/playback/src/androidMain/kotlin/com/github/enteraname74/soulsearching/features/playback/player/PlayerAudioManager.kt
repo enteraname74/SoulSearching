@@ -15,7 +15,7 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
  */
 class PlayerAudioManager(
     private val context: Context,
-    private val playbackManager: PlaybackManager
+    private val listener: Listener,
 ): AudioManager.OnAudioFocusChangeListener {
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     val audioAttributes: AudioAttributes = AudioAttributes.Builder()
@@ -30,7 +30,7 @@ class PlayerAudioManager(
 
     private val audioBecomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            playbackManager.pause()
+            listener.onPause()
         }
     }
 
@@ -58,9 +58,9 @@ class PlayerAudioManager(
 
     override fun onAudioFocusChange(focusChange: Int) {
         when (focusChange) {
-            AudioManager.AUDIOFOCUS_GAIN -> playbackManager.play()
-            AudioManager.AUDIOFOCUS_LOSS -> playbackManager.pause()
-            else -> playbackManager.pause()
+            AudioManager.AUDIOFOCUS_GAIN -> listener.onPlay()
+            AudioManager.AUDIOFOCUS_LOSS -> listener.onPause()
+            else -> listener.onPause()
         }
     }
 
@@ -85,4 +85,9 @@ class PlayerAudioManager(
         context.unregisterReceiver(audioBecomingNoisyReceiver)
     }
 
+
+    interface Listener {
+        fun onPlay()
+        fun onPause()
+    }
 }

@@ -1,7 +1,6 @@
-package com.github.enteraname74.soulsearching.features.playback
+package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -9,11 +8,14 @@ import kotlinx.coroutines.flow.Flow
  */
 interface SoulSearchingPlayer {
     val state: Flow<Boolean>
+    var listener: Listener?
 
     /**
      * Initialize the player.
      */
     fun init()
+
+    fun registerListener(listener: Listener)
 
     /**
      * Set a song to the player.
@@ -81,4 +83,12 @@ interface SoulSearchingPlayer {
      * Set the volume of the player between 0.1 and 1.0.
      */
     fun setPlayerVolume(volume: Float)
+
+    interface Listener {
+        /**
+         * Called when the current played song is completed
+         */
+        suspend fun onCompletion()
+        suspend fun onError()
+    }
 }
