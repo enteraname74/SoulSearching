@@ -84,14 +84,27 @@ object FrStrings : Strings {
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 
+    override val addArtist = "Ajouter un artiste"
+
     override val deleteMusicDialogTitle = "Voulez-vous vraiment supprimer cette musique ?"
     override val deleteMusicDialogText = "Elle sera supprimée de l'application."
     override val deleteAlbumDialogTitle = "Voulez-vous vraiment supprimer cet album ?"
     override val deletePlaylistDialogTitle = "Voulez-vous vraiment supprimer cette playlist ?"
     override val deleteArtistDialogTitle = "Voulez-vous vraiment supprimer cet artiste ?"
+
+    override val deleteSelectedMusicsDialogTitle = "Voulez-vous vraiment supprimer ces musiques ?"
+    override val deleteSelectedMusicsDialogText = "Elles seront supprimées de l'application."
+    override val deleteSelectedAlbumsDialogTitle = "Voulez-vous vraiment supprimer ces albums ?"
+    override val deleteSelectedArtistsDialogTitle = "Voulez-vous vraiment supprimer ces artistes ?"
+    override val deleteSelectedPlaylistsDialogTitle = "Voulez-vous vraiment supprimer ces playlists ?"
+
     override val removeMusicFromPlaylistTitle = "Voulez-vous vraiment supprimer cette musique de cette playlist ?"
     override val removeMusicFromPlaylistText =
         "Cette musique sera retirée de cette playlist mais ne sera pas supprimée de l'application."
+    override val removeSelectedMusicFromPlaylistTitle =
+        "Voulez-vous vraiment supprimer les musiques sélectionnées de cette playlist ?"
+    override val removeSelectedMusicFromPlaylistText = "" +
+            "Elles seront retirées de cette playlist mais ne seront pas supprimées de l'application."
 
     override val modifyAlbum = "Modifier cet album"
     override val modifyArtist = "Modifier cet artiste"
@@ -102,6 +115,10 @@ object FrStrings : Strings {
     override val deleteArtist = "Supprimer cet artiste"
     override val deleteMusic = "Supprimer cette musique"
     override val deletePlaylist = "Supprimer cette playlist"
+    override val deleteSelectedAlbums = "Supprimer les albums sélectionnés"
+    override val deleteSelectedArtists = "Supprimer les artistes sélectionnés"
+    override val deleteSelectedPlaylists = "Supprimer les playlists sélectionnées"
+    override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
 
     override val playNext = "Jouer ensuite"
 
@@ -112,14 +129,18 @@ object FrStrings : Strings {
     override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
 
     override val settings = "Paramètres"
-    override val advancedSettingsTitle = "Paramètres avancées"
-    override val advancedSettingsText = "Gérer les images utilisées dans l'application"
+    override val advancedSettingsTitle = "Paramètres avancés"
+    override val advancedSettingsText = "Gérer les images, séparer les artistes"
     override val reloadCoversTitle = "Recharger les images"
     override val reloadCoversText = "Recharger les images depuis les informations des fichiers"
     override val reloadMusicsCovers = "Recharger les images des musiques"
     override val deletePlaylistsCovers = "Supprimer les images des playlists"
     override val reloadAlbumsCovers = "Recharger les images des albums"
     override val reloadArtistsCovers = "Recharger les images des artistes"
+
+    override val splitMultipleArtistsTitle = "Séparer les artistes"
+    override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
+
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"
     override val modifyMusicFileTitle = "Modifier les fichiers sur l'appareil"
@@ -156,13 +177,15 @@ object FrStrings : Strings {
     override val manageMusicsViewText = "Gérer la vue des musiques"
     override val showMusicsByFolders = "Afficher les musiques par dossiers"
     override val showMusicsByMonths = "Afficher les musiques par mois"
-    override val showVerticalAccessBarTitle = "Afficher la barre d'accès verticale"
-    override val showVerticalAccessBarText = "Donne un accès rapide à tous les éléments de la page principale"
+    override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
+    override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 
     override val managePlayerTitle = "Lecteur de musique"
     override val managePlayerText = "Gérer le lecteur de musique"
     override val playerSwipeTitle =
         "Faire glisser la couverture de la musique pour avancer ou reculer dans la liste jouée"
+    override val playerRewindTitle = "Rembobiner la musique courante avant de jouer la précédente"
+    override val playerMinimisedProgressionTitle = "Afficher la progression de la musique sur le lecteur minimisé"
     override val soulMixSettingsTitle = "Total de musiques récupérées de chaque dossier pour le Soul Mix"
     override val usedFoldersTitle = "Dossiers utilisés"
     override val usedFoldersText = "Définissez les dossiers utilisés par l'application"
@@ -172,7 +195,7 @@ object FrStrings : Strings {
     override val deletingMusicsFromUnselectedFolders = "Suppression des musiques des dossiers désélectionnés…"
 
     override val dynamicThemeTitle = "Thème dynamique"
-    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d'album de la musique jouée courante"
+    override val dynamicThemeText = "Thème de couleur global basé sur la pochette d'album de la musique jouée"
     override val systemThemeTitle = "Thème du système"
     override val systemThemeText = "Thème de couleur global basé sur le mode de couleur de votre système"
 
@@ -187,6 +210,19 @@ object FrStrings : Strings {
     override val searchForNewSongs = "Rechercher de nouvelles musiques"
 
     override val appMigration = "Mise à jour des données de l'application"
+
+    override val multipleArtistsTitle = "Musiques avec plusieurs artistes"
+    override val multipleArtistsText =
+        "Des musiques avec plusieurs artistes ont été trouvées par l'application. " +
+                "Choisissez si vous voulez diviser ces artistes en plusieurs ou les conserver comme un seul artiste."
+    override val multipleArtistsSelectionTitle = "Artistes sélectionnés à diviser :"
+    override val noMultipleArtists = "Aucun artiste à diviser"
+
+    override val multipleSelection = "Sélection multiple"
+
+    override val fieldCannotBeEmpty = "Ce champ ne peut pas être vide"
+
+    override val playerVolume = "Volume du lecteur"
 
     override fun musics(total: Int): String {
         return when (total) {
@@ -212,4 +248,11 @@ object FrStrings : Strings {
 
     override fun fetchingMusicsFrom(path: String): String =
         "Récupération de musiques dans le dossier : $path"
+
+    override fun selectedElements(total: Int): String =
+        when (total) {
+            0 -> "Aucun élément sélectionné"
+            1 -> "Un élément sélectionné"
+            else -> "$total éléments sélectionnés"
+        }
 }

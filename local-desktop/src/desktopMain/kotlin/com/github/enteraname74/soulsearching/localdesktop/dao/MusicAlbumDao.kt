@@ -7,15 +7,17 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.albumId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicAlbumTable.musicId
+import com.github.enteraname74.soulsearching.localdesktop.tables.toMusicAlbum
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.batchUpsert
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.update
-import org.jetbrains.exposed.sql.upsert
-import java.util.UUID
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.*
 
 internal class MusicAlbumDao {
+    fun getAll(): List<MusicAlbum> = transaction {
+        MusicAlbumTable.selectAll().mapNotNull { it.toMusicAlbum() }
+    }
+
     suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) {
         flowTransactionOn {
             MusicAlbumTable.upsert {

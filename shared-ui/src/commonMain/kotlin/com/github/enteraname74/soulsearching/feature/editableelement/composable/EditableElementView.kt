@@ -27,6 +27,7 @@ fun EditableElementView(
     onNewImageSet: (imageFile: PlatformFile) -> Unit,
     onValidateModification: () -> Unit,
     textFields: List<SoulTextFieldHolder>,
+    extraContent: @Composable (() -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
     val windowSize = rememberWindowSize()
@@ -59,6 +60,7 @@ fun EditableElementView(
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
+                    extraContent = extraContent,
                 )
 
                 else -> EditableElementRowView(
@@ -67,6 +69,7 @@ fun EditableElementView(
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
+                    extraContent = extraContent,
                 )
             }
         }

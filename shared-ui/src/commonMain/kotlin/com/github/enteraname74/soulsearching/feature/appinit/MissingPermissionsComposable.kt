@@ -29,7 +29,6 @@ fun MissingPermissionsComposable(
 ) {
     val windowSize = rememberWindowSize()
 
-
     colorThemeManager.isInDarkMode = isInDarkTheme()
 
     val appColorTheme by colorThemeManager.appColorPalette.collectAsState()

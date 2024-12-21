@@ -119,6 +119,18 @@ object SoulSearchingSettingsKeys {
             key = "SOUL_MIX_TOTAL_BY_LIST",
             defaultValue = 50
         )
+        val IS_REWIND_ENABLED = settingElementOf(
+            key = "IS_REWIND_ENABLED",
+            defaultValue = true,
+        )
+        val IS_MINIMISED_SONG_PROGRESSION_SHOWN = settingElementOf(
+            key = "IS_MINIMISED_SONG_PROGRESSION_SHOWN",
+            defaultValue = false,
+        )
+        val PLAYER_VOLUME = settingElementOf(
+            key = "PLAYER_VOLUME",
+            defaultValue = 1f,
+        )
     }
 
     object ColorTheme {
@@ -172,6 +184,25 @@ object SoulSearchingSettingsKeys {
         val ARE_MUSICS_BY_FOLDERS_SHOWN = settingElementOf(
             key = "ARE_MUSICS_BY_FOLDERS_SHOWN",
             defaultValue = true,
+        )
+        val IS_USING_VERTICAL_ACCESS_BAR = settingElementOf(
+            key = "IS_USING_VERTICAL_ACCESS_BAR",
+            defaultValue = true,
+        )
+    }
+
+    object Desktop {
+        val WINDOW_HEIGHT = settingElementOf(
+            key = "WINDOW_HEIGHT",
+            defaultValue = 600f,
+        )
+        val WINDOW_WIDTH = settingElementOf(
+            key = "WINDOW_WIDTH",
+            defaultValue = 800f,
+        )
+        val IS_FULLSCREEN = settingElementOf(
+            key = "IS_FULLSCREEN",
+            defaultValue = false,
         )
     }
 

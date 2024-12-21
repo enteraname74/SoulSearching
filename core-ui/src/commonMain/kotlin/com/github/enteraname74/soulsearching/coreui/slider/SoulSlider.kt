@@ -4,12 +4,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -23,7 +22,9 @@ fun SoulSlider(
     minValue: Float = 0f,
     maxValue: Float,
     value: Float,
+    onThumbDragged: (tmpPosition: Float?) -> Unit,
     onValueChanged: (newValue: Float) -> Unit,
+    steps: Int = 0,
 ) {
     val fixedMin = max(0f, minValue)
     val fixedMax = max(maxValue, 0f)
@@ -33,15 +34,30 @@ fun SoulSlider(
         thumbColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         activeTrackColor = SoulSearchingColorTheme.colorScheme.onPrimary,
         inactiveTrackColor = SoulSearchingColorTheme.colorScheme.secondary,
+        activeTickColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+        inactiveTickColor = SoulSearchingColorTheme.colorScheme.secondary,
     )
+
+
+    var overridePosition: Float? by rememberSaveable {
+        mutableStateOf(null)
+    }
 
     Slider(
         modifier = Modifier
             .fillMaxWidth(),
-        value = value.coerceIn(fixedMin, fixedMax),
-        onValueChange = onValueChanged,
+        value = overridePosition ?: value.coerceIn(fixedMin, fixedMax),
+        onValueChange = { tmpPosition ->
+            overridePosition = tmpPosition
+            onThumbDragged(tmpPosition)
+        },
+        onValueChangeFinished = {
+            overridePosition?.let { onValueChanged(it) }
+            overridePosition = null
+            onThumbDragged(null)
+        },
         colors = sliderColors,
-        valueRange = 0f..fixedMax,
+        valueRange = fixedMin..fixedMax,
         interactionSource = interactionSource,
         thumb = {
             SliderDefaults.Thumb(
@@ -57,6 +73,7 @@ fun SoulSlider(
                 colors = sliderColors
             )
         },
+        steps = steps,
         track = {
             SliderDefaults.Track(
                 sliderState = it,

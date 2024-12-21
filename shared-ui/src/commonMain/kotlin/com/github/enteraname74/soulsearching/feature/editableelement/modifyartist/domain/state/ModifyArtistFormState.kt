@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
@@ -13,11 +15,14 @@ sealed interface ModifyArtistFormState {
     ) : ModifyArtistFormState {
         val textFields: List<SoulTextFieldHolder> = listOf(
             SoulDropdownTextFieldHolderImpl(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialArtist.artistName,
                 updateProposedValues = updateFoundArtists,
                 getLabel = { strings.artistName },
+                getError = { strings.fieldCannotBeEmpty },
             ),
         )
 

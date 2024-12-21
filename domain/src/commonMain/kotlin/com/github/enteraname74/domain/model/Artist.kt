@@ -14,4 +14,10 @@ data class Artist(
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false
-)
+) {
+    fun isComposedOfMultipleArtists(): Boolean =
+        artistName.split(",").size > 1
+
+    fun getMultipleArtists(): List<String> =
+        artistName.split(",").map { it.trim() }
+}

@@ -1,12 +1,13 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -24,10 +25,12 @@ import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddT
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionScaffold
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
@@ -39,7 +42,9 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainMenuHeaderComposable
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderScreen
@@ -61,6 +66,7 @@ class MainPageScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val mainPageViewModel = koinScreenModel<MainPageViewModel>()
+        val playerViewManager: PlayerViewManager = injectElement()
 
         val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
         val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
@@ -69,6 +75,7 @@ class MainPageScreen : Screen {
 
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
+        val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
 
         val searchDraggableState = mainPageViewModel.searchDraggableState
 
@@ -79,6 +86,12 @@ class MainPageScreen : Screen {
         bottomSheetState?.BottomSheet()
         addToPlaylistsBottomSheetState?.BottomSheet()
         dialogState?.Dialog()
+
+        LaunchedEffect(playerViewManager.currentValue) {
+            if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                mainPageViewModel.clearMultiSelection()
+            }
+        }
 
         LaunchedEffect(navigationState) {
             handleMainPageNavigation(
@@ -117,6 +130,7 @@ class MainPageScreen : Screen {
             allArtistsState = artistState,
             tabs = tabs,
             currentEnumPage = currentPage,
+            isUsingVerticalAccessBar = isUsingVerticalAccessBar,
         )
     }
 
@@ -184,12 +198,16 @@ class MainPageScreen : Screen {
                     SelectedPlaylistScreen(selectedPlaylistId = navigationState.playlistId.toString())
                 )
             }
+
+            else -> {
+                /*no-op*/
+            }
         }
         consumeNavigation()
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Suppress("Deprecation")
 fun MainPageScreenView(
@@ -205,9 +223,8 @@ fun MainPageScreenView(
     allArtistsState: AllArtistsState,
     tabs: List<PagerScreen>,
     currentEnumPage: ElementEnum?,
+    isUsingVerticalAccessBar: Boolean,
 ) {
-    val windowSize = rememberWindowSize()
-
     val pagerState = rememberPagerState(
         pageCount = { tabs.size }
     )
@@ -222,90 +239,141 @@ fun MainPageScreenView(
     val searchBarFocusRequester = remember { FocusRequester() }
     val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 
-    BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = SoulSearchingColorTheme.colorScheme.primary)
+    MultiSelectionScaffold(
+        multiSelectionManagerImpl = mainPageViewModel.multiSelectionManagerImpl,
+        onCancel = mainPageViewModel::clearMultiSelection,
+        onMore = mainPageViewModel::handleMultiSelectionBottomSheet,
     ) {
-        val constraintsScope = this
-        val maxHeight = with(LocalDensity.current) {
-            constraintsScope.maxHeight.toPx()
-        }
-
-        val coroutineScope = rememberCoroutineScope()
-
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = SoulSearchingColorTheme.colorScheme.primary)
         ) {
-            MainMenuHeaderComposable(
-                settingsAction = navigateToSettings,
-                searchAction = {
-                    coroutineScope.launch {
-                        searchDraggableState.animateTo(
-                            BottomSheetStates.EXPANDED,
-                            tween(UiConstants.AnimationDuration.normal)
-                        )
-                    }.invokeOnCompletion {
-                        searchBarFocusRequester.requestFocus()
-                    }
-                }
-            )
+            val constraintsScope = this
+            val maxHeight = with(LocalDensity.current) {
+                constraintsScope.maxHeight.toPx()
+            }
 
-            Row(
-                modifier = Modifier.fillMaxSize()
+            val coroutineScope = rememberCoroutineScope()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = SoulSearchingColorTheme.colorScheme.primary)
             ) {
+                MainMenuHeaderComposable(
+                    settingsAction = navigateToSettings,
+                    searchAction = {
+                        coroutineScope.launch {
+                            searchDraggableState.animateTo(
+                                BottomSheetStates.EXPANDED,
+                                tween(UiConstants.AnimationDuration.normal)
+                            )
+                        }.invokeOnCompletion {
+                            searchBarFocusRequester.requestFocus()
+                        }
+                    }
+                )
 
-                // We only show the vertical shortcut if there is more than one panel to access.
-                if (tabs.size > 1 && windowSize != WindowSize.Large) {
-                    MainPageVerticalShortcut(
-                        currentPage = currentPage,
-                        visibleElements = tabs.map { it.type },
-                        switchPageAction = { newPage ->
-                            if (newPage == -1) return@MainPageVerticalShortcut
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(newPage)
-                            }.invokeOnCompletion {
-                                mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                if (isUsingVerticalAccessBar) {
+                    Row(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        // We only show the vertical shortcut if there is more than one panel to access.
+                        if (shouldShowShortcutAccess(tabs = tabs)) {
+                            MainPageVerticalShortcut(
+                                currentPage = currentPage,
+                                visibleElements = tabs.map { it.type },
+                                switchPageAction = { newPage ->
+                                    if (newPage == -1) return@MainPageVerticalShortcut
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(newPage)
+                                    }.invokeOnCompletion {
+                                        mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                                    }
+                                }
+                            )
+                        }
+                        VerticalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize(),
+                            userScrollEnabled = false,
+                        ) {
+                            tabs[it].screen()
+                        }
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        if (shouldShowShortcutAccess(tabs = tabs)) {
+                            MainPageHorizontalShortcut(
+                                currentPage = currentPage,
+                                visibleElements = tabs.map { it.type },
+                                switchPageAction = { newPage ->
+                                    if (newPage == -1) return@MainPageHorizontalShortcut
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(newPage)
+                                    }.invokeOnCompletion {
+                                        mainPageViewModel.setCurrentPage(tabs[newPage].type)
+                                    }
+                                }
+                            )
+                        }
+
+                        val windowSize = rememberWindowSize()
+
+                        if (windowSize == WindowSize.Large) {
+                            VerticalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                                userScrollEnabled = false,
+                            ) {
+                                tabs[it].screen()
+                            }
+                        } else {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+                                tabs[it].screen()
                             }
                         }
-                    )
-                }
-
-                VerticalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = false
-                ) {
-                    tabs[it].screen()
+                    }
                 }
             }
-        }
 
-        SearchView(
-            draggableState = searchDraggableState,
-            placeholder = strings.searchAll,
-            maxHeight = maxHeight,
-            focusRequester = searchBarFocusRequester
-        ) { searchText, focusManager ->
-            SearchAll(
-                searchText = searchText,
-                musicState = musicState,
-                allAlbumsState = allAlbumsState,
-                allArtistsState = allArtistsState,
-                allPlaylistsState = allPlaylistsState,
-                onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
-                onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumBottomSheet,
-                onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
-                onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
-                navigateToPlaylist = navigateToPlaylist,
-                navigateToArtist = navigateToArtist,
-                navigateToAlbum = navigateToAlbum,
-                isMainPlaylist = false,
-                focusManager = focusManager,
-            )
+            SearchView(
+                draggableState = searchDraggableState,
+                placeholder = strings.searchAll,
+                maxHeight = maxHeight,
+                focusRequester = searchBarFocusRequester
+            ) { searchText, focusManager ->
+                SearchAll(
+                    searchText = searchText,
+                    musicState = musicState,
+                    allAlbumsState = allAlbumsState,
+                    allArtistsState = allArtistsState,
+                    allPlaylistsState = allPlaylistsState,
+                    onSelectedMusicForBottomSheet = mainPageViewModel::showMusicBottomSheet,
+                    onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumBottomSheet,
+                    onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
+                    onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
+                    navigateToPlaylist = navigateToPlaylist,
+                    navigateToArtist = navigateToArtist,
+                    navigateToAlbum = navigateToAlbum,
+                    isMainPlaylist = false,
+                    focusManager = focusManager,
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun shouldShowShortcutAccess(tabs: List<PagerScreen>): Boolean {
+    val windowSize = rememberWindowSize()
+    return tabs.size > 1 && windowSize != WindowSize.Large
 }
 

@@ -1,39 +1,37 @@
 package com.github.enteraname74.soulsearching.feature.player.presentation.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerTopInformation(
     modifier: Modifier = Modifier,
@@ -41,8 +39,9 @@ fun PlayerTopInformation(
     onTopInformationHeightChange: (Int) -> Unit,
     state: PlayerViewState.Data,
     onShowPanel: (() -> Unit)?,
-    onArtistClicked: () -> Unit,
+    onArtistClicked: (selectedArtist: Artist) -> Unit,
     onAlbumClicked: () -> Unit,
+    onSongInfoClicked: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
@@ -58,11 +57,9 @@ fun PlayerTopInformation(
 
         val statusBarPadding: Int = getStatusBarPadding()
 
-        Image(
-            imageVector = Icons.Rounded.KeyboardArrowDown,
-            contentDescription = "",
+        SoulIcon(
+            icon = Icons.Rounded.KeyboardArrowDown,
             modifier = Modifier
-                .size(UiConstants.ImageSize.medium)
                 .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                     coroutineScope.launch {
                         if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
@@ -75,7 +72,8 @@ fun PlayerTopInformation(
                         )
                     }
                 },
-            colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
+            size = UiConstants.ImageSize.medium,
+            tint = SoulSearchingColorTheme.colorScheme.onPrimary,
         )
         Column(
             modifier = Modifier
@@ -98,28 +96,34 @@ fun PlayerTopInformation(
                     .basicMarquee()
             )
 
-            Row(
+            Column (
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = state.currentMusic.artist.formatTextForEllipsis(),
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    fontSize = 15.sp,
-                    maxLines = 1,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                            onArtistClicked()
-                        },
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = " | ",
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    fontSize = 15.sp,
-                )
+                Row {
+                    state.artistsOfCurrentMusic.forEachIndexed { index, artist ->
+
+                        val formattedText = if (index == state.artistsOfCurrentMusic.lastIndex) {
+                            artist.artistName
+                        } else {
+                            "${artist.artistName}, "
+                        }
+
+                        Text(
+                            text = formattedText,
+                            color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                            fontSize = 15.sp,
+                            maxLines = 1,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                                    onArtistClicked(artist)
+                                },
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
                 Text(
                     text = state.currentMusic.album.formatTextForEllipsis(),
                     color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
@@ -134,17 +138,24 @@ fun PlayerTopInformation(
             }
         }
         if (onShowPanel != null) {
-            Image(
-                imageVector = Icons.Rounded.Menu,
-                contentDescription = "",
+            SoulIcon(
+                icon = Icons.Rounded.Menu,
                 modifier = Modifier
-                    .size(UiConstants.ImageSize.medium)
-                    .clickableWithHandCursor { onShowPanel() },
-                colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
+                    .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                        onShowPanel()
+                    },
+                size = UiConstants.ImageSize.medium,
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         } else {
-            Spacer(
-                modifier = Modifier.size(UiConstants.ImageSize.medium)
+            SoulIcon(
+                icon = Icons.Rounded.MoreVert,
+                modifier = Modifier
+                    .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+                        onSongInfoClicked()
+                    },
+                size = UiConstants.ImageSize.medium,
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
         }
     }

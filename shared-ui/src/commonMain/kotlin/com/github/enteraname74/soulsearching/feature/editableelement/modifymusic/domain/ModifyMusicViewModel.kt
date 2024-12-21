@@ -2,10 +2,12 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -21,17 +23,20 @@ import kotlinx.coroutines.flow.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import java.util.*
+import kotlin.collections.HashMap
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
     private val getMusicUseCase: GetMusicUseCase,
     private val getAlbumsNameFromSearchStringUseCase: GetAlbumsNameFromSearchStringUseCase,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
+    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyMusicNavigationState> = MutableStateFlow(
         ModifyMusicNavigationState.Idle
@@ -67,16 +72,33 @@ class ModifyMusicViewModel(
         initialValue = ModifyMusicState.Loading,
     )
 
+    private val savedData: HashMap<String, String> = hashMapOf()
+    private var addedArtists: MutableStateFlow<List<Artist>> = MutableStateFlow(emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val formState: StateFlow<ModifyMusicFormState> = initialMusic.mapLatest { music ->
+    val formState: StateFlow<ModifyMusicFormState> = initialMusic.flatMapLatest { music ->
         if (music == null) {
-            ModifyMusicFormState.NoData
+            flowOf(ModifyMusicFormState.NoData)
         } else {
-            ModifyMusicFormState.Data(
-                initialMusic = music,
-                updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
-                updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
-            )
+            getArtistsOfMusicUseCase(music.musicId).flatMapLatest { artists ->
+                addedArtists.flatMapLatest { addedArtists ->
+                    deletedArtistIds.mapLatest { ids ->
+                        ModifyMusicFormState.Data(
+                            initialMusic = music,
+                            updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
+                            updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
+                            artistsOfMusic = artists.plus(addedArtists).filter { it.artistId !in ids },
+                            onDeleteArtist = { artistId ->
+                                deletedArtistIds.value = deletedArtistIds.value.plus(artistId)
+                            },
+                            savedData = savedData,
+                            onFieldChange = { id, value ->
+                                savedData[id] = value
+                            }
+                        )
+                    }
+                }
+            }
         }
     }.stateIn(
         scope = screenModelScope.plus(Dispatchers.IO),
@@ -105,6 +127,10 @@ class ModifyMusicViewModel(
         }
     }
 
+    fun addArtistField() {
+        addedArtists.value = addedArtists.value.plus(Artist(artistName = ""))
+    }
+
     /**
      * Update selected music information.
      */
@@ -128,18 +154,26 @@ class ModifyMusicViewModel(
                 newCoverId
             } ?: (state.initialMusic.cover as? Cover.CoverFile)?.fileCoverId
 
+            // We remove duplicate and we trim the inputs
+            val cleanedNewArtistsName: List<String> = form.getArtistsName()
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .distinct()
+
             val newMusicInformation = state.initialMusic.copy(
                 cover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
                     fileCoverId = coverFile,
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
-                artist = form.getArtistName().trim(),
+                artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 
             updateMusicUseCase(
                 legacyMusic = state.initialMusic,
-                newMusicInformation = newMusicInformation
+                newMusicInformation = newMusicInformation,
+                previousArtistsNames = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull()?.map { it.artistName } ?: emptyList(),
+                newArtistsNames = cleanedNewArtistsName,
             )
 
             playbackManager.updateMusic(newMusicInformation)

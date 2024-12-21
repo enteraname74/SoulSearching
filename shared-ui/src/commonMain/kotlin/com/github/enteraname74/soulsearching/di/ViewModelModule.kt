@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.di
 
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
+import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain.SelectedAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistViewModel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderViewModel
@@ -21,6 +22,8 @@ import com.github.enteraname74.soulsearching.feature.settings.personalisation.ma
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
+import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
+import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -40,6 +43,10 @@ internal val viewModelModule: Module = module {
     // Main page
     singleOf(::MainPageViewModel)
     singleOf(::ApplicationViewModel)
+
+    // Song fetching and management
+    factoryOf(::AppInitSongFetchingViewModel)
+    factoryOf(::MultipleArtistsChoiceViewModel)
 
     // Modify elements
     factoryOf(::ModifyAlbumViewModel)

@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 /**
  * Represent a song with information related to it.
@@ -20,4 +20,8 @@ data class Music(
     var nbPlayed: Int = 0,
     override var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false
-): QuickAccessible
+): QuickAccessible {
+    val informationText: String = "$artist | $album"
+
+    fun hasPotentialMultipleArtists(): Boolean = artist.split(",").size > 1
+}

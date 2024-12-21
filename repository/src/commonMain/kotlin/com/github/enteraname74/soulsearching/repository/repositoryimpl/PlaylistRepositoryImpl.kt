@@ -25,6 +25,10 @@ class PlaylistRepositoryImpl(
         playlist = playlist
     )
 
+    override suspend fun deleteAll(playlistIds: List<UUID>) {
+        playlistDataSource.deleteAll(playlistIds)
+    }
+
     override fun getAll(): Flow<List<Playlist>> =
         playlistDataSource.getAll()
 

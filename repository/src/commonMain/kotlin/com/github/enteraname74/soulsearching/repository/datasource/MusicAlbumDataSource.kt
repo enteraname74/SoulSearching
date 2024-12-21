@@ -7,6 +7,7 @@ import java.util.UUID
  * Data source of a MusicAlbum.
  */
 interface MusicAlbumDataSource {
+    suspend fun getAll(): List<MusicAlbum>
     /**
      * Inserts or updates a MusicAlbum.
      * It is the equivalent of adding a Music to an Album.

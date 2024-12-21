@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -23,8 +24,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,12 +36,14 @@ fun PlaylistColumnView(
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
-    playerViewManager: PlayerViewManager = injectElement(),
     playbackManager: PlaybackManager = injectElement(),
+    playerViewManager: PlayerViewManager = injectElement(),
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -83,24 +84,23 @@ fun PlaylistColumnView(
                 MusicItemComposable(
                     music = elt,
                     onClick = { music ->
+                        playlistDetailListener.onUpdateNbPlayed()
                         coroutineScope.launch {
-                            playlistDetailListener.onUpdateNbPlayed()
-                            CoroutineScope(Dispatchers.IO).launch {
-                                playbackManager.setCurrentPlaylistAndMusic(
-                                    music = music,
-                                    musicList = playlistDetail.musics,
-                                    playlistId = playlistDetail.id,
-                                    isMainPlaylist = false
-                                )
-                            }
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
+                            playbackManager.setCurrentPlaylistAndMusic(
+                                music = music,
+                                musicList = playlistDetail.musics,
+                                playlistId = playlistDetail.id,
+                                isMainPlaylist = false
                             )
+                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
-                    onLongClick = { onShowMusicBottomSheet(elt) },
+                    onLongClick = { onLongSelectOnMusic(elt) },
+                    onMoreClicked = { onShowMusicBottomSheet(elt) },
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId
+                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }
             item { SoulPlayerSpacer() }

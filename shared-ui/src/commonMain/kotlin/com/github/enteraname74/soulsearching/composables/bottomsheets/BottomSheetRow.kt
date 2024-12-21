@@ -27,8 +27,8 @@ fun BottomSheetRow(
                 onClick()
             }
             .padding(
-                vertical = UiConstants.Spacing.large,
-                horizontal = UiConstants.Spacing.huge
+                vertical = UiConstants.Spacing.mediumPlus,
+                horizontal = UiConstants.Spacing.large,
             ),
         horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically

@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
 import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionScreen
@@ -24,12 +25,11 @@ import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_main
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * Represent the view of the color theme screen.
  */
-class SettingsColorThemeScreen: Screen {
+class SettingsColorThemeScreen: Screen, SettingPage {
 
     @Composable
     override fun Content() {
@@ -55,7 +55,6 @@ class SettingsColorThemeScreen: Screen {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun SettingsColorThemeScreenView(
     navigateBack: () -> Unit,

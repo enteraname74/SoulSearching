@@ -7,27 +7,26 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 
 class SettingsMainPagePersonalisationViewModel(
     private val settings: SoulSearchingSettings,
     viewSettingsManager: ViewSettingsManager,
 ) : ScreenModel {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<SettingsMainPagePersonalisationState> =
-        viewSettingsManager.visibleElements.mapLatest { elements ->
-            SettingsMainPagePersonalisationState.Data(
-                elementsVisibility = elements,
-            )
-        }.stateIn(
-            scope = screenModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = SettingsMainPagePersonalisationState.Loading
+    val state: StateFlow<SettingsMainPagePersonalisationState> = combine(
+        viewSettingsManager.visibleElements,
+        settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR),
+    ) { elements, isUsingVerticalAccess ->
+        SettingsMainPagePersonalisationState.Data(
+            elementsVisibility = elements,
+            isUsingVerticalAccessBar = isUsingVerticalAccess,
         )
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = SettingsMainPagePersonalisationState.Loading
+    )
 
 
     fun toggleQuickAccessVisibility() {
@@ -78,6 +77,13 @@ class SettingsMainPagePersonalisationViewModel(
         settings.set(
             key = SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_FOLDERS_SHOWN.key,
             value = !elementsVisibility.areMusicFoldersShown
+        )
+    }
+
+    fun setShortcutAccessChoice(isVerticalAccessSelected: Boolean) {
+        settings.set(
+            key = SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR.key,
+            value = isVerticalAccessSelected,
         )
     }
 }

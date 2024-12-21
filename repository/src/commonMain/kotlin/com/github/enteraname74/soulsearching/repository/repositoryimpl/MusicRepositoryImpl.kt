@@ -28,12 +28,6 @@ class MusicRepositoryImpl(
         musicDataSource.deleteAll(ids = ids)
     }
 
-    override suspend fun deleteAllMusicOfAlbum(album: String, artist: String) =
-        musicDataSource.deleteMusicFromAlbum(
-            album = album,
-            artist = artist
-        )
-
     override fun getFromId(musicId: UUID): Flow<Music?> = musicDataSource.getFromId(
         musicId = musicId
     )

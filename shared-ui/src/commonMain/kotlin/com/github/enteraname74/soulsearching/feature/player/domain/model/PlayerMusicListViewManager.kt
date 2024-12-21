@@ -1,3 +1,4 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.animation.core.tween
@@ -9,7 +10,7 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 /**
  * Manages the view of the player music list draggable view.
  */
-@Suppress("Deprecation")
+
 @OptIn(ExperimentalMaterialApi::class)
 class PlayerMusicListViewManager {
     val musicListDraggableState: SwipeableState<BottomSheetStates> =

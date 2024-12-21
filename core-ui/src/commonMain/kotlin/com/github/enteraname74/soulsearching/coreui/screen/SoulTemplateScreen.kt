@@ -1,20 +1,12 @@
 package com.github.enteraname74.soulsearching.coreui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -30,8 +22,7 @@ fun SoulTemplateScreen(
     leftAction: TopBarActionSpec,
     icon: ImageVector,
     text: String,
-    buttonAction: () -> Unit,
-    buttonText: String,
+    buttonSpec: TemplateScreenButtonSpec?,
     title: String? = null,
     rightAction: TopBarActionSpec? = null,
 ) {
@@ -51,8 +42,7 @@ fun SoulTemplateScreen(
             TemplateScreenContent(
                 icon = icon,
                 text = text,
-                buttonText = buttonText,
-                onClick = buttonAction,
+                buttonSpec = buttonSpec,
             )
         }
     }
@@ -62,8 +52,7 @@ fun SoulTemplateScreen(
 private fun ColumnScope.TemplateScreenContent(
     icon: ImageVector,
     text: String,
-    onClick: () -> Unit,
-    buttonText: String,
+    buttonSpec: TemplateScreenButtonSpec?,
 ) {
     Box(
         modifier = Modifier
@@ -85,16 +74,23 @@ private fun ColumnScope.TemplateScreenContent(
                 textAlign = TextAlign.Center,
                 color = SoulSearchingColorTheme.colorScheme.onPrimary,
             )
-            SoulButton(
-                onClick = onClick
-            ) {
-                Text(
-                    text = buttonText,
-                    textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                    fontSize = 14.sp
-                )
+            buttonSpec?.let { spec ->
+                SoulButton(
+                    onClick = spec.onClick
+                ) {
+                    Text(
+                        text = spec.text,
+                        textAlign = TextAlign.Center,
+                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     }
 }
+
+data class TemplateScreenButtonSpec(
+    val text: String,
+    val onClick: () -> Unit,
+)

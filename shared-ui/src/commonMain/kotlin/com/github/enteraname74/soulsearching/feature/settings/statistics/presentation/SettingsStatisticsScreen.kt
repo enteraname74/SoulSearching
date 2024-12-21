@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.presentation
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.ListenedElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsState
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
@@ -27,7 +27,7 @@ import com.github.enteraname74.soulsearching.feature.settings.statistics.present
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable.SettingsStatisticsSectionIndicatorList
 import kotlinx.coroutines.launch
 
-class SettingsStatisticsScreen: Screen {
+class SettingsStatisticsScreen: Screen, SettingPage {
 
     @Composable
     override fun Content() {
@@ -41,7 +41,6 @@ class SettingsStatisticsScreen: Screen {
         )
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun DataScreen(
         state: SettingsStatisticsState,

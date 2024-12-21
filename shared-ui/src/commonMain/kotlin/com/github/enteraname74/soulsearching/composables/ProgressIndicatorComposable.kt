@@ -17,8 +17,10 @@ fun ProgressIndicatorComposable(
     progressMessage: String,
     progress: Float,
     subText: String?,
+    modifier: Modifier = Modifier,
 ) {
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

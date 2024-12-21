@@ -68,4 +68,9 @@ internal class RoomArtistDataSourceImpl(
             artistId = artistId
         ).map { it?.toArtistWithMusics() }
     }
+
+    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+        appDatabase.artistDao.getArtistsOfMusic(musicId).map { list ->
+            list.map { it.toArtist() }
+        }
 }

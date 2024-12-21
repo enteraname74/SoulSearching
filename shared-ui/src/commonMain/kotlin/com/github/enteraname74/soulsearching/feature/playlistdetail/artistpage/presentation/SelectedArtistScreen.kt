@@ -1,11 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -76,15 +80,8 @@ data class SelectedArtistScreen(
             }
         }
 
-        var isArtistFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(isArtistFetched) {
-            if (!isArtistFetched) {
-                screenModel.init(artistId = artistId)
-                isArtistFetched = true
-            }
+        LaunchInit {
+            screenModel.init(artistId = artistId)
         }
 
         SelectedArtistScreenView(
@@ -105,6 +102,7 @@ fun SelectedArtistScreenView(
     navigateBack: () -> Unit,
 ) {
     val state by selectedArtistViewModel.state.collectAsState()
+    val multiSelectionState by selectedArtistViewModel.multiSelectionState.collectAsState()
 
     when (state) {
         is SelectedArtistState.Data -> {
@@ -115,12 +113,28 @@ fun SelectedArtistScreenView(
                 navigateBack = navigateBack,
                 onShowMusicBottomSheet = selectedArtistViewModel::showMusicBottomSheet,
                 optionalContent = {
-                    ArtistAlbums(
-                        albums = dataState.artistAlbums,
-                        onAlbumClick = selectedArtistViewModel::toAlbum,
-                        onAlbumLongClick = selectedArtistViewModel::showAlbumBottomSheet,
+                    if (dataState.artistAlbums.isNotEmpty()) {
+                        ArtistAlbums(
+                            albums = dataState.artistAlbums,
+                            onAlbumClick = selectedArtistViewModel::toAlbum,
+                            onAlbumLongClick = { albumWithMusics ->
+                                selectedArtistViewModel.toggleElementInSelection(
+                                    id = albumWithMusics.album.albumId,
+                                    mode = SelectionMode.Album,
+                                )
+                            },
+                            multiSelectionState = multiSelectionState,
+                        )
+                    }
+                },
+                multiSelectionManagerImpl = selectedArtistViewModel.multiSelectionManagerImpl,
+                onLongSelectOnMusic = {
+                    selectedArtistViewModel.toggleElementInSelection(
+                        id = it.musicId,
+                        mode = SelectionMode.Music,
                     )
-                }
+                },
+                multiSelectionState = multiSelectionState,
             )
         }
         SelectedArtistState.Loading -> SoulLoadingScreen(

@@ -1,19 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
+import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.ModifyAlbumViewModel
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
-import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
@@ -31,15 +34,8 @@ data class ModifyAlbumScreen(
         val formState: ModifyAlbumFormState by screenModel.formState.collectAsState()
         val navigationState: ModifyAlbumNavigationState by screenModel.navigationState.collectAsState()
 
-        var isSelectedAlbumFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(isSelectedAlbumFetched) {
-            if (!isSelectedAlbumFetched) {
-                screenModel.init(albumId = albumId)
-                isSelectedAlbumFetched = true
-            }
+        LaunchInit {
+            screenModel.init(albumId = albumId)
         }
 
         LaunchedEffect(navigationState) {

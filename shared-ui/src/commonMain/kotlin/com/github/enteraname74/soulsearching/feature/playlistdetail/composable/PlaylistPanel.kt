@@ -1,9 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Search
@@ -12,10 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
+import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -54,51 +55,36 @@ private fun ImagesButton(
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    editAction?.let {
-        Image(
-            modifier = Modifier
-                .size(48.dp)
-                .background(
-                    color = primaryColor,
-                    shape = CircleShape
+    SoulSegmentedButton(
+        colors = SoulButtonDefaults.colors(
+            containerColor = primaryColor,
+            contentColor = tint,
+        ),
+        buttons = buildList {
+            editAction?.let { action ->
+                add(
+                    SoulSegmentedIconButton(
+                        data = Icons.Rounded.Edit,
+                        onClick = action,
+                        contentPadding = SoulButtonDefaults.contentPadding(),
+                    )
                 )
-                .clickableWithHandCursor {
-                    it()
-                }
-                .padding(10.dp),
-            imageVector = Icons.Rounded.Edit,
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(tint)
-        )
-    }
-    Image(
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = primaryColor,
-                shape = CircleShape
-            )
-            .clickableWithHandCursor {
-                shuffleAction()
+
             }
-            .padding(10.dp),
-        imageVector = Icons.Rounded.Shuffle,
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(tint)
-    )
-    Image(
-        modifier = Modifier
-            .size(48.dp)
-            .background(
-                color = primaryColor,
-                shape = CircleShape
+            add(
+                SoulSegmentedIconButton(
+                    data = Icons.Rounded.Shuffle,
+                    onClick = shuffleAction,
+                    contentPadding = SoulButtonDefaults.contentPadding(),
+                )
             )
-            .clickableWithHandCursor {
-                searchAction()
-            }
-            .padding(10.dp),
-        imageVector = Icons.Rounded.Search,
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(tint)
+            add(
+                SoulSegmentedIconButton(
+                    data = Icons.Rounded.Search,
+                    onClick = searchAction,
+                    contentPadding = SoulButtonDefaults.contentPadding(),
+                )
+            )
+        }
     )
 }

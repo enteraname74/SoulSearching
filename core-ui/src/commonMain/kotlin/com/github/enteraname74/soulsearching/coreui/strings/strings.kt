@@ -58,6 +58,8 @@ interface Strings {
     val managePlayerTitle: String
     val managePlayerText: String
     val playerSwipeTitle: String
+    val playerRewindTitle: String
+    val playerMinimisedProgressionTitle: String
     val soulMixSettingsTitle: String
 
     val searchingSongsFromYourDevice: String
@@ -96,13 +98,24 @@ interface Strings {
     val artistInformation: String
     val albumInformation: String
 
+    val addArtist: String
+
     val deleteMusicDialogTitle: String
     val deleteMusicDialogText: String
     val deleteAlbumDialogTitle: String
     val deletePlaylistDialogTitle: String
     val deleteArtistDialogTitle: String
+
+    val deleteSelectedMusicsDialogTitle: String
+    val deleteSelectedMusicsDialogText: String
+    val deleteSelectedAlbumsDialogTitle: String
+    val deleteSelectedArtistsDialogTitle: String
+    val deleteSelectedPlaylistsDialogTitle: String
+
     val removeMusicFromPlaylistTitle: String
     val removeMusicFromPlaylistText: String
+    val removeSelectedMusicFromPlaylistTitle: String
+    val removeSelectedMusicFromPlaylistText: String
 
     val modifyAlbum: String
     val modifyArtist: String
@@ -113,6 +126,10 @@ interface Strings {
     val deleteArtist: String
     val deleteMusic: String
     val deletePlaylist: String
+    val deleteSelectedAlbums: String
+    val deleteSelectedArtists: String
+    val deleteSelectedPlaylists: String
+    val deleteSelectedMusics: String
 
     val playNext: String
 
@@ -131,6 +148,10 @@ interface Strings {
     val deletePlaylistsCovers: String
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
+
+    val splitMultipleArtistsTitle: String
+    val splitMultipleArtistsText: String
+
     val manageMusicsTitle: String
     val manageMusicsText: String
     val modifyMusicFileTitle: String
@@ -169,8 +190,8 @@ interface Strings {
     val manageMusicsViewText: String
     val showMusicsByFolders: String
     val showMusicsByMonths: String
-    val showVerticalAccessBarTitle: String
-    val showVerticalAccessBarText: String
+    val useVerticalAccessBarTitle: String
+    val useHorizontalAccessBarText: String
 
     val usedFoldersTitle: String
     val usedFoldersText: String
@@ -197,6 +218,17 @@ interface Strings {
 
     val appMigration: String
 
+    val multipleArtistsTitle: String
+    val multipleArtistsText: String
+    val multipleArtistsSelectionTitle: String
+    val noMultipleArtists: String
+
+    val multipleSelection: String
+
+    val fieldCannotBeEmpty: String
+
+    val playerVolume: String
+
     /**
      * Shows a text indicating the number of musics.
      */
@@ -216,4 +248,9 @@ interface Strings {
      * Shows a text indicating the current folder where songs are fetched.
      */
     fun fetchingMusicsFrom(path: String): String
+
+    /**
+     * Shows a text indicating the total of selected elements.
+     */
+    fun selectedElements(total: Int): String
 }

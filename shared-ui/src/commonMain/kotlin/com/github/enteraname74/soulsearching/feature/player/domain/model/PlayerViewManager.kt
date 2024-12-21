@@ -1,3 +1,4 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.animation.core.tween
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * Manages the view of the player draggable view.
  */
-@Suppress("Deprecation")
 @OptIn(ExperimentalMaterialApi::class)
 class PlayerViewManager {
 
@@ -21,10 +21,14 @@ class PlayerViewManager {
     private val _state: MutableStateFlow<BottomSheetStates> = MutableStateFlow(BottomSheetStates.COLLAPSED)
     val state = _state.asStateFlow()
 
-    val currentValue: BottomSheetStates
-        get() = playerDraggableState.currentValue
+    private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val previousState = _previousState.asStateFlow()
+
     val isAnimationRunning: Boolean
         get() = playerDraggableState.isAnimationRunning
+
+    val currentValue: BottomSheetStates
+        get() = playerDraggableState.currentValue
     val offset: Float
         get() = playerDraggableState.offset.value
 
@@ -35,7 +39,12 @@ class PlayerViewManager {
         )
     }
 
+    fun consumePreviousState() {
+        _previousState.value = null
+    }
+
     fun updateState(newState: BottomSheetStates) {
+        _previousState.value = _state.value
         _state.value = newState
     }
 }

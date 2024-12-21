@@ -8,6 +8,9 @@ import java.util.*
 internal class AlbumArtistDataSourceImpl(
     private val albumArtistDao: AlbumArtistDao
 ) : AlbumArtistDataSource {
+    override suspend fun getAll(): List<AlbumArtist> =
+        albumArtistDao.getAll()
+
     override suspend fun upsert(albumArtist: AlbumArtist) =
         albumArtistDao.upsertAlbumIntoArtist(
             albumArtist = albumArtist,

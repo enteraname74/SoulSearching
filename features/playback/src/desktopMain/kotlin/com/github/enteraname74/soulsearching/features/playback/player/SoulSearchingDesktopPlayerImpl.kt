@@ -1,21 +1,20 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-class SoulSearchingDesktopPlayerImpl(
-    private val playbackManager: PlaybackManager,
-) :
+class SoulSearchingDesktopPlayerImpl :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
 
@@ -25,15 +24,20 @@ class SoulSearchingDesktopPlayerImpl(
 
     private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val state: Flow<Boolean> = _state.asStateFlow()
+    override var listener: SoulSearchingPlayer.Listener? = null
 
     init {
         init()
     }
 
+    override fun registerListener(listener: SoulSearchingPlayer.Listener) {
+        this.listener = listener
+    }
+
     override fun finished(mediaPlayer: MediaPlayer?) {
         super.finished(mediaPlayer)
         CoroutineScope(Dispatchers.IO).launch {
-            playbackManager.next()
+            listener?.onCompletion()
         }
     }
 
@@ -58,7 +62,7 @@ class SoulSearchingDesktopPlayerImpl(
     override fun error(mediaPlayer: MediaPlayer?) {
         super.error(mediaPlayer)
         runBlocking {
-            playbackManager.skipAndRemoveCurrentSong()
+            listener?.onError()
         }
     }
 
@@ -152,6 +156,13 @@ class SoulSearchingDesktopPlayerImpl(
             println("PLAYER -- MUSIC DURATION EXC: $e")
             0
         }
+
+    override fun setPlayerVolume(volume: Float) {
+
+        // On desktop impl, the volume is set from 0 to 200 ,but we will keep the max at 100.
+        val fixedVolume: Int = (volume * 100).toInt().coerceIn(1, 100)
+        player.audio().setVolume(fixedVolume)
+    }
 
     /**
      * Returns the integer or 0 if it is negative.

@@ -8,6 +8,9 @@ import java.util.*
 internal class MusicAlbumDataSourceImpl(
     private val musicAlbumDao: MusicAlbumDao
 ) : MusicAlbumDataSource {
+    override suspend fun getAll(): List<MusicAlbum> =
+        musicAlbumDao.getAll()
+
     override suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) =
         musicAlbumDao.insertMusicIntoAlbum(musicAlbum = musicAlbum)
 
