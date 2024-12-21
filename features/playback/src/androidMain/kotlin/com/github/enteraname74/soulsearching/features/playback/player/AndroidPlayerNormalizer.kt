@@ -23,8 +23,6 @@ class AndroidPlayerNormalizer: PlayerNormalizer() {
             ?.trim()
             ?.toFloatOrNull()
 
-        println("Got mean volume: $meanVolume")
-
         return meanVolume
     }
 }

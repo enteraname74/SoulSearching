@@ -14,9 +14,7 @@ abstract class PlayerNormalizer: KoinComponent {
         targetVolume: Float = -14f,
     ): Float? {
         val meanVolume: Float = getMeanVolume(music) ?: return null
-        println("Mean: $meanVolume")
         val gain = targetVolume - meanVolume
-        println("Gain: $gain")
         return 10F.pow(gain / 20)
     }
 

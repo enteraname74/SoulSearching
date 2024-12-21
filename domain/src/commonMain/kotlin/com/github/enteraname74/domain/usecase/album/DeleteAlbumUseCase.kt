@@ -33,20 +33,15 @@ class DeleteAlbumUseCase(
             .filter { it.artistId != albumWithMusics.artist?.artistId }
             .distinctBy { it.artistId }
 
-        println("Got linked: ${linkedArtists.map { it.artistName }}")
-
         // We first delete the musics of the album.
         albumWithMusics.musics.forEach { music ->
             musicRepository.delete(music)
         }
-
-        println("Will delete album: ${albumWithMusics.album}")
         // We then delete the album
         albumRepository.delete(albumWithMusics.album)
 
         // Finally we can check if we can delete the artist of the deleted album.
         albumWithMusics.artist?.let {
-            println("Will check and delete artist: ${it.artistName}")
             deleteArtistIfEmptyUseCase(
                 artistId = it.artistId,
             )
@@ -54,7 +49,6 @@ class DeleteAlbumUseCase(
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            println("Will check and delete linked artist: ${it.artistName}")
             deleteArtistIfEmptyUseCase(it.artistId)
         }
     }
