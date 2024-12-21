@@ -33,7 +33,7 @@ fun PageHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                contentScale = ContentScale.Inside,
+                contentScale = ContentScale.Fit,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
                 roundedPercent = 5,
@@ -76,7 +76,7 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
-                contentScale = ContentScale.Inside,
+                contentScale = ContentScale.Fit,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.veryHuge,
                 roundedPercent = 5,
