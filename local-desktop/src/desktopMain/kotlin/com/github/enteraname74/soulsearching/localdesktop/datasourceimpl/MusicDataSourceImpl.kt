@@ -30,10 +30,6 @@ internal class MusicDataSourceImpl(
         )
     }
 
-    override suspend fun deleteMusicFromAlbum(album: String, artist: String) {
-        musicDao.deleteMusicFromAlbum(album, artist)
-    }
-
     override suspend fun getFromPath(musicPath: String): Music? =
         musicDao.getFromPath(musicPath)
 

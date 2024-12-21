@@ -5,8 +5,6 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.util.Log
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,21 +18,23 @@ import java.io.File
  * Implementation of the SoulSearchingAndroidPlayer
  */
 class SoulSearchingAndroidPlayerImpl(
-    context: Context,
-    private val playbackManager: PlaybackManager,
+    private val context: Context,
 ) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener,
-    MediaPlayer.OnErrorListener {
+    MediaPlayer.OnErrorListener,
+    PlayerAudioManager.Listener {
 
     private var player: MediaPlayer = MediaPlayer()
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
-    private val audioManager: PlayerAudioManager = PlayerAudioManager(context, playbackManager)
+    private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
+//    private val normalizer: AndroidPlayerNormalizer = AndroidPlayerNormalizer()
 
     private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val state: Flow<Boolean> = _state.asStateFlow()
+    override var listener: SoulSearchingPlayer.Listener? = null
 
     override fun init() {
         audioManager.init()
@@ -51,13 +51,24 @@ class SoulSearchingAndroidPlayerImpl(
         init()
     }
 
+    override fun registerListener(listener: SoulSearchingPlayer.Listener) {
+        this.listener = listener
+    }
+
     override fun setMusic(music: Music) {
         try {
             player.stop()
             player.reset()
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
         if (File(music.path).exists()) {
             player.setDataSource(music.path)
+//            CoroutineScope(Dispatchers.IO).launch {
+//                val volumeMultiplier: Float = normalizer.getVolumeMultiplier(music = music) ?: return@launch
+//                println("Multiplier: $volumeMultiplier")
+//                val newVolume: Float = 0.5f * volumeMultiplier
+//                setPlayerVolume(newVolume)
+//            }
         }
     }
 
@@ -144,7 +155,7 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onCompletion(mp: MediaPlayer?) {
         CoroutineScope(Dispatchers.IO).launch {
-            playbackManager.next()
+            listener?.onCompletion()
         }
     }
 
@@ -153,7 +164,7 @@ class SoulSearchingAndroidPlayerImpl(
         when (what) {
             MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                 runBlocking {
-                    playbackManager.skipAndRemoveCurrentSong()
+                    listener?.onError()
                 }
             }
         }
@@ -162,7 +173,6 @@ class SoulSearchingAndroidPlayerImpl(
 
     override fun onPrepared(mp: MediaPlayer?) {
         if (isOnlyLoadingMusic) {
-            MediaPlayer.MEDIA_ERROR_UNKNOWN
             /*
              * When only loading the music, we try to seek to the last music position
              * (when loading a previous song which was at a given position)
@@ -176,8 +186,23 @@ class SoulSearchingAndroidPlayerImpl(
                     player.start()
                     _state.value = true
                 }
+
                 else -> {}
             }
         }
+    }
+
+    override fun setPlayerVolume(volume: Float) {
+        player.setVolume(volume, volume)
+    }
+
+    /*************** AUDIO MANAGER LISTENER IMPL ***************/
+
+    override fun onPlay() {
+        play()
+    }
+
+    override fun onPause() {
+        pause()
     }
 }

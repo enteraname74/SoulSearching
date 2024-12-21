@@ -9,6 +9,15 @@ import java.util.*
 internal class MusicArtistDataSourceImpl(
     private val musicArtistDao: MusicArtistDao
 ): MusicArtistDataSource {
+    override suspend fun getAll(): List<MusicArtist> =
+        musicArtistDao.getAll()
+
+    override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
+        musicArtistDao.get(
+            musicId = musicId,
+            artistId = artistId,
+        )
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) =
         musicArtistDao.upsertMusicIntoArtist(musicArtist = musicArtist)
 
@@ -18,15 +27,7 @@ internal class MusicArtistDataSourceImpl(
         )
     }
 
-    override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
-        musicArtistDao.updateArtistOfMusic(
-            musicId = musicId,
-            newArtistId = newArtistId
-        )
-
-    override suspend fun deleteMusicFromArtist(musicId: UUID) =
-        musicArtistDao.deleteMusicFromArtist(musicId = musicId)
-
-    override suspend fun getArtistIdFromMusicId(musicId: UUID) =
-        musicArtistDao.getArtistIdFromMusicId(musicId = musicId)
+    override suspend fun deleteMusicArtist(musicArtist: MusicArtist) {
+        musicArtistDao.delete(musicArtist)
+    }
 }

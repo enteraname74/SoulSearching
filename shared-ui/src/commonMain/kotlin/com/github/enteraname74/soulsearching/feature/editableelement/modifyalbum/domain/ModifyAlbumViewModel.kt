@@ -109,51 +109,48 @@ class ModifyAlbumViewModel(
     fun updateAlbum() {
         CoroutineScope(Dispatchers.IO).launch {
             val state = (state.value as? ModifyAlbumState.Data) ?: return@launch
-            val form = (formState.value as? ModifyAlbumFormState.Data) ?: return@launch
+            val form = (formState.value as? ModifyAlbumFormState.Data)?.takeIf { it.isFormValid() } ?: return@launch
 
-            if (!form.isFormValid()) return@launch
+            loadingManager.withLoading {
+                // If the image has changed, we need to save it and retrieve its id.
+                val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
+                    val newCoverId: UUID = UUID.randomUUID()
 
-            loadingManager.startLoading()
+                    upsertImageCoverUseCase(
+                        id = newCoverId,
+                        data = coverData,
+                    )
+                    newCoverId
+                } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
 
-            // If the image has changed, we need to save it and retrieve its id.
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
-                val newCoverId: UUID = UUID.randomUUID()
-
-                upsertImageCoverUseCase(
-                    id = newCoverId,
-                    data = coverData,
+                val albumWithArtist: AlbumWithArtist = state.initialAlbum.toAlbumWithArtist().copy(
+                    album = state.initialAlbum.album.copy(
+                        albumName = form.getAlbumName().trim(),
+                    ),
+                    artist = state.initialAlbum.artist?.copy(
+                        artistName = form.getArtistName().trim(),
+                    ),
                 )
-                newCoverId
-            } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
-
-            val albumWithArtist: AlbumWithArtist = state.initialAlbum.toAlbumWithArtist().copy(
-                album = state.initialAlbum.album.copy(
-                    albumName = form.getAlbumName().trim(),
-                ),
-                artist = state.initialAlbum.artist?.copy(
-                    artistName = form.getArtistName().trim(),
-                ),
-            )
-            val newAlbumWithArtistInformation: AlbumWithArtist = albumWithArtist.copy(
-                album = albumWithArtist.album.copy(
-                    cover = (albumWithArtist.album.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile,
-                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
+                val newAlbumWithArtistInformation: AlbumWithArtist = albumWithArtist.copy(
+                    album = albumWithArtist.album.copy(
+                        cover = (albumWithArtist.album.cover as? Cover.CoverFile)?.copy(
+                            fileCoverId = coverFile,
+                        ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
+                    )
                 )
-            )
 
-            // We update the information of the album.
-            updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+                // We update the information of the album.
+                updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
 
-            // We retrieve the updated album
-            val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
-                albumId = newAlbumWithArtistInformation.album.albumId
-            ).first() ?: return@launch
+                // We retrieve the updated album
+                val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
+                    albumId = newAlbumWithArtistInformation.album.albumId
+                ).first() ?: return@withLoading
 
-            // We need to update the album's songs that are in the played list.
-            for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
+                // We need to update the album's songs that are in the played list.
+                for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
 
-            loadingManager.stopLoading()
+            }
 
             _navigationState.value = ModifyAlbumNavigationState.Back
         }

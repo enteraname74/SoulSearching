@@ -8,12 +8,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
 /**
  * Represent the view of the developers screen.
  */
-class SettingsDevelopersScreen : Screen {
+class SettingsDevelopersScreen : Screen, SettingPage {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

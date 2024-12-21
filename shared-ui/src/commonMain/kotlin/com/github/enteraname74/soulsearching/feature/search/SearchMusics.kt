@@ -81,7 +81,7 @@ fun SearchMusics(
                             playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                         }
                     },
-                    onLongClick = {
+                    onMoreClicked = {
                         coroutineScope.launch {
                             onSelectedMusicForBottomSheet(music)
                         }

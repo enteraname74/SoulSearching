@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +33,7 @@ fun PageHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
+                contentScale = ContentScale.Inside,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
                 roundedPercent = 5,
@@ -74,6 +76,7 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
+                contentScale = ContentScale.Inside,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.veryHuge,
                 roundedPercent = 5,

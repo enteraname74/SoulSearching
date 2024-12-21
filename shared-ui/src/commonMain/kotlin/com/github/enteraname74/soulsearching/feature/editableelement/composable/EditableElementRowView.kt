@@ -2,10 +2,10 @@ package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
@@ -21,11 +21,13 @@ fun EditableElementRowView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
+    extraContent: @Composable (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(SoulSearchingColorTheme.colorScheme.secondary)
+            .padding(UiConstants.Spacing.medium)
+            .background(SoulSearchingColorTheme.colorScheme.primary)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
@@ -36,20 +38,31 @@ fun EditableElementRowView(
     ) {
         EditableElementCoverSection(
             modifier = Modifier
-                .padding(UiConstants.Spacing.medium)
                 .weight(1F),
             title = coverSectionTitle,
             editableElement = editableElement,
             onSelectImage = onSelectImage,
         )
-        EditableElementTextFieldsView(
-            focusManager = focusManager,
-            textFields = textFields,
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .weight(2F)
-                .background(color = SoulSearchingColorTheme.colorScheme.primary)
-                .padding(UiConstants.Spacing.medium),
-        )
+                .weight(2f)
+                .padding(
+                    top = UiConstants.Spacing.medium
+                )
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                editableElementTextFieldsView(
+                    focusManager = focusManager,
+                    textFields = textFields,
+                    extraContent = extraContent,
+                )
+            }
+
+        }
     }
 }

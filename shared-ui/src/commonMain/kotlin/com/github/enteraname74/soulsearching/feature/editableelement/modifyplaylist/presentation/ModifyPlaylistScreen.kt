@@ -1,12 +1,15 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementView
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.ModifyPlaylistViewModel
@@ -46,15 +49,8 @@ data class ModifyPlaylistScreen(
             }
         }
 
-        var isPlaylistFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        LaunchedEffect(isPlaylistFetched) {
-            if (!isPlaylistFetched) {
-                screenModel.init(playlistId = playlistId)
-                isPlaylistFetched = true
-            }
+        LaunchInit {
+            screenModel.init(playlistId = playlistId)
         }
 
         ModifyPlaylistScreenView(

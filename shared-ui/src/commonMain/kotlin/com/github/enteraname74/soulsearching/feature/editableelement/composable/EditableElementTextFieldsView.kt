@@ -1,42 +1,38 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 
-@Composable
-fun EditableElementTextFieldsView(
+fun LazyListScope.editableElementTextFieldsView(
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    modifier: Modifier = Modifier,
+    extraContent: @Composable (() -> Unit)? = null,
 ) {
-    Row(
-        modifier = modifier
-    ) {
-        Spacer(
+    items(textFields) {
+        it.TextField(
             modifier = Modifier
-                .fillMaxHeight()
-                .weight(1F)
+                .animateItem(),
+            focusManager = focusManager,
         )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(4F),
-            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
-        ) {
-            textFields.forEach { textField ->
-                textField.TextField(
-                    focusManager = focusManager,
-                )
+    }
+    extraContent?.let {
+        item {
+            Box(
+                modifier = Modifier
+                    .animateItem()
+            ) {
+                it()
             }
         }
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1F)
-        )
+    }
+
+    item {
+        SoulPlayerSpacer()
     }
 }

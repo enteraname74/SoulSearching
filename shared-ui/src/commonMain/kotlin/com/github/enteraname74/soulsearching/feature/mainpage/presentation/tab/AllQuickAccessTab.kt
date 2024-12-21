@@ -18,8 +18,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -60,59 +58,62 @@ private fun QuickAccessible.toPreview(
 
     val coroutineScope = rememberCoroutineScope()
 
-    when(this) {
-        is AlbumWithArtist -> {
+    when (this) {
+        is AlbumWithMusics -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
                 title = this.album.albumName,
                 text = this.artist?.artistName.orEmpty(),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is ArtistWithMusics -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
                 title = this.artist.artistName,
                 text = strings.musics(total = this.musics.size),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is Music -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
                 title = this.name,
                 text = this.album,
+                imageSize = null,
                 onClick = {
+                    val musicListSingleton = arrayListOf(this@toPreview)
                     coroutineScope.launch {
-                        val musicListSingleton = arrayListOf(this@toPreview)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            playbackManager.setCurrentPlaylistAndMusic(
-                                music = this@toPreview,
-                                musicList = musicListSingleton,
-                                isMainPlaylist = false,
-                                playlistId = null,
-                                isForcingNewPlaylist = true
-                            )
-                        }
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
+                        playbackManager.setCurrentPlaylistAndMusic(
+                            music = this@toPreview,
+                            musicList = musicListSingleton,
+                            isMainPlaylist = false,
+                            playlistId = null,
+                            isForcingNewPlaylist = true
                         )
+                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                     }
                 },
                 onLongClick = { onLongClick(this) }
             )
         }
+
         is PlaylistWithMusicsNumber -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.playlist.cover,
                 title = this.playlist.name,
                 text = strings.musics(total = this.musicsNumber),
+                imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
             )

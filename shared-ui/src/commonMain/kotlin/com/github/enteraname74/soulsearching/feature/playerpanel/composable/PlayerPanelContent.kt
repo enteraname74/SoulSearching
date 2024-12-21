@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -12,27 +11,32 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
+import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlayerPanelContent(
     playbackManager: PlaybackManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
-    onSelectedMusic: (Music) -> Unit,
+    onMoreClickedOnMusic: (Music) -> Unit,
+    onLongSelectOnMusic: (Music) -> Unit,
     onRetrieveLyrics: () -> Unit,
+    multiSelectionState: MultiSelectionState,
     textColor: Color,
     subTextColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
+    selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -44,11 +48,14 @@ fun PlayerPanelContent(
                 PlayerListView(
                     playbackManager = playbackManager,
                     playedList = playerState.playedList,
-                    onSelectedMusic = onSelectedMusic,
+                    onMoreClickedOnMusic = onMoreClickedOnMusic,
                     secondaryColor = textColor,
                     isExpanded = isExpanded,
                     buttonColors = buttonColors,
                     currentMusicIndex = playerState.currentMusicIndex,
+                    onLongSelectOnMusic = onLongSelectOnMusic,
+                    multiSelectionState = multiSelectionState,
+                    selectedIconColors = selectedIconColors,
                 )
             }
         ),

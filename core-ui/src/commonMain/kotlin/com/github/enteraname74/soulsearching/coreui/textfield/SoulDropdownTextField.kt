@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
@@ -15,9 +14,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,6 +28,12 @@ fun SoulDropdownTextField(
     value: String,
     onValueChange: (String) -> Unit,
     labelName: String?,
+    error: String?,
+    isInError: Boolean,
+    modifier: Modifier = Modifier,
+    colors : SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
+    style: SoulTextFieldStyle,
+    leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     focusManager: FocusManager
 ) {
     var isExpanded by rememberSaveable {
@@ -45,81 +49,77 @@ fun SoulDropdownTextField(
 
     val focusRequester = remember { FocusRequester() }
 
-    ExposedDropdownMenuBox(
-        expanded = isExpanded && isFocused,
-        onExpandedChange = { isExpanded = it }
+    SoulTextFieldViewHolder(
+        style = style,
+        colors = colors,
+        isFocused = isFocused
     ) {
-        TextField(
-            interactionSource = interactionSource,
-            modifier = Modifier
-                .menuAnchor(
-                    type = MenuAnchorType.PrimaryEditable,
-                    enabled = true
-                )
-                .focusRequester(focusRequester),
-            value = value,
-            onValueChange = {
-                isDropdownExpanded = it != value
-                focusRequester.requestFocus()
-                onValueChange(it)
-            },
-            label = {
-                labelName?.let {
-                    Text(text = it)
-                }
-            },
-            singleLine = true,
-            colors = ExposedDropdownMenuDefaults.textFieldColors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                cursorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                focusedLabelColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unfocusedTextColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                focusedContainerColor = Color.Transparent,
-                selectionColors = TextSelectionColors(
-                    handleColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    backgroundColor = SoulSearchingColorTheme.colorScheme.secondary
+        ExposedDropdownMenuBox(
+            expanded = isExpanded && isFocused,
+            onExpandedChange = { isExpanded = it }
+        ) {
+            SoulTextField(
+                value = value,
+                onValueChange = {
+                    isDropdownExpanded = it != value
+                    focusRequester.requestFocus()
+                    onValueChange(it)
+                },
+                labelName = labelName,
+                isInError = isInError,
+                error = error,
+                focusManager = focusManager,
+                modifier = modifier
+                    .menuAnchor(
+                        type = MenuAnchorType.PrimaryEditable,
+                        enabled = true
+                    )
+                    .focusRequester(focusRequester),
+                style = style,
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        isExpanded = false
+                    }
                 ),
-                unfocusedIndicatorColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                focusedLeadingIconColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unfocusedLeadingIconColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                focusedTrailingIconColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                unfocusedTrailingIconColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-            ),
-            trailingIcon = {
-                val rotation by animateFloatAsState(targetValue = if (isExpanded && isFocused) 180f else 0f)
-                SoulIcon(
-                    icon = Icons.Filled.ArrowDropDown,
-                    contentDescription = null,
-                    modifier = Modifier.rotate(rotation),
-                )
-            },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                    isExpanded = false
+                trailingIcon = {
+                    val rotation by animateFloatAsState(targetValue = if (isExpanded && isFocused) 180f else 0f)
+                    SoulIcon(
+                        icon = Icons.Filled.ArrowDropDown,
+                        contentDescription = null,
+                        modifier = Modifier.rotate(rotation),
+                        tint = colors.contentColor,
+                    )
+                },
+                leadingIcon = leadingIconSpec?.let {
+                    {
+                        SoulIcon(
+                            icon = it.icon,
+                            contentDescription = null,
+                            tint = colors.contentColor,
+                            modifier = Modifier.clickableWithHandCursor {
+                                it.onClick()
+                            }
+                        )
+                    }
                 }
             )
-        )
-        ExposedDropdownMenu(
-            expanded = isDropdownExpanded && values.isNotEmpty(),
-            onDismissRequest = {
-                isDropdownExpanded = false
-            }
-        ) {
-            values.forEach { value ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = value
+            ExposedDropdownMenu(
+                containerColor = colors.containerColor,
+                expanded = isDropdownExpanded && values.isNotEmpty(),
+                onDismissRequest = {
+                    isDropdownExpanded = false
+                }
+            ) {
+                values.forEach { value ->
+                    DropdownMenuItem(
+                        text = { Text(text = value) },
+                        onClick = { onValueChange(value) },
+                        colors = MenuDefaults.itemColors(
+                            textColor = colors.contentColor,
                         )
-                    },
-                    onClick = {
-                        onValueChange(value)
-                    }
-                )
+                    )
+                }
             }
         }
     }
@@ -130,12 +130,21 @@ class SoulDropdownTextFieldHolderImpl(
     initialValue: String = "",
     isValid: (value: String) -> Boolean = { true },
     getLabel: @Composable () -> String?,
+    getError: @Composable () -> String?,
+    getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
+    private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
+    private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
+    onChange: (String) -> Unit = {},
 ): SoulTextFieldHolder(
     initialValue = initialValue,
     isValid = isValid,
     id = id,
     getLabel = getLabel,
+    getColors = getColors,
+    getError = getError,
+    onChange = onChange,
 ) {
     private var values: List<String> by mutableStateOf(emptyList())
     private var updateJob: Job? = null
@@ -152,14 +161,21 @@ class SoulDropdownTextFieldHolderImpl(
 
     @Composable
     override fun TextField(
+        modifier: Modifier,
         focusManager: FocusManager,
     ) {
         SoulDropdownTextField(
+            modifier = this.modifier.then(modifier),
             value = value,
             onValueChange = ::onValueChanged,
             labelName = label,
             focusManager = focusManager,
             values = values,
+            style = style,
+            colors = colors,
+            isInError = isInError,
+            error = error,
+            leadingIconSpec = leadingIconSpec,
         )
     }
 }

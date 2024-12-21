@@ -19,6 +19,11 @@ interface PlaylistRepository {
     suspend fun delete(playlist: Playlist)
 
     /**
+     * Deletes the playlists identified in the given list of ids.
+     */
+    suspend fun deleteAll(playlistIds: List<UUID>)
+
+    /**
      * Retrieves a flow of all Playlist, sorted by name asc.
      */
     fun getAll(): Flow<List<Playlist>>

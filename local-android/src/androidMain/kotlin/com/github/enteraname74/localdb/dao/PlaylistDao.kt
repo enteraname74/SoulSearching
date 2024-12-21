@@ -21,6 +21,9 @@ internal interface PlaylistDao {
     @Delete
     suspend fun delete(roomPlaylist : RoomPlaylist)
 
+    @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite=0")
+    suspend fun deleteAll(ids: List<UUID>)
+
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
     fun getAll(): Flow<List<RoomPlaylist>>
 

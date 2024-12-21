@@ -2,15 +2,22 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpag
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpdatePlaylistNbPlayedUseCase
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
@@ -25,7 +32,22 @@ class SelectedPlaylistViewModel(
     private val updatePlaylistNbPlayedUseCase: UpdatePlaylistNbPlayedUseCase,
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-) : ScreenModel, PlaylistDetailListener, MusicBottomSheetDelegate by musicBottomSheetDelegateImpl {
+    private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
+    private val getMusicUseCase: GetMusicUseCase,
+    val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+) : ScreenModel,
+    PlaylistDetailListener,
+    MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
+    MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
+    MultiSelectionManager by multiSelectionManagerImpl {
+
+    val multiSelectionState = multiSelectionManagerImpl.state
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MultiSelectionState(emptyList()),
+        )
+
     private val allPlaylists = getAllPlaylistWithMusicsUseCase()
         .stateIn(
             scope = screenModelScope,
@@ -82,10 +104,20 @@ class SelectedPlaylistViewModel(
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
+        )
+
+        multiMusicBottomSheetDelegateImpl.initDelegate(
+            setDialogState = { _dialogState.value = it },
+            setBottomSheetState = { _bottomSheetState.value = it },
+            setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
+            multiSelectionManagerImpl = multiSelectionManagerImpl,
+            musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
         )
     }
 
     fun consumeNavigation() {
+        multiSelectionManagerImpl.clearMultiSelection()
         _navigationState.value = SelectedPlaylistNavigationState.Idle
     }
 
@@ -96,7 +128,7 @@ class SelectedPlaylistViewModel(
         _playlistId.value = playlistId
     }
 
-    override val onEdit: (() -> Unit)? = {
+    override val onEdit: (() -> Unit) = {
         _navigationState.value = SelectedPlaylistNavigationState.ToEdit
     }
 
@@ -111,6 +143,32 @@ class SelectedPlaylistViewModel(
             val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
                 ?: return@launch
             updatePlaylistNbPlayedUseCase(playlistId = playlistId)
+        }
+    }
+
+    override fun onCloseSelection() {
+        multiSelectionManagerImpl.clearMultiSelection()
+    }
+
+    override fun onMoreClickedOnSelection() {
+        handleMultiSelectionBottomSheet()
+    }
+
+    private fun handleMultiSelectionBottomSheet() {
+        screenModelScope.launch {
+            val selectedIds = multiSelectionState.value.selectedIds
+            val currentPlaylist = (state.value as SelectedPlaylistState.Data).selectedPlaylist
+            if (selectedIds.size == 1) {
+                val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                showMusicBottomSheet(
+                    selectedMusic = selectedMusic,
+                    currentPlaylist = currentPlaylist,
+                )
+            } else {
+                showMultiMusicBottomSheet(
+                    currentPlaylist = currentPlaylist,
+                )
+            }
         }
     }
 }

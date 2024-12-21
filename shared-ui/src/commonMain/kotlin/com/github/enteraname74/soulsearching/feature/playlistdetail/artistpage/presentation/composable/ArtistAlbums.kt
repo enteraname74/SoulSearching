@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -10,22 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.list.SoulHorizontalScrollBar
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ArtistAlbums(
     albums: List<AlbumWithMusics>,
+    multiSelectionState: MultiSelectionState,
     onAlbumClick: (albumId: UUID) -> Unit = {},
-    onAlbumLongClick: (Album) -> Unit = {},
+    onAlbumLongClick: (AlbumWithMusics) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -68,7 +67,9 @@ fun ArtistAlbums(
                             onClick = {
                                 onAlbumClick(element.album.albumId)
                             },
-                            onLongClick = { onAlbumLongClick(element.album) }
+                            onLongClick = { onAlbumLongClick(element) },
+                            isSelected = multiSelectionState.selectedIds.contains(element.album.albumId),
+                            isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                         )
                     }
                 }

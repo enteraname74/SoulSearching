@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.menu
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
@@ -18,11 +15,11 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulMenuAction(
     title: String,
-    subTitle: String,
+    subTitle: String?,
     clickAction: () -> Unit,
     clickEnabled: Boolean = true,
     isSelected: Boolean,
-    padding: Dp = UiConstants.Spacing.veryLarge,
+    padding: PaddingValues = PaddingValues(UiConstants.Spacing.veryLarge),
     textColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     subTextColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
 ) {
@@ -38,7 +35,8 @@ fun SoulMenuAction(
     ) {
         Row(
             modifier = Modifier
-                .weight(1f),
+                .weight(1f)
+                .padding(end = UiConstants.Spacing.medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
         ) {

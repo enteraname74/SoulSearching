@@ -10,5 +10,5 @@ interface PlaybackListCallbacks {
     suspend fun getMusicPosition(): Int
     suspend fun stopPlayback()
     suspend fun next()
-
+    suspend fun setAndPlayMusic(music: Music)
 }

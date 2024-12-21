@@ -42,4 +42,7 @@ internal class ArtistDataSourceImpl(
 
     override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
         artistDao.getArtistWithMusics(artistId)
+
+    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+        artistDao.getArtistsOfMusic(musicId)
 }

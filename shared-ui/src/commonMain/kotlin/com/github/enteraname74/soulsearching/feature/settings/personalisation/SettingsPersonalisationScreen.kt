@@ -11,6 +11,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation.SettingsMainPagePersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -18,7 +19,7 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 /**
  * Represent the view of the personalisation screen in the settings.
  */
-class SettingsPersonalisationScreen : Screen {
+class SettingsPersonalisationScreen : Screen, SettingPage {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

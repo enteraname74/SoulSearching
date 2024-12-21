@@ -40,4 +40,7 @@ internal interface ArtistDao {
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics?>
+
+    @Query("SELECT * FROM RoomArtist INNER JOIN RoomMusicArtist WHERE RoomArtist.artistId = RoomMusicArtist.artistId AND RoomMusicArtist.musicId = :musicId")
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<RoomArtist>>
 }

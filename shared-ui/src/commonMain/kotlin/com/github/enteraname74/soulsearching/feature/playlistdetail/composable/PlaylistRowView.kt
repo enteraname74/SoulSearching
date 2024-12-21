@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -29,8 +30,6 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,6 +41,8 @@ fun PlaylistRowView(
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetailListener: PlaylistDetailListener,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     val windowSize = rememberWindowSize()
@@ -55,6 +56,8 @@ fun PlaylistRowView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            multiSelectionState = multiSelectionState,
+            onLongSelectOnMusic = onLongSelectOnMusic
         )
     } else {
         MediumView(
@@ -66,6 +69,8 @@ fun PlaylistRowView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            multiSelectionState = multiSelectionState,
+            onLongSelectOnMusic = onLongSelectOnMusic,
         )
     }
 }
@@ -79,6 +84,8 @@ private fun LargeView(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
 
@@ -96,8 +103,8 @@ private fun LargeView(
         ) {
             Content(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = windowWidth * 0.1f)
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.9f)
                     .padding(top = windowHeight * 0.1f),
                 shuffleAction = shuffleAction,
                 searchAction = searchAction,
@@ -106,6 +113,8 @@ private fun LargeView(
                 playlistDetailListener = playlistDetailListener,
                 optionalContent = optionalContent,
                 onCoverLoaded = onCoverLoaded,
+                onLongSelectOnMusic = onLongSelectOnMusic,
+                multiSelectionState = multiSelectionState,
             )
         }
     }
@@ -120,6 +129,8 @@ private fun MediumView(
     searchAction: () -> Unit,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
     Column(
@@ -136,6 +147,8 @@ private fun MediumView(
             playlistDetailListener = playlistDetailListener,
             optionalContent = optionalContent,
             onCoverLoaded = onCoverLoaded,
+            onLongSelectOnMusic = onLongSelectOnMusic,
+            multiSelectionState = multiSelectionState,
         )
     }
 }
@@ -151,12 +164,14 @@ private fun Content(
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
     modifier: Modifier = Modifier,
     optionalContent: @Composable () -> Unit = {},
+    multiSelectionState: MultiSelectionState,
+    onLongSelectOnMusic: (Music) -> Unit,
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val canShowVerticalInformation = PlaylistVIewUiUtils.canShowVerticalMainInformation()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = modifier,
@@ -217,21 +232,22 @@ private fun Content(
                             .animateItem(),
                         music = music,
                         onClick = {
+                            playlistDetailListener.onUpdateNbPlayed()
                             coroutineScope.launch {
-                                playlistDetailListener.onUpdateNbPlayed()
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    playbackManager.setCurrentPlaylistAndMusic(
-                                        music = music,
-                                        musicList = playlistDetail.musics,
-                                        playlistId = playlistDetail.id,
-                                        isMainPlaylist = false,
-                                    )
-                                }
-                                playerViewManager.animateTo(newState = BottomSheetStates.EXPANDED)
+                                playbackManager.setCurrentPlaylistAndMusic(
+                                    music = music,
+                                    musicList = playlistDetail.musics,
+                                    playlistId = playlistDetail.id,
+                                    isMainPlaylist = false,
+                                )
+                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                             }
                         },
-                        onLongClick = { onShowMusicBottomSheet(music) },
+                        onLongClick = { onLongSelectOnMusic(music) },
+                        onMoreClicked = { onShowMusicBottomSheet(music) },
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(music.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                     )
                 }
                 item {

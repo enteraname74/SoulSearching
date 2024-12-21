@@ -20,9 +20,9 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerD
 
 @Composable
 fun PlayerViewScaffold(
-    playerViewModel: PlayerViewModel = injectElement(),
-    playerViewManager: PlayerViewManager = injectElement(),
+    playerViewModel: PlayerViewModel,
     generalNavigator: Navigator?,
+    playerViewManager: PlayerViewManager = injectElement(),
     content: @Composable () -> Unit,
 ) {
     LaunchedEffect(playerViewManager.currentValue) {

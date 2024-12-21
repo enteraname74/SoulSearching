@@ -11,6 +11,12 @@ import java.util.*
 class MusicArtistRepositoryImpl(
     private val musicArtistDataSource: MusicArtistDataSource
 ): MusicArtistRepository {
+    override suspend fun getAll(): List<MusicArtist> =
+        musicArtistDataSource.getAll()
+
+    override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
+        musicArtistDataSource.get(artistId, musicId)
+
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) =
         musicArtistDataSource.upsertMusicIntoArtist(
             musicArtist = musicArtist
@@ -20,18 +26,7 @@ class MusicArtistRepositoryImpl(
         musicArtistDataSource.upsertAll(musicArtists)
     }
 
-    override suspend fun updateArtistOfMusic(musicId: UUID, newArtistId: UUID) =
-        musicArtistDataSource.updateArtistOfMusic(
-            musicId = musicId,
-            newArtistId = newArtistId
-        )
-
-    override suspend fun deleteMusicFromArtist(musicId: UUID) = musicArtistDataSource.deleteMusicFromArtist(
-        musicId = musicId
-    )
-
-    override suspend fun getArtistIdFromMusicId(musicId: UUID): UUID? =
-        musicArtistDataSource.getArtistIdFromMusicId(
-            musicId = musicId
-        )
+    override suspend fun deleteMusicArtist(musicArtist: MusicArtist) {
+        musicArtistDataSource.deleteMusicArtist(musicArtist)
+    }
 }

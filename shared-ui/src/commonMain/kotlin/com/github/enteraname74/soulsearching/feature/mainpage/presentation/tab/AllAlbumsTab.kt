@@ -1,11 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
+import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
+import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -14,7 +15,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.M
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class)
 fun allAlbumsTab(
     mainPageViewModel: MainPageViewModel,
     navigateToAlbum: (albumId: UUID) -> Unit,
@@ -23,6 +23,7 @@ fun allAlbumsTab(
     screen = {
 
         val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
+        val multiSelectionState: MultiSelectionState by mainPageViewModel.multiSelectionState.collectAsState()
 
         MainPageList(
             list = albumState.albums,
@@ -51,9 +52,15 @@ fun allAlbumsTab(
                 onClick = {
                     navigateToAlbum(element.album.albumId)
                 },
+                imageSize = null,
                 onLongClick = {
-                    mainPageViewModel.showAlbumBottomSheet(element.album)
-                }
+                    mainPageViewModel.toggleElementInSelection(
+                        id = element.album.albumId,
+                        mode = SelectionMode.Album,
+                    )
+                },
+                isSelected = multiSelectionState.selectedIds.contains(element.album.albumId),
+                isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
             )
         }
     }

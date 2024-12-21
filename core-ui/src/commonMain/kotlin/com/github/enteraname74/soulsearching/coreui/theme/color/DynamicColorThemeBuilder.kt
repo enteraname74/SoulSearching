@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.theme.color
 
-import androidx.annotation.FloatRange
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import com.github.enteraname74.soulsearching.coreui.ext.blend
 import kotlin.math.max
 import kotlin.math.min
 
@@ -39,33 +39,10 @@ object DynamicColorThemeBuilder {
     private fun getDynamicColor(
         color: Color,
         ratio: Float,
-    ): Color = blendARGB(
-        color1 = color,
-        color2 = Color.Black,
+    ): Color = color.blend(
+        other = Color.Black,
         ratio = ratio,
     )
-
-    /**
-     * Blend two colors together.
-     */
-    private fun blendARGB(
-        color1: Color,
-        color2: Color,
-        @FloatRange(from = 0.0, to = 1.0) ratio: Float
-    ): Color {
-
-        val inverseRatio = 1 - ratio
-        val a = color1.alpha * inverseRatio + color2.alpha * ratio
-        val r = color1.red * inverseRatio + color2.red * ratio
-        val g = color1.green * inverseRatio + color2.green * ratio
-        val b = color1.blue * inverseRatio + color2.blue * ratio
-        return Color(
-            red = r,
-            green = g,
-            blue = b,
-            alpha = a
-        )
-    }
 
     private fun getTextColor(
         backgroundColor: Color,
@@ -73,15 +50,13 @@ object DynamicColorThemeBuilder {
         baseDark: Color = Color.Black,
     ): Color {
 
-        val lightColor = blendARGB(
-            color1 = baseLight,
-            color2 = backgroundColor,
+        val lightColor = baseLight.blend(
+            other = backgroundColor,
             ratio = 0.2f
         )
 
-        val darkColor = blendARGB(
-            color1 = baseDark,
-            color2 = backgroundColor,
+        val darkColor = baseDark.blend(
+            other = backgroundColor,
             ratio = 0.4f,
         )
 

@@ -7,8 +7,8 @@ import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
-import com.github.enteraname74.soulsearching.features.playback.SoulSearchingPlayer
+import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
+import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +21,12 @@ internal class PlaybackListManager(
     private val player: SoulSearchingPlayer,
     private val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
 ) {
     private val _state: MutableStateFlow<PlaybackListState> = MutableStateFlow(PlaybackListState.NoData)
     val state: StateFlow<PlaybackListState> = _state.asStateFlow()
+
+    private var updateMusicNbPlayedJob: Job? = null
 
     /**
      * Used to save the currently played list in the database for future uses after a relaunch
@@ -116,6 +118,29 @@ internal class PlaybackListManager(
                 currentMusicIndex = currentMusicIndex,
                 currentMusicPosition = playbackCallback.getMusicPosition(),
             )
+        }
+    }
+
+    suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
+        if (musics.isEmpty()) return
+        /*
+        If we have not initialized the player and if we have more than 2 songs, we need to do the following :
+        - Add the first song
+        - Add all the other songs in reverse.
+         */
+        if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
+            addMusicToPlayNext(music = musics[0])
+            if (musics.size > 1) {
+                musics.subList(1, musics.size).reversed().forEach { music ->
+                    addMusicToPlayNext(music = music)
+                }
+            }
+        }
+
+        if (_state.value is PlaybackListState.Data) {
+            musics.reversed().forEach { music ->
+                addMusicToPlayNext(music = music)
+            }
         }
     }
 
@@ -280,22 +305,15 @@ internal class PlaybackListManager(
             } else {
                 // If the current song is in the deleted one, we play the next song.
                 if (currentMusic.musicId in musicIds) {
-                    // We first place ourselves in the previous music :
-                    val newCurrentSong = if (actualIndex == 0) {
-                        playedList[playedList.lastIndex]
+                    // We first place ourselves in the next music :
+                    val newCurrentSong = if (actualIndex > playedList.lastIndex) {
+                        playedList[0]
                     } else {
-                        playedList[actualIndex - 1]
+                        playedList[actualIndex]
                     }
 
-                    _state.value = this.copy(
-                        currentMusic = newCurrentSong,
-                        playedList = playedList,
-                    )
-                    settings.saveCurrentMusicInformation(
-                        currentMusicIndex = playedList.indexOf(newCurrentSong),
-                        currentMusicPosition = playbackCallback.getMusicPosition(),
-                    )
-                    playbackCallback.next()
+                    _state.value = this.copy(playedList = playedList)
+                    playbackCallback.setAndPlayMusic(newCurrentSong)
                 } else {
                     _state.value = this.copy(
                         playedList = playedList,
@@ -306,7 +324,6 @@ internal class PlaybackListManager(
                     )
                 }
                 savePlayedList(list = playedList)
-
             }
         }
     }
@@ -342,18 +359,21 @@ internal class PlaybackListManager(
             _state.value = this.copy(
                 currentMusic = music,
             )
-            settings.set(
-                key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
-                value = playedList.indexOfFirst { it.musicId == music.musicId }
+//            settings.set(
+//                key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
+//                value = playedList.indexOfFirst { it.musicId == music.musicId }
+//            )
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = playedList.indexOfFirst { it.musicId == music.musicId },
+                currentMusicPosition = 0,
             )
             player.setMusic(music)
             player.launchMusic()
-            CoroutineScope(Dispatchers.IO).launch {
-                upsertMusicUseCase(
-                    music = music.copy(
-                        nbPlayed = music.nbPlayed + 1,
-                    )
-                )
+
+            updateMusicNbPlayedJob?.cancel()
+            updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
+                delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
+                updateMusicNbPlayedUseCase(musicId = music.musicId)
             }
         }
     }
@@ -538,5 +558,9 @@ internal class PlaybackListManager(
 
         setAndPlayMusic(music = musicList[0])
         savePlayedList(list = musicList)
+    }
+
+    companion object {
+        private const val WAIT_TIME_BEFORE_UPDATE_NB_PLAYED: Long = 3_000
     }
 }

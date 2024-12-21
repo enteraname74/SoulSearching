@@ -14,12 +14,12 @@ import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.
 import com.github.enteraname74.soulsearching.coreui.core_ui.generated.resources.app_icon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun SoulSearchingLogo() {
+fun SoulSearchingLogo(
+    modifier: Modifier = Modifier,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

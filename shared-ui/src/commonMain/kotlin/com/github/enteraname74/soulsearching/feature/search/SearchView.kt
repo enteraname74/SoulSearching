@@ -1,3 +1,4 @@
+@file:Suppress("Deprecation")
 package com.github.enteraname74.soulsearching.feature.search
 
 import androidx.compose.animation.core.tween
@@ -28,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
-@Suppress("Deprecation")
 @Composable
 fun SearchView(
     maxHeight: Float,

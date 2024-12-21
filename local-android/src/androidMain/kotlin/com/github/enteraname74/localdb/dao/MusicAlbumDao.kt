@@ -11,6 +11,9 @@ import java.util.UUID
  */
 @Dao
 internal interface MusicAlbumDao {
+    @Query("SELECT * FROM RoomMusicAlbum")
+    suspend fun getAll(): List<RoomMusicAlbum>
+
     @Upsert
     suspend fun insertMusicIntoAlbum(roomMusicAlbum : RoomMusicAlbum)
 

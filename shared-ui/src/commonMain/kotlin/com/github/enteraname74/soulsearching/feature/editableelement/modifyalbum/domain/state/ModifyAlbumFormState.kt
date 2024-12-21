@@ -1,9 +1,12 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 
 sealed interface ModifyAlbumFormState {
     data object NoData : ModifyAlbumFormState
@@ -14,18 +17,26 @@ sealed interface ModifyAlbumFormState {
     ) : ModifyAlbumFormState {
         val textFields: List<SoulTextFieldHolder> = listOf(
             SoulDropdownTextFieldHolderImpl(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 id = ALBUM_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.album.albumName,
                 updateProposedValues = updateFoundAlbums,
                 getLabel = { strings.albumName },
+                style = SoulTextFieldStyle.Top,
+                getError = { strings.fieldCannotBeEmpty },
             ),
             SoulDropdownTextFieldHolderImpl(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
                 initialValue = initialAlbum.artist?.artistName.orEmpty(),
                 updateProposedValues = updateFoundArtists,
                 getLabel = { strings.artistName },
+                style = SoulTextFieldStyle.Bottom,
+                getError = { strings.fieldCannotBeEmpty },
             ),
         )
 

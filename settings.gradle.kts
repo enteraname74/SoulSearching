@@ -31,3 +31,5 @@ include("features:playback")
 findProject(":features:playback")?.name = "playback"
 include("features:filemanager")
 findProject(":features:filemanager")?.name = "filemanager"
+include("features:musicmanager")
+findProject(":features:musicmanager")?.name = "musicmanager"

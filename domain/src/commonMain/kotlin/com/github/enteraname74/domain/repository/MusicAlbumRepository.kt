@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.MusicAlbum
 import java.util.*
 
 interface MusicAlbumRepository {
+    suspend fun getAll(): List<MusicAlbum>
     /**
      * Inserts or updates a MusicAlbum.
      * It is the equivalent of adding a Music to an Album.

@@ -7,6 +7,10 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.slider.SoulSlider
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.utils.Utils
-import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.ext.imageVector
 
 
@@ -38,24 +42,24 @@ fun ExpandedPlayerControlsComposable(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        var draggedThumbValue: Float? by rememberSaveable { mutableStateOf(null) }
+
         SoulSlider(
             maxValue = state.currentMusic.duration.toFloat(),
             value = currentMusicProgression.toFloat(),
             onValueChanged = { seekTo(it.toInt()) },
+            onThumbDragged = { draggedThumbValue = it }
         )
 
         Column(
             modifier = Modifier
-                .weight(
-                    weight = 1f,
-                    fill = false,
-                ),
+                .weight(weight = 1f, fill = false),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
 
             SliderMusicPositionAndDuration(
                 contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                currentMusicPosition = currentMusicProgression,
+                currentMusicPosition = draggedThumbValue?.toInt() ?: currentMusicProgression,
                 currentMusicDuration = state.currentMusic.duration.toInt(),
             )
 

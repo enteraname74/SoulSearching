@@ -10,7 +10,8 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 object SoulButtonDefaults {
-    val shape: Shape = RoundedCornerShape(percent = 50)
+    val ROUND_SHAPE: Shape = RoundedCornerShape(percent = 50)
+    val LIGHT_ROUND_SHAPE: Shape = RoundedCornerShape(percent = 10)
 
     @Composable
     fun contentPadding(

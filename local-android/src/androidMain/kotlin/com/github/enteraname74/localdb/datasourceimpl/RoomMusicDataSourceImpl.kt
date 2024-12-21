@@ -37,13 +37,6 @@ internal class RoomMusicDataSourceImpl(
         )
     }
 
-    override suspend fun deleteMusicFromAlbum(album: String, artist: String) {
-        appDatabase.musicDao.deleteMusicFromAlbum(
-            album = album,
-            artist = artist
-        )
-    }
-
     override suspend fun getFromPath(musicPath: String): Music? {
         return appDatabase.musicDao.getMusicFromPath(
             musicPath = musicPath

@@ -32,6 +32,12 @@ internal class RoomPlaylistDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(playlistIds: List<UUID>) {
+        appDatabase.playlistDao.deleteAll(
+            ids = playlistIds,
+        )
+    }
+
     override fun getAll(): Flow<List<Playlist>> {
         return appDatabase.playlistDao.getAll().map { list ->
             list.map { it.toPlaylist() }

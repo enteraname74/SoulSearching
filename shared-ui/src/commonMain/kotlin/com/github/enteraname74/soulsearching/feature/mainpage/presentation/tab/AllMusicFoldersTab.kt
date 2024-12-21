@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
@@ -11,13 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.MusicFolderList
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedTextButton
+import com.github.enteraname74.soulsearching.coreui.button.*
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -30,7 +27,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 fun allMusicFoldersTab(
     mainPageViewModel: MainPageViewModel,
     navigateToFolder: (folderPath: String) -> Unit,
@@ -59,6 +55,7 @@ fun allMusicFoldersTab(
                     .animateItem(),
                 cover = element.cover,
                 title = element.path,
+                imageSize = null,
                 text = strings.musics(total = element.musics.size),
                 onClick = {
                     navigateToFolder(element.path)
@@ -90,24 +87,30 @@ private fun Buttons(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SoulSegmentedButton(
-                leftButtonSpec = SoulSegmentedTextButton(
-                    data = strings.soulMix,
-                    onClick = {
-                        if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
-                        coroutineScope.launch {
-                            playbackManager.playSoulMix(
-                                musicLists = allMusicFolders.map { it.musics },
-                            )
-                            playerViewManager.animateTo(
-                                newState = BottomSheetStates.EXPANDED,
-                            )
+                buttons = listOf(
+                    SoulSegmentedTextButton(
+                        data = strings.soulMix,
+                        contentPadding = SoulButtonDefaults.contentPadding(
+                            horizontal = UiConstants.Spacing.medium,
+                        ),
+                        onClick = {
+                            if (allMusicFolders.isEmpty()) return@SoulSegmentedTextButton
+                            coroutineScope.launch {
+                                playbackManager.playSoulMix(
+                                    musicLists = allMusicFolders.map { it.musics },
+                                )
+                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                            }
                         }
-                    }
+                    ),
+                    SoulSegmentedIconButton(
+                        data = Icons.Rounded.Info,
+                        contentPadding = SoulButtonDefaults.contentPadding(
+                            horizontal = 0.dp,
+                        ),
+                        onClick = onSeeSoulMixInformation,
+                    )
                 ),
-                rightButtonSpec = SoulSegmentedIconButton(
-                    data = Icons.Rounded.Info,
-                    onClick = onSeeSoulMixInformation,
-                )
             )
             SoulIconButton(
                 icon = Icons.Rounded.Shuffle,
@@ -122,9 +125,7 @@ private fun Buttons(
                                 }
                             }
                         )
-                        playerViewManager.animateTo(
-                            newState = BottomSheetStates.EXPANDED,
-                        )
+                        playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                     }
                 }
             )

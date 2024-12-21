@@ -22,6 +22,11 @@ interface PlaylistDataSource {
     suspend fun delete(playlist: Playlist)
 
     /**
+     * Delete the playlists identified in the given list of ids.
+     */
+    suspend fun deleteAll(playlistIds: List<UUID>)
+
+    /**
      * Retrieves a flow of all Playlist, sorted by name asc.
      */
     fun getAll(): Flow<List<Playlist>>

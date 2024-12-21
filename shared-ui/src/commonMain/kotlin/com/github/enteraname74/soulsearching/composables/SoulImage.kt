@@ -43,7 +43,7 @@ import java.util.*
 @Composable
 fun SoulImage(
     cover: Cover?,
-    size: Dp,
+    size: Dp?,
     modifier: Modifier = Modifier,
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
@@ -51,8 +51,15 @@ fun SoulImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
+
+    val sizeModifier = if (size != null) {
+        Modifier.size(size)
+    } else {
+        Modifier
+    }
+
     val baseModifier = Modifier
-        .size(size)
+        .then(sizeModifier)
         .clip(RoundedCornerShape(percent = roundedPercent))
         .then(modifier)
 
@@ -142,7 +149,7 @@ private fun MusicFileImage(
 
         job = CoroutineScope(Dispatchers.IO).launch {
             val fetchedCover = coverUtils.fetchCoverOfMusicFile(musicPath = musicPath)
-            fetchedCover?.let { fileData = it }
+            fileData = fetchedCover
             onSuccess?.let { it(fetchedCover) }
         }
     }

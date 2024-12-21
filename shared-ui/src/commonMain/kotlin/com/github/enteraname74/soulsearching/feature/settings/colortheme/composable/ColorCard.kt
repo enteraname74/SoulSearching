@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.composable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Card
@@ -43,7 +44,7 @@ fun ColorCard(
                 subTitle = text,
                 clickAction = onClick,
                 isSelected = isSelected,
-                padding = 0.dp,
+                padding = PaddingValues.Absolute(),
                 textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
             )

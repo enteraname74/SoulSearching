@@ -20,6 +20,10 @@ import org.jetbrains.exposed.sql.upsert
 import java.util.*
 
 internal class AlbumArtistDao {
+    fun getAll(): List<AlbumArtist> = transaction {
+        AlbumArtistTable.selectAll().mapNotNull { it.toAlbumArtist() }
+    }
+
     suspend fun upsertAlbumIntoArtist(albumArtist: AlbumArtist) {
         flowTransactionOn {
             AlbumArtistTable.upsert {

@@ -7,6 +7,7 @@ import java.util.*
  * Repository of an AlbumArtist.
  */
 interface AlbumArtistRepository {
+    suspend fun getAll(): List<AlbumArtist>
     /**
      * Insert or updates an AlbumArtist.
      */

@@ -21,11 +21,6 @@ interface MusicRepository {
     suspend fun deleteAll(ids: List<UUID>)
 
     /**
-     * Remove all songs of an Album.
-     */
-    suspend fun deleteAllMusicOfAlbum(album: String, artist: String)
-
-    /**
      * Retrieve a music from its id.
      */
     fun getFromId(musicId: UUID): Flow<Music?>

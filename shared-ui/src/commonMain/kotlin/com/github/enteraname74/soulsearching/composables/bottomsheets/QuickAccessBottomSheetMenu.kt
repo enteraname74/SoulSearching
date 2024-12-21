@@ -31,7 +31,6 @@ fun QuickAccessBottomSheetMenu(
         modifier = Modifier
             .navigationBarsPadding()
             .background(color = SoulSearchingColorTheme.colorScheme.secondary)
-            .padding(vertical = UiConstants.Spacing.large)
     ) {
         if (isQuickAccessShown) {
             BottomSheetRow(

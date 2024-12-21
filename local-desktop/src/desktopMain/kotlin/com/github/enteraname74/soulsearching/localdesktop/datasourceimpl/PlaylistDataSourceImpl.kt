@@ -22,6 +22,10 @@ internal class PlaylistDataSourceImpl(
         playlistDao.delete(playlist)
     }
 
+    override suspend fun deleteAll(playlistIds: List<UUID>) {
+        playlistDao.deleteAll(playlistIds)
+    }
+
     override fun getAll(): Flow<List<Playlist>> =
         playlistDao.getAll()
 

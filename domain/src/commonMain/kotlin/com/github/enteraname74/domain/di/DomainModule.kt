@@ -29,7 +29,7 @@ val domainModule = module {
     singleOf(::GetAlbumUseCase)
     singleOf(::GetAlbumWithMusicsUseCase)
     singleOf(::GetAllAlbumsUseCase)
-    singleOf(::GetAllAlbumsWithArtistFromQuickAccessUseCase)
+    singleOf(::GetAllAlbumsWithMusicsFromQuickAccessUseCase)
     singleOf(::GetAllAlbumsWithArtistUseCase)
     singleOf(::GetAllAlbumsWithMusicsUseCase)
     singleOf(::GetAllAlbumWithMusicsSortedUseCase)
@@ -42,6 +42,7 @@ val domainModule = module {
     singleOf(::UpsertAllAlbumsUseCase)
 
     // AlbumArtist
+    singleOf(::GetAllAlbumArtistUseCase)
     singleOf(::UpsertAlbumArtistUseCase)
     singleOf(::UpsertAllAlbumArtistUseCase)
 
@@ -56,8 +57,8 @@ val domainModule = module {
     singleOf(::GetAllArtistWithMusicsUseCase)
     singleOf(::GetArtistFromNameUseCase)
     singleOf(::GetArtistsNameFromSearchStringUseCase)
+    singleOf(::GetArtistsOfMusicUseCase)
     singleOf(::GetArtistWithMusicsUseCase)
-    singleOf(::GetCorrespondingArtistUseCase)
     singleOf(::GetDuplicatedArtistUseCase)
     singleOf(::UpdateArtistCoverUseCase)
     singleOf(::UpdateArtistNbPlayedUseCase)
@@ -103,11 +104,13 @@ val domainModule = module {
 
     // MusicAlbum
     singleOf(::GetAlbumIdFromMusicIdUseCase)
+    singleOf(::GetAllMusicAlbumUseCase)
+    singleOf(::UpdateMusicsAlbumUseCase)
     singleOf(::UpsertAllMusicAlbumUseCase)
     singleOf(::UpsertMusicIntoAlbumUseCase)
 
     // MusicArtist
-    singleOf(::GetArtistIdFromMusicIdUseCase)
+    singleOf(::GetAllMusicArtistUseCase)
     singleOf(::UpsertAllMusicArtistsUseCase)
     singleOf(::UpsertMusicIntoArtistUseCase)
 
@@ -120,6 +123,7 @@ val domainModule = module {
     singleOf(::UpsertMusicIntoPlaylistUseCase)
 
     // Playlist
+    singleOf(::DeleteAllPlaylistsUseCase)
     singleOf(::DeletePlaylistUseCase)
     singleOf(::GetAllPlaylistsUseCase)
     singleOf(::GetAllPlaylistWithMusicsNumberFromQuickAccessUseCase)

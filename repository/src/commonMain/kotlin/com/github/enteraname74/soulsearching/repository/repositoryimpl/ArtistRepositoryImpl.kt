@@ -65,4 +65,8 @@ class ArtistRepositoryImpl(
         artistDataSource.getArtistWithMusics(
             artistId = artistId
         )
+
+    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+        artistDataSource.getArtistsOfMusic(musicId)
+
 }

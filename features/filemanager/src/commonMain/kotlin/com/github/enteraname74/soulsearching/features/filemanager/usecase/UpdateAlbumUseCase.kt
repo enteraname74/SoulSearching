@@ -1,25 +1,22 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.domain.usecase.album.GetDuplicatedAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
-import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 import kotlinx.coroutines.flow.first
+import java.util.UUID
 
 class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
     private val musicAlbumRepository: MusicAlbumRepository,
-    private val musicArtistRepository: MusicArtistRepository,
     private val albumArtistRepository: AlbumArtistRepository,
     private val getDuplicatedAlbumUseCase: GetDuplicatedAlbumUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
-    private val musicFileUpdater: MusicFileUpdater,
+    private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
+    private val musicArtistRepository: MusicArtistRepository,
 ) {
     suspend operator fun invoke(
         newAlbumWithArtistInformation: AlbumWithArtist,
@@ -66,26 +63,11 @@ class UpdateAlbumUseCase(
         if (duplicateAlbum != null) mergeAlbums(from = duplicateAlbum, to = newAlbumWithArtistInformation.album)
 
         // We then need to update the musics of the album (new artist, album name and cover).
-        val musicsFromAlbum = musicRepository.getAllMusicFromAlbum(
-            albumId = newAlbumWithArtistInformation.album.albumId
+        updateMusicsOfAlbum(
+            albumWithArtist = newAlbumWithArtistInformation,
+            legacyArtist = initialArtist,
+            newArtist = albumArtistToSave,
         )
-
-        for (music in musicsFromAlbum) {
-            val newMusic = music.copy(
-                album = newAlbumWithArtistInformation.album.albumName,
-                cover = (music.cover as? Cover.CoverFile)?.copy(
-                    fileCoverId = (newAlbumWithArtistInformation.album.cover as? Cover.CoverFile)?.fileCoverId
-                        ?: (music.cover as? Cover.CoverFile)?.fileCoverId
-                ) ?: music.cover,
-                artist = newAlbumWithArtistInformation.artist!!.artistName
-            )
-            musicRepository.upsert(newMusic)
-            musicFileUpdater.updateMusic(music = newMusic)
-            musicArtistRepository.updateArtistOfMusic(
-                musicId = music.musicId,
-                newArtistId = albumArtistToSave.artistId
-            )
-        }
 
         // We adapt the quick access status with the potential duplicate album.
         val albumToSave = newAlbumWithArtistInformation.album.copy(
@@ -98,6 +80,67 @@ class UpdateAlbumUseCase(
 
         // We check and delete the initial artist if it no longer possess songs.
         deleteArtistIfEmptyUseCase(artistId = initialArtist.artistId)
+    }
+
+    private suspend fun replaceArtistOfMusic(
+        music: Music,
+        legacyArtistId: UUID,
+        newArtistId: UUID,
+    ) {
+        // We first remove the link to the legacy artist
+        musicArtistRepository.deleteMusicArtist(
+            musicArtist = MusicArtist(
+                musicId = music.musicId,
+                artistId = legacyArtistId,
+            )
+        )
+        // And we add a link to the new one if it does not exist already
+        val existingLink: MusicArtist? = musicArtistRepository.get(
+            artistId = newArtistId,
+            musicId = music.musicId,
+        )
+
+        if (existingLink == null) {
+            musicArtistRepository.upsertMusicIntoArtist(
+                musicArtist = MusicArtist(
+                    musicId = music.musicId,
+                    artistId = newArtistId,
+                )
+            )
+        }
+    }
+
+    private suspend fun updateMusicsOfAlbum(
+        albumWithArtist: AlbumWithArtist,
+        newArtist: Artist,
+        legacyArtist: Artist,
+    ) {
+        val musicsFromAlbum = musicRepository.getAllMusicFromAlbum(
+            albumId = albumWithArtist.album.albumId
+        )
+
+        for (music in musicsFromAlbum) {
+            val newMusic = music.copy(
+                album = albumWithArtist.album.albumName,
+                cover = (music.cover as? Cover.CoverFile)?.copy(
+                    fileCoverId = (albumWithArtist.album.cover as? Cover.CoverFile)?.fileCoverId
+                        ?: (music.cover as? Cover.CoverFile)?.fileCoverId
+                ) ?: music.cover,
+            )
+            updateArtistNameOfMusicUseCase(
+                legacyArtistName = legacyArtist.artistName,
+                newArtistName = newArtist.artistName,
+                music = newMusic,
+            )
+
+            if (newArtist.artistId != legacyArtist.artistId) {
+                replaceArtistOfMusic(
+                    music = music,
+                    legacyArtistId = legacyArtist.artistId,
+                    newArtistId = newArtist.artistId,
+                )
+            }
+        }
     }
 
     /**
