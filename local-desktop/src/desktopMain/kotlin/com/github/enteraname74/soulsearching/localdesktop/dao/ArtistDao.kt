@@ -117,6 +117,13 @@ internal class ArtistDao(
             .firstOrNull()
     }
 
+    suspend fun getAllFromNames(artistsNames: List<String>): List<Artist> = dbQuery {
+        ArtistTable
+            .selectAll()
+            .where { artistName inList artistsNames }
+            .mapNotNull { it.toArtist() }
+    }
+
     fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
         combine(
             getFromId(artistId),

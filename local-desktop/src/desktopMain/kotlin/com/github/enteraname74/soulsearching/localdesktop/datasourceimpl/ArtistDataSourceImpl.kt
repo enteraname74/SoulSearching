@@ -40,6 +40,9 @@ internal class ArtistDataSourceImpl(
     override suspend fun getFromName(artistName: String): Artist? =
         artistDao.getFromName(artistName)
 
+    override suspend fun getAllFromName(artistsNames: List<String>): List<Artist> =
+        artistDao.getAllFromNames(artistsNames)
+
     override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
         artistDao.getArtistWithMusics(artistId)
 

@@ -54,10 +54,4 @@ class DeleteArtistUseCase(
             deleteArtistIfEmptyUseCase(it.artistId)
         }
     }
-
-    suspend operator fun invoke(artistId: UUID) {
-        artistRepository.getArtistWithMusics(artistId).firstOrNull()?.let {
-            artistRepository.delete(it.artist)
-        }
-    }
 }

@@ -51,6 +51,7 @@ val domainModule = module {
     singleOf(::DeleteArtistIfEmptyUseCase)
     singleOf(::DeleteArtistUseCase)
     singleOf(::GetAllArtistsUseCase)
+    singleOf(::GetAllArtistsWithNameUseCase)
     singleOf(::GetAllArtistWithMusicsFromQuickAccessUseCase)
     singleOf(::GetAllArtistWithMusicsSortedByMostSongsUseCase)
     singleOf(::GetAllArtistWithMusicsSortedUseCase)

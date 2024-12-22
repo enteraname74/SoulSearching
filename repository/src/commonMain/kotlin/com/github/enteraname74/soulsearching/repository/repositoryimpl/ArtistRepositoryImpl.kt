@@ -46,6 +46,9 @@ class ArtistRepositoryImpl(
     override suspend fun getFromName(artistName: String): Artist? =
         artistDataSource.getFromName(artistName = artistName)
 
+    override suspend fun getAllFromName(artistsNames: List<String>): List<Artist> =
+        artistDataSource.getAllFromName(artistsNames)
+
     /**
      * Retrieves a flow of all Artist, sorted by name asc.
      */
