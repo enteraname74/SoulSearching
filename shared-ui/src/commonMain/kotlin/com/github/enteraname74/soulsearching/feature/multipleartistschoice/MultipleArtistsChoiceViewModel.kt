@@ -23,14 +23,21 @@ class MultipleArtistsChoiceViewModel(
     private val multipleArtistListener: MultipleArtistListener,
 ): ScreenModel {
     private val artists: MutableStateFlow<List<ArtistChoice>?> = MutableStateFlow(null)
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<MultipleArtistChoiceState> = artists.mapLatest { artists ->
+    private val toggleState: MutableStateFlow<Boolean> = MutableStateFlow(true)
+
+    val state: StateFlow<MultipleArtistChoiceState> = combine(
+        artists,
+        toggleState
+    ) { artists, toggleState ->
         when {
             artists != null -> {
                 if (artists.isEmpty()) {
                     MultipleArtistChoiceState.NoMultipleArtists
                 } else {
-                    MultipleArtistChoiceState.UserAction(artists)
+                    MultipleArtistChoiceState.UserAction(
+                        toggleAllState = toggleState,
+                        artists = artists,
+                    )
                 }
             }
             else -> MultipleArtistChoiceState.Loading
@@ -75,6 +82,15 @@ class MultipleArtistsChoiceViewModel(
 
     fun consumeNavigation() {
         _navigationState.value = MultipleArtistsChoiceNavigationState.Idle
+    }
+
+    fun toggleAll() {
+        toggleState.value = !toggleState.value
+        artists.update { artists ->
+            artists?.map {
+                it.copy(isSelected = toggleState.value)
+            }
+        }
     }
 
     fun toggleSelection(
