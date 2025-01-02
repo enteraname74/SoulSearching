@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -43,7 +44,10 @@ fun SoulTextField(
     modifier: Modifier = Modifier,
     colors: SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
     style: SoulTextFieldStyle,
-    keyboardType: KeyboardType = KeyboardType.Text,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Done,
+    ),
     keyboardActions: KeyboardActions = KeyboardActions(
         onDone = { focusManager.clearFocus() }
     ),
@@ -73,9 +77,7 @@ fun SoulTextField(
                 interactionSource = interactionSource,
                 maxLines = 1,
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = keyboardType,
-                ),
+                keyboardOptions = keyboardOptions,
                 textStyle = UiConstants.Typography.bodyLarge.copy(color = colors.contentColor),
                 keyboardActions = keyboardActions,
                 cursorBrush = SolidColor(colors.contentColor),
@@ -150,7 +152,10 @@ class SoulTextFieldHolderImpl(
     private val modifier: Modifier = Modifier,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
     private val onValueChange: ((String) -> Unit)? = null,
-    private val keyboardType: KeyboardType = KeyboardType.Text,
+    private val keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Done,
+    ),
     onChange: (String) -> Unit = {},
 ) : SoulTextFieldHolder(
     initialValue = initialValue,
@@ -178,7 +183,7 @@ class SoulTextFieldHolderImpl(
             onValueChange = ::onValueChanged,
             labelName = label,
             focusManager = focusManager,
-            keyboardType = keyboardType,
+            keyboardOptions = keyboardOptions,
             style = style,
             colors = colors,
             error = error,
