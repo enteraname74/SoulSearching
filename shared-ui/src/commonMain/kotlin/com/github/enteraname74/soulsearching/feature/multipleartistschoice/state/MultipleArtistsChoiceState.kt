@@ -6,6 +6,7 @@ sealed interface MultipleArtistChoiceState {
     data object Loading : MultipleArtistChoiceState
     data object NoMultipleArtists: MultipleArtistChoiceState
     data class UserAction(
+        val toggleAllState: Boolean,
         val artists: List<ArtistChoice>
     ): MultipleArtistChoiceState
 }

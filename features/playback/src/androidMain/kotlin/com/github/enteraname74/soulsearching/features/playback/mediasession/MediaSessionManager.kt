@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 /**
  * Manage media session related things.
@@ -25,6 +25,7 @@ class MediaSessionManager(
     private val playbackManager: PlaybackManager,
 ) {
     private var mediaSession: MediaSessionCompat? = null
+    private var seekToJob: Job? = null
 
     private val standardNotificationBitmap: Bitmap = Bitmap.createScaledBitmap(
         BitmapFactory.decodeResource(context.resources, R.drawable.notification_default),
@@ -57,7 +58,10 @@ class MediaSessionManager(
 
         mediaSession?.setCallback(object : MediaSessionCompat.Callback() {
             override fun onSeekTo(pos: Long) {
-                playbackManager.seekToPosition(pos.toInt())
+                seekToJob?.cancel()
+                seekToJob = CoroutineScope(Dispatchers.IO).launch {
+                    playbackManager.seekToPosition(pos.toInt())
+                }
             }
 
             override fun onMediaButtonEvent(mediaButtonIntent: Intent): Boolean {

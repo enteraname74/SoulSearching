@@ -23,19 +23,20 @@ open class FetchAllMultipleArtistManagerImpl(
         return newArtist
     }
 
-    override suspend fun deleteArtist(
-        artist: Artist,
-        musicIdsOfInitialArtist: List<UUID>,
-        albumIdsOfInitialArtist: List<UUID>,
+    override suspend fun deleteArtists(
+        artists: List<Artist>,
     ) {
-        optimizedCachedData.artistsByName.remove(artist.artistName)
-        musicIdsOfInitialArtist.forEach { musicId ->
-            optimizedCachedData.musicArtists.removeIf { it.musicId == musicId && it.artistId == artist.artistId }
+        val ids = artists.map { it.artistId }
+
+        artists.forEach { artist ->
+            optimizedCachedData.artistsByName.remove(artist.artistName)
         }
-        albumIdsOfInitialArtist.forEach { albumId ->
-            optimizedCachedData.albumArtists.removeIf { it.albumId == albumId && it.artistId == artist.artistId }
-        }
+        optimizedCachedData.musicArtists.removeIf { it.artistId in ids }
+        optimizedCachedData.albumArtists.removeIf { it.artistId in ids }
     }
+
+    override suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist> =
+        optimizedCachedData.artistsByName.filter { it.key in artistsNames }.values.toList()
 
     override suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID> =
         optimizedCachedData.musicsByPath
@@ -47,12 +48,14 @@ open class FetchAllMultipleArtistManagerImpl(
             .filter { it.key.artist == artist.artistName }
             .map { it.value.albumId }
 
-    override suspend fun linkMusicToArtist(musicId: UUID, artistId: UUID) {
-        optimizedCachedData.musicArtists.add(
-            MusicArtist(
-                musicId = musicId,
-                artistId = artistId,
-            )
+    override suspend fun linkSongsToArtist(musicIds: List<UUID>, artistId: UUID) {
+        optimizedCachedData.musicArtists.addAll(
+            musicIds.map {
+                MusicArtist(
+                    musicId = it,
+                    artistId = artistId,
+                )
+            }
         )
     }
 

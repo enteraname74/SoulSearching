@@ -47,13 +47,12 @@ class UpdateMusicUseCase(
     private suspend fun handleFirstArtistOfMusic(
         legacyMusic: Music,
         newMusicInformation: Music,
-        previousArtist: String,
+        previousArtist: Artist,
         newArtist: String,
     ) {
         // It's the same artist, we got nothing to do.
-        if (previousArtist == newArtist) return
+        if (previousArtist.artistName == newArtist) return
 
-        val legacyArtist = artistRepository.getFromName(artistName = previousArtist)
         val existingNewArtist = getOrCreateArtist(
             artistName = newArtist,
             music = newMusicInformation
@@ -73,39 +72,34 @@ class UpdateMusicUseCase(
             newAlbumName = newMusicInformation.album,
         )
 
-        legacyArtist?.let { artist ->
-            musicArtistRepository.deleteMusicArtist(
-                musicArtist = MusicArtist(
-                    musicId = legacyMusic.musicId,
-                    artistId = legacyArtist.artistId,
-                )
+        musicArtistRepository.deleteMusicArtist(
+            musicArtist = MusicArtist(
+                musicId = legacyMusic.musicId,
+                artistId = previousArtist.artistId,
             )
-            deleteArtistIfEmptyUseCase(artistId = artist.artistId)
-        }
+        )
+        deleteArtistIfEmptyUseCase(artistId = previousArtist.artistId)
     }
 
     private suspend fun handleMultipleArtistsOfMusic(
         legacyMusic: Music,
         newMusicInformation: Music,
-        previousArtistsName: List<String>,
+        previousArtists: List<Artist>,
         newArtistsName: List<String>
     ) {
         // We first need to handle the first artist of the song (it's the one that possess the album of the song)
         handleFirstArtistOfMusic(
             legacyMusic = legacyMusic,
             newMusicInformation = newMusicInformation,
-            previousArtist = previousArtistsName.first(),
+            previousArtist = previousArtists.first(),
             newArtist = newArtistsName.first(),
         )
 
-        val previousArtists: List<Artist> = previousArtistsName
-            .subList(1, previousArtistsName.size)
-            .mapNotNull { previousArtistName ->
-                artistRepository.getFromName(artistName = previousArtistName)
-            }
+        val previousArtistsWithoutFirstOne: List<Artist> = previousArtists
+            .subList(1, previousArtists.size)
 
         // We will remove the link of the music to all its other previous artists
-        previousArtists.forEach { artist ->
+        previousArtistsWithoutFirstOne.forEach { artist ->
             musicArtistRepository.deleteMusicArtist(
                 musicArtist = MusicArtist(
                     musicId = legacyMusic.musicId,
@@ -129,7 +123,7 @@ class UpdateMusicUseCase(
         }
 
         // We finally check if the previous artists can be deleted :
-        previousArtists.forEach { artist ->
+        previousArtistsWithoutFirstOne.forEach { artist ->
             deleteArtistIfEmptyUseCase(
                 artistId = artist.artistId,
             )
@@ -145,15 +139,15 @@ class UpdateMusicUseCase(
      */
     suspend operator fun invoke(
         legacyMusic: Music,
-        previousArtistsNames: List<String>,
+        previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
     ) {
-        if (previousArtistsNames != newArtistsNames) {
+        if (previousArtists.map { it.artistName } != newArtistsNames) {
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtistsName = previousArtistsNames,
+                previousArtists = previousArtists,
                 newArtistsName = newArtistsNames,
             )
         } else if (legacyMusic.album != newMusicInformation.album) {

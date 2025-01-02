@@ -1,21 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DownloadDone
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
@@ -33,10 +33,15 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
 
 class MultipleArtistsChoiceScreen(
-    private val mode: MultipleArtistsChoiceMode,
+    private val serializedMode: String,
 ) : Screen {
+
     @Composable
     override fun Content() {
+        val mode: MultipleArtistsChoiceMode by remember {
+            mutableStateOf(MultipleArtistsChoiceMode.deserialize(serializedMode))
+        }
+
         val screenModel: MultipleArtistsChoiceViewModel = koinScreenModel()
         val state: MultipleArtistChoiceState by screenModel.state.collectAsState()
         val navigationState: MultipleArtistsChoiceNavigationState by screenModel.navigationState.collectAsState()
@@ -69,15 +74,19 @@ class MultipleArtistsChoiceScreen(
             onToggleArtistChoice = screenModel::toggleSelection,
             onSaveSelection = screenModel::saveSelection,
             navigateBack = navigator::pop,
+            onToggleAll = screenModel::toggleAll,
+            mode = mode,
         )
     }
 
     @Composable
     private fun MainComposable(
         state: MultipleArtistChoiceState,
+        mode: MultipleArtistsChoiceMode,
         onSaveSelection: () -> Unit,
         navigateBack: () -> Unit,
         onToggleArtistChoice: (ArtistChoice) -> Unit,
+        onToggleAll: () -> Unit,
     ) {
         when (state) {
             MultipleArtistChoiceState.Loading -> {
@@ -86,10 +95,12 @@ class MultipleArtistsChoiceScreen(
 
             is MultipleArtistChoiceState.UserAction -> {
                 UserActionScreen(
-                    choices = state.artists,
+                    state = state,
                     onSaveSelection = onSaveSelection,
                     onToggleArtistChoice = onToggleArtistChoice,
                     navigateBack = navigateBack,
+                    onToggleAll = onToggleAll,
+                    mode = mode,
                 )
             }
 
@@ -108,9 +119,11 @@ class MultipleArtistsChoiceScreen(
 
     @Composable
     private fun UserActionScreen(
-        choices: List<ArtistChoice>,
+        state: MultipleArtistChoiceState.UserAction,
+        mode: MultipleArtistsChoiceMode,
         onSaveSelection: () -> Unit,
         navigateBack: () -> Unit,
+        onToggleAll: () -> Unit,
         onToggleArtistChoice: (ArtistChoice) -> Unit,
     ) {
         SoulScreen {
@@ -141,14 +154,28 @@ class MultipleArtistsChoiceScreen(
                         key = SelectionTextKey,
                         contentType = SelectionTextContentType,
                     ) {
-                        Text(
-                            text = strings.multipleArtistsSelectionTitle,
-                            color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                            style = UiConstants.Typography.bodyTitle,
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = strings.multipleArtistsSelectionTitle,
+                                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                                style = UiConstants.Typography.bodyTitle,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            SoulCheckBox(
+                                checked = state.toggleAllState,
+                                onCheckedChange = {
+                                    onToggleAll()
+                                },
+                            )
+                        }
                     }
                     items(
-                        items = choices,
+                        items = state.artists,
                         contentType = { ArtistChoicesContentType },
                         key = { it.artist.artistId }
                     ) { artistChoice ->

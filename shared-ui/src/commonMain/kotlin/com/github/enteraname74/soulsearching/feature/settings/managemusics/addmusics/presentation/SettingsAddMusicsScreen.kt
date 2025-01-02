@@ -55,11 +55,11 @@ class SettingsAddMusicsScreen(
                 is SettingsAddMusicsNavigationState.ToMultipleArtists -> {
                     navigator.safePush(
                         MultipleArtistsChoiceScreen(
-                            mode = MultipleArtistsChoiceMode.NewSongs(
+                            serializedMode = MultipleArtistsChoiceMode.NewSongs(
                                 multipleArtists =
                                 (navigationState as SettingsAddMusicsNavigationState.ToMultipleArtists)
                                     .multipleArtists
-                            ),
+                            ).serialize(),
                         )
                     )
                     screenModel.consumeNavigation()

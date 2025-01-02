@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -55,16 +54,12 @@ fun PlaylistSelectableComposable(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        Checkbox(
+        SoulCheckBox(
             checked = isSelected,
             onCheckedChange = {
                 onClick()
             },
-            colors = CheckboxDefaults.colors(
-                checkmarkColor = textColor,
-                checkedColor = Color.Transparent,
-                uncheckedColor = textColor
-            )
+            color = textColor,
         )
     }
 }

@@ -178,11 +178,21 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         player.pause()
     }
 
+    private suspend fun updateNotification() {
+        (mainState.value as? PlaybackManagerState.Data)?.let {
+            notification.updateNotification(
+                playbackManagerState = it,
+                cover = _currentCoverState.value,
+            )
+        }
+    }
+
     /**
      * Seek to a given position in the current played music.
      */
-    fun seekToPosition(position: Int) {
+    suspend fun seekToPosition(position: Int) {
         player.seekToPosition(position)
+        updateNotification()
         playbackProgressJob.launchDurationJobIfNecessary()
     }
 
@@ -218,6 +228,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         (playbackListManager.state.first() as? PlaybackListState.Data)?.let { dataState ->
             if (settings.get(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED) && getMusicPosition() > REWIND_THRESHOLD) {
                 setAndPlayMusic(music = dataState.currentMusic)
+                updateNotification()
             } else {
                 playbackListManager.getPreviousMusic()?.let {
                     setAndPlayMusic(it)

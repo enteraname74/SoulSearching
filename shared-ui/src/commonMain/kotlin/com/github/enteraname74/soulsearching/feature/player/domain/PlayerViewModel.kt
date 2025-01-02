@@ -261,7 +261,9 @@ class PlayerViewModel(
      * Set the current music position.
      */
     fun seekTo(position: Int) {
-        playbackManager.seekToPosition(position = position)
+        screenModelScope.launch {
+            playbackManager.seekToPosition(position = position)
+        }
     }
 
     /**

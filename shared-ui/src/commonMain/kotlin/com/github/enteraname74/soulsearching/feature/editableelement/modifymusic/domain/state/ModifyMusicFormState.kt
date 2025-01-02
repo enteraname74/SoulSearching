@@ -1,15 +1,17 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.*
-import java.util.UUID
+import java.util.*
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -35,7 +37,11 @@ sealed interface ModifyMusicFormState {
                     getError = { strings.fieldCannotBeEmpty },
                     onChange = {
                         onFieldChange(MUSIC_NAME, it)
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text,
+                    )
                 )
             )
             add(
@@ -51,7 +57,11 @@ sealed interface ModifyMusicFormState {
                     getError = { strings.fieldCannotBeEmpty },
                     onChange = {
                         onFieldChange(ALBUM_NAME, it)
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text,
+                    )
                 )
             )
 
@@ -72,8 +82,19 @@ sealed interface ModifyMusicFormState {
                         } else {
                             SoulTextFieldStyle.Body
                         },
+                        keyboardOptions = if (index == artistsOfMusic.lastIndex) {
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Done,
+                            )
+                        } else {
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            )
+                        },
                         getError = { strings.fieldCannotBeEmpty },
-                        leadingIconSpec = if (index == 0) {
+                        leadingIconSpec = if (artistsOfMusic.size == 1) {
                             null
                         } else {
                             SoulTextFieldLeadingIconSpec(

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.coreui.textfield
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -10,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +32,10 @@ fun SoulDropdownTextField(
     modifier: Modifier = Modifier,
     colors : SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
     style: SoulTextFieldStyle,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Done,
+    ),
     leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     focusManager: FocusManager
 ) {
@@ -78,6 +85,7 @@ fun SoulDropdownTextField(
                         isExpanded = false
                     }
                 ),
+                keyboardOptions = keyboardOptions,
                 leadingIcon = leadingIconSpec?.let {
                     {
                         SoulIcon(
@@ -123,6 +131,10 @@ class SoulDropdownTextFieldHolderImpl(
     private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
+    private val keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Done,
+    ),
     onChange: (String) -> Unit = {},
 ): SoulTextFieldHolder(
     initialValue = initialValue,
@@ -163,6 +175,7 @@ class SoulDropdownTextFieldHolderImpl(
             isInError = isInError,
             error = error,
             leadingIconSpec = leadingIconSpec,
+            keyboardOptions = keyboardOptions,
         )
     }
 }

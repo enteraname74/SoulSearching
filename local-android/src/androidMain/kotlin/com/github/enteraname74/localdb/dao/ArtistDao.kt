@@ -37,6 +37,9 @@ internal interface ArtistDao {
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
     suspend fun getFromName(artistName: String): RoomArtist?
 
+    @Query("SELECT * FROM RoomArtist WHERE artistName in (:artistsNames)")
+    suspend fun getAllFromName(artistsNames: List<String>): List<RoomArtist>
+
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics?>

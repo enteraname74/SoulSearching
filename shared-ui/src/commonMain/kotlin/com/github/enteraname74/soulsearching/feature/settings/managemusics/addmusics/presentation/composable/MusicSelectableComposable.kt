@@ -1,13 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +15,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulBitmapImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -109,16 +103,12 @@ private fun InnerContent(
                 )
 
             }
-            Checkbox(
+            SoulCheckBox(
                 checked = isSelected,
                 onCheckedChange = {
                     onClick()
                 },
-                colors = CheckboxDefaults.colors(
-                    checkmarkColor = textColor,
-                    checkedColor = Color.Transparent,
-                    uncheckedColor = textColor
-                )
+                color = textColor,
             )
         }
     }

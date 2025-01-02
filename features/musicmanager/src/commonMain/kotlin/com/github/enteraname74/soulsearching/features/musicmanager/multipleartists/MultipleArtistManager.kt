@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
-import com.github.enteraname74.domain.model.*
-import java.util.UUID
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
+import java.util.*
 
 /**
  * Manages multiple artist.
@@ -9,26 +11,24 @@ import java.util.UUID
  */
 abstract class MultipleArtistManager {
     protected abstract suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album>
-    protected abstract suspend fun getArtistFromName(artistName: String): Artist?
     protected abstract suspend fun createNewArtist(artistName: String): Artist
+    protected abstract suspend fun getArtistFromName(artistName: String): Artist?
+    protected abstract suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist>
 
     /**
-     * Should only delete the Artist and not its songs, nor its albums
+     * Should only delete artists and not its songs, nor its albums
      * (each of the mentioned elements are managed by others functions)
      */
-    protected abstract suspend fun deleteArtist(
-        artist: Artist,
-        musicIdsOfInitialArtist: List<UUID>,
-        albumIdsOfInitialArtist: List<UUID>,
-    )
+    protected abstract suspend fun deleteArtists(artists: List<Artist>)
 
     protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
     protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
 
-    protected abstract suspend fun linkMusicToArtist(
-        musicId: UUID,
+    protected abstract suspend fun linkSongsToArtist(
+        musicIds: List<UUID>,
         artistId: UUID,
     )
+
     protected abstract suspend fun linkAlbumToArtist(
         albumId: UUID,
         artistId: UUID,
@@ -60,26 +60,34 @@ abstract class MultipleArtistManager {
     private suspend fun manageMultipleArtistAlbums(
         multipleArtist: Artist,
         firstArtistName: String,
+        existingArtists: List<Artist>,
     ) {
-
         val albumsOfMultipleArtist: List<Album> = getAlbumsOfMultipleArtist(
-            artist = multipleArtist,
+            artist = multipleArtist
         )
 
         albumsOfMultipleArtist.forEach { album ->
             /*
             If we found an existing album with a single artist as the first one of the multiple artist,
-            we link the songs of the current album to it.
+            we link the songs of the current album to it. Else, we just link the album of the multiple artist to the first artist.
              */
             val albumWithSingleArtist: Album? = getExistingAlbumOfFirstArtist(
                 albumName = album.albumName,
                 firstArtistName = firstArtistName,
             )
-            albumWithSingleArtist?.let {
+            if (albumWithSingleArtist != null) {
                 moveSongsOfAlbum(
                     fromAlbum = album,
-                    toAlbum = it,
+                    toAlbum = albumWithSingleArtist,
                     multipleArtistName = multipleArtist.artistName,
+                )
+            } else {
+                linkAlbumToArtist(
+                    albumId = album.albumId,
+                    artistId = (
+                            existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
+                                firstArtistName
+                            ) ?: createNewArtist(firstArtistName)).artistId,
                 )
             }
         }
@@ -87,66 +95,60 @@ abstract class MultipleArtistManager {
 
     /**
      * Divide a multiple artist into separated artists and link songs of the multiple artist to each of them.
+     * All albums of the multiple artist will be linked to the first artist.
      */
     private suspend fun divideArtistAndLinkSongsToThem(
         musicIdsOfInitialArtist: List<UUID>,
-        albumIdsOfInitialArtist: List<UUID>,
-        allArtistsName: List<String>
+        allArtistsName: List<String>,
+        existingArtists: List<Artist>,
     ) {
-        allArtistsName.forEachIndexed { index, name ->
+        allArtistsName.forEach { name ->
             val artistId: UUID =
-                getArtistFromName(name)?.artistId ?: createNewArtist(artistName = name).artistId
+                (existingArtists.firstOrNull { it.artistName == name }
+                    ?: getArtistFromName(name)
+                    ?: createNewArtist(artistName = name)).artistId
 
-            musicIdsOfInitialArtist.forEach { musicId ->
-                linkMusicToArtist(
-                    musicId = musicId,
-                    artistId = artistId,
-                )
-            }
-            // Only the first artist of the list keep its album
-            if (index == 0) {
-                albumIdsOfInitialArtist.forEach { albumId ->
-                    linkAlbumToArtist(
-                        albumId = albumId,
-                        artistId = artistId,
-                    )
-                }
-            }
+            linkSongsToArtist(
+                musicIds = musicIdsOfInitialArtist,
+                artistId = artistId,
+            )
         }
     }
 
-    suspend fun handleMultipleArtists(
+    open suspend fun handleMultipleArtists(
         artistsToDivide: List<Artist>
     ) {
+        val allExistingArtists: List<Artist> = getAllArtistFromName(
+            artistsNames = buildList {
+                artistsToDivide.forEach {
+                    addAll(it.getMultipleArtists())
+                }
+            }.distinct()
+        )
+
         // We update the concerned cached artists
         artistsToDivide.forEach { multipleArtist ->
-            val musicIdsOfInitialArtist: List<UUID> = getMusicIdsOfArtist(
-                artist = multipleArtist,
-            )
-            val albumIdsOfInitialArtist: List<UUID> = getAlbumIdsOfArtist(
+            val musicIdsOfMultipleArtist: List<UUID> = getMusicIdsOfArtist(
                 artist = multipleArtist,
             )
 
             val allArtistsName: List<String> = multipleArtist.getMultipleArtists()
 
             divideArtistAndLinkSongsToThem(
-                musicIdsOfInitialArtist = musicIdsOfInitialArtist,
-                albumIdsOfInitialArtist = albumIdsOfInitialArtist,
+                musicIdsOfInitialArtist = musicIdsOfMultipleArtist,
                 allArtistsName = allArtistsName,
+                existingArtists = allExistingArtists,
             )
 
             manageMultipleArtistAlbums(
                 multipleArtist = multipleArtist,
                 firstArtistName = allArtistsName.first(),
-            )
-
-            // We need to delete the links and artist with the legacy information:
-            deleteArtist(
-                artist = multipleArtist,
-                musicIdsOfInitialArtist = musicIdsOfInitialArtist,
-                albumIdsOfInitialArtist = albumIdsOfInitialArtist,
+                existingArtists = allExistingArtists,
             )
         }
+
+        // We need to delete the links and artist with the legacy information:
+        deleteArtists(artists = artistsToDivide)
     }
 
     fun doMusicsHaveMultipleArtists(musics: List<Music>): Boolean =

@@ -44,6 +44,8 @@ interface ArtistDataSource {
      */
     suspend fun getFromName(artistName: String): Artist?
 
+    suspend fun getAllFromName(artistsNames: List<String>): List<Artist>
+
     /**
      * Retrieves a flow of an ArtistWithMusics.
      */

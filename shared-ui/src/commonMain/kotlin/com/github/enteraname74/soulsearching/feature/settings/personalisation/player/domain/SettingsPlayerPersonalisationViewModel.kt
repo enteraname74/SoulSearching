@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain
 
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
@@ -45,7 +47,10 @@ class SettingsPlayerPersonalisationViewModel(
         id = SOUL_MIX_TEXT_FIELD,
         initialValue = settings.get(SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST).toString(),
         isValid = { text -> text.isNotBlank() },
-        keyboardType = KeyboardType.Number,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done,
+        ),
         getLabel = { null },
         onValueChange = { text ->
             val intValue = text.toIntOrNull() ?: return@SoulTextFieldHolderImpl

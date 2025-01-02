@@ -172,7 +172,7 @@ class ModifyMusicViewModel(
             updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtistsNames = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull()?.map { it.artistName } ?: emptyList(),
+                previousArtists = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
             )
 

@@ -1,7 +1,10 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulDropdownTextFieldHolderImpl
@@ -26,6 +29,10 @@ sealed interface ModifyAlbumFormState {
                 getLabel = { strings.albumName },
                 style = SoulTextFieldStyle.Top,
                 getError = { strings.fieldCannotBeEmpty },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                ),
             ),
             SoulDropdownTextFieldHolderImpl(
                 modifier = Modifier
