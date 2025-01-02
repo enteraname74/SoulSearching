@@ -56,7 +56,7 @@ class MultipleArtistsChoiceViewModel(
     private var mode: MultipleArtistsChoiceMode = MultipleArtistsChoiceMode.InitialFetch
 
     fun init(
-        mode: MultipleArtistsChoiceMode
+        mode: MultipleArtistsChoiceMode,
     ) {
         this.mode = mode
 

@@ -50,7 +50,7 @@ class SettingsAdvancedScreen: Screen, SettingPage {
             toMultipleArtists = {
                 navigator.safePush(
                     MultipleArtistsChoiceScreen(
-                        mode = MultipleArtistsChoiceMode.GeneralCheck,
+                        serializedMode = MultipleArtistsChoiceMode.GeneralCheck.serialize(),
                     )
                 )
             }

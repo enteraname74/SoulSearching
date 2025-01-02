@@ -42,6 +42,7 @@ kotlin {
                 implementation(libs.bundles.koin)
 
                 implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.kmpalette)
                 implementation(libs.components.resources)
