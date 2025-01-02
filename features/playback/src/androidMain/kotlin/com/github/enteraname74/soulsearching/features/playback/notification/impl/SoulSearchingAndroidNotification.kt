@@ -23,9 +23,9 @@ import org.koin.core.component.inject
 abstract class SoulSearchingAndroidNotification(
     private val context: Context,
 ) : SoulSearchingNotification, KoinComponent {
-    protected val mediaSessionManager: MediaSessionManager by inject()
+    private val mediaSessionManager: MediaSessionManager by inject()
 
-    protected val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     protected val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
         context,
         MUSIC_NOTIFICATION_CHANNEL_ID
@@ -33,7 +33,7 @@ abstract class SoulSearchingAndroidNotification(
     lateinit var notification: Notification
         protected set
 
-    protected val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
+    private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
         1,
         Intent().apply {
@@ -45,7 +45,7 @@ abstract class SoulSearchingAndroidNotification(
         PendingIntent.FLAG_IMMUTABLE
     )
 
-    protected val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
+    private val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
         context,
         5,
         Intent(context, DeletedNotificationIntentReceiver::class.java),

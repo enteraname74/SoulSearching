@@ -359,10 +359,6 @@ internal class PlaybackListManager(
             _state.value = this.copy(
                 currentMusic = music,
             )
-//            settings.set(
-//                key = SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY.key,
-//                value = playedList.indexOfFirst { it.musicId == music.musicId }
-//            )
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = playedList.indexOfFirst { it.musicId == music.musicId },
                 currentMusicPosition = 0,
