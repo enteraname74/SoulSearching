@@ -94,11 +94,13 @@ fun PlayerDraggableView(
             is PlayerNavigationState.ToAlbum -> {
                 val albumId = (navigationState as? PlayerNavigationState.ToAlbum)?.albumId ?: return@LaunchedEffect
                 navigateToAlbum(albumId.toString())
+                playerViewModel.consumeNavigation()
             }
 
             is PlayerNavigationState.ToArtist -> {
                 val artistId = (navigationState as? PlayerNavigationState.ToArtist)?.artistId ?: return@LaunchedEffect
                 navigateToArtist(artistId.toString())
+                playerViewModel.consumeNavigation()
             }
         }
     }
