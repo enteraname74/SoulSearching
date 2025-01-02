@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
@@ -12,7 +11,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.*
-import java.util.UUID
+import java.util.*
 
 sealed interface ModifyMusicFormState {
     data object NoData : ModifyMusicFormState
@@ -95,7 +94,7 @@ sealed interface ModifyMusicFormState {
                             )
                         },
                         getError = { strings.fieldCannotBeEmpty },
-                        leadingIconSpec = if (index == 0) {
+                        leadingIconSpec = if (artistsOfMusic.size == 1) {
                             null
                         } else {
                             SoulTextFieldLeadingIconSpec(
