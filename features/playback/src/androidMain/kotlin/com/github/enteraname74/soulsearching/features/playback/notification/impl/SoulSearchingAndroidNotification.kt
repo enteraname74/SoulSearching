@@ -35,14 +35,17 @@ abstract class SoulSearchingAndroidNotification(
 
     private val activityPendingIntent: PendingIntent = PendingIntent.getActivity(
         context,
-        1,
+        0,
         Intent().apply {
+            setClassName(context.packageName, "com.github.enteraname74.soulsearching.MainActivity")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             action = Intent.ACTION_MAIN
-            `package` = context.packageName
             addCategory(Intent.CATEGORY_LAUNCHER)
         },
-        PendingIntent.FLAG_IMMUTABLE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            PendingIntent.FLAG_MUTABLE
+        else
+            PendingIntent.FLAG_UPDATE_CURRENT
     )
 
     private val deleteNotificationIntent: PendingIntent = PendingIntent.getBroadcast(
