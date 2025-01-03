@@ -21,7 +21,8 @@ fun EditableElementColumnView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    extraContent: @Composable (() -> Unit)? = null,
+    extraFormBottomContent: @Composable (() -> Unit)?,
+    extraFormTopContent: @Composable (() -> Unit)?,
 ) {
     Box(
         modifier = Modifier
@@ -60,7 +61,8 @@ fun EditableElementColumnView(
             editableElementTextFieldsView(
                 focusManager = focusManager,
                 textFields = textFields,
-                extraContent = extraContent,
+                extraFormBottomContent = extraFormBottomContent,
+                extraFormTopContent = extraFormTopContent,
             )
         }
     }

@@ -21,7 +21,8 @@ fun EditableElementRowView(
     onSelectImage: () -> Unit,
     focusManager: FocusManager,
     textFields: List<SoulTextFieldHolder>,
-    extraContent: @Composable (() -> Unit)? = null,
+    extraFormTopContent: @Composable (() -> Unit)?,
+    extraFormBottomContent: @Composable (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier
@@ -59,10 +60,10 @@ fun EditableElementRowView(
                 editableElementTextFieldsView(
                     focusManager = focusManager,
                     textFields = textFields,
-                    extraContent = extraContent,
+                    extraFormBottomContent = extraFormBottomContent,
+                    extraFormTopContent = extraFormTopContent,
                 )
             }
-
         }
     }
 }

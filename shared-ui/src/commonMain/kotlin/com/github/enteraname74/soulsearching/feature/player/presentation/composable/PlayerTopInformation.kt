@@ -98,6 +98,7 @@ fun PlayerTopInformation(
             FlowRow(
                 horizontalArrangement = Arrangement.Center,
                 verticalArrangement = Arrangement.Center,
+                maxLines = 2,
             ) {
                 state.artistsOfCurrentMusic.forEachIndexed { index, artist ->
 

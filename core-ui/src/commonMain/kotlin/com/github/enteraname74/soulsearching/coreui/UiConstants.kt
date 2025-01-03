@@ -25,6 +25,7 @@ object UiConstants {
      * Spacing values for spacing or simple size.
      */
     object Spacing {
+        val verySmall: Dp = 2.dp
         val small: Dp = 4.dp
         val medium: Dp = 8.dp
         val mediumPlus: Dp = 12.dp

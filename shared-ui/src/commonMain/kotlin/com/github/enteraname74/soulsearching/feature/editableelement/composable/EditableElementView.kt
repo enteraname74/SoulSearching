@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
-import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
@@ -27,7 +26,8 @@ fun EditableElementView(
     onNewImageSet: (imageFile: PlatformFile) -> Unit,
     onValidateModification: () -> Unit,
     textFields: List<SoulTextFieldHolder>,
-    extraContent: @Composable (() -> Unit)? = null,
+    extraFormBottomContent: @Composable (() -> Unit)? = null,
+    extraFormTopContent: @Composable (() -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
     val windowSize = rememberWindowSize()
@@ -60,7 +60,8 @@ fun EditableElementView(
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
-                    extraContent = extraContent,
+                    extraFormTopContent = extraFormTopContent,
+                    extraFormBottomContent = extraFormBottomContent,
                 )
 
                 else -> EditableElementRowView(
@@ -69,7 +70,8 @@ fun EditableElementView(
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
-                    extraContent = extraContent,
+                    extraFormTopContent = extraFormTopContent,
+                    extraFormBottomContent = extraFormBottomContent,
                 )
             }
         }
