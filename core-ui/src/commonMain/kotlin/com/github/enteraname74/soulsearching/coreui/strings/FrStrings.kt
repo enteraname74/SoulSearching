@@ -82,6 +82,9 @@ object FrStrings : Strings {
     override val playlistInformation = "Informations de la playlist"
     override val musicInformation = "Informations de la musique"
     override val musicPath = "Chemin de la musique :"
+    override val musicFileCover = "Couverture du fichier"
+    override val musicAppCover = "Couverture de l'application"
+    override val coverSelection = "Sélection d'une couverture"
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 

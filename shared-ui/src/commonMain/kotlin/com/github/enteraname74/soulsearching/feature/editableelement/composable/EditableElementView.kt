@@ -13,9 +13,6 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
-import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.PickerType
-import io.github.vinceglb.filekit.core.PlatformFile
 
 @Composable
 fun EditableElementView(
@@ -23,7 +20,7 @@ fun EditableElementView(
     coverSectionTitle: String,
     editableElement: EditableElement,
     navigateBack: () -> Unit,
-    onNewImageSet: (imageFile: PlatformFile) -> Unit,
+    onSelectCover: () -> Unit,
     onValidateModification: () -> Unit,
     textFields: List<SoulTextFieldHolder>,
     extraFormBottomContent: @Composable (() -> Unit)? = null,
@@ -31,13 +28,6 @@ fun EditableElementView(
 ) {
     val focusManager = LocalFocusManager.current
     val windowSize = rememberWindowSize()
-
-    val imagePickerLauncher = rememberFilePickerLauncher(
-        type = PickerType.Image,
-    ) { file ->
-        if (file == null) return@rememberFilePickerLauncher
-        onNewImageSet(file)
-    }
 
     SoulScreen {
         Column(
@@ -56,7 +46,7 @@ fun EditableElementView(
             when (windowSize) {
                 WindowSize.Small -> EditableElementColumnView(
                     editableElement = editableElement,
-                    onSelectImage = { imagePickerLauncher.launch() },
+                    onSelectImage = onSelectCover,
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,
@@ -66,7 +56,7 @@ fun EditableElementView(
 
                 else -> EditableElementRowView(
                     editableElement = editableElement,
-                    onSelectImage = { imagePickerLauncher.launch() },
+                    onSelectImage = onSelectCover,
                     focusManager = focusManager,
                     textFields = textFields,
                     coverSectionTitle = coverSectionTitle,

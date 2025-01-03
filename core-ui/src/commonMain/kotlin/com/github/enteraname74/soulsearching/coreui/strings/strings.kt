@@ -96,6 +96,9 @@ interface Strings {
     val playlistInformation: String
     val musicInformation: String
     val musicPath: String
+    val musicFileCover: String
+    val musicAppCover: String
+    val coverSelection: String
     val artistInformation: String
     val albumInformation: String
 

@@ -78,7 +78,9 @@ private fun ModifyPlaylistScreenView(
                 coverSectionTitle = strings.playlistCover,
                 editableElement = state.editableElement,
                 navigateBack = navigateBack,
-                onNewImageSet = onNewImageSet,
+                onSelectCover = {
+                    // TODO
+                },
                 onValidateModification = onValidateModification,
                 textFields = formState.textFields,
             )

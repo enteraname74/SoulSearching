@@ -14,6 +14,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -26,7 +27,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
-import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
 /**
@@ -45,6 +45,9 @@ data class ModifyMusicScreen(
         val state: ModifyMusicState by screenModel.state.collectAsState()
         val formState: ModifyMusicFormState by screenModel.formState.collectAsState()
         val navigationState: ModifyMusicNavigationState by screenModel.navigationState.collectAsState()
+        val bottomSheetState: SoulBottomSheet? by screenModel.bottomSheetState.collectAsState()
+
+        bottomSheetState?.BottomSheet()
 
         LaunchInit {
             screenModel.init(musicId = musicId)
@@ -66,7 +69,7 @@ data class ModifyMusicScreen(
             state = state,
             formState = formState,
             navigateBack = { navigator.pop() },
-            onNewImageSet = screenModel::setNewCover,
+            onSelectCover = screenModel::showCoverBottomSheet,
             onValidateModification = screenModel::updateMusic,
             addArtistField = screenModel::addArtistField,
         )
@@ -102,7 +105,7 @@ data class ModifyMusicScreen(
         state: ModifyMusicState,
         formState: ModifyMusicFormState,
         navigateBack: () -> Unit,
-        onNewImageSet: (cover: PlatformFile) -> Unit,
+        onSelectCover: () -> Unit,
         onValidateModification: () -> Unit,
         addArtistField: () -> Unit,
     ) {
@@ -121,7 +124,7 @@ data class ModifyMusicScreen(
                         coverSectionTitle = strings.albumCover,
                         editableElement = state.editableElement,
                         navigateBack = navigateBack,
-                        onNewImageSet = onNewImageSet,
+                        onSelectCover = onSelectCover,
                         onValidateModification = onSave,
                         textFields = formState.textFields,
                         extraFormBottomContent = {

@@ -29,7 +29,7 @@ fun EditableElementCoverSection(
         Text(
             modifier = Modifier.padding(bottom = UiConstants.Spacing.medium),
             text = title,
-            color = SoulSearchingColorTheme.colorScheme.onSecondary
+            color = SoulSearchingColorTheme.colorScheme.onPrimary
         )
 
         if (editableElement.newCover == null) {

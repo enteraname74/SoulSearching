@@ -30,18 +30,20 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun BigPreviewComposable(
     modifier: Modifier = Modifier,
     cover: Cover?,
-    title: String,
-    text: String = "",
+    title: String?,
+    text: String? = null,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {},
     imageSize: Dp? = UiConstants.ImageSize.veryLarge,
     titleStyle: TextStyle = MaterialTheme.typography.labelLarge,
     textStyle: TextStyle = MaterialTheme.typography.labelSmall,
+    contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     selectionColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     roundedPercent: Int = 4,
     isFavoritePlaylist: Boolean = false,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
+    titleMaxLines: Int = 1,
 ) {
     val borderWidth by animateDpAsState(
         targetValue = if (isSelected) BORDER_SIZE else 0.dp,
@@ -97,6 +99,7 @@ fun BigPreviewComposable(
             cover = cover,
             size = imageSize,
             roundedPercent = roundedPercent,
+            tint = contentColor,
         )
         Row(
             modifier = infoModifier,
@@ -107,18 +110,20 @@ fun BigPreviewComposable(
                 SoulIcon(icon = Icons.Rounded.Favorite)
             }
             Column {
-                Text(
-                    text = title,
-                    color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    style = titleStyle,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (text.isNotBlank()) {
+                title?.let {
                     Text(
-                        text = text,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
+                        text = it,
+                        color = contentColor,
+                        fontWeight = FontWeight.Bold,
+                        style = titleStyle,
+                        maxLines = titleMaxLines,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                text?.let {
+                    Text(
+                        text = it,
+                        color = contentColor,
                         style = textStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

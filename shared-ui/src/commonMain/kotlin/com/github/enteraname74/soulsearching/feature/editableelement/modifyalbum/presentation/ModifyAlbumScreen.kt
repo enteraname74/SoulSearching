@@ -22,7 +22,7 @@ import java.util.*
 
 data class ModifyAlbumScreen(
     private val selectedAlbumId: String
-): EditableElementScreen(selectedAlbumId) {
+) : EditableElementScreen(selectedAlbumId) {
     private val albumId: UUID = UUID.fromString(selectedAlbumId)
 
     @Composable
@@ -44,7 +44,8 @@ data class ModifyAlbumScreen(
                     navigator.pop()
                     screenModel.consumeNavigation()
                 }
-                ModifyAlbumNavigationState.Idle ->  {
+
+                ModifyAlbumNavigationState.Idle -> {
                     /*no-op*/
                 }
             }
@@ -81,7 +82,9 @@ private fun ModifyAlbumScreenView(
                     coverSectionTitle = strings.albumCover,
                     editableElement = state.editableElement,
                     navigateBack = navigateBack,
-                    onNewImageSet = onNewImageSet,
+                    onSelectCover = {
+                        // TODO
+                    },
                     onValidateModification = onSave,
                     textFields = formState.textFields,
                 )

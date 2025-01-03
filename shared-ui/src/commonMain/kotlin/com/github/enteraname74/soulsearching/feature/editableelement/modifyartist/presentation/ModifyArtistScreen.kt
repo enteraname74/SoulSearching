@@ -80,7 +80,9 @@ private fun ModifyArtistScreenView(
                     coverSectionTitle = strings.artistCover,
                     editableElement = state.editableElement,
                     navigateBack = navigateBack,
-                    onNewImageSet = onNewImageSet,
+                    onSelectCover = {
+                        // TODO
+                    },
                     onValidateModification = onSave,
                     textFields = formState.textFields,
                 )
