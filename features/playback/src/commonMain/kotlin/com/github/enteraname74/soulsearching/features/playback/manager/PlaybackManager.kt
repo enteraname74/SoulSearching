@@ -134,7 +134,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
      * Load the current music of the player view model.
      * The music will not be played.
      */
-    fun onlyLoadMusic(seekTo: Int = 0, music: Music) {
+    private suspend fun onlyLoadMusic(seekTo: Int = 0, music: Music) {
         player.setMusic(music = music)
         player.onlyLoadMusic(seekTo = seekTo)
     }
