@@ -16,14 +16,11 @@ import org.koin.core.component.inject
  * Service used for the playback.
  */
 class PlayerService : Service(), KoinComponent {
-    private val musicNotification: SoulSearchingAndroidNotification by inject()
-
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    @Suppress("Deprecation")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i("Player service", "ON START COMMAND")
         ServiceCompat.startForeground(
@@ -65,7 +62,8 @@ class PlayerService : Service(), KoinComponent {
         }
     }
 
-    companion object {
+    companion object : KoinComponent {
+        private val musicNotification: SoulSearchingAndroidNotification by inject()
         const val RESTART_SERVICE = "RESTART_SERVICE"
         const val SERVICE_BROADCAST = "SERVICE_BROADCAST"
 

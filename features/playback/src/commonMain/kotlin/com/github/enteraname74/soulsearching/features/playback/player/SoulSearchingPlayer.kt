@@ -20,7 +20,7 @@ interface SoulSearchingPlayer {
     /**
      * Set a song to the player.
      */
-    fun setMusic(music: Music)
+    suspend fun setMusic(music: Music)
 
     /**
      * Load the current music without playing it.

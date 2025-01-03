@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.io.File
 
 /**
@@ -30,6 +32,7 @@ class SoulSearchingAndroidPlayerImpl(
     private var isOnlyLoadingMusic: Boolean = false
     private var positionToReachWhenLoadingMusic: Int = 0
     private val audioManager: PlayerAudioManager = PlayerAudioManager(context, this)
+    private val mutex = Mutex()
 //    private val normalizer: AndroidPlayerNormalizer = AndroidPlayerNormalizer()
 
     private val _state: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -55,20 +58,24 @@ class SoulSearchingAndroidPlayerImpl(
         this.listener = listener
     }
 
-    override fun setMusic(music: Music) {
+    override suspend fun setMusic(music: Music) {
         try {
             player.stop()
             player.reset()
-        } catch (_: Exception) {
-        }
-        if (File(music.path).exists()) {
-            player.setDataSource(music.path)
+            if (File(music.path).exists()) {
+                mutex.withLock {
+                    player.setDataSource(music.path)
+                }
+
 //            CoroutineScope(Dispatchers.IO).launch {
 //                val volumeMultiplier: Float = normalizer.getVolumeMultiplier(music = music) ?: return@launch
 //                println("Multiplier: $volumeMultiplier")
 //                val newVolume: Float = 0.5f * volumeMultiplier
 //                setPlayerVolume(newVolume)
 //            }
+            }
+        } catch (e: Exception) {
+            Log.e("PLAYER", "UNABLE TO SET MUSIC. GOT ERROR: ${e.message}")
         }
     }
 
