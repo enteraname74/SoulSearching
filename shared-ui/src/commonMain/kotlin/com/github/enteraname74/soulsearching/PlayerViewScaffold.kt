@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewMod
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerDraggableView
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerViewScaffold(
     playerViewModel: PlayerViewModel,
@@ -27,6 +29,10 @@ fun PlayerViewScaffold(
 ) {
     LaunchedEffect(playerViewManager.currentValue) {
         playerViewManager.updateState(newState = playerViewManager.currentValue)
+    }
+
+    LaunchedEffect(playerViewManager.playerDraggableState.targetValue) {
+        playerViewManager.updateTargetState(newState = playerViewManager.playerDraggableState.targetValue)
     }
 
     BoxWithConstraints(

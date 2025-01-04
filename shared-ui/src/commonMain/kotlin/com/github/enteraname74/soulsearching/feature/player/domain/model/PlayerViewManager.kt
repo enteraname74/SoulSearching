@@ -21,6 +21,9 @@ class PlayerViewManager {
     private val _state: MutableStateFlow<BottomSheetStates> = MutableStateFlow(BottomSheetStates.COLLAPSED)
     val state = _state.asStateFlow()
 
+    private val _targetState: MutableStateFlow<BottomSheetStates> = MutableStateFlow(BottomSheetStates.COLLAPSED)
+    val targetState = _targetState.asStateFlow()
+
     private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val previousState = _previousState.asStateFlow()
 
@@ -29,6 +32,8 @@ class PlayerViewManager {
 
     val currentValue: BottomSheetStates
         get() = playerDraggableState.currentValue
+    val targetValue: BottomSheetStates
+        get() = playerDraggableState.targetValue
     val offset: Float
         get() = playerDraggableState.offset.value
 
@@ -46,5 +51,9 @@ class PlayerViewManager {
     fun updateState(newState: BottomSheetStates) {
         _previousState.value = _state.value
         _state.value = newState
+    }
+
+    fun updateTargetState(newState: BottomSheetStates) {
+        _targetState.value = newState
     }
 }
