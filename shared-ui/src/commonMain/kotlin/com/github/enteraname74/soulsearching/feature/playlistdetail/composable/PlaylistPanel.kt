@@ -24,14 +24,15 @@ fun PlaylistPanel(
     editAction: (() -> Unit)?,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
-    primaryColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+    modifier: Modifier = Modifier,
+    containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .background(primaryColor)
+            .background(containerColor)
             .padding(vertical = UiConstants.Spacing.mediumPlus),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly

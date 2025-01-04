@@ -15,10 +15,8 @@ kotlin {
     sourceSets {
         androidMain {
             dependencies {
-                implementation(compose.ui)
-                implementation(libs.koin.androidx.compose)
-                implementation(libs.androidx.core)
                 implementation(libs.room)
+                implementation(libs.koin.androidx.compose)
 
                 configurations.getByName("kapt").dependencies.add(
                     DefaultExternalModuleDependency(

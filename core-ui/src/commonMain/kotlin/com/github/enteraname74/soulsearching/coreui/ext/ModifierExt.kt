@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.coreui.ext
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -11,6 +12,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 fun Modifier.clickableWithHandCursor(onClick: () -> Unit): Modifier =
     this
@@ -51,7 +54,6 @@ fun Modifier.optionalClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)
 /**
  * Disable the focus and click action on a composable.
  */
-@OptIn(ExperimentalFoundationApi::class)
 fun Modifier.disableFocus(): Modifier = this
     .pointerInput(Unit) { detectTapGestures {  } }
     .semantics(mergeDescendants = true) {
@@ -65,3 +67,11 @@ expect fun Modifier.combinedClickableWithRightClick(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
 ): Modifier
+
+@Composable
+expect fun Modifier.blurCompat(
+    radius: Dp? = null
+): Modifier
+
+internal val RECENT_DEFAULT_BLUR = 8.dp
+internal const val LEGACY_DEFAULT_BLUR = 52

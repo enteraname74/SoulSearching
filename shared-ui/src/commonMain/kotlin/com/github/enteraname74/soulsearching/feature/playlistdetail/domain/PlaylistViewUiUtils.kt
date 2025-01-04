@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 
-object PlaylistVIewUiUtils {
+object PlaylistViewUiUtils {
     private val minHeightForSmallView: Dp = 400.dp
 
     @Composable
