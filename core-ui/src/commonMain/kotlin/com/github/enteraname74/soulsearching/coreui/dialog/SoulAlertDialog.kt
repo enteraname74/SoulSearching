@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.dialog
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -70,6 +71,7 @@ fun SoulAlertDialog(
     content: @Composable () -> Unit,
     icon: @Composable (() -> Unit)? = null,
     confirmText: String,
+    isConfirmButtonEnabled: Boolean = true,
     dismissText: String,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
@@ -77,10 +79,16 @@ fun SoulAlertDialog(
     AlertDialog(
         onDismissRequest = dismissAction,
         confirmButton = {
-            TextButton(onClick = { confirmAction() }) {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = contentColor,
+                    disabledContentColor = contentColor.copy(alpha = 0.7f),
+                ),
+                onClick = { confirmAction() },
+                enabled = isConfirmButtonEnabled,
+            ) {
                 Text(
                     text = confirmText,
-                    color = contentColor
                 )
             }
         },

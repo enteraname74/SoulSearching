@@ -130,6 +130,8 @@ class MultiMusicBottomSheetDelegateImpl(
                     setBottomSheetState(null)
                 },
                 playlistsWithMusics = allPlaylists.value,
+                setDialogState = setDialogState,
+                selectedMusicIds = selectedIds,
             )
         )
     }

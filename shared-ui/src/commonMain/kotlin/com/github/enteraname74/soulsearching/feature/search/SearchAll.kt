@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.search
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -28,7 +27,6 @@ import com.github.enteraname74.soulsearching.feature.search.composable.SearchTyp
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchAll(
     searchText: String,

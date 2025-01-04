@@ -1,16 +1,15 @@
-package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
+package com.github.enteraname74.soulsearching.composables.dialog
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.Dp
@@ -21,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 
 
 class CreatePlaylistDialog(
@@ -34,11 +34,20 @@ class CreatePlaylistDialog(
             mutableStateOf("")
         }
         val focusManager = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
+
+        LaunchInit {
+            focusRequester.requestFocus()
+        }
 
         SoulAlertDialog(
             confirmAction = { onConfirm(playlistName.trim()) },
-            dismissAction = { onDismiss() },
+            dismissAction = {
+                focusRequester.freeFocus()
+                onDismiss()
+            },
             confirmText = strings.create,
+            isConfirmButtonEnabled = playlistName.isNotBlank(),
             dismissText = strings.cancel,
             title = strings.createPlaylistDialogTitle,
             content = {
@@ -52,6 +61,7 @@ class CreatePlaylistDialog(
                     SoulTextField(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .focusRequester(focusRequester)
                             .onGloballyPositioned {
                                 textFieldHeight = it.size.height.toFloat()
                             },
@@ -61,6 +71,7 @@ class CreatePlaylistDialog(
                         focusManager = focusManager,
                         keyboardActions = KeyboardActions(
                             onDone = {
+                                focusRequester.freeFocus()
                                 focusManager.clearFocus()
                                 onConfirm(playlistName.trim())
                             }
