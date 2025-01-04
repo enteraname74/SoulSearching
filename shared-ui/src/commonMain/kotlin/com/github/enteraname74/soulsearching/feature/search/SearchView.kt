@@ -84,7 +84,6 @@ fun SearchView(
                     0f to BottomSheetStates.EXPANDED
                 )
             )
-            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -95,6 +94,7 @@ fun SearchView(
                         focusManager.clearFocus()
                     })
                 }
+                .statusBarsPadding()
                 .padding(UiConstants.Spacing.medium)
         ) {
 
