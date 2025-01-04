@@ -16,12 +16,14 @@ cloudy = "0.2.3"
 coil = "3.0.0-alpha01"
 compose = "1.8.0-alpha01"
 coroutines-core = "1.9.0"
+dbus = "3.3.2"
 exposed = "0.55.0"
 ffmpeg = "6.0-2"
 file-kit = "0.8.1"
 gradle = "8.5.2"
 gson = "2.11.0"
 jaudiotagger = "3.0.1"
+jlibnotify = "1.2.0"
 kmpalette = "2.2.0"
 kotlin = "2.0.21"
 kotlinx-metadata-jvm = "0.9.0"
@@ -60,6 +62,8 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", ve
 coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines-core" }
 coroutines-core-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines-core" }
 
+dbus = { module = "com.github.hypfvieh:dbus-java", version.ref = "dbus" }
+
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposed" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
@@ -72,6 +76,7 @@ file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
+jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
