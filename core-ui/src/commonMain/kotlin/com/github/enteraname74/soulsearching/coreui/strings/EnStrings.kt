@@ -227,6 +227,13 @@ object EnStrings : Strings {
 
     override val playerVolume = "Player volume"
 
+    override val anErrorOccurred = "An error occurred"
+    override val albumDoesNotExists = "This album doesn't exist"
+    override val artistDoesNotExists = "This artist doesn't exist"
+    override val playlistDoesNotExists = "This playlist doesn't exist"
+    override val folderDoesNotExists = "This folder doesn't exist"
+    override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"

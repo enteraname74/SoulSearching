@@ -66,7 +66,7 @@ class SelectedAlbumViewModel(
         } else {
             getAlbumWithMusicsUseCase(albumId = albumId).mapLatest { albumWithMusics ->
                 when {
-                    albumWithMusics == null -> SelectedAlbumState.Loading
+                    albumWithMusics == null -> SelectedAlbumState.Error
                     else -> SelectedAlbumState.Data(
                         playlistDetail = albumWithMusics.toPlaylistDetail(),
                         artistId = albumWithMusics.artist?.artistId,

@@ -70,7 +70,7 @@ class SelectedArtistViewModel(
                 getArtistWithMusicsUseCase(artistId = artistId),
             ) { albums, artistWithMusics ->
                 when {
-                    artistWithMusics == null -> SelectedArtistState.Loading
+                    artistWithMusics == null -> SelectedArtistState.Error
                     else -> SelectedArtistState.Data(
                         playlistDetail = artistWithMusics.toPlaylistDetail(),
                         artistAlbums = albums,

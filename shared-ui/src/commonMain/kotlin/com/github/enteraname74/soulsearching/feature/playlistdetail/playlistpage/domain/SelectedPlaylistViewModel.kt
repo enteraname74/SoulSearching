@@ -64,7 +64,7 @@ class SelectedPlaylistViewModel(
         } else {
             getPlaylistWithMusicsUseCase(playlistId).mapLatest { playlistWithMusics ->
                 when {
-                    playlistWithMusics == null -> SelectedPlaylistState.Loading
+                    playlistWithMusics == null -> SelectedPlaylistState.Error
                     else -> SelectedPlaylistState.Data(
                         playlistDetail = playlistWithMusics.toPlaylistDetail(),
                         selectedPlaylist = playlistWithMusics.playlist,

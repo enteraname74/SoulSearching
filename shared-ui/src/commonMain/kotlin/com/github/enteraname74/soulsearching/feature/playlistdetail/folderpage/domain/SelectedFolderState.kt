@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
  * State for managing a selected folder.
  */
 sealed interface SelectedFolderState {
+    data object Error: SelectedFolderState
     data class Data(
         val playlistDetail: PlaylistDetail,
     ) : SelectedFolderState

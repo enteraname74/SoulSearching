@@ -1,12 +1,16 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation
 
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
+import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -98,5 +102,12 @@ fun SelectedMonthScreenView(
             },
             multiSelectionState = multiSelectionState,
         )
+
+        SelectedMonthState.Error -> {
+            SoulErrorScreen(
+                leftAction = TopBarNavigationAction(navigateBack),
+                text = strings.monthPlaylistDoesNotExists,
+            )
+        }
     }
 }

@@ -13,6 +13,9 @@ class GetMusicFolderListUseCase(
     operator fun invoke(path: String): Flow<MusicFolderList?> =
         getAllMusicUseCase().mapLatest { allMusics ->
             val musics = allMusics.filter { it.folder == path }
+
+            if (musics.isEmpty()) return@mapLatest null
+
             MusicFolderList(
                 path = path,
                 musics = musics,

@@ -229,6 +229,13 @@ object FrStrings : Strings {
 
     override val playerVolume = "Volume du lecteur"
 
+    override val anErrorOccurred = "Une erreur est survenue"
+    override val albumDoesNotExists = "L'album n'existe pas"
+    override val artistDoesNotExists = "L'artiste n'existe pas"
+    override val playlistDoesNotExists = "La playlist n'existe pas"
+    override val folderDoesNotExists = "Le dossier n'existe pas"
+    override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

@@ -19,6 +19,9 @@ class GetMonthMusicListUseCase(
             sortType = SortType.ADDED_DATE,
         ).mapLatest { allMusics ->
             val musics = allMusics.filter { DateUtils.getMonthAndYearOfDate(date = it.addedDate) == month  }
+
+            if (musics.isEmpty()) return@mapLatest null
+
             MonthMusicList(
                 month = month,
                 musics = musics,

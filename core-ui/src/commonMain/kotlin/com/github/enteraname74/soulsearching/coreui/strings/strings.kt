@@ -234,6 +234,13 @@ interface Strings {
 
     val playerVolume: String
 
+    val anErrorOccurred: String
+    val albumDoesNotExists: String
+    val artistDoesNotExists: String
+    val playlistDoesNotExists: String
+    val folderDoesNotExists: String
+    val monthPlaylistDoesNotExists: String
+
     /**
      * Shows a text indicating the number of musics.
      */

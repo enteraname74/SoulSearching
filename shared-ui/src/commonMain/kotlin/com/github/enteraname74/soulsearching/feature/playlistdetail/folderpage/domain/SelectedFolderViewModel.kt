@@ -63,7 +63,7 @@ class SelectedFolderViewModel(
         } else {
             getMusicFolderListUseCase(path = folderPath).mapLatest { musicFolderList ->
                 when {
-                    musicFolderList == null -> SelectedFolderState.Loading
+                    musicFolderList == null -> SelectedFolderState.Error
                     else -> SelectedFolderState.Data(
                         playlistDetail = musicFolderList.toPlaylistDetail()
                     )
