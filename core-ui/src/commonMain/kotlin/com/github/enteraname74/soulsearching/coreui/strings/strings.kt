@@ -166,6 +166,7 @@ interface Strings {
     val personalizationText: String
     val aboutTitle: String
     val aboutText: String
+    val newReleaseAvailableTitle: String
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
@@ -257,4 +258,9 @@ interface Strings {
      * Shows a text indicating the total of selected elements.
      */
     fun selectedElements(total: Int): String
+
+    /**
+     * Shows a text indicating the detail of the new latest release of Soul Searching
+     */
+    fun newReleaseAvailableText(releaseName: String): String
 }

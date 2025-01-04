@@ -156,6 +156,7 @@ object FrStrings : Strings {
     override val personalizationText = "Gérer le lecteur et la vue de la page principale"
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
+    override val newReleaseAvailableTitle = "Nouvelle version disponible !"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
     override val mostPlayedSongs = "Musiques les plus écoutées"
@@ -259,4 +260,7 @@ object FrStrings : Strings {
             1 -> "Un élément sélectionné"
             else -> "$total éléments sélectionnés"
         }
+
+    override fun newReleaseAvailableText(releaseName: String): String =
+        "Une nouvelle version est disponible, prête à être téléchargée : $releaseName"
 }

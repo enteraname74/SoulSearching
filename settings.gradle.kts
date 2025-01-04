@@ -33,3 +33,4 @@ include("features:filemanager")
 findProject(":features:filemanager")?.name = "filemanager"
 include("features:musicmanager")
 findProject(":features:musicmanager")?.name = "musicmanager"
+include("remote")

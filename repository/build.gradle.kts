@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 group = "com.github.enteraname74.soulsearching.repository"
@@ -22,7 +21,6 @@ kotlin {
                 implementation(libs.coroutines.core.jvm)
                 implementation(compose.ui)
                 implementation(libs.jaudiotagger)
-                implementation(libs.bundles.ktor)
                 implementation(project(":domain"))
                 implementation(project(":features:filemanager"))
             }
