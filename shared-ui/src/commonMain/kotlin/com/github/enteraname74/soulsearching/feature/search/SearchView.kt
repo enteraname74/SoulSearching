@@ -24,7 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.composable.AppSearchBar
+import com.github.enteraname74.soulsearching.feature.search.composable.SoulSearchBar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -98,7 +98,7 @@ fun SearchView(
                 .padding(UiConstants.Spacing.medium)
         ) {
 
-            AppSearchBar(
+            SoulSearchBar(
                 searchText = searchText,
                 placeholder = placeholder,
                 updateTextMethod = {

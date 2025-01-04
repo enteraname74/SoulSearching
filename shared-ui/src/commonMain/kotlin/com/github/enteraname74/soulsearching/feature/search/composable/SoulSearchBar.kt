@@ -6,7 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.ext.blend
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -29,7 +32,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
-fun AppSearchBar(
+fun SoulSearchBar(
     searchText: String,
     placeholder: String,
     updateTextMethod: (String) -> Unit,
@@ -45,7 +48,7 @@ fun AppSearchBar(
 
         if (windowSize != WindowSize.Small) {
             SoulIconButton(
-                icon = Icons.Rounded.Cancel,
+                icon = Icons.Rounded.KeyboardArrowDown,
                 contentDescription = strings.cancel,
                 onClick = onClose,
                 colors = SoulButtonDefaults.colors(
@@ -99,8 +102,8 @@ fun AppSearchBar(
                     unfocusedTextColor = onSecondary,
                     focusedContainerColor = secondary,
                     selectionColors = TextSelectionColors(
-                        handleColor = onSecondary,
-                        backgroundColor = secondary
+                        handleColor = onPrimary,
+                        backgroundColor = primary.blend(Color.Black, 0.2f),
                     ),
                     unfocusedIndicatorColor = Color.Transparent,
                     unfocusedLabelColor = onSecondary,
