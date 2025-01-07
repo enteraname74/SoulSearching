@@ -1,10 +1,6 @@
-package com.github.enteraname74.soulsearching.feature.playerpanel.composable
+package com.github.enteraname74.soulsearching.coreui.tab
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,27 +12,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.ext.clickableIf
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 
 @Composable
-fun PlayerPanelTab(
-    modifier: Modifier = Modifier,
+fun SoulTabHeader(
     title: String,
     contentColor: Color,
     isSelected: Boolean,
-    onSelected: () -> Unit,
-    playerViewManager: PlayerViewManager = injectElement(),
+    modifier: Modifier = Modifier,
+    isClickable: Boolean = true,
+    onClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
-            .height(
-                IntrinsicSize.Min
-            ).then(
-                modifier
-            ).clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                onSelected()
+            .height(IntrinsicSize.Min)
+            .then(modifier)
+            .clickableIf(enabled = isClickable) {
+                onClick()
             }
     ) {
         Column(

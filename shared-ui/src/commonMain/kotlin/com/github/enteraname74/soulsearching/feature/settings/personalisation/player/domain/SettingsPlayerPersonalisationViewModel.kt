@@ -52,7 +52,7 @@ class SettingsPlayerPersonalisationViewModel(
             imeAction = ImeAction.Done,
         ),
         getLabel = { null },
-        onValueChange = { text ->
+        onChange = { text ->
             val intValue = text.toIntOrNull() ?: return@SoulTextFieldHolderImpl
             settings.set(
                 key = SoulSearchingSettingsKeys.Player.SOUL_MIX_TOTAL_BY_LIST.key,

@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.ext.safePush
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutScreen
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudScreen
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeScreen
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsScreen
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationScreen
@@ -59,6 +60,11 @@ class SettingsScreen : Screen, SettingPage {
                 navigator.safePush(
                     SettingsAdvancedScreen()
                 )
+            },
+            navigateToCloud = {
+                navigator.safePush(
+                    SettingsCloudScreen()
+                )
             }
         )
     }
@@ -73,6 +79,7 @@ fun SettingsScreenView(
     navigateToStatistics: () -> Unit,
     navigateToAbout: () -> Unit,
     navigateToAdvanced: () -> Unit,
+    navigateToCloud: () -> Unit,
 ) {
     SettingPage(
         navigateBack = finishAction,
@@ -124,6 +131,14 @@ fun SettingsScreenView(
                 subTitle = strings.aboutText,
                 icon = Icons.Rounded.Info,
                 onClick = navigateToAbout
+            )
+        }
+        item {
+            SoulMenuElement(
+                title = strings.cloudSettingsTitle,
+                subTitle = strings.cloudSettingsText,
+                icon = Icons.Rounded.Cloud,
+                onClick = navigateToCloud
             )
         }
     }

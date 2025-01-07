@@ -23,6 +23,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Release
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -138,10 +139,8 @@ class SettingsAboutScreen : Screen, SettingPage {
             title = strings.aboutTitle,
         ) {
             item {
-                AnimatedVisibility(
+                VerticalAnimatedVisibility(
                     visible = state.moreRecentRelease != null,
-                    enter = slideInVertically(),
-                    exit = slideOutVertically(),
                 ) {
                     state.moreRecentRelease?.let {
                         LatestReleaseCard(it)

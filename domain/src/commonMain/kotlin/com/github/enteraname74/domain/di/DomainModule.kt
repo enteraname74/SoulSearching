@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import com.github.enteraname74.domain.usecase.album.*
 import com.github.enteraname74.domain.usecase.albumartist.*
 import com.github.enteraname74.domain.usecase.artist.*
+import com.github.enteraname74.domain.usecase.auth.*
 import com.github.enteraname74.domain.usecase.folder.*
 import com.github.enteraname74.domain.usecase.cover.*
 import com.github.enteraname74.domain.usecase.lyrics.*
@@ -16,6 +17,7 @@ import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
 import com.github.enteraname74.domain.usecase.month.*
 import com.github.enteraname74.domain.usecase.musicfolder.*
+import com.github.enteraname74.domain.usecase.datamode.*
 import com.github.enteraname74.domain.usecase.release.*
 
 val domainModule = module {
@@ -66,6 +68,13 @@ val domainModule = module {
     singleOf(::UpdateArtistNbPlayedUseCase)
     singleOf(::UpsertAllArtistsUseCase)
     singleOf(::UpsertArtistUseCase)
+
+    // Auth
+    singleOf(::GetCloudHostUseCase)
+    singleOf(::GetUserUseCase)
+    singleOf(::LogInUserUseCase)
+    singleOf(::SetCloudHostUseCase)
+    singleOf(::SignUserUseCase)
 
     // Folder
     singleOf(::DeleteAllFoldersUseCase)
@@ -144,4 +153,8 @@ val domainModule = module {
 
     // Release
     singleOf(::GetLatestReleaseUseCase)
+
+    // DataMode
+    singleOf(::GetCurrentDataModeUseCase)
+    singleOf(::SetCurrentDataModeUseCase)
 }

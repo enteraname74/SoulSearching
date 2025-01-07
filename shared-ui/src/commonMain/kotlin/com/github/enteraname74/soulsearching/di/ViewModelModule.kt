@@ -21,6 +21,7 @@ import com.github.enteraname74.soulsearching.feature.settings.colortheme.themese
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain.SettingsMainPagePersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.domain.SettingsPlayerPersonalisationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
@@ -41,6 +42,7 @@ internal val viewModelModule: Module = module {
     factoryOf(::SettingsThemeSelectionViewModel)
     factoryOf(::SettingsAdvancedViewModel)
     factoryOf(::SettingsAboutViewModel)
+    factoryOf(::SettingsCloudViewModel)
 
     // Main page
     singleOf(::MainPageViewModel)

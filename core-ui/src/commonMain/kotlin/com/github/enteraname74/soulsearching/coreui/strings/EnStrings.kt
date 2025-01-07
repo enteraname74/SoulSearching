@@ -140,6 +140,14 @@ object EnStrings : Strings {
     override val reloadAlbumsCovers = "Reload albums covers"
     override val reloadArtistsCovers = "Reload artists covers"
 
+    override val cloudSettingsText = "Stream your songs from a cloud with Cloudy!"
+    override val activateCloudMode = "Activate Cloudy mode"
+    override val cloudHost = "Host"
+    override val cloudSignIn = "Sign in"
+    override val cloudLogIn = "Log in"
+    override val cloudUsername = "Username"
+    override val cloudPassword = "Password"
+
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
 

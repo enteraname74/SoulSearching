@@ -153,6 +153,15 @@ interface Strings {
     val reloadAlbumsCovers: String
     val reloadArtistsCovers: String
 
+    val cloudSettingsTitle: String  get() = "Cloudy"
+    val cloudSettingsText: String
+    val activateCloudMode: String
+    val cloudHost: String
+    val cloudSignIn: String
+    val cloudLogIn: String
+    val cloudUsername: String
+    val cloudPassword: String
+
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
 

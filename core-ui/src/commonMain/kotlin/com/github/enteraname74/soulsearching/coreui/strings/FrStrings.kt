@@ -142,6 +142,14 @@ object FrStrings : Strings {
     override val reloadAlbumsCovers = "Recharger les images des albums"
     override val reloadArtistsCovers = "Recharger les images des artistes"
 
+    override val cloudSettingsText = "Écoutez vos musiques depuis un cloud avec Cloudy !"
+    override val activateCloudMode = "Activer le mode Cloudy"
+    override val cloudHost = "Hôte"
+    override val cloudSignIn = "Inscription"
+    override val cloudLogIn = "Authentification"
+    override val cloudUsername = "Nom d'utilisateur"
+    override val cloudPassword = "Mot de passe"
+
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
 

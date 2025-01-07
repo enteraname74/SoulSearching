@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -44,10 +45,8 @@ fun MultiSelectionScaffold(
             .fillMaxSize(),
     ) {
         content()
-        AnimatedVisibility(
+        VerticalAnimatedVisibility(
             visible = isMultiSelectionActive,
-            enter = slideInVertically(),
-            exit = slideOutVertically()
         ) {
             MultiSelectionTopBar(
                 total = state.selectedIds.size,

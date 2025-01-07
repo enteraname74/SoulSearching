@@ -15,11 +15,13 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.tab.SoulTabHeader
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
@@ -36,6 +38,7 @@ fun PlayerPanelContent(
     subTextColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
+    playerViewManager: PlayerViewManager = injectElement(),
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     modifier: Modifier = Modifier,
 ) {
@@ -93,7 +96,7 @@ fun PlayerPanelContent(
             pages.forEachIndexed { index, page ->
                 val isSelected = pagerState.currentPage == index
 
-                PlayerPanelTab(
+                SoulTabHeader(
                     modifier = Modifier
                         .height(50.dp)
                         .fillMaxWidth()
@@ -101,7 +104,8 @@ fun PlayerPanelContent(
                     title = page.title,
                     contentColor = if (isSelected && isExpanded) textColor else subTextColor,
                     isSelected = isExpanded && isSelected,
-                    onSelected = {
+                    isClickable = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
+                    onClick = {
                         coroutineScope.launch {
                             val currentFocusedTab = pagerState.currentPage
                             val isSameTab = index == currentFocusedTab

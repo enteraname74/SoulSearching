@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 
@@ -106,9 +107,7 @@ fun SoulTextField(
                                     )
                                 }
                                 innerTextField()
-                                AnimatedVisibility(
-                                    enter = slideInVertically(),
-                                    exit = slideOutVertically(),
+                                VerticalAnimatedVisibility(
                                     visible = isInError,
                                 ) {
                                     Text(
@@ -151,7 +150,6 @@ class SoulTextFieldHolderImpl(
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
-    private val onValueChange: ((String) -> Unit)? = null,
     private val keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Done,
@@ -166,11 +164,6 @@ class SoulTextFieldHolderImpl(
     getError = getError,
     onChange = onChange,
 ) {
-
-    override fun onValueChanged(newValue: String) {
-        super.onValueChanged(newValue)
-        this.onValueChange?.let { it(newValue) }
-    }
 
     @Composable
     override fun TextField(

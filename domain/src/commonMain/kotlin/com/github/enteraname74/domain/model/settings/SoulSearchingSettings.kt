@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.model.settings
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
@@ -210,6 +211,29 @@ object SoulSearchingSettingsKeys {
         val CURRENT_DB_VERSION = settingElementOf(
             key = "CURRENT_DB_VERSION",
             defaultValue = 0,
+        )
+        val CURRENT_DATA_MODE = settingElementOf(
+            key = "CURRENT_DATA_MODE",
+            defaultValue = DataMode.Local.value
+        )
+    }
+
+    object Cloud {
+        val HOST = settingElementOf(
+            key = "CLOUD_HOST",
+            defaultValue = "",
+        )
+        val TOKEN = settingElementOf(
+            key = "CLOUD_TOKEN",
+            defaultValue = "",
+        )
+        val USERNAME = settingElementOf(
+            key = "CLOUD_USERNAME",
+            defaultValue = "",
+        )
+        val PASSWORD = settingElementOf(
+            key = "CLOUD_PASSWORD",
+            defaultValue = "",
         )
     }
 }
