@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.di
 import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.soulsearching.repository.repositoryimpl.*
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthLocalDataSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -25,4 +26,5 @@ val repositoryModule = module {
     singleOf(::ReleaseRepositoryImpl) bind ReleaseRepository::class
 
     singleOf(::DataModeDataSource)
+    singleOf(::AuthLocalDataSource)
 }

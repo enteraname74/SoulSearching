@@ -35,7 +35,6 @@ internal fun DataImage(
 
     AsyncImage(
         onSuccess = { result ->
-            println("SUCCESS? :$result")
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
                 onSuccess?.let {
@@ -44,7 +43,6 @@ internal fun DataImage(
             }
         },
         onError = {
-            println("ERROR? :$it")
             onSuccess?.let {
                 previousSavedImage = null
                 it(null)

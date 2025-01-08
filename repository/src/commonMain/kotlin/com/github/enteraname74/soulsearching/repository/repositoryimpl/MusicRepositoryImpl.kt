@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -37,6 +38,10 @@ class MusicRepositoryImpl(
         musicLocalDataSource.deleteAll(ids = ids)
     }
 
+    override suspend fun deleteAll(dataMode: DataMode) {
+        musicLocalDataSource.deleteAll(dataMode)
+    }
+
     override fun getFromId(musicId: UUID): Flow<Music?> = musicLocalDataSource.getFromId(
         musicId = musicId
     )
@@ -48,11 +53,13 @@ class MusicRepositoryImpl(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAll(): Flow<List<Music>> =
-        dataModeDataSource.getCurrentDataMode().flatMapLatest { dataMode ->
-            musicLocalDataSource.getAll(
-                dataMode = dataMode,
-            )
-        }
+        dataModeDataSource
+            .getCurrentDataModeWithUserCheck()
+            .flatMapLatest { dataMode ->
+                musicLocalDataSource.getAll(
+                    dataMode = dataMode,
+                )
+            }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicLocalDataSource.getAllMusicFromAlbum(

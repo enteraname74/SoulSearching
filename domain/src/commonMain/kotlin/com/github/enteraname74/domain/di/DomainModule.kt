@@ -74,10 +74,12 @@ val domainModule = module {
     singleOf(::GetCloudHostUseCase)
     singleOf(::GetUserUseCase)
     singleOf(::LogInUserUseCase)
+    singleOf(::LogOutUserUseCase)
     singleOf(::SetCloudHostUseCase)
     singleOf(::SignUserUseCase)
 
-    // CLOUD
+    // Cloud
+    singleOf(::ResetAndSyncDataWithCloudUseCase)
     singleOf(::SyncDataWithCloudUseCase)
 
     // Folder

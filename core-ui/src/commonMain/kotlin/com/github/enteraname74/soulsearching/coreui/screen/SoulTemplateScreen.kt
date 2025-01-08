@@ -12,6 +12,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -39,52 +41,55 @@ fun SoulTemplateScreen(
                 leftAction = leftAction,
                 rightAction = rightAction,
             )
-            TemplateScreenContent(
-                icon = icon,
-                text = text,
-                buttonSpec = buttonSpec,
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.Center,
+            ) {
+                SoulTemplateComposable(
+                    icon = icon,
+                    text = text,
+                    buttonSpec = buttonSpec,
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun ColumnScope.TemplateScreenContent(
+fun SoulTemplateComposable(
     icon: ImageVector,
     text: String,
     buttonSpec: TemplateScreenButtonSpec?,
+    modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            SoulIcon(
-                icon = icon,
-                size = UiConstants.ImageSize.veryLarge,
-            )
-            Text(
-                text = text,
-                textAlign = TextAlign.Center,
-                color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            )
-            buttonSpec?.let { spec ->
-                SoulButton(
-                    onClick = spec.onClick
-                ) {
-                    Text(
-                        text = spec.text,
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                        fontSize = 14.sp
-                    )
-                }
+        SoulIcon(
+            icon = icon,
+            size = UiConstants.ImageSize.veryLarge,
+        )
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+        )
+        buttonSpec?.let { spec ->
+            SoulButton(
+                onClick = spec.onClick,
+                colors = spec.colors(),
+            ) {
+                Text(
+                    text = spec.text,
+                    textAlign = TextAlign.Center,
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    fontSize = 14.sp
+                )
             }
         }
     }
@@ -93,4 +98,5 @@ private fun ColumnScope.TemplateScreenContent(
 data class TemplateScreenButtonSpec(
     val text: String,
     val onClick: () -> Unit,
+    val colors: @Composable () -> SoulButtonColors = { SoulButtonDefaults.secondaryColors() }
 )

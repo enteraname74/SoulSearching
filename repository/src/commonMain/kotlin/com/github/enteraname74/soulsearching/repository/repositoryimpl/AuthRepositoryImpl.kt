@@ -2,33 +2,45 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.AuthRepository
-import com.github.enteraname74.soulsearching.repository.datasource.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 
 class AuthRepositoryImpl(
     private val authRemoteDataSource: AuthRemoteDataSource,
-    private val settings: SoulSearchingSettings,
+    private val authLocalDataSource: AuthLocalDataSource,
 ): AuthRepository {
-    override suspend fun signIn(user: User): SoulResult<Unit> =
-        authRemoteDataSource.signIn(user)
+    override suspend fun signIn(user: User): SoulResult<Unit> {
+        val result: SoulResult<String> = authRemoteDataSource.signIn(user)
 
-    override suspend fun logIn(user: User): SoulResult<Unit> =
-        authRemoteDataSource.logIn(user)
+        (result as? SoulResult.Success)?.result?.let { token ->
+            authLocalDataSource.setUser(user)
+            authLocalDataSource.setToken(token)
+        }
+
+        return result.toSimpleResult()
+    }
+
+
+    override suspend fun logIn(user: User): SoulResult<Unit> {
+        val result: SoulResult<String> = authRemoteDataSource.logIn(user)
+
+        (result as? SoulResult.Success)?.result?.let { token ->
+            authLocalDataSource.setUser(user)
+            authLocalDataSource.setToken(token)
+        }
+
+        return result.toSimpleResult()
+    }
+
+    override suspend fun logOut() {
+        authLocalDataSource.setToken("")
+        authLocalDataSource.setUser(null)
+    }
 
     override fun getUser(): Flow<User?> =
-        combine(
-            settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.USERNAME),
-            settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.PASSWORD),
-        ) { username, password ->
-            User(
-                username = username,
-                password = password
-            ).takeIf { it.isValid() }
-        }
+        authLocalDataSource.getUser()
 
     override fun getHost(): Flow<String> =
         authRemoteDataSource.getHost()

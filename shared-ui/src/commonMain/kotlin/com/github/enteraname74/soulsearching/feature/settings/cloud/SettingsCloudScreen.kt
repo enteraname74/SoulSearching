@@ -1,8 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.HowToReg
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,12 +25,16 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpandSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
+import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
+import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
+import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.tab.SoulTabHeader
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
@@ -58,6 +68,7 @@ class SettingsCloudScreen: Screen, SettingPage {
             toggleCloudMode = screenModel::toggleCloudState,
             signIn = screenModel::signIn,
             logIn = screenModel::logIn,
+            onLogOut = screenModel::logOut,
         )
     }
 
@@ -121,14 +132,31 @@ class SettingsCloudScreen: Screen, SettingPage {
     }
 
     @Composable
-    private fun ExpandSwitchContent(
+    private fun ConnectedView(
+        user: User,
+        onLogOut: () -> Unit,
+    ) {
+        SoulTemplateComposable(
+            modifier = Modifier
+                .padding(bottom = UiConstants.Spacing.medium),
+            icon = Icons.Rounded.HowToReg,
+            text = strings.certifyUserConnected(user),
+            buttonSpec = TemplateScreenButtonSpec(
+                text = strings.cloudLogOut,
+                onClick = onLogOut,
+                colors = { SoulButtonDefaults.primaryColors() }
+            )
+        )
+    }
+
+    @Composable
+    private fun ConnectionView(
         logInFormState: SettingsCloudFormState,
         signInFormState: SettingsCloudFormState,
         hostTextField: SoulTextFieldHolder,
         signIn: () -> Unit,
         logIn: () -> Unit,
     ) {
-
         val coroutineScope = rememberCoroutineScope()
         val focusManager = LocalFocusManager.current
 
@@ -211,6 +239,40 @@ class SettingsCloudScreen: Screen, SettingPage {
     }
 
     @Composable
+    private fun ExpandSwitchContent(
+        state: SettingsCloudState.Data,
+        logInFormState: SettingsCloudFormState,
+        signInFormState: SettingsCloudFormState,
+        hostTextField: SoulTextFieldHolder,
+        signIn: () -> Unit,
+        logIn: () -> Unit,
+        onLogOut: () -> Unit,
+    ) {
+        AnimatedContent(
+            targetState = state.user,
+            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+        ) {
+            when(state.user) {
+                null -> {
+                    ConnectionView(
+                        logInFormState = logInFormState,
+                        signInFormState = signInFormState,
+                        hostTextField = hostTextField,
+                        logIn = logIn,
+                        signIn = signIn,
+                    )
+                }
+                else -> {
+                    ConnectedView(
+                        user = state.user,
+                        onLogOut = onLogOut,
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
     private fun DataScreen(
         state: SettingsCloudState.Data,
         logInFormState: SettingsCloudFormState,
@@ -220,6 +282,7 @@ class SettingsCloudScreen: Screen, SettingPage {
         toggleCloudMode: () -> Unit,
         signIn: () -> Unit,
         logIn: () -> Unit,
+        onLogOut: () -> Unit,
     ) {
         SettingPage(
             navigateBack = navigateBack,
@@ -242,6 +305,8 @@ class SettingsCloudScreen: Screen, SettingPage {
                         hostTextField = hostTextField,
                         signIn = signIn,
                         logIn = logIn,
+                        onLogOut = onLogOut,
+                        state = state,
                     )
                 }
             }
@@ -258,6 +323,7 @@ class SettingsCloudScreen: Screen, SettingPage {
         toggleCloudMode: () -> Unit,
         signIn: () -> Unit,
         logIn: () -> Unit,
+        onLogOut: () -> Unit,
     ) {
 
         when(state) {
@@ -271,6 +337,7 @@ class SettingsCloudScreen: Screen, SettingPage {
                     toggleCloudMode = toggleCloudMode,
                     signIn = signIn,
                     logIn = logIn,
+                    onLogOut = onLogOut,
                 )
             }
             SettingsCloudState.Loading -> {

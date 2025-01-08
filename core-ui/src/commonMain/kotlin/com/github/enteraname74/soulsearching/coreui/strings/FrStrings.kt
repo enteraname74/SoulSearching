@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.User
+
 /**
  * French translation for application strings
  */
@@ -149,6 +151,7 @@ object FrStrings : Strings {
     override val cloudLogIn = "Authentification"
     override val cloudUsername = "Nom d'utilisateur"
     override val cloudPassword = "Mot de passe"
+    override val cloudLogOut = "Déconnexion"
 
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
@@ -278,4 +281,7 @@ object FrStrings : Strings {
 
     override fun newReleaseAvailableText(releaseName: String): String =
         "Une nouvelle version est disponible, prête à être téléchargée : $releaseName"
+
+    override fun certifyUserConnected(user: User): String =
+        "Vous êtes connecté sous le nom de : ${user.username}"
 }

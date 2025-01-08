@@ -19,6 +19,8 @@ interface MusicRepository {
 
     suspend fun deleteAll(ids: List<UUID>)
 
+    suspend fun deleteAll(dataMode: DataMode)
+
     /**
      * Retrieve a music from its id.
      */

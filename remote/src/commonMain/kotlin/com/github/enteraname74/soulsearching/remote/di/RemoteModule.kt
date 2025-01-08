@@ -6,7 +6,7 @@ import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsDataSou
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
-import com.github.enteraname74.soulsearching.repository.datasource.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
@@ -84,7 +84,6 @@ val remoteModule = module {
     single<AuthRemoteDataSource> {
         AuthRemoteDataSourceImpl(
             client = get(named(HttpClientNames.GENERIC)),
-            cloudLocalDataSource = get(),
             settings = get(),
         )
     }

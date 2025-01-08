@@ -36,7 +36,6 @@ fun SoulImage(
         .clip(RoundedCornerShape(percent = roundedPercent))
         .then(modifier)
 
-    println("COVER: $cover")
     when (cover) {
         null -> {
             TemplateImage(

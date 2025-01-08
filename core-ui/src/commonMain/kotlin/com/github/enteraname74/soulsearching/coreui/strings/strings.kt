@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.domain.model.User
 
 val strings = when(Locale.current.language) {
     "fr" -> FrStrings
@@ -161,6 +162,7 @@ interface Strings {
     val cloudLogIn: String
     val cloudUsername: String
     val cloudPassword: String
+    val cloudLogOut: String
 
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
@@ -279,4 +281,6 @@ interface Strings {
      * Shows a text indicating the detail of the new latest release of Soul Searching
      */
     fun newReleaseAvailableText(releaseName: String): String
+
+    fun certifyUserConnected(user: User): String
 }

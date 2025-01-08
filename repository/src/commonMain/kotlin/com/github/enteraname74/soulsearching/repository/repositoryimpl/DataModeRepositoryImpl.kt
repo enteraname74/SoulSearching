@@ -12,6 +12,9 @@ class DataModeRepositoryImpl(
         dataModeDataSource.switchDataMode(newDataMode)
     }
 
+    override fun getCurrentDataModeWithUserCheck(): Flow<DataMode> =
+        dataModeDataSource.getCurrentDataModeWithUserCheck()
+
     override fun getCurrentDataMode(): Flow<DataMode> =
         dataModeDataSource.getCurrentDataMode()
 }

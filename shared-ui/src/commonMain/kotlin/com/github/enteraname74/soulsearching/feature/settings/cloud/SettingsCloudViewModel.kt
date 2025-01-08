@@ -28,6 +28,7 @@ class SettingsCloudViewModel(
     getCloudHostUseCase: GetCloudHostUseCase,
     private val signUserUseCase: SignUserUseCase,
     private val logInUserUseCase: LogInUserUseCase,
+    private val logOutUserUseCase: LogOutUserUseCase,
     private val setCloudHostUseCase: SetCloudHostUseCase,
     private val setCurrentDataModeUSeCase: SetCurrentDataModeUseCase,
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
@@ -36,11 +37,14 @@ class SettingsCloudViewModel(
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
     private val errorInLog: MutableStateFlow<String?> = MutableStateFlow(null)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<SettingsCloudState> =
-        getCurrentDataModeUseCase().mapLatest { dataMode ->
+        combine(
+            getCurrentDataModeUseCase(),
+            getUserUseCase()
+        ) { dataMode, user ->
             SettingsCloudState.Data(
                 isCloudActivated = dataMode == DataMode.Cloud,
+                user = user,
             )
         }.stateIn(
             scope = screenModelScope,
@@ -131,6 +135,12 @@ class SettingsCloudViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun logOut() {
+        CoroutineScope(Dispatchers.IO).launch {
+            logOutUserUseCase()
         }
     }
 
