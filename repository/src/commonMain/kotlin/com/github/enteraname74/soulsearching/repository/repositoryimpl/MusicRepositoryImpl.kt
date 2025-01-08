@@ -1,47 +1,73 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
 import java.util.*
 
 /**
  * Repository for handling Music related work.
  */
 class MusicRepositoryImpl(
-    private val musicDataSource: MusicDataSource,
-): MusicRepository {
+    private val musicLocalDataSource: MusicLocalDataSource,
+    private val musicRemoteDataSource: MusicRemoteDataSource,
+    private val dataModeDataSource: DataModeDataSource,
+) : MusicRepository {
     override suspend fun upsert(music: Music) {
-        musicDataSource.upsert(music = music)
+        musicLocalDataSource.upsert(music = music)
     }
 
     override suspend fun upsertAll(musics: List<Music>) {
-        musicDataSource.upsertAll(musics = musics)
+        musicLocalDataSource.upsertAll(musics = musics)
     }
 
     override suspend fun delete(music: Music) {
-        musicDataSource.delete(music = music)
+        musicLocalDataSource.delete(music = music)
     }
 
     override suspend fun deleteAll(ids: List<UUID>) {
-        musicDataSource.deleteAll(ids = ids)
+        musicLocalDataSource.deleteAll(ids = ids)
     }
 
-    override fun getFromId(musicId: UUID): Flow<Music?> = musicDataSource.getFromId(
+    override fun getFromId(musicId: UUID): Flow<Music?> = musicLocalDataSource.getFromId(
         musicId = musicId
     )
 
     override suspend fun getFromPath(musicPath: String): Music? =
-        musicDataSource.getFromPath(
+        musicLocalDataSource.getFromPath(
             musicPath = musicPath,
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAll(): Flow<List<Music>> =
-        musicDataSource.getAll()
+        dataModeDataSource.getCurrentDataMode().flatMapLatest { dataMode ->
+            musicLocalDataSource.getAll(
+                dataMode = dataMode,
+            )
+        }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
-        musicDataSource.getAllMusicFromAlbum(
+        musicLocalDataSource.getAllMusicFromAlbum(
             albumId = albumId
         )
+
+    override suspend fun syncWithCloud(): SoulResult<Unit> =
+        when (val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchAllMusicOfUser()) {
+            is SoulResult.Error -> {
+                songsFromCloud.toSimpleResult()
+            }
+
+            is SoulResult.Success -> {
+                musicLocalDataSource.upsertAll(musics = songsFromCloud.result)
+                SoulResult.ofSuccess()
+            }
+        }
 }

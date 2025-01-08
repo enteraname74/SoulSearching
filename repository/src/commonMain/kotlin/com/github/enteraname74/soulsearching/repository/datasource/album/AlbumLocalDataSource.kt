@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.album
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
@@ -9,7 +9,7 @@ import java.util.UUID
 /**
  * Data source of an Album.
  */
-interface AlbumDataSource {
+interface AlbumLocalDataSource {
 
     /**
      * Inserts or updates a new Album.

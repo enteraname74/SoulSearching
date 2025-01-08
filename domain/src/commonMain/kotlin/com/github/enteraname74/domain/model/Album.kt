@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 /**
  * Represent an Album and information related to it.
@@ -13,5 +13,5 @@ data class Album(
     var cover: Cover? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
 )

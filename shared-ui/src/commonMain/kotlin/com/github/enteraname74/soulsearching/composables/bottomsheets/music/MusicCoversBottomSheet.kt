@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
@@ -33,9 +34,8 @@ class MusicCoversBottomSheet(
 ): SoulBottomSheet {
 
     @Composable
-    private fun CoverFileList(
-        coverFile: Cover.CoverFile,
-        closeWithAnim: () -> Unit,
+    private fun ImageList(
+        block: LazyGridScope.() -> Unit,
     ) {
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
@@ -43,6 +43,16 @@ class MusicCoversBottomSheet(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
+            block()
+        }
+    }
+
+    @Composable
+    private fun CoverFileList(
+        coverFile: Cover.CoverFile,
+        closeWithAnim: () -> Unit,
+    ) {
+        ImageList {
             coverFile.initialCoverPath?.let { initialCoverPath ->
                 item {
                     EditableElementCoverSelectionItem(
@@ -71,6 +81,27 @@ class MusicCoversBottomSheet(
                         }
                     )
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun CoverUrlList(
+        cover: Cover.CoverUrl,
+        closeWithAnim: () -> Unit,
+    ) {
+        ImageList {
+            cover.url?.let { _ ->
+               item {
+                   EditableElementCoverSelectionItem(
+                       cover = cover,
+                       title = strings.musicAppCover,
+                       onClick = {
+                           closeWithAnim()
+                           // TODO: Select URL image on song update
+                       }
+                   )
+               }
             }
         }
     }
@@ -110,6 +141,12 @@ class MusicCoversBottomSheet(
                     is Cover.CoverFile -> {
                         CoverFileList(
                             coverFile = musicCover,
+                            closeWithAnim = closeWithAnim,
+                        )
+                    }
+                    is Cover.CoverUrl -> {
+                        CoverUrlList(
+                            cover = musicCover,
                             closeWithAnim = closeWithAnim,
                         )
                     }

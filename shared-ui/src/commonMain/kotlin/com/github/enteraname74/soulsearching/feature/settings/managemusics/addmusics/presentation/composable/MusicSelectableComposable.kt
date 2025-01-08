@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.composables.SoulImage
+import com.github.enteraname74.soulsearching.composables.image.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor

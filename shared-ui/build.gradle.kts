@@ -64,8 +64,7 @@ kotlin {
 
                 implementation(libs.file.kit)
 
-                implementation(libs.coil)
-                implementation(libs.coil.compose)
+                implementation(libs.bundles.coil)
             }
         }
         androidMain {

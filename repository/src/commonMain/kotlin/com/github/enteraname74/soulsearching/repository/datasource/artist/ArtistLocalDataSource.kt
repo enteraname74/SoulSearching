@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.artist
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
@@ -8,7 +8,7 @@ import java.util.UUID
 /**
  * Data source of an Artist.
  */
-interface ArtistDataSource {
+interface ArtistLocalDataSource {
 
     /**
      * Inserts or updates an artist.

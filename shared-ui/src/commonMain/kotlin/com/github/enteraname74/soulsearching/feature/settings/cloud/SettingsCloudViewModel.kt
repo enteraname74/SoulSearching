@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.usecase.auth.*
+import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -29,6 +30,7 @@ class SettingsCloudViewModel(
     private val logInUserUseCase: LogInUserUseCase,
     private val setCloudHostUseCase: SetCloudHostUseCase,
     private val setCurrentDataModeUSeCase: SetCurrentDataModeUseCase,
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
     private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -101,12 +103,18 @@ class SettingsCloudViewModel(
             initialValue = SettingsCloudFormState.Loading,
         )
 
+    private fun syncWithCloud() {
+        CoroutineScope(Dispatchers.IO).launch {
+            syncDataWithCloudUseCase()
+        }
+    }
+
     fun signIn() {
         val validForm = (signInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
-                val result: SoulResult = signUserUseCase(
+                val result: SoulResult<*> = signUserUseCase(
                     user = User(
                         username = validForm.getFormUsername(),
                         password = validForm.getFormPassword(),
@@ -119,6 +127,7 @@ class SettingsCloudViewModel(
                     is SoulResult.Success<*> -> {
                         errorInLog.value = null
                         errorInSign.value = null
+                        syncDataWithCloudUseCase()
                     }
                 }
             }
@@ -130,7 +139,7 @@ class SettingsCloudViewModel(
 
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
-                val result: SoulResult = logInUserUseCase(
+                val result: SoulResult<*> = logInUserUseCase(
                     user = User(
                         username = validForm.getFormUsername(),
                         password = validForm.getFormPassword(),
@@ -143,6 +152,7 @@ class SettingsCloudViewModel(
                     is SoulResult.Success<*> -> {
                         errorInLog.value = null
                         errorInSign.value = null
+                        syncDataWithCloudUseCase()
                     }
                 }
             }

@@ -4,14 +4,14 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.localdesktop.dao.AlbumDao
-import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.*
 
-internal class AlbumDataSourceImpl(
+internal class AlbumLocalDataSourceImpl(
     private val albumDao: AlbumDao,
-) : AlbumDataSource {
+) : AlbumLocalDataSource {
     override suspend fun upsert(album: Album) {
         albumDao.upsert(album = album)
     }

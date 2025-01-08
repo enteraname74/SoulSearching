@@ -1,5 +1,6 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.music
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -7,7 +8,7 @@ import java.util.UUID
 /**
  * Data source of a Music.
  */
-interface MusicDataSource {
+interface MusicLocalDataSource {
     /**
      * Inserts or updates a Music.
      */
@@ -21,6 +22,7 @@ interface MusicDataSource {
     suspend fun delete(music: Music)
 
     suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Tries to retrieve a Music from its path.
@@ -35,7 +37,7 @@ interface MusicDataSource {
     /**
      * Retrieves a flow of all Music, sorted by name asc.
      */
-    fun getAll(): Flow<List<Music>>
+    fun getAll(dataMode: DataMode): Flow<List<Music>>
 
     /**
      * Retrieves all musics of an Album.

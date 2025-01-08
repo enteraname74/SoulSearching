@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.usecase.album.*
 import com.github.enteraname74.domain.usecase.albumartist.*
 import com.github.enteraname74.domain.usecase.artist.*
 import com.github.enteraname74.domain.usecase.auth.*
+import com.github.enteraname74.domain.usecase.cloud.*
 import com.github.enteraname74.domain.usecase.folder.*
 import com.github.enteraname74.domain.usecase.cover.*
 import com.github.enteraname74.domain.usecase.lyrics.*
@@ -75,6 +76,9 @@ val domainModule = module {
     singleOf(::LogInUserUseCase)
     singleOf(::SetCloudHostUseCase)
     singleOf(::SignUserUseCase)
+
+    // CLOUD
+    singleOf(::SyncDataWithCloudUseCase)
 
     // Folder
     singleOf(::DeleteAllFoldersUseCase)

@@ -1,10 +1,12 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
+import org.springframework.security.crypto.keygen.KeyGenerators.string
 
 /**
  * Table for storing Musics.
@@ -14,6 +16,7 @@ internal object MusicTable : UUIDTable() {
     val album = varchar("album", 128)
     val artist = varchar("artist", 128)
     val coverId = uuid("coverId").nullable()
+    val coverUrl = mediumText("coverUrl").nullable()
     val duration = long("duration")
     val path = mediumText("path")
     val folder = varchar("folder", 128)
@@ -21,7 +24,20 @@ internal object MusicTable : UUIDTable() {
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
     val isHidden = bool("isHidden")
+    val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 }
+
+private fun ResultRow.buildCover(): Cover =
+    if (this[MusicTable.coverUrl] != null) {
+        Cover.CoverUrl(
+            url = this[MusicTable.coverUrl],
+        )
+    } else {
+        Cover.CoverFile(
+            fileCoverId = this[MusicTable.coverId],
+            initialCoverPath = this[MusicTable.path],
+        )
+    }
 
 /**
  * Builds a Music from a ResultRow.
@@ -33,17 +49,15 @@ internal fun ResultRow.toMusic(): Music? =
             name = this[MusicTable.name],
             album = this[MusicTable.album],
             artist = this[MusicTable.artist],
-            cover = Cover.CoverFile(
-                fileCoverId = this[MusicTable.coverId],
-                initialCoverPath = this[MusicTable.path],
-            ),
+            cover = buildCover(),
             duration = this[MusicTable.duration],
             path = this[MusicTable.path],
             folder = this[MusicTable.folder],
             addedDate = this[MusicTable.addedDate],
             nbPlayed = this[MusicTable.nbPlayed],
             isInQuickAccess = this[MusicTable.isInQuickAccess],
-            isHidden = this[MusicTable.isHidden]
+            isHidden = this[MusicTable.isHidden],
+            dataMode = DataMode.fromString(this[MusicTable.dataMode]) ?: DataMode.Local
         )
     } catch (e: Exception) {
         null

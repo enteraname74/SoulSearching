@@ -13,7 +13,7 @@ annotation = "1.9.1"
 appcompat = "1.7.0"
 application-version-name = "0.10.2"
 cloudy = "0.2.3"
-coil = "3.0.0-alpha01"
+coil = "3.0.4"
 compose = "1.8.0-alpha01"
 coroutines-core = "1.9.0"
 dbus = "3.3.2"
@@ -53,6 +53,7 @@ androidx-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", vers
 androidx-media = { module = "androidx.media:media", version.ref = "media" }
 
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-ktor2", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
@@ -123,3 +124,4 @@ voyager = ["voyager-koin", "voyager-navigator", "voyager-screen-model", "voyager
 exposed = ["exposed-core", "exposed-crypt", "exposed-dao", "exposed-java-time", "exposed-jdbc"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
 ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-serialization-kotlinx-json", "ktor-client-auth"]
+coil = ["coil", "coil-compose", "coil-network"]

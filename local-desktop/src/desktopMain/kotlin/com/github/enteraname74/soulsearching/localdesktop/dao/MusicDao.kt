@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.localdesktop.dao
 
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
@@ -12,6 +13,8 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.adde
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverUrl
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.dataMode
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.folder
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.isHidden
@@ -34,6 +37,7 @@ internal class MusicDao {
                 it[album] = music.album
                 it[artist] = music.artist
                 it[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
+                it[coverUrl] = (music.cover as? Cover.CoverUrl)?.url
                 it[duration] = music.duration
                 it[path] = music.path
                 it[folder] = music.folder
@@ -41,6 +45,7 @@ internal class MusicDao {
                 it[nbPlayed] = music.nbPlayed
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
+                it[dataMode] = music.dataMode.value
             }
         }
     }
@@ -53,6 +58,7 @@ internal class MusicDao {
                 this[album] = music.album
                 this[artist] = music.artist
                 this[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
+                this[coverUrl] = (music.cover as? Cover.CoverUrl)?.url
                 this[duration] = music.duration
                 this[path] = music.path
                 this[folder] = music.folder
@@ -60,6 +66,7 @@ internal class MusicDao {
                 this[nbPlayed] = music.nbPlayed
                 this[isInQuickAccess] = music.isInQuickAccess
                 this[isHidden] = music.isHidden
+                this[dataMode] = music.dataMode.value
             }
         }
     }
@@ -73,6 +80,12 @@ internal class MusicDao {
     suspend fun deleteAll(ids: List<UUID>) {
         flowTransactionOn {
             MusicTable.deleteWhere { Op.build { id inList ids } }
+        }
+    }
+
+    suspend fun deleteAll(dataMode: String) {
+        flowTransactionOn {
+            MusicTable.deleteWhere { MusicTable.dataMode eq dataMode }
         }
     }
 
@@ -92,9 +105,10 @@ internal class MusicDao {
             .mapSingleResultRow { it.toMusic() }
     }
 
-    fun getAll(): Flow<List<Music>> = transaction {
+    fun getAll(dataMode: String): Flow<List<Music>> = transaction {
         MusicTable
             .selectAll()
+            .where { MusicTable.dataMode eq dataMode }
             .orderBy(MusicTable.name to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toMusic() }

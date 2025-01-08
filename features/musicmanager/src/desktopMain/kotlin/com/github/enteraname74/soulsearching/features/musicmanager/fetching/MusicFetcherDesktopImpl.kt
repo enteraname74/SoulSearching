@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
@@ -90,7 +91,8 @@ internal class MusicFetcherDesktopImpl(
                         folder = file.parent,
                         cover = Cover.CoverFile(
                             initialCoverPath = file.path,
-                        )
+                        ),
+                        dataMode = DataMode.Local,
                     )
                     onMusicFetched(musicToAdd)
                 } catch (_: Exception) {

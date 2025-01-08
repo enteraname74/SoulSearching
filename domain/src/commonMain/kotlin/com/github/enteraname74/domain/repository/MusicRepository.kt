@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 interface MusicRepository {
-
     /**
      * Upsert a music.
      */
@@ -36,4 +35,9 @@ interface MusicRepository {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    /**
+     * Retrieves all the songs of the user from the Cloud.
+     */
+    suspend fun syncWithCloud(): SoulResult<Unit>
 }

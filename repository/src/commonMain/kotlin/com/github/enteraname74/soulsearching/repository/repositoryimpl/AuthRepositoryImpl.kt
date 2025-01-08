@@ -13,10 +13,10 @@ class AuthRepositoryImpl(
     private val authRemoteDataSource: AuthRemoteDataSource,
     private val settings: SoulSearchingSettings,
 ): AuthRepository {
-    override suspend fun signIn(user: User): SoulResult =
+    override suspend fun signIn(user: User): SoulResult<Unit> =
         authRemoteDataSource.signIn(user)
 
-    override suspend fun logIn(user: User): SoulResult =
+    override suspend fun logIn(user: User): SoulResult<Unit> =
         authRemoteDataSource.logIn(user)
 
     override fun getUser(): Flow<User?> =

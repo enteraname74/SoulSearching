@@ -18,7 +18,7 @@ class AuthRemoteDataSourceImpl(
     private val cloudLocalDataSource: CloudLocalDataSource,
     private val settings: SoulSearchingSettings,
 ): AuthRemoteDataSource {
-    override suspend fun signIn(user: User): SoulResult {
+    override suspend fun signIn(user: User): SoulResult<Unit> {
         val result = client.safeRequest<RemoteToken> {
             this.post(urlString = ServerRoutes.Auth.SIGN_IN) {
                 contentType(ContentType.Application.Json)
@@ -31,10 +31,10 @@ class AuthRemoteDataSourceImpl(
             cloudLocalDataSource.setToken(token)
         }
 
-        return result.toSoulResult()
+        return result.toSimpleResult()
     }
 
-    override suspend fun logIn(user: User): SoulResult {
+    override suspend fun logIn(user: User): SoulResult<Unit> {
         val result = client.safeRequest<RemoteToken> {
             this.post(urlString = ServerRoutes.Auth.LOG_IN) {
                 contentType(ContentType.Application.Json)
@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImpl(
             cloudLocalDataSource.setToken(token)
         }
 
-        return result.toSoulResult()
+        return result.toSimpleResult()
     }
 
     override fun getHost(): Flow<String> =

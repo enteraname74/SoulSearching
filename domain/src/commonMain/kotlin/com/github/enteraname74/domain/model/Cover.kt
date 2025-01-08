@@ -13,4 +13,11 @@ sealed interface Cover {
         override fun isEmpty(): Boolean =
             initialCoverPath == null && fileCoverId == null
     }
+
+    data class CoverUrl(
+        val url: String?,
+    ): Cover {
+        override fun isEmpty(): Boolean =
+            url == null
+    }
 }

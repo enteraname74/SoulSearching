@@ -5,8 +5,8 @@ import com.github.enteraname74.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    suspend fun signIn(user: User): SoulResult
-    suspend fun logIn(user: User): SoulResult
+    suspend fun signIn(user: User): SoulResult<Unit>
+    suspend fun logIn(user: User): SoulResult<Unit>
 
     fun getUser(): Flow<User?>
 

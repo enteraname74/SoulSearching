@@ -13,6 +13,7 @@ import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.folder.DeleteAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
@@ -97,6 +98,8 @@ class MainPageViewModel(
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl by inject()
     private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
     private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
+
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase by inject()
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
@@ -357,6 +360,10 @@ class MainPageViewModel(
             val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
             deleteAllFoldersUseCase(foldersToDelete)
         }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            syncDataWithCloudUseCase()
+        }
     }
 
     fun setCurrentPage(page: ElementEnum) {
@@ -370,7 +377,8 @@ class MainPageViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             var deleteCount = 0
             for (music in allMusicsState.value.musics) {
-                if (!File(music.path).exists()) {
+                if (!File(music.path).exists() && music.dataMode == DataMode.Local) {
+                    // TODO: Improve deleted songs check for Cloud mode
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)
                     )

@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -12,47 +12,47 @@ import java.util.*
  * Repository of an Album.
  */
 class AlbumRepositoryImpl(
-    private val albumDataSource: AlbumDataSource,
+    private val albumLocalDataSource: AlbumLocalDataSource,
 ): AlbumRepository {
 
     override suspend fun delete(album: Album) {
-        albumDataSource.delete(album = album)
+        albumLocalDataSource.delete(album = album)
     }
 
     override suspend fun deleteAll(ids: List<UUID>) {
-        albumDataSource.deleteAll(ids = ids)
+        albumLocalDataSource.deleteAll(ids = ids)
     }
 
     override suspend fun upsertAll(albums: List<Album>) {
-        albumDataSource.upsertAll(albums)
+        albumLocalDataSource.upsertAll(albums)
     }
 
-    override suspend fun upsert(album: Album) = albumDataSource.upsert(
+    override suspend fun upsert(album: Album) = albumLocalDataSource.upsert(
         album = album
     )
 
-    override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = albumDataSource.getAlbumsOfArtist(
+    override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = albumLocalDataSource.getAlbumsOfArtist(
         artistId = artistId
     )
 
     override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
-        albumDataSource.getAlbumsWithMusicsOfArtist(artistId)
+        albumLocalDataSource.getAlbumsWithMusicsOfArtist(artistId)
 
-    override fun getFromId(albumId: UUID): Flow<Album?> = albumDataSource.getFromId(
+    override fun getFromId(albumId: UUID): Flow<Album?> = albumLocalDataSource.getFromId(
         albumId = albumId
     )
 
     override fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> =
-        albumDataSource.getAlbumWithMusics(
+        albumLocalDataSource.getAlbumWithMusics(
             albumId = albumId
         )
 
     override fun getAll(): Flow<List<Album>> =
-        albumDataSource.getAll()
+        albumLocalDataSource.getAll()
 
     override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> =
-        albumDataSource.getAllAlbumWithMusics()
+        albumLocalDataSource.getAllAlbumWithMusics()
 
     override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> =
-        albumDataSource.getAllAlbumsWithArtist()
+        albumLocalDataSource.getAllAlbumsWithArtist()
 }

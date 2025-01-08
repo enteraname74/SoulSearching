@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables
+package com.github.enteraname74.soulsearching.composables.image
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,9 +14,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulByteArrayImage(
     data: ByteArray?,
-    size : Dp,
+    size: Dp,
     modifier: Modifier = Modifier,
-    roundedPercent : Int = 10,
+    roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
     val modifierBase = Modifier
@@ -26,16 +26,17 @@ fun SoulByteArrayImage(
             modifier
         }
 
-    if (data != null) {
+    AnimatedImage(
+        data = data,
+        contentScale = ContentScale.Crop,
+        modifier = modifierBase,
+        tint = tint,
+    ) { byteArray ->
         DataImage(
-            data = data,
+            data = byteArray,
             modifier = modifierBase,
             contentScale = ContentScale.Crop,
-        )
-    } else {
-        TemplateImage(
-            modifier = modifierBase,
-            contentScale = ContentScale.Crop,
+            contentDescription = null,
             tint = tint,
         )
     }

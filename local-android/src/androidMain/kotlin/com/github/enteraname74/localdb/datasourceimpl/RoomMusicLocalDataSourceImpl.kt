@@ -1,20 +1,21 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusic
 import com.github.enteraname74.localdb.model.toRoomMusic
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import java.util.*
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
  */
-internal class RoomMusicDataSourceImpl(
-    private val appDatabase: AppDatabase
-) : MusicDataSource {
+internal class RoomMusicLocalDataSourceImpl(
+    private val appDatabase: AppDatabase,
+) : MusicLocalDataSource {
     override suspend fun upsert(music: Music) {
         appDatabase.musicDao.upsert(
             roomMusic = music.toRoomMusic()
@@ -37,6 +38,12 @@ internal class RoomMusicDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(dataMode: DataMode) {
+        appDatabase.musicDao.deleteAll(
+            dataMode = dataMode.value,
+        )
+    }
+
     override suspend fun getFromPath(musicPath: String): Music? {
         return appDatabase.musicDao.getMusicFromPath(
             musicPath = musicPath
@@ -49,8 +56,8 @@ internal class RoomMusicDataSourceImpl(
         ).map { it?.toMusic() }
     }
 
-    override fun getAll(): Flow<List<Music>> {
-        return appDatabase.musicDao.getAll().map { list ->
+    override fun getAll(dataMode: DataMode): Flow<List<Music>> {
+        return appDatabase.musicDao.getAll(dataMode.value).map { list ->
             list.map { it.toMusic() }
         }
     }

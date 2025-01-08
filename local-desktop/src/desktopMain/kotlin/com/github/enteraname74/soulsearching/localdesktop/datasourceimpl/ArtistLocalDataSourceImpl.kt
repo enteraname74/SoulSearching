@@ -3,13 +3,13 @@ package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.soulsearching.localdesktop.dao.ArtistDao
-import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
-internal class ArtistDataSourceImpl(
+internal class ArtistLocalDataSourceImpl(
     private val artistDao: ArtistDao
-) : ArtistDataSource {
+) : ArtistLocalDataSource {
     override suspend fun upsert(artist: Artist) {
         artistDao.upsert(artist)
     }

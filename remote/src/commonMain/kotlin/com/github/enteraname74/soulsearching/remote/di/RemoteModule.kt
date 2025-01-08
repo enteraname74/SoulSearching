@@ -3,11 +3,13 @@ package com.github.enteraname74.soulsearching.remote.di
 import com.github.enteraname74.soulsearching.remote.cloud.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.AuthRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
 import com.github.enteraname74.soulsearching.repository.datasource.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
@@ -15,10 +17,8 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
-import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val remoteModule = module {
@@ -86,6 +86,12 @@ val remoteModule = module {
             client = get(named(HttpClientNames.GENERIC)),
             cloudLocalDataSource = get(),
             settings = get(),
+        )
+    }
+
+    single<MusicRemoteDataSource> {
+        MusicRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
         )
     }
 

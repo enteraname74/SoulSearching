@@ -19,7 +19,8 @@ data class Music(
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     override var isInQuickAccess: Boolean = false,
-    var isHidden: Boolean = false
+    var isHidden: Boolean = false,
+    val dataMode: DataMode,
 ): QuickAccessible {
     val informationText: String = "$artist | $album"
 

@@ -7,7 +7,7 @@ import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toAlbum
 import com.github.enteraname74.localdb.model.toAlbumWithMusics
 import com.github.enteraname74.localdb.model.toRoomAlbum
-import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.*
@@ -15,9 +15,9 @@ import java.util.*
 /**
  * Implementation of the AlbumDataSource with Room's DAO.
  */
-internal class RoomAlbumDataSourceImpl(
+internal class RoomAlbumLocalDataSourceImpl(
     private val appDatabase: AppDatabase
-) : AlbumDataSource {
+) : AlbumLocalDataSource {
     override suspend fun upsert(album: Album) {
         appDatabase.albumDao.upsert(
             roomAlbum = album.toRoomAlbum()
