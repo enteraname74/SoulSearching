@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDateTime
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
@@ -233,6 +234,10 @@ object SoulSearchingSettingsKeys {
         )
         val PASSWORD = settingElementOf(
             key = "CLOUD_PASSWORD",
+            defaultValue = "",
+        )
+        val LAST_UPDATE_DATE = settingElementOf(
+            key = "CLOUD_LAST_UPDATE_DATE",
             defaultValue = "",
         )
     }

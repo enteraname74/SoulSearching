@@ -4,14 +4,14 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapLatest
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -21,6 +21,7 @@ class MusicRepositoryImpl(
     private val musicLocalDataSource: MusicLocalDataSource,
     private val musicRemoteDataSource: MusicRemoteDataSource,
     private val dataModeDataSource: DataModeDataSource,
+    private val cloudLocalDataSource: CloudLocalDataSource,
 ) : MusicRepository {
     override suspend fun upsert(music: Music) {
         musicLocalDataSource.upsert(music = music)
@@ -66,15 +67,35 @@ class MusicRepositoryImpl(
             albumId = albumId
         )
 
-    override suspend fun syncWithCloud(): SoulResult<Unit> =
-        when (val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchAllMusicOfUser()) {
-            is SoulResult.Error -> {
-                songsFromCloud.toSimpleResult()
-            }
+    override suspend fun syncWithCloud(): SoulResult<Unit> {
+        var currentPage = 0
+        val lastUpdateDate: LocalDateTime? = cloudLocalDataSource.getLastUpdateDate()
 
-            is SoulResult.Success -> {
-                musicLocalDataSource.upsertAll(musics = songsFromCloud.result)
-                SoulResult.ofSuccess()
+        while(true) {
+            val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchSongsFromCloud(
+                after = lastUpdateDate,
+                maxPerPage = MAX_SONGS_PER_PAGE,
+                page = currentPage,
+            )
+
+            when (songsFromCloud) {
+                is SoulResult.Error -> {
+                    return songsFromCloud.toSimpleResult()
+                }
+
+                is SoulResult.Success -> {
+                    if (songsFromCloud.result.isEmpty()) {
+                        cloudLocalDataSource.updateLastUpdateDate()
+                        return SoulResult.ofSuccess()
+                    }
+                    currentPage += 1
+                    musicLocalDataSource.upsertAll(musics = songsFromCloud.result)
+                }
             }
         }
+    }
+
+    companion object {
+        private const val MAX_SONGS_PER_PAGE = 1
+    }
 }

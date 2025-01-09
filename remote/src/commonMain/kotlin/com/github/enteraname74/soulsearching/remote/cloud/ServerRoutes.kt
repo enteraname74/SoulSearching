@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.remote.cloud
 
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.time.LocalDateTime
 
 object ServerRoutes : KoinComponent {
     private val cloudLocalDataSource: CloudLocalDataSource by inject()
@@ -20,8 +21,17 @@ object ServerRoutes : KoinComponent {
     object Music : Route {
         override val BASE_ROUTE = "/music"
 
-        val ALL: String
-            get() = "$HOST$BASE_ROUTE/ofUser"
+        fun all(
+            after: LocalDateTime?,
+            maxPerPage: Int,
+            page: Int,
+        ): String {
+            val afterText: String = after?.let {
+                "lastUpdateAt=$it&"
+            } ?: ""
+
+            return "$HOST$BASE_ROUTE/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
+        }
     }
 
     private interface Route {

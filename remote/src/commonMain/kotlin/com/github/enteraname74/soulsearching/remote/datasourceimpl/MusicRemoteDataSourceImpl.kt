@@ -9,13 +9,24 @@ import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.request.*
+import java.time.LocalDateTime
 
 class MusicRemoteDataSourceImpl(
     private val client: HttpClient
 ): MusicRemoteDataSource {
-    override suspend fun fetchAllMusicOfUser(): SoulResult<List<Music>> {
+    override suspend fun fetchSongsFromCloud(
+        after: LocalDateTime?,
+        maxPerPage: Int,
+        page: Int,
+    ): SoulResult<List<Music>> {
         val result: RemoteResult<List<RemoteMusic>> = client.safeRequest<List<RemoteMusic>> {
-            get(urlString = ServerRoutes.Music.ALL)
+            get(
+                urlString = ServerRoutes.Music.all(
+                    after = after,
+                    maxPerPage = maxPerPage,
+                    page = page,
+                )
+            )
         }
 
         return result.toSoulResult(
