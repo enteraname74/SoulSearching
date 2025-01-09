@@ -11,11 +11,18 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class AuthRemoteDataSourceImpl(
     private val client: HttpClient,
     private val settings: SoulSearchingSettings,
-): AuthRemoteDataSource {
+) : AuthRemoteDataSource, KoinComponent {
+    private val cloudClient by inject<HttpClient>(
+        qualifier = named(HttpClientNames.CLOUD)
+    )
+
     override suspend fun signIn(user: User): SoulResult<String> {
         val result = client.safeRequest<RemoteToken> {
             this.post(urlString = ServerRoutes.Auth.SIGN_IN) {
@@ -40,6 +47,10 @@ class AuthRemoteDataSourceImpl(
         return result.toSoulResult {
             it.token
         }
+    }
+
+    override suspend fun logOut() {
+        cloudClient.clearToken()
     }
 
     override fun getHost(): Flow<String> =

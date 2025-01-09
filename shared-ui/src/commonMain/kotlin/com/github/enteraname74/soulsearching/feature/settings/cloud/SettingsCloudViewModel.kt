@@ -9,6 +9,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.usecase.auth.*
+import com.github.enteraname74.domain.usecase.cloud.ResetAndSyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
@@ -32,6 +33,7 @@ class SettingsCloudViewModel(
     private val setCloudHostUseCase: SetCloudHostUseCase,
     private val setCurrentDataModeUSeCase: SetCurrentDataModeUseCase,
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
+    private val resetAndSyncDataWithCloudUseCase: ResetAndSyncDataWithCloudUseCase,
     private val loadingManager: LoadingManager,
 ) : ScreenModel {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -145,15 +147,20 @@ class SettingsCloudViewModel(
     }
 
     fun logIn() {
+        val dataState = (state.value as? SettingsCloudState.Data) ?: return
         val validForm = (logInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
+                val newUserInformation = User(
+                    username = validForm.getFormUsername(),
+                    password = validForm.getFormPassword(),
+                )
+
+                val isDifferentFromCurrentUser = newUserInformation != dataState.user
+
                 val result: SoulResult<*> = logInUserUseCase(
-                    user = User(
-                        username = validForm.getFormUsername(),
-                        password = validForm.getFormPassword(),
-                    )
+                    user = newUserInformation
                 )
                 when(result) {
                     is SoulResult.Error -> {
@@ -162,7 +169,16 @@ class SettingsCloudViewModel(
                     is SoulResult.Success<*> -> {
                         errorInLog.value = null
                         errorInSign.value = null
-                        syncDataWithCloudUseCase()
+
+
+                        /*
+                        If the user is different from the previous one, we reset all cloud data before syncing with it.
+                         */
+                        if (isDifferentFromCurrentUser) {
+                            resetAndSyncDataWithCloudUseCase()
+                        } else {
+                            syncDataWithCloudUseCase()
+                        }
                     }
                 }
             }

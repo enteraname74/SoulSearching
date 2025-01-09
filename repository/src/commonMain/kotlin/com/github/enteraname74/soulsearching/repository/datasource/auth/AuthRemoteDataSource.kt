@@ -8,6 +8,11 @@ interface AuthRemoteDataSource {
     suspend fun signIn(user: User): SoulResult<String>
     suspend fun logIn(user: User): SoulResult<String>
 
+    /**
+     * Log out the user. It will remove the tokens of the cloud client.
+     */
+    suspend fun logOut()
+
     fun getHost(): Flow<String>
 
     suspend fun setHost(host: String)

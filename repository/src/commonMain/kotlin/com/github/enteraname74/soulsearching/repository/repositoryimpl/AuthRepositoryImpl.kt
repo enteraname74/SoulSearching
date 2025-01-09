@@ -37,6 +37,7 @@ class AuthRepositoryImpl(
     override suspend fun logOut() {
         authLocalDataSource.setToken("")
         authLocalDataSource.setUser(null)
+        authRemoteDataSource.logOut()
     }
 
     override fun getUser(): Flow<User?> =

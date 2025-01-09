@@ -3,6 +3,9 @@ package com.github.enteraname74.soulsearching.remote.model
 import com.github.enteraname74.domain.model.SoulResult
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
@@ -38,7 +41,10 @@ sealed interface RemoteResult<T> {
     fun toSimpleResult(): SoulResult<Unit>
 }
 
-
+fun HttpClient.clearToken() {
+    this.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+        .firstOrNull()?.clearToken()
+}
 
 suspend inline fun <reified T> HttpClient.safeRequest(
     block: HttpClient.() -> HttpResponse

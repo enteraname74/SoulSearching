@@ -18,7 +18,6 @@ import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal fun DataImage(
     data: Any?,
