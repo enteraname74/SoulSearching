@@ -21,6 +21,9 @@ object ServerRoutes : KoinComponent {
     object Music : Route {
         override val BASE_ROUTE = "/music"
 
+        val CHECK: String
+            get() = "$HOST$BASE_ROUTE/check"
+
         fun all(
             after: LocalDateTime?,
             maxPerPage: Int,

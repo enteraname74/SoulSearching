@@ -41,5 +41,5 @@ interface MusicRepository {
     /**
      * Retrieves all the songs of the user from the Cloud.
      */
-    suspend fun syncWithCloud(): SoulResult<Unit>
+    suspend fun syncWithCloud(): SoulResult<List<UUID>>
 }

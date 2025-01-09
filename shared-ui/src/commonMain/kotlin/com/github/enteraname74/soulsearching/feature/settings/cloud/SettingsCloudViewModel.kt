@@ -20,8 +20,10 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.*
 
 class SettingsCloudViewModel(
     getCurrentDataModeUseCase: GetCurrentDataModeUseCase,
@@ -35,6 +37,7 @@ class SettingsCloudViewModel(
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
     private val resetAndSyncDataWithCloudUseCase: ResetAndSyncDataWithCloudUseCase,
     private val loadingManager: LoadingManager,
+    private val playbackManager: PlaybackManager,
 ) : ScreenModel {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
     private val errorInLog: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -61,7 +64,7 @@ class SettingsCloudViewModel(
         initialValue = runBlocking { getCloudHostUseCase().first() },
         isValid = { it.isNotBlank() },
         getLabel = { strings.cloudHost },
-        getError = { strings.fieldCannotBeEmpty},
+        getError = { strings.fieldCannotBeEmpty },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next,
@@ -109,12 +112,6 @@ class SettingsCloudViewModel(
             initialValue = SettingsCloudFormState.Loading,
         )
 
-    private fun syncWithCloud() {
-        CoroutineScope(Dispatchers.IO).launch {
-            syncDataWithCloudUseCase()
-        }
-    }
-
     fun signIn() {
         val validForm = (signInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
 
@@ -126,14 +123,20 @@ class SettingsCloudViewModel(
                         password = validForm.getFormPassword(),
                     )
                 )
-                when(result) {
+                when (result) {
                     is SoulResult.Error -> {
                         errorInSign.value = result.error
                     }
+
                     is SoulResult.Success<*> -> {
                         errorInLog.value = null
                         errorInSign.value = null
-                        syncDataWithCloudUseCase()
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val syncData: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
+                            (syncData as? SoulResult.Success)?.result?.let {
+                                playbackManager.removeSongsFromPlayedPlaylist(it)
+                            }
+                        }
                     }
                 }
             }
@@ -162,22 +165,28 @@ class SettingsCloudViewModel(
                 val result: SoulResult<*> = logInUserUseCase(
                     user = newUserInformation
                 )
-                when(result) {
+                when (result) {
                     is SoulResult.Error -> {
                         errorInLog.value = result.error
                     }
+
                     is SoulResult.Success<*> -> {
                         errorInLog.value = null
                         errorInSign.value = null
 
+                        CoroutineScope(Dispatchers.IO).launch {
+                            /*
+                            If the user is different from the previous one, we reset all cloud data before syncing with it.
+                             */
+                            val syncResult: SoulResult<List<UUID>> = if (isDifferentFromCurrentUser) {
+                                resetAndSyncDataWithCloudUseCase()
+                            } else {
+                                syncDataWithCloudUseCase()
+                            }
 
-                        /*
-                        If the user is different from the previous one, we reset all cloud data before syncing with it.
-                         */
-                        if (isDifferentFromCurrentUser) {
-                            resetAndSyncDataWithCloudUseCase()
-                        } else {
-                            syncDataWithCloudUseCase()
+                            (syncResult as? SoulResult.Success)?.result?.let {
+                                playbackManager.removeSongsFromPlayedPlaylist(it)
+                            }
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLo
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDateTime
 import java.util.*
@@ -67,9 +68,17 @@ class MusicRepositoryImpl(
             albumId = albumId
         )
 
-    override suspend fun syncWithCloud(): SoulResult<Unit> {
+    override suspend fun syncWithCloud(): SoulResult<List<UUID>> {
         var currentPage = 0
         val lastUpdateDate: LocalDateTime? = cloudLocalDataSource.getLastUpdateDate()
+
+        val idsToDeleteResult: SoulResult<List<UUID>> = musicRemoteDataSource.checkForDeletedSongs(
+            musicIds = musicLocalDataSource.getAll(dataMode = DataMode.Cloud).first().map { it.musicId }
+        )
+
+        val idsToDelete: List<UUID> = (idsToDeleteResult as? SoulResult.Success<List<UUID>>)?.result ?: emptyList()
+
+        musicLocalDataSource.deleteAll(idsToDelete)
 
         while(true) {
             val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchSongsFromCloud(
@@ -80,13 +89,13 @@ class MusicRepositoryImpl(
 
             when (songsFromCloud) {
                 is SoulResult.Error -> {
-                    return songsFromCloud.toSimpleResult()
+                    return SoulResult.Error(songsFromCloud.error)
                 }
 
                 is SoulResult.Success -> {
                     if (songsFromCloud.result.isEmpty()) {
                         cloudLocalDataSource.updateLastUpdateDate()
-                        return SoulResult.ofSuccess()
+                        return SoulResult.Success(idsToDelete)
                     }
                     currentPage += 1
                     musicLocalDataSource.upsertAll(musics = songsFromCloud.result)
