@@ -7,6 +7,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.*
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -23,8 +24,8 @@ class AuthRemoteDataSourceImpl(
         qualifier = named(HttpClientNames.CLOUD)
     )
 
-    override suspend fun signIn(user: User): SoulResult<String> {
-        val result = client.safeRequest<RemoteToken> {
+    override suspend fun signIn(user: User): SoulResult<UserTokens> {
+        val result = client.safeRequest<RemoteUserTokens> {
             this.post(urlString = ServerRoutes.Auth.SIGN_IN) {
                 contentType(ContentType.Application.Json)
                 setBody(user.toRemoteUser())
@@ -32,12 +33,12 @@ class AuthRemoteDataSourceImpl(
         }
 
         return result.toSoulResult {
-            it.token
+            it.toUserTokens()
         }
     }
 
-    override suspend fun logIn(user: User): SoulResult<String> {
-        val result = client.safeRequest<RemoteToken> {
+    override suspend fun logIn(user: User): SoulResult<UserTokens> {
+        val result = client.safeRequest<RemoteUserTokens> {
             this.post(urlString = ServerRoutes.Auth.LOG_IN) {
                 contentType(ContentType.Application.Json)
                 setBody(user.toRemoteUser())
@@ -45,7 +46,17 @@ class AuthRemoteDataSourceImpl(
         }
 
         return result.toSoulResult {
-            it.token
+            it.toUserTokens()
+        }
+    }
+
+    override suspend fun refreshTokens(): SoulResult<UserTokens> {
+        val result = client.safeRequest<RemoteUserTokens> {
+            this.get(urlString = ServerRoutes.Auth.REFRESH_TOKENS)
+        }
+
+        return result.toSoulResult {
+            it.toUserTokens()
         }
     }
 

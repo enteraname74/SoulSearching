@@ -4,16 +4,20 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.util.FlowResult
+import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Repository for handling Music related work.
@@ -24,6 +28,10 @@ class MusicRepositoryImpl(
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
 ) : MusicRepository {
+    override val uploadFlow: MutableStateFlow<FlowResult<Unit>> = MutableStateFlow(
+        FlowResult.Success(null)
+    )
+
     override suspend fun upsert(music: Music) {
         musicLocalDataSource.upsert(music = music)
     }
@@ -76,7 +84,7 @@ class MusicRepositoryImpl(
             musicIds = musicLocalDataSource.getAll(dataMode = DataMode.Cloud).first().map { it.musicId }
         )
 
-        val idsToDelete: List<UUID> = (idsToDeleteResult as? SoulResult.Success<List<UUID>>)?.result ?: emptyList()
+        val idsToDelete: List<UUID> = (idsToDeleteResult as? SoulResult.Success<List<UUID>>)?.data ?: emptyList()
 
         musicLocalDataSource.deleteAll(idsToDelete)
 
@@ -87,22 +95,55 @@ class MusicRepositoryImpl(
                 page = currentPage,
             )
 
+            println("musicRepositoryImpl -- syncWithCloud -- got result: $songsFromCloud")
+
             when (songsFromCloud) {
                 is SoulResult.Error -> {
                     return SoulResult.Error(songsFromCloud.error)
                 }
 
                 is SoulResult.Success -> {
-                    if (songsFromCloud.result.isEmpty()) {
+                    if (songsFromCloud.data.isEmpty()) {
                         cloudLocalDataSource.updateLastUpdateDate()
                         return SoulResult.Success(idsToDelete)
                     }
                     currentPage += 1
-                    musicLocalDataSource.upsertAll(musics = songsFromCloud.result)
+                    musicLocalDataSource.upsertAll(musics = songsFromCloud.data)
                 }
             }
         }
     }
+
+    override suspend fun uploadAllMusicToCloud(): SoulResult<Unit> =
+        handleFlowResultOn(flow = uploadFlow) { _ ->
+            val allLocalSongs: List<Music> = musicLocalDataSource.getAll(DataMode.Local).first()
+
+            val jobs = ArrayList<Job>()
+
+            allLocalSongs.forEach { music ->
+                val job = CoroutineScope(Dispatchers.IO).launch {
+                    val uploadResult: SoulResult<Music?> = musicRemoteDataSource.uploadMusicToCloud(
+                        music = music,
+                        searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
+                    )
+
+                    println("MusicRepositoryImpl -- uploadAllMusicToCloud -- got result for ${music.name}: $uploadResult")
+
+                    when(uploadResult) {
+                        is SoulResult.Error -> {
+                            /*no-op*/
+                        }
+                        is SoulResult.Success -> {
+                            uploadResult.data?.let { musicLocalDataSource.upsert(it) }
+                        }
+                    }
+                }
+                jobs.add(job)
+            }
+
+            jobs.forEach { it.join() }
+            SoulResult.Success(Unit)
+        }
 
     companion object {
         private const val MAX_SONGS_PER_PAGE = 1

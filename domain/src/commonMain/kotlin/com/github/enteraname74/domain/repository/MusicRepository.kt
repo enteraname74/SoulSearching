@@ -1,10 +1,14 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.util.FlowResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
 interface MusicRepository {
+    val uploadFlow: MutableStateFlow<FlowResult<Unit>>
+
     /**
      * Upsert a music.
      */
@@ -42,4 +46,6 @@ interface MusicRepository {
      * Retrieves all the songs of the user from the Cloud.
      */
     suspend fun syncWithCloud(): SoulResult<List<UUID>>
+
+    suspend fun uploadAllMusicToCloud(): SoulResult<Unit>
 }

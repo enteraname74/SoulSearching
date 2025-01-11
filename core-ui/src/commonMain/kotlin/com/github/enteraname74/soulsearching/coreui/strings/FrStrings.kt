@@ -152,6 +152,10 @@ object FrStrings : Strings {
     override val cloudUsername = "Nom d'utilisateur"
     override val cloudPassword = "Mot de passe"
     override val cloudLogOut = "Déconnexion"
+    override val cloudUploadTitle = "Exporter vos musiques"
+    override val cloudUploadText = "Exporter toutes vos musiques vers le cloud"
+    override val cloudServerMetadataSearch = "Utiliser le cloud pour définir les informations des musiques"
+    override val upload = "Exporter"
 
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
@@ -260,6 +264,13 @@ object FrStrings : Strings {
             0 -> "Aucune musique supprimée"
             1 -> "1 musique a été supprimée car elle n'existe plus sur l'appareil"
             else -> "$total musiques ont été supprimées car elles n'existent plus sur l'appareil"
+        }
+
+    override fun deleteMusicsFromCloudAutomatically(total: Int): String =
+        when (total) {
+            0 -> "Aucune musique supprimée"
+            1 -> "1 musique a été supprimée car elle n'existe plus sur le cloud"
+            else -> "$total musiques ont été supprimées car elles n'existent plus sur le cloud"
         }
 
     override fun plays(total: Int): String =

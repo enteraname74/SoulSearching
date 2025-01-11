@@ -1,15 +1,13 @@
 package com.github.enteraname74.soulsearching.coreui.menu
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
+import com.github.enteraname74.soulsearching.coreui.button.SoulSwitchDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -52,16 +50,12 @@ fun SoulMenuSwitch(
                 titleMaxLines = maxLines,
             )
         }
-        Switch(
+        SoulSwitch(
             checked = isChecked,
             onCheckedChange = { toggleAction() },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = textColor,
-                checkedTrackColor = titleColor,
-                checkedBorderColor = titleColor,
-                uncheckedThumbColor = textColor,
-                uncheckedTrackColor = Color.Transparent,
-                uncheckedBorderColor = textColor,
+            colors = SoulSwitchDefaults.colors(
+                thumbColor = textColor,
+                containerColor = titleColor,
             )
         )
     }

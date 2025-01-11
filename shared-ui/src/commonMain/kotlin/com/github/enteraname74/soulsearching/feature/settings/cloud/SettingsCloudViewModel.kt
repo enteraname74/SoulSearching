@@ -9,10 +9,16 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.usecase.auth.*
+import com.github.enteraname74.domain.usecase.cloud.GetCloudSearchMetadataUseCase
 import com.github.enteraname74.domain.usecase.cloud.ResetAndSyncDataWithCloudUseCase
+import com.github.enteraname74.domain.usecase.cloud.SetCloudSearchMetadataUseCase
 import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
+import com.github.enteraname74.domain.usecase.music.GetCloudUploadMusicUseCase
+import com.github.enteraname74.domain.usecase.music.UploadAllMusicToCloudUseCase
+import com.github.enteraname74.domain.util.FlowResult
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefaults
@@ -20,9 +26,12 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolde
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
 class SettingsCloudViewModel(
@@ -38,9 +47,14 @@ class SettingsCloudViewModel(
     private val resetAndSyncDataWithCloudUseCase: ResetAndSyncDataWithCloudUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
-) : ScreenModel {
+    private val feedbackPopUpManager: FeedbackPopUpManager,
+) : ScreenModel, KoinComponent {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
     private val errorInLog: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val getCloudSearchMetadataUseCase: GetCloudSearchMetadataUseCase by inject()
+    private val setCloudSearchMetadataUseCase: SetCloudSearchMetadataUseCase by inject()
+    private val getCloudUploadMusicUseCase: GetCloudUploadMusicUseCase by inject()
+    private val uploadAllMusicToCloudUseCase: UploadAllMusicToCloudUseCase by inject()
 
     val state: StateFlow<SettingsCloudState> =
         combine(
@@ -55,6 +69,30 @@ class SettingsCloudViewModel(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
             initialValue = SettingsCloudState.Loading,
+        )
+
+    val uploadState: StateFlow<SettingsCloudUploadState> =
+        combine(
+            getCloudSearchMetadataUseCase(),
+            getCloudUploadMusicUseCase()
+        ) { searchMetadata, uploadMusic ->
+            when (uploadMusic) {
+                is FlowResult.Error -> SettingsCloudUploadState.Error(
+                    error = uploadMusic.message,
+                    searchMetadata = searchMetadata,
+                )
+                is FlowResult.Loading -> SettingsCloudUploadState.Uploading(
+                    progress = uploadMusic.progress ?: 0f,
+                    searchMetadata = searchMetadata,
+                )
+                is FlowResult.Success -> SettingsCloudUploadState.Idle(
+                    searchMetadata = searchMetadata,
+                )
+            }
+        }.stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = SettingsCloudUploadState.Idle(searchMetadata = false),
         )
 
     private val HOST_TEXT_FIELD = "HOST_TEXT_FIELD"
@@ -133,8 +171,13 @@ class SettingsCloudViewModel(
                         errorInSign.value = null
                         CoroutineScope(Dispatchers.IO).launch {
                             val syncData: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
-                            (syncData as? SoulResult.Success)?.result?.let {
-                                playbackManager.removeSongsFromPlayedPlaylist(it)
+                            (syncData as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                                playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
+                                feedbackPopUpManager.showFeedback(
+                                    feedback = strings.deleteMusicsFromCloudAutomatically(
+                                        total = deletedIds.size,
+                                    ),
+                                )
                             }
                         }
                     }
@@ -184,8 +227,13 @@ class SettingsCloudViewModel(
                                 syncDataWithCloudUseCase()
                             }
 
-                            (syncResult as? SoulResult.Success)?.result?.let {
-                                playbackManager.removeSongsFromPlayedPlaylist(it)
+                            (syncResult as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                                playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
+                                feedbackPopUpManager.showFeedback(
+                                    feedback = strings.deleteMusicsFromCloudAutomatically(
+                                        total = deletedIds.size,
+                                    )
+                                )
                             }
                         }
                     }
@@ -201,6 +249,21 @@ class SettingsCloudViewModel(
             setCurrentDataModeUSeCase(
                 dataMode = if (dataState.isCloudActivated) DataMode.Local else DataMode.Cloud,
             )
+        }
+    }
+
+    fun toggleSearchMetadata() {
+        CoroutineScope(Dispatchers.IO).launch {
+            setCloudSearchMetadataUseCase(
+                searchMetadata = !uploadState.value.searchMetadata,
+            )
+        }
+    }
+
+
+    fun uploadAllMusicToCloud() {
+        CoroutineScope(Dispatchers.IO).launch {
+            uploadAllMusicToCloudUseCase()
         }
     }
 }

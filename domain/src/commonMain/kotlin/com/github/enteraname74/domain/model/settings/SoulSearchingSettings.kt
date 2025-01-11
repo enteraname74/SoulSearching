@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
@@ -215,7 +214,7 @@ object SoulSearchingSettingsKeys {
         )
         val CURRENT_DATA_MODE = settingElementOf(
             key = "CURRENT_DATA_MODE",
-            defaultValue = DataMode.Local.value
+            defaultValue = DataMode.Local.value,
         )
     }
 
@@ -224,21 +223,25 @@ object SoulSearchingSettingsKeys {
             key = "CLOUD_HOST",
             defaultValue = "",
         )
-        val TOKEN = settingElementOf(
-            key = "CLOUD_TOKEN",
+        val ACCESS_TOKEN = settingElementOf(
+            key = "CLOUD_ACCESS_TOKEN",
+            defaultValue = "",
+        )
+        val REFRESH_TOKEN = settingElementOf(
+            key = "CLOUD_REFRESH_TOKEN",
             defaultValue = "",
         )
         val USERNAME = settingElementOf(
             key = "CLOUD_USERNAME",
             defaultValue = "",
         )
-        val PASSWORD = settingElementOf(
-            key = "CLOUD_PASSWORD",
-            defaultValue = "",
-        )
         val LAST_UPDATE_DATE = settingElementOf(
             key = "CLOUD_LAST_UPDATE_DATE",
             defaultValue = "",
+        )
+        val SEARCH_METADATA = settingElementOf(
+            key = "CLOUD_SEARCH_METADATA",
+            defaultValue = false,
         )
     }
 }

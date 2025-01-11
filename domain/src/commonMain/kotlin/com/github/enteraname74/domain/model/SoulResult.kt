@@ -1,9 +1,9 @@
 package com.github.enteraname74.domain.model
 
 sealed interface SoulResult<T> {
-    data class Success<T>(val result: T) : SoulResult<T> {
+    data class Success<T>(val data: T) : SoulResult<T> {
         override fun <R> map(mapData: (T) -> R): SoulResult<R> =
-            Success(mapData(this.result))
+            Success(mapData(this.data))
 
         override fun toSimpleResult(): SoulResult<Unit> = Success(Unit)
     }

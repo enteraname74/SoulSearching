@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.repository.AuthRepository
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
@@ -12,11 +13,11 @@ class AuthRepositoryImpl(
     private val authLocalDataSource: AuthLocalDataSource,
 ): AuthRepository {
     override suspend fun signIn(user: User): SoulResult<Unit> {
-        val result: SoulResult<String> = authRemoteDataSource.signIn(user)
+        val result: SoulResult<UserTokens> = authRemoteDataSource.signIn(user)
 
-        (result as? SoulResult.Success)?.result?.let { token ->
+        (result as? SoulResult.Success)?.data?.let { token ->
             authLocalDataSource.setUser(user)
-            authLocalDataSource.setToken(token)
+            authLocalDataSource.setUserTokens(token)
         }
 
         return result.toSimpleResult()
@@ -24,18 +25,23 @@ class AuthRepositoryImpl(
 
 
     override suspend fun logIn(user: User): SoulResult<Unit> {
-        val result: SoulResult<String> = authRemoteDataSource.logIn(user)
+        val result: SoulResult<UserTokens> = authRemoteDataSource.logIn(user)
 
-        (result as? SoulResult.Success)?.result?.let { token ->
+        (result as? SoulResult.Success)?.data?.let { token ->
             authLocalDataSource.setUser(user)
-            authLocalDataSource.setToken(token)
+            authLocalDataSource.setUserTokens(token)
         }
 
         return result.toSimpleResult()
     }
 
     override suspend fun logOut() {
-        authLocalDataSource.setToken("")
+        authLocalDataSource.setUserTokens(
+            UserTokens(
+                accessToken = "",
+                refreshToken = "",
+            )
+        )
         authLocalDataSource.setUser(null)
         authRemoteDataSource.logOut()
     }

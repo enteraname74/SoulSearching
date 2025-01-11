@@ -7,10 +7,15 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.json.Json
 
 object HttpClientNames {
     const val GENERIC = "Generic"
     const val CLOUD = "Cloud"
+}
+
+val JSON = Json {
+    ignoreUnknownKeys = true
 }
 
 fun HttpClient.clearToken() {

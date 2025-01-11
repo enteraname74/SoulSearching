@@ -150,6 +150,10 @@ object EnStrings : Strings {
     override val cloudUsername = "Username"
     override val cloudPassword = "Password"
     override val cloudLogOut = "Log out"
+    override val cloudUploadTitle = "Upload songs"
+    override val cloudUploadText = "Upload your songs to the cloud"
+    override val cloudServerMetadataSearch = "Use the cloud for settings the metadata of songs"
+    override val upload = "Upload"
 
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
@@ -258,6 +262,13 @@ object EnStrings : Strings {
             0 -> "No songs deleted"
             1 -> "1 song was deleted because it don't exist anymore on the device"
             else -> "$total songs were deleted because they don't exist anymore on the device"
+        }
+
+    override fun deleteMusicsFromCloudAutomatically(total: Int): String =
+        when (total) {
+            0 -> "No songs deleted"
+            1 -> "1 song was deleted because it don't exist anymore on the cloud"
+            else -> "$total songs were deleted because they don't exist anymore on the cloud"
         }
 
     override fun plays(total: Int): String =

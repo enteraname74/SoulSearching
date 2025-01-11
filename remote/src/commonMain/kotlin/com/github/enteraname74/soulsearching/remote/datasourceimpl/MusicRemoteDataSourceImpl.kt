@@ -4,13 +4,20 @@ import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
+import com.github.enteraname74.soulsearching.remote.model.JSON
 import com.github.enteraname74.soulsearching.remote.model.RemoteMusic
 import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.utils.io.streams.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.nio.file.Files
 import java.time.LocalDateTime
 import java.util.*
 
@@ -53,5 +60,42 @@ class MusicRemoteDataSourceImpl(
                 songs.map { it.toMusic() }
             }
         )
+    }
+
+    override suspend fun uploadMusicToCloud(
+        music: Music,
+        searchMetadata: Boolean,
+    ): SoulResult<Music?> {
+        val file: File = File(music.path).takeIf { it.exists() } ?: return SoulResult.Error(null)
+
+        val contentType = withContext(Dispatchers.IO) {
+            Files.probeContentType(file.toPath())
+        } ?: "application/octet-stream"
+
+        val result: RemoteResult<String> = client.safeRequest {
+            submitFormWithBinaryData(
+                url = ServerRoutes.Music.upload(searchMetadata),
+                formData = formData {
+                    append(
+                        key = "file".quote(),
+                        value = InputProvider(file.length()) {
+                            file.inputStream().asInput()
+                        },
+                        headers = Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=${file.name.quote()}")
+                            append(HttpHeaders.ContentType, contentType)
+                        }
+                    )
+                }
+            )
+        }
+
+        return result.toSoulResult {
+            try {
+                JSON.decodeFromString<RemoteMusic>(it).toMusic()
+            } catch (_: Exception) {
+                null
+            }
+        }
     }
 }

@@ -79,7 +79,9 @@ val domainModule = module {
     singleOf(::SignUserUseCase)
 
     // Cloud
+    singleOf(::GetCloudSearchMetadataUseCase)
     singleOf(::ResetAndSyncDataWithCloudUseCase)
+    singleOf(::SetCloudSearchMetadataUseCase)
     singleOf(::SyncDataWithCloudUseCase)
 
     // Folder
@@ -109,6 +111,7 @@ val domainModule = module {
     singleOf(::GetAllMusicFromQuickAccessUseCase)
     singleOf(::GetAllMusicsSortedUseCase)
     singleOf(::GetAllMusicUseCase)
+    singleOf(::GetCloudUploadMusicUseCase)
     singleOf(::GetMusicUseCase)
     singleOf(::IsMusicAlreadySavedUseCase)
     singleOf(::IsMusicInFavoritePlaylistUseCase)
@@ -116,6 +119,7 @@ val domainModule = module {
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)
+    singleOf(::UploadAllMusicToCloudUseCase)
     singleOf(::UpsertAllMusicsUseCase)
     singleOf(::UpsertMusicUseCase)
 

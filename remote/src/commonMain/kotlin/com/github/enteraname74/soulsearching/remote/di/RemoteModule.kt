@@ -1,15 +1,19 @@
 package com.github.enteraname74.soulsearching.remote.di
 
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.AuthRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.ext.toBearerTokens
 import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
+import com.github.enteraname74.soulsearching.remote.model.JSON
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
@@ -22,12 +26,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val remoteModule = module {
+
+
+
     single(named(HttpClientNames.GENERIC)) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
+                json(JSON)
             }
         }
     }
@@ -35,9 +40,11 @@ val remoteModule = module {
     single(named(HttpClientNames.CLOUD)) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
+                json(JSON)
+            }
+
+            engine {
+                requestTimeout = 0L
             }
 
             install(Auth) {
@@ -46,24 +53,16 @@ val remoteModule = module {
 
                 bearer {
                     loadTokens {
-                        val token = cloudLocalDataSource.getToken()
-
-                        BearerTokens(
-                            accessToken = token,
-                            refreshToken = token,
-                        )
+                        cloudLocalDataSource.getUserToken().toBearerTokens()
                     }
 
                     refreshTokens {
-                        val currentUser = cloudLocalDataSource.getUser()
+                        val result: SoulResult<UserTokens> = authRemoteDataSource.refreshTokens()
 
-                        authRemoteDataSource.logIn(currentUser)
-                        val updatedToken = cloudLocalDataSource.getToken()
-
-                        BearerTokens(
-                            accessToken = updatedToken,
-                            refreshToken = updatedToken,
-                        )
+                        (result as? SoulResult.Success)?.data?.let {
+                            cloudLocalDataSource.setUserToken(userToken = it)
+                        }
+                        cloudLocalDataSource.getUserToken().toBearerTokens()
                     }
                 }
             }

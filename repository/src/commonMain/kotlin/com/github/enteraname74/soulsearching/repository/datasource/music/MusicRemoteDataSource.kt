@@ -15,4 +15,9 @@ interface MusicRemoteDataSource {
         maxPerPage: Int,
         page: Int,
     ): SoulResult<List<Music>>
+
+    suspend fun uploadMusicToCloud(
+        music: Music,
+        searchMetadata: Boolean,
+    ): SoulResult<Music?>
 }

@@ -42,6 +42,7 @@ internal fun DataImage(
             }
         },
         onError = {
+            println("ERROR: $it")
             onSuccess?.let {
                 previousSavedImage = null
                 it(null)

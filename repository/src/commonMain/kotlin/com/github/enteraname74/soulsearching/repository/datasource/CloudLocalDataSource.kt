@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -12,6 +13,16 @@ class CloudLocalDataSource(
         settings.get(SoulSearchingSettingsKeys.Cloud.LAST_UPDATE_DATE).takeIf { it.isNotEmpty() }?.let {
             runCatching { LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }.getOrNull()
         }
+
+    fun getSearchMetadata(): Flow<Boolean> =
+        settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.SEARCH_METADATA)
+
+    fun setSearchMetadata(searchMetadata: Boolean) {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Cloud.SEARCH_METADATA.key,
+            value = searchMetadata,
+        )
+    }
 
     fun updateLastUpdateDate() {
         settings.set(

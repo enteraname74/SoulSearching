@@ -16,6 +16,8 @@ object ServerRoutes : KoinComponent {
             get() = "$HOST$BASE_ROUTE/sign"
         val LOG_IN: String
             get() = "$HOST$BASE_ROUTE/login"
+        val REFRESH_TOKENS: String
+            get() = "$HOST$BASE_ROUTE/refreshTokens"
     }
 
     object Music : Route {
@@ -23,6 +25,10 @@ object ServerRoutes : KoinComponent {
 
         val CHECK: String
             get() = "$HOST$BASE_ROUTE/check"
+
+        fun upload(
+            searchMetadata: Boolean
+        ): String = "$HOST$BASE_ROUTE/upload?searchMetadata=$searchMetadata"
 
         fun all(
             after: LocalDateTime?,

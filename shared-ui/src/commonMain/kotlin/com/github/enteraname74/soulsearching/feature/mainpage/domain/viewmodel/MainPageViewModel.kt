@@ -362,7 +362,15 @@ class MainPageViewModel(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            syncDataWithCloudUseCase()
+            val result: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
+
+            (result as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                feedbackPopUpManager.showFeedback(
+                    feedback = strings.deleteMusicsFromCloudAutomatically(
+                        total = deletedIds.size,
+                    )
+                )
+            }
         }
     }
 

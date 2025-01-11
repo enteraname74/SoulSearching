@@ -163,6 +163,10 @@ interface Strings {
     val cloudUsername: String
     val cloudPassword: String
     val cloudLogOut: String
+    val cloudUploadTitle: String
+    val cloudUploadText: String
+    val cloudServerMetadataSearch: String
+    val upload: String
 
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
@@ -261,6 +265,11 @@ interface Strings {
      * Shows a text indicating that songs were deleted from the app automatically.
      */
     fun deletedMusicsAutomatically(total: Int): String
+
+    /**
+     * Shows a text indicating that songs were deleted from the app automatically because they no longer are on the cloud
+     */
+    fun deleteMusicsFromCloudAutomatically(total: Int): String
 
     /**
      * Shows a text indicating the total play of an element.
