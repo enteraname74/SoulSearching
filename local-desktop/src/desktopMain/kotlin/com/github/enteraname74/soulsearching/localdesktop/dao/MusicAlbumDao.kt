@@ -21,7 +21,7 @@ internal class MusicAlbumDao {
     suspend fun insertMusicIntoAlbum(musicAlbum: MusicAlbum) {
         flowTransactionOn {
             MusicAlbumTable.upsert {
-                if (musicAlbum.id != 0L) it[id] = musicAlbum.id
+                it[id] = musicAlbum.id
                 it[musicId] = musicAlbum.musicId
                 it[albumId] = musicAlbum.albumId
             }
@@ -31,7 +31,7 @@ internal class MusicAlbumDao {
     suspend fun upsertAll(musicAlbums: List<MusicAlbum>) {
         flowTransactionOn {
             MusicAlbumTable.batchUpsert(musicAlbums) {musicAlbum ->
-                if (musicAlbum.id != 0L) this[id] = musicAlbum.id
+                this[id] = musicAlbum.id
                 this[musicId] = musicAlbum.musicId
                 this[albumId] = musicAlbum.albumId
             }

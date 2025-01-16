@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.MusicPlaylist
-import java.util.UUID
+import java.util.*
 
 /**
  * Room representation of a MusicPlaylist.
@@ -27,7 +27,7 @@ import java.util.UUID
     ]
 )
 internal data class RoomMusicPlaylist(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey val id: String,
     @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val playlistId: UUID = UUID.randomUUID()
 )
@@ -36,7 +36,6 @@ internal data class RoomMusicPlaylist(
  * Converts a RoomMusicPlaylist to a MusicPlaylist.
  */
 internal fun RoomMusicPlaylist.toMusicPlaylist(): MusicPlaylist = MusicPlaylist(
-    id = id,
     musicId = musicId,
     playlistId = playlistId
 )

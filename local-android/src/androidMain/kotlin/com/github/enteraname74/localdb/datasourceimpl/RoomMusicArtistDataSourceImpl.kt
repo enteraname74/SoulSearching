@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusicArtist
 import com.github.enteraname74.localdb.model.toRoomMusicArtist
-import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistDataSource
 import java.util.*
 
 /**

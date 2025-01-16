@@ -2,14 +2,18 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicAlbum
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.MusicAlbumDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.MusicWithAlbumId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDateTime
 import java.util.*
-import kotlin.collections.ArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Repository for handling Music related work.
@@ -25,6 +29,8 @@ import kotlin.collections.ArrayList
 class MusicRepositoryImpl(
     private val musicLocalDataSource: MusicLocalDataSource,
     private val musicRemoteDataSource: MusicRemoteDataSource,
+    private val musicAlbumDataSource: MusicAlbumDataSource,
+    private val artistLocalDataSource: ArtistLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
 ) : MusicRepository {
@@ -89,7 +95,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.deleteAll(idsToDelete)
 
         while(true) {
-            val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchSongsFromCloud(
+            val songsFromCloud: SoulResult<List<MusicWithAlbumId>> = musicRemoteDataSource.fetchSongsFromCloud(
                 after = lastUpdateDate,
                 maxPerPage = MAX_SONGS_PER_PAGE,
                 page = currentPage,
@@ -108,23 +114,36 @@ class MusicRepositoryImpl(
                         return SoulResult.Success(idsToDelete)
                     }
                     currentPage += 1
-                    musicLocalDataSource.upsertAll(musics = songsFromCloud.data)
+                    musicLocalDataSource.upsertAll(
+                        musics = songsFromCloud.data.map { it.music },
+                    )
+                    musicAlbumDataSource.upsertAll(
+                        musicAlbums = songsFromCloud.data.map {
+                            MusicAlbum(
+
+                            )
+                        }
+                    )
                 }
             }
         }
     }
 
     override suspend fun uploadAllMusicToCloud(): SoulResult<Unit> =
-        handleFlowResultOn(flow = uploadFlow) { _ ->
+        handleFlowResultOn(flow = uploadFlow) { progressFunc ->
+            val total = AtomicInteger(0)
             val allLocalSongs: List<Music> = musicLocalDataSource.getAll(DataMode.Local).first()
 
             val jobs = ArrayList<Job>()
 
             allLocalSongs.forEach { music ->
                 val job = CoroutineScope(Dispatchers.IO).launch {
-                    val uploadResult: SoulResult<Music?> = musicRemoteDataSource.uploadMusicToCloud(
+                    val uploadResult: SoulResult<MusicWithAlbumId?> = musicRemoteDataSource.uploadMusicToCloud(
                         music = music,
                         searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
+                        artists = artistLocalDataSource.getArtistsOfMusic(
+                            musicId = music.musicId,
+                        ).first().map { it.artistName }
                     )
 
                     println("MusicRepositoryImpl -- uploadAllMusicToCloud -- got result for ${music.name}: $uploadResult")
@@ -134,7 +153,15 @@ class MusicRepositoryImpl(
                             /*no-op*/
                         }
                         is SoulResult.Success -> {
-                            uploadResult.data?.let { musicLocalDataSource.upsert(it) }
+                            uploadResult.data?.let {
+                                total.getAndIncrement()
+                                progressFunc(
+                                    total.get().toFloat() / allLocalSongs.size
+                                )
+                                musicLocalDataSource.upsert(
+                                    music = it.music,
+                                )
+                            }
                         }
                     }
                 }

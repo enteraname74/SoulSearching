@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.localdesktop
 import com.github.enteraname74.domain.util.AppEnvironment
 import com.github.enteraname74.soulsearching.localdesktop.migration.ExposedMigrationHandler
 import com.github.enteraname74.soulsearching.localdesktop.migration.impl.Migration16To17
+import com.github.enteraname74.soulsearching.localdesktop.migration.impl.Migration18To19
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
@@ -17,7 +18,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object AppDatabase {
 
     private val migrationHandler = ExposedMigrationHandler(
-        Migration16To17()
+        Migration16To17(),
+        Migration18To19,
     )
 
     /**

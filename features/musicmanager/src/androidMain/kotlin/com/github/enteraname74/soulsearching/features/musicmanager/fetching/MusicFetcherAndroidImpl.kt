@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
@@ -60,6 +61,7 @@ internal class MusicFetcherAndroidImpl(
                 path = this.getString(4),
                 folder = File(this.getString(4)).parent ?: "",
                 cover = Cover.CoverFile(initialCoverPath = this.getString(4)),
+                dataMode = DataMode.Local,
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

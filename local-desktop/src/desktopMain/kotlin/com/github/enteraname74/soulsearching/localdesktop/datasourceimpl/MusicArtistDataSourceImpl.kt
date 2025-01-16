@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.soulsearching.localdesktop.dao.MusicArtistDao
-import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistDataSource
 import java.util.*
 
 

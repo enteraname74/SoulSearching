@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.*
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistDataSource
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

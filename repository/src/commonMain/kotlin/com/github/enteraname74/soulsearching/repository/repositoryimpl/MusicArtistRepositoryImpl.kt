@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistDataSource
 import java.util.*
 
 /**
