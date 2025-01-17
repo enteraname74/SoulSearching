@@ -27,7 +27,7 @@ import java.util.*
     ]
 )
 internal data class RoomAlbumArtist(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey val id: String,
     @ColumnInfo(index = true) val albumId: UUID = UUID.randomUUID(),
     @ColumnInfo(index = true) val artistId: UUID = UUID.randomUUID()
 )
@@ -36,7 +36,6 @@ internal data class RoomAlbumArtist(
  * Converts a RoomAlbumArtist to an AlbumArtist.
  */
 internal fun RoomAlbumArtist.toAlbumArtist(): AlbumArtist = AlbumArtist(
-    id = id,
     albumId = albumId,
     artistId = artistId
 )

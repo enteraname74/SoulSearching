@@ -10,91 +10,84 @@ object Migration18To19: Migration(18, 19) {
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN dataMode TEXT NOT NULL DEFAULT '${DataMode.Local.value}'")
     }
 
-    private fun musicAlbumMigration(db: SupportSQLiteDatabase) {
+    private fun mxnTableMigration(
+        tableName: String,
+        mColumnName: String,
+        mTableName: String,
+        nColumnName: String,
+        nTableName: String,
+        db: SupportSQLiteDatabase,
+    ) {
         // Step 1: Create the new table with the correct schema
         db.execSQL("""
-            CREATE TABLE RoomMusicAlbum_new (
+            CREATE TABLE ${tableName}_new (
                 id TEXT PRIMARY KEY NOT NULL,
-                musicId BLOB NOT NULL,
-                albumId BLOB NOT NULL,
-                FOREIGN KEY (musicId) REFERENCES RoomMusic(musicId) ON DELETE CASCADE ON UPDATE NO ACTION,
-                FOREIGN KEY (albumId) REFERENCES RoomAlbum(albumId) ON DELETE CASCADE ON UPDATE NO ACTION
+                $mColumnName BLOB NOT NULL,
+                $nColumnName BLOB NOT NULL,
+                FOREIGN KEY (${mColumnName}) REFERENCES ${mTableName}(${mColumnName}) ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (${nColumnName}) REFERENCES ${nTableName}(${nColumnName}) ON DELETE CASCADE ON UPDATE NO ACTION
             )
         """)
 
         // Step 2: Populate the new table with the concatenated id
         db.execSQL("""
-            INSERT INTO RoomMusicAlbum_new (id, musicId, albumId)
-            SELECT hex(musicId) || hex(albumId), musicId, albumId FROM RoomMusicAlbum
+            INSERT INTO ${tableName}_new (id, ${mColumnName}, albumId)
+            SELECT hex(${mColumnName}) || hex(${nColumnName}), ${mColumnName}, $nColumnName FROM $tableName
         """)
 
         // Step 3: Drop the old table
-        db.execSQL("DROP TABLE RoomMusicAlbum")
+        db.execSQL("DROP TABLE $tableName")
 
         // Step 4: Rename the new table to the original name
-        db.execSQL("ALTER TABLE RoomMusicAlbum_new RENAME TO RoomMusicAlbum")
+        db.execSQL("ALTER TABLE ${tableName}_new RENAME TO $tableName")
 
         // Step 5: Recreate indices for the new table
-        db.execSQL("CREATE INDEX index_RoomMusicAlbum_musicId ON RoomMusicAlbum(musicId)")
-        db.execSQL("CREATE INDEX index_RoomMusicAlbum_albumId ON RoomMusicAlbum(albumId)")
+        db.execSQL("CREATE INDEX index_${tableName}_${mColumnName} ON ${tableName}(${nColumnName})")
+        db.execSQL("CREATE INDEX index_${tableName}${nColumnName} ON ${tableName}(${nColumnName})")
+    }
+
+    private fun musicAlbumMigration(db: SupportSQLiteDatabase) {
+        mxnTableMigration(
+            tableName = "RoomMusicAlbum",
+            mColumnName = "musicId",
+            mTableName = "RoomMusic",
+            nColumnName = "albumId",
+            nTableName = "RoomAlbum",
+            db = db,
+        )
     }
 
     private fun musicArtistMigration(db: SupportSQLiteDatabase) {
-        // Step 1: Create the new table with the correct schema
-        db.execSQL("""
-            CREATE TABLE RoomMusicArtist_new (
-                id TEXT PRIMARY KEY NOT NULL,
-                musicId BLOB NOT NULL,
-                artistId BLOB NOT NULL,
-                FOREIGN KEY (musicId) REFERENCES RoomMusic(musicId) ON DELETE CASCADE ON UPDATE NO ACTION,
-                FOREIGN KEY (artistId) REFERENCES RoomArtist(artistId) ON DELETE CASCADE ON UPDATE NO ACTION
-            )
-        """)
-
-        // Step 2: Populate the new table with the concatenated id
-        db.execSQL("""
-            INSERT INTO RoomMusicArtist_new (id, musicId, artistId)
-            SELECT musicId || artistId, musicId, artistId FROM RoomMusicArtist
-        """)
-
-        // Step 3: Drop the old table
-        db.execSQL("DROP TABLE RoomMusicArtist")
-
-        // Step 4: Rename the new table to the original name
-        db.execSQL("ALTER TABLE RoomMusicArtist_new RENAME TO RoomMusicArtist")
-
-        // Step 5: Recreate indices for the new table
-        db.execSQL("CREATE INDEX index_RoomMusicArtist_musicId ON RoomMusicArtist(musicId)")
-        db.execSQL("CREATE INDEX index_RoomMusicArtist_artistId ON RoomMusicArtist(artistId)")
+        mxnTableMigration(
+            tableName = "RoomMusicArtist",
+            mColumnName = "musicId",
+            mTableName = "RoomMusic",
+            nColumnName = "artistId",
+            nTableName = "RoomArtist",
+            db = db,
+        )
     }
 
     private fun musicPlaylistMigration(db: SupportSQLiteDatabase) {
-        // Step 1: Create the new table with the correct schema
-        db.execSQL("""
-            CREATE TABLE RoomMusicPlaylist_new (
-                id TEXT PRIMARY KEY NOT NULL,
-                musicId BLOB NOT NULL,
-                playlistId BLOB NOT NULL,
-                FOREIGN KEY (musicId) REFERENCES RoomMusic(musicId) ON DELETE CASCADE ON UPDATE NO ACTION,
-                FOREIGN KEY (playlistId) REFERENCES RoomPlaylist(playlistId) ON DELETE CASCADE ON UPDATE NO ACTION
-            )
-        """)
+        mxnTableMigration(
+            tableName = "RoomMusicPlaylist",
+            mColumnName = "musicId",
+            mTableName = "RoomMusic",
+            nColumnName = "playlistId",
+            nTableName = "RoomPlaylist",
+            db = db,
+        )
+    }
 
-        // Step 2: Populate the new table with the concatenated id
-        db.execSQL("""
-            INSERT INTO RoomMusicPlaylist_new (id, musicId, playlistId)
-            SELECT musicId || playlistId, musicId, playlistId FROM RoomMusicPlaylist
-        """)
-
-        // Step 3: Drop the old table
-        db.execSQL("DROP TABLE RoomMusicPlaylist")
-
-        // Step 4: Rename the new table to the original name
-        db.execSQL("ALTER TABLE RoomMusicPlaylist_new RENAME TO RoomMusicPlaylist")
-
-        // Step 5: Recreate indices for the new table
-        db.execSQL("CREATE INDEX index_RoomMusicPlaylist_musicId ON RoomMusicPlaylist(musicId)")
-        db.execSQL("CREATE INDEX index_RoomMusicPlaylist_playlistId ON RoomMusicPlaylist(playlistId)")
+    private fun albumArtistMigration(db: SupportSQLiteDatabase) {
+        mxnTableMigration(
+            tableName = "RoomAlbumArtist",
+            mColumnName = "albumId",
+            mTableName = "RoomAlbum",
+            nColumnName = "artistId",
+            nTableName = "RoomArtist",
+            db = db,
+        )
     }
 
     override fun migrate(db: SupportSQLiteDatabase) {
@@ -104,6 +97,7 @@ object Migration18To19: Migration(18, 19) {
             musicAlbumMigration(db = db)
             musicArtistMigration(db = db)
             musicPlaylistMigration(db = db)
+            albumArtistMigration(db = db)
         } catch (e: Exception) {
             println("DATABASE -- Error while migrating fro 18 to 19: ${e.message}")
         }
