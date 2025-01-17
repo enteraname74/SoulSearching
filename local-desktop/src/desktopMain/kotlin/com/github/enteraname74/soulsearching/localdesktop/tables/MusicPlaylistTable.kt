@@ -6,14 +6,18 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.PlaylistTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
 import java.util.*
 
 /**
  * Table for storing MusicPlaylists.
  */
-internal object MusicPlaylistTable: LongIdTable() {
+internal object MusicPlaylistTable: Table() {
+    val id = varchar("id", 256)
     val musicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE)
     val playlistId = reference("playlistId", PlaylistTable.id, onDelete = ReferenceOption.CASCADE)
+
+    override val primaryKey: PrimaryKey = PrimaryKey(MusicArtistTable.id)
 }
 
 /**
@@ -22,7 +26,6 @@ internal object MusicPlaylistTable: LongIdTable() {
 internal fun ResultRow.toMusicPlaylist(): MusicPlaylist? =
     try {
         MusicPlaylist(
-            id = this[MusicPlaylistTable.id].value,
             musicId = this[MusicPlaylistTable.musicId].value,
             playlistId = this[MusicPlaylistTable.playlistId].value
         )

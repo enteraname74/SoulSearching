@@ -31,7 +31,7 @@ object Migration18To19: Migration(18, 19) {
 
         // Step 2: Populate the new table with the concatenated id
         db.execSQL("""
-            INSERT INTO ${tableName}_new (id, ${mColumnName}, albumId)
+            INSERT INTO ${tableName}_new (id, ${mColumnName}, ${nColumnName})
             SELECT hex(${mColumnName}) || hex(${nColumnName}), ${mColumnName}, $nColumnName FROM $tableName
         """)
 

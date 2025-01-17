@@ -18,6 +18,7 @@ abstract class ExposedMigration(
             migrate()
         } catch (e: Exception) {
             println("EXPOSED MIGRATION -- Error while migrating from $forVersion to $toVersion: ${e.message}")
+            rollback()
         }
         settings.set(
             key = SoulSearchingSettingsKeys.System.CURRENT_DB_VERSION.key,

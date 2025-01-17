@@ -44,11 +44,6 @@ class ApplicationWindow: Screen {
     @Composable
     override fun Content() {
         val applicationViewModel: ApplicationViewModel = koinScreenModel()
-        val mainPageViewModel: MainPageViewModel = koinScreenModel()
-        val playerViewModel: PlayerViewModel = koinScreenModel()
-
-        val loadingManager: LoadingManager = injectElement()
-        val isLoadingManagerLoading by loadingManager.state.collectAsState()
 
         val state: ApplicationState by applicationViewModel.state.collectAsState()
 
@@ -57,6 +52,12 @@ class ApplicationWindow: Screen {
                 MigrationScreen()
             }
             ApplicationState.Data -> {
+                val mainPageViewModel: MainPageViewModel = koinScreenModel()
+                val playerViewModel: PlayerViewModel = koinScreenModel()
+
+                val loadingManager: LoadingManager = injectElement()
+                val isLoadingManagerLoading by loadingManager.state.collectAsState()
+
                 DataView(
                     isLoadingManagerLoading = isLoadingManagerLoading,
                     mainPageViewModel = mainPageViewModel,
