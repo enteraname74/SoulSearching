@@ -3,7 +3,10 @@ package com.github.enteraname74.soulsearching.features.filemanager.usecase
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.GetDuplicatedArtistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -11,14 +14,14 @@ import kotlinx.coroutines.flow.firstOrNull
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicRepository: MusicRepository,
     private val musicArtistRepository: MusicArtistRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
-        val legacyArtist: Artist = artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
+        val legacyArtist: Artist =
+            artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
 
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
@@ -54,7 +57,7 @@ class UpdateArtistUseCase(
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist.copy(
                 isInQuickAccess = newArtistWithMusicsInformation.artist.isInQuickAccess ||
-                possibleDuplicatedArtist?.isInQuickAccess == true
+                        possibleDuplicatedArtist?.isInQuickAccess == true
             )
         )
     }
@@ -84,12 +87,13 @@ class UpdateArtistUseCase(
                 // The album has a duplicate!
                 // We redirect the album's songs to the one with the actual artist id.
                 for (music in albumWithMusicToUpdate!!.musics) {
-                    musicAlbumRepository.updateAlbumOfMusic(
-                        musicId = music.musicId,
-                        newAlbumId = legacyAlbumsOfArtist.find {
-                            (it.album.albumName == entry.key)
-                                    && (it.artist!!.artistId == artist.artistId)
-                        }!!.album.albumId
+                    musicRepository.upsert(
+                        music = music.copy(
+                            albumId = legacyAlbumsOfArtist.find {
+                                (it.album.albumName == entry.key)
+                                        && (it.artist!!.artistId == artist.artistId)
+                            }!!.album.albumId
+                        )
                     )
                 }
                 // We delete the previous album
@@ -98,9 +102,10 @@ class UpdateArtistUseCase(
                 )
             } else if (albumWithMusicToUpdate != null) {
                 // Else, we update the artist's id.
-                albumArtistRepository.update(
-                    albumId = albumWithMusicToUpdate.album.albumId,
-                    newArtistId = artist.artistId
+                albumRepository.upsert(
+                    album = albumWithMusicToUpdate.album.copy(
+                        artistId = artist.artistId,
+                    )
                 )
             }
         }

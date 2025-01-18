@@ -43,6 +43,11 @@ interface MusicRepository {
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
 
     /**
+     * Replace an album by another one.
+     */
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+
+    /**
      * Retrieves all the songs of the user from the Cloud.
      */
     suspend fun syncWithCloud(): SoulResult<List<UUID>>

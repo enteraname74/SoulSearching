@@ -11,7 +11,7 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
  * Room representation of an AlbumWithMusics.
  */
 internal data class RoomAlbumWithMusics(
-    @Embedded val roomAlbum: RoomAlbum = RoomAlbum(),
+    @Embedded val roomAlbum: RoomAlbum,
     @Relation(
         parentColumn = "albumId",
         entityColumn = "musicId",

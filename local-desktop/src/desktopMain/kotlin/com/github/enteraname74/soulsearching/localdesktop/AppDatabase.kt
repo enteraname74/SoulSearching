@@ -35,11 +35,9 @@ object AppDatabase {
         migrationHandler.doMigrations()
         transaction {
             SchemaUtils.createMissingTablesAndColumns(
-                AlbumArtistTable,
                 AlbumTable,
                 ArtistTable,
                 FolderTable,
-                MusicAlbumTable,
                 MusicArtistTable,
                 MusicPlaylistTable,
                 MusicTable,

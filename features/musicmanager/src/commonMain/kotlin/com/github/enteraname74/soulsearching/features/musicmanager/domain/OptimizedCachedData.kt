@@ -15,17 +15,13 @@ data class OptimizedCachedData(
     var musicsByPath: HashMap<String, Music> = hashMapOf(),
     var artistsByName: HashMap<String, Artist> = hashMapOf(),
     var albumsByInfo: HashMap<AlbumInformation, Album> = hashMapOf(),
-    var albumArtists: ArrayList<AlbumArtist> = arrayListOf(),
     var musicArtists: ArrayList<MusicArtist> = arrayListOf(),
-    var musicAlbums: ArrayList<MusicAlbum> = arrayListOf(),
 ) {
     fun clear() {
         musicsByPath.clear()
         artistsByName.clear()
         albumsByInfo.clear()
-        albumArtists.clear()
         musicArtists.clear()
-        musicAlbums.clear()
     }
 
     companion object : KoinComponent {

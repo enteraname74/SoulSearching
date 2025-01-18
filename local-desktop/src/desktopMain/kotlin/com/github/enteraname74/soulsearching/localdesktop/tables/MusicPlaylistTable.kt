@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable.index
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.PlaylistTable
 import org.jetbrains.exposed.dao.id.LongIdTable
@@ -14,8 +15,12 @@ import java.util.*
  */
 internal object MusicPlaylistTable: Table() {
     val id = varchar("id", 256)
-    val musicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE)
-    val playlistId = reference("playlistId", PlaylistTable.id, onDelete = ReferenceOption.CASCADE)
+    val musicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE).index(
+        customIndexName = "index_MusicPlaylist_musicId",
+    )
+    val playlistId = reference("playlistId", PlaylistTable.id, onDelete = ReferenceOption.CASCADE).index(
+        customIndexName = "index_MusicPlaylist_playlistId",
+    )
 
     override val primaryKey: PrimaryKey = PrimaryKey(MusicArtistTable.id)
 }

@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.springframework.security.crypto.keygen.KeyGenerators.string
@@ -25,6 +26,9 @@ internal object MusicTable : UUIDTable() {
     val isInQuickAccess = bool("isInQuickAccess")
     val isHidden = bool("isHidden")
     val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
+    val albumId = reference("albumId", AlbumTable.id, ReferenceOption.CASCADE).index(
+        customIndexName = "index_MusicTable_albumId"
+    )
 }
 
 private fun ResultRow.buildCover(): Cover =
@@ -57,7 +61,8 @@ internal fun ResultRow.toMusic(): Music? =
             nbPlayed = this[MusicTable.nbPlayed],
             isInQuickAccess = this[MusicTable.isInQuickAccess],
             isHidden = this[MusicTable.isHidden],
-            dataMode = DataMode.fromString(this[MusicTable.dataMode]) ?: DataMode.Local
+            dataMode = DataMode.fromString(this[MusicTable.dataMode]) ?: DataMode.Local,
+            albumId = this[MusicTable.albumId].value,
         )
     } catch (e: Exception) {
         null

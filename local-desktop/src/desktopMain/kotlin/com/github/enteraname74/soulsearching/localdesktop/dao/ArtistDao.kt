@@ -24,7 +24,6 @@ import java.util.*
 
 
 internal class ArtistDao(
-    private val albumArtistDao: AlbumArtistDao,
     private val musicDao: MusicDao,
 ) {
     suspend fun upsert(artist: Artist) {
@@ -63,16 +62,6 @@ internal class ArtistDao(
         flowTransactionOn {
             ArtistTable.deleteWhere { Op.build { id inList artistsIds } }
         }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun getArtistOfAlbum(albumId: UUID): Flow<Artist?> =
-        albumArtistDao.getArtistIdOfAlbum(albumId).flatMapLatest { artistId ->
-            if (artistId != null) {
-                getFromId(artistId)
-            } else {
-                flowOf(null)
-            }
     }
 
     fun getFromId(artistId: UUID): Flow<Artist?> = transaction {

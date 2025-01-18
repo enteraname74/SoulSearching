@@ -21,6 +21,7 @@ data class Music(
     override var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false,
     val dataMode: DataMode,
+    val albumId: UUID,
 ): QuickAccessible {
     val informationText: String = "$artist | $album"
 

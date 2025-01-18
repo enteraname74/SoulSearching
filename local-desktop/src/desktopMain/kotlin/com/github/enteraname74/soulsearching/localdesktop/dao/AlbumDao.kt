@@ -8,9 +8,8 @@ import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -29,6 +28,7 @@ internal class AlbumDao(
                 it[addedDate] = album.addedDate
                 it[nbPlayed] = album.nbPlayed
                 it[isInQuickAccess] = album.isInQuickAccess
+                it[artistId] = album.artistId
             }
         }
     }
@@ -36,12 +36,14 @@ internal class AlbumDao(
     suspend fun upsertAll(albums: List<Album>) {
         flowTransactionOn {
             AlbumTable.batchUpsert(albums) {
+                println("SAVING: ${it.albumName}, ARTIST ID: ${it.artistId}")
                 this[AlbumTable.id] = it.albumId
                 this[AlbumTable.albumName] = it.albumName
                 this[AlbumTable.coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId
                 this[AlbumTable.addedDate] = it.addedDate
                 this[AlbumTable.nbPlayed] = it.nbPlayed
                 this[AlbumTable.isInQuickAccess] = it.isInQuickAccess
+                this[AlbumTable.artistId] = it.artistId
             }
         }
     }
@@ -68,13 +70,9 @@ internal class AlbumDao(
     }
 
     fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = transaction {
-        AlbumTable.join(
-            otherTable = AlbumArtistTable,
-            joinType = JoinType.INNER,
-            onColumn = AlbumTable.id,
-            otherColumn = AlbumArtistTable.albumId,
-            additionalConstraint = { AlbumArtistTable.artistId eq artistId }
-        ).selectAll()
+        AlbumTable
+            .selectAll()
+            .where { AlbumTable.artistId eq artistId }
             .asFlow()
             .mapResultRow { it.toAlbum() }
             .map { it.filterNotNull() }
@@ -88,10 +86,15 @@ internal class AlbumDao(
             .mapSingleResultRow { it.toAlbum() }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?> = combine(
         getFromId(albumId),
         musicDao.getAllMusicFromAlbum(albumId),
-        artistDao.getArtistOfAlbum(albumId)
+        getFromId(albumId).flatMapLatest {
+            it?.let {
+                artistDao.getFromId(it.artistId)
+            } ?: flowOf(null)
+        }
     ) { album, songs, artist ->
         album?.let {
             AlbumWithMusics(
@@ -103,14 +106,9 @@ internal class AlbumDao(
     }
 
     fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> = transaction {
-        (AlbumTable.join(
-            otherTable = AlbumArtistTable,
-            joinType = JoinType.INNER,
-            onColumn = AlbumTable.id,
-            otherColumn = AlbumArtistTable.albumId,
-            additionalConstraint = { AlbumArtistTable.artistId eq artistId }
-        ) fullJoin MusicAlbumTable fullJoin MusicTable fullJoin ArtistTable)
+        (AlbumTable fullJoin MusicTable fullJoin ArtistTable)
             .selectAll()
+            .where { AlbumTable.artistId eq artistId }
             .asFlow()
             .map { list ->
                 list.groupBy(
@@ -128,7 +126,7 @@ internal class AlbumDao(
     }
 
     fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> = transaction {
-        (AlbumTable fullJoin MusicAlbumTable fullJoin MusicTable fullJoin AlbumArtistTable fullJoin ArtistTable)
+        (AlbumTable fullJoin MusicTable fullJoin ArtistTable)
             .selectAll()
             .asFlow()
             .map { list ->

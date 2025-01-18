@@ -43,4 +43,9 @@ interface MusicLocalDataSource {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    /**
+     * Replace an album by another one.
+     */
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 }

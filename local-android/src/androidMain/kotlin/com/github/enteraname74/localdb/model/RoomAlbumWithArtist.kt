@@ -9,11 +9,10 @@ import com.github.enteraname74.domain.model.AlbumWithArtist
  * Room representation of an AlbumWithArtist.
  */
 internal data class RoomAlbumWithArtist(
-    @Embedded val roomAlbum: RoomAlbum = RoomAlbum(),
+    @Embedded val roomAlbum: RoomAlbum,
     @Relation(
-        parentColumn = "albumId",
+        parentColumn = "artistId",
         entityColumn = "artistId",
-        associateBy = Junction(RoomAlbumArtist::class)
     )
     val roomArtist: RoomArtist? = RoomArtist()
 )

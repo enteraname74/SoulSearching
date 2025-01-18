@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.localdesktop.dao
 
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
@@ -11,6 +10,7 @@ import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverUrl
@@ -46,6 +46,7 @@ internal class MusicDao {
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
                 it[dataMode] = music.dataMode.value
+                it[albumId] = music.albumId
             }
         }
     }
@@ -67,6 +68,17 @@ internal class MusicDao {
                 this[isInQuickAccess] = music.isInQuickAccess
                 this[isHidden] = music.isHidden
                 this[dataMode] = music.dataMode.value
+                this[albumId] = music.albumId
+            }
+        }
+    }
+
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        flowTransactionOn {
+            MusicTable.update(
+                where = { albumId eq legacyAlbumId }
+            ) {
+                it[albumId] = newAlbumId
             }
         }
     }
@@ -116,14 +128,9 @@ internal class MusicDao {
     }
 
     fun getAllMusicFromAlbum(albumId: UUID): Flow<List<Music>> = transaction {
-        MusicTable.join(
-            otherTable = MusicAlbumTable,
-            joinType = JoinType.INNER,
-            onColumn = MusicTable.id,
-            otherColumn = MusicAlbumTable.musicId,
-            additionalConstraint = { (MusicAlbumTable.albumId eq albumId) and (isHidden eq false) }
-        )
+        MusicTable
             .selectAll()
+            .where { MusicTable.albumId eq albumId }
             .asFlow()
             .mapResultRow { it.toMusic() }
             .map { it.filterNotNull() }

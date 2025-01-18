@@ -1,16 +1,16 @@
-package com.github.enteraname74.domain.usecase.musicalbum
+package com.github.enteraname74.domain.usecase.music
 
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import java.util.*
 
 class UpdateMusicsAlbumUseCase(
-    private val musicAlbumRepository: MusicAlbumRepository
+    private val musicRepository: MusicRepository,
 ) {
     suspend operator fun invoke(
         newAlbumId: UUID,
         legacyAlbumId: UUID
     ) {
-        musicAlbumRepository.updateMusicsAlbum(
+        musicRepository.updateMusicsAlbum(
             newAlbumId = newAlbumId,
             legacyAlbumId = legacyAlbumId,
         )

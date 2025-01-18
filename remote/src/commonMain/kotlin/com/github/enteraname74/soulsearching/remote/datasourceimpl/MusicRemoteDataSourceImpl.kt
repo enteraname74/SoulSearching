@@ -9,7 +9,6 @@ import com.github.enteraname74.soulsearching.remote.model.RemoteMusic
 import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
-import com.github.enteraname74.soulsearching.repository.model.MusicWithAlbumId
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -46,7 +45,7 @@ class MusicRemoteDataSourceImpl(
         after: LocalDateTime?,
         maxPerPage: Int,
         page: Int,
-    ): SoulResult<List<MusicWithAlbumId>> {
+    ): SoulResult<List<Music>> {
         val result: RemoteResult<List<RemoteMusic>> = client.safeRequest<List<RemoteMusic>> {
             get(
                 urlString = ServerRoutes.Music.all(
@@ -59,7 +58,7 @@ class MusicRemoteDataSourceImpl(
 
         return result.toSoulResult(
             mapData = { songs ->
-                songs.map { it.toMusicWithAlbumId() }
+                songs.map { it.toMusic() }
             }
         )
     }
@@ -68,7 +67,7 @@ class MusicRemoteDataSourceImpl(
         music: Music,
         searchMetadata: Boolean,
         artists: List<String>,
-    ): SoulResult<MusicWithAlbumId?> {
+    ): SoulResult<Music?> {
         val file: File = File(music.path).takeIf { it.exists() } ?: return SoulResult.Error(null)
 
         val contentType = withContext(Dispatchers.IO) {
@@ -108,7 +107,7 @@ class MusicRemoteDataSourceImpl(
 
         return result.toSoulResult {
             try {
-                JSON.decodeFromString<RemoteMusic>(it).toMusicWithAlbumId()
+                JSON.decodeFromString<RemoteMusic>(it).toMusic()
             } catch (_: Exception) {
                 null
             }

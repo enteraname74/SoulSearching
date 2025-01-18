@@ -49,4 +49,11 @@ internal class MusicLocalDataSourceImpl(
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDao.getAllMusicFromAlbum(albumId).first()
+
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        musicDao.updateMusicsAlbum(
+            newAlbumId = newAlbumId,
+            legacyAlbumId = legacyAlbumId,
+        )
+    }
 }

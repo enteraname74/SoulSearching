@@ -21,8 +21,6 @@ class ExposedMigrationHandler(
             println("EXPOSED MIGRATION -- Current DB version is $currentDbVersion")
             val migration: ExposedMigration? = migrations.find { it.forVersion == currentDbVersion }
 
-            println("EXPOSED MIGRATION -- Got migration to do: $migration")
-
             if (migration == null) {
                 // We skip it
                 settings.set(
@@ -30,6 +28,7 @@ class ExposedMigrationHandler(
                     value = currentDbVersion + 1,
                 )
             } else {
+                println("EXPOSED MIGRATION -- Got migration to do: $migration")
                 migration.doMigration()
             }
             currentDbVersion = settings.get(

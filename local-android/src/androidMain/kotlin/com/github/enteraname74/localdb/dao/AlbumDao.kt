@@ -6,7 +6,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomAlbum
-import com.github.enteraname74.localdb.model.RoomAlbumWithArtist
 import com.github.enteraname74.localdb.model.RoomAlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -29,11 +28,11 @@ internal interface AlbumDao {
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
-    @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
     fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
+    @Query("SELECT * FROM RoomAlbum WHERE artistId = :artistId")
     fun getAllAlbumsWithMusicsFromArtist(artistId: UUID): Flow<List<RoomAlbumWithMusics>>
 
     @Query("SELECT * FROM RoomAlbum ORDER BY albumName ASC")

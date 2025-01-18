@@ -11,6 +11,7 @@ import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateMusicUseCase(
@@ -164,7 +165,14 @@ class UpdateMusicUseCase(
             }
         }
 
-        musicRepository.upsert(newMusicInformation)
+        // We need to retrieve the albumId that may have changed from the previous operations.
+        musicRepository.upsert(
+            music = newMusicInformation.copy(
+                albumId = musicRepository.getFromId(
+                    legacyMusic.musicId
+                ).first()!!.albumId
+            )
+        )
         musicFileUpdater.updateMusic(music = newMusicInformation)
     }
 }

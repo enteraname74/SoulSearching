@@ -11,8 +11,6 @@ class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
     private val getDuplicatedAlbumUseCase: GetDuplicatedAlbumUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
@@ -44,11 +42,6 @@ class UpdateAlbumUseCase(
                     artist = newArtist
                 )
             }
-            // We update the link between the album and its artist.
-            albumArtistRepository.update(
-                albumId = newAlbumWithArtistInformation.album.albumId,
-                newArtistId = newArtist.artistId
-            )
             albumArtistToSave = newArtist
         }
 
@@ -72,7 +65,8 @@ class UpdateAlbumUseCase(
         // We adapt the quick access status with the potential duplicate album.
         val albumToSave = newAlbumWithArtistInformation.album.copy(
             isInQuickAccess = newAlbumWithArtistInformation.album.isInQuickAccess
-                    || duplicateAlbum?.isInQuickAccess == true
+                    || duplicateAlbum?.isInQuickAccess == true,
+            artistId = albumArtistToSave.artistId,
         )
 
         // Finally, we can update the information of the album.
@@ -150,14 +144,11 @@ class UpdateAlbumUseCase(
      */
     private suspend fun mergeAlbums(from: Album, to: Album) {
         // We update the link of the musics of the duplicated album to the new album id.
-        musicAlbumRepository.updateMusicsAlbum(
+        musicRepository.updateMusicsAlbum(
             newAlbumId = to.albumId,
             legacyAlbumId = from.albumId
         )
         // We remove the previous album.
-        albumArtistRepository.delete(
-            albumId = from.albumId
-        )
         albumRepository.delete(
             album = from
         )

@@ -10,8 +10,12 @@ import org.jetbrains.exposed.sql.Table
  */
 internal object MusicArtistTable: Table() {
     val id = varchar("id", 256)
-    val musicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE)
-    val artistId = reference("artistId", ArtistTable.id, onDelete = ReferenceOption.CASCADE)
+    val musicId = reference("musicId", MusicTable.id, onDelete = ReferenceOption.CASCADE).index(
+        customIndexName = "index_MusicArtist_musicId",
+    )
+    val artistId = reference("artistId", ArtistTable.id, onDelete = ReferenceOption.CASCADE).index(
+        customIndexName = "index_MusicArtist_artistId",
+    )
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

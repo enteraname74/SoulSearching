@@ -62,6 +62,7 @@ internal class MusicFetcherAndroidImpl(
                 folder = File(this.getString(4)).parent ?: "",
                 cover = Cover.CoverFile(initialCoverPath = this.getString(4)),
                 dataMode = DataMode.Local,
+                albumId = UUID.randomUUID(),
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

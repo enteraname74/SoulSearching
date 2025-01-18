@@ -1,20 +1,17 @@
 package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumArtist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.AlbumArtistRepository
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.MusicAlbumRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import java.util.*
 
 class UpdateAlbumOfMusicUseCase(
     private val albumRepository: AlbumRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicRepository: MusicRepository,
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
 ) {
@@ -29,7 +26,7 @@ class UpdateAlbumOfMusicUseCase(
         artistId: UUID,
         newAlbumName: String
     ) {
-        val legacyAlbum = getCorrespondingAlbumUseCase(musicId = legacyMusic.musicId)
+        val legacyAlbum = getCorrespondingAlbumUseCase(music = legacyMusic)
 
         var newMusicAlbum = getCorrespondingAlbumUseCase(
             albumName = newAlbumName,
@@ -42,23 +39,17 @@ class UpdateAlbumOfMusicUseCase(
                 albumName = newAlbumName,
                 cover = (legacyMusic.cover as? Cover.CoverFile)?.fileCoverId?.let {
                     Cover.CoverFile(fileCoverId = it)
-                }
+                },
+                artistId = artistId,
             )
             albumRepository.upsert(album = newMusicAlbum)
-
-            // We link the new album to the music's artist.
-            albumArtistRepository.upsert(
-                AlbumArtist(
-                    albumId = newMusicAlbum.albumId,
-                    artistId = artistId
-                )
-            )
         }
 
         // We update the album of the music.
-        musicAlbumRepository.updateAlbumOfMusic(
-            musicId = legacyMusic.musicId,
-            newAlbumId = newMusicAlbum.albumId
+        musicRepository.upsert(
+            music = legacyMusic.copy(
+                albumId = newMusicAlbum.albumId,
+            )
         )
 
         // We remove the legacy album if there is no music left in it.

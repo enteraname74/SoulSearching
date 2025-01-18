@@ -93,6 +93,7 @@ internal class MusicFetcherDesktopImpl(
                             initialCoverPath = file.path,
                         ),
                         dataMode = DataMode.Local,
+                        albumId = UUID.randomUUID(),
                     )
                     onMusicFetched(musicToAdd)
                 } catch (_: Exception) {

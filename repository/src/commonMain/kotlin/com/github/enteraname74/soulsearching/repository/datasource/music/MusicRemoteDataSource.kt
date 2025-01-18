@@ -2,9 +2,8 @@ package com.github.enteraname74.soulsearching.repository.datasource.music
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.soulsearching.repository.model.MusicWithAlbumId
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 interface MusicRemoteDataSource {
     suspend fun checkForDeletedSongs(
@@ -15,11 +14,11 @@ interface MusicRemoteDataSource {
         after: LocalDateTime?,
         maxPerPage: Int,
         page: Int,
-    ): SoulResult<List<MusicWithAlbumId>>
+    ): SoulResult<List<Music>>
 
     suspend fun uploadMusicToCloud(
         music: Music,
         searchMetadata: Boolean,
         artists: List<String>,
-    ): SoulResult<MusicWithAlbumId?>
+    ): SoulResult<Music?>
 }

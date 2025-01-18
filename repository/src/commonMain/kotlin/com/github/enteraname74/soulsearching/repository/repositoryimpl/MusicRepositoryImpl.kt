@@ -2,18 +2,15 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicAlbum
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.MusicAlbumDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
-import com.github.enteraname74.soulsearching.repository.model.MusicWithAlbumId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger
 class MusicRepositoryImpl(
     private val musicLocalDataSource: MusicLocalDataSource,
     private val musicRemoteDataSource: MusicRemoteDataSource,
-    private val musicAlbumDataSource: MusicAlbumDataSource,
     private val artistLocalDataSource: ArtistLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
@@ -82,6 +78,13 @@ class MusicRepositoryImpl(
             albumId = albumId
         )
 
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        musicLocalDataSource.updateMusicsAlbum(
+            newAlbumId = newAlbumId,
+            legacyAlbumId = legacyAlbumId,
+        )
+    }
+
     override suspend fun syncWithCloud(): SoulResult<List<UUID>> {
         var currentPage = 0
         val lastUpdateDate: LocalDateTime? = cloudLocalDataSource.getLastUpdateDate()
@@ -95,7 +98,7 @@ class MusicRepositoryImpl(
         musicLocalDataSource.deleteAll(idsToDelete)
 
         while(true) {
-            val songsFromCloud: SoulResult<List<MusicWithAlbumId>> = musicRemoteDataSource.fetchSongsFromCloud(
+            val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchSongsFromCloud(
                 after = lastUpdateDate,
                 maxPerPage = MAX_SONGS_PER_PAGE,
                 page = currentPage,
@@ -115,14 +118,7 @@ class MusicRepositoryImpl(
                     }
                     currentPage += 1
                     musicLocalDataSource.upsertAll(
-                        musics = songsFromCloud.data.map { it.music },
-                    )
-                    musicAlbumDataSource.upsertAll(
-                        musicAlbums = songsFromCloud.data.map {
-                            MusicAlbum(
-
-                            )
-                        }
+                        musics = songsFromCloud.data,
                     )
                 }
             }
@@ -138,7 +134,7 @@ class MusicRepositoryImpl(
 
             allLocalSongs.forEach { music ->
                 val job = CoroutineScope(Dispatchers.IO).launch {
-                    val uploadResult: SoulResult<MusicWithAlbumId?> = musicRemoteDataSource.uploadMusicToCloud(
+                    val uploadResult: SoulResult<Music?> = musicRemoteDataSource.uploadMusicToCloud(
                         music = music,
                         searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
                         artists = artistLocalDataSource.getArtistsOfMusic(
@@ -159,7 +155,7 @@ class MusicRepositoryImpl(
                                     total.get().toFloat() / allLocalSongs.size
                                 )
                                 musicLocalDataSource.upsert(
-                                    music = it.music,
+                                    music = it,
                                 )
                             }
                         }

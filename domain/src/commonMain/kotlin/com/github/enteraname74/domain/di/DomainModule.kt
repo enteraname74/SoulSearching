@@ -1,25 +1,34 @@
 package com.github.enteraname74.domain.di
 
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
 import com.github.enteraname74.domain.usecase.album.*
-import com.github.enteraname74.domain.usecase.albumartist.*
 import com.github.enteraname74.domain.usecase.artist.*
 import com.github.enteraname74.domain.usecase.auth.*
-import com.github.enteraname74.domain.usecase.cloud.*
+import com.github.enteraname74.domain.usecase.cloud.GetCloudSearchMetadataUseCase
+import com.github.enteraname74.domain.usecase.cloud.ResetAndSyncDataWithCloudUseCase
+import com.github.enteraname74.domain.usecase.cloud.SetCloudSearchMetadataUseCase
+import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
+import com.github.enteraname74.domain.usecase.cover.DeleteCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
+import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.folder.*
-import com.github.enteraname74.domain.usecase.cover.*
-import com.github.enteraname74.domain.usecase.lyrics.*
+import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
+import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
+import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.*
-import com.github.enteraname74.domain.usecase.musicalbum.*
-import com.github.enteraname74.domain.usecase.musicartist.*
-import com.github.enteraname74.domain.usecase.musicplaylist.*
+import com.github.enteraname74.domain.usecase.musicartist.GetAllMusicArtistUseCase
+import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
+import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
-import com.github.enteraname74.domain.usecase.quickaccess.*
-import com.github.enteraname74.domain.usecase.month.*
-import com.github.enteraname74.domain.usecase.musicfolder.*
-import com.github.enteraname74.domain.usecase.datamode.*
-import com.github.enteraname74.domain.usecase.release.*
+import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
 val domainModule = module {
     // USE CASES
@@ -44,11 +53,6 @@ val domainModule = module {
     singleOf(::UpdateAlbumNbPlayedUseCase)
     singleOf(::UpsertAlbumUseCase)
     singleOf(::UpsertAllAlbumsUseCase)
-
-    // AlbumArtist
-    singleOf(::GetAllAlbumArtistUseCase)
-    singleOf(::UpsertAlbumArtistUseCase)
-    singleOf(::UpsertAllAlbumArtistUseCase)
 
     // Artist
     singleOf(::DeleteAllArtistsUseCase)
@@ -115,20 +119,12 @@ val domainModule = module {
     singleOf(::GetMusicUseCase)
     singleOf(::IsMusicAlreadySavedUseCase)
     singleOf(::IsMusicInFavoritePlaylistUseCase)
-    singleOf(::SaveMusicAndCreateMissingArtistAndAlbumUseCase)
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)
     singleOf(::UploadAllMusicToCloudUseCase)
     singleOf(::UpsertAllMusicsUseCase)
     singleOf(::UpsertMusicUseCase)
-
-    // MusicAlbum
-    singleOf(::GetAlbumIdFromMusicIdUseCase)
-    singleOf(::GetAllMusicAlbumUseCase)
-    singleOf(::UpdateMusicsAlbumUseCase)
-    singleOf(::UpsertAllMusicAlbumUseCase)
-    singleOf(::UpsertMusicIntoAlbumUseCase)
 
     // MusicArtist
     singleOf(::GetAllMusicArtistUseCase)
