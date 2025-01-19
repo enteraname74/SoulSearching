@@ -36,7 +36,6 @@ internal class AlbumDao(
     suspend fun upsertAll(albums: List<Album>) {
         flowTransactionOn {
             AlbumTable.batchUpsert(albums) {
-                println("SAVING: ${it.albumName}, ARTIST ID: ${it.artistId}")
                 this[AlbumTable.id] = it.albumId
                 this[AlbumTable.albumName] = it.albumName
                 this[AlbumTable.coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId

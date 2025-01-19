@@ -14,14 +14,12 @@ internal data class RoomAlbumWithMusics(
     @Embedded val roomAlbum: RoomAlbum,
     @Relation(
         parentColumn = "albumId",
-        entityColumn = "musicId",
-        associateBy = Junction(RoomMusicAlbum::class)
+        entityColumn = "albumId",
     )
     val roomMusics : List<RoomMusic> = emptyList(),
     @Relation(
-        parentColumn = "albumId",
+        parentColumn = "artistId",
         entityColumn = "artistId",
-        associateBy = Junction(RoomAlbumArtist::class)
     )
     val roomArtist: RoomArtist? = RoomArtist()
 ) {

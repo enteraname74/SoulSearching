@@ -66,4 +66,10 @@ internal class RoomMusicLocalDataSourceImpl(
         appDatabase.musicDao.getAllMusicFromAlbum(
             albumId = albumId
         ).map { it.toMusic() }
+
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        appDatabase.musicDao.updateMusicsAlbum(
+            newAlbumId, legacyAlbumId
+        )
+    }
 }

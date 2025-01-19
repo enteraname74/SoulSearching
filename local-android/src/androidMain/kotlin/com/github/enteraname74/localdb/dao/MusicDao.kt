@@ -19,6 +19,9 @@ internal interface MusicDao {
     @Delete
     suspend fun delete(roomMusic : RoomMusic)
 
+    @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 

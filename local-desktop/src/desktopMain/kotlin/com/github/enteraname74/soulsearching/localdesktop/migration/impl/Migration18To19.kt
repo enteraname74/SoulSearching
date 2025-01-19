@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.localdesktop.migration.impl
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.soulsearching.localdesktop.migration.ExposedMigration
 import org.jetbrains.exposed.sql.Transaction
+import java.util.*
 
 object Migration18To19 : ExposedMigration(
     forVersion = 18,
@@ -19,10 +20,10 @@ object Migration18To19 : ExposedMigration(
             """
             CREATE TABLE ${tableName}_new (
                 id VARCHAR(256) PRIMARY KEY NOT NULL,
-                $mColumnName TEXT NOT NULL,
-                $nColumnName TEXT NOT NULL,
-                FOREIGN KEY (${mColumnName}) REFERENCES ${mTableName}(${mColumnName}) ON DELETE CASCADE,
-                FOREIGN KEY (${nColumnName}) REFERENCES ${nTableName}(${nColumnName}) ON DELETE CASCADE
+                $mColumnName UUID NOT NULL,
+                $nColumnName UUID NOT NULL,
+                FOREIGN KEY (${mColumnName}) REFERENCES ${mTableName}(id) ON DELETE CASCADE,
+                FOREIGN KEY (${nColumnName}) REFERENCES ${nTableName}(id) ON DELETE CASCADE
             )
         """
         )
@@ -61,20 +62,30 @@ object Migration18To19 : ExposedMigration(
                 isInQuickAccess INTEGER NOT NULL,
                 isHidden INTEGER NOT NULL,
                 dataMode TEXT NOT NULL,
-                albumId TEXT,
-                FOREIGN KEY (id) REFERENCES Album(id) ON DELETE CASCADE
+                albumId TEXT NOT NULL,
+                FOREIGN KEY (albumId) REFERENCES Album(id) ON DELETE CASCADE
             )
         """)
-
         exec("""
             INSERT INTO Music_new (
                 id, name, album, artist, coverId, coverUrl, duration, path, folder, addedDate, nbPlayed, isInQuickAccess, isHidden, dataMode, id
             )
             SELECT 
-                Music.id, Music.name, Music.album, Music.artist, 
-                Music.coverId, Music.coverUrl, Music.duration, Music.path, Music.folder, 
-                Music.addedDate, Music.nbPlayed, Music.isInQuickAccess, Music.isHidden, Music.dataMode,
-                (SELECT id FROM MusicAlbum WHERE Music.id = MusicAlbum.musicId)
+                Music.id, 
+                Music.name, 
+                Music.album, 
+                Music.artist, 
+                Music.coverId, 
+                Music.coverUrl, 
+                Music.duration, 
+                Music.path, 
+                Music.folder, 
+                Music.addedDate, 
+                Music.nbPlayed, 
+                Music.isInQuickAccess, 
+                Music.isHidden, 
+                Music.dataMode,
+                (SELECT albumId FROM MusicAlbum WHERE Music.id = MusicAlbum.musicId)
             FROM Music
         """)
 
@@ -84,6 +95,7 @@ object Migration18To19 : ExposedMigration(
         exec("CREATE INDEX index_Music_id ON Music(id)")
 
         exec("DROP TABLE MusicAlbum")
+
     }
     
     private fun Transaction.albumMigration() {
@@ -95,7 +107,7 @@ object Migration18To19 : ExposedMigration(
                 addedDate TEXT NOT NULL,
                 nbPlayed INTEGER NOT NULL,
                 isInQuickAccess INTEGER NOT NULL,
-                artistId TEXT,
+                artistId TEXT NOT NULL,
                 FOREIGN KEY (artistId) REFERENCES Artist(id) ON DELETE CASCADE
             )
         """)

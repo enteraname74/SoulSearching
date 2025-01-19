@@ -26,12 +26,6 @@ class MusicPersistence(
     private val settings: SoulSearchingSettings by inject()
 
     suspend fun saveAll() {
-        println("SAVE ALL CALLED")
-
-        optimizedCachedData.albumsByInfo.forEach { key, value ->
-            println("$key -- ${value.albumName}")
-        }
-
         upsertAllArtistsUseCase(optimizedCachedData.artistsByName.values.toList())
         upsertAllAlbumsUseCase(optimizedCachedData.albumsByInfo.values.toList())
         upsertAllMusicsUseCase(optimizedCachedData.musicsByPath.values.toList())

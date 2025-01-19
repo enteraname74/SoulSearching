@@ -25,7 +25,7 @@ object Migration18To19: Migration(18, 19) {
                 isInQuickAccess INTEGER NOT NULL,
                 isHidden INTEGER NOT NULL,
                 dataMode TEXT NOT NULL,
-                albumId BLOB,
+                albumId BLOB NOT NULL,
                 FOREIGN KEY (albumId) REFERENCES RoomAlbum(albumId) ON DELETE CASCADE
             )
         """)
@@ -59,7 +59,7 @@ object Migration18To19: Migration(18, 19) {
                 addedDate TEXT NOT NULL,
                 nbPlayed INTEGER NOT NULL,
                 isInQuickAccess INTEGER NOT NULL,
-                artistId BLOB,
+                artistId BLOB NOT NULL,
                 FOREIGN KEY (artistId) REFERENCES RoomArtist(artistId) ON DELETE CASCADE
             )
         """)
