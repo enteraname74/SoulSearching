@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.soulsearching.localdesktop.dao.ArtistDao
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ internal class ArtistLocalDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(artist: Artist) {
+    override suspend fun delete(artist: Artist) {
         artistDao.delete(artist)
     }
 
@@ -28,14 +29,19 @@ internal class ArtistLocalDataSourceImpl(
         artistDao.deleteAll(artistsIds)
     }
 
+    override suspend fun deleteAll(dataMode: DataMode) {
+        artistDao.deleteAll(dataMode.value)
+    }
+
+    override fun getAll(dataMode: DataMode): Flow<List<Artist>> =
+        artistDao.getAll(dataMode.value)
+
     override fun getFromId(artistId: UUID): Flow<Artist?> =
         artistDao.getFromId(artistId)
+    
 
-    override fun getAll(): Flow<List<Artist>> =
-        artistDao.getAll()
-
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
-        artistDao.getAllArtistWithMusics()
+    override fun getAllArtistWithMusics(dataMode: DataMode): Flow<List<ArtistWithMusics>> =
+        artistDao.getAllArtistWithMusics(dataMode = dataMode.value)
 
     override suspend fun getFromName(artistName: String): Artist? =
         artistDao.getFromName(artistName)

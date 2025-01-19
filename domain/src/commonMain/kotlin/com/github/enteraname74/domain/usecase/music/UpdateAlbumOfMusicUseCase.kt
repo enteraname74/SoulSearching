@@ -41,6 +41,7 @@ class UpdateAlbumOfMusicUseCase(
                     Cover.CoverFile(fileCoverId = it)
                 },
                 artistId = artistId,
+                dataMode = legacyMusic.dataMode,
             )
             albumRepository.upsert(album = newMusicAlbum)
         }

@@ -113,13 +113,14 @@ class MusicRepositoryImpl(
 
                 is SoulResult.Success -> {
                     if (songsFromCloud.data.isEmpty()) {
-                        cloudLocalDataSource.updateLastUpdateDate()
                         return SoulResult.Success(idsToDelete)
+                    } else {
+                        currentPage += 1
+                        musicLocalDataSource.upsertAll(
+                            musics = songsFromCloud.data,
+                        )
                     }
-                    currentPage += 1
-                    musicLocalDataSource.upsertAll(
-                        musics = songsFromCloud.data,
-                    )
+
                 }
             }
         }
@@ -169,6 +170,6 @@ class MusicRepositoryImpl(
         }
 
     companion object {
-        private const val MAX_SONGS_PER_PAGE = 1
+        private const val MAX_SONGS_PER_PAGE = 50
     }
 }

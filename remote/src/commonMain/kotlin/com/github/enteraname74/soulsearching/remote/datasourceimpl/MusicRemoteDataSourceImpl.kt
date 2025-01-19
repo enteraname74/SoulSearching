@@ -46,7 +46,7 @@ class MusicRemoteDataSourceImpl(
         maxPerPage: Int,
         page: Int,
     ): SoulResult<List<Music>> {
-        val result: RemoteResult<List<RemoteMusic>> = client.safeRequest<List<RemoteMusic>> {
+        val result: RemoteResult<List<RemoteMusic>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.Music.all(
                     after = after,

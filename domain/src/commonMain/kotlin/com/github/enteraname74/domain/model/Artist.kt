@@ -20,7 +20,8 @@ data class Artist(
     @Serializable(with = LocalDateTimeSerializer::class)
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
+    val dataMode: DataMode,
 ) {
     fun isComposedOfMultipleArtists(): Boolean =
         artistName.split(",").size > 1

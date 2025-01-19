@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
@@ -37,6 +38,7 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -52,6 +54,7 @@ class AddToPlaylistBottomSheet(
 ) : SoulBottomSheet, KoinComponent {
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase by inject()
+    private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase by inject()
 
     private fun showCreatePlaylistDialog(
         closeWithAnim: () -> Unit,
@@ -62,13 +65,17 @@ class AddToPlaylistBottomSheet(
                 onConfirm = { playlistName ->
                     CoroutineScope(Dispatchers.IO).launch {
                         if (playlistName.isNotBlank()) {
-                            val newPlaylist = Playlist(name = playlistName)
+                            val newPlaylist = Playlist(
+                                name = playlistName,
+                                dataMode = getCurrentDataModeWithUserUseCase().first(),
+                            )
                             upsertPlaylistUseCase(playlist = newPlaylist)
                             selectedMusicIds.forEach { musicId ->
                                 upsertMusicIntoPlaylistUseCase(
                                     MusicPlaylist(
                                         musicId = musicId,
                                         playlistId = newPlaylist.playlistId,
+                                        dataMode = newPlaylist.dataMode,
                                     )
                                 )
                             }

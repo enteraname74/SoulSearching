@@ -12,11 +12,13 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.dataMode
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.nbPlayed
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,6 +37,7 @@ internal class ArtistDao(
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
+                it[dataMode] = artist.dataMode.value
             }
         }
     }
@@ -48,6 +51,7 @@ internal class ArtistDao(
                 this[addedDate] = it.addedDate
                 this[nbPlayed] = it.nbPlayed
                 this[isInQuickAccess] = it.isInQuickAccess
+                this[dataMode] = it.dataMode.value
             }
         }
     }
@@ -64,6 +68,12 @@ internal class ArtistDao(
         }
     }
 
+    suspend fun deleteAll(dataMode: String) {
+        flowTransactionOn {
+            ArtistTable.deleteWhere { ArtistTable.dataMode eq dataMode }
+        }
+    }
+
     fun getFromId(artistId: UUID): Flow<Artist?> = transaction {
         ArtistTable
             .selectAll()
@@ -72,17 +82,19 @@ internal class ArtistDao(
             .mapSingleResultRow { it.toArtist() }
     }
 
-    fun getAll(): Flow<List<Artist>> = transaction {
+    fun getAll(dataMode: String): Flow<List<Artist>> = transaction {
         ArtistTable
             .selectAll()
+            .where { ArtistTable.dataMode eq dataMode }
             .asFlow()
             .mapResultRow { it.toArtist() }
             .map { list -> list.filterNotNull() }
     }
 
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> = transaction {
+    fun getAllArtistWithMusics(dataMode: String): Flow<List<ArtistWithMusics>> = transaction {
         (ArtistTable fullJoin MusicArtistTable fullJoin MusicTable)
             .selectAll()
+            .where { ArtistTable.dataMode eq dataMode }
             .asFlow()
             .map { list ->
                 list.groupBy(

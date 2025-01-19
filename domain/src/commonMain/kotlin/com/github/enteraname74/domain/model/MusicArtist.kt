@@ -7,7 +7,8 @@ import java.util.UUID
  */
 data class MusicArtist(
     val musicId: UUID = UUID.randomUUID(),
-    val artistId: UUID = UUID.randomUUID()
+    val artistId: UUID = UUID.randomUUID(),
+    val dataMode: DataMode,
 ) {
     val id: String
         get() = "$musicId$artistId"

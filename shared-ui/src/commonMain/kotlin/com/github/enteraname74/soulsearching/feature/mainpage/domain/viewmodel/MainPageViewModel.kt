@@ -15,6 +15,7 @@ import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSorte
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
 import com.github.enteraname74.domain.usecase.folder.DeleteAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
@@ -99,6 +100,7 @@ class MainPageViewModel(
     private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
     private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
 
+    private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase by inject()
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase by inject()
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
@@ -362,9 +364,14 @@ class MainPageViewModel(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
+            if (getCurrentDataModeWithUserUseCase().first() != DataMode.Cloud) return@launch
+
             val result: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
 
             (result as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                playbackManager.removeSongsFromPlayedPlaylist(
+                    musicIds = deletedIds,
+                )
                 feedbackPopUpManager.showFeedback(
                     feedback = strings.deleteMusicsFromCloudAutomatically(
                         total = deletedIds.size,
@@ -386,7 +393,6 @@ class MainPageViewModel(
             var deleteCount = 0
             for (music in allMusicsState.value.musics) {
                 if (!File(music.path).exists() && music.dataMode == DataMode.Local) {
-                    // TODO: Improve deleted songs check for Cloud mode
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)
                     )
@@ -413,7 +419,10 @@ class MainPageViewModel(
                 if (playlistName.isNotBlank()) {
                     screenModelScope.launch {
                         upsertPlaylistUseCase(
-                            playlist = Playlist(name = playlistName)
+                            playlist = Playlist(
+                                name = playlistName,
+                                dataMode = getCurrentDataModeWithUserUseCase().first(),
+                            )
                         )
                     }
                 }

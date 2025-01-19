@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Playlist
 import java.time.LocalDateTime
 import java.util.*
@@ -19,7 +20,8 @@ internal data class RoomPlaylist(
     val isFavorite: Boolean = false,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
+    var dataMode: String,
 )
 
 /**
@@ -32,7 +34,10 @@ internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    dataMode = DataMode.fromString(
+        dataMode
+    ) ?: DataMode.Local,
 )
 
 /**
@@ -45,5 +50,6 @@ internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    dataMode = dataMode.value,
 )

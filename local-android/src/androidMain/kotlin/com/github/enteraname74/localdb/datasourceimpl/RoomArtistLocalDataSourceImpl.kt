@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
 import com.github.enteraname74.localdb.model.toArtistWithMusics
@@ -27,7 +28,7 @@ internal class RoomArtistLocalDataSourceImpl(
         appDatabase.artistDao.upsertAll(artists.map { it.toRoomArtist() })
     }
 
-    override suspend fun deleteAll(artist: Artist) {
+    override suspend fun delete(artist: Artist) {
         appDatabase.artistDao.delete(
             roomArtist = artist.toRoomArtist()
         )
@@ -39,20 +40,26 @@ internal class RoomArtistLocalDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(dataMode: DataMode) {
+        appDatabase.artistDao.deleteAll(dataMode = dataMode.value)
+    }
+
     override fun getFromId(artistId: UUID): Flow<Artist?> {
         return appDatabase.artistDao.getFromId(
             artistId = artistId
         ).map { it?.toArtist() }
     }
 
-    override fun getAll(): Flow<List<Artist>> {
-        return appDatabase.artistDao.getAll().map { list ->
+    override fun getAll(dataMode: DataMode): Flow<List<Artist>> {
+        return appDatabase.artistDao.getAll(
+            dataMode = dataMode.value
+        ).map { list ->
             list.map { it.toArtist() }
         }
     }
 
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> {
-        return appDatabase.artistDao.getAllArtistWithMusics().map { list ->
+    override fun getAllArtistWithMusics(dataMode: DataMode): Flow<List<ArtistWithMusics>> {
+        return appDatabase.artistDao.getAllArtistWithMusics(dataMode.value).map { list ->
             list.filterNotNull().map { it.toArtistWithMusics() }
         }
     }

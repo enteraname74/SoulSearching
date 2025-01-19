@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.default
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
@@ -10,12 +12,13 @@ import org.jetbrains.exposed.sql.javatime.datetime
  * Table for storing Playlists.
  */
 internal object PlaylistTable: UUIDTable() {
-    var name = varchar("name", 128)
-    var coverId = uuid("coverId").nullable()
+    val name = varchar("name", 128)
+    val coverId = uuid("coverId").nullable()
     val isFavorite = bool("isFavorite")
-    var addedDate = datetime("addedDate")
-    var nbPlayed = integer("nbPlayed")
-    var isInQuickAccess = bool("isInQuickAccess")
+    val addedDate = datetime("addedDate")
+    val nbPlayed = integer("nbPlayed")
+    val isInQuickAccess = bool("isInQuickAccess")
+    val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 }
 
 /**
@@ -34,7 +37,10 @@ internal fun ResultRow.toPlaylist(): Playlist? =
             isFavorite = this[PlaylistTable.isFavorite],
             addedDate = this[PlaylistTable.addedDate],
             nbPlayed = this[PlaylistTable.nbPlayed],
-            isInQuickAccess = this[PlaylistTable.isInQuickAccess]
+            isInQuickAccess = this[PlaylistTable.isInQuickAccess],
+            dataMode = DataMode.fromString(
+                this[PlaylistTable.dataMode]
+            ) ?: DataMode.Local,
         )
     } catch (_: Exception) {
         null

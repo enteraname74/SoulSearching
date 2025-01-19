@@ -19,6 +19,7 @@ internal class MusicPlaylistDao {
                 it[id] = musicPlaylist.id
                 it[musicId] = musicPlaylist.musicId
                 it[playlistId] = musicPlaylist.playlistId
+                it[dataMode] = musicPlaylist.dataMode.value
             }
         }
     }

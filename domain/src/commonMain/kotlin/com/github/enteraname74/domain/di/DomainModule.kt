@@ -3,15 +3,11 @@ package com.github.enteraname74.domain.di
 import com.github.enteraname74.domain.usecase.album.*
 import com.github.enteraname74.domain.usecase.artist.*
 import com.github.enteraname74.domain.usecase.auth.*
-import com.github.enteraname74.domain.usecase.cloud.GetCloudSearchMetadataUseCase
-import com.github.enteraname74.domain.usecase.cloud.ResetAndSyncDataWithCloudUseCase
-import com.github.enteraname74.domain.usecase.cloud.SetCloudSearchMetadataUseCase
-import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
+import com.github.enteraname74.domain.usecase.cloud.*
 import com.github.enteraname74.domain.usecase.cover.DeleteCoverUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
-import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
+import com.github.enteraname74.domain.usecase.datamode.*
 import com.github.enteraname74.domain.usecase.folder.*
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
@@ -83,6 +79,7 @@ val domainModule = module {
     singleOf(::SignUserUseCase)
 
     // Cloud
+    singleOf(::DeleteCloudDataUseCase)
     singleOf(::GetCloudSearchMetadataUseCase)
     singleOf(::ResetAndSyncDataWithCloudUseCase)
     singleOf(::SetCloudSearchMetadataUseCase)
@@ -162,5 +159,6 @@ val domainModule = module {
 
     // DataMode
     singleOf(::GetCurrentDataModeUseCase)
+    singleOf(::GetCurrentDataModeWithUserUseCase)
     singleOf(::SetCurrentDataModeUseCase)
 }

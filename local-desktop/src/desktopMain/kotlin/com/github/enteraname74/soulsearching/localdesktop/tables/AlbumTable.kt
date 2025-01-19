@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.localdesktop.tables
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.default
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.index
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -21,6 +23,7 @@ internal object AlbumTable: UUIDTable() {
     val artistId = reference("artistId", ArtistTable.id, ReferenceOption.CASCADE).index(
         customIndexName = "index_AlbumTable_artistId",
     )
+    val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 }
 
 /**
@@ -40,6 +43,9 @@ internal fun ResultRow.toAlbum(): Album? =
             nbPlayed = this[AlbumTable.nbPlayed],
             isInQuickAccess = this[AlbumTable.isInQuickAccess],
             artistId = this[AlbumTable.artistId].value,
+            dataMode = DataMode.fromString(
+                this[AlbumTable.dataMode]
+            ) ?: DataMode.Local,
         )
     } catch (_: Exception) {
         null

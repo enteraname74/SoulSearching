@@ -9,11 +9,14 @@ import java.util.UUID
  */
 @Dao
 internal interface MusicArtistDao {
-    @Query("SELECT * FROM RoomMusicArtist")
-    suspend fun getAll(): List<RoomMusicArtist>
+    @Query("SELECT * FROM RoomMusicArtist WHERE dataMode = :dataMode")
+    suspend fun getAll(dataMode: String): List<RoomMusicArtist>
 
     @Query("SELECT * FROM RoomMusicArtist WHERE artistId = :artistId AND musicId = :musicId")
     suspend fun get(artistId: UUID, musicId: UUID): RoomMusicArtist?
+
+    @Query("DELETE FROM RoomMusicArtist WHERE dataMode = :dataMode")
+    suspend fun deleteAll(dataMode: String)
 
     @Query("DELETE FROM RoomMusicArtist WHERE artistId = :artistId AND musicId = :musicId")
     suspend fun delete(

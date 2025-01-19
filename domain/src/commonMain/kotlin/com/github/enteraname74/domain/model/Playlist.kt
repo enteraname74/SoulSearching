@@ -14,5 +14,6 @@ data class Playlist(
     val isFavorite: Boolean = false,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
+    val dataMode: DataMode,
 )

@@ -1,8 +1,6 @@
 package com.github.enteraname74.domain.repository
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -16,6 +14,8 @@ interface AlbumRepository {
     suspend fun delete(album: Album)
 
     suspend fun deleteAll(ids: List<UUID>)
+
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Inserts a new Album.
@@ -55,4 +55,9 @@ interface AlbumRepository {
      * Retrieves all AlbumsWithArtist.
      */
     fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
+
+    /**
+     * Synchronize remote albums of the users with the cloud
+     */
+    suspend fun syncWithCloud(): SoulResult<Unit>
 }

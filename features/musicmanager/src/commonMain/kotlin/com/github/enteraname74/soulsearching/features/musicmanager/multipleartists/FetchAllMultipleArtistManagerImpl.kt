@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.AlbumInformation
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
 import java.util.*
@@ -22,6 +19,7 @@ open class FetchAllMultipleArtistManagerImpl(
         val newArtist = Artist(
             artistId = UUID.randomUUID(),
             artistName = artistName,
+            dataMode = DataMode.Local,
         )
         optimizedCachedData.artistsByName[artistName] = newArtist
         return newArtist
@@ -63,6 +61,7 @@ open class FetchAllMultipleArtistManagerImpl(
                 MusicArtist(
                     musicId = it,
                     artistId = artistId,
+                    dataMode = DataMode.Local,
                 )
             }
         )

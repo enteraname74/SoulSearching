@@ -16,6 +16,8 @@ abstract class SoulTextFieldHolder(
     var value: String by mutableStateOf(initialValue)
         protected set
 
+    private var forceNoError: Boolean by mutableStateOf(true)
+
     val label: String?
         @Composable
         get() = getLabel()
@@ -24,7 +26,7 @@ abstract class SoulTextFieldHolder(
         @Composable
         get() = getError()
 
-    val isInError: Boolean by derivedStateOf { !isValid(value) }
+    val isInError: Boolean by derivedStateOf { !isValid(value) && !forceNoError }
 
     val colors: SoulTextFieldColors
         @Composable
@@ -34,6 +36,7 @@ abstract class SoulTextFieldHolder(
 
     open fun onValueChanged(newValue: String) {
         value = newValue
+        forceNoError = false
         onChange(newValue)
     }
 

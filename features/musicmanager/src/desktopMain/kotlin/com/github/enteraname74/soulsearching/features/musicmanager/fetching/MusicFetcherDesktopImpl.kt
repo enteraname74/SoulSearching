@@ -126,7 +126,8 @@ internal class MusicFetcherDesktopImpl(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = strings.favorite,
-                    isFavorite = true
+                    isFavorite = true,
+                    dataMode = DataMode.Local,
                 )
             )
         }

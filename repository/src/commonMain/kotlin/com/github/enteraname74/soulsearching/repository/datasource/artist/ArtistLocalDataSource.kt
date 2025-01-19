@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.artist
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.DataMode
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -20,9 +21,10 @@ interface ArtistLocalDataSource {
     /**
      * Deletes an Artist.
      */
-    suspend fun deleteAll(artist: Artist)
+    suspend fun delete(artist: Artist)
 
     suspend fun deleteAll(artistsIds: List<UUID>)
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Retrieves an Artist from its id.
@@ -32,12 +34,16 @@ interface ArtistLocalDataSource {
     /**
      * Retrieves a flow of all Artist, sorted by name asc.
      */
-    fun getAll(): Flow<List<Artist>>
+    fun getAll(
+        dataMode: DataMode,
+    ): Flow<List<Artist>>
 
     /**
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
+    fun getAllArtistWithMusics(
+        dataMode: DataMode,
+    ): Flow<List<ArtistWithMusics>>
 
     /**
      * Tries to find an artist from its name.

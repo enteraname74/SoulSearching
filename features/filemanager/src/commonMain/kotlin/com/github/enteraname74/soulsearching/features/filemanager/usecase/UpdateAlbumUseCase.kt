@@ -37,6 +37,7 @@ class UpdateAlbumUseCase(
                 newArtist = Artist(
                     artistName = newAlbumWithArtistInformation.artist!!.artistName,
                     cover = newAlbumWithArtistInformation.album.cover,
+                    dataMode = newAlbumWithArtistInformation.artist!!.dataMode,
                 )
                 artistRepository.upsert(
                     artist = newArtist
@@ -86,6 +87,7 @@ class UpdateAlbumUseCase(
             musicArtist = MusicArtist(
                 musicId = music.musicId,
                 artistId = legacyArtistId,
+                dataMode = music.dataMode,
             )
         )
         // And we add a link to the new one if it does not exist already
@@ -99,6 +101,7 @@ class UpdateAlbumUseCase(
                 musicArtist = MusicArtist(
                     musicId = music.musicId,
                     artistId = newArtistId,
+                    dataMode = music.dataMode,
                 )
             )
         }

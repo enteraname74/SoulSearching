@@ -1,15 +1,18 @@
 package com.github.enteraname74.soulsearching.repository.datasource.musicartist
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicArtist
 import java.util.UUID
 
 /**
  * Data source of a MusicArtist.
  */
-interface MusicArtistDataSource {
-    suspend fun getAll(): List<MusicArtist>
+interface MusicArtistLocalDataSource {
+    suspend fun getAll(dataMode: DataMode): List<MusicArtist>
 
     suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
+
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Inserts or updates a MusicArtist.

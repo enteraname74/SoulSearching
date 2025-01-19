@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicPlaylist
 import java.util.*
 
@@ -29,7 +30,8 @@ import java.util.*
 internal data class RoomMusicPlaylist(
     @PrimaryKey val id: String,
     @ColumnInfo(index = true) val musicId: UUID = UUID.randomUUID(),
-    @ColumnInfo(index = true) val playlistId: UUID = UUID.randomUUID()
+    @ColumnInfo(index = true) val playlistId: UUID = UUID.randomUUID(),
+    val dataMode: String,
 )
 
 /**
@@ -37,7 +39,10 @@ internal data class RoomMusicPlaylist(
  */
 internal fun RoomMusicPlaylist.toMusicPlaylist(): MusicPlaylist = MusicPlaylist(
     musicId = musicId,
-    playlistId = playlistId
+    playlistId = playlistId,
+    dataMode = DataMode.fromString(
+        dataMode
+    ) ?: DataMode.Local,
 )
 
 /**
@@ -46,5 +51,6 @@ internal fun RoomMusicPlaylist.toMusicPlaylist(): MusicPlaylist = MusicPlaylist(
 internal fun MusicPlaylist.toRoomMusicPlaylist(): RoomMusicPlaylist = RoomMusicPlaylist(
     id = id,
     musicId = musicId,
-    playlistId = playlistId
+    playlistId = playlistId,
+    dataMode = dataMode.value,
 )

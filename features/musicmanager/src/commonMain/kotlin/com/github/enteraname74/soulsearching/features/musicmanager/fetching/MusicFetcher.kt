@@ -51,7 +51,11 @@ abstract class MusicFetcher : KoinComponent {
             ) to it.album
         } as HashMap<AlbumInformation, Album>
 
-        optimizedCachedData.musicArtists = ArrayList(getAllMusicArtistUseCase())
+        optimizedCachedData.musicArtists = ArrayList(
+            getAllMusicArtistUseCase(
+                dataMode = DataMode.Local,
+            )
+        )
     }
 
     private fun createAlbumOfSong(
@@ -63,6 +67,7 @@ abstract class MusicFetcher : KoinComponent {
             albumId = albumId,
             albumName = music.album,
             artistId = artistId,
+            dataMode = DataMode.Local,
         )
         optimizedCachedData.albumsByInfo[AlbumInformation(
             name = albumToAdd.albumName,
@@ -77,7 +82,8 @@ abstract class MusicFetcher : KoinComponent {
     ) {
         val artistToAdd = Artist(
             artistId = artistId,
-            artistName = music.artist
+            artistName = music.artist,
+            dataMode = DataMode.Local,
         )
         optimizedCachedData.artistsByName[artistToAdd.artistName] = artistToAdd
     }
@@ -143,6 +149,7 @@ abstract class MusicFetcher : KoinComponent {
             MusicArtist(
                 musicId = musicToAdd.musicId,
                 artistId = artistId,
+                dataMode = musicToAdd.dataMode,
             )
         )
         onSongSaved()

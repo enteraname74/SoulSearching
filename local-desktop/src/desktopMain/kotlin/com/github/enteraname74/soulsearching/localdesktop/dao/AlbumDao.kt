@@ -29,6 +29,7 @@ internal class AlbumDao(
                 it[nbPlayed] = album.nbPlayed
                 it[isInQuickAccess] = album.isInQuickAccess
                 it[artistId] = album.artistId
+                it[dataMode] = album.dataMode.value
             }
         }
     }
@@ -43,6 +44,7 @@ internal class AlbumDao(
                 this[AlbumTable.nbPlayed] = it.nbPlayed
                 this[AlbumTable.isInQuickAccess] = it.isInQuickAccess
                 this[AlbumTable.artistId] = it.artistId
+                this[AlbumTable.dataMode] = it.dataMode.value
             }
         }
     }
@@ -59,9 +61,16 @@ internal class AlbumDao(
         }
     }
 
-    fun getAll(): Flow<List<Album>> = transaction {
+    suspend fun deleteAll(dataMode: String) {
+        flowTransactionOn {
+            AlbumTable.deleteWhere { AlbumTable.dataMode eq dataMode }
+        }
+    }
+
+    fun getAll(dataMode: String): Flow<List<Album>> = transaction {
         AlbumTable
             .selectAll()
+            .where { AlbumTable.dataMode eq dataMode }
             .orderBy(AlbumTable.albumName to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toAlbum() }
@@ -124,9 +133,10 @@ internal class AlbumDao(
             }
     }
 
-    fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> = transaction {
+    fun getAllAlbumsWithMusics(dataMode: String): Flow<List<AlbumWithMusics>> = transaction {
         (AlbumTable fullJoin MusicTable fullJoin ArtistTable)
             .selectAll()
+            .where { AlbumTable.dataMode eq dataMode }
             .asFlow()
             .map { list ->
                 list.groupBy(

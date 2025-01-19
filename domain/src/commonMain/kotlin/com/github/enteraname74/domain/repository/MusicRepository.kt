@@ -48,9 +48,10 @@ interface MusicRepository {
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 
     /**
-     * Retrieves all the songs of the user from the Cloud.
+     * Synchronize remote songs of the users with the cloud
      */
     suspend fun syncWithCloud(): SoulResult<List<UUID>>
 
     suspend fun uploadAllMusicToCloud(): SoulResult<Unit>
+
 }

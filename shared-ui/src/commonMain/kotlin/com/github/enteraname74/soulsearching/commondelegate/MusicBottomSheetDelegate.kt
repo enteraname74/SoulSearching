@@ -118,6 +118,7 @@ class MusicBottomSheetDelegateImpl(
                     MusicPlaylist(
                         musicId = music.musicId,
                         playlistId = selectedPlaylist.playlist.playlistId,
+                        dataMode = music.dataMode,
                     )
                 )
             }

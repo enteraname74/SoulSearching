@@ -123,6 +123,7 @@ class UpdateArtistUseCase(
                 musicArtist = MusicArtist(
                     musicId = music.musicId,
                     artistId = from.artist.artistId,
+                    dataMode = music.dataMode,
                 )
             )
             // And we add a link to the new one if it does not exist already
@@ -136,6 +137,7 @@ class UpdateArtistUseCase(
                     musicArtist = MusicArtist(
                         musicId = music.musicId,
                         artistId = to.artistId,
+                        dataMode = music.dataMode,
                     )
                 )
             }

@@ -4,12 +4,9 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
@@ -20,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class SettingsAllFoldersViewModel(
     private val getAllFoldersUseCase: GetAllFoldersUseCase,

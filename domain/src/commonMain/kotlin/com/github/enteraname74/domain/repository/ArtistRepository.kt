@@ -2,11 +2,14 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.util.FlowResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
 interface ArtistRepository {
-
     /**
      * Inserts or updates an artist.
      */
@@ -20,6 +23,7 @@ interface ArtistRepository {
     suspend fun delete(artist: Artist)
 
     suspend fun deleteAll(artistsIds: List<UUID>)
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Retrieves an Artist from its id.
@@ -52,4 +56,9 @@ interface ArtistRepository {
      * Retrieves all artists linked to a music.
      */
     fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+
+    /**
+     * Synchronize remote artists of the users with the cloud
+     */
+    suspend fun syncWithCloud(): SoulResult<Unit>
 }

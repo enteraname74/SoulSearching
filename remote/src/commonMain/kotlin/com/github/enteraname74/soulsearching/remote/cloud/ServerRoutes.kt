@@ -84,8 +84,17 @@ object ServerRoutes : KoinComponent {
     object MusicArtist : Route {
         override val BASE_ROUTE = "/musicartist"
 
-        val ALL: String
-            get() = "$HOST$BASE_ROUTE/ofUser"
+        fun all(
+            after: LocalDateTime?,
+            maxPerPage: Int,
+            page: Int,
+        ): String {
+            val afterText: String = after?.let {
+                "lastUpdateAt=$it&"
+            } ?: ""
+
+            return "$HOST${BASE_ROUTE}/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
+        }
     }
 
     private interface Route {

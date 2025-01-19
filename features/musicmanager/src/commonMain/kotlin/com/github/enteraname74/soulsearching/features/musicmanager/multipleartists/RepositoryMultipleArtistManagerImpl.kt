@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.features.musicmanager.multiplearti
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsOfArtistUseCase
@@ -38,6 +39,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     override suspend fun createNewArtist(artistName: String): Artist {
         val newArtist = Artist(
             artistName = artistName,
+            dataMode = DataMode.Local,
         )
         cachedArtists.add(newArtist)
         return newArtist
@@ -74,6 +76,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
                 MusicArtist(
                     musicId = it,
                     artistId = artistId,
+                    dataMode = DataMode.Local,
                 )
             }
         )

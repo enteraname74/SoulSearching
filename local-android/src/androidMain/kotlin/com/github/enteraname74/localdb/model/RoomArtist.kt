@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import java.time.LocalDateTime
 import java.util.*
 
@@ -18,7 +19,8 @@ internal data class RoomArtist(
     var coverId: UUID? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    var isInQuickAccess: Boolean = false,
+    val dataMode: String = DataMode.Local.value,
 )
 
 /**
@@ -30,7 +32,8 @@ internal fun RoomArtist.toArtist(): Artist = Artist(
     cover = Cover.CoverFile(fileCoverId = coverId),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    dataMode = DataMode.fromString(dataMode) ?: DataMode.Local,
 )
 
 /**
@@ -42,5 +45,6 @@ internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    dataMode = dataMode.value,
 )

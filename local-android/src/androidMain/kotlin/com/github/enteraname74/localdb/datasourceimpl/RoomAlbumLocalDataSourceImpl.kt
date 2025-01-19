@@ -3,6 +3,7 @@ package com.github.enteraname74.localdb.datasourceimpl
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toAlbum
 import com.github.enteraname74.localdb.model.toAlbumWithMusics
@@ -40,6 +41,12 @@ internal class RoomAlbumLocalDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(dataMode: DataMode) {
+        appDatabase.albumDao.deleteAll(
+            dataMode = dataMode.value,
+        )
+    }
+
     override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> {
         return appDatabase.albumDao.getAllAlbumsFromArtist(
             artistId = artistId
@@ -72,20 +79,20 @@ internal class RoomAlbumLocalDataSourceImpl(
         ).map { it?.toAlbumWithMusics() }
     }
 
-    override fun getAll(): Flow<List<Album>> {
-        return appDatabase.albumDao.getAll().map { list ->
+    override fun getAll(dataMode: DataMode): Flow<List<Album>> {
+        return appDatabase.albumDao.getAll(dataMode.value).map { list ->
             list.map { it.toAlbum() }
         }
     }
 
-    override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> {
-        return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
+    override fun getAllAlbumWithMusics(dataMode: DataMode): Flow<List<AlbumWithMusics>> {
+        return appDatabase.albumDao.getAllAlbumWithMusics(dataMode.value).map { list ->
             list.map { it.toAlbumWithMusics() }
         }
     }
 
-    override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> {
-        return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
+    override fun getAllAlbumsWithArtist(dataMode: DataMode): Flow<List<AlbumWithArtist>> {
+        return appDatabase.albumDao.getAllAlbumWithMusics(dataMode.value).map { list ->
             list.map { it.toAlbumWithArtist() }
         }
     }

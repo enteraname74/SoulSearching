@@ -1,18 +1,14 @@
 package com.github.enteraname74.domain.usecase.cloud
 
-import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
-import com.github.enteraname74.domain.repository.MusicRepository
-import java.util.UUID
+import java.util.*
 
 class ResetAndSyncDataWithCloudUseCase(
-    private val musicRepository: MusicRepository,
+    private val deleteCloudDataUseCase: DeleteCloudDataUseCase,
+    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase
 ) {
     suspend operator fun invoke(): SoulResult<List<UUID>> {
-        // We first delete all the info cloud from the database
-        musicRepository.deleteAll(DataMode.Cloud)
-
-        // We then fetch the cloud data
-        return musicRepository.syncWithCloud()
+        deleteCloudDataUseCase()
+        return syncDataWithCloudUseCase()
     }
 }

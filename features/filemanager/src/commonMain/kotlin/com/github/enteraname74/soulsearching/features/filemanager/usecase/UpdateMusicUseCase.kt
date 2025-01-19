@@ -37,7 +37,8 @@ class UpdateMusicUseCase(
                     Cover.CoverFile(
                         fileCoverId = fileCoverId,
                     )
-                }
+                },
+                dataMode = music.dataMode,
             )
             artistRepository.upsert(artist = existingNewArtist)
         }
@@ -64,6 +65,7 @@ class UpdateMusicUseCase(
             musicArtist = MusicArtist(
                 musicId = newMusicInformation.musicId,
                 artistId = existingNewArtist.artistId,
+                dataMode = existingNewArtist.dataMode,
             ),
         )
 
@@ -77,6 +79,7 @@ class UpdateMusicUseCase(
             musicArtist = MusicArtist(
                 musicId = legacyMusic.musicId,
                 artistId = previousArtist.artistId,
+                dataMode = legacyMusic.dataMode,
             )
         )
         deleteArtistIfEmptyUseCase(artistId = previousArtist.artistId)
@@ -105,6 +108,7 @@ class UpdateMusicUseCase(
                 musicArtist = MusicArtist(
                     musicId = legacyMusic.musicId,
                     artistId = artist.artistId,
+                    dataMode = legacyMusic.dataMode,
                 )
             )
         }
@@ -119,6 +123,7 @@ class UpdateMusicUseCase(
                 musicArtist = MusicArtist(
                     musicId = newMusicInformation.musicId,
                     artistId = newArtist.artistId,
+                    dataMode = newMusicInformation.dataMode,
                 )
             )
         }

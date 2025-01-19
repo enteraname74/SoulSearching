@@ -2,17 +2,17 @@ package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.CloudLocalDataSource
-import com.github.enteraname74.soulsearching.remote.datasourceimpl.AuthRemoteDataSourceImpl
-import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsDataSourceImpl
-import com.github.enteraname74.soulsearching.remote.datasourceimpl.MusicRemoteDataSourceImpl
-import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
+import com.github.enteraname74.soulsearching.remote.datasourceimpl.*
 import com.github.enteraname74.soulsearching.remote.ext.toBearerTokens
 import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
 import com.github.enteraname74.soulsearching.remote.model.JSON
-import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -20,15 +20,11 @@ import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val remoteModule = module {
-
-
-
     single(named(HttpClientNames.GENERIC)) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -89,6 +85,24 @@ val remoteModule = module {
 
     single<MusicRemoteDataSource> {
         MusicRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+        )
+    }
+
+    single<AlbumRemoteDataSource> {
+        AlbumRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+        )
+    }
+
+    single<ArtistRemoteDataSource> {
+        ArtistRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD)),
+        )
+    }
+
+    single<MusicArtistRemoteDataSource> {
+        MusicArtistRemoteDataSourceImpl(
             client = get(named(HttpClientNames.CLOUD)),
         )
     }

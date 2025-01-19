@@ -1,12 +1,16 @@
 package com.github.enteraname74.domain.repository
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.model.SoulResult
 import java.util.*
 
 interface MusicArtistRepository {
-    suspend fun getAll(): List<MusicArtist>
+    suspend fun getAll(dataMode: DataMode): List<MusicArtist>
 
     suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
+
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Inserts or updates a MusicArtist.
@@ -17,4 +21,9 @@ interface MusicArtistRepository {
     suspend fun upsertAll(musicArtists: List<MusicArtist>)
 
     suspend fun deleteMusicArtist(musicArtist: MusicArtist)
+
+    /**
+     * Synchronize remote MusicArtist links of the users with the cloud
+     */
+    suspend fun syncWithCloud(): SoulResult<Unit>
 }

@@ -1,36 +1,27 @@
 package com.github.enteraname74.soulsearching.remote.model
-
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.DataMode
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.util.serializer.LocalDateTimeSerializer
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Serializable
-data class RemoteMusic(
+data class RemoteArtist(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val name: String,
-    val album: String,
-    @Serializable(with = UUIDSerializer::class)
-    val albumId: UUID,
-    val artist: String,
-    val path: String,
     val coverPath: String?,
-    val duration: Long,
     @Serializable(with = LocalDateTimeSerializer::class)
-    val addedDate: LocalDateTime,
-    val nbPlayed: Int,
-    val isInQuickAccess: Boolean,
+    var addedDate: LocalDateTime,
+    var nbPlayed: Int,
+    var isInQuickAccess: Boolean,
 ) {
-    fun toMusic(): Music = Music(
-        musicId = id,
-        name = name,
-        album = album,
-        artist = artist,
+    fun toArtist(): Artist = Artist(
+        artistId = id,
+        artistName = name,
         cover = Cover.CoverUrl(
             url = coverPath,
         ),
@@ -38,8 +29,5 @@ data class RemoteMusic(
         nbPlayed = nbPlayed,
         isInQuickAccess = isInQuickAccess,
         dataMode = DataMode.Cloud,
-        albumId = albumId,
-        path = path,
-        folder = "Cloudy",
     )
 }

@@ -104,6 +104,7 @@ class MultiMusicBottomSheetDelegateImpl(
                         MusicPlaylist(
                             musicId = musicId,
                             playlistId = selectedPlaylist.playlist.playlistId,
+                            dataMode = selectedPlaylist.playlist.dataMode,
                         )
                     )
                 }

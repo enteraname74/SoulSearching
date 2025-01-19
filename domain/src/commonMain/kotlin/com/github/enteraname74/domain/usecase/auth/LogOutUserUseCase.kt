@@ -1,18 +1,15 @@
 package com.github.enteraname74.domain.usecase.auth
 
 import com.github.enteraname74.domain.model.DataMode
-import com.github.enteraname74.domain.repository.AuthRepository
-import com.github.enteraname74.domain.repository.CloudRepository
-import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.usecase.cloud.DeleteCloudDataUseCase
 
 class LogOutUserUseCase(
     private val authRepository: AuthRepository,
-    private val musicRepository: MusicRepository,
-    private val cloudRepository: CloudRepository,
+    private val deleteCloudDataUseCase: DeleteCloudDataUseCase
 ) {
     suspend operator fun invoke() {
         authRepository.logOut()
-        musicRepository.deleteAll(DataMode.Cloud)
-        cloudRepository.clearLastUpdateDate()
+        deleteCloudDataUseCase()
     }
 }

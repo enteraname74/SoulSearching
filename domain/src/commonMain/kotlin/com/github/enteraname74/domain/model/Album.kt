@@ -15,4 +15,5 @@ data class Album(
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     val artistId: UUID,
+    val dataMode: DataMode,
 )

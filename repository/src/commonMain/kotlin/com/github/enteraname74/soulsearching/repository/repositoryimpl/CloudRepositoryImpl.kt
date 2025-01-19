@@ -15,6 +15,10 @@ class CloudRepositoryImpl(
         cloudLocalDataSource.setSearchMetadata(searchMetadata)
     }
 
+    override suspend fun updateLastUpdateDate() {
+        cloudLocalDataSource.updateLastUpdateDate()
+    }
+
     override fun getSearchMetadata(): Flow<Boolean> =
         cloudLocalDataSource.getSearchMetadata()
 }

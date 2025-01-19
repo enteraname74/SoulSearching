@@ -36,6 +36,7 @@ internal class PlaylistDao(
                 it[addedDate] = playlist.addedDate
                 it[nbPlayed] = playlist.nbPlayed
                 it[isInQuickAccess] = playlist.isInQuickAccess
+                it[dataMode] = playlist.dataMode.value
             }
         }
     }
@@ -50,6 +51,7 @@ internal class PlaylistDao(
                 this[PlaylistTable.addedDate] = playlist.addedDate
                 this[PlaylistTable.nbPlayed] = playlist.nbPlayed
                 this[PlaylistTable.isInQuickAccess] = playlist.isInQuickAccess
+                this[PlaylistTable.dataMode] = playlist.dataMode.value
             }
         }
     }

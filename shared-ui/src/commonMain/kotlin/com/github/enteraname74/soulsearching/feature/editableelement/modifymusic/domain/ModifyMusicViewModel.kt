@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStrin
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -35,6 +36,7 @@ class ModifyMusicViewModel(
     private val getMusicUseCase: GetMusicUseCase,
     private val getAlbumsNameFromSearchStringUseCase: GetAlbumsNameFromSearchStringUseCase,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
+    private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
@@ -156,7 +158,14 @@ class ModifyMusicViewModel(
     }
 
     fun addArtistField() {
-        addedArtists.value = addedArtists.value.plus(Artist(artistName = ""))
+        screenModelScope.launch {
+            addedArtists.value = addedArtists.value.plus(
+                Artist(
+                    artistName = "",
+                    dataMode = getCurrentDataModeWithUserUseCase().first(),
+                )
+            )
+        }
     }
 
     fun showCoverBottomSheet() {

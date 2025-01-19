@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -31,7 +32,8 @@ internal data class RoomAlbum(
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     @ColumnInfo(index = true)
-    val artistId: UUID
+    val artistId: UUID,
+    val dataMode: String = DataMode.Local.value,
 )
 
 /**
@@ -45,6 +47,7 @@ internal fun RoomAlbum.toAlbum(): Album = Album(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     artistId = artistId,
+    dataMode = DataMode.fromString(dataMode) ?: DataMode.Local,
 )
 
 /**
@@ -58,4 +61,5 @@ internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     artistId = artistId,
+    dataMode = dataMode.value,
 )

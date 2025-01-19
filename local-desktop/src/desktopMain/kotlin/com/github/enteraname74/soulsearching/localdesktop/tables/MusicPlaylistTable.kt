@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.localdesktop.tables
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicPlaylist
+import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumTable.default
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTable.index
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
 import com.github.enteraname74.soulsearching.localdesktop.tables.PlaylistTable
@@ -21,6 +23,7 @@ internal object MusicPlaylistTable: Table() {
     val playlistId = reference("playlistId", PlaylistTable.id, onDelete = ReferenceOption.CASCADE).index(
         customIndexName = "index_MusicPlaylist_playlistId",
     )
+    val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 
     override val primaryKey: PrimaryKey = PrimaryKey(MusicArtistTable.id)
 }
@@ -32,7 +35,10 @@ internal fun ResultRow.toMusicPlaylist(): MusicPlaylist? =
     try {
         MusicPlaylist(
             musicId = this[MusicPlaylistTable.musicId].value,
-            playlistId = this[MusicPlaylistTable.playlistId].value
+            playlistId = this[MusicPlaylistTable.playlistId].value,
+            dataMode = DataMode.fromString(
+                this[MusicPlaylistTable.dataMode]
+            ) ?: DataMode.Local
         )
     } catch (_: Exception) {
         null

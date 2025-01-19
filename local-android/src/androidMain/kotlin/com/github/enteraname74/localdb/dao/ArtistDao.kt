@@ -24,15 +24,18 @@ internal interface ArtistDao {
     @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query("DELETE FROM RoomArtist WHERE dataMode = :dataMode")
+    suspend fun deleteAll(dataMode: String)
+
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
 
-    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAll(): Flow<List<RoomArtist>>
+    @Query("SELECT * FROM RoomArtist WHERE dataMode = :dataMode ORDER BY artistName ASC")
+    fun getAll(dataMode: String): Flow<List<RoomArtist>>
 
     @Transaction
-    @Query("SELECT * FROM RoomArtist ORDER BY artistName ASC")
-    fun getAllArtistWithMusics(): Flow<List<RoomArtistWithMusics?>>
+    @Query("SELECT * FROM RoomArtist WHERE dataMode = :dataMode ORDER BY artistName ASC")
+    fun getAllArtistWithMusics(dataMode: String): Flow<List<RoomArtistWithMusics?>>
 
     @Query("SELECT * FROM RoomArtist WHERE artistName = :artistName LIMIT 1")
     suspend fun getFromName(artistName: String): RoomArtist?
