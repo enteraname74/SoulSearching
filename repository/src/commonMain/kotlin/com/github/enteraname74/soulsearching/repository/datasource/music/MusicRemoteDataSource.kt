@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.music
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import java.time.LocalDateTime
 import java.util.*
 
@@ -20,5 +21,5 @@ interface MusicRemoteDataSource {
         music: Music,
         searchMetadata: Boolean,
         artists: List<String>,
-    ): SoulResult<Music?>
+    ): SoulResult<UploadedMusicResult>
 }

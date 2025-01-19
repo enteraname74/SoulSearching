@@ -4,11 +4,9 @@ import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
-import com.github.enteraname74.soulsearching.remote.model.JSON
-import com.github.enteraname74.soulsearching.remote.model.RemoteMusic
-import com.github.enteraname74.soulsearching.remote.model.RemoteResult
-import com.github.enteraname74.soulsearching.remote.model.safeRequest
+import com.github.enteraname74.soulsearching.remote.model.*
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
@@ -67,7 +65,7 @@ class MusicRemoteDataSourceImpl(
         music: Music,
         searchMetadata: Boolean,
         artists: List<String>,
-    ): SoulResult<Music?> {
+    ): SoulResult<UploadedMusicResult> {
         val file: File = File(music.path).takeIf { it.exists() } ?: return SoulResult.Error(null)
 
         val contentType = withContext(Dispatchers.IO) {
@@ -107,9 +105,11 @@ class MusicRemoteDataSourceImpl(
 
         return result.toSoulResult {
             try {
-                JSON.decodeFromString<RemoteMusic>(it).toMusic()
+                JSON.decodeFromString<RemoteUploadedMusicData>(it).toUploadMusicData()
             } catch (_: Exception) {
-                null
+                UploadedMusicResult.AlreadySaved(
+                    message = it,
+                )
             }
         }
     }

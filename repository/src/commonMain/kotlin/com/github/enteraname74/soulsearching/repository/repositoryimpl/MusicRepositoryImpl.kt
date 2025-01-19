@@ -2,15 +2,19 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +31,8 @@ class MusicRepositoryImpl(
     private val musicLocalDataSource: MusicLocalDataSource,
     private val musicRemoteDataSource: MusicRemoteDataSource,
     private val artistLocalDataSource: ArtistLocalDataSource,
+    private val musicArtistLocalDataSource: MusicArtistLocalDataSource,
+    private val albumLocalDataSource: AlbumLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
 ) : MusicRepository {
@@ -135,7 +141,7 @@ class MusicRepositoryImpl(
 
             allLocalSongs.forEach { music ->
                 val job = CoroutineScope(Dispatchers.IO).launch {
-                    val uploadResult: SoulResult<Music?> = musicRemoteDataSource.uploadMusicToCloud(
+                    val uploadResult: SoulResult<UploadedMusicResult> = musicRemoteDataSource.uploadMusicToCloud(
                         music = music,
                         searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
                         artists = artistLocalDataSource.getArtistsOfMusic(
@@ -150,13 +156,29 @@ class MusicRepositoryImpl(
                             /*no-op*/
                         }
                         is SoulResult.Success -> {
-                            uploadResult.data?.let {
+                            (uploadResult.data as? UploadedMusicResult.Data)?.let { data ->
                                 total.getAndIncrement()
                                 progressFunc(
                                     total.get().toFloat() / allLocalSongs.size
                                 )
+
+                                artistLocalDataSource.upsertAll(
+                                    artists = data.artists,
+                                )
+                                albumLocalDataSource.upsert(
+                                    album = data.album
+                                )
                                 musicLocalDataSource.upsert(
-                                    music = it,
+                                    music = data.music,
+                                )
+                                musicArtistLocalDataSource.upsertAll(
+                                    musicArtists = data.artists.map { artist ->
+                                        MusicArtist(
+                                            musicId = data.music.musicId,
+                                            artistId = artist.artistId,
+                                            dataMode = DataMode.Cloud,
+                                        )
+                                    }
                                 )
                             }
                         }
