@@ -22,4 +22,8 @@ interface MusicRemoteDataSource {
         searchMetadata: Boolean,
         artists: List<String>,
     ): SoulResult<UploadedMusicResult>
+
+    suspend fun deleteAll(
+        musicIds: List<UUID>
+    ): SoulResult<String>
 }

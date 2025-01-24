@@ -21,7 +21,7 @@ interface MusicRepository {
      */
     suspend fun delete(music: Music)
 
-    suspend fun deleteAll(ids: List<UUID>)
+    suspend fun deleteAll(ids: List<UUID>): SoulResult<String>
 
     suspend fun deleteAll(dataMode: DataMode)
 

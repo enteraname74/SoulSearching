@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicPlaylist
-import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
@@ -15,6 +12,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusic
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMultiMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
@@ -41,6 +39,7 @@ class MultiMusicBottomSheetDelegateImpl(
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val getMusicUseCase: GetMusicUseCase,
     private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     private val playbackManager: PlaybackManager,
 ): MultiMusicBottomSheetDelegate {
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistsWithMusicsUseCase()
@@ -78,7 +77,14 @@ class MultiMusicBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            deleteAllMusicsUseCase(selectedIdsToDelete)
+                            val result: SoulResult<String> = deleteAllMusicsUseCase(selectedIdsToDelete)
+
+                            (result as? SoulResult.Error)?.error?.let { error ->
+                                feedbackPopUpManager.showFeedback(
+                                    feedback = error,
+                                )
+                            }
+
                             playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
 
                             setDialogState(null)

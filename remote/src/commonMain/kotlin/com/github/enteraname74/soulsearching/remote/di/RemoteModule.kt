@@ -40,7 +40,7 @@ val remoteModule = module {
             }
 
             engine {
-                requestTimeout = 0L
+                requestTimeout = 60_000L
             }
 
             install(Auth) {

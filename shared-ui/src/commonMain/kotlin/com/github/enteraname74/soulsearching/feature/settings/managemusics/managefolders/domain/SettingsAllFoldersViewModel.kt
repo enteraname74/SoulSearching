@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
@@ -11,6 +12,7 @@ import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicFromFolderPathUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +32,7 @@ class SettingsAllFoldersViewModel(
     private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ): ScreenModel {
     private val isFetchingFolders: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val folders: MutableStateFlow<List<Folder>> = MutableStateFlow(emptyList())
@@ -95,7 +98,14 @@ class SettingsAllFoldersViewModel(
                         val musicsFromFolder: List<UUID> = getAllMusicFromFolderPathUseCase(folder.folderPath)
                             .first()
                             .map { it.musicId }
-                        deleteAllMusicsUseCase(ids = musicsFromFolder)
+                        val result: SoulResult<String> = deleteAllMusicsUseCase(ids = musicsFromFolder)
+
+                        (result as? SoulResult.Error)?.error?.let { error ->
+                            feedbackPopUpManager.showFeedback(
+                                feedback = error,
+                            )
+                        }
+
                         playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
 
                         val albumsToDelete = getAllAlbumWithMusicsUseCase()

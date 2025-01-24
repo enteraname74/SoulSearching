@@ -2,12 +2,15 @@ package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +25,8 @@ class ArtistBottomSheetDelegateImpl(
     private val deleteArtistUseCase: DeleteArtistUseCase,
     private val upsertArtistUseCase: UpsertArtistUseCase,
     private val playbackManager: PlaybackManager,
+    private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ArtistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -46,7 +51,15 @@ class ArtistBottomSheetDelegateImpl(
                 artistToDelete = artistWithMusics,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteArtistUseCase(artistWithMusics)
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = deleteArtistUseCase(artistWithMusics)
+
+                            (result as? SoulResult.Error)?.error?.let { error ->
+                                feedbackPopUpManager.showFeedback(
+                                    feedback = error,
+                                )
+                            }
+                        }
                     }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.

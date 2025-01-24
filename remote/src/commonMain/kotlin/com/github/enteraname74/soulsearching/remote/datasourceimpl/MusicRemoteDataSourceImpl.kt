@@ -61,6 +61,14 @@ class MusicRemoteDataSourceImpl(
         )
     }
 
+    override suspend fun deleteAll(musicIds: List<UUID>): SoulResult<String> =
+        client.safeRequest<String> {
+            delete(urlString = ServerRoutes.Music.DELETE) {
+                setBody(musicIds.map { it.toString() })
+                contentType(ContentType.Application.Json)
+            }
+        }.toSoulResult()
+
     override suspend fun uploadMusicToCloud(
         music: Music,
         searchMetadata: Boolean,

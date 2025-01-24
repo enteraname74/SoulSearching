@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.DataMode
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
@@ -52,9 +49,16 @@ class MusicRepositoryImpl(
         musicLocalDataSource.delete(music = music)
     }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
-        musicLocalDataSource.deleteAll(ids = ids)
-    }
+    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> =
+        when(dataModeDataSource.getCurrentDataModeWithUserCheck().first()) {
+            DataMode.Local -> {
+                musicLocalDataSource.deleteAll(ids = ids)
+                SoulResult.Success("")
+            }
+            DataMode.Cloud -> {
+                musicRemoteDataSource.deleteAll(musicIds = ids)
+            }
+        }
 
     override suspend fun deleteAll(dataMode: DataMode) {
         musicLocalDataSource.deleteAll(dataMode)
@@ -139,6 +143,11 @@ class MusicRepositoryImpl(
 
             val jobs = ArrayList<Job>()
 
+            val musicsToSave: ArrayList<Music> = arrayListOf()
+            val albumsToSave: ArrayList<Album> = arrayListOf()
+            val artistsToSave: ArrayList<Artist> = arrayListOf()
+            val musicArtistsToSave: ArrayList<MusicArtist> = arrayListOf()
+
             allLocalSongs.forEach { music ->
                 val job = CoroutineScope(Dispatchers.IO).launch {
                     val uploadResult: SoulResult<UploadedMusicResult> = musicRemoteDataSource.uploadMusicToCloud(
@@ -162,17 +171,11 @@ class MusicRepositoryImpl(
                                     total.get().toFloat() / allLocalSongs.size
                                 )
 
-                                artistLocalDataSource.upsertAll(
-                                    artists = data.artists,
-                                )
-                                albumLocalDataSource.upsert(
-                                    album = data.album
-                                )
-                                musicLocalDataSource.upsert(
-                                    music = data.music,
-                                )
-                                musicArtistLocalDataSource.upsertAll(
-                                    musicArtists = data.artists.map { artist ->
+                                musicsToSave.add(data.music)
+                                albumsToSave.add(data.album)
+                                artistsToSave.addAll(data.artists)
+                                musicArtistsToSave.addAll(
+                                    data.artists.map { artist ->
                                         MusicArtist(
                                             musicId = data.music.musicId,
                                             artistId = artist.artistId,
@@ -188,6 +191,20 @@ class MusicRepositoryImpl(
             }
 
             jobs.forEach { it.join() }
+
+            artistLocalDataSource.upsertAll(
+                artists = artistsToSave,
+            )
+            albumLocalDataSource.upsertAll(
+                albums = albumsToSave,
+            )
+            musicLocalDataSource.upsertAll(
+                musics = musicsToSave,
+            )
+            musicArtistLocalDataSource.upsertAll(
+                musicArtists = musicArtistsToSave
+            )
+
             SoulResult.Success(Unit)
         }
 
