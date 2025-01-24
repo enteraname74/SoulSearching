@@ -45,20 +45,38 @@ class MusicRepositoryImpl(
         musicLocalDataSource.upsertAll(musics = musics)
     }
 
-    override suspend fun delete(music: Music) {
-        musicLocalDataSource.delete(music = music)
-    }
-
-    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> =
-        when(dataModeDataSource.getCurrentDataModeWithUserCheck().first()) {
+    override suspend fun delete(music: Music): SoulResult<String> =
+        when (music.dataMode) {
             DataMode.Local -> {
-                musicLocalDataSource.deleteAll(ids = ids)
+                musicLocalDataSource.delete(music = music)
                 SoulResult.Success("")
             }
             DataMode.Cloud -> {
-                musicRemoteDataSource.deleteAll(musicIds = ids)
+                musicRemoteDataSource.deleteAll(
+                    musicIds = listOf(music.musicId),
+                )
             }
         }
+
+    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> {
+        val musicsToDelete: Pair<List<Music>, List<Music>> = musicLocalDataSource.getAll(
+            musicIds = ids,
+        ).partition { it.dataMode == DataMode.Local }
+
+        if (musicsToDelete.first.isNotEmpty()) {
+            musicLocalDataSource.deleteAll(
+                ids = musicsToDelete.first.map { it.musicId },
+            )
+        }
+
+        return if (musicsToDelete.second.isNotEmpty()) {
+            musicRemoteDataSource.deleteAll(
+                musicIds = musicsToDelete.second.map { it.musicId },
+            )
+        } else {
+            SoulResult.Success("")
+        }
+    }
 
     override suspend fun deleteAll(dataMode: DataMode) {
         musicLocalDataSource.deleteAll(dataMode)
@@ -74,12 +92,14 @@ class MusicRepositoryImpl(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getAll(): Flow<List<Music>> =
+    override fun getAll(
+        dataMode: DataMode?
+    ): Flow<List<Music>> =
         dataModeDataSource
             .getCurrentDataModeWithUserCheck()
-            .flatMapLatest { dataMode ->
+            .flatMapLatest { currentDataMode ->
                 musicLocalDataSource.getAll(
-                    dataMode = dataMode,
+                    dataMode = dataMode ?: currentDataMode,
                 )
             }
 

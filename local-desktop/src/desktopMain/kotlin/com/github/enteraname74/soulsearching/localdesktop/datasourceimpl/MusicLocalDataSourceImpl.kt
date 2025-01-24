@@ -47,6 +47,9 @@ internal class MusicLocalDataSourceImpl(
         dataMode = dataMode.value
     )
 
+    override suspend fun getAll(musicIds: List<UUID>): List<Music> =
+        musicDao.getAll(musicIds = musicIds)
+
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDao.getAllMusicFromAlbum(albumId).first()
 

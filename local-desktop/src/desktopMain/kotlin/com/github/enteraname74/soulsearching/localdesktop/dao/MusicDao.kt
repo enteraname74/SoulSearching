@@ -127,6 +127,13 @@ internal class MusicDao {
             .map { it.filterNotNull() }
     }
 
+    suspend fun getAll(musicIds: List<UUID>): List<Music> = dbQuery {
+        MusicTable
+            .selectAll()
+            .where { MusicTable.id inList musicIds }
+            .mapNotNull { it.toMusic() }
+    }
+
     fun getAllMusicFromAlbum(albumId: UUID): Flow<List<Music>> = transaction {
         MusicTable
             .selectAll()

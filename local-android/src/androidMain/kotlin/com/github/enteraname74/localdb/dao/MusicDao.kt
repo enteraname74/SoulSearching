@@ -37,6 +37,9 @@ internal interface MusicDao {
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND dataMode = :dataMode ORDER BY name ASC")
     fun getAll(dataMode: String): Flow<List<RoomMusic>>
 
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND musicId in (:musicIds)")
+    suspend fun getAll(musicIds: List<UUID>): List<RoomMusic>
+
     @Query("SELECT RoomMusic.* FROM RoomMusic WHERE albumId = :albumId AND isHidden = 0")
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomMusic>
 }

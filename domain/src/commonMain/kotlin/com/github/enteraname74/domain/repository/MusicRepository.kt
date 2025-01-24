@@ -19,7 +19,7 @@ interface MusicRepository {
     /**
      * Delete a music.
      */
-    suspend fun delete(music: Music)
+    suspend fun delete(music: Music): SoulResult<String>
 
     suspend fun deleteAll(ids: List<UUID>): SoulResult<String>
 
@@ -35,7 +35,7 @@ interface MusicRepository {
     /**
      * Retrieves a flow of all Music.
      */
-    fun getAll(): Flow<List<Music>>
+    fun getAll(dataMode: DataMode? = null): Flow<List<Music>>
 
     /**
      * Retrieves all musics of an Album.

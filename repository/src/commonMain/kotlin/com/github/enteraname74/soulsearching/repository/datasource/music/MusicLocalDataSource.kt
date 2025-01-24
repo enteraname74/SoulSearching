@@ -30,6 +30,11 @@ interface MusicLocalDataSource {
     suspend fun getFromPath(musicPath: String): Music?
 
     /**
+     * Retrieves all musics from a list of ids.
+     */
+    suspend fun getAll(musicIds: List<UUID>): List<Music>
+
+    /**
      * Retrieve a music from its id.
      */
     fun getFromId(musicId: UUID): Flow<Music?>

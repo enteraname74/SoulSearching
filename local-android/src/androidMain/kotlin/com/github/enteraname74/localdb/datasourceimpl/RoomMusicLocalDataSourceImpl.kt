@@ -50,6 +50,11 @@ internal class RoomMusicLocalDataSourceImpl(
         )?.toMusic()
     }
 
+    override suspend fun getAll(musicIds: List<UUID>): List<Music> =
+        appDatabase.musicDao.getAll(
+            musicIds = musicIds
+        ).map { it.toMusic() }
+
     override fun getFromId(musicId: UUID): Flow<Music?> {
         return appDatabase.musicDao.getFromId(
             musicId = musicId
