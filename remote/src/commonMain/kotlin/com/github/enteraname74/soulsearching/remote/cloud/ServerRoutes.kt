@@ -29,6 +29,9 @@ object ServerRoutes : KoinComponent {
         val DELETE: String
             get() = "$HOST$BASE_ROUTE"
 
+        val UPDATE: String
+            get() = "$HOST$BASE_ROUTE"
+
         fun upload(
             searchMetadata: Boolean
         ): String = "$HOST$BASE_ROUTE/upload?searchMetadata=$searchMetadata"
@@ -55,6 +58,9 @@ object ServerRoutes : KoinComponent {
         val DELETE: String
             get() = "$HOST${BASE_ROUTE}"
 
+        val UPDATE: String
+            get() = "$HOST${BASE_ROUTE}"
+
         fun all(
             after: LocalDateTime?,
             maxPerPage: Int,
@@ -75,6 +81,9 @@ object ServerRoutes : KoinComponent {
             get() = "$HOST$BASE_ROUTE/check"
 
         val DELETE: String
+            get() = "$HOST${BASE_ROUTE}"
+
+        val UPDATE: String
             get() = "$HOST${BASE_ROUTE}"
 
         fun all(

@@ -19,4 +19,9 @@ interface AlbumRemoteDataSource {
     suspend fun deleteAll(
         albumIds: List<UUID>
     ): SoulResult<String>
+
+    suspend fun update(
+        album: Album,
+        artist: String,
+    ): SoulResult<String>
 }

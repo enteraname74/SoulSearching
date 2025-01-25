@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -33,14 +36,31 @@ class MusicRepositoryImpl(
     private val albumLocalDataSource: AlbumLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
-) : MusicRepository {
+) : MusicRepository, KoinComponent {
+    private val cloudRepository: CloudRepository by inject()
+
     override val uploadFlow: MutableStateFlow<FlowResult<Unit>> = MutableStateFlow(
         FlowResult.Success(null)
     )
 
-    override suspend fun upsert(music: Music) {
-        musicLocalDataSource.upsert(music = music)
-    }
+    override suspend fun upsert(
+        music: Music,
+        artists: List<String>,
+    ): SoulResult<String> =
+        when(music.dataMode) {
+            DataMode.Local -> {
+                musicLocalDataSource.upsert(music = music)
+                SoulResult.Success("")
+            }
+            DataMode.Cloud -> {
+                val result = musicRemoteDataSource.update(
+                    music = music,
+                    artists = artists,
+                )
+                cloudRepository.syncDataWithCloud()
+                result
+            }
+        }
 
     override suspend fun upsertAll(musics: List<Music>) {
         musicLocalDataSource.upsertAll(musics = musics)
@@ -53,9 +73,11 @@ class MusicRepositoryImpl(
                 SoulResult.Success("")
             }
             DataMode.Cloud -> {
-                musicRemoteDataSource.deleteAll(
+                val result = musicRemoteDataSource.deleteAll(
                     musicIds = listOf(music.musicId),
                 )
+                cloudRepository.syncDataWithCloud()
+                result
             }
         }
 

@@ -13,8 +13,7 @@ interface ArtistRepository {
     /**
      * Inserts or updates an artist.
      */
-    suspend fun upsert(artist: Artist)
-
+    suspend fun upsert(artist: Artist): SoulResult<String>
     suspend fun upsertAll(artists: List<Artist>)
 
     /**

@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.ToggleArtistQuickAccessStateUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -23,7 +23,7 @@ interface ArtistBottomSheetDelegate {
 
 class ArtistBottomSheetDelegateImpl(
     private val deleteArtistUseCase: DeleteArtistUseCase,
-    private val upsertArtistUseCase: UpsertArtistUseCase,
+    private val toggleArtistQuickAccessStateUseCase: ToggleArtistQuickAccessStateUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
@@ -75,11 +75,10 @@ class ArtistBottomSheetDelegateImpl(
                 onModifyArtist = { onModifyArtist(selectedArtist.artist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertArtistUseCase(
-                            artist = selectedArtist.artist.copy(
-                                isInQuickAccess = !selectedArtist.artist.isInQuickAccess,
-                            )
+                        val result: SoulResult<String> = toggleArtistQuickAccessStateUseCase(
+                            artist = selectedArtist.artist
                         )
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                         multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
                     }

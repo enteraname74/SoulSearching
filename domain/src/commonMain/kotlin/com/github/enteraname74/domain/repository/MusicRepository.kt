@@ -11,9 +11,12 @@ interface MusicRepository {
 
     /**
      * Upsert a music.
+     * @param artists the list of artists name of the music. Used for the cloud to update the artists of the music.
      */
-    suspend fun upsert(music: Music)
-
+    suspend fun upsert(
+        music: Music,
+        artists: List<String> = emptyList(),
+    ): SoulResult<String>
     suspend fun upsertAll(musics: List<Music>)
 
     /**

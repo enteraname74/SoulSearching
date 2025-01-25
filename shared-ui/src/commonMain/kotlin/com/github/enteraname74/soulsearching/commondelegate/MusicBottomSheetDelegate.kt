@@ -1,15 +1,12 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
+import com.github.enteraname74.domain.usecase.music.ToggleMusicQuickAccessStateUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheet
-import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -21,7 +18,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 interface MusicBottomSheetDelegate {
     fun showMusicBottomSheet(
@@ -34,7 +30,7 @@ class MusicBottomSheetDelegateImpl(
     private val deleteMusicUseCase: DeleteMusicUseCase,
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
     private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
+    private val toggleMusicQuickAccessStateUseCase: ToggleMusicQuickAccessStateUseCase,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : MusicBottomSheetDelegate {
@@ -167,11 +163,8 @@ class MusicBottomSheetDelegateImpl(
                 onAddToPlaylist = { showAddToPlaylistsBottomSheet(musicToAdd = selectedMusic) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertMusicUseCase(
-                            music = selectedMusic.copy(
-                                isInQuickAccess = !selectedMusic.isInQuickAccess,
-                            )
-                        )
+                        val result: SoulResult<String> = toggleMusicQuickAccessStateUseCase(music = selectedMusic)
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                         multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },

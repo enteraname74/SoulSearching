@@ -4,9 +4,11 @@ import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
-import com.github.enteraname74.soulsearching.remote.model.RemoteArtist
+import com.github.enteraname74.soulsearching.remote.model.artist.RemoteArtist
 import com.github.enteraname74.soulsearching.remote.model.RemoteResult
+import com.github.enteraname74.soulsearching.remote.model.artist.toModifiedArtist
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
+import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -59,6 +61,14 @@ class ArtistRemoteDataSourceImpl(
             println("Will call route: ${ServerRoutes.Artist.DELETE}")
             delete(urlString = ServerRoutes.Artist.DELETE) {
                 setBody(artistIds.map { it.toString() })
+                contentType(ContentType.Application.Json)
+            }
+        }.toSoulResult()
+
+    override suspend fun update(artist: Artist): SoulResult<String> =
+        client.safeSimpleRequest {
+            put(urlString = ServerRoutes.Artist.UPDATE) {
+                setBody(artist.toModifiedArtist())
                 contentType(ContentType.Application.Json)
             }
         }.toSoulResult()

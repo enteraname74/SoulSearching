@@ -17,9 +17,12 @@ interface AlbumRepository {
 
     /**
      * Inserts a new Album.
+     * @param artist the name of the artist of the album. Used by the cloud to update the artist of the album.
      */
-    suspend fun upsert(album: Album)
-
+    suspend fun upsert(
+        album: Album,
+        artist: String = "",
+    ): SoulResult<String>
     suspend fun upsertAll(albums: List<Album>)
 
     /**

@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
@@ -19,9 +17,16 @@ class UpdateArtistUseCase(
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
 ) {
-    suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
+    suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<String> =
+        when (newArtistWithMusicsInformation.artist.dataMode) {
+            DataMode.Local -> localUpdate(newArtistWithMusicsInformation)
+            DataMode.Cloud -> artistRepository.upsert(newArtistWithMusicsInformation.artist)
+        }
+
+    private suspend fun localUpdate(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<String> {
         val legacyArtist: Artist =
-            artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
+            artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull()
+                ?: return SoulResult.Success("")
 
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
@@ -60,6 +65,8 @@ class UpdateArtistUseCase(
                         possibleDuplicatedArtist?.isInQuickAccess == true
             )
         )
+
+        return SoulResult.Success("")
     }
 
     /**

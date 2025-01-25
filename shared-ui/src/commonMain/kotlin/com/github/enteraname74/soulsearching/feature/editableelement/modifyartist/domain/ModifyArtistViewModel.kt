@@ -4,9 +4,11 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
@@ -26,6 +28,7 @@ class ModifyArtistViewModel(
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel {
     private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -122,7 +125,9 @@ class ModifyArtistViewModel(
                     )
                 )
 
-                updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+                val result: SoulResult<String> =
+                    updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+                feedbackPopUpManager.showResultErrorIfAny(result)
 
                 val newArtistWithMusics: ArtistWithMusics = getArtistWithMusicsUseCase(
                     artistId = newArtistInformation.artist.artistId,

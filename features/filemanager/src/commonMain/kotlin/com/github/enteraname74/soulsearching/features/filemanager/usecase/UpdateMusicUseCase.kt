@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
@@ -136,19 +133,12 @@ class UpdateMusicUseCase(
         }
     }
 
-    /**
-     * Update a music.
-     *
-     * @param legacyMusic the information of the previous version of the music to update
-     * (used for comparison between the legacy and new music information for better updating).
-     * @param newMusicInformation the new music information to save.
-     */
-    suspend operator fun invoke(
+    suspend private fun updateLocal(
         legacyMusic: Music,
         previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
-    ) {
+    ): SoulResult<String> {
         if (previousArtists.map { it.artistName } != newArtistsNames) {
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
@@ -179,5 +169,38 @@ class UpdateMusicUseCase(
             )
         )
         musicFileUpdater.updateMusic(music = newMusicInformation)
+
+        return SoulResult.Success("")
     }
+
+    /**
+     * Update a music.
+     *
+     * @param legacyMusic the information of the previous version of the music to update
+     * (used for comparison between the legacy and new music information for better updating).
+     * @param newArtistsNames the new list of artists the music should belong to.
+     * @param newMusicInformation the new music information to save.
+     */
+    suspend operator fun invoke(
+        legacyMusic: Music,
+        previousArtists: List<Artist>,
+        newArtistsNames: List<String>,
+        newMusicInformation: Music,
+    ): SoulResult<String> =
+        when(legacyMusic.dataMode) {
+            DataMode.Local -> {
+                updateLocal(
+                    legacyMusic = legacyMusic,
+                    newMusicInformation = newMusicInformation,
+                    previousArtists = previousArtists,
+                    newArtistsNames = newArtistsNames,
+                )
+            }
+            DataMode.Cloud -> {
+                musicRepository.upsert(
+                    music = newMusicInformation,
+                    artists = newArtistsNames,
+                )
+            }
+        }
 }

@@ -1,6 +1,5 @@
-package com.github.enteraname74.soulsearching.remote.model
-
-import com.github.enteraname74.domain.model.Album
+package com.github.enteraname74.soulsearching.remote.model.artist
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.util.serializer.LocalDateTimeSerializer
@@ -10,28 +9,25 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Serializable
-data class RemoteAlbum(
+data class RemoteArtist(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val name: String,
     val coverPath: String?,
     @Serializable(with = LocalDateTimeSerializer::class)
-    val addedDate: LocalDateTime,
-    val nbPlayed: Int,
-    val isInQuickAccess: Boolean,
-    @Serializable(with = UUIDSerializer::class)
-    val artistId: UUID,
+    var addedDate: LocalDateTime,
+    var nbPlayed: Int,
+    var isInQuickAccess: Boolean,
 ) {
-    fun toAlbum(): Album = Album(
-        albumId = id,
-        albumName = name,
+    fun toArtist(): Artist = Artist(
+        artistId = id,
+        artistName = name,
         cover = Cover.CoverUrl(
             url = coverPath,
         ),
         addedDate = addedDate,
         nbPlayed = nbPlayed,
         isInQuickAccess = isInQuickAccess,
-        artistId = artistId,
         dataMode = DataMode.Cloud,
     )
 }

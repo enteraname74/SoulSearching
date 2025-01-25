@@ -2,15 +2,19 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalDateTime
 import java.util.*
 
@@ -20,9 +24,11 @@ import java.util.*
 class AlbumRepositoryImpl(
     private val albumLocalDataSource: AlbumLocalDataSource,
     private val albumRemoteDataSource: AlbumRemoteDataSource,
+    private val artistLocalDataSource: ArtistLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
-) : AlbumRepository {
+) : AlbumRepository, KoinComponent {
+    private val cloudRepository: CloudRepository by inject()
 
     override suspend fun delete(album: Album): SoulResult<String> =
         when (album.dataMode) {
@@ -32,9 +38,11 @@ class AlbumRepositoryImpl(
             }
 
             DataMode.Cloud -> {
-                albumRemoteDataSource.deleteAll(
+                val result = albumRemoteDataSource.deleteAll(
                     albumIds = listOf(album.albumId),
                 )
+                cloudRepository.syncDataWithCloud()
+                result
             }
         }
 
@@ -56,9 +64,27 @@ class AlbumRepositoryImpl(
         albumLocalDataSource.upsertAll(albums)
     }
 
-    override suspend fun upsert(album: Album) = albumLocalDataSource.upsert(
-        album = album
-    )
+    override suspend fun upsert(
+        album: Album,
+        artist: String,
+    ): SoulResult<String> =
+        when (album.dataMode) {
+            DataMode.Local -> {
+                albumLocalDataSource.upsert(
+                    album = album
+                )
+                SoulResult.Success("")
+            }
+
+            DataMode.Cloud -> {
+                val result = albumRemoteDataSource.update(
+                    album = album,
+                    artist = artist,
+                )
+                cloudRepository.syncDataWithCloud()
+                result
+            }
+        }
 
     override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = albumLocalDataSource.getAlbumsOfArtist(
         artistId = artistId

@@ -18,12 +18,23 @@ class UpdateAlbumUseCase(
 ) {
     suspend operator fun invoke(
         newAlbumWithArtistInformation: AlbumWithArtist,
-    ) {
-        if (newAlbumWithArtistInformation.artist == null) return
+    ): SoulResult<String> =
+        when(newAlbumWithArtistInformation.album.dataMode) {
+            DataMode.Local -> localUpdate(newAlbumWithArtistInformation)
+            DataMode.Cloud -> albumRepository.upsert(
+                album = newAlbumWithArtistInformation.album,
+                artist = newAlbumWithArtistInformation.artist?.artistName.orEmpty(),
+            )
+        }
+
+    private suspend fun localUpdate(
+        newAlbumWithArtistInformation: AlbumWithArtist
+    ): SoulResult<String> {
+        if (newAlbumWithArtistInformation.artist == null) return SoulResult.Success("")
 
         val initialArtist: Artist = artistRepository.getFromId(
             artistId = newAlbumWithArtistInformation.artist!!.artistId
-        ).first() ?: return
+        ).first() ?: return SoulResult.Success("")
 
 
         var albumArtistToSave = initialArtist
@@ -75,6 +86,8 @@ class UpdateAlbumUseCase(
 
         // We check and delete the initial artist if it no longer possess songs.
         deleteArtistIfEmptyUseCase(artistId = initialArtist.artistId)
+
+        return SoulResult.Success("")
     }
 
     private suspend fun replaceArtistOfMusic(

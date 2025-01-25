@@ -6,11 +6,9 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.usecase.cloud.SyncDataWithCloudUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
 
 class DeleteArtistUseCase(
     private val albumRepository: AlbumRepository,
@@ -18,7 +16,6 @@ class DeleteArtistUseCase(
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
-    private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase,
 ) {
 
     private suspend fun deleteLocal(artistWithMusics: ArtistWithMusics): SoulResult<String> {
@@ -66,10 +63,6 @@ class DeleteArtistUseCase(
     suspend operator fun invoke(artistWithMusics: ArtistWithMusics): SoulResult<String> =
         when(artistWithMusics.artist.dataMode) {
             DataMode.Local -> deleteLocal(artistWithMusics)
-            DataMode.Cloud -> {
-                val result = artistRepository.delete(artistWithMusics.artist)
-                syncDataWithCloudUseCase()
-                result
-            }
+            DataMode.Cloud -> artistRepository.delete(artistWithMusics.artist)
         }
 }

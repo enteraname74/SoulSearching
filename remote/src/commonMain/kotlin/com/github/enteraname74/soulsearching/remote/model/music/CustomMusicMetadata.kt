@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.remote.model
+package com.github.enteraname74.soulsearching.remote.model.music
 
 import com.github.enteraname74.domain.model.Music
 import kotlinx.serialization.Serializable

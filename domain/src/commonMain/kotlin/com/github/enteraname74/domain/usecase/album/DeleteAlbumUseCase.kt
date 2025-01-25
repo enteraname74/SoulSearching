@@ -62,11 +62,7 @@ class DeleteAlbumUseCase(
     suspend operator fun invoke(album: Album): SoulResult<String> =
         when(album.dataMode) {
             DataMode.Local -> deleteLocal(album)
-            DataMode.Cloud -> {
-                val result = albumRepository.delete(album)
-                cloudRepository.syncDataWithCloud()
-                result
-            }
+            DataMode.Cloud -> albumRepository.delete(album)
         }
 
     suspend fun onlyAlbum(albumId: UUID): SoulResult<String> =

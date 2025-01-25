@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
@@ -14,6 +15,7 @@ import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUse
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
@@ -43,6 +45,7 @@ class ModifyMusicViewModel(
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
@@ -220,12 +223,13 @@ class ModifyMusicViewModel(
                 artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 
-            updateMusicUseCase(
+            val result: SoulResult<String> = updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
                 previousArtists = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
             )
+            feedbackPopUpManager.showResultErrorIfAny(result)
 
             playbackManager.updateMusic(newMusicInformation)
             if (

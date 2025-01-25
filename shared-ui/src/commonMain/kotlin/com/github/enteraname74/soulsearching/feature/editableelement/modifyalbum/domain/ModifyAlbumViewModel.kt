@@ -5,10 +5,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
@@ -29,6 +31,7 @@ class ModifyAlbumViewModel(
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel {
     private val albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -140,7 +143,9 @@ class ModifyAlbumViewModel(
                 )
 
                 // We update the information of the album.
-                updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+                val result: SoulResult<String> =
+                    updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+                feedbackPopUpManager.showResultErrorIfAny(result)
 
                 // We retrieve the updated album
                 val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(

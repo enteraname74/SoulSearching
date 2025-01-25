@@ -5,6 +5,10 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.*
+import com.github.enteraname74.soulsearching.remote.model.music.CustomMusicMetadata
+import com.github.enteraname74.soulsearching.remote.model.music.RemoteMusic
+import com.github.enteraname74.soulsearching.remote.model.music.RemoteUploadedMusicData
+import com.github.enteraname74.soulsearching.remote.model.music.toModifiedMusic
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import io.ktor.client.*
@@ -14,7 +18,6 @@ import io.ktor.http.*
 import io.ktor.utils.io.streams.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import java.io.File
 import java.nio.file.Files
@@ -65,6 +68,14 @@ class MusicRemoteDataSourceImpl(
         client.safeRequest<String> {
             delete(urlString = ServerRoutes.Music.DELETE) {
                 setBody(musicIds.map { it.toString() })
+                contentType(ContentType.Application.Json)
+            }
+        }.toSoulResult()
+
+    override suspend fun update(music: Music, artists: List<String>): SoulResult<String> =
+        client.safeSimpleRequest {
+            put(urlString = ServerRoutes.Music.UPDATE) {
+                setBody(music.toModifiedMusic(artists))
                 contentType(ContentType.Application.Json)
             }
         }.toSoulResult()

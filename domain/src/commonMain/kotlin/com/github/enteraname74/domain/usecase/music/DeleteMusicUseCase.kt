@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
 import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
@@ -15,7 +14,6 @@ class DeleteMusicUseCase(
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
-    private val cloudRepository: CloudRepository,
 ) {
     private suspend fun deleteLocal(music: Music): SoulResult<String> {
         val artists: List<Artist> = getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull() ?: emptyList()
@@ -36,10 +34,6 @@ class DeleteMusicUseCase(
     suspend operator fun invoke(music: Music): SoulResult<String> =
         when(music.dataMode) {
             DataMode.Local -> deleteLocal(music)
-            DataMode.Cloud -> {
-                val result = musicRepository.delete(music)
-                cloudRepository.syncDataWithCloud()
-                result
-            }
+            DataMode.Cloud -> musicRepository.delete(music)
         }
 }

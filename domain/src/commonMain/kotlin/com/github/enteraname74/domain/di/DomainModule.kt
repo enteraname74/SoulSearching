@@ -45,7 +45,6 @@ val domainModule = module {
     singleOf(::GetCorrespondingAlbumUseCase)
     singleOf(::GetDuplicatedAlbumUseCase)
     singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
-    singleOf(::UpdateAlbumCoverUseCase)
     singleOf(::UpdateAlbumNbPlayedUseCase)
     singleOf(::UpsertAlbumUseCase)
     singleOf(::UpsertAllAlbumsUseCase)
@@ -65,10 +64,9 @@ val domainModule = module {
     singleOf(::GetArtistsOfMusicUseCase)
     singleOf(::GetArtistWithMusicsUseCase)
     singleOf(::GetDuplicatedArtistUseCase)
-    singleOf(::UpdateArtistCoverUseCase)
     singleOf(::UpdateArtistNbPlayedUseCase)
     singleOf(::UpsertAllArtistsUseCase)
-    singleOf(::UpsertArtistUseCase)
+    singleOf(::ToggleArtistQuickAccessStateUseCase)
 
     // Auth
     singleOf(::GetCloudHostUseCase)
@@ -121,7 +119,7 @@ val domainModule = module {
     singleOf(::UpdateMusicNbPlayedUseCase)
     singleOf(::UploadAllMusicToCloudUseCase)
     singleOf(::UpsertAllMusicsUseCase)
-    singleOf(::UpsertMusicUseCase)
+    singleOf(::ToggleMusicQuickAccessStateUseCase)
 
     // MusicArtist
     singleOf(::GetAllMusicArtistUseCase)

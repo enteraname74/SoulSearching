@@ -35,3 +35,16 @@ suspend inline fun <reified T> HttpClient.safeRequest(
 } catch (e: Exception) {
     RemoteResult.Error(e.message ?: e.toString())
 }
+
+suspend fun HttpClient.safeSimpleRequest(
+    block: suspend HttpClient.() -> HttpResponse
+): RemoteResult<String> = try {
+    val response = block(this)
+    if (response.status.isSuccess()) {
+        RemoteResult.Success(response.bodyAsText())
+    } else {
+        RemoteResult.Error(response.bodyAsText())
+    }
+} catch (e: Exception) {
+    RemoteResult.Error(e.message ?: e.toString())
+}
