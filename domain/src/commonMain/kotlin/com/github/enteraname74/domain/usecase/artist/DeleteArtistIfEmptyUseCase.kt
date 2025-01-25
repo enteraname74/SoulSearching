@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.artist
 
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.ArtistRepository
 import kotlinx.coroutines.flow.first
 import java.util.UUID
@@ -10,12 +11,14 @@ class DeleteArtistIfEmptyUseCase(
 ) {
     suspend operator fun invoke(
         artistId: UUID
-    ) {
+    ): SoulResult<String> {
         val artistWithMusics: ArtistWithMusics =
-            artistRepository.getArtistWithMusics(artistId = artistId).first() ?: return
+            artistRepository.getArtistWithMusics(artistId = artistId).first() ?: return SoulResult.Success("")
 
-        if (artistWithMusics.musics.isEmpty()) {
+        return if (artistWithMusics.musics.isEmpty()) {
             artistRepository.delete(artist = artistWithMusics.artist)
+        } else {
+            SoulResult.Success("")
         }
     }
 }

@@ -85,6 +85,9 @@ internal class RoomAlbumLocalDataSourceImpl(
         }
     }
 
+    override suspend fun getAll(albumIds: List<UUID>): List<Album> =
+        appDatabase.albumDao.getAll(albumIds).map { it.toAlbum() }
+
     override fun getAllAlbumWithMusics(dataMode: DataMode): Flow<List<AlbumWithMusics>> {
         return appDatabase.albumDao.getAllAlbumWithMusics(dataMode.value).map { list ->
             list.map { it.toAlbumWithMusics() }

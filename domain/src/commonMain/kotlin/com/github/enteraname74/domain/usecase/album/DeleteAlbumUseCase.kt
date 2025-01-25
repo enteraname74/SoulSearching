@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
@@ -15,8 +16,9 @@ class DeleteAlbumUseCase(
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
 ) {
-    suspend operator fun invoke(albumId: UUID) {
-        val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
+    suspend operator fun invoke(albumId: UUID): SoulResult<String> {
+        val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first()
+            ?: return SoulResult.Success("")
 
         /*
         Album may hold songs that are shared by other artists.
@@ -33,29 +35,33 @@ class DeleteAlbumUseCase(
             .filter { it.artistId != albumWithMusics.artist?.artistId }
             .distinctBy { it.artistId }
 
-        // We first delete the musics of the album.
-        albumWithMusics.musics.forEach { music ->
-            musicRepository.delete(music)
-        }
+        val musicDeletionResult: SoulResult<String> = musicRepository.deleteAll(
+            ids = albumWithMusics.musics.map { it.musicId },
+        )
+
+        if (musicDeletionResult.isError()) return musicDeletionResult
+
         // We then delete the album
-        albumRepository.delete(albumWithMusics.album)
+        val albumDeletionResult: SoulResult<String> = albumRepository.delete(albumWithMusics.album)
+        if (albumDeletionResult.isError()) return albumDeletionResult
 
         // Finally we can check if we can delete the artist of the deleted album.
         albumWithMusics.artist?.let {
-            deleteArtistIfEmptyUseCase(
-                artistId = it.artistId,
-            )
+            val artistDeletionResult = deleteArtistIfEmptyUseCase(it.artistId)
+            if (artistDeletionResult.isError()) return artistDeletionResult
         }
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            deleteArtistIfEmptyUseCase(it.artistId)
+            val artistDeletionResult = deleteArtistIfEmptyUseCase(it.artistId)
+            if (artistDeletionResult.isError()) return artistDeletionResult
         }
+
+        return SoulResult.Success("")
     }
 
-    suspend fun onlyAlbum(albumId: UUID) {
+    suspend fun onlyAlbum(albumId: UUID): SoulResult<String> =
         albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {
             albumRepository.delete(it.album)
-        }
-    }
+        } ?: SoulResult.Success("")
 }

@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLo
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
+import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,25 +59,15 @@ class MusicRepositoryImpl(
             }
         }
 
-    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> {
-        val musicsToDelete: Pair<List<Music>, List<Music>> = musicLocalDataSource.getAll(
-            musicIds = ids,
-        ).partition { it.dataMode == DataMode.Local }
-
-        if (musicsToDelete.first.isNotEmpty()) {
-            musicLocalDataSource.deleteAll(
-                ids = musicsToDelete.first.map { it.musicId },
-            )
-        }
-
-        return if (musicsToDelete.second.isNotEmpty()) {
-            musicRemoteDataSource.deleteAll(
-                musicIds = musicsToDelete.second.map { it.musicId },
-            )
-        } else {
-            SoulResult.Success("")
-        }
-    }
+    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> =
+        DeleteAllHelper.deleteAll(
+            ids = ids,
+            getAll = musicLocalDataSource::getAll,
+            deleteAllLocal = musicLocalDataSource::deleteAll,
+            deleteAllRemote = musicRemoteDataSource::deleteAll,
+            mapIds = { it.musicId },
+            getDataMode = { it.dataMode },
+        )
 
     override suspend fun deleteAll(dataMode: DataMode) {
         musicLocalDataSource.deleteAll(dataMode)

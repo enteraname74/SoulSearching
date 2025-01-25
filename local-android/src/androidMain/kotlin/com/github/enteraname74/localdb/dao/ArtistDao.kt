@@ -33,6 +33,9 @@ internal interface ArtistDao {
     @Query("SELECT * FROM RoomArtist WHERE dataMode = :dataMode ORDER BY artistName ASC")
     fun getAll(dataMode: String): Flow<List<RoomArtist>>
 
+    @Query("SELECT * FROM RoomArtist WHERE artistId IN (:artistsIds)")
+    suspend fun getAll(artistsIds: List<UUID>): List<RoomArtist>
+
     @Transaction
     @Query("SELECT * FROM RoomArtist WHERE dataMode = :dataMode ORDER BY artistName ASC")
     fun getAllArtistWithMusics(dataMode: String): Flow<List<RoomArtistWithMusics?>>

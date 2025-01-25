@@ -367,6 +367,7 @@ class MainPageViewModel(
             if (getCurrentDataModeWithUserUseCase().first() != DataMode.Cloud) return@launch
 
             val result: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
+            feedbackPopUpManager.showResultErrorIfAny(result)
 
             (result as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
                 playbackManager.removeSongsFromPlayedPlaylist(
@@ -396,7 +397,11 @@ class MainPageViewModel(
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)
                     )
-                    deleteMusicUseCase(music = music)
+                    val result: SoulResult<String> = deleteMusicUseCase(music = music)
+
+                    feedbackPopUpManager.showResultErrorIfAny(result)
+                    if (result.isError()) return@launch
+
                     deleteCount += 1
                 }
             }

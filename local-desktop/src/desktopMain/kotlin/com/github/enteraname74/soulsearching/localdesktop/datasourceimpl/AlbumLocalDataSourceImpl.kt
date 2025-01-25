@@ -48,6 +48,9 @@ internal class AlbumLocalDataSourceImpl(
     override fun getAll(dataMode: DataMode): Flow<List<Album>> =
         albumDao.getAll(dataMode.value)
 
+    override suspend fun getAll(albumIds: List<UUID>): List<Album> =
+        albumDao.getAll(albumIds)
+
     override fun getAllAlbumWithMusics(dataMode: DataMode): Flow<List<AlbumWithMusics>> =
         albumDao.getAllAlbumsWithMusics(dataMode.value)
 

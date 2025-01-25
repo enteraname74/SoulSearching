@@ -53,4 +53,12 @@ class AlbumRemoteDataSourceImpl(
             }
         )
     }
+
+    override suspend fun deleteAll(albumIds: List<UUID>): SoulResult<String> =
+        client.safeRequest<String> {
+            delete(urlString = ServerRoutes.Album.DELETE) {
+                setBody(albumIds.map { it.toString() })
+                contentType(ContentType.Application.Json)
+            }
+        }.toSoulResult()
 }

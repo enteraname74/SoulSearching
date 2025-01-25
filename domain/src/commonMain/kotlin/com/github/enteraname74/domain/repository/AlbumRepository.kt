@@ -11,10 +11,8 @@ interface AlbumRepository {
     /**
      * Delete an album.
      */
-    suspend fun delete(album: Album)
-
-    suspend fun deleteAll(ids: List<UUID>)
-
+    suspend fun delete(album: Album): SoulResult<String>
+    suspend fun deleteAll(ids: List<UUID>): SoulResult<String>
     suspend fun deleteAll(dataMode: DataMode)
 
     /**

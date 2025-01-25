@@ -41,6 +41,9 @@ internal interface AlbumDao {
     @Query("SELECT * FROM RoomAlbum WHERE dataMode = :dataMode ORDER BY albumName ASC")
     fun getAll(dataMode: String): Flow<List<RoomAlbum>>
 
+    @Query("SELECT * FROM RoomAlbum WHERE albumId in (:albumIds)")
+    suspend fun getAll(albumIds: List<UUID>): List<RoomAlbum>
+
     @Query("SELECT * FROM RoomAlbum WHERE albumId = :albumId")
     fun getFromId(albumId: UUID): Flow<RoomAlbum?>
 

@@ -7,6 +7,7 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
+import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -75,6 +76,13 @@ internal class AlbumDao(
             .asFlow()
             .mapResultRow { it.toAlbum() }
             .map { it.filterNotNull() }
+    }
+
+    suspend fun getAll(albumIds: List<UUID>): List<Album> = dbQuery {
+        AlbumTable
+            .selectAll()
+            .where { AlbumTable.id inList albumIds }
+            .mapNotNull { it.toAlbum() }
     }
 
     fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> = transaction {

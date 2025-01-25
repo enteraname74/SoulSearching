@@ -15,4 +15,8 @@ interface AlbumRemoteDataSource {
         maxPerPage: Int,
         page: Int,
     ): SoulResult<List<Album>>
+
+    suspend fun deleteAll(
+        albumIds: List<UUID>
+    ): SoulResult<String>
 }

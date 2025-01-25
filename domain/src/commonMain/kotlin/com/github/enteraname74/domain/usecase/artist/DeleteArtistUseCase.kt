@@ -46,18 +46,21 @@ class DeleteArtistUseCase(
             artistId = artistWithMusics.artist.artistId
         ).first()
 
-        albumRepository.deleteAll(
+        val albumDeletionResult: SoulResult<String> = albumRepository.deleteAll(
             ids = albumsToDelete.map { it.albumId }
         )
+        if (albumDeletionResult.isError()) return albumDeletionResult
 
         // And we finally delete the artist.
-        artistRepository.delete(artistWithMusics.artist)
+        val artistDeletionResult: SoulResult<String> = artistRepository.delete(artistWithMusics.artist)
+        if (artistDeletionResult.isError()) return artistDeletionResult
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            deleteArtistIfEmptyUseCase(it.artistId)
+            val result = deleteArtistIfEmptyUseCase(it.artistId)
+            if (result.isError()) return result
         }
 
-        return result
+        return SoulResult.Success("")
     }
 }

@@ -58,6 +58,9 @@ internal class RoomArtistLocalDataSourceImpl(
         }
     }
 
+    override suspend fun getAll(artistIds: List<UUID>): List<Artist> =
+        appDatabase.artistDao.getAll(artistIds).map { it.toArtist() }
+
     override fun getAllArtistWithMusics(dataMode: DataMode): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusics(dataMode.value).map { list ->
             list.filterNotNull().map { it.toArtistWithMusics() }

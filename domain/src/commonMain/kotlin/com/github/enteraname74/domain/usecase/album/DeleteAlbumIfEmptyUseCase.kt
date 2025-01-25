@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.first
 import java.util.*
@@ -12,11 +13,14 @@ import java.util.*
 class DeleteAlbumIfEmptyUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(albumId: UUID) {
-        val albumWithMusics: AlbumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
+    suspend operator fun invoke(albumId: UUID): SoulResult<String> {
+        val albumWithMusics: AlbumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first()
+            ?: return SoulResult.Success("")
 
-        if (albumWithMusics.musics.isEmpty()) {
+        return if (albumWithMusics.musics.isEmpty()) {
             albumRepository.delete(album = albumWithMusics.album)
+        } else {
+            SoulResult.Success("")
         }
     }
 }

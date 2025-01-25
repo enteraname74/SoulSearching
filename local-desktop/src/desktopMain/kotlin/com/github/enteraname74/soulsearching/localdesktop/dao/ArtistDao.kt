@@ -86,9 +86,17 @@ internal class ArtistDao(
         ArtistTable
             .selectAll()
             .where { ArtistTable.dataMode eq dataMode }
+            .orderBy(artistName to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toArtist() }
             .map { list -> list.filterNotNull() }
+    }
+
+    suspend fun getAll(artistIds: List<UUID>): List<Artist> = dbQuery {
+        ArtistTable
+            .selectAll()
+            .where { ArtistTable.id inList artistIds}
+            .mapNotNull { it.toArtist() }
     }
 
     fun getAllArtistWithMusics(dataMode: String): Flow<List<ArtistWithMusics>> = transaction {
@@ -99,7 +107,7 @@ internal class ArtistDao(
             .map { list ->
                 list.groupBy(
                     { it.toArtist() }, { it.toMusic() }
-                ).map { (artist,songs) ->
+                ).map { (artist, songs) ->
                     artist?.let {
                         ArtistWithMusics(
                             artist = it,

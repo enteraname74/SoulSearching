@@ -52,6 +52,9 @@ object ServerRoutes : KoinComponent {
         val CHECK: String
             get() = "$HOST$BASE_ROUTE/check"
 
+        val DELETE: String
+            get() = "$HOST${BASE_ROUTE}"
+
         fun all(
             after: LocalDateTime?,
             maxPerPage: Int,
@@ -70,6 +73,9 @@ object ServerRoutes : KoinComponent {
 
         val CHECK: String
             get() = "$HOST$BASE_ROUTE/check"
+
+        val DELETE: String
+            get() = "$HOST${BASE_ROUTE}"
 
         fun all(
             after: LocalDateTime?,

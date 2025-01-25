@@ -75,7 +75,7 @@ class UpdateMusicUseCase(
             newAlbumName = newMusicInformation.album,
         )
 
-        musicArtistRepository.deleteMusicArtist(
+        musicArtistRepository.delete(
             musicArtist = MusicArtist(
                 musicId = legacyMusic.musicId,
                 artistId = previousArtist.artistId,
@@ -104,7 +104,7 @@ class UpdateMusicUseCase(
 
         // We will remove the link of the music to all its other previous artists
         previousArtistsWithoutFirstOne.forEach { artist ->
-            musicArtistRepository.deleteMusicArtist(
+            musicArtistRepository.delete(
                 musicArtist = MusicArtist(
                     musicId = legacyMusic.musicId,
                     artistId = artist.artistId,

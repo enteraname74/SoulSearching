@@ -36,9 +36,11 @@ internal class ArtistLocalDataSourceImpl(
     override fun getAll(dataMode: DataMode): Flow<List<Artist>> =
         artistDao.getAll(dataMode.value)
 
+    override suspend fun getAll(artistIds: List<UUID>): List<Artist> =
+        artistDao.getAll(artistIds)
+
     override fun getFromId(artistId: UUID): Flow<Artist?> =
         artistDao.getFromId(artistId)
-    
 
     override fun getAllArtistWithMusics(dataMode: DataMode): Flow<List<ArtistWithMusics>> =
         artistDao.getAllArtistWithMusics(dataMode = dataMode.value)

@@ -54,11 +54,7 @@ class ArtistBottomSheetDelegateImpl(
                         loadingManager.withLoading {
                             val result: SoulResult<String> = deleteArtistUseCase(artistWithMusics)
 
-                            (result as? SoulResult.Error)?.error?.let { error ->
-                                feedbackPopUpManager.showFeedback(
-                                    feedback = error,
-                                )
-                            }
+                            feedbackPopUpManager.showResultErrorIfAny(result = result)
                         }
                     }
                     setDialogState(null)

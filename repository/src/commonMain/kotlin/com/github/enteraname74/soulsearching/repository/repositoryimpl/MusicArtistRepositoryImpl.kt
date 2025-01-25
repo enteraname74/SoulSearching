@@ -39,7 +39,7 @@ class MusicArtistRepositoryImpl(
         musicArtistLocalDataSource.upsertAll(musicArtists)
     }
 
-    override suspend fun deleteMusicArtist(musicArtist: MusicArtist) {
+    override suspend fun delete(musicArtist: MusicArtist) {
         musicArtistLocalDataSource.deleteMusicArtist(musicArtist)
     }
 

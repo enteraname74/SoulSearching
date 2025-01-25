@@ -83,7 +83,7 @@ class UpdateAlbumUseCase(
         newArtistId: UUID,
     ) {
         // We first remove the link to the legacy artist
-        musicArtistRepository.deleteMusicArtist(
+        musicArtistRepository.delete(
             musicArtist = MusicArtist(
                 musicId = music.musicId,
                 artistId = legacyArtistId,

@@ -38,6 +38,8 @@ interface ArtistLocalDataSource {
         dataMode: DataMode,
     ): Flow<List<Artist>>
 
+    suspend fun getAll(artistIds: List<UUID>): List<Artist>
+
     /**
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */

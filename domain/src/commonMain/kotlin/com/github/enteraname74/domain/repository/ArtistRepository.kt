@@ -20,9 +20,8 @@ interface ArtistRepository {
     /**
      * Deletes an Artist.
      */
-    suspend fun delete(artist: Artist)
-
-    suspend fun deleteAll(artistsIds: List<UUID>)
+    suspend fun delete(artist: Artist): SoulResult<String>
+    suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<String>
     suspend fun deleteAll(dataMode: DataMode)
 
     /**

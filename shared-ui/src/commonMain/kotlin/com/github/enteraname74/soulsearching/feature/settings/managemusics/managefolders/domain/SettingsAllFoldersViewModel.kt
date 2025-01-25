@@ -98,13 +98,10 @@ class SettingsAllFoldersViewModel(
                         val musicsFromFolder: List<UUID> = getAllMusicFromFolderPathUseCase(folder.folderPath)
                             .first()
                             .map { it.musicId }
-                        val result: SoulResult<String> = deleteAllMusicsUseCase(ids = musicsFromFolder)
 
-                        (result as? SoulResult.Error)?.error?.let { error ->
-                            feedbackPopUpManager.showFeedback(
-                                feedback = error,
-                            )
-                        }
+                        val musicDeletionResult: SoulResult<String> = deleteAllMusicsUseCase(ids = musicsFromFolder)
+                        feedbackPopUpManager.showResultErrorIfAny(result = musicDeletionResult)
+                        if (musicDeletionResult.isError()) return@withLoading
 
                         playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
 
@@ -118,8 +115,15 @@ class SettingsAllFoldersViewModel(
                             .filter { it.musics.isEmpty() }
                             .map { it.artist.artistId }
 
-                        deleteAllAlbumUseCase(albumsIds = albumsToDelete)
-                        deleteAllArtistsUseCase(artistsIds = artistsToDelete)
+                        val albumDeletionResult: SoulResult<String> =
+                            deleteAllAlbumUseCase(albumsIds = albumsToDelete)
+                        feedbackPopUpManager.showResultErrorIfAny(albumDeletionResult)
+                        if (albumDeletionResult.isError()) return@withLoading
+
+                        val artistDeletionResult: SoulResult<String> =
+                            deleteAllArtistsUseCase(artistsIds = artistsToDelete)
+                        feedbackPopUpManager.showResultErrorIfAny(artistDeletionResult)
+                        if (artistDeletionResult.isError()) return@withLoading
                     }
                 }
             }

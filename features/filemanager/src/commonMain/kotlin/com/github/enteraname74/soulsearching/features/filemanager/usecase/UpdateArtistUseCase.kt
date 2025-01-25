@@ -119,7 +119,7 @@ class UpdateArtistUseCase(
     private suspend fun mergeArtists(from: ArtistWithMusics, to: Artist) {
         for (music in from.musics) {
             // We first remove the link to the legacy artist
-            musicArtistRepository.deleteMusicArtist(
+            musicArtistRepository.delete(
                 musicArtist = MusicArtist(
                     musicId = music.musicId,
                     artistId = from.artist.artistId,

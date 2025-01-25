@@ -1,25 +1,21 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.ArtistRepository
-import com.github.enteraname74.domain.util.FlowResult
-import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.temporal.TemporalAccessor
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.max
 
 /**
  * Repository of an Artist.
@@ -44,13 +40,30 @@ class ArtistRepositoryImpl(
     /**
      * Deletes an Artist.
      */
-    override suspend fun delete(artist: Artist) = artistLocalDataSource.delete(
-        artist = artist
-    )
+    override suspend fun delete(artist: Artist): SoulResult<String> =
+        when(artist.dataMode) {
+            DataMode.Local -> {
+                artistLocalDataSource.delete(
+                    artist = artist
+                )
+                SoulResult.Success("")
+            }
+            DataMode.Cloud -> {
+                artistRemoteDataSource.deleteAll(
+                    artistIds = listOf(artist.artistId),
+                )
+            }
+        }
 
-    override suspend fun deleteAll(artistsIds: List<UUID>) {
-        artistLocalDataSource.deleteAll(artistsIds)
-    }
+    override suspend fun deleteAll(artistsIds: List<UUID>) =
+        DeleteAllHelper.deleteAll(
+            ids = artistsIds,
+            getAll = artistLocalDataSource::getAll,
+            deleteAllLocal = artistLocalDataSource::deleteAll,
+            deleteAllRemote = artistRemoteDataSource::deleteAll,
+            mapIds = { it.artistId },
+            getDataMode = { it.dataMode },
+        )
 
     override suspend fun deleteAll(dataMode: DataMode) {
         artistLocalDataSource.deleteAll(dataMode)

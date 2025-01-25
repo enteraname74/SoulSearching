@@ -1,12 +1,14 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multialbum.MultiAlbumBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -25,6 +27,7 @@ class MultiAlbumBottomSheetDelegateImpl(
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ): MultiAlbumBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -57,7 +60,9 @@ class MultiAlbumBottomSheetDelegateImpl(
                                     )
                                 }
                             }
-                            deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            val result: SoulResult<String> = deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                         setDialogState(null)

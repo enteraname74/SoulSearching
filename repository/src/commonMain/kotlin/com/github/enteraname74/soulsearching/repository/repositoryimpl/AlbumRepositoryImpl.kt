@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDat
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -21,15 +22,31 @@ class AlbumRepositoryImpl(
     private val albumRemoteDataSource: AlbumRemoteDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
-): AlbumRepository {
+) : AlbumRepository {
 
-    override suspend fun delete(album: Album) {
-        albumLocalDataSource.delete(album = album)
-    }
+    override suspend fun delete(album: Album): SoulResult<String> =
+        when (album.dataMode) {
+            DataMode.Local -> {
+                albumLocalDataSource.delete(album = album)
+                SoulResult.Success("")
+            }
 
-    override suspend fun deleteAll(ids: List<UUID>) {
-        albumLocalDataSource.deleteAll(ids = ids)
-    }
+            DataMode.Cloud -> {
+                albumRemoteDataSource.deleteAll(
+                    albumIds = listOf(album.albumId),
+                )
+            }
+        }
+
+    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> =
+        DeleteAllHelper.deleteAll(
+            ids = ids,
+            getAll = albumLocalDataSource::getAll,
+            deleteAllLocal = albumLocalDataSource::deleteAll,
+            deleteAllRemote = albumRemoteDataSource::deleteAll,
+            mapIds = { it.albumId },
+            getDataMode = { it.dataMode },
+        )
 
     override suspend fun deleteAll(dataMode: DataMode) {
         albumLocalDataSource.deleteAll(dataMode = dataMode)
@@ -98,7 +115,7 @@ class AlbumRepositoryImpl(
 
         albumLocalDataSource.deleteAll(idsToDelete)
 
-        while(true) {
+        while (true) {
             val songsFromCloud: SoulResult<List<Album>> = albumRemoteDataSource.fetchAlbumsFromCloud(
                 after = lastUpdateDate,
                 maxPerPage = MAX_ALBUMS_PER_PAGE,
@@ -126,6 +143,7 @@ class AlbumRepositoryImpl(
             }
         }
     }
+
     companion object {
         private const val MAX_ALBUMS_PER_PAGE = 50
     }

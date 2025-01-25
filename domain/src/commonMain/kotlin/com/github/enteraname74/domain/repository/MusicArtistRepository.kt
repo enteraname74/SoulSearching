@@ -11,7 +11,7 @@ interface MusicArtistRepository {
     suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
 
     suspend fun deleteAll(dataMode: DataMode)
-
+    suspend fun delete(musicArtist: MusicArtist)
     /**
      * Inserts or updates a MusicArtist.
      * It is the equivalent of adding a Music to an Artist.
@@ -19,8 +19,6 @@ interface MusicArtistRepository {
     suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist)
 
     suspend fun upsertAll(musicArtists: List<MusicArtist>)
-
-    suspend fun deleteMusicArtist(musicArtist: MusicArtist)
 
     /**
      * Synchronize remote MusicArtist links of the users with the cloud

@@ -1,12 +1,14 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multiartist.MultiArtistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -25,6 +27,7 @@ class MultiArtistBottomSheetDelegateImpl(
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : MultiArtistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -57,7 +60,9 @@ class MultiArtistBottomSheetDelegateImpl(
                                     )
                                 }
                             }
-                            deleteAllArtistsUseCase(selectedIdsToDelete)
+                            val result: SoulResult<String> = deleteAllArtistsUseCase(selectedIdsToDelete)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                         setDialogState(null)

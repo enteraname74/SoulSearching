@@ -1,9 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.datasource.album
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
-import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.domain.model.*
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -45,9 +42,14 @@ interface AlbumLocalDataSource {
     fun getAlbumWithMusics(albumId: UUID): Flow<AlbumWithMusics?>
 
     /**
-     * Retrieves a flow of all Album, sorted bu name asc.
+     * Retrieves a flow of all Album, sorted by name asc.
      */
     fun getAll(dataMode: DataMode): Flow<List<Album>>
+
+    /**
+     * Retrieves all musics from a list of ids.
+     */
+    suspend fun getAll(albumIds: List<UUID>): List<Album>
 
     /**
      * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
