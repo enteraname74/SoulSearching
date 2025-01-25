@@ -53,7 +53,6 @@ class ArtistBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             val result: SoulResult<String> = deleteArtistUseCase(artistWithMusics)
-
                             feedbackPopUpManager.showResultErrorIfAny(result = result)
                         }
                     }

@@ -152,56 +152,49 @@ class MusicRepositoryImpl(
             val total = AtomicInteger(0)
             val allLocalSongs: List<Music> = musicLocalDataSource.getAll(DataMode.Local).first()
 
-            val jobs = ArrayList<Job>()
-
             val musicsToSave: ArrayList<Music> = arrayListOf()
             val albumsToSave: ArrayList<Album> = arrayListOf()
             val artistsToSave: ArrayList<Artist> = arrayListOf()
             val musicArtistsToSave: ArrayList<MusicArtist> = arrayListOf()
 
             allLocalSongs.forEach { music ->
-                val job = CoroutineScope(Dispatchers.IO).launch {
-                    val uploadResult: SoulResult<UploadedMusicResult> = musicRemoteDataSource.uploadMusicToCloud(
-                        music = music,
-                        searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
-                        artists = artistLocalDataSource.getArtistsOfMusic(
-                            musicId = music.musicId,
-                        ).first().map { it.artistName }
-                    )
+                val uploadResult: SoulResult<UploadedMusicResult> = musicRemoteDataSource.uploadMusicToCloud(
+                    music = music,
+                    searchMetadata = cloudLocalDataSource.getSearchMetadata().first(),
+                    artists = artistLocalDataSource.getArtistsOfMusic(
+                        musicId = music.musicId,
+                    ).first().map { it.artistName }
+                )
 
-                    println("MusicRepositoryImpl -- uploadAllMusicToCloud -- got result for ${music.name}: $uploadResult")
+                println("MusicRepositoryImpl -- uploadAllMusicToCloud -- got result for ${music.name}: $uploadResult")
 
-                    when(uploadResult) {
-                        is SoulResult.Error -> {
-                            /*no-op*/
-                        }
-                        is SoulResult.Success -> {
-                            (uploadResult.data as? UploadedMusicResult.Data)?.let { data ->
-                                total.getAndIncrement()
-                                progressFunc(
-                                    total.get().toFloat() / allLocalSongs.size
-                                )
+                when(uploadResult) {
+                    is SoulResult.Error -> {
+                        /*no-op*/
+                    }
+                    is SoulResult.Success -> {
+                        (uploadResult.data as? UploadedMusicResult.Data)?.let { data ->
+                            total.getAndIncrement()
+                            progressFunc(
+                                total.get().toFloat() / allLocalSongs.size
+                            )
 
-                                musicsToSave.add(data.music)
-                                albumsToSave.add(data.album)
-                                artistsToSave.addAll(data.artists)
-                                musicArtistsToSave.addAll(
-                                    data.artists.map { artist ->
-                                        MusicArtist(
-                                            musicId = data.music.musicId,
-                                            artistId = artist.artistId,
-                                            dataMode = DataMode.Cloud,
-                                        )
-                                    }
-                                )
-                            }
+                            musicsToSave.add(data.music)
+                            albumsToSave.add(data.album)
+                            artistsToSave.addAll(data.artists)
+                            musicArtistsToSave.addAll(
+                                data.artists.map { artist ->
+                                    MusicArtist(
+                                        musicId = data.music.musicId,
+                                        artistId = artist.artistId,
+                                        dataMode = DataMode.Cloud,
+                                    )
+                                }
+                            )
                         }
                     }
                 }
-                jobs.add(job)
             }
-
-            jobs.forEach { it.join() }
 
             artistLocalDataSource.upsertAll(
                 artists = artistsToSave,

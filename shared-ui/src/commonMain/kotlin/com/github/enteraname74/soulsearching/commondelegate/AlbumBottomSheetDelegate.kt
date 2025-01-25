@@ -46,7 +46,7 @@ class AlbumBottomSheetDelegateImpl(
                 selectedAlbum = album,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteAlbumUseCase(album.albumId)
+                        deleteAlbumUseCase(album)
                         multiSelectionManagerImpl?.clearMultiSelection()
 
                         setDialogState(null)

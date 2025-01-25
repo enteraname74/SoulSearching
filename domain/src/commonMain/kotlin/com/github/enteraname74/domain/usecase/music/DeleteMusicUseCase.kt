@@ -1,9 +1,7 @@
 package com.github.enteraname74.domain.usecase.music
 
-import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
@@ -17,26 +15,31 @@ class DeleteMusicUseCase(
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val cloudRepository: CloudRepository,
 ) {
-    private suspend fun deleteMusic(music: Music): SoulResult<String> {
+    private suspend fun deleteLocal(music: Music): SoulResult<String> {
         val artists: List<Artist> = getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull() ?: emptyList()
         val album: Album? = getCorrespondingAlbumUseCase(music = music)
 
-        val musicDeletionResult: SoulResult<String> = musicRepository.delete(music = music)
-        if (musicDeletionResult.isError()) return musicDeletionResult
+        musicRepository.delete(music = music)
 
         album?.let { musicAlbum ->
-            val result = deleteAlbumIfEmptyUseCase(albumId = musicAlbum.albumId)
-            if (result.isError()) return result
+            deleteAlbumIfEmptyUseCase(albumId = musicAlbum.albumId)
         }
         artists.forEach { musicArtist ->
-            val result = deleteArtistIfEmptyUseCase(artistId = musicArtist.artistId)
-            if (result.isError()) return result
+            deleteArtistIfEmptyUseCase(artistId = musicArtist.artistId)
         }
 
         return SoulResult.Success("")
     }
 
     suspend operator fun invoke(music: Music): SoulResult<String> =
-        deleteMusic(music = music)
+        when(music.dataMode) {
+            DataMode.Local -> deleteLocal(music)
+            DataMode.Cloud -> {
+                val result = musicRepository.delete(music)
+                cloudRepository.syncDataWithCloud()
+                result
+            }
+        }
 }

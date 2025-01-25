@@ -1,8 +1,11 @@
 package com.github.enteraname74.domain.usecase.album
 
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
@@ -15,9 +18,10 @@ class DeleteAlbumUseCase(
     private val musicRepository: MusicRepository,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val cloudRepository: CloudRepository,
 ) {
-    suspend operator fun invoke(albumId: UUID): SoulResult<String> {
-        val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first()
+    private suspend fun deleteLocal(album: Album): SoulResult<String> {
+        val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = album.albumId).first()
             ?: return SoulResult.Success("")
 
         /*
@@ -35,30 +39,35 @@ class DeleteAlbumUseCase(
             .filter { it.artistId != albumWithMusics.artist?.artistId }
             .distinctBy { it.artistId }
 
-        val musicDeletionResult: SoulResult<String> = musicRepository.deleteAll(
+        musicRepository.deleteAll(
             ids = albumWithMusics.musics.map { it.musicId },
         )
 
-        if (musicDeletionResult.isError()) return musicDeletionResult
-
         // We then delete the album
-        val albumDeletionResult: SoulResult<String> = albumRepository.delete(albumWithMusics.album)
-        if (albumDeletionResult.isError()) return albumDeletionResult
+        albumRepository.delete(albumWithMusics.album)
 
         // Finally we can check if we can delete the artist of the deleted album.
         albumWithMusics.artist?.let {
-            val artistDeletionResult = deleteArtistIfEmptyUseCase(it.artistId)
-            if (artistDeletionResult.isError()) return artistDeletionResult
+            deleteArtistIfEmptyUseCase(it.artistId)
         }
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            val artistDeletionResult = deleteArtistIfEmptyUseCase(it.artistId)
-            if (artistDeletionResult.isError()) return artistDeletionResult
+            deleteArtistIfEmptyUseCase(it.artistId)
         }
 
         return SoulResult.Success("")
     }
+
+    suspend operator fun invoke(album: Album): SoulResult<String> =
+        when(album.dataMode) {
+            DataMode.Local -> deleteLocal(album)
+            DataMode.Cloud -> {
+                val result = albumRepository.delete(album)
+                cloudRepository.syncDataWithCloud()
+                result
+            }
+        }
 
     suspend fun onlyAlbum(albumId: UUID): SoulResult<String> =
         albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {

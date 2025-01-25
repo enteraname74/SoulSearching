@@ -2,9 +2,15 @@ package com.github.enteraname74.soulsearching.repository.utils
 
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.repository.CloudRepository
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.util.*
 
-object DeleteAllHelper {
+object DeleteAllHelper: KoinComponent {
+
+    private val cloudRepository by inject<CloudRepository>()
+
     suspend fun <T>deleteAll(
         ids: List<UUID>,
         getAll: suspend (ids: List<UUID>) -> List<T>,
@@ -20,7 +26,9 @@ object DeleteAllHelper {
         }
 
         return if (partition.second.isNotEmpty()) {
-            deleteAllRemote(partition.second.map(mapIds))
+            val result = deleteAllRemote(partition.second.map(mapIds))
+            cloudRepository.syncDataWithCloud()
+            result
         } else {
             SoulResult.Success("")
         }
