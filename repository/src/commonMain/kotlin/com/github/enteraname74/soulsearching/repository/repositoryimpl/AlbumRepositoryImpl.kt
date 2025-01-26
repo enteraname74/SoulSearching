@@ -7,7 +7,6 @@ import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDat
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
-import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +23,6 @@ import java.util.*
 class AlbumRepositoryImpl(
     private val albumLocalDataSource: AlbumLocalDataSource,
     private val albumRemoteDataSource: AlbumRemoteDataSource,
-    private val artistLocalDataSource: ArtistLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
 ) : AlbumRepository, KoinComponent {

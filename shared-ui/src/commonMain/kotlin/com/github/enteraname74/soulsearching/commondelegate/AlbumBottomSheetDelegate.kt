@@ -2,12 +2,15 @@ package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.UpsertAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.ToggleAlbumQuickAccessStateUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.album.AlbumBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteAlbumDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -20,8 +23,10 @@ interface AlbumBottomSheetDelegate {
 
 class AlbumBottomSheetDelegateImpl(
     private val deleteAlbumUseCase: DeleteAlbumUseCase,
-    private val upsertAlbumUseCase: UpsertAlbumUseCase,
+    private val toggleAlbumQuickAccessStateUseCase: ToggleAlbumQuickAccessStateUseCase,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
+    private val loadingManager: LoadingManager,
 ) : AlbumBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -46,7 +51,10 @@ class AlbumBottomSheetDelegateImpl(
                 selectedAlbum = album,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteAlbumUseCase(album)
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = deleteAlbumUseCase(album)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+                        }
                         multiSelectionManagerImpl?.clearMultiSelection()
 
                         setDialogState(null)
@@ -69,11 +77,10 @@ class AlbumBottomSheetDelegateImpl(
                 onModifyAlbum = { onModifyAlbum(albumWithMusics.album) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertAlbumUseCase(
-                            album = albumWithMusics.album.copy(
-                                isInQuickAccess = !albumWithMusics.album.isInQuickAccess,
-                            )
-                        )
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = toggleAlbumQuickAccessStateUseCase(album = albumWithMusics.album)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+                        }
                         multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
                     }

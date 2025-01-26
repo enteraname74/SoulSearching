@@ -5,20 +5,18 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.AlbumRepository
-import com.github.enteraname74.domain.repository.CloudRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 
 class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
-    private val cloudRepository: CloudRepository,
 ) {
     private suspend fun deleteLocal(album: Album): SoulResult<String> {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = album.albumId).first()

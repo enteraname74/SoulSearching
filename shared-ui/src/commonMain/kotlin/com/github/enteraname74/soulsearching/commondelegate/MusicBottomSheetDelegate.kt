@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromP
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -32,6 +33,7 @@ class MusicBottomSheetDelegateImpl(
     private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
     private val toggleMusicQuickAccessStateUseCase: ToggleMusicQuickAccessStateUseCase,
     private val playbackManager: PlaybackManager,
+    private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : MusicBottomSheetDelegate {
 
@@ -67,9 +69,10 @@ class MusicBottomSheetDelegateImpl(
                 musicToDelete = musicToDelete,
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val result: SoulResult<String> = deleteMusicUseCase(music = musicToDelete)
-
-                        feedbackPopUpManager.showResultErrorIfAny(result = result)
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = deleteMusicUseCase(music = musicToDelete)
+                            feedbackPopUpManager.showResultErrorIfAny(result = result)
+                        }
                     }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
@@ -163,8 +166,10 @@ class MusicBottomSheetDelegateImpl(
                 onAddToPlaylist = { showAddToPlaylistsBottomSheet(musicToAdd = selectedMusic) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val result: SoulResult<String> = toggleMusicQuickAccessStateUseCase(music = selectedMusic)
-                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = toggleMusicQuickAccessStateUseCase(music = selectedMusic)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+                        }
                         multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },

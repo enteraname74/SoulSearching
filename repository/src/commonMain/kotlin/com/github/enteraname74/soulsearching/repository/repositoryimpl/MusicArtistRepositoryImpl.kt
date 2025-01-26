@@ -45,11 +45,12 @@ class MusicArtistRepositoryImpl(
 
     override suspend fun syncWithCloud(): SoulResult<Unit> {
         var currentPage = 0
-        val lastUpdateDate: LocalDateTime? = cloudLocalDataSource.getLastUpdateDate()
+
+        musicArtistLocalDataSource.deleteAll(DataMode.Cloud)
 
         while(true) {
             val songsFromCloud: SoulResult<List<MusicArtist>> = musicArtistRemoteDataSource.fetchMusicArtistsFromCloud(
-                after = lastUpdateDate,
+                after = null,
                 maxPerPage = MAX_MUSIC_ARTISTS_PER_PAGE,
                 page = currentPage,
             )

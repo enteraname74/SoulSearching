@@ -70,7 +70,7 @@ class ArtistRepositoryImpl(
             }
         }
 
-    override suspend fun deleteAll(artistsIds: List<UUID>) =
+    override suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<String> =
         DeleteAllHelper.deleteAll(
             ids = artistsIds,
             getAll = artistLocalDataSource::getAll,

@@ -75,10 +75,12 @@ class ArtistBottomSheetDelegateImpl(
                 onModifyArtist = { onModifyArtist(selectedArtist.artist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val result: SoulResult<String> = toggleArtistQuickAccessStateUseCase(
-                            artist = selectedArtist.artist
-                        )
-                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        loadingManager.withLoading {
+                            val result: SoulResult<String> = toggleArtistQuickAccessStateUseCase(
+                                artist = selectedArtist.artist
+                            )
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+                        }
                         multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
                     }

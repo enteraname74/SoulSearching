@@ -78,8 +78,8 @@ class MultiMusicBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             val result: SoulResult<String> = deleteAllMusicsUseCase(selectedIdsToDelete)
-
                             feedbackPopUpManager.showResultErrorIfAny(result = result)
+
                             playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
 
                             setDialogState(null)

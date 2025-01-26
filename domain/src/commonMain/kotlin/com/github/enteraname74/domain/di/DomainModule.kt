@@ -46,7 +46,7 @@ val domainModule = module {
     singleOf(::GetDuplicatedAlbumUseCase)
     singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
     singleOf(::UpdateAlbumNbPlayedUseCase)
-    singleOf(::UpsertAlbumUseCase)
+    singleOf(::ToggleAlbumQuickAccessStateUseCase)
     singleOf(::UpsertAllAlbumsUseCase)
 
     // Artist
