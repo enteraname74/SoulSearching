@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
+import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
@@ -39,6 +40,7 @@ class MusicRepositoryImpl(
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
     private val playlistRepository: PlaylistRepository,
+    private val cloudCacheManager: CloudCacheManager,
 ) : MusicRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
@@ -142,6 +144,9 @@ class MusicRepositoryImpl(
         val idsToDelete: List<UUID> = (idsToDeleteResult as? SoulResult.Success<List<UUID>>)?.data ?: emptyList()
 
         musicLocalDataSource.deleteAll(idsToDelete)
+        idsToDelete.forEach { musicIdToDelete ->
+            cloudCacheManager.deleteFromId(id = musicIdToDelete)
+        }
 
         while(true) {
             val songsFromCloud: SoulResult<List<Music>> = musicRemoteDataSource.fetchSongsFromCloud(

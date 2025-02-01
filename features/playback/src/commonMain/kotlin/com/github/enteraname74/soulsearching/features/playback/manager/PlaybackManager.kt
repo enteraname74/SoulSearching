@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.features.playback.manager
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.key.*
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
@@ -124,19 +125,19 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     private val _currentCoverState: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
     val currentCoverState: StateFlow<ImageBitmap?> = _currentCoverState.asStateFlow()
 
-    fun initFromSavedData() {
-        CoroutineScope(Dispatchers.IO).launch {
-            playbackListManager.init()
-        }
-    }
+    suspend fun initPlaybackList(): SoulResult<Unit> =
+        playbackListManager.init()
 
     /**
      * Load the current music of the player view model.
      * The music will not be played.
      */
-    private suspend fun onlyLoadMusic(seekTo: Int = 0, music: Music) {
-        player.setMusic(music = music)
-        player.onlyLoadMusic(seekTo = seekTo)
+    private suspend fun onlyLoadMusic(seekTo: Int = 0, music: Music): SoulResult<Unit> {
+        val result: SoulResult<Unit> = player.setMusic(music = music)
+        if (!result.isError()) {
+            player.onlyLoadMusic(seekTo = seekTo)
+        }
+        return result
     }
 
     /**

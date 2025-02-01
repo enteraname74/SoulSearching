@@ -5,6 +5,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.util.serializer.LocalDateTimeSerializer
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
+import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
@@ -39,7 +40,8 @@ data class RemoteMusic(
         isInQuickAccess = isInQuickAccess,
         dataMode = DataMode.Cloud,
         albumId = albumId,
-        path = path,
+        path = "${ServerRoutes.HOST}/$path",
         folder = "Cloudy",
+        duration = duration,
     )
 }

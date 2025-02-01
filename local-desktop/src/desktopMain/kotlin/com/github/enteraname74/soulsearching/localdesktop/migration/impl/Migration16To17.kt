@@ -24,7 +24,7 @@ class Migration16To17: ExposedMigration(
 
                 if (coverAsBytes.isNotEmpty()) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        coverFileManager.saveCover(id = coverId, data = coverAsBytes)
+                        coverFileManager.save(id = coverId, data = coverAsBytes)
                     }
                 }
             }

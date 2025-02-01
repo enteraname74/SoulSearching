@@ -30,7 +30,7 @@ internal class Migration16To17(
             if (!coverAsString.isNullOrEmpty()) {
                 val imageBytes = Base64.decode(coverAsString, 0)
                 CoroutineScope(Dispatchers.IO).launch {
-                    coverFileManager.saveCover(
+                    coverFileManager.save(
                         id = coverId,
                         data = imageBytes,
                     )

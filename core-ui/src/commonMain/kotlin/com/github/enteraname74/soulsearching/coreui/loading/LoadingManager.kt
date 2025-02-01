@@ -25,6 +25,7 @@ class LoadingManager {
     }
 
     fun stopLoading() {
+        loadingUiWaitJob?.cancel()
         _state.value = false
     }
 

@@ -1,15 +1,15 @@
-package com.github.enteraname74.soulsearching.features.filemanager.cover
+package com.github.enteraname74.soulsearching.features.filemanager.cloud
 
 import android.content.Context
 import java.io.File
 
-internal class CoverFileManagerAndroidImpl(
+class CloudCacheManagerAndroidImpl(
     private val context: Context,
-): CoverFileManager {
+): CloudCacheManager {
     override val folder: File
         get() {
             val filesDir: File = context.filesDir
-            val folder = File(filesDir, COVER_FOLDER)
+            val folder = File(filesDir, CLOUD_FOLDER)
             if (!folder.exists()) {
                 folder.mkdirs()
             }
@@ -17,6 +17,6 @@ internal class CoverFileManagerAndroidImpl(
         }
 
     companion object {
-        private const val COVER_FOLDER = "covers"
+        private const val CLOUD_FOLDER = "cloud"
     }
 }

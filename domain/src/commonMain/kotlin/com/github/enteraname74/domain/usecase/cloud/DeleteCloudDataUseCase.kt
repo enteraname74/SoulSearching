@@ -20,6 +20,7 @@ class DeleteCloudDataUseCase(
         musicArtistRepository.deleteAll(DataMode.Cloud)
         musicPlaylistRepository.deleteAll(DataMode.Cloud)
 
+        cloudRepository.deleteCloudCache()
         cloudRepository.clearLastUpdateDate()
     }
 }

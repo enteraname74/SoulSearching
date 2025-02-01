@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
@@ -23,7 +24,7 @@ import java.util.*
 internal class PlaylistDao(
     private val musicDao: MusicDao,
 ) {
-    suspend fun upsertAll(playlist: Playlist) {
+    suspend fun upsert(playlist: Playlist) {
         flowTransactionOn {
             PlaylistTable.upsert {
                 it[id] = playlist.playlistId
@@ -61,7 +62,9 @@ internal class PlaylistDao(
 
     suspend fun deleteAll(playlistIds: List<UUID>) {
         flowTransactionOn {
-            PlaylistTable.deleteWhere { Op.build { id inList playlistIds } and isFavorite eq Op.FALSE }
+            PlaylistTable.deleteWhere {
+                (id inList playlistIds) and (isFavorite eq false)
+            }
         }
     }
 
@@ -77,7 +80,7 @@ internal class PlaylistDao(
             .where { PlaylistTable.dataMode eq dataMode }
             .orderBy(PlaylistTable.name to SortOrder.ASC)
             .asFlow()
-            .mapResultRow { it.toPlaylist() }
+            .mapResultRow {it.toPlaylist()  }
             .map { it.filterNotNull() }
     }
 

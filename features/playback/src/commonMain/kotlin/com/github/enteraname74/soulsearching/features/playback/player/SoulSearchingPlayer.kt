@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -20,7 +21,7 @@ interface SoulSearchingPlayer {
     /**
      * Set a song to the player.
      */
-    suspend fun setMusic(music: Music)
+    suspend fun setMusic(music: Music): SoulResult<Unit>
 
     /**
      * Load the current music without playing it.

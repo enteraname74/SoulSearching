@@ -1,6 +1,12 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
+import com.github.enteraname74.soulsearching.remote.model.safeReadBytes
+import io.ktor.client.*
+import io.ktor.client.request.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +17,10 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent
 
-class SoulSearchingDesktopPlayerImpl :
+class SoulSearchingDesktopPlayerImpl(
+    private val client: HttpClient,
+    private val cloudCacheManager: CloudCacheManager
+) :
     SoulSearchingPlayer,
     MediaPlayerEventAdapter() {
 
@@ -73,16 +82,54 @@ class SoulSearchingDesktopPlayerImpl :
         player.events().addMediaPlayerEventListener(this)
     }
 
-    override suspend fun setMusic(music: Music) {
-        try {
+    private suspend fun getMusicBytes(music: Music): SoulResult<ByteArray> =
+        client.safeReadBytes { client.get(urlString = music.path) }.toSoulResult()
+
+    private fun setLocalMusic(music: Music): SoulResult<Unit> {
+        player.media().prepare(music.path)
+        return SoulResult.ofSuccess()
+    }
+
+    private suspend fun setRemoteMusic(music: Music): SoulResult<Unit> {
+        // We first try to retrieve the path of an already cached music
+        val cachedMusicPath = cloudCacheManager.getPath(id = music.musicId)
+        if (cachedMusicPath != null) {
+            player.media().prepare(cachedMusicPath)
+            return SoulResult.ofSuccess()
+        }
+
+        // Else, we fetch it from the cloud.
+        val result = getMusicBytes(music)
+        (result as? SoulResult.Success)?.data?.let { musicData ->
+            cloudCacheManager.save(
+                id = music.musicId,
+                data = musicData,
+            )
+
+            cloudCacheManager.getPath(id = music.musicId)?.let { musicPath ->
+                player.media().prepare(musicPath)
+            }
+        }
+
+        return result.toSimpleResult()
+    }
+
+    override suspend fun setMusic(music: Music): SoulResult<Unit> {
+        return try {
             if (player.status().state() == State.PLAYING) {
                 player.controls().pause()
             }
             // Necessary to avoid blocking the app.
             delay(500)
-            player.media().prepare(music.path)
+
+            when(music.dataMode) {
+                DataMode.Local -> setLocalMusic(music)
+                DataMode.Cloud -> setRemoteMusic(music)
+            }
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")
+            // We don't want to show the error if an exception occurs (for now)
+            SoulResult.ofSuccess()
         }
     }
 

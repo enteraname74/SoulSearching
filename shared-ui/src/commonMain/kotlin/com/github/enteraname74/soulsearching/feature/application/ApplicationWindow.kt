@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
@@ -75,14 +74,13 @@ class ApplicationWindow: Screen {
         playerViewModel: PlayerViewModel,
         mainPageViewModel: MainPageViewModel,
         isLoadingManagerLoading: Boolean,
-        playbackManager: PlaybackManager = injectElement(),
     ) {
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentElementPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
         var generalNavigator: Navigator? by remember { mutableStateOf(null) }
 
         LaunchInit {
-            playbackManager.initFromSavedData()
+            playerViewModel.initPlaybackList()
         }
 
         Row {

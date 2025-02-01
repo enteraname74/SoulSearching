@@ -12,7 +12,7 @@ internal class PlaylistLocalDataSourceImpl(
     private val playlistDao: PlaylistDao
 ) : PlaylistLocalDataSource {
     override suspend fun upsert(playlist: Playlist) {
-        playlistDao.upsertAll(playlist)
+        playlistDao.upsert(playlist)
     }
 
     override suspend fun upsertAll(playlists: List<Playlist>) {

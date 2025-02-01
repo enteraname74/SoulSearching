@@ -12,7 +12,7 @@ class CoverRepositoryImpl(
     private val coverFileManager: CoverFileManager,
 ): CoverRepository {
     override suspend fun upsert(id: UUID, data: ByteArray) {
-        coverFileManager.saveCover(
+        coverFileManager.save(
             id = id,
             data = data,
         )

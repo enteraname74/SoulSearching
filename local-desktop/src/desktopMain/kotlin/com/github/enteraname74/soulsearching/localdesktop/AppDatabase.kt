@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.File
 
 /**
  * Database of the application.
@@ -22,16 +23,26 @@ object AppDatabase {
         Migration18To19,
     )
 
+    private val SUFFIX = if (AppEnvironment.IS_IN_DEVELOPMENT) {
+        "_dev"
+    } else {
+        ""
+    }
+    private val DATABASE_FOLDER: String = ".soul_searching$SUFFIX/"
+
     /**
      * Establish a connection with the database.
      */
     fun connectToDatabase() {
-        val databaseName = if (AppEnvironment.IS_IN_DEVELOPMENT) {
-            "soulSearchingDevDatabase.db"
-        } else {
-            "soulSearchingDatabase.db"
+        val userHome = System.getProperty("user.home") ?: ""
+        val userFolder = File(userHome)
+        val appFolder = File(userFolder, DATABASE_FOLDER)
+        if (!appFolder.exists()) {
+            appFolder.mkdirs()
         }
-        Database.connect("jdbc:sqlite:$databaseName?foreign_keys=on", "org.sqlite.JDBC")
+        val appDbFile = File(appFolder, "app_db.db")
+
+        Database.connect("jdbc:sqlite:${appDbFile.absolutePath}?foreign_keys=on", "org.sqlite.JDBC")
         migrationHandler.doMigrations()
         transaction {
             SchemaUtils.createMissingTablesAndColumns(

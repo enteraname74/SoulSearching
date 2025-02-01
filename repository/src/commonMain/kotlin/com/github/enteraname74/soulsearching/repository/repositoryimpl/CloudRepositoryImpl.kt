@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -14,6 +15,7 @@ class CloudRepositoryImpl(
     private val musicArtistRepository: MusicArtistRepository,
     private val musicPlaylistRepository: MusicPlaylistRepository,
     private val cloudLocalDataSource: CloudLocalDataSource,
+    private val cloudCacheManager: CloudCacheManager,
 ): CloudRepository {
     override suspend fun clearLastUpdateDate() {
         cloudLocalDataSource.clearLastUpdateDate()
@@ -23,8 +25,15 @@ class CloudRepositoryImpl(
         cloudLocalDataSource.setSearchMetadata(searchMetadata)
     }
 
+    override suspend fun getAccessToken(): String =
+        cloudLocalDataSource.getAccessToken()
+
     override fun getSearchMetadata(): Flow<Boolean> =
         cloudLocalDataSource.getSearchMetadata()
+
+    override suspend fun deleteCloudCache() {
+        cloudCacheManager.deleteAll()
+    }
 
     override suspend fun syncDataWithCloud(): SoulResult<List<UUID>> {
         val artistSync: SoulResult<Unit> = artistRepository.syncWithCloud()

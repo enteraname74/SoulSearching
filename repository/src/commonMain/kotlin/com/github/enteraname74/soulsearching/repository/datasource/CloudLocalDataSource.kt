@@ -38,4 +38,7 @@ class CloudLocalDataSource(
             "",
         )
     }
+
+    fun getAccessToken(): String =
+        settings.get(SoulSearchingSettingsKeys.Cloud.ACCESS_TOKEN)
 }

@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
@@ -21,6 +22,7 @@ import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDele
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
@@ -42,6 +44,7 @@ import kotlinx.coroutines.launch
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
     settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
@@ -57,7 +60,6 @@ class PlayerViewModel(
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
     MultiSelectionManager by multiSelectionManagerImpl {
-
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
@@ -315,6 +317,13 @@ class PlayerViewModel(
                     albumId = currentMusic.albumId,
                 )
             }
+        }
+    }
+
+    fun initPlaybackList() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result: SoulResult<Unit> = playbackManager.initPlaybackList()
+            feedbackPopUpManager.showResultErrorIfAny(result)
         }
     }
 

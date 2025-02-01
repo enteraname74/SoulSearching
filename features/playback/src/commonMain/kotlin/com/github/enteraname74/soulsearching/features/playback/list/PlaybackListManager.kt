@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.ext.getFirstsOrMax
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.PlayerMusic
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
@@ -58,7 +59,7 @@ internal class PlaybackListManager(
      * If the playlist is empty (nothing is playing), we load the music.
      * It will remove the previous apparition of the music if there was one.
      */
-    suspend fun addMusicToPlayNext(music: Music) {
+    suspend fun addMusicToPlayNext(music: Music): SoulResult<Unit> {
         if (_state.value is PlaybackListState.NoData) {
             // We will initialize the player:
             val singletonList = listOf(music)
@@ -68,19 +69,19 @@ internal class PlaybackListManager(
                 currentMusic = music,
             )
 
-            playbackCallback.onlyLoadMusic(music = music)
+            val result: SoulResult<Unit> = playbackCallback.onlyLoadMusic(music = music)
             savePlayedList(list = singletonList)
             settings.saveCurrentMusicInformation(
                 currentMusicIndex = 0,
                 currentMusicPosition = 0,
             )
-            return
+            return result
         }
 
-        withDataState {
+        return withDataState {
             // If same music than the one played, does nothing :
             if (music.musicId.compareTo(currentMusic.musicId) == 0) {
-                return@withDataState
+                return@withDataState SoulResult.ofSuccess()
             }
 
             // We make sure to remove the music if it's already in the playlist :
@@ -88,7 +89,7 @@ internal class PlaybackListManager(
             updatedPlayedList.removeIf { it.musicId == music.musicId }
 
             // If the current playlist is empty, we load the music :
-            if (updatedPlayedList.isEmpty()) {
+            val result: SoulResult<Unit> = if (updatedPlayedList.isEmpty()) {
                 updatedPlayedList.add(music)
                 init(
                     musics = updatedPlayedList,
@@ -111,6 +112,7 @@ internal class PlaybackListManager(
                     playedList = updatedPlayedList,
                 )
                 matchInitialListToPlayedListIfNormalPlayerMode()
+                SoulResult.ofSuccess()
             }
 
             savePlayedList(list = updatedPlayedList)
@@ -118,7 +120,9 @@ internal class PlaybackListManager(
                 currentMusicIndex = currentMusicIndex,
                 currentMusicPosition = playbackCallback.getMusicPosition(),
             )
-        }
+
+            result
+        } ?: SoulResult.ofSuccess()
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
@@ -222,14 +226,15 @@ internal class PlaybackListManager(
     /**
      * Init the lists used by the player from the saved one in the db
      */
-    suspend fun init() {
+    suspend fun init(): SoulResult<Unit> {
         val list = playerMusicRepository.getAll().first().mapNotNull { it.music }
         val index = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_INDEX_KEY)
         val playerMode = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MODE_KEY)
         val position = settings.get(SoulSearchingSettingsKeys.Player.PLAYER_MUSIC_POSITION_KEY)
 
-        if (list.isEmpty()) {
+        return if (list.isEmpty()) {
             _state.value = PlaybackListState.NoData
+            SoulResult.ofSuccess()
         } else {
             val currentMusic: Music = list.getOrNull(index) ?: list.first()
             _state.value = PlaybackListState.Data(
@@ -354,7 +359,7 @@ internal class PlaybackListManager(
         }
     }
 
-    suspend fun setAndPlayMusic(music: Music) {
+    suspend fun setAndPlayMusic(music: Music): SoulResult<Unit> =
         withDataState {
             _state.value = this.copy(
                 currentMusic = music,
@@ -363,7 +368,7 @@ internal class PlaybackListManager(
                 currentMusicIndex = playedList.indexOfFirst { it.musicId == music.musicId },
                 currentMusicPosition = 0,
             )
-            player.setMusic(music)
+            val result: SoulResult<Unit> = player.setMusic(music)
             player.launchMusic()
 
             updateMusicNbPlayedJob?.cancel()
@@ -371,8 +376,9 @@ internal class PlaybackListManager(
                 delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
                 updateMusicNbPlayedUseCase(musicId = music.musicId)
             }
-        }
-    }
+
+            return@withDataState result
+        } ?: SoulResult.ofSuccess()
 
     /**
      * Define the current playlist and music.

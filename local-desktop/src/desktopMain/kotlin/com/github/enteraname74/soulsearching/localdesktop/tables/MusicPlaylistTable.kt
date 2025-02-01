@@ -25,7 +25,7 @@ internal object MusicPlaylistTable: Table() {
     )
     val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 
-    override val primaryKey: PrimaryKey = PrimaryKey(MusicArtistTable.id)
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
 /**

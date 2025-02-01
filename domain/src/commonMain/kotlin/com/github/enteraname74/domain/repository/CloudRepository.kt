@@ -8,6 +8,9 @@ interface CloudRepository {
     suspend fun clearLastUpdateDate()
     suspend fun setSearchMetadata(searchMetadata: Boolean)
     fun getSearchMetadata(): Flow<Boolean>
+    suspend fun getAccessToken(): String
+
+    suspend fun deleteCloudCache()
 
     /**
      * Sync all data with the cloud.

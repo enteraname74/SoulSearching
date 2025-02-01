@@ -33,6 +33,10 @@ kotlin {
             implementation(project(":domain"))
             implementation(compose.ui)
             implementation(libs.koin.core)
+
+            implementation(project(":remote"))
+            implementation(project(":features:filemanager"))
+            implementation(libs.bundles.ktor)
         }
 
         androidMain.dependencies {

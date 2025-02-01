@@ -1,14 +1,14 @@
-package com.github.enteraname74.soulsearching.features.filemanager.cover
+package com.github.enteraname74.soulsearching.features.filemanager.cloud
 
 import com.github.enteraname74.domain.util.AppEnvironment
 import java.io.File
 
-internal class CoverFileManagerDesktopImpl: CoverFileManager {
+class CloudCacheManagerDesktopImpl: CloudCacheManager {
     override val folder: File
-        get() {
+        get(){
             val userHome = System.getProperty("user.home") ?: ""
             val userFolder = File(userHome)
-            val coverFolder = File(userFolder, COVERS_FOLDER)
+            val coverFolder = File(userFolder, CLOUD_FOLDER)
             if (!coverFolder.exists()) {
                 coverFolder.mkdirs()
             }
@@ -22,6 +22,6 @@ internal class CoverFileManagerDesktopImpl: CoverFileManager {
         } else {
             ""
         }
-        private val COVERS_FOLDER: String = ".soul_searching$SUFFIX/covers"
+        private val CLOUD_FOLDER: String = ".soul_searching$SUFFIX/cloud"
     }
 }

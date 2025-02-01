@@ -4,7 +4,13 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.util.Log
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
+import com.github.enteraname74.soulsearching.remote.model.safeReadBytes
+import io.ktor.client.*
+import io.ktor.client.request.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +26,9 @@ import java.io.File
  * Implementation of the SoulSearchingAndroidPlayer
  */
 class SoulSearchingAndroidPlayerImpl(
-    private val context: Context,
+    context: Context,
+    private val client: HttpClient,
+    private val cloudCacheManager: CloudCacheManager
 ) :
     SoulSearchingPlayer,
     MediaPlayer.OnCompletionListener,
@@ -58,14 +66,11 @@ class SoulSearchingAndroidPlayerImpl(
         this.listener = listener
     }
 
-    override suspend fun setMusic(music: Music) {
-        try {
-            player.stop()
-            player.reset()
-            if (File(music.path).exists()) {
-                mutex.withLock {
-                    player.setDataSource(music.path)
-                }
+    private suspend fun setLocalMusic(music: Music): SoulResult<Unit> {
+        if (File(music.path).exists()) {
+            mutex.withLock {
+                player.setDataSource(music.path)
+            }
 
 //            CoroutineScope(Dispatchers.IO).launch {
 //                val volumeMultiplier: Float = normalizer.getVolumeMultiplier(music = music) ?: return@launch
@@ -73,9 +78,54 @@ class SoulSearchingAndroidPlayerImpl(
 //                val newVolume: Float = 0.5f * volumeMultiplier
 //                setPlayerVolume(newVolume)
 //            }
+        }
+        return SoulResult.ofSuccess()
+    }
+
+    private suspend fun setRemoteMusic(music: Music): SoulResult<Unit> {
+        // We first try to retrieve the path of an already cached music
+        val cachedMusicPath = cloudCacheManager.getPath(id = music.musicId)
+        if (cachedMusicPath != null) {
+            mutex.withLock {
+                player.setDataSource(cachedMusicPath)
+            }
+            return SoulResult.ofSuccess()
+        }
+
+        // Else, we fetch it from the cloud.
+        val result = client.safeReadBytes {
+            client.get(urlString = music.path)
+        }.toSoulResult()
+
+        (result as? SoulResult.Success)?.data?.let { musicData ->
+            cloudCacheManager.save(
+                id = music.musicId,
+                data = musicData,
+            )
+
+            cloudCacheManager.getPath(id = music.musicId)?.let { musicPath ->
+                mutex.withLock {
+                    player.setDataSource(musicPath)
+                }
+            }
+        }
+
+        return result.toSimpleResult()
+    }
+
+    override suspend fun setMusic(music: Music): SoulResult<Unit> {
+        return try {
+            player.stop()
+            player.reset()
+
+            when(music.dataMode) {
+                DataMode.Local -> setLocalMusic(music)
+                DataMode.Cloud -> setRemoteMusic(music)
             }
         } catch (e: Exception) {
             Log.e("PLAYER", "UNABLE TO SET MUSIC. GOT ERROR: ${e.message}")
+            // We don't want to show the error if an exception occurs (for now)
+            SoulResult.ofSuccess()
         }
     }
 

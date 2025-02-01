@@ -34,7 +34,7 @@ internal fun CoverIdImage(
             coverPath = null
             return@LaunchedEffect
         }
-        coverPath = coverFileManager.getCoverPath(id = coverId)
+        coverPath = coverFileManager.getPath(id = coverId)
     }
 
     AnimatedImage(

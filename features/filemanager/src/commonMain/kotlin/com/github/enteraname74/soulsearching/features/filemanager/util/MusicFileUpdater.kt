@@ -38,7 +38,7 @@ class MusicFileUpdater : KoinComponent {
             tag.setField(FieldKey.ARTIST, music.artist)
 
             (music.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
-                val coverData: ByteArray? = coverFileManager.getCoverData(coverId = coverId)
+                val coverData: ByteArray? = coverFileManager.getFileData(coverId = coverId)
 
                 coverData?.let { currentArtwork ->
                     try {

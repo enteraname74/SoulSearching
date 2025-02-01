@@ -58,7 +58,6 @@ class ArtistRemoteDataSourceImpl(
 
     override suspend fun deleteAll(artistIds: List<UUID>): SoulResult<Unit> =
         client.safeRequest<String> {
-            println("Will call route: ${ServerRoutes.Artist.DELETE}")
             delete(urlString = ServerRoutes.Artist.DELETE) {
                 setBody(artistIds.map { it.toString() })
                 contentType(ContentType.Application.Json)

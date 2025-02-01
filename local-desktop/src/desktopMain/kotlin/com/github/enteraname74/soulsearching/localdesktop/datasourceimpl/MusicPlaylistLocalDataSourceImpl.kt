@@ -13,7 +13,7 @@ internal class MusicPlaylistLocalDataSourceImpl(
         musicPlaylistDao.upsert(musicPlaylist = musicPlaylist)
 
     override suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
-        TODO("Not yet implemented")
+        musicPlaylistDao.upsertAll(musicPlaylists)
     }
 
     override suspend fun delete(musicPlaylist: MusicPlaylist) {

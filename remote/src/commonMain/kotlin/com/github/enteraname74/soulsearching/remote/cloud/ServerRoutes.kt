@@ -7,7 +7,7 @@ import java.util.UUID
 
 object ServerRoutes : KoinComponent {
     private val cloudLocalDataSource: CloudLocalDataSource by inject()
-    private val HOST: String
+    val HOST: String
         get() = cloudLocalDataSource.getHost()
 
     object Auth : Route {

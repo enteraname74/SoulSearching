@@ -154,7 +154,7 @@ class ModifyMusicViewModel(
     private fun setNewCoverFromCoverId(coverId: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
-                newCover.value = coverFileManager.getCoverData(coverId)
+                newCover.value = coverFileManager.getFileData(coverId)
                 _bottomSheetState.value = null
             }
         }
