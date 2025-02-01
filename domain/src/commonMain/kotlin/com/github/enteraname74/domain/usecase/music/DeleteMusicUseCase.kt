@@ -15,7 +15,7 @@ class DeleteMusicUseCase(
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
 ) {
-    private suspend fun deleteLocal(music: Music): SoulResult<String> {
+    private suspend fun deleteLocal(music: Music): SoulResult<Unit> {
         val artists: List<Artist> = getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull() ?: emptyList()
         val album: Album? = getCorrespondingAlbumUseCase(music = music)
 
@@ -28,10 +28,10 @@ class DeleteMusicUseCase(
             deleteArtistIfEmptyUseCase(artistId = musicArtist.artistId)
         }
 
-        return SoulResult.Success("")
+        return SoulResult.ofSuccess()
     }
 
-    suspend operator fun invoke(music: Music): SoulResult<String> =
+    suspend operator fun invoke(music: Music): SoulResult<Unit> =
         when(music.dataMode) {
             DataMode.Local -> deleteLocal(music)
             DataMode.Cloud -> musicRepository.delete(music)

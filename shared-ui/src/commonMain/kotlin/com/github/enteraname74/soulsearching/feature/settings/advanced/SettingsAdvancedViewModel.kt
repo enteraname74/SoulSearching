@@ -81,7 +81,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
-            val allSongs: List<Music> = getAllMusicUseCase().first()
+            val allSongs: List<Music> = getAllMusicUseCase(DataMode.Local).first()
 
             upsertAllMusicsUseCase(
                 allMusics = allSongs.map { music ->
@@ -95,7 +95,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadPlaylists() {
         if (_state.value.shouldDeletePlaylistsCovers) {
-            val allPlaylists: List<Playlist> = getAllPlaylistsUseCase().first()
+            val allPlaylists: List<Playlist> = getAllPlaylistsUseCase(DataMode.Local).first()
             upsertAllPlaylistsUseCase(
                 playlists = allPlaylists.map { playlist ->
                     playlist.cover = null
@@ -107,7 +107,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadAlbums() {
         if (_state.value.shouldReloadAlbumsCovers) {
-            val allAlbums: List<Album> = getAllAlbumsUseCase().first()
+            val allAlbums: List<Album> = getAllAlbumsUseCase(DataMode.Local).first()
             upsertAllAlbumsUseCase(
                 albums = allAlbums.map { album ->
                     album.cover = null
@@ -119,7 +119,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadArtists() {
         if (_state.value.shouldReloadArtistsCovers) {
-            val allArtists: List<Artist> = getAllArtistsUseCase().first()
+            val allArtists: List<Artist> = getAllArtistsUseCase(DataMode.Local).first()
             upsertAllArtistsUseCase(
                 allArtists = allArtists.map { artist ->
                     artist.cover = null

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.remote.cloud
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDateTime
+import java.util.UUID
 
 object ServerRoutes : KoinComponent {
     private val cloudLocalDataSource: CloudLocalDataSource by inject()
@@ -10,97 +11,97 @@ object ServerRoutes : KoinComponent {
         get() = cloudLocalDataSource.getHost()
 
     object Auth : Route {
-        override val BASE_ROUTE = "/auth"
+        override val END_POINT = "/auth"
 
         val SIGN_IN: String
-            get() = "$HOST$BASE_ROUTE/sign"
+            get() = "$ROUTE/sign"
         val LOG_IN: String
-            get() = "$HOST$BASE_ROUTE/login"
+            get() = "$ROUTE/login"
         val REFRESH_TOKENS: String
-            get() = "$HOST$BASE_ROUTE/refreshTokens"
+            get() = "$ROUTE/refreshTokens"
     }
 
     object Music : Route {
-        override val BASE_ROUTE = "/music"
+        override val END_POINT = "/music"
 
         val CHECK: String
-            get() = "$HOST$BASE_ROUTE/check"
+            get() = "$ROUTE/check"
 
         val DELETE: String
-            get() = "$HOST$BASE_ROUTE"
+            get() = ROUTE
 
         val UPDATE: String
-            get() = "$HOST$BASE_ROUTE"
+            get() = ROUTE
 
         fun upload(
             searchMetadata: Boolean
-        ): String = "$HOST$BASE_ROUTE/upload?searchMetadata=$searchMetadata"
-
-        fun all(
-            after: LocalDateTime?,
-            maxPerPage: Int,
-            page: Int,
-        ): String {
-            val afterText: String = after?.let {
-                "lastUpdateAt=$it&"
-            } ?: ""
-
-            return "$HOST$BASE_ROUTE/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
-        }
+        ): String = "$ROUTE/upload?searchMetadata=$searchMetadata"
     }
 
     object Album : Route {
-        override val BASE_ROUTE = "/album"
+        override val END_POINT = "/album"
 
         val CHECK: String
-            get() = "$HOST$BASE_ROUTE/check"
+            get() = "$ROUTE/check"
 
         val DELETE: String
-            get() = "$HOST${BASE_ROUTE}"
+            get() = ROUTE
 
         val UPDATE: String
-            get() = "$HOST${BASE_ROUTE}"
-
-        fun all(
-            after: LocalDateTime?,
-            maxPerPage: Int,
-            page: Int,
-        ): String {
-            val afterText: String = after?.let {
-                "lastUpdateAt=$it&"
-            } ?: ""
-
-            return "$HOST$BASE_ROUTE/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
-        }
+            get() = ROUTE
     }
 
     object Artist : Route {
-        override val BASE_ROUTE = "/artist"
+        override val END_POINT = "/artist"
 
         val CHECK: String
-            get() = "$HOST$BASE_ROUTE/check"
+            get() = "$ROUTE/check"
 
         val DELETE: String
-            get() = "$HOST${BASE_ROUTE}"
+            get() = ROUTE
 
         val UPDATE: String
-            get() = "$HOST${BASE_ROUTE}"
+            get() = ROUTE
+    }
 
-        fun all(
-            after: LocalDateTime?,
-            maxPerPage: Int,
-            page: Int,
-        ): String {
-            val afterText: String = after?.let {
-                "lastUpdateAt=$it&"
-            } ?: ""
+    object Playlist : Route {
+        override val END_POINT = "/playlist"
 
-            return "$HOST$BASE_ROUTE/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
-        }
+        val CHECK: String
+            get() = "$ROUTE/check"
+
+        val DELETE: String
+            get() = ROUTE
+
+        val UPLOAD: String
+            get() = "$ROUTE/upload"
+
+        val UPDATE: String
+            get() = ROUTE
+
+        val CREATE: String
+            get() = ROUTE
+
+        fun addMusicsToPlaylist(playlistId: UUID): String =
+            "$ROUTE/addMusics/$playlistId"
+
+        fun removeMusicsFromPlaylist(playlistId: UUID): String =
+            "$ROUTE/removeMusics/$playlistId"
     }
 
     object MusicArtist : Route {
-        override val BASE_ROUTE = "/musicartist"
+        override val END_POINT = "/musicartist"
+    }
+
+    object MusicPlaylist : Route {
+        override val END_POINT = "/musicplaylist"
+    }
+
+    private interface Route {
+        val END_POINT: String
+
+        val ROUTE: String
+            get() = "$HOST$END_POINT"
 
         fun all(
             after: LocalDateTime?,
@@ -111,11 +112,7 @@ object ServerRoutes : KoinComponent {
                 "lastUpdateAt=$it&"
             } ?: ""
 
-            return "$HOST${BASE_ROUTE}/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
+            return "$ROUTE/ofUser?${afterText}maxPerPage=$maxPerPage&page=$page"
         }
-    }
-
-    private interface Route {
-        val BASE_ROUTE: String
     }
 }

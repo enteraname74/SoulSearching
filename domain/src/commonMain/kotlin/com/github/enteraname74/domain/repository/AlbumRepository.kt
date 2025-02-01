@@ -11,8 +11,8 @@ interface AlbumRepository {
     /**
      * Delete an album.
      */
-    suspend fun delete(album: Album): SoulResult<String>
-    suspend fun deleteAll(ids: List<UUID>): SoulResult<String>
+    suspend fun delete(album: Album): SoulResult<Unit>
+    suspend fun deleteAll(ids: List<UUID>): SoulResult<Unit>
     suspend fun deleteAll(dataMode: DataMode)
 
     /**
@@ -22,7 +22,7 @@ interface AlbumRepository {
     suspend fun upsert(
         album: Album,
         artist: String = "",
-    ): SoulResult<String>
+    ): SoulResult<Unit>
     suspend fun upsertAll(albums: List<Album>)
 
     /**
@@ -45,7 +45,7 @@ interface AlbumRepository {
     /**
      * Retrieves a flow of all Album, sorted by name asc.
      */
-    fun getAll(): Flow<List<Album>>
+    fun getAll(dataMode: DataMode? = null): Flow<List<Album>>
 
     /**
      * Retrieves a flow of all AlbumsWithMusics.

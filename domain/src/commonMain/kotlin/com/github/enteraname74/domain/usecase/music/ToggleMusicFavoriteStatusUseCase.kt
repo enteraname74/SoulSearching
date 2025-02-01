@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.usecase.music
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -16,21 +17,25 @@ class ToggleMusicFavoriteStatusUseCase(
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
 ) {
     suspend operator fun invoke(musicId: UUID) {
-        val favoritePlaylist: PlaylistWithMusics = getFavoritePlaylistWithMusicsUseCase().first() ?: return
         val music: Music = musicRepository.getFromId(musicId).first() ?: return
+        val favoritePlaylist: PlaylistWithMusics = getFavoritePlaylistWithMusicsUseCase(
+            dataMode = music.dataMode,
+        ).first() ?: return
 
         if (isMusicInFavoritePlaylistUseCase(musicId = musicId).first()) {
-            musicPlaylistRepository.deleteMusicFromPlaylist(
-                musicId = musicId,
-                playlistId = favoritePlaylist.playlist.playlistId,
+            musicPlaylistRepository.delete(
+                musicPlaylist = MusicPlaylist(
+                    musicId = musicId,
+                    playlistId = favoritePlaylist.playlist.playlistId,
+                    dataMode = music.dataMode,
+                ),
             )
         } else {
-            musicPlaylistRepository.upsertMusicIntoPlaylist(
+            musicPlaylistRepository.upsert(
                 MusicPlaylist(
                     musicId = musicId,
                     playlistId = favoritePlaylist.playlist.playlistId,
                     dataMode = music.dataMode,
-
                 )
             )
         }

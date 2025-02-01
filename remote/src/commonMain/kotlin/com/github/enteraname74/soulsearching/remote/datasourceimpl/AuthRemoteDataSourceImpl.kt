@@ -21,7 +21,7 @@ class AuthRemoteDataSourceImpl(
     private val settings: SoulSearchingSettings,
 ) : AuthRemoteDataSource, KoinComponent {
     private val cloudClient by inject<HttpClient>(
-        qualifier = named(HttpClientNames.CLOUD)
+        qualifier = named(HttpClientNames.CLOUD_AUTH)
     )
 
     override suspend fun signIn(user: User): SoulResult<UserTokens> {

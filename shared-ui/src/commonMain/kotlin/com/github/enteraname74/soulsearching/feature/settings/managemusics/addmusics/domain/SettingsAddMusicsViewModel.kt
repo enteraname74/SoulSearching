@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.addm
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
@@ -84,7 +85,7 @@ class SettingsAddMusicsViewModel(
             multipleArtistListener.consumeStep()
 
             val hiddenFoldersPaths: List<String> = getHiddenFoldersPathUseCase()
-            val allMusicsPaths: List<String> = getAllMusicUseCase().first().map { it.path }
+            val allMusicsPaths: List<String> = getAllMusicUseCase(DataMode.Local).first().map { it.path }
 
             _state.value = SettingsAddMusicsState.Fetching
 

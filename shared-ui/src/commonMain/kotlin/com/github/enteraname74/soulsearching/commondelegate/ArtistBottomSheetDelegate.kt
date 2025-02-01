@@ -52,7 +52,7 @@ class ArtistBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = deleteArtistUseCase(artistWithMusics)
+                            val result: SoulResult<Unit> = deleteArtistUseCase(artistWithMusics)
                             feedbackPopUpManager.showResultErrorIfAny(result = result)
                         }
                     }
@@ -76,7 +76,7 @@ class ArtistBottomSheetDelegateImpl(
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = toggleArtistQuickAccessStateUseCase(
+                            val result: SoulResult<Unit> = toggleArtistQuickAccessStateUseCase(
                                 artist = selectedArtist.artist
                             )
                             feedbackPopUpManager.showResultErrorIfAny(result)

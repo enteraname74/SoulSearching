@@ -7,6 +7,8 @@ import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLo
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicplaylist.MusicPlaylistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -29,7 +31,7 @@ val localDesktopModule: Module = module {
     singleOf(::FolderDataSourceImpl) bind FolderDataSource::class
     singleOf(::MusicArtistLocalDataSourceImpl) bind MusicArtistLocalDataSource::class
     singleOf(::MusicLocalDataSourceImpl) bind MusicLocalDataSource::class
-    singleOf(::MusicPlaylistDataSourceImpl) bind MusicPlaylistDataSource::class
+    singleOf(::MusicPlaylistLocalDataSourceImpl) bind MusicPlaylistLocalDataSource::class
     singleOf(::PlayerMusicDataSourceImpl) bind PlayerMusicDataSource::class
-    singleOf(::PlaylistDataSourceImpl) bind PlaylistDataSource::class
+    singleOf(::PlaylistLocalDataSourceImpl) bind PlaylistLocalDataSource::class
 }

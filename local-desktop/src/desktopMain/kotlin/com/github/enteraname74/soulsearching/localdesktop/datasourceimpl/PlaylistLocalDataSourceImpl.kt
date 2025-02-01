@@ -1,15 +1,16 @@
 package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.localdesktop.dao.PlaylistDao
-import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
-internal class PlaylistDataSourceImpl(
+internal class PlaylistLocalDataSourceImpl(
     private val playlistDao: PlaylistDao
-) : PlaylistDataSource {
+) : PlaylistLocalDataSource {
     override suspend fun upsert(playlist: Playlist) {
         playlistDao.upsertAll(playlist)
     }
@@ -26,15 +27,22 @@ internal class PlaylistDataSourceImpl(
         playlistDao.deleteAll(playlistIds)
     }
 
-    override fun getAll(): Flow<List<Playlist>> =
-        playlistDao.getAll()
+    override fun getAll(dataMode: DataMode): Flow<List<Playlist>> =
+        playlistDao.getAll(dataMode.value)
 
-    override fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> =
-        playlistDao.getAllPlaylistWithMusics()
+    override fun getAllPlaylistWithMusics(dataMode: DataMode): Flow<List<PlaylistWithMusics>> =
+        playlistDao.getAllPlaylistWithMusics(dataMode.value)
 
     override fun getFromId(playlistId: UUID): Flow<Playlist?> =
         playlistDao.getFromId(playlistId)
 
     override fun getPlaylistWithMusics(playlistId: UUID): Flow<PlaylistWithMusics?> =
         playlistDao.getPlaylistWithMusics(playlistId)
+
+    override suspend fun deleteAll(dataMode: DataMode) {
+        playlistDao.deleteAll(dataMode.value)
+    }
+
+    override suspend fun getAll(playlistIds: List<UUID>): List<Playlist> =
+        playlistDao.getAll(playlistIds)
 }

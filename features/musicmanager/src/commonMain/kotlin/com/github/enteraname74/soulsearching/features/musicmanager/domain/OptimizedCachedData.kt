@@ -32,7 +32,7 @@ data class OptimizedCachedData(
         suspend fun fromDb(): OptimizedCachedData = OptimizedCachedData(
             musicsByPath = getAllMusicUseCase().first().associateBy { it.path } as HashMap<String, Music>,
             artistsByName =
-            getAllArtistsUseCase().first().associateBy { it.artistName } as HashMap<String, Artist>,
+            getAllArtistsUseCase(DataMode.Local).first().associateBy { it.artistName } as HashMap<String, Artist>,
             albumsByInfo = getAllAlbumsWithArtistUseCase().first().associate {
                 AlbumInformation(
                     name = it.album.albumName,

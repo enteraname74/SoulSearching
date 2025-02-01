@@ -143,7 +143,7 @@ class ModifyAlbumViewModel(
                 )
 
                 // We update the information of the album.
-                val result: SoulResult<String> =
+                val result: SoulResult<Unit> =
                     updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
                 feedbackPopUpManager.showResultErrorIfAny(result)
 

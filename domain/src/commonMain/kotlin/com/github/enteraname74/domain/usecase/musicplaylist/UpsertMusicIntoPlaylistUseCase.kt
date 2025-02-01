@@ -7,7 +7,7 @@ class UpsertMusicIntoPlaylistUseCase(
     private val musicPlaylistRepository: MusicPlaylistRepository
 ) {
     suspend operator fun invoke(musicPlaylist: MusicPlaylist) {
-        musicPlaylistRepository.upsertMusicIntoPlaylist(
+        musicPlaylistRepository.upsert(
             musicPlaylist = musicPlaylist,
         )
     }

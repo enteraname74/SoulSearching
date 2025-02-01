@@ -65,6 +65,6 @@ internal class MusicArtistDao {
     }
 
     suspend fun delete(musicArtist: MusicArtist) = flowTransactionOn {
-        MusicArtistTable.deleteWhere { musicId eq musicArtist.musicId and (artistId eq musicArtist.artistId) }
+        MusicArtistTable.deleteWhere { id eq musicArtist.id }
     }
 }

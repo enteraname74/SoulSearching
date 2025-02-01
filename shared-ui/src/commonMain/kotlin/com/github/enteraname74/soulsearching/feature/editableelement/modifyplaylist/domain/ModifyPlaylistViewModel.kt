@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpdatePlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
@@ -20,7 +20,7 @@ import java.util.*
 class ModifyPlaylistViewModel(
     private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val updatePlaylistUseCase: UpdatePlaylistUseCase,
     private val loadingManager: LoadingManager,
 ) : ScreenModel {
 
@@ -102,7 +102,7 @@ class ModifyPlaylistViewModel(
                 name = form.getPlaylistName().trim(),
             )
 
-            upsertPlaylistUseCase(
+            updatePlaylistUseCase(
                 playlist = newPlaylistInformation,
             )
 

@@ -17,16 +17,16 @@ class UpdateArtistUseCase(
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
 ) {
-    suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<String> =
+    suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<Unit> =
         when (newArtistWithMusicsInformation.artist.dataMode) {
             DataMode.Local -> localUpdate(newArtistWithMusicsInformation)
             DataMode.Cloud -> artistRepository.upsert(newArtistWithMusicsInformation.artist)
         }
 
-    private suspend fun localUpdate(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<String> {
+    private suspend fun localUpdate(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<Unit> {
         val legacyArtist: Artist =
             artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull()
-                ?: return SoulResult.Success("")
+                ?: return SoulResult.ofSuccess()
 
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
@@ -66,7 +66,7 @@ class UpdateArtistUseCase(
             )
         )
 
-        return SoulResult.Success("")
+        return SoulResult.ofSuccess()
     }
 
     /**

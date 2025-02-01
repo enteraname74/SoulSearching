@@ -7,11 +7,8 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
+import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.PlaylistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -68,18 +65,33 @@ internal class PlaylistDao(
         }
     }
 
-    fun getAll(): Flow<List<Playlist>> = transaction {
+    suspend fun deleteAll(dataMode: String) {
+        flowTransactionOn {
+            PlaylistTable.deleteWhere { PlaylistTable.dataMode eq dataMode }
+        }
+    }
+
+    fun getAll(dataMode: String): Flow<List<Playlist>> = transaction {
         PlaylistTable
             .selectAll()
+            .where { PlaylistTable.dataMode eq dataMode }
             .orderBy(PlaylistTable.name to SortOrder.ASC)
             .asFlow()
             .mapResultRow { it.toPlaylist() }
             .map { it.filterNotNull() }
     }
 
-    fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>> = transaction {
+    suspend fun getAll(playlistIds: List<UUID>): List<Playlist> = dbQuery {
+        PlaylistTable
+            .selectAll()
+            .where { PlaylistTable.id inList playlistIds }
+            .mapNotNull { it.toPlaylist() }
+    }
+
+    fun getAllPlaylistWithMusics(dataMode: String): Flow<List<PlaylistWithMusics>> = transaction {
         (PlaylistTable fullJoin MusicPlaylistTable fullJoin MusicTable)
             .selectAll()
+            .where { PlaylistTable.dataMode eq dataMode }
             .asFlow()
             .map { list ->
                 list.groupBy(

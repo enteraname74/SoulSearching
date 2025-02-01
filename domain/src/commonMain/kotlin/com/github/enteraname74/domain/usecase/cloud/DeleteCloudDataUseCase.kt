@@ -7,14 +7,18 @@ class DeleteCloudDataUseCase(
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
+    private val playlistRepository: PlaylistRepository,
     private val cloudRepository: CloudRepository,
-    private val musicArtistRepository: MusicArtistRepository
+    private val musicArtistRepository: MusicArtistRepository,
+    private val musicPlaylistRepository: MusicPlaylistRepository,
 ) {
     suspend operator fun invoke() {
         artistRepository.deleteAll(DataMode.Cloud)
         albumRepository.deleteAll(DataMode.Cloud)
         musicRepository.deleteAll(DataMode.Cloud)
+        playlistRepository.deleteAll(DataMode.Cloud)
         musicArtistRepository.deleteAll(DataMode.Cloud)
+        musicPlaylistRepository.deleteAll(DataMode.Cloud)
 
         cloudRepository.clearLastUpdateDate()
     }

@@ -52,7 +52,7 @@ class AlbumBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = deleteAlbumUseCase(album)
+                            val result: SoulResult<Unit> = deleteAlbumUseCase(album)
                             feedbackPopUpManager.showResultErrorIfAny(result)
                         }
                         multiSelectionManagerImpl?.clearMultiSelection()
@@ -78,7 +78,7 @@ class AlbumBottomSheetDelegateImpl(
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = toggleAlbumQuickAccessStateUseCase(album = albumWithMusics.album)
+                            val result: SoulResult<Unit> = toggleAlbumQuickAccessStateUseCase(album = albumWithMusics.album)
                             feedbackPopUpManager.showResultErrorIfAny(result)
                         }
                         multiSelectionManagerImpl?.clearMultiSelection()

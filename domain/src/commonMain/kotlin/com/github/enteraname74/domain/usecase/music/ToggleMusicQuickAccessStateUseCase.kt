@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 class ToggleMusicQuickAccessStateUseCase(
     private val musicRepository: MusicRepository,
 ) {
-    suspend operator fun invoke(music: Music): SoulResult<String> =
+    suspend operator fun invoke(music: Music): SoulResult<Unit> =
         musicRepository.upsert(
             music = music.copy(
                 isInQuickAccess = !music.isInQuickAccess,

@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ import java.util.*
  */
 internal class MusicFetcherAndroidImpl(
     private val context: Context,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val createPlaylistUseCase: CreatePlaylistUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
     private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
 ) : MusicFetcher() {
@@ -94,12 +94,13 @@ internal class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
-                if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
-                    upsertPlaylistUseCase(
+                if (getFavoritePlaylistWithMusicsUseCase(dataMode = DataMode.Local).first() == null) {
+                    createPlaylistUseCase(
                         Playlist(
                             playlistId = UUID.randomUUID(),
                             name = strings.favorite,
-                            isFavorite = true
+                            isFavorite = true,
+                            dataMode = DataMode.Local,
                         )
                     )
                 }

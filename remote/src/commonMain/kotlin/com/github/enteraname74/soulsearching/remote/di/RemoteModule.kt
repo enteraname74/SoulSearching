@@ -13,6 +13,8 @@ import com.github.enteraname74.soulsearching.repository.datasource.artist.Artist
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicplaylist.MusicPlaylistRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -33,7 +35,7 @@ val remoteModule = module {
         }
     }
 
-    single(named(HttpClientNames.CLOUD)) {
+    single(named(HttpClientNames.CLOUD_AUTH)) {
         HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(JSON)
@@ -85,25 +87,37 @@ val remoteModule = module {
 
     single<MusicRemoteDataSource> {
         MusicRemoteDataSourceImpl(
-            client = get(named(HttpClientNames.CLOUD)),
+            client = get(named(HttpClientNames.CLOUD_AUTH)),
         )
     }
 
     single<AlbumRemoteDataSource> {
         AlbumRemoteDataSourceImpl(
-            client = get(named(HttpClientNames.CLOUD)),
+            client = get(named(HttpClientNames.CLOUD_AUTH)),
         )
     }
 
     single<ArtistRemoteDataSource> {
         ArtistRemoteDataSourceImpl(
-            client = get(named(HttpClientNames.CLOUD)),
+            client = get(named(HttpClientNames.CLOUD_AUTH)),
         )
     }
 
     single<MusicArtistRemoteDataSource> {
         MusicArtistRemoteDataSourceImpl(
-            client = get(named(HttpClientNames.CLOUD)),
+            client = get(named(HttpClientNames.CLOUD_AUTH)),
+        )
+    }
+
+    single<MusicPlaylistRemoteDataSource> {
+        MusicPlaylistRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD_AUTH)),
+        )
+    }
+
+    single<PlaylistRemoteDataSource> {
+        PlaylistRemoteDataSourceImpl(
+            client = get(named(HttpClientNames.CLOUD_AUTH))
         )
     }
 

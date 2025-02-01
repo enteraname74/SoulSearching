@@ -60,7 +60,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                                     )
                                 }
                             }
-                            val result: SoulResult<String> = deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            val result: SoulResult<Unit> = deleteAllAlbumsUseCase(selectedIdsToDelete)
                             feedbackPopUpManager.showResultErrorIfAny(result)
 
                             multiSelectionManagerImpl?.clearMultiSelection()

@@ -16,14 +16,14 @@ interface MusicRepository {
     suspend fun upsert(
         music: Music,
         artists: List<String> = emptyList(),
-    ): SoulResult<String>
+    ): SoulResult<Unit>
     suspend fun upsertAll(musics: List<Music>)
 
     /**
      * Delete a music.
      */
-    suspend fun delete(music: Music): SoulResult<String>
-    suspend fun deleteAll(ids: List<UUID>): SoulResult<String>
+    suspend fun delete(music: Music): SoulResult<Unit>
+    suspend fun deleteAll(ids: List<UUID>): SoulResult<Unit>
     suspend fun deleteAll(dataMode: DataMode)
 
     /**

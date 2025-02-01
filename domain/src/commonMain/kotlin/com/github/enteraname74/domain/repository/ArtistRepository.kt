@@ -13,14 +13,14 @@ interface ArtistRepository {
     /**
      * Inserts or updates an artist.
      */
-    suspend fun upsert(artist: Artist): SoulResult<String>
+    suspend fun upsert(artist: Artist): SoulResult<Unit>
     suspend fun upsertAll(artists: List<Artist>)
 
     /**
      * Deletes an Artist.
      */
-    suspend fun delete(artist: Artist): SoulResult<String>
-    suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<String>
+    suspend fun delete(artist: Artist): SoulResult<Unit>
+    suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<Unit>
     suspend fun deleteAll(dataMode: DataMode)
 
     /**
@@ -38,12 +38,12 @@ interface ArtistRepository {
     /**
      * Retrieves a flow of all Artist.
      */
-    fun getAll(): Flow<List<Artist>>
+    fun getAll(dataMode: DataMode? = null): Flow<List<Artist>>
 
     /**
      * Retrieves a flow of all ArtistWithMusics.
      */
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
+    fun getAllArtistWithMusics(dataMode: DataMode? = null): Flow<List<ArtistWithMusics>>
 
     /**
      * Retrieves a flow of an ArtistWithMusics.

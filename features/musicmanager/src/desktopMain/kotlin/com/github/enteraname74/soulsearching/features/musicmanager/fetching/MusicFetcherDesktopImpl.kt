@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.flow.first
 import org.jaudiotagger.audio.AudioFile
@@ -22,7 +22,7 @@ import java.util.*
  * Class handling music fetching for desktop application.
  */
 internal class MusicFetcherDesktopImpl(
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val createPlaylistUseCase: CreatePlaylistUseCase,
     private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
 ) : MusicFetcher() {
 
@@ -121,8 +121,8 @@ internal class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::cacheMusic
         )
-        if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
-            upsertPlaylistUseCase(
+        if (getFavoritePlaylistWithMusicsUseCase(dataMode = DataMode.Local).first() == null) {
+            createPlaylistUseCase(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = strings.favorite,

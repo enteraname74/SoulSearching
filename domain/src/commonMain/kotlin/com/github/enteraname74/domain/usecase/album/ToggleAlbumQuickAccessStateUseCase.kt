@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.repository.AlbumRepository
 class ToggleAlbumQuickAccessStateUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(album: Album): SoulResult<String> =
+    suspend operator fun invoke(album: Album): SoulResult<Unit> =
         albumRepository.upsert(
             album = album.copy(
                 isInQuickAccess = !album.isInQuickAccess,

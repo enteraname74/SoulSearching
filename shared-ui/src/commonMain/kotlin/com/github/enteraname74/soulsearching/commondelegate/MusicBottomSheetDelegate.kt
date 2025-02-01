@@ -70,7 +70,7 @@ class MusicBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = deleteMusicUseCase(music = musicToDelete)
+                            val result: SoulResult<Unit> = deleteMusicUseCase(music = musicToDelete)
                             feedbackPopUpManager.showResultErrorIfAny(result = result)
                         }
                     }
@@ -167,7 +167,7 @@ class MusicBottomSheetDelegateImpl(
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            val result: SoulResult<String> = toggleMusicQuickAccessStateUseCase(music = selectedMusic)
+                            val result: SoulResult<Unit> = toggleMusicQuickAccessStateUseCase(music = selectedMusic)
                             feedbackPopUpManager.showResultErrorIfAny(result)
                         }
                         multiSelectionManagerImpl?.clearMultiSelection()

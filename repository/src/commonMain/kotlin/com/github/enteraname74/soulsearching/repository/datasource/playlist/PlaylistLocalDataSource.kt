@@ -1,5 +1,6 @@
-package com.github.enteraname74.soulsearching.repository.datasource
+package com.github.enteraname74.soulsearching.repository.datasource.playlist
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +9,7 @@ import java.util.UUID
 /**
  * Data source of a Playlist.
  */
-interface PlaylistDataSource {
+interface PlaylistLocalDataSource {
     /**
      * Inserts or updates a Playlist.
      */
@@ -25,16 +26,18 @@ interface PlaylistDataSource {
      * Delete the playlists identified in the given list of ids.
      */
     suspend fun deleteAll(playlistIds: List<UUID>)
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
      * Retrieves a flow of all Playlist, sorted by name asc.
      */
-    fun getAll(): Flow<List<Playlist>>
+    fun getAll(dataMode: DataMode): Flow<List<Playlist>>
+    suspend fun getAll(playlistIds: List<UUID>): List<Playlist>
 
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.
      */
-    fun getAllPlaylistWithMusics(): Flow<List<PlaylistWithMusics>>
+    fun getAllPlaylistWithMusics(dataMode: DataMode): Flow<List<PlaylistWithMusics>>
 
     /**
      * Retrieves a Playlist from its id.

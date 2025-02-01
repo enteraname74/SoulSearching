@@ -31,13 +31,13 @@ class ArtistRepositoryImpl(
 ): ArtistRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
-    override suspend fun upsert(artist: Artist): SoulResult<String> =
+    override suspend fun upsert(artist: Artist): SoulResult<Unit> =
         when(artist.dataMode) {
             DataMode.Local -> {
                 artistLocalDataSource.upsert(
                     artist = artist
                 )
-                SoulResult.Success("")
+                SoulResult.ofSuccess()
             }
             DataMode.Cloud -> {
                 val result = artistRemoteDataSource.update(artist)
@@ -53,13 +53,13 @@ class ArtistRepositoryImpl(
     /**
      * Deletes an Artist.
      */
-    override suspend fun delete(artist: Artist): SoulResult<String> =
+    override suspend fun delete(artist: Artist): SoulResult<Unit> =
         when(artist.dataMode) {
             DataMode.Local -> {
                 artistLocalDataSource.delete(
                     artist = artist
                 )
-                SoulResult.Success("")
+                SoulResult.ofSuccess()
             }
             DataMode.Cloud -> {
                 val result = artistRemoteDataSource.deleteAll(
@@ -70,7 +70,7 @@ class ArtistRepositoryImpl(
             }
         }
 
-    override suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<String> =
+    override suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<Unit> =
         DeleteAllHelper.deleteAll(
             ids = artistsIds,
             getAll = artistLocalDataSource::getAll,
@@ -101,11 +101,15 @@ class ArtistRepositoryImpl(
      * Retrieves a flow of all Artist, sorted by name asc.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getAll(): Flow<List<Artist>> =
+    override fun getAll(
+        dataMode: DataMode?,
+    ): Flow<List<Artist>> =
         dataModeDataSource
             .getCurrentDataModeWithUserCheck()
-            .flatMapLatest {
-                artistLocalDataSource.getAll(it)
+            .flatMapLatest { currentDataMode ->
+                artistLocalDataSource.getAll(
+                    dataMode = dataMode ?: currentDataMode
+                )
             }
 
 
@@ -113,11 +117,15 @@ class ArtistRepositoryImpl(
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
+    override fun getAllArtistWithMusics(
+        dataMode: DataMode?,
+    ): Flow<List<ArtistWithMusics>> =
         dataModeDataSource
             .getCurrentDataModeWithUserCheck()
-            .flatMapLatest {
-                artistLocalDataSource.getAllArtistWithMusics(it)
+            .flatMapLatest { currentDataMode ->
+                artistLocalDataSource.getAllArtistWithMusics(
+                    dataMode = dataMode ?: currentDataMode
+                )
             }
 
 

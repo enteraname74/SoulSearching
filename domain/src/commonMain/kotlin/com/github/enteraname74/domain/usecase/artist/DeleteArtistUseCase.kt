@@ -18,7 +18,7 @@ class DeleteArtistUseCase(
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
 ) {
 
-    private suspend fun deleteLocal(artistWithMusics: ArtistWithMusics): SoulResult<String> {
+    private suspend fun deleteLocal(artistWithMusics: ArtistWithMusics): SoulResult<Unit> {
         /*
         Artist may hold songs that are shared by other artists.
         These songs will be deleted, but we must fetch all the related artists to check if we can delete them afterward.
@@ -57,10 +57,10 @@ class DeleteArtistUseCase(
             deleteArtistIfEmptyUseCase(it.artistId)
         }
 
-        return SoulResult.Success("")
+        return SoulResult.ofSuccess()
     }
 
-    suspend operator fun invoke(artistWithMusics: ArtistWithMusics): SoulResult<String> =
+    suspend operator fun invoke(artistWithMusics: ArtistWithMusics): SoulResult<Unit> =
         when(artistWithMusics.artist.dataMode) {
             DataMode.Local -> deleteLocal(artistWithMusics)
             DataMode.Cloud -> artistRepository.delete(artistWithMusics.artist)

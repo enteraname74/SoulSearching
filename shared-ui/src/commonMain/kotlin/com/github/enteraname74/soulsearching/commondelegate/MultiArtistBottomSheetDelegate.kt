@@ -60,7 +60,7 @@ class MultiArtistBottomSheetDelegateImpl(
                                     )
                                 }
                             }
-                            val result: SoulResult<String> = deleteAllArtistsUseCase(selectedIdsToDelete)
+                            val result: SoulResult<Unit> = deleteAllArtistsUseCase(selectedIdsToDelete)
                             feedbackPopUpManager.showResultErrorIfAny(result)
 
                             multiSelectionManagerImpl?.clearMultiSelection()

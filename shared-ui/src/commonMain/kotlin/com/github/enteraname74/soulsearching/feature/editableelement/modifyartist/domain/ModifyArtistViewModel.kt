@@ -125,7 +125,7 @@ class ModifyArtistViewModel(
                     )
                 )
 
-                val result: SoulResult<String> =
+                val result: SoulResult<Unit> =
                     updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
                 feedbackPopUpManager.showResultErrorIfAny(result)
 

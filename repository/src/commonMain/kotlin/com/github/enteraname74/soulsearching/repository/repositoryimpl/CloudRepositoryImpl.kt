@@ -10,7 +10,9 @@ class CloudRepositoryImpl(
     private val musicRepository: MusicRepository,
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
+    private val playlistRepository: PlaylistRepository,
     private val musicArtistRepository: MusicArtistRepository,
+    private val musicPlaylistRepository: MusicPlaylistRepository,
     private val cloudLocalDataSource: CloudLocalDataSource,
 ): CloudRepository {
     override suspend fun clearLastUpdateDate() {
@@ -26,16 +28,22 @@ class CloudRepositoryImpl(
 
     override suspend fun syncDataWithCloud(): SoulResult<List<UUID>> {
         val artistSync: SoulResult<Unit> = artistRepository.syncWithCloud()
-        if (artistSync.isError()) return artistSync.map { emptyList() }
+        if (artistSync.isError()) return artistSync.mapSuccess { emptyList() }
 
         val albumSync: SoulResult<Unit> = albumRepository.syncWithCloud()
-        if (albumSync.isError()) return albumSync.map { emptyList() }
+        if (albumSync.isError()) return albumSync.mapSuccess { emptyList() }
 
         val musicSync: SoulResult<List<UUID>> = musicRepository.syncWithCloud()
-        if (musicSync.isError()) return musicSync.map { emptyList() }
+        if (musicSync.isError()) return musicSync.mapSuccess { emptyList() }
 
         val musicArtistSync: SoulResult<Unit> = musicArtistRepository.syncWithCloud()
-        if (musicArtistSync.isError()) return musicArtistSync.map { emptyList() }
+        if (musicArtistSync.isError()) return musicArtistSync.mapSuccess { emptyList() }
+
+        val playlistSync: SoulResult<Unit> = playlistRepository.syncWithCloud()
+        if (playlistSync.isError()) return playlistSync.mapSuccess { emptyList() }
+
+        val musicPlaylistSync: SoulResult<Unit> = musicPlaylistRepository.syncWithCloud()
+        if (musicPlaylistSync.isError()) return musicPlaylistSync.mapSuccess { emptyList() }
 
         cloudLocalDataSource.updateLastUpdateDate()
 

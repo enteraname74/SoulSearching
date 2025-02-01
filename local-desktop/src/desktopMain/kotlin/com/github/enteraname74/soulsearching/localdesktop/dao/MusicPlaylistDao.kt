@@ -2,18 +2,15 @@ package com.github.enteraname74.soulsearching.localdesktop.dao
 
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.exposedflows.flowTransactionOn
-import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicPlaylistTable
-import com.github.enteraname74.soulsearching.localdesktop.tables.toMusicPlaylist
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.batchUpsert
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.upsert
-import java.util.*
 
 internal class MusicPlaylistDao {
-    suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
+    suspend fun upsert(musicPlaylist: MusicPlaylist) {
         flowTransactionOn {
             MusicPlaylistTable.upsert {
                 it[id] = musicPlaylist.id
@@ -24,26 +21,35 @@ internal class MusicPlaylistDao {
         }
     }
 
-    suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID) {
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>) {
         flowTransactionOn {
-            MusicPlaylistTable.
-            deleteWhere { (MusicPlaylistTable.musicId eq musicId) and
-                    (MusicPlaylistTable.playlistId eq playlistId) }
+            MusicPlaylistTable.batchUpsert(musicPlaylists) { musicPlaylist ->
+                this[MusicPlaylistTable.id] = musicPlaylist.id
+                this[MusicPlaylistTable.musicId] = musicPlaylist.musicId
+                this[MusicPlaylistTable.playlistId] = musicPlaylist.playlistId
+                this[MusicPlaylistTable.dataMode] = musicPlaylist.dataMode.value
+            }
         }
     }
 
-    suspend fun getMusicPlaylist(musicId: UUID, playlistId: UUID): MusicPlaylist? = dbQuery {
-        MusicPlaylistTable
-            .selectAll()
-            .where { (MusicPlaylistTable.musicId eq musicId) and
-                    (MusicPlaylistTable.playlistId eq playlistId) }
-            .map { it.toMusicPlaylist() }
-            .firstOrNull()
+    suspend fun delete(musicPlaylist: MusicPlaylist) {
+        flowTransactionOn {
+            MusicPlaylistTable.
+            deleteWhere { id eq musicPlaylist.id }
+        }
     }
 
-    suspend fun deleteMusicFromAllPlaylists(musicId: UUID) {
+    suspend fun deleteAll(musicPlaylistsIds: List<String>) {
         flowTransactionOn {
-            MusicPlaylistTable.deleteWhere { MusicPlaylistTable.musicId eq musicId }
+            MusicPlaylistTable.
+            deleteWhere { id inList musicPlaylistsIds }
+        }
+    }
+
+    suspend fun deleteAll(dataMode: String) {
+        flowTransactionOn {
+            MusicPlaylistTable.
+            deleteWhere { MusicPlaylistTable.dataMode eq dataMode }
         }
     }
 }

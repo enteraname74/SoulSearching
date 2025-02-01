@@ -18,9 +18,9 @@ class DeleteAlbumUseCase(
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
 ) {
-    private suspend fun deleteLocal(album: Album): SoulResult<String> {
+    private suspend fun deleteLocal(album: Album): SoulResult<Unit> {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = album.albumId).first()
-            ?: return SoulResult.Success("")
+            ?: return SoulResult.ofSuccess()
 
         /*
         Album may hold songs that are shared by other artists.
@@ -54,17 +54,17 @@ class DeleteAlbumUseCase(
             deleteArtistIfEmptyUseCase(it.artistId)
         }
 
-        return SoulResult.Success("")
+        return SoulResult.ofSuccess()
     }
 
-    suspend operator fun invoke(album: Album): SoulResult<String> =
+    suspend operator fun invoke(album: Album): SoulResult<Unit> =
         when(album.dataMode) {
             DataMode.Local -> deleteLocal(album)
             DataMode.Cloud -> albumRepository.delete(album)
         }
 
-    suspend fun onlyAlbum(albumId: UUID): SoulResult<String> =
+    suspend fun onlyAlbum(albumId: UUID): SoulResult<Unit> =
         albumRepository.getAlbumWithMusics(albumId = albumId).firstOrNull()?.let {
             albumRepository.delete(it.album)
-        } ?: SoulResult.Success("")
+        } ?: SoulResult.ofSuccess()
 }

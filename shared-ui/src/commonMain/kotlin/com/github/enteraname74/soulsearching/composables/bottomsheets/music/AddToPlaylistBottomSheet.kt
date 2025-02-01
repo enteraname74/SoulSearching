@@ -20,7 +20,7 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
@@ -52,7 +52,7 @@ class AddToPlaylistBottomSheet(
     private val addMusicToSelectedPlaylists: (selectedPlaylists: List<PlaylistWithMusics>) -> Unit,
     private val playlistsWithMusics: List<PlaylistWithMusics>,
 ) : SoulBottomSheet, KoinComponent {
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
+    private val createPlaylistUseCase: CreatePlaylistUseCase by inject()
     private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase by inject()
     private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase by inject()
 
@@ -69,7 +69,7 @@ class AddToPlaylistBottomSheet(
                                 name = playlistName,
                                 dataMode = getCurrentDataModeWithUserUseCase().first(),
                             )
-                            upsertPlaylistUseCase(playlist = newPlaylist)
+                            createPlaylistUseCase(playlist = newPlaylist)
                             selectedMusicIds.forEach { musicId ->
                                 upsertMusicIntoPlaylistUseCase(
                                     MusicPlaylist(

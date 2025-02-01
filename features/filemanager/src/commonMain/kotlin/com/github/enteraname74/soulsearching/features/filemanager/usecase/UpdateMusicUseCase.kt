@@ -133,12 +133,12 @@ class UpdateMusicUseCase(
         }
     }
 
-    suspend private fun updateLocal(
+    private suspend fun updateLocal(
         legacyMusic: Music,
         previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
-    ): SoulResult<String> {
+    ): SoulResult<Unit> {
         if (previousArtists.map { it.artistName } != newArtistsNames) {
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
@@ -170,7 +170,7 @@ class UpdateMusicUseCase(
         )
         musicFileUpdater.updateMusic(music = newMusicInformation)
 
-        return SoulResult.Success("")
+        return SoulResult.ofSuccess()
     }
 
     /**
@@ -186,7 +186,7 @@ class UpdateMusicUseCase(
         previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
-    ): SoulResult<String> =
+    ): SoulResult<Unit> =
         when(legacyMusic.dataMode) {
             DataMode.Local -> {
                 updateLocal(

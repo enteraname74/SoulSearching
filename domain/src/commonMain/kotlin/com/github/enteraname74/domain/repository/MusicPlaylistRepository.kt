@@ -1,28 +1,26 @@
 package com.github.enteraname74.domain.repository
 
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicPlaylist
-import java.util.*
+import com.github.enteraname74.domain.model.SoulResult
 
 interface MusicPlaylistRepository {
     /**
      * Inserts or updates a MusicPlaylist.
      * It is the equivalent of adding a Music to a Playlist.
      */
-    suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist)
+    suspend fun upsert(musicPlaylist: MusicPlaylist)
+    suspend fun upsertAll(musicPlaylists: List<MusicPlaylist>)
 
     /**
      * Deletes a MusicPlaylist.
      * It is the equivalent of removing a Music from a Playlist.
      */
-    suspend fun deleteMusicFromPlaylist(musicId: UUID, playlistId: UUID)
+    suspend fun delete(musicPlaylist: MusicPlaylist)
+    suspend fun deleteAll(dataMode: DataMode)
 
     /**
-     * Tries to retrieve a MusicPlaylist from given information.
+     * Synchronize remote MusicPlaylist links of the users with the cloud
      */
-    suspend fun getMusicPlaylist(musicId: UUID, playlistId: UUID): MusicPlaylist?
-
-    /**
-     * Deletes a Music from all playlists.
-     */
-    suspend fun deleteMusicFromAllPlaylists(musicId: UUID)
+    suspend fun syncWithCloud(): SoulResult<Unit>
 }

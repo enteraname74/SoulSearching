@@ -1,5 +1,7 @@
 package com.github.enteraname74.domain.usecase.musicplaylist
 
+import com.github.enteraname74.domain.model.DataMode
+import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.repository.MusicPlaylistRepository
 import java.util.UUID
 
@@ -10,9 +12,13 @@ class DeleteMusicFromPlaylistUseCase(
         musicId: UUID,
         playlistId: UUID
     ) {
-        musicPlaylistRepository.deleteMusicFromPlaylist(
-            musicId = musicId,
-            playlistId = playlistId,
+        // Data mode is not important here
+        musicPlaylistRepository.delete(
+            musicPlaylist = MusicPlaylist(
+                musicId = musicId,
+                playlistId = playlistId,
+                dataMode = DataMode.Local
+            )
         )
     }
 }

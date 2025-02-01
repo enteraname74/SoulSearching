@@ -56,19 +56,19 @@ class AlbumRemoteDataSourceImpl(
         )
     }
 
-    override suspend fun deleteAll(albumIds: List<UUID>): SoulResult<String> =
+    override suspend fun deleteAll(albumIds: List<UUID>): SoulResult<Unit> =
         client.safeRequest<String> {
             delete(urlString = ServerRoutes.Album.DELETE) {
                 setBody(albumIds.map { it.toString() })
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult()
+        }.toSimpleResult()
 
-    override suspend fun update(album: Album, artist: String): SoulResult<String> =
+    override suspend fun update(album: Album, artist: String): SoulResult<Unit> =
         client.safeSimpleRequest {
             put(urlString = ServerRoutes.Album.UPDATE) {
                 setBody(album.toModifiedAlbum(artist))
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult()
+        }.toSimpleResult()
 }

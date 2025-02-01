@@ -10,7 +10,7 @@ class UpdatePlaylistNbPlayedUseCase(
 ) {
     suspend operator fun invoke(playlistId: UUID) {
         val playlist: Playlist = playlistRepository.getFromId(playlistId).first() ?: return
-        playlistRepository.upsert(
+        playlistRepository.update(
             playlist.copy(
                 nbPlayed = playlist.nbPlayed + 1
             )

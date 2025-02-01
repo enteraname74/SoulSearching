@@ -28,11 +28,11 @@ class AlbumRepositoryImpl(
 ) : AlbumRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
-    override suspend fun delete(album: Album): SoulResult<String> =
+    override suspend fun delete(album: Album): SoulResult<Unit> =
         when (album.dataMode) {
             DataMode.Local -> {
                 albumLocalDataSource.delete(album = album)
-                SoulResult.Success("")
+                SoulResult.ofSuccess()
             }
 
             DataMode.Cloud -> {
@@ -44,7 +44,7 @@ class AlbumRepositoryImpl(
             }
         }
 
-    override suspend fun deleteAll(ids: List<UUID>): SoulResult<String> =
+    override suspend fun deleteAll(ids: List<UUID>): SoulResult<Unit> =
         DeleteAllHelper.deleteAll(
             ids = ids,
             getAll = albumLocalDataSource::getAll,
@@ -65,13 +65,13 @@ class AlbumRepositoryImpl(
     override suspend fun upsert(
         album: Album,
         artist: String,
-    ): SoulResult<String> =
+    ): SoulResult<Unit> =
         when (album.dataMode) {
             DataMode.Local -> {
                 albumLocalDataSource.upsert(
                     album = album
                 )
-                SoulResult.Success("")
+                SoulResult.ofSuccess()
             }
 
             DataMode.Cloud -> {
@@ -101,11 +101,15 @@ class AlbumRepositoryImpl(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getAll(): Flow<List<Album>> =
+    override fun getAll(
+        dataMode: DataMode?,
+    ): Flow<List<Album>> =
         dataModeDataSource
             .getCurrentDataModeWithUserCheck()
-            .flatMapLatest {
-                albumLocalDataSource.getAll(it)
+            .flatMapLatest { currentDataMode ->
+                albumLocalDataSource.getAll(
+                    dataMode = dataMode ?: currentDataMode
+                )
             }
 
 
@@ -140,26 +144,26 @@ class AlbumRepositoryImpl(
         albumLocalDataSource.deleteAll(idsToDelete)
 
         while (true) {
-            val songsFromCloud: SoulResult<List<Album>> = albumRemoteDataSource.fetchAlbumsFromCloud(
+            val albumsFromCloud: SoulResult<List<Album>> = albumRemoteDataSource.fetchAlbumsFromCloud(
                 after = lastUpdateDate,
                 maxPerPage = MAX_ALBUMS_PER_PAGE,
                 page = currentPage,
             )
 
-            println("albumRepositoryImpl -- syncWithCloud -- got result: $songsFromCloud")
+            println("albumRepositoryImpl -- syncWithCloud -- got result: $albumsFromCloud")
 
-            when (songsFromCloud) {
+            when (albumsFromCloud) {
                 is SoulResult.Error -> {
-                    return SoulResult.Error(songsFromCloud.error)
+                    return SoulResult.Error(albumsFromCloud.error)
                 }
 
                 is SoulResult.Success -> {
-                    if (songsFromCloud.data.isEmpty()) {
+                    if (albumsFromCloud.data.isEmpty()) {
                         return SoulResult.ofSuccess()
                     } else {
                         currentPage += 1
                         albumLocalDataSource.upsertAll(
-                            albums = songsFromCloud.data,
+                            albums = albumsFromCloud.data,
                         )
                     }
 

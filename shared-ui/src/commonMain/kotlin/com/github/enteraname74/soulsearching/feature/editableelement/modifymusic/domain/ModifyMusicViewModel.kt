@@ -223,7 +223,7 @@ class ModifyMusicViewModel(
                 artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 
-            val result: SoulResult<String> = updateMusicUseCase(
+            val result: SoulResult<Unit> = updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
                 previousArtists = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull() ?: emptyList(),

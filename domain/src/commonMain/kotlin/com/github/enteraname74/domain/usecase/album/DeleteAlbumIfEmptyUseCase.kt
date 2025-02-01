@@ -13,14 +13,14 @@ import java.util.*
 class DeleteAlbumIfEmptyUseCase(
     private val albumRepository: AlbumRepository,
 ) {
-    suspend operator fun invoke(albumId: UUID): SoulResult<String> {
+    suspend operator fun invoke(albumId: UUID): SoulResult<Unit> {
         val albumWithMusics: AlbumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first()
-            ?: return SoulResult.Success("")
+            ?: return SoulResult.ofSuccess()
 
         return if (albumWithMusics.musics.isEmpty()) {
             albumRepository.delete(album = albumWithMusics.album)
         } else {
-            SoulResult.Success("")
+            SoulResult.ofSuccess()
         }
     }
 }

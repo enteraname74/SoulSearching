@@ -11,6 +11,8 @@ import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLo
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.musicplaylist.MusicPlaylistLocalDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistLocalDataSource
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -42,7 +44,7 @@ val localAndroidModule: Module = module {
     single<FolderDataSource> { RoomFolderDataSourceImpl(get()) }
     single<MusicArtistLocalDataSource> { RoomMusicArtistLocalDataSourceImpl(get()) }
     single<MusicLocalDataSource> { RoomMusicLocalDataSourceImpl(get()) }
-    single<MusicPlaylistDataSource> { RoomMusicPlaylistDataSourceImpl(get()) }
+    single<MusicPlaylistLocalDataSource> { RoomMusicPlaylistLocalDataSourceImpl(get()) }
     single<PlayerMusicDataSource> { RoomPlayerMusicDataSourceImpl(get()) }
-    single<PlaylistDataSource> { RoomPlaylistDataSourceImpl(get()) }
+    single<PlaylistLocalDataSource> { RoomPlaylistLocalDataSourceImpl(get()) }
 }

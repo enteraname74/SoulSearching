@@ -7,7 +7,9 @@ import com.github.enteraname74.domain.usecase.cloud.*
 import com.github.enteraname74.domain.usecase.cover.DeleteCoverUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.datamode.*
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeUseCase
+import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
+import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.folder.*
 import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
@@ -44,7 +46,6 @@ val domainModule = module {
     singleOf(::GetAllAlbumWithMusicsSortedUseCase)
     singleOf(::GetCorrespondingAlbumUseCase)
     singleOf(::GetDuplicatedAlbumUseCase)
-    singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
     singleOf(::UpdateAlbumNbPlayedUseCase)
     singleOf(::ToggleAlbumQuickAccessStateUseCase)
     singleOf(::UpsertAllAlbumsUseCase)
@@ -135,6 +136,7 @@ val domainModule = module {
     singleOf(::UpsertMusicIntoPlaylistUseCase)
 
     // Playlist
+    singleOf(::CreatePlaylistUseCase)
     singleOf(::DeleteAllPlaylistsUseCase)
     singleOf(::DeletePlaylistUseCase)
     singleOf(::GetAllPlaylistsUseCase)
@@ -146,8 +148,8 @@ val domainModule = module {
     singleOf(::GetPlaylistWithMusicsUseCase)
     singleOf(::GetSelectablePlaylistWithMusicsForMusicUseCase)
     singleOf(::UpdatePlaylistNbPlayedUseCase)
+    singleOf(::UpdatePlaylistUseCase)
     singleOf(::UpsertAllPlaylistsUseCase)
-    singleOf(::UpsertPlaylistUseCase)
 
     // QuickAccess
     singleOf(::GetAllQuickAccessElementsUseCase)

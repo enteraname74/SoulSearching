@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.usecase.playlist.DeletePlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpdatePlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.playlist.PlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeletePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -23,7 +23,7 @@ interface PlaylistBottomSheetDelegate {
 
 class PlaylistBottomSheetDelegateImpl(
     private val deletePlaylistUseCase: DeletePlaylistUseCase,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val updatePlaylistUseCase: UpdatePlaylistUseCase,
     private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
     private val playbackManager: PlaybackManager,
 ) : PlaylistBottomSheetDelegate {
@@ -72,7 +72,7 @@ class PlaylistBottomSheetDelegateImpl(
                 onModifyPlaylist = { onModifyPlaylist(selectedPlaylist.playlist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertPlaylistUseCase(
+                        updatePlaylistUseCase(
                             playlist = selectedPlaylist.playlist.copy(
                                 isInQuickAccess = !selectedPlaylist.isInQuickAccess,
                             )

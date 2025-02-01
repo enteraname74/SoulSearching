@@ -4,10 +4,8 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.MusicArtistRepository
-import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistRemoteDataSource
-import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -16,8 +14,7 @@ import java.util.*
 class MusicArtistRepositoryImpl(
     private val musicArtistLocalDataSource: MusicArtistLocalDataSource,
     private val musicArtistRemoteDataSource: MusicArtistRemoteDataSource,
-    private val cloudLocalDataSource: CloudLocalDataSource,
-): MusicArtistRepository {
+) : MusicArtistRepository {
     override suspend fun getAll(dataMode: DataMode): List<MusicArtist> =
         musicArtistLocalDataSource.getAll(
             dataMode = dataMode,
@@ -48,27 +45,28 @@ class MusicArtistRepositoryImpl(
 
         musicArtistLocalDataSource.deleteAll(DataMode.Cloud)
 
-        while(true) {
-            val songsFromCloud: SoulResult<List<MusicArtist>> = musicArtistRemoteDataSource.fetchMusicArtistsFromCloud(
-                after = null,
-                maxPerPage = MAX_MUSIC_ARTISTS_PER_PAGE,
-                page = currentPage,
-            )
+        while (true) {
+            val musicArtistsFromCloud: SoulResult<List<MusicArtist>> =
+                musicArtistRemoteDataSource.fetchMusicArtistsFromCloud(
+                    after = null,
+                    maxPerPage = MAX_MUSIC_ARTISTS_PER_PAGE,
+                    page = currentPage,
+                )
 
-            println("musicArtistRepositoryImpl -- syncWithCloud -- got result: $songsFromCloud")
+            println("musicArtistRepositoryImpl -- syncWithCloud -- got result: $musicArtistsFromCloud")
 
-            when (songsFromCloud) {
+            when (musicArtistsFromCloud) {
                 is SoulResult.Error -> {
-                    return SoulResult.Error(songsFromCloud.error)
+                    return SoulResult.Error(musicArtistsFromCloud.error)
                 }
 
                 is SoulResult.Success -> {
-                    if (songsFromCloud.data.isEmpty()) {
+                    if (musicArtistsFromCloud.data.isEmpty()) {
                         return SoulResult.ofSuccess()
                     } else {
                         currentPage += 1
                         musicArtistLocalDataSource.upsertAll(
-                            musicArtists = songsFromCloud.data,
+                            musicArtists = musicArtistsFromCloud.data,
                         )
                     }
 

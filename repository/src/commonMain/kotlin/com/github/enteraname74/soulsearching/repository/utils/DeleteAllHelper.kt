@@ -15,10 +15,10 @@ object DeleteAllHelper: KoinComponent {
         ids: List<UUID>,
         getAll: suspend (ids: List<UUID>) -> List<T>,
         deleteAllLocal: suspend (ids: List<UUID>) -> Unit,
-        deleteAllRemote: suspend (ids: List<UUID>) -> SoulResult<String>,
+        deleteAllRemote: suspend (ids: List<UUID>) -> SoulResult<Unit>,
         mapIds: (T) -> UUID,
         getDataMode: (T) -> DataMode,
-    ): SoulResult<String> {
+    ): SoulResult<Unit> {
         val partition = getAll(ids).partition { getDataMode(it) == DataMode.Local }
 
         if (partition.first.isNotEmpty()) {
@@ -30,7 +30,7 @@ object DeleteAllHelper: KoinComponent {
             cloudRepository.syncDataWithCloud()
             result
         } else {
-            SoulResult.Success("")
+            SoulResult.ofSuccess()
         }
     }
 }

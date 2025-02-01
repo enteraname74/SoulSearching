@@ -11,14 +11,14 @@ class DeleteArtistIfEmptyUseCase(
 ) {
     suspend operator fun invoke(
         artistId: UUID
-    ): SoulResult<String> {
+    ): SoulResult<Unit> {
         val artistWithMusics: ArtistWithMusics =
-            artistRepository.getArtistWithMusics(artistId = artistId).first() ?: return SoulResult.Success("")
+            artistRepository.getArtistWithMusics(artistId = artistId).first() ?: return SoulResult.ofSuccess()
 
         return if (artistWithMusics.musics.isEmpty()) {
             artistRepository.delete(artist = artistWithMusics.artist)
         } else {
-            SoulResult.Success("")
+            SoulResult.ofSuccess()
         }
     }
 }

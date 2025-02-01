@@ -99,7 +99,7 @@ class SettingsAllFoldersViewModel(
                             .first()
                             .map { it.musicId }
 
-                        val musicDeletionResult: SoulResult<String> = deleteAllMusicsUseCase(ids = musicsFromFolder)
+                        val musicDeletionResult: SoulResult<Unit> = deleteAllMusicsUseCase(ids = musicsFromFolder)
                         feedbackPopUpManager.showResultErrorIfAny(result = musicDeletionResult)
                         if (musicDeletionResult.isError()) return@withLoading
 
@@ -115,12 +115,12 @@ class SettingsAllFoldersViewModel(
                             .filter { it.musics.isEmpty() }
                             .map { it.artist.artistId }
 
-                        val albumDeletionResult: SoulResult<String> =
+                        val albumDeletionResult: SoulResult<Unit> =
                             deleteAllAlbumUseCase(albumsIds = albumsToDelete)
                         feedbackPopUpManager.showResultErrorIfAny(albumDeletionResult)
                         if (albumDeletionResult.isError()) return@withLoading
 
-                        val artistDeletionResult: SoulResult<String> =
+                        val artistDeletionResult: SoulResult<Unit> =
                             deleteAllArtistsUseCase(artistsIds = artistsToDelete)
                         feedbackPopUpManager.showResultErrorIfAny(artistDeletionResult)
                         if (artistDeletionResult.isError()) return@withLoading

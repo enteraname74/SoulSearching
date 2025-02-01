@@ -1,6 +1,7 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.room.*
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.localdb.model.RoomPlaylist
 import com.github.enteraname74.localdb.model.RoomPlaylistWithMusics
 import kotlinx.coroutines.flow.Flow
@@ -24,8 +25,14 @@ internal interface PlaylistDao {
     @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite=0")
     suspend fun deleteAll(ids: List<UUID>)
 
-    @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAll(): Flow<List<RoomPlaylist>>
+    @Query("DELETE FROM RoomPlaylist WHERE dataMode = :dataMode AND isFavorite=0")
+    suspend fun deleteAll(dataMode: String)
+
+    @Query("SELECT * FROM RoomPlaylist WHERE dataMode = :dataMode ORDER BY name ASC")
+    fun getAll(dataMode: String): Flow<List<RoomPlaylist>>
+
+    @Query("SELECT * FROM RoomPlaylist WHERE playlistId IN (:playlistIds) ORDER BY name ASC")
+    fun getAll(playlistIds: List<UUID>): List<RoomPlaylist>
 
     @Transaction
     @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
@@ -37,10 +44,6 @@ internal interface PlaylistDao {
     @Transaction
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
     fun getPlaylistWithMusics(playlistId : UUID): Flow<RoomPlaylistWithMusics?>
-
-    @Transaction
-    @Query("SELECT * FROM RoomPlaylist")
-    suspend fun getAllPlaylistsWithMusics() : List<RoomPlaylistWithMusics>
 
     @Query("SELECT COUNT(*) FROM RoomPlaylist WHERE coverId = :coverId")
     suspend fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int

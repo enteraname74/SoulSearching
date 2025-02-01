@@ -26,7 +26,7 @@ import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListU
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
@@ -89,7 +89,7 @@ class MainPageViewModel(
     private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase by inject()
     private val deleteMusicUseCase: DeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
+    private val createPlaylistUseCase: CreatePlaylistUseCase by inject()
     private val getMusicUseCase: GetMusicUseCase by inject()
     private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase by inject()
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
@@ -397,7 +397,7 @@ class MainPageViewModel(
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)
                     )
-                    val result: SoulResult<String> = deleteMusicUseCase(music = music)
+                    val result: SoulResult<Unit> = deleteMusicUseCase(music = music)
 
                     feedbackPopUpManager.showResultErrorIfAny(result)
                     if (result.isError()) return@launch
@@ -423,7 +423,7 @@ class MainPageViewModel(
             onConfirm = { playlistName ->
                 if (playlistName.isNotBlank()) {
                     screenModelScope.launch {
-                        upsertPlaylistUseCase(
+                        createPlaylistUseCase(
                             playlist = Playlist(
                                 name = playlistName,
                                 dataMode = getCurrentDataModeWithUserUseCase().first(),

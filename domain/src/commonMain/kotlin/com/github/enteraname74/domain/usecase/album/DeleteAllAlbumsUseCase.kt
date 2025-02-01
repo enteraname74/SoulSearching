@@ -7,7 +7,7 @@ import java.util.UUID
 class DeleteAllAlbumsUseCase(
     private val albumRepository: AlbumRepository
 ) {
-    suspend operator fun invoke(albumsIds: List<UUID>): SoulResult<String> =
+    suspend operator fun invoke(albumsIds: List<UUID>): SoulResult<Unit> =
         albumRepository.deleteAll(
             ids = albumsIds,
         )

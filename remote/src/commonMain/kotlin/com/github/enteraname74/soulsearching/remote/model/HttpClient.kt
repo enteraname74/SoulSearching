@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 
 object HttpClientNames {
     const val GENERIC = "Generic"
-    const val CLOUD = "Cloud"
+    const val CLOUD_AUTH = "Cloud"
 }
 
 val JSON = Json {
