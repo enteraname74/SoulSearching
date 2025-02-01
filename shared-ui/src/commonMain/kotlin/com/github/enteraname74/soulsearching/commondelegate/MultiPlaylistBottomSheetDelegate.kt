@@ -1,12 +1,14 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.playlist.DeleteAllPlaylistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multiplaylist.MultiPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -25,6 +27,7 @@ class MultiPlaylistBottomSheetDelegateImpl(
     private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : MultiPlaylistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
     private var setBottomSheetState: (SoulBottomSheet?) -> Unit = {}
@@ -46,13 +49,13 @@ class MultiPlaylistBottomSheetDelegateImpl(
         setDialogState(
             DeleteMultiPlaylistDialog(
                 onDelete = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            deleteAllPlaylistsUseCase(selectedIdsToDelete)
-                            multiSelectionManagerImpl?.clearMultiSelection()
-                            setDialogState(null)
-                            setBottomSheetState(null)
-                        }
+                    setDialogState(null)
+                    setBottomSheetState(null)
+
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = deleteAllPlaylistsUseCase(selectedIdsToDelete)
+                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
                 onClose = { setDialogState(null) }

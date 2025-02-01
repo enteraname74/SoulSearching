@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 interface PlaylistRepository {
-    suspend fun create(playlist: Playlist): SoulResult<Unit>
+    suspend fun create(playlist: Playlist): SoulResult<Playlist>
     suspend fun upsertAll(playlists: List<Playlist>)
 
     suspend fun update(playlist: Playlist): SoulResult<Unit>
@@ -16,6 +16,16 @@ interface PlaylistRepository {
      * Deletes a Playlist.
      */
     suspend fun delete(playlist: Playlist): SoulResult<Unit>
+
+    suspend fun addMusicsToPlaylist(
+        playlistId: UUID,
+        musicIds: List<UUID>,
+    ): SoulResult<Unit>
+
+    suspend fun removeMusicsFromPlaylist(
+        playlistId: UUID,
+        musicIds: List<UUID>,
+    ): SoulResult<Unit>
 
     /**
      * Deletes the playlists identified in the given list of ids.

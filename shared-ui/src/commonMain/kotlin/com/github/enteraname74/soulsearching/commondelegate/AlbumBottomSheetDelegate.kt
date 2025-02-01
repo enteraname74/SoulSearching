@@ -50,16 +50,13 @@ class AlbumBottomSheetDelegateImpl(
             DeleteAlbumDialog(
                 selectedAlbum = album,
                 onDelete = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            val result: SoulResult<Unit> = deleteAlbumUseCase(album)
-                            feedbackPopUpManager.showResultErrorIfAny(result)
-                        }
-                        multiSelectionManagerImpl?.clearMultiSelection()
+                    setDialogState(null)
+                    // We make sure to close the bottom sheet after deleting the selected music.
+                    setBottomSheetState(null)
 
-                        setDialogState(null)
-                        // We make sure to close the bottom sheet after deleting the selected music.
-                        setBottomSheetState(null)
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = deleteAlbumUseCase(album)
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                         multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
@@ -76,13 +73,11 @@ class AlbumBottomSheetDelegateImpl(
                 onDeleteAlbum = { showDeleteAlbumDialog(album = albumWithMusics.album) },
                 onModifyAlbum = { onModifyAlbum(albumWithMusics.album) },
                 toggleQuickAccess = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            val result: SoulResult<Unit> = toggleAlbumQuickAccessStateUseCase(album = albumWithMusics.album)
-                            feedbackPopUpManager.showResultErrorIfAny(result)
-                        }
+                    setBottomSheetState(null)
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = toggleAlbumQuickAccessStateUseCase(album = albumWithMusics.album)
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                         multiSelectionManagerImpl?.clearMultiSelection()
-                        setBottomSheetState(null)
                     }
                 },
                 onPlayNext = {
@@ -90,8 +85,8 @@ class AlbumBottomSheetDelegateImpl(
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = albumWithMusics.musics,
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
                 onRemoveFromPlayedList = {
@@ -99,8 +94,8 @@ class AlbumBottomSheetDelegateImpl(
                         playbackManager.removeSongsFromPlayedPlaylist(
                             musicIds = albumWithMusics.musics.map { it.musicId },
                         )
-                        multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 }
             )

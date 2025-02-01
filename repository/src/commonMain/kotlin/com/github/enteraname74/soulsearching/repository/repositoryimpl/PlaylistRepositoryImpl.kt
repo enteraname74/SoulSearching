@@ -27,11 +27,11 @@ class PlaylistRepositoryImpl(
     private val cloudLocalDataSource: CloudLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
 ) : PlaylistRepository {
-    override suspend fun create(playlist: Playlist): SoulResult<Unit> =
+    override suspend fun create(playlist: Playlist): SoulResult<Playlist> =
         when (playlist.dataMode) {
             DataMode.Local -> {
                 playlistLocalDataSource.upsert(playlist = playlist)
-                SoulResult.ofSuccess()
+                SoulResult.Success(playlist)
             }
 
             DataMode.Cloud -> {
@@ -42,10 +42,69 @@ class PlaylistRepositoryImpl(
                     playlistLocalDataSource.upsert(it)
                 }
 
-                result.toSimpleResult()
+                result
             }
         }
 
+    override suspend fun addMusicsToPlaylist(playlistId: UUID, musicIds: List<UUID>): SoulResult<Unit> {
+        val playlist: Playlist = playlistLocalDataSource.getFromId(playlistId).first() ?: return SoulResult.ofSuccess()
+
+        return when(playlist.dataMode) {
+            DataMode.Local -> {
+                musicPlaylistLocalDataSource.upsertAll(
+                    musicPlaylists = musicIds.map { musicId ->
+                        MusicPlaylist(
+                            musicId = musicId,
+                            playlistId = playlistId,
+                            dataMode = DataMode.Local,
+                        )
+                    }
+                )
+                SoulResult.ofSuccess()
+            }
+            DataMode.Cloud -> {
+                val result: SoulResult<List<MusicPlaylist>> = playlistRemoteDataSource.addMusicsToPlaylist(
+                    playlistId = playlistId,
+                    musicIds = musicIds,
+                )
+
+                (result as? SoulResult.Success)?.data?.let { musicPlaylists ->
+                    musicPlaylistLocalDataSource.upsertAll(musicPlaylists)
+                }
+                result.toSimpleResult()
+            }
+        }
+    }
+
+    override suspend fun removeMusicsFromPlaylist(playlistId: UUID, musicIds: List<UUID>): SoulResult<Unit> {
+        val playlist: Playlist = playlistLocalDataSource.getFromId(playlistId).first() ?: return SoulResult.ofSuccess()
+
+        return when(playlist.dataMode) {
+            DataMode.Local -> {
+                musicPlaylistLocalDataSource.deleteAll(
+                    musicPlaylists = musicIds.map { musicId ->
+                        MusicPlaylist(
+                            musicId = musicId,
+                            playlistId = playlistId,
+                            dataMode = DataMode.Local,
+                        )
+                    }
+                )
+                SoulResult.ofSuccess()
+            }
+            DataMode.Cloud -> {
+                val result: SoulResult<List<MusicPlaylist>> = playlistRemoteDataSource.deleteMusicsFromPlaylist(
+                    playlistId = playlistId,
+                    musicIds = musicIds,
+                )
+
+                (result as? SoulResult.Success)?.data?.let { musicPlaylists ->
+                    musicPlaylistLocalDataSource.deleteAll(musicPlaylists)
+                }
+                result.toSimpleResult()
+            }
+        }
+    }
 
     override suspend fun update(playlist: Playlist): SoulResult<Unit> =
         when (playlist.dataMode) {
@@ -155,6 +214,7 @@ class PlaylistRepositoryImpl(
 
             is SoulResult.Success -> {
                 val playlistResultData: List<UploadedPlaylistResult> = uploadedPlaylistsResult.data
+                println("PlaylistRepositoryImpl -- upload result: $playlistResultData")
                 playlistLocalDataSource.upsertAll(
                     playlists = playlistResultData.map { it.remotePlaylist },
                 )
@@ -173,11 +233,17 @@ class PlaylistRepositoryImpl(
         val allLocalPlaylistWithMusics: List<PlaylistWithMusics> = playlistLocalDataSource
             .getAllPlaylistWithMusics(DataMode.Local).first()
 
+        println("PlaylistRepositoryImpl -- local playlists: ${allLocalPlaylistWithMusics.size}")
+
         val uploadedPlaylistLocalIds = uploadedPlaylistResult.map { it.localPlaylistId }
+
+        println("PlaylistRepositoryImpl -- link -- uploaded playlist local ids ${uploadedPlaylistLocalIds.size}")
 
         val syncedPlaylistWithMusics: List<PlaylistWithMusics> = allLocalPlaylistWithMusics.filter {
             it.playlist.playlistId in uploadedPlaylistLocalIds
         }
+
+        println("PlaylistRepositoryImpl -- link -- synced to cloud ${syncedPlaylistWithMusics.size}")
 
         syncedPlaylistWithMusics.forEach { playlistWithMusics ->
             val remoteSongsIds: List<UUID> = playlistWithMusics.musics.mapNotNull {

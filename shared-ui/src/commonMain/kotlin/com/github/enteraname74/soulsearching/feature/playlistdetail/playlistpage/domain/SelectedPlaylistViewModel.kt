@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpag
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
@@ -15,12 +16,15 @@ import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDele
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -35,6 +39,7 @@ class SelectedPlaylistViewModel(
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val getMusicUseCase: GetMusicUseCase,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    private val feedbackPopUpManager: FeedbackPopUpManager,
 ) : ScreenModel,
     PlaylistDetailListener,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
@@ -139,10 +144,11 @@ class SelectedPlaylistViewModel(
     }
 
     override fun onUpdateNbPlayed() {
-        screenModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
                 ?: return@launch
-            updatePlaylistNbPlayedUseCase(playlistId = playlistId)
+            val result: SoulResult<Unit> = updatePlaylistNbPlayedUseCase(playlistId = playlistId)
+            feedbackPopUpManager.showResultErrorIfAny(result)
         }
     }
 

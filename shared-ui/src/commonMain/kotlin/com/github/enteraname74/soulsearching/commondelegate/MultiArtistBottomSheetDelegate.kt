@@ -49,24 +49,22 @@ class MultiArtistBottomSheetDelegateImpl(
         setDialogState(
             DeleteMultiArtistDialog(
                 onDelete = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            selectedIdsToDelete.forEach { albumId ->
-                                getArtistWithMusicsUseCase(
-                                    artistId = albumId
-                                ).firstOrNull()?.let { artistWithMusics ->
-                                    playbackManager.removeSongsFromPlayedPlaylist(
-                                        musicIds = artistWithMusics.musics.map { it.musicId },
-                                    )
-                                }
-                            }
-                            val result: SoulResult<Unit> = deleteAllArtistsUseCase(selectedIdsToDelete)
-                            feedbackPopUpManager.showResultErrorIfAny(result)
+                    setDialogState(null)
+                    setBottomSheetState(null)
 
-                            multiSelectionManagerImpl?.clearMultiSelection()
+                    loadingManager.withLoadingOnIO {
+                        selectedIdsToDelete.forEach { albumId ->
+                            getArtistWithMusicsUseCase(
+                                artistId = albumId
+                            ).firstOrNull()?.let { artistWithMusics ->
+                                playbackManager.removeSongsFromPlayedPlaylist(
+                                    musicIds = artistWithMusics.musics.map { it.musicId },
+                                )
+                            }
                         }
-                        setDialogState(null)
-                        setBottomSheetState(null)
+                        val result: SoulResult<Unit> = deleteAllArtistsUseCase(selectedIdsToDelete)
+                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
                 onClose = { setDialogState(null) }
@@ -99,8 +97,9 @@ class MultiArtistBottomSheetDelegateImpl(
                             musics = musics,
                         )
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
+                        multiSelectionManagerImpl?.clearMultiSelection()
+
                     }
                 },
                 onRemoveFromPlayedList = {
@@ -115,8 +114,8 @@ class MultiArtistBottomSheetDelegateImpl(
                             }
                         }
 
-                        multiSelectionManagerImpl?.clearMultiSelection()
                         setBottomSheetState(null)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 }
             )

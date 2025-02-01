@@ -422,13 +422,14 @@ class MainPageViewModel(
             onDismiss = { _dialogState.value = null },
             onConfirm = { playlistName ->
                 if (playlistName.isNotBlank()) {
-                    screenModelScope.launch {
-                        createPlaylistUseCase(
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val result: SoulResult<Playlist> = createPlaylistUseCase(
                             playlist = Playlist(
                                 name = playlistName,
                                 dataMode = getCurrentDataModeWithUserUseCase().first(),
                             )
                         )
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                     }
                 }
                 _dialogState.value = null

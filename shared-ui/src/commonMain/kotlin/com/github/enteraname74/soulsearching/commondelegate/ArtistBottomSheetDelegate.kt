@@ -50,16 +50,15 @@ class ArtistBottomSheetDelegateImpl(
             DeleteArtistDialog(
                 artistToDelete = artistWithMusics,
                 onDelete = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            val result: SoulResult<Unit> = deleteArtistUseCase(artistWithMusics)
-                            feedbackPopUpManager.showResultErrorIfAny(result = result)
-                        }
-                    }
                     setDialogState(null)
                     // We make sure to close the bottom sheet after deleting the selected music.
                     setBottomSheetState(null)
-                    multiSelectionManagerImpl?.clearMultiSelection()
+
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = deleteArtistUseCase(artistWithMusics)
+                        feedbackPopUpManager.showResultErrorIfAny(result = result)
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                    }
                 },
                 onClose = { setDialogState(null) }
             )
@@ -74,15 +73,13 @@ class ArtistBottomSheetDelegateImpl(
                 onDeleteArtist = { showDeleteArtistDialog(artistWithMusics = selectedArtist) },
                 onModifyArtist = { onModifyArtist(selectedArtist.artist) },
                 toggleQuickAccess = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            val result: SoulResult<Unit> = toggleArtistQuickAccessStateUseCase(
-                                artist = selectedArtist.artist
-                            )
-                            feedbackPopUpManager.showResultErrorIfAny(result)
-                        }
+                    setBottomSheetState(null)
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = toggleArtistQuickAccessStateUseCase(
+                            artist = selectedArtist.artist
+                        )
+                        feedbackPopUpManager.showResultErrorIfAny(result)
                         multiSelectionManagerImpl?.clearMultiSelection()
-                        setBottomSheetState(null)
                     }
                 },
                 onPlayNext = {

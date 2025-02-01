@@ -62,9 +62,7 @@ internal class PlaylistDao(
 
     suspend fun deleteAll(playlistIds: List<UUID>) {
         flowTransactionOn {
-            PlaylistTable.deleteWhere {
-                (id inList playlistIds) and (isFavorite eq false)
-            }
+            PlaylistTable.deleteWhere { id inList playlistIds }
         }
     }
 

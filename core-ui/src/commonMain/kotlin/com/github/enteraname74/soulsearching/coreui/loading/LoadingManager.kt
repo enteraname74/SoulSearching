@@ -38,6 +38,18 @@ class LoadingManager {
         stopLoading()
     }
 
+    fun withLoadingOnIO(
+        delayMillis: Long = DEFAULT_UI_DELAY,
+        block: suspend () -> Unit,
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            withLoading(
+                delayMillis = delayMillis,
+                block = block,
+            )
+        }
+    }
+
     companion object {
         private const val DEFAULT_UI_DELAY = 500L
     }

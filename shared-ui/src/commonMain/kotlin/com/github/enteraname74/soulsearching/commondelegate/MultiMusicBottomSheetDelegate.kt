@@ -1,11 +1,14 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.AddMusicsToPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.playlist.RemoveMusicsFromPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multimusic.MultiMusicBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
@@ -35,8 +38,8 @@ interface MultiMusicBottomSheetDelegate {
 class MultiMusicBottomSheetDelegateImpl(
     getAllPlaylistsWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
-    private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
+    private val removeMusicsFromPlaylistUseCase: RemoveMusicsFromPlaylistUseCase,
+    private val addMusicsToPlaylistUseCase: AddMusicsToPlaylistUseCase,
     private val getMusicUseCase: GetMusicUseCase,
     private val loadingManager: LoadingManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
@@ -75,42 +78,21 @@ class MultiMusicBottomSheetDelegateImpl(
         setDialogState(
             DeleteMultiMusicDialog(
                 onDelete = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        loadingManager.withLoading {
-                            val result: SoulResult<Unit> = deleteAllMusicsUseCase(selectedIdsToDelete)
-                            feedbackPopUpManager.showResultErrorIfAny(result = result)
+                    setDialogState(null)
+                    // We make sure to close the bottom sheet after removing the selected musics.
+                    setBottomSheetState(null)
 
-                            playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = deleteAllMusicsUseCase(selectedIdsToDelete)
+                        feedbackPopUpManager.showResultErrorIfAny(result = result)
 
-                            setDialogState(null)
-                            // We make sure to close the bottom sheet after removing the selected musics.
-                            setBottomSheetState(null)
-                            multiSelectionManagerImpl?.clearMultiSelection()
-                        }
+                        playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
+                        multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },
                 onClose = { setDialogState(null) },
             )
         )
-    }
-
-    /**
-     * Add a music to multiple playlists.
-     */
-    private fun addMusicToPlaylists(musicId: UUID, selectedPlaylists: List<PlaylistWithMusics>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            for (selectedPlaylist in selectedPlaylists) {
-                if (selectedPlaylist.musics.find { it.musicId == musicId } == null) {
-                    upsertMusicIntoPlaylistUseCase(
-                        MusicPlaylist(
-                            musicId = musicId,
-                            playlistId = selectedPlaylist.playlist.playlistId,
-                            dataMode = selectedPlaylist.playlist.dataMode,
-                        )
-                    )
-                }
-            }
-        }
     }
 
     private fun showAddToPlaylistsBottomSheet(
@@ -122,14 +104,21 @@ class MultiMusicBottomSheetDelegateImpl(
                     setAddToPlaylistBottomSheetState(null)
                 },
                 addMusicToSelectedPlaylists = { selectedPlaylists ->
-                    selectedIds.forEach { musicId ->
-                        addMusicToPlaylists(
-                            musicId = musicId,
-                            selectedPlaylists = selectedPlaylists,
-                        )
-                    }
-                    multiSelectionManagerImpl?.clearMultiSelection()
                     setBottomSheetState(null)
+
+                    loadingManager.withLoadingOnIO {
+                        selectedPlaylists.forEach { playlistWithMusics ->
+                            val result: SoulResult<Unit> = addMusicsToPlaylistUseCase(
+                                playlistId = playlistWithMusics.playlist.playlistId,
+                                musicIds = selectedIds,
+                            )
+                            feedbackPopUpManager.showResultErrorIfAny(result = result)
+                            if (result.isError()) {
+                                return@forEach
+                            }
+                        }
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                    }
                 },
                 playlistsWithMusics = allPlaylists.value,
                 setDialogState = setDialogState,
@@ -145,18 +134,18 @@ class MultiMusicBottomSheetDelegateImpl(
         setDialogState(
             RemoveMultiMusicFromPlaylistDialog(
                 onConfirm = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        musicIdsToRemove.forEach { musicId ->
-                            deleteMusicFromPlaylistUseCase(
-                                musicId = musicId,
-                                playlistId = currentPlaylist.playlistId,
-                            )
-                        }
-                    }
-                    multiSelectionManagerImpl?.clearMultiSelection()
                     setDialogState(null)
                     // We make sure to close the bottom sheet after removing the selected music from the playlist.
                     setBottomSheetState(null)
+
+                    loadingManager.withLoadingOnIO {
+                        val result: SoulResult<Unit> = removeMusicsFromPlaylistUseCase(
+                            musicIds = musicIdsToRemove,
+                            playlistId = currentPlaylist.playlistId,
+                        )
+                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                    }
                 },
                 onClose = { setDialogState(null) }
             )

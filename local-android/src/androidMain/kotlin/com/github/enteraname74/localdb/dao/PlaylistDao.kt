@@ -22,10 +22,10 @@ internal interface PlaylistDao {
     @Delete
     suspend fun delete(roomPlaylist : RoomPlaylist)
 
-    @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids) AND isFavorite=0")
+    @Query("DELETE FROM RoomPlaylist WHERE playlistId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
-    @Query("DELETE FROM RoomPlaylist WHERE dataMode = :dataMode AND isFavorite=0")
+    @Query("DELETE FROM RoomPlaylist WHERE dataMode = :dataMode")
     suspend fun deleteAll(dataMode: String)
 
     @Query("SELECT * FROM RoomPlaylist WHERE dataMode = :dataMode ORDER BY name ASC")
@@ -35,8 +35,8 @@ internal interface PlaylistDao {
     fun getAll(playlistIds: List<UUID>): List<RoomPlaylist>
 
     @Transaction
-    @Query("SELECT * FROM RoomPlaylist ORDER BY name ASC")
-    fun getAllPlaylistWithMusics(): Flow<List<RoomPlaylistWithMusics>>
+    @Query("SELECT * FROM RoomPlaylist WHERE dataMode = :dataMode ORDER BY name ASC")
+    fun getAllPlaylistWithMusics(dataMode: String): Flow<List<RoomPlaylistWithMusics>>
 
     @Query("SELECT * FROM RoomPlaylist WHERE playlistId = :playlistId")
     fun getFromId(playlistId: UUID) : Flow<RoomPlaylist?>

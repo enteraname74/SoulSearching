@@ -20,8 +20,6 @@ import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsU
 import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
@@ -131,11 +129,8 @@ val domainModule = module {
     singleOf(::GetAllMusicFolderListUseCase)
     singleOf(::GetMusicFolderListUseCase)
 
-    // MusicPlaylist
-    singleOf(::DeleteMusicFromPlaylistUseCase)
-    singleOf(::UpsertMusicIntoPlaylistUseCase)
-
     // Playlist
+    singleOf(::AddMusicsToPlaylistUseCase)
     singleOf(::CreatePlaylistUseCase)
     singleOf(::DeleteAllPlaylistsUseCase)
     singleOf(::DeletePlaylistUseCase)
@@ -147,6 +142,7 @@ val domainModule = module {
     singleOf(::GetPlaylistUseCase)
     singleOf(::GetPlaylistWithMusicsUseCase)
     singleOf(::GetSelectablePlaylistWithMusicsForMusicUseCase)
+    singleOf(::RemoveMusicsFromPlaylistUseCase)
     singleOf(::UpdatePlaylistNbPlayedUseCase)
     singleOf(::UpdatePlaylistUseCase)
     singleOf(::UpsertAllPlaylistsUseCase)

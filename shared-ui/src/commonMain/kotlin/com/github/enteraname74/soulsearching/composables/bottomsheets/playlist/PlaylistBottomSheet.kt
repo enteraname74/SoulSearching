@@ -20,7 +20,7 @@ class PlaylistBottomSheet(
     private val onDeletePlaylist: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
-): SoulBottomSheet, KoinComponent {
+) : SoulBottomSheet, KoinComponent {
     private val playbackManager: PlaybackManager by inject()
 
     @Composable
@@ -50,7 +50,10 @@ class PlaylistBottomSheet(
                 toggleQuickAccess()
             },
             isInQuickAccess = selectedPlaylist.isInQuickAccess,
-            playNextAction = onPlayNext,
+            playNextAction = {
+                closeWithAnim()
+                onPlayNext()
+            },
             removeFromPlayedListAction = {
                 closeWithAnim()
                 onRemoveFromPlayedList()

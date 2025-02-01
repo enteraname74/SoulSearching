@@ -15,11 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.AddMusicsToPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
@@ -29,17 +29,16 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -53,8 +52,10 @@ class AddToPlaylistBottomSheet(
     private val playlistsWithMusics: List<PlaylistWithMusics>,
 ) : SoulBottomSheet, KoinComponent {
     private val createPlaylistUseCase: CreatePlaylistUseCase by inject()
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase by inject()
+    private val addMusicsToPlaylistUseCase: AddMusicsToPlaylistUseCase by inject()
     private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase by inject()
+    private val feedbackPopUpManager: FeedbackPopUpManager by inject()
+    private val loadingManager: LoadingManager by inject()
 
     private fun showCreatePlaylistDialog(
         closeWithAnim: () -> Unit,
@@ -63,26 +64,30 @@ class AddToPlaylistBottomSheet(
             CreatePlaylistDialog(
                 onDismiss = { setDialogState(null) },
                 onConfirm = { playlistName ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (playlistName.isNotBlank()) {
-                            val newPlaylist = Playlist(
-                                name = playlistName,
-                                dataMode = getCurrentDataModeWithUserUseCase().first(),
-                            )
-                            createPlaylistUseCase(playlist = newPlaylist)
-                            selectedMusicIds.forEach { musicId ->
-                                upsertMusicIntoPlaylistUseCase(
-                                    MusicPlaylist(
-                                        musicId = musicId,
-                                        playlistId = newPlaylist.playlistId,
-                                        dataMode = newPlaylist.dataMode,
-                                    )
-                                )
-                            }
-                        }
+                    if (playlistName.isBlank()) {
+                        return@CreatePlaylistDialog
+                    }
 
+                    loadingManager.withLoadingOnIO {
                         setDialogState(null)
                         closeWithAnim()
+
+                        val newPlaylist = Playlist(
+                            name = playlistName,
+                            dataMode = getCurrentDataModeWithUserUseCase().first(),
+                        )
+                        val createPlaylistResult: SoulResult<Playlist> =
+                            createPlaylistUseCase(playlist = newPlaylist)
+                        feedbackPopUpManager.showResultErrorIfAny(createPlaylistResult)
+                        if (createPlaylistResult.isError()) return@withLoadingOnIO
+
+                        (createPlaylistResult as? SoulResult.Success)?.data?.let { savedPlaylist ->
+                            val addMusicsResult: SoulResult<Unit> = addMusicsToPlaylistUseCase(
+                                playlistId = savedPlaylist.playlistId,
+                                musicIds = selectedMusicIds,
+                            )
+                            feedbackPopUpManager.showResultErrorIfAny(addMusicsResult)
+                        }
                     }
                 }
             )
