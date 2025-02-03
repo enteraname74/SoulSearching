@@ -60,8 +60,10 @@ class PlaylistBottomSheetDelegateImpl(
                     setBottomSheetState(null)
 
                     loadingManager.withLoadingOnIO {
-                        val result = deletePlaylistUseCase(playlistToDelete)
-                        feedbackPopUpManager.showResultErrorIfAny(result)
+                        if (!playlistToDelete.isFavorite) {
+                            val result = deletePlaylistUseCase(playlistToDelete)
+                            feedbackPopUpManager.showResultErrorIfAny(result)
+                        }
                         multiSelectionManagerImpl?.clearMultiSelection()
                     }
                 },

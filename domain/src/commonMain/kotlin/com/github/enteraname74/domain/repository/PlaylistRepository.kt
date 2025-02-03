@@ -37,6 +37,7 @@ interface PlaylistRepository {
      * Retrieves a flow of all Playlist, sorted by name asc.
      */
     fun getAll(dataMode: DataMode? = null): Flow<List<Playlist>>
+    suspend fun getAll(playlistIds: List<UUID>): List<Playlist>
 
     /**
      * Retrieves a flow of all PlaylistWithMusics, sorted by name asc.

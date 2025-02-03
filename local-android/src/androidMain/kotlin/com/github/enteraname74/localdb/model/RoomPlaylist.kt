@@ -21,7 +21,7 @@ internal data class RoomPlaylist(
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
-    var dataMode: String,
+    var dataMode: String = DataMode.Local.value,
 )
 
 /**

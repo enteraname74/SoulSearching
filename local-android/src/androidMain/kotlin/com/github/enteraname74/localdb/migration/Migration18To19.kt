@@ -84,12 +84,13 @@ object Migration18To19 : Migration(18, 19) {
         db.execSQL(
             """
             INSERT INTO RoomAlbum_new (
-                albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId
+                albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId, dataMode
             )
             SELECT 
                 RoomAlbum.albumId, RoomAlbum.albumName, RoomAlbum.coverId, 
                 RoomAlbum.addedDate, RoomAlbum.nbPlayed, RoomAlbum.isInQuickAccess,
-                (SELECT artistId FROM RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId)
+                (SELECT artistId FROM RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId),
+                RoomAlbum.dataMode
             FROM RoomAlbum
         """
         )

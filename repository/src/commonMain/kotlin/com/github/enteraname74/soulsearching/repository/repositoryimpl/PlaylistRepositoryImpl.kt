@@ -165,6 +165,9 @@ class PlaylistRepositoryImpl(
                 )
             }
 
+    override suspend fun getAll(playlistIds: List<UUID>): List<Playlist> =
+        playlistLocalDataSource.getAll(playlistIds)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getAllPlaylistWithMusics(
         dataMode: DataMode?,
