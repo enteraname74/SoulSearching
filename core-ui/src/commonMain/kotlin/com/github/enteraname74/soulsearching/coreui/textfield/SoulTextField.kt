@@ -10,19 +10,21 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
@@ -49,6 +51,7 @@ fun SoulTextField(
     keyboardActions: KeyboardActions = KeyboardActions(
         onDone = { focusManager.clearFocus() }
     ),
+    isPassword: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
@@ -59,6 +62,30 @@ fun SoulTextField(
         handleColor = colors.selectionContentColor,
         backgroundColor = colors.selectionContainerColor,
     )
+
+    var isPasswordShown by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val finalTrailingIcon: @Composable (() -> Unit)? = if (isPassword) {
+        {
+            PasswordTrailingIcon(
+                isPasswordShown = isPasswordShown,
+                togglePasswordVisibility = {
+                    isPasswordShown = !isPasswordShown
+                },
+                tint = colors.contentColor,
+            )
+        }
+    } else {
+        trailingIcon
+    }
+
+    val visualTransformation = if (!isPassword || isPasswordShown) {
+        VisualTransformation.None
+    } else {
+        PasswordVisualTransformation()
+    }
 
     CompositionLocalProvider(
         LocalTextSelectionColors provides textSelectionColors
@@ -79,6 +106,7 @@ fun SoulTextField(
                 textStyle = UiConstants.Typography.bodyLarge.copy(color = colors.contentColor),
                 keyboardActions = keyboardActions,
                 cursorBrush = SolidColor(colors.contentColor),
+                visualTransformation = visualTransformation,
                 decorationBox = { innerTextField ->
                     TextFieldDefaults.DecorationBox(
                         isError = isInError,
@@ -86,12 +114,12 @@ fun SoulTextField(
                         value = value,
                         singleLine = true,
                         interactionSource = interactionSource,
-                        visualTransformation = VisualTransformation.None,
+                        visualTransformation = visualTransformation,
                         contentPadding = PaddingValues(
                             vertical = UiConstants.Spacing.mediumPlus,
                             horizontal = UiConstants.Spacing.mediumPlus,
                         ),
-                        trailingIcon = trailingIcon,
+                        trailingIcon = finalTrailingIcon,
                         leadingIcon = leadingIcon,
                         innerTextField = {
                             Column(
@@ -137,6 +165,22 @@ fun SoulTextField(
     }
 }
 
+@Composable
+private fun PasswordTrailingIcon(
+    isPasswordShown: Boolean,
+    togglePasswordVisibility: () -> Unit,
+    tint: Color,
+) {
+    SoulIcon(
+        icon = if (isPasswordShown) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+        tint = tint,
+        contentDescription = null,
+        modifier = Modifier.clickableWithHandCursor {
+            togglePasswordVisibility()
+        }
+    )
+}
+
 class SoulTextFieldHolderImpl(
     id: String,
     initialValue: String = "",
@@ -144,6 +188,7 @@ class SoulTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val isPassword: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
@@ -178,6 +223,7 @@ class SoulTextFieldHolderImpl(
             colors = colors,
             error = error,
             isInError = isInError,
+            isPassword = isPassword,
             leadingIcon = leadingIconSpec?.let {
                 {
                     SoulIcon(

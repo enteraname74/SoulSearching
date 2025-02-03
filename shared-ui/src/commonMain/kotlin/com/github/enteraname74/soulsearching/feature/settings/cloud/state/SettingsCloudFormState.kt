@@ -54,7 +54,8 @@ sealed interface SettingsCloudFormState {
                     ),
                     getColors = {
                         SoulTextFieldDefaults.primaryColors()
-                    }
+                    },
+                    isPassword = true,
                 )
             )
         }

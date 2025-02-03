@@ -37,6 +37,7 @@ fun SoulDropdownTextField(
         imeAction = ImeAction.Done,
     ),
     leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
+    isPassword: Boolean = false,
     focusManager: FocusManager
 ) {
     var isExpanded by rememberSaveable {
@@ -97,7 +98,8 @@ fun SoulDropdownTextField(
                             }
                         )
                     }
-                }
+                },
+                isPassword = isPassword,
             )
             ExposedDropdownMenu(
                 containerColor = colors.containerColor,
@@ -127,6 +129,7 @@ class SoulDropdownTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val isPassword: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
@@ -173,6 +176,7 @@ class SoulDropdownTextFieldHolderImpl(
             style = style,
             colors = colors,
             isInError = isInError,
+            isPassword = isPassword,
             error = error,
             leadingIconSpec = leadingIconSpec,
             keyboardOptions = keyboardOptions,
