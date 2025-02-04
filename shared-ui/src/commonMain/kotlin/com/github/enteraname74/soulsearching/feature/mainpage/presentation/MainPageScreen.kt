@@ -76,6 +76,7 @@ class MainPageScreen : Screen {
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
         val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
+        val isInCloudMode: Boolean by mainPageViewModel.isInCloudMode.collectAsState()
 
         val searchDraggableState = mainPageViewModel.searchDraggableState
 
@@ -131,6 +132,7 @@ class MainPageScreen : Screen {
             tabs = tabs,
             currentEnumPage = currentPage,
             isUsingVerticalAccessBar = isUsingVerticalAccessBar,
+            isInCloudMode = isInCloudMode,
         )
     }
 
@@ -223,6 +225,7 @@ fun MainPageScreenView(
     allArtistsState: AllArtistsState,
     tabs: List<PagerScreen>,
     currentEnumPage: ElementEnum?,
+    isInCloudMode: Boolean,
     isUsingVerticalAccessBar: Boolean,
 ) {
     val pagerState = rememberPagerState(
@@ -263,6 +266,7 @@ fun MainPageScreenView(
             ) {
                 MainMenuHeaderComposable(
                     settingsAction = navigateToSettings,
+                    isInCloudMode = isInCloudMode,
                     searchAction = {
                         coroutineScope.launch {
                             searchDraggableState.animateTo(

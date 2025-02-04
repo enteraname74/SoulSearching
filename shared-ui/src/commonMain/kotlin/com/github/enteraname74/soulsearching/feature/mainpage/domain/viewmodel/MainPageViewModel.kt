@@ -114,6 +114,14 @@ class MainPageViewModel(
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    val isInCloudMode: StateFlow<Boolean> = getCurrentDataModeWithUserUseCase().mapLatest { it == DataMode.Cloud }
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false,
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
         val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
         buildTabs(elements = elementEnums)

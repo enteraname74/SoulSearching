@@ -2,8 +2,10 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
@@ -22,6 +25,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun MainMenuHeaderComposable(
+    isInCloudMode: Boolean,
     settingsAction: () -> Unit,
     searchAction: () -> Unit
 ) {
@@ -59,12 +63,7 @@ fun MainMenuHeaderComposable(
             )
         }
 
-        Text(
-            text = strings.appName,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        AppName(isInCloudMode = isInCloudMode)
         SoulIconButton(
             icon = Icons.Rounded.Search,
             contentDescription = strings.searchAll,
@@ -75,6 +74,29 @@ fun MainMenuHeaderComposable(
             onClick = searchAction,
             size = ICON_SIZE,
         )
+    }
+}
+
+@Composable
+private fun AppName(
+    isInCloudMode: Boolean,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+    ) {
+        Text(
+            text = strings.appName,
+            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            style = UiConstants.Typography.titleSmall,
+            fontWeight = FontWeight.Bold
+        )
+        if (isInCloudMode) {
+            SoulIcon(
+                icon = Icons.Rounded.Cloud,
+                tint = SoulSearchingColorTheme.colorScheme.onPrimary,
+            )
+        }
     }
 }
 
