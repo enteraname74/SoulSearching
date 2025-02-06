@@ -1,17 +1,16 @@
-package com.github.enteraname74.soulsearching.remote.model
+package com.github.enteraname74.soulsearching.remote.model.user
 
 import com.github.enteraname74.domain.model.User
 import kotlinx.serialization.Serializable
-import java.rmi.Remote
 
 @Serializable
-data class RemoteUser(
+data class UserLogIn(
     val username: String,
     val password: String,
 )
 
-fun User.toRemoteUser(): RemoteUser =
-    RemoteUser(
+fun User.toUserLogIn(): UserLogIn =
+    UserLogIn(
         username = username,
         password = password,
     )

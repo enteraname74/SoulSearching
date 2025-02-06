@@ -73,7 +73,7 @@ fun PlayerListView(
                                 )
                             }
                         }
-                    }
+                    },
                 ) {
                     Text(
                         text = strings.currentSong,

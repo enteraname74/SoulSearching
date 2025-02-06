@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.RemoteMusicPlaylist
-import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.musicplaylist.MusicPlaylistRemoteDataSource
 import io.ktor.client.*
@@ -19,7 +18,7 @@ class MusicPlaylistRemoteDataSourceImpl(
         maxPerPage: Int,
         page: Int
     ): SoulResult<List<MusicPlaylist>> {
-        val result: RemoteResult<List<RemoteMusicPlaylist>> = client.safeRequest {
+        val result: SoulResult<List<RemoteMusicPlaylist>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.MusicPlaylist.all(
                     after = after,
@@ -29,10 +28,8 @@ class MusicPlaylistRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult(
-            mapData = { songs ->
-                songs.map { it.toMusicPlaylist() }
-            }
-        )
+        return result.map{ songs ->
+            songs.map { it.toMusicPlaylist() }
+        }
     }
 }

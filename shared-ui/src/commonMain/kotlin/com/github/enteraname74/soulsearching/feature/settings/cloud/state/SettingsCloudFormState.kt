@@ -16,6 +16,7 @@ sealed interface SettingsCloudFormState {
     data class Data(
         val username: String,
         val password: String,
+        val isSignIn: Boolean,
         val error: String?,
     ): SettingsCloudFormState {
         val textFields: List<SoulTextFieldHolder> = buildList {
@@ -58,16 +59,41 @@ sealed interface SettingsCloudFormState {
                     isPassword = true,
                 )
             )
+
+            if (isSignIn) {
+                add(
+                    SoulTextFieldHolderImpl(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        id = INSCRIPTION_CODE_ID,
+                        initialValue = "",
+                        isValid = { it.isNotBlank() },
+                        getLabel = { strings.cloudSignInCode },
+                        style = SoulTextFieldStyle.Bottom,
+                        getError = { strings.fieldCannotBeEmpty },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Password,
+                        ),
+                        getColors = {
+                            SoulTextFieldDefaults.primaryColors()
+                        },
+                        isPassword = true,
+                    )
+                )
+            }
         }
 
         fun getFormUsername(): String = textFields.find { it.id == USERNAME_ID }?.value.orEmpty()
         fun getFormPassword(): String = textFields.find { it.id == PASSWORD_ID }?.value.orEmpty()
+        fun getInscriptionCode(): String = textFields.find { it.id == INSCRIPTION_CODE_ID }?.value.orEmpty()
 
         fun isValid(): Boolean = textFields.all { it.isValid() }
     }
 
     companion object {
-        val USERNAME_ID = "USERNAME_ID"
-        val PASSWORD_ID = "PASSWORD_ID"
+        const val USERNAME_ID = "USERNAME_ID"
+        const val PASSWORD_ID = "PASSWORD_ID"
+        const val INSCRIPTION_CODE_ID = "INSCRIPTION_CODE_ID"
     }
 }

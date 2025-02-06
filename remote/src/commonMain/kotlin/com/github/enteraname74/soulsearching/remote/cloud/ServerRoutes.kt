@@ -21,6 +21,13 @@ object ServerRoutes : KoinComponent {
             get() = "$ROUTE/refreshTokens"
     }
 
+    object User : Route {
+        override val END_POINT = "/user"
+
+        val GENERATE_CODE: String
+            get() = "$ROUTE/generateCode"
+    }
+
     object Music : Route {
         override val END_POINT = "/music"
 

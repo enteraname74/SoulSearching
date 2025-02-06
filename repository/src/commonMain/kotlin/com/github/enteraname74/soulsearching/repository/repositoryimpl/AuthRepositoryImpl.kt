@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
+import com.github.enteraname74.domain.model.CloudInscriptionCode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.repository.AuthRepository
@@ -12,8 +13,8 @@ class AuthRepositoryImpl(
     private val authRemoteDataSource: AuthRemoteDataSource,
     private val authLocalDataSource: AuthLocalDataSource,
 ): AuthRepository {
-    override suspend fun signIn(user: User): SoulResult<Unit> {
-        val result: SoulResult<UserTokens> = authRemoteDataSource.signIn(user)
+    override suspend fun signIn(user: User, inscriptionCode: String): SoulResult<Unit> {
+        val result: SoulResult<UserTokens> = authRemoteDataSource.signIn(user, inscriptionCode)
 
         (result as? SoulResult.Success)?.data?.let { token ->
             authLocalDataSource.setUser(user)
@@ -34,6 +35,9 @@ class AuthRepositoryImpl(
 
         return result.toSimpleResult()
     }
+
+    override suspend fun generateInscriptionCode(): SoulResult<CloudInscriptionCode> =
+        authRemoteDataSource.generateInscriptionCode()
 
     override suspend fun logOut() {
         authLocalDataSource.setUserTokens(

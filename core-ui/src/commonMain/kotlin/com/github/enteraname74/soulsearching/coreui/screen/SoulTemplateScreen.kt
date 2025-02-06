@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
@@ -83,14 +82,8 @@ fun SoulTemplateComposable(
             SoulButton(
                 onClick = spec.onClick,
                 colors = spec.colors(),
-            ) {
-                Text(
-                    text = spec.text,
-                    textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                    fontSize = 14.sp
-                )
-            }
+                text = spec.text,
+            )
         }
     }
 }

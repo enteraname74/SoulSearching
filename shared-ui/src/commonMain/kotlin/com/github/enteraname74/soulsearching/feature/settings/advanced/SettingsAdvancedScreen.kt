@@ -171,14 +171,8 @@ class SettingsAdvancedScreen: Screen, SettingPage {
                 SoulButton(
                     onClick = reloadImages,
                     colors = SoulButtonDefaults.primaryColors(),
-                ) {
-                    Text(
-                        text = strings.reloadCoversTitle,
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        fontSize = 15.sp
-                    )
-                }
+                    text = strings.reloadCoversTitle,
+                )
             }
         }
     }

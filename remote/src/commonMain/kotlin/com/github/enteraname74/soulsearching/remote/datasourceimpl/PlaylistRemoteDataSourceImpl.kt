@@ -29,7 +29,7 @@ class PlaylistRemoteDataSourceImpl(
             }
         }
 
-        return result.toSoulResult { list ->
+        return result.map { list ->
             list.mapNotNull { it.toUUID() }
         }
     }
@@ -40,7 +40,7 @@ class PlaylistRemoteDataSourceImpl(
                 setBody(playlists.map { it.toPlaylistUpload() })
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult { list ->
+        }.map { list ->
             list.map { it.toUploadedPlaylistData() }
         }
 
@@ -50,7 +50,7 @@ class PlaylistRemoteDataSourceImpl(
                 setBody(PlaylistCreation(name = playlistName))
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult {
+        }.map {
             it.toPlaylist()
         }
 
@@ -60,7 +60,7 @@ class PlaylistRemoteDataSourceImpl(
                 setBody(playlist.toModifiedPlaylist())
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult { 
+        }.map {
             it.toPlaylist()
         }
 
@@ -87,7 +87,7 @@ class PlaylistRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult { list ->
+        return result.map { list ->
             list.map { it.toPlaylist() }
         }
     }
@@ -104,7 +104,7 @@ class PlaylistRemoteDataSourceImpl(
                 )
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult { list ->
+        }.map { list ->
             list.map { it.toMusicPlaylist() }
         }
 
@@ -123,7 +123,7 @@ class PlaylistRemoteDataSourceImpl(
                 )
                 contentType(ContentType.Application.Json)
             }
-        }.toSoulResult { list ->
+        }.map { list ->
             list.map { it.toMusicPlaylist() }
         }
 }

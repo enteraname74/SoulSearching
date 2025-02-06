@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.remote.model
 
+import com.github.enteraname74.domain.model.SoulResult
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -25,39 +26,39 @@ fun HttpClient.clearToken() {
 
 suspend inline fun <reified T> HttpClient.safeRequest(
     block: HttpClient.() -> HttpResponse
-): RemoteResult<T> = try {
+): SoulResult<T> = try {
     val response = block(this)
     if (response.status.isSuccess()) {
-        RemoteResult.Success(response.body())
+        SoulResult.Success(response.body())
     } else {
-        RemoteResult.Error(response.bodyAsText())
+        SoulResult.Error(response.bodyAsText())
     }
 } catch (e: Exception) {
-    RemoteResult.Error(e.message ?: e.toString())
+    SoulResult.Error(e.message ?: e.toString())
 }
 
 suspend inline fun HttpClient.safeReadBytes(
     block: HttpClient.() -> HttpResponse
-): RemoteResult<ByteArray> = try {
+): SoulResult<ByteArray> = try {
     val response = block(this)
     if (response.status.isSuccess()) {
-        RemoteResult.Success(response.readBytes())
+        SoulResult.Success(response.readBytes())
     } else {
-        RemoteResult.Error(response.bodyAsText())
+        SoulResult.Error(response.bodyAsText())
     }
 } catch (e: Exception) {
-    RemoteResult.Error(e.message ?: e.toString())
+    SoulResult.Error(e.message ?: e.toString())
 }
 
 suspend fun HttpClient.safeSimpleRequest(
     block: suspend HttpClient.() -> HttpResponse
-): RemoteResult<String> = try {
+): SoulResult<String> = try {
     val response = block(this)
     if (response.status.isSuccess()) {
-        RemoteResult.Success(response.bodyAsText())
+        SoulResult.Success(response.bodyAsText())
     } else {
-        RemoteResult.Error(response.bodyAsText())
+        SoulResult.Error(response.bodyAsText())
     }
 } catch (e: Exception) {
-    RemoteResult.Error(e.message ?: e.toString())
+    SoulResult.Error(e.message ?: e.toString())
 }

@@ -68,6 +68,7 @@ val domainModule = module {
     singleOf(::ToggleArtistQuickAccessStateUseCase)
 
     // Auth
+    singleOf(::GenerateInscriptionCodeUseCase)
     singleOf(::GetCloudHostUseCase)
     singleOf(::GetUserUseCase)
     singleOf(::LogInUserUseCase)

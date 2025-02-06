@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.album.RemoteAlbum
-import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.album.toModifiedAlbum
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
@@ -18,9 +17,9 @@ import java.util.*
 
 class AlbumRemoteDataSourceImpl(
     private val client: HttpClient
-): AlbumRemoteDataSource {
+) : AlbumRemoteDataSource {
     override suspend fun checkForDeletedAlbums(albumIds: List<UUID>): SoulResult<List<UUID>> {
-        val result: RemoteResult<List<String>> = client.safeRequest {
+        val result: SoulResult<List<String>> = client.safeRequest {
             get(urlString = ServerRoutes.Album.CHECK) {
                 setBody(
                     albumIds.map { it.toString() }
@@ -29,7 +28,7 @@ class AlbumRemoteDataSourceImpl(
             }
         }
 
-        return result.toSoulResult { list ->
+        return result.map { list ->
             list.mapNotNull { it.toUUID() }
         }
     }
@@ -39,7 +38,7 @@ class AlbumRemoteDataSourceImpl(
         maxPerPage: Int,
         page: Int
     ): SoulResult<List<Album>> {
-        val result: RemoteResult<List<RemoteAlbum>> = client.safeRequest {
+        val result: SoulResult<List<RemoteAlbum>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.Album.all(
                     after = after,
@@ -49,11 +48,9 @@ class AlbumRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult(
-            mapData = { songs ->
-                songs.map { it.toAlbum() }
-            }
-        )
+        return result.map { songs ->
+            songs.map { it.toAlbum() }
+        }
     }
 
     override suspend fun deleteAll(albumIds: List<UUID>): SoulResult<Unit> =

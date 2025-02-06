@@ -37,22 +37,22 @@ class CloudRepositoryImpl(
 
     override suspend fun syncDataWithCloud(): SoulResult<List<UUID>> {
         val artistSync: SoulResult<Unit> = artistRepository.syncWithCloud()
-        if (artistSync.isError()) return artistSync.mapSuccess { emptyList() }
+        if (artistSync.isError()) return artistSync.map { emptyList() }
 
         val albumSync: SoulResult<Unit> = albumRepository.syncWithCloud()
-        if (albumSync.isError()) return albumSync.mapSuccess { emptyList() }
+        if (albumSync.isError()) return albumSync.map { emptyList() }
 
         val musicSync: SoulResult<List<UUID>> = musicRepository.syncWithCloud()
-        if (musicSync.isError()) return musicSync.mapSuccess { emptyList() }
+        if (musicSync.isError()) return musicSync.map { emptyList() }
 
         val musicArtistSync: SoulResult<Unit> = musicArtistRepository.syncWithCloud()
-        if (musicArtistSync.isError()) return musicArtistSync.mapSuccess { emptyList() }
+        if (musicArtistSync.isError()) return musicArtistSync.map { emptyList() }
 
         val playlistSync: SoulResult<Unit> = playlistRepository.syncWithCloud()
-        if (playlistSync.isError()) return playlistSync.mapSuccess { emptyList() }
+        if (playlistSync.isError()) return playlistSync.map { emptyList() }
 
         val musicPlaylistSync: SoulResult<Unit> = musicPlaylistRepository.syncWithCloud()
-        if (musicPlaylistSync.isError()) return musicPlaylistSync.mapSuccess { emptyList() }
+        if (musicPlaylistSync.isError()) return musicPlaylistSync.map { emptyList() }
 
         cloudLocalDataSource.updateLastUpdateDate()
 

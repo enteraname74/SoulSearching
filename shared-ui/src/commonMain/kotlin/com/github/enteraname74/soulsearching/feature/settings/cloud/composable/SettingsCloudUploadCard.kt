@@ -12,8 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -69,14 +67,8 @@ fun SettingsCloudUploadCard(
                     enabled = uploadState !is SettingsCloudUploadState.Uploading,
                     onClick = uploadSongs,
                     colors = SoulButtonDefaults.primaryColors(),
-                ) {
-                    Text(
-                        text = strings.upload,
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                        fontSize = 15.sp
-                    )
-                }
+                    text = strings.upload,
+                )
             }
             VerticalAnimatedVisibility(
                 visible = uploadState is SettingsCloudUploadState.Uploading

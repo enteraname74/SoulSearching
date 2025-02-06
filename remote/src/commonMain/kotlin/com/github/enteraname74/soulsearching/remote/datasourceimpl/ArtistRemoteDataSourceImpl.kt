@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.artist.RemoteArtist
-import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.artist.toModifiedArtist
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
@@ -18,9 +17,9 @@ import java.util.*
 
 class ArtistRemoteDataSourceImpl(
     private val client: HttpClient
-): ArtistRemoteDataSource {
+) : ArtistRemoteDataSource {
     override suspend fun checkForDeletedArtists(artistIds: List<UUID>): SoulResult<List<UUID>> {
-        val result: RemoteResult<List<String>> = client.safeRequest {
+        val result: SoulResult<List<String>> = client.safeRequest {
             get(urlString = ServerRoutes.Artist.CHECK) {
                 setBody(
                     artistIds.map { it.toString() }
@@ -29,7 +28,7 @@ class ArtistRemoteDataSourceImpl(
             }
         }
 
-        return result.toSoulResult { list ->
+        return result.map { list ->
             list.mapNotNull { it.toUUID() }
         }
     }
@@ -39,7 +38,7 @@ class ArtistRemoteDataSourceImpl(
         maxPerPage: Int,
         page: Int
     ): SoulResult<List<Artist>> {
-        val result: RemoteResult<List<RemoteArtist>> = client.safeRequest {
+        val result: SoulResult<List<RemoteArtist>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.Artist.all(
                     after = after,
@@ -49,11 +48,9 @@ class ArtistRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult(
-            mapData = { songs ->
-                songs.map { it.toArtist() }
-            }
-        )
+        return result.map { songs ->
+            songs.map { it.toArtist() }
+        }
     }
 
     override suspend fun deleteAll(artistIds: List<UUID>): SoulResult<Unit> =

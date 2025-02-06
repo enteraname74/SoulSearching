@@ -162,6 +162,7 @@ interface Strings {
     val cloudLogIn: String
     val cloudUsername: String
     val cloudPassword: String
+    val cloudSignInCode: String
     val cloudLogOut: String
     val cloudUploadTitle: String
     val cloudUploadText: String

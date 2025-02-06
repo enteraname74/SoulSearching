@@ -9,8 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -60,14 +58,8 @@ fun SettingsCloudFormTab(
                     SoulButton(
                         onClick = onValidate,
                         colors = SoulButtonDefaults.primaryColors(),
-                    ) {
-                        Text(
-                            text = validateButtonTitle,
-                            textAlign = TextAlign.Center,
-                            color = SoulSearchingColorTheme.colorScheme.onPrimary,
-                            fontSize = 15.sp
-                        )
-                    }
+                        text = validateButtonTitle,
+                    )
                 }
             }
         }

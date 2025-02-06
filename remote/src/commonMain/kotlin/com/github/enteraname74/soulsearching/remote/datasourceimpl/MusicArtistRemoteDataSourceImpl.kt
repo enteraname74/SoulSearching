@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.RemoteMusicArtist
-import com.github.enteraname74.soulsearching.remote.model.RemoteResult
 import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistRemoteDataSource
 import io.ktor.client.*
@@ -13,13 +12,13 @@ import java.time.LocalDateTime
 
 class MusicArtistRemoteDataSourceImpl(
     private val client: HttpClient,
-): MusicArtistRemoteDataSource {
+) : MusicArtistRemoteDataSource {
     override suspend fun fetchMusicArtistsFromCloud(
         after: LocalDateTime?,
         maxPerPage: Int,
         page: Int
     ): SoulResult<List<MusicArtist>> {
-        val result: RemoteResult<List<RemoteMusicArtist>> = client.safeRequest {
+        val result: SoulResult<List<RemoteMusicArtist>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.MusicArtist.all(
                     after = after,
@@ -29,10 +28,8 @@ class MusicArtistRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult(
-            mapData = { songs ->
-                songs.map { it.toMusicArtist() }
-            }
-        )
+        return result.map { songs ->
+            songs.map { it.toMusicArtist() }
+        }
     }
 }

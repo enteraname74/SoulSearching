@@ -149,6 +149,7 @@ object EnStrings : Strings {
     override val cloudLogIn = "Log in"
     override val cloudUsername = "Username"
     override val cloudPassword = "Password"
+    override val cloudSignInCode = "Sign in code"
     override val cloudLogOut = "Log out"
     override val cloudUploadTitle = "Upload songs"
     override val cloudUploadText = "Upload your songs to the cloud"

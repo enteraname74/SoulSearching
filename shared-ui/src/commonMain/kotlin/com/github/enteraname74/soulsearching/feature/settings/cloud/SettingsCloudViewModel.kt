@@ -127,6 +127,7 @@ class SettingsCloudViewModel(
                 username = user?.username.orEmpty(),
                 password = user?.password.orEmpty(),
                 error = error,
+                isSignIn = true,
             )
         }.stateIn(
             scope = screenModelScope,
@@ -143,6 +144,7 @@ class SettingsCloudViewModel(
                 username = user?.username.orEmpty(),
                 password = user?.password.orEmpty(),
                 error = error,
+                isSignIn = false,
             )
         }.stateIn(
             scope = screenModelScope,
@@ -159,7 +161,8 @@ class SettingsCloudViewModel(
                     user = User(
                         username = validForm.getFormUsername(),
                         password = validForm.getFormPassword(),
-                    )
+                    ),
+                    inscriptionCode = validForm.getInscriptionCode()
                 )
                 when (result) {
                     is SoulResult.Error -> {

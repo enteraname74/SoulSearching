@@ -28,7 +28,7 @@ class MusicRemoteDataSourceImpl(
     private val client: HttpClient
 ): MusicRemoteDataSource {
     override suspend fun checkForDeletedSongs(musicIds: List<UUID>): SoulResult<List<UUID>> {
-        val result: RemoteResult<List<String>> = client.safeRequest {
+        val result: SoulResult<List<String>> = client.safeRequest {
             get(urlString = ServerRoutes.Music.CHECK) {
                 setBody(
                     musicIds.map { it.toString() }
@@ -37,7 +37,7 @@ class MusicRemoteDataSourceImpl(
             }
         }
 
-        return result.toSoulResult { list ->
+        return result.map { list ->
             list.mapNotNull { it.toUUID() }
         }
     }
@@ -47,7 +47,7 @@ class MusicRemoteDataSourceImpl(
         maxPerPage: Int,
         page: Int,
     ): SoulResult<List<Music>> {
-        val result: RemoteResult<List<RemoteMusic>> = client.safeRequest {
+        val result: SoulResult<List<RemoteMusic>> = client.safeRequest {
             get(
                 urlString = ServerRoutes.Music.all(
                     after = after,
@@ -57,11 +57,9 @@ class MusicRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult(
-            mapData = { songs ->
-                songs.map { it.toMusic() }
-            }
-        )
+        return result.map { songs ->
+            songs.map { it.toMusic() }
+        }
     }
 
     override suspend fun deleteAll(musicIds: List<UUID>): SoulResult<Unit> =
@@ -91,7 +89,7 @@ class MusicRemoteDataSourceImpl(
             Files.probeContentType(file.toPath())
         } ?: "application/octet-stream"
 
-        val result: RemoteResult<String> = client.safeRequest {
+        val result: SoulResult<String> = client.safeRequest {
             submitFormWithBinaryData(
                 url = ServerRoutes.Music.upload(searchMetadata),
                 formData = formData {
@@ -122,7 +120,7 @@ class MusicRemoteDataSourceImpl(
             )
         }
 
-        return result.toSoulResult {
+        return result.map {
             try {
                 JSON.decodeFromString<RemoteUploadedMusicData>(it).toUploadMusicData()
             } catch (_: Exception) {

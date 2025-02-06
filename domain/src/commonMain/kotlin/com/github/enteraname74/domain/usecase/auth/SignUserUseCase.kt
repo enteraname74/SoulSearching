@@ -7,6 +7,6 @@ import com.github.enteraname74.domain.repository.AuthRepository
 class SignUserUseCase(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke(user: User): SoulResult<*> =
-        authRepository.signIn(user)
+    suspend operator fun invoke(user: User, inscriptionCode: String): SoulResult<*> =
+        authRepository.signIn(user, inscriptionCode)
 }

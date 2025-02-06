@@ -151,6 +151,7 @@ object FrStrings : Strings {
     override val cloudLogIn = "Authentification"
     override val cloudUsername = "Nom d'utilisateur"
     override val cloudPassword = "Mot de passe"
+    override val cloudSignInCode = "Code d'inscription"
     override val cloudLogOut = "Déconnexion"
     override val cloudUploadTitle = "Exporter vos musiques"
     override val cloudUploadText = "Exporter toutes vos musiques vers le cloud"
