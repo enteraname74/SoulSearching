@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -88,7 +87,7 @@ private fun AppName(
         Text(
             text = strings.appName,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
+            style = UiConstants.Typography.title,
             fontWeight = FontWeight.Bold
         )
         if (isInCloudMode) {

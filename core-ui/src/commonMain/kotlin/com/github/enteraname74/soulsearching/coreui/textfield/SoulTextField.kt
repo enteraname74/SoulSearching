@@ -39,6 +39,7 @@ fun SoulTextField(
     onValueChange: (String) -> Unit,
     error: String?,
     isInError: Boolean,
+    isActive: Boolean,
     labelName: String?,
     focusManager: FocusManager,
     modifier: Modifier = Modifier,
@@ -98,6 +99,7 @@ fun SoulTextField(
             BasicTextField(
                 modifier = modifier,
                 value = value,
+                readOnly = isActive,
                 onValueChange = onValueChange,
                 interactionSource = interactionSource,
                 maxLines = 1,
@@ -188,6 +190,7 @@ class SoulTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val isActive: Boolean = false,
     private val isPassword: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
@@ -224,6 +227,7 @@ class SoulTextFieldHolderImpl(
             error = error,
             isInError = isInError,
             isPassword = isPassword,
+            isActive = isActive,
             leadingIcon = leadingIconSpec?.let {
                 {
                     SoulIcon(

@@ -1,16 +1,16 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
 import com.github.enteraname74.domain.model.CloudInscriptionCode
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.*
-import com.github.enteraname74.soulsearching.remote.model.user.RemoteInscriptionCode
-import com.github.enteraname74.soulsearching.remote.model.user.toUserLogIn
-import com.github.enteraname74.soulsearching.remote.model.user.toUserSignIn
+import com.github.enteraname74.soulsearching.remote.model.user.*
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UserAuth
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -28,8 +28,8 @@ class AuthRemoteDataSourceImpl(
         qualifier = named(HttpClientNames.CLOUD_AUTH)
     )
 
-    override suspend fun signIn(user: User, inscriptionCode: String): SoulResult<UserTokens> {
-        val result = client.safeRequest<RemoteUserTokens> {
+    override suspend fun signIn(user: User, inscriptionCode: String): SoulResult<UserAuth> {
+        val result = client.safeRequest<RemoteUserAuth> {
             this.post(urlString = ServerRoutes.Auth.SIGN_IN) {
                 contentType(ContentType.Application.Json)
                 setBody(user.toUserSignIn(inscriptionCode))
@@ -37,12 +37,12 @@ class AuthRemoteDataSourceImpl(
         }
 
         return result.map {
-            it.toUserTokens()
+            it.toUserAuth()
         }
     }
 
-    override suspend fun logIn(user: User): SoulResult<UserTokens> {
-        val result = client.safeRequest<RemoteUserTokens> {
+    override suspend fun logIn(user: User): SoulResult<UserAuth> {
+        val result = client.safeRequest<RemoteUserAuth> {
             this.post(urlString = ServerRoutes.Auth.LOG_IN) {
                 contentType(ContentType.Application.Json)
                 setBody(user.toUserLogIn())
@@ -50,17 +50,17 @@ class AuthRemoteDataSourceImpl(
         }
 
         return result.map {
-            it.toUserTokens()
+            it.toUserAuth()
         }
     }
 
     override suspend fun generateInscriptionCode(): SoulResult<CloudInscriptionCode> =
-        client.safeRequest<RemoteInscriptionCode> {
+        cloudClient.safeRequest<RemoteInscriptionCode> {
             this.get(urlString = ServerRoutes.User.GENERATE_CODE)
         }.map { it.toInscriptionCode() }
 
     override suspend fun refreshTokens(): SoulResult<UserTokens> {
-        val result = client.safeRequest<RemoteUserTokens> {
+        val result = cloudClient.safeRequest<RemoteUserTokens> {
             this.get(urlString = ServerRoutes.Auth.REFRESH_TOKENS)
         }
 

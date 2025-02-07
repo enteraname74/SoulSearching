@@ -7,6 +7,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
@@ -16,7 +17,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.state.Settin
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
 
-class SettingsCloudScreen: Screen, SettingPage {
+class SettingsCloudScreen : Screen, SettingPage {
 
     @Composable
     override fun Content() {
@@ -28,6 +29,10 @@ class SettingsCloudScreen: Screen, SettingPage {
         val logInFormState: SettingsCloudFormState by screenModel.logInFormState.collectAsState()
         val signInFormState: SettingsCloudFormState by screenModel.signInFormState.collectAsState()
 
+        val dialog: SoulDialog? by screenModel.dialogState.collectAsState()
+
+        dialog?.Dialog()
+
         Screen(
             state = state,
             uploadState = uploadState,
@@ -37,12 +42,7 @@ class SettingsCloudScreen: Screen, SettingPage {
             navigateBack = {
                 navigator.pop()
             },
-            toggleCloudMode = screenModel::toggleCloudState,
-            signIn = screenModel::signIn,
-            logIn = screenModel::logIn,
-            onLogOut = screenModel::logOut,
-            uploadSongs = screenModel::uploadAllMusicToCloud,
-            toggleSearchMetadata = screenModel::toggleSearchMetadata,
+            listener = screenModel,
         )
     }
 
@@ -54,15 +54,10 @@ class SettingsCloudScreen: Screen, SettingPage {
         signInFormState: SettingsCloudFormState,
         hostTextField: SoulTextFieldHolder,
         navigateBack: () -> Unit,
-        toggleCloudMode: () -> Unit,
-        signIn: () -> Unit,
-        logIn: () -> Unit,
-        onLogOut: () -> Unit,
-        uploadSongs: () -> Unit,
-        toggleSearchMetadata: () -> Unit,
+        listener: SettingsCloudListener,
     ) {
 
-        when(state) {
+        when (state) {
             is SettingsCloudState.Data -> {
                 SettingsCloudDataScreen(
                     state = state,
@@ -70,15 +65,11 @@ class SettingsCloudScreen: Screen, SettingPage {
                     signInFormState = signInFormState,
                     hostTextField = hostTextField,
                     navigateBack = navigateBack,
-                    toggleCloudMode = toggleCloudMode,
-                    signIn = signIn,
-                    logIn = logIn,
-                    onLogOut = onLogOut,
                     uploadState = uploadState,
-                    uploadSongs = uploadSongs,
-                    toggleSearchMetadata = toggleSearchMetadata,
+                    listener = listener,
                 )
             }
+
             SettingsCloudState.Loading -> {
                 SoulLoadingScreen(
                     navigateBack = navigateBack,

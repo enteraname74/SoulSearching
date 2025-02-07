@@ -18,6 +18,6 @@ fun SettingsStatisticsSectionTitle(title: String) {
             ),
         text = title,
         color = SoulSearchingColorTheme.colorScheme.onPrimary,
-        style = UiConstants.Typography.titleSmall,
+        style = UiConstants.Typography.title,
     )
 }

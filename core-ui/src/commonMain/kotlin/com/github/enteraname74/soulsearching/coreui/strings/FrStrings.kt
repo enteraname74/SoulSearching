@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.User
 
 /**
@@ -152,6 +153,9 @@ object FrStrings : Strings {
     override val cloudUsername = "Nom d'utilisateur"
     override val cloudPassword = "Mot de passe"
     override val cloudSignInCode = "Code d'inscription"
+    override val cloudSignInCodeTitle = "Générer un code d'inscription"
+    override val cloudSignInCodeText = "Générez un code pour permettre à vos amis de se créer un compte sur votre instance de cloud."
+    override val cloudSignInCodeButton = "Générer un code"
     override val cloudLogOut = "Déconnexion"
     override val cloudUploadTitle = "Exporter vos musiques"
     override val cloudUploadText = "Exporter toutes vos musiques vers le cloud"
@@ -294,6 +298,6 @@ object FrStrings : Strings {
     override fun newReleaseAvailableText(releaseName: String): String =
         "Une nouvelle version est disponible, prête à être téléchargée : $releaseName"
 
-    override fun certifyUserConnected(user: User): String =
+    override fun certifyUserConnected(user: ConnectedUser): String =
         "Vous êtes connecté sous le nom de : ${user.username}"
 }

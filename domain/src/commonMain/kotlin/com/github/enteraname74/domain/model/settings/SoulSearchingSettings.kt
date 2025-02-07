@@ -235,6 +235,10 @@ object SoulSearchingSettingsKeys {
             key = "CLOUD_USERNAME",
             defaultValue = "",
         )
+        val USER_IS_ADMIN = settingElementOf(
+            key = "USER_IS_ADMIN",
+            defaultValue = false,
+        )
         val LAST_UPDATE_DATE = settingElementOf(
             key = "CLOUD_LAST_UPDATE_DATE",
             defaultValue = "",

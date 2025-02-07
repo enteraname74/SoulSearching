@@ -48,6 +48,33 @@ fun SoulButton(
 
 @Composable
 fun SoulButton(
+    spec: SoulButtonSpec,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = SoulButtonDefaults.ROUND_SHAPE,
+    contentPadding: PaddingValues = SoulButtonDefaults.contentPadding(),
+    fontSize: TextUnit = 14.sp
+) {
+    SoulButton(
+        onClick = spec.onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        colors = spec.colors,
+        contentPadding = contentPadding,
+    ) {
+        Text(
+            text = spec.text,
+            textAlign = TextAlign.Center,
+            color = spec.colors.contentColor,
+            fontSize = fontSize,
+        )
+    }
+}
+
+
+@Composable
+fun SoulButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -73,3 +100,9 @@ fun SoulButton(
         )
     }
 }
+
+data class SoulButtonSpec(
+    val text: String,
+    val onClick: () -> Unit,
+    val colors: SoulButtonColors,
+)

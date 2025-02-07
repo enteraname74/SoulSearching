@@ -100,6 +100,7 @@ fun SoulDropdownTextField(
                     }
                 },
                 isPassword = isPassword,
+                isActive = true,
             )
             ExposedDropdownMenu(
                 containerColor = colors.containerColor,

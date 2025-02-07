@@ -3,12 +3,13 @@ package com.github.enteraname74.soulsearching.repository.datasource.auth
 import com.github.enteraname74.domain.model.CloudInscriptionCode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.soulsearching.repository.model.UserAuth
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRemoteDataSource {
-    suspend fun signIn(user: User, inscriptionCode: String): SoulResult<UserTokens>
-    suspend fun logIn(user: User): SoulResult<UserTokens>
+    suspend fun signIn(user: User, inscriptionCode: String): SoulResult<UserAuth>
+    suspend fun logIn(user: User): SoulResult<UserAuth>
     suspend fun generateInscriptionCode(): SoulResult<CloudInscriptionCode>
     suspend fun refreshTokens(): SoulResult<UserTokens>
 

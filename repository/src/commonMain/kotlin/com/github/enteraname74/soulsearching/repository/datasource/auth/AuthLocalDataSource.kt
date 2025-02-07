@@ -1,35 +1,37 @@
 package com.github.enteraname74.soulsearching.repository.datasource.auth
 
-import com.github.enteraname74.domain.model.User
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.combine
 
 class AuthLocalDataSource(
     private val settings: SoulSearchingSettings
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun getUser(): Flow<User?> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.USERNAME).mapLatest { username ->
-            User(
+
+    fun getUser(): Flow<ConnectedUser?> =
+        combine(
+            settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.USERNAME),
+            settings.getFlowOn(SoulSearchingSettingsKeys.Cloud.USER_IS_ADMIN)
+        ) { username, isAdmin ->
+            ConnectedUser(
                 username = username,
-                password = "",
+                isAdmin = isAdmin,
             ).takeIf { it.isValid() }
         }
 
     fun setUser(
-        user: User?,
+        user: ConnectedUser?,
     ) {
         settings.set(
             SoulSearchingSettingsKeys.Cloud.USERNAME.key,
             user?.username.orEmpty(),
         )
         settings.set(
-            SoulSearchingSettingsKeys.Cloud.USERNAME.key,
-            user?.username.orEmpty(),
+            SoulSearchingSettingsKeys.Cloud.USER_IS_ADMIN.key,
+            user?.isAdmin ?: false,
         )
     }
 

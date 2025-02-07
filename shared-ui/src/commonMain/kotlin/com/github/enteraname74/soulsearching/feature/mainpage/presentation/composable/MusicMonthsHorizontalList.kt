@@ -33,7 +33,7 @@ fun MusicMonthsHorizontalList(
                 .padding(start = UiConstants.Spacing.medium),
             text = strings.byMonths,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
+            style = UiConstants.Typography.title,
         )
         if (months.isNotEmpty()) {
             Column {

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.HowToReg
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
@@ -14,7 +15,7 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 
 @Composable
 fun SettingsCloudConnectedView(
-    user: User,
+    user: ConnectedUser,
     onLogOut: () -> Unit,
 ) {
     SoulTemplateComposable(

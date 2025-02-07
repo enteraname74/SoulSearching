@@ -40,7 +40,7 @@ fun SubMenuComposable(
                 .weight(1f, fill = false),
             text = title,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
+            style = UiConstants.Typography.title,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

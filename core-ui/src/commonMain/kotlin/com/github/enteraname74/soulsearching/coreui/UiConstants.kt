@@ -2,13 +2,11 @@ package com.github.enteraname74.soulsearching.coreui
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.soulsearching.coreui.ext.toPx
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
@@ -98,9 +96,13 @@ object UiConstants {
     }
 
     object Typography {
-        val titleSmall: TextStyle = TextStyle(
+        val title: TextStyle = TextStyle(
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
+        )
+        val titleSmall: TextStyle = TextStyle(
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
         )
         val bodyTitle: TextStyle = TextStyle(
             fontSize = 18.sp,

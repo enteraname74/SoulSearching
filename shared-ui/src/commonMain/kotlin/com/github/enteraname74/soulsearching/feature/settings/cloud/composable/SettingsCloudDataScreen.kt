@@ -3,9 +3,11 @@ package com.github.enteraname74.soulsearching.feature.settings.cloud.composable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.animation.VerticalAnimatedVisibility
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpandSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
+import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudListener
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
@@ -19,12 +21,7 @@ fun SettingsCloudDataScreen(
     signInFormState: SettingsCloudFormState,
     hostTextField: SoulTextFieldHolder,
     navigateBack: () -> Unit,
-    toggleCloudMode: () -> Unit,
-    signIn: () -> Unit,
-    logIn: () -> Unit,
-    onLogOut: () -> Unit,
-    uploadSongs: () -> Unit,
-    toggleSearchMetadata: () -> Unit,
+    listener: SettingsCloudListener,
 ) {
     SettingPage(
         navigateBack = navigateBack,
@@ -38,26 +35,39 @@ fun SettingsCloudDataScreen(
             SoulMenuExpandSwitch(
                 title = strings.activateCloudMode,
                 subTitle = null,
-                clickAction = toggleCloudMode,
+                clickAction = listener::toggleCloudState,
                 isExpanded = state.isCloudActivated,
             ) {
                 SettingsCloudExpandSwitchContent(
                     logInFormState = logInFormState,
                     signInFormState = signInFormState,
                     hostTextField = hostTextField,
-                    signIn = signIn,
-                    logIn = logIn,
-                    onLogOut = onLogOut,
+                    signIn = listener::signIn,
+                    logIn = listener::logIn,
+                    onLogOut = listener::logOut,
                     state = state,
                 )
             }
         }
+
+        if (state.user?.isAdmin == true) {
+            item {
+                VerticalAnimatedVisibility(
+                    visible = state.user.isAdmin
+                ) {
+                    SettingsCloudGenerateCodeCard(
+                        onGenerateCode = listener::generateCode,
+                    )
+                }
+            }
+        }
+
         item {
             SettingsCloudUploadCard(
-                uploadSongs = uploadSongs,
+                uploadSongs = listener::uploadAllMusicToCloud,
                 uploadState = uploadState,
                 isEnable = state.user != null,
-                toggleSearchMetadata = toggleSearchMetadata,
+                toggleSearchMetadata = listener::toggleSearchMetadata,
             )
         }
     }

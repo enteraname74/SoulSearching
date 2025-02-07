@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.CloudInscriptionCode
 import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
@@ -18,12 +19,14 @@ import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.music.GetCloudUploadMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UploadAllMusicToCloudUseCase
 import com.github.enteraname74.domain.util.FlowResult
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefaults
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
+import com.github.enteraname74.soulsearching.feature.settings.cloud.composable.SettingsCloudCodeDialog
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
@@ -48,13 +51,14 @@ class SettingsCloudViewModel(
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-) : ScreenModel, KoinComponent {
+) : ScreenModel, KoinComponent, SettingsCloudListener {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
     private val errorInLog: MutableStateFlow<String?> = MutableStateFlow(null)
     private val getCloudSearchMetadataUseCase: GetCloudSearchMetadataUseCase by inject()
     private val setCloudSearchMetadataUseCase: SetCloudSearchMetadataUseCase by inject()
     private val getCloudUploadMusicUseCase: GetCloudUploadMusicUseCase by inject()
     private val uploadAllMusicToCloudUseCase: UploadAllMusicToCloudUseCase by inject()
+    private val generateInscriptionCodeUseCase: GenerateInscriptionCodeUseCase by inject()
 
     val state: StateFlow<SettingsCloudState> =
         combine(
@@ -95,6 +99,9 @@ class SettingsCloudViewModel(
             initialValue = SettingsCloudUploadState.Idle(searchMetadata = false),
         )
 
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
     private val HOST_TEXT_FIELD = "HOST_TEXT_FIELD"
     private var hostJob: Job? = null
     val hostTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
@@ -118,14 +125,12 @@ class SettingsCloudViewModel(
         }
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val signInFormState: StateFlow<SettingsCloudFormState> =
-        combine(
-            getUserUseCase(),
-            errorInSign,
-        ) { user, error ->
+        errorInLog.mapLatest { error ->
             SettingsCloudFormState.Data(
-                username = user?.username.orEmpty(),
-                password = user?.password.orEmpty(),
+                username = "",
+                password = "",
                 error = error,
                 isSignIn = true,
             )
@@ -135,14 +140,12 @@ class SettingsCloudViewModel(
             initialValue = SettingsCloudFormState.Loading,
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val logInFormState: StateFlow<SettingsCloudFormState> =
-        combine(
-            getUserUseCase(),
-            errorInLog,
-        ) { user, error ->
+        errorInSign.mapLatest { error ->
             SettingsCloudFormState.Data(
-                username = user?.username.orEmpty(),
-                password = user?.password.orEmpty(),
+                username = "",
+                password = "",
                 error = error,
                 isSignIn = false,
             )
@@ -152,36 +155,34 @@ class SettingsCloudViewModel(
             initialValue = SettingsCloudFormState.Loading,
         )
 
-    fun signIn() {
+    override fun signIn() {
         val validForm = (signInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
 
-        CoroutineScope(Dispatchers.IO).launch {
-            loadingManager.withLoading {
-                val result: SoulResult<*> = signUserUseCase(
-                    user = User(
-                        username = validForm.getFormUsername(),
-                        password = validForm.getFormPassword(),
-                    ),
-                    inscriptionCode = validForm.getInscriptionCode()
-                )
-                when (result) {
-                    is SoulResult.Error -> {
-                        errorInSign.value = result.error
-                    }
+        loadingManager.withLoadingOnIO {
+            val result: SoulResult<*> = signUserUseCase(
+                user = User(
+                    username = validForm.getFormUsername(),
+                    password = validForm.getFormPassword(),
+                ),
+                inscriptionCode = validForm.getInscriptionCode()
+            )
+            when (result) {
+                is SoulResult.Error -> {
+                    errorInSign.value = result.error
+                }
 
-                    is SoulResult.Success<*> -> {
-                        errorInLog.value = null
-                        errorInSign.value = null
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val syncData: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
-                            (syncData as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
-                                playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
-                                feedbackPopUpManager.showFeedback(
-                                    feedback = strings.deleteMusicsFromCloudAutomatically(
-                                        total = deletedIds.size,
-                                    ),
-                                )
-                            }
+                is SoulResult.Success<*> -> {
+                    errorInLog.value = null
+                    errorInSign.value = null
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val syncData: SoulResult<List<UUID>> = syncDataWithCloudUseCase()
+                        (syncData as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                            playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
+                            feedbackPopUpManager.showFeedback(
+                                feedback = strings.deleteMusicsFromCloudAutomatically(
+                                    total = deletedIds.size,
+                                ),
+                            )
                         }
                     }
                 }
@@ -189,55 +190,54 @@ class SettingsCloudViewModel(
         }
     }
 
-    fun logOut() {
+    override fun logOut() {
         CoroutineScope(Dispatchers.IO).launch {
             logOutUserUseCase()
         }
     }
 
-    fun logIn() {
+    override fun logIn() {
         val dataState = (state.value as? SettingsCloudState.Data) ?: return
         val validForm = (logInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
 
-        CoroutineScope(Dispatchers.IO).launch {
-            loadingManager.withLoading {
-                val newUserInformation = User(
-                    username = validForm.getFormUsername(),
-                    password = validForm.getFormPassword(),
-                )
+        loadingManager.withLoadingOnIO {
+            val newUserInformation = User(
+                username = validForm.getFormUsername(),
+                password = validForm.getFormPassword(),
+            )
 
-                val isDifferentFromCurrentUser = newUserInformation != dataState.user
+            val isDifferentFromCurrentUser = newUserInformation.username != dataState.user?.username
 
-                val result: SoulResult<*> = logInUserUseCase(
-                    user = newUserInformation
-                )
-                when (result) {
-                    is SoulResult.Error -> {
-                        errorInLog.value = result.error
-                    }
+            val result: SoulResult<*> = logInUserUseCase(
+                user = newUserInformation
+            )
 
-                    is SoulResult.Success<*> -> {
-                        errorInLog.value = null
-                        errorInSign.value = null
+            when (result) {
+                is SoulResult.Error -> {
+                    errorInLog.value = result.error
+                }
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            /*
-                            If the user is different from the previous one, we reset all cloud data before syncing with it.
-                             */
-                            val syncResult: SoulResult<List<UUID>> = if (isDifferentFromCurrentUser) {
-                                resetAndSyncDataWithCloudUseCase()
-                            } else {
-                                syncDataWithCloudUseCase()
-                            }
+                is SoulResult.Success<*> -> {
+                    errorInLog.value = null
+                    errorInSign.value = null
 
-                            (syncResult as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
-                                playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
-                                feedbackPopUpManager.showFeedback(
-                                    feedback = strings.deleteMusicsFromCloudAutomatically(
-                                        total = deletedIds.size,
-                                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        /*
+                        If the user is different from the previous one, we reset all cloud data before syncing with it.
+                         */
+                        val syncResult: SoulResult<List<UUID>> = if (isDifferentFromCurrentUser) {
+                            resetAndSyncDataWithCloudUseCase()
+                        } else {
+                            syncDataWithCloudUseCase()
+                        }
+
+                        (syncResult as? SoulResult.Success)?.data?.takeIf { it.isNotEmpty() }?.let { deletedIds ->
+                            playbackManager.removeSongsFromPlayedPlaylist(deletedIds)
+                            feedbackPopUpManager.showFeedback(
+                                feedback = strings.deleteMusicsFromCloudAutomatically(
+                                    total = deletedIds.size,
                                 )
-                            }
+                            )
                         }
                     }
                 }
@@ -245,7 +245,7 @@ class SettingsCloudViewModel(
         }
     }
 
-    fun toggleCloudState() {
+    override fun toggleCloudState() {
         val dataState = (state.value as? SettingsCloudState.Data) ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -255,7 +255,7 @@ class SettingsCloudViewModel(
         }
     }
 
-    fun toggleSearchMetadata() {
+    override fun toggleSearchMetadata() {
         CoroutineScope(Dispatchers.IO).launch {
             setCloudSearchMetadataUseCase(
                 searchMetadata = !uploadState.value.searchMetadata,
@@ -264,9 +264,23 @@ class SettingsCloudViewModel(
     }
 
 
-    fun uploadAllMusicToCloud() {
+    override fun uploadAllMusicToCloud() {
         CoroutineScope(Dispatchers.IO).launch {
             uploadAllMusicToCloudUseCase()
+        }
+    }
+
+    override fun generateCode() {
+        loadingManager.withLoadingOnIO {
+            val result: SoulResult<CloudInscriptionCode> = generateInscriptionCodeUseCase()
+
+            (result as? SoulResult.Success)?.data?.let { code ->
+                _dialogState.value = SettingsCloudCodeDialog(
+                    onDismiss = { _dialogState.value = null },
+                    code = code,
+                )
+            }
+            feedbackPopUpManager.showResultErrorIfAny(result)
         }
     }
 }

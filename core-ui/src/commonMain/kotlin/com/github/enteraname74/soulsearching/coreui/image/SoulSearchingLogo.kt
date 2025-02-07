@@ -32,7 +32,7 @@ fun SoulSearchingLogo(
         Text(
             text = strings.appName,
             color = SoulSearchingColorTheme.colorScheme.onPrimary,
-            style = UiConstants.Typography.titleSmall,
+            style = UiConstants.Typography.title,
             fontWeight = FontWeight.Bold
         )
     }

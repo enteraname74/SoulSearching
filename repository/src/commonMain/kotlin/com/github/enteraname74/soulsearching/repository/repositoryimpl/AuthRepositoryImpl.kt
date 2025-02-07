@@ -1,11 +1,13 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.CloudInscriptionCode
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.repository.AuthRepository
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.model.UserAuth
 import com.github.enteraname74.soulsearching.repository.model.UserTokens
 import kotlinx.coroutines.flow.Flow
 
@@ -14,11 +16,11 @@ class AuthRepositoryImpl(
     private val authLocalDataSource: AuthLocalDataSource,
 ): AuthRepository {
     override suspend fun signIn(user: User, inscriptionCode: String): SoulResult<Unit> {
-        val result: SoulResult<UserTokens> = authRemoteDataSource.signIn(user, inscriptionCode)
+        val result: SoulResult<UserAuth> = authRemoteDataSource.signIn(user, inscriptionCode)
 
-        (result as? SoulResult.Success)?.data?.let { token ->
-            authLocalDataSource.setUser(user)
-            authLocalDataSource.setUserTokens(token)
+        (result as? SoulResult.Success)?.data?.let { userAuth ->
+            authLocalDataSource.setUser(userAuth.user)
+            authLocalDataSource.setUserTokens(userAuth.tokens)
         }
 
         return result.toSimpleResult()
@@ -26,11 +28,11 @@ class AuthRepositoryImpl(
 
 
     override suspend fun logIn(user: User): SoulResult<Unit> {
-        val result: SoulResult<UserTokens> = authRemoteDataSource.logIn(user)
+        val result: SoulResult<UserAuth> = authRemoteDataSource.logIn(user)
 
-        (result as? SoulResult.Success)?.data?.let { token ->
-            authLocalDataSource.setUser(user)
-            authLocalDataSource.setUserTokens(token)
+        (result as? SoulResult.Success)?.data?.let { userAuth ->
+            authLocalDataSource.setUser(userAuth.user)
+            authLocalDataSource.setUserTokens(userAuth.tokens)
         }
 
         return result.toSimpleResult()
@@ -50,7 +52,7 @@ class AuthRepositoryImpl(
         authRemoteDataSource.logOut()
     }
 
-    override fun getUser(): Flow<User?> =
+    override fun getUser(): Flow<ConnectedUser?> =
         authLocalDataSource.getUser()
 
     override fun getHost(): Flow<String> =

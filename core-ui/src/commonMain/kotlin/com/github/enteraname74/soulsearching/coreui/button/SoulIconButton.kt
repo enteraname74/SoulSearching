@@ -14,14 +14,15 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 @Composable
 fun SoulIconButton(
     icon: ImageVector,
-    contentDescription: String? = null,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     enabled: Boolean = true,
     size: Dp = UiConstants.ImageSize.smallPlus,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
     IconButton(
-        modifier = Modifier
+        modifier = modifier
             .pointerHoverIcon(PointerIcon.Hand),
         onClick = onClick,
         enabled = enabled,

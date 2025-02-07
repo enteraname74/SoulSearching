@@ -83,7 +83,7 @@ class SoulSearchingDesktopPlayerImpl(
     }
 
     private suspend fun getMusicBytes(music: Music): SoulResult<ByteArray> =
-        client.safeReadBytes { client.get(urlString = music.path) }.toSoulResult()
+        client.safeReadBytes { client.get(urlString = music.path) }
 
     private fun setLocalMusic(music: Music): SoulResult<Unit> {
         player.media().prepare(music.path)

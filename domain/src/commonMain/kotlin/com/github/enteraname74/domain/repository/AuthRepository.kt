@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.CloudInscriptionCode
+import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ interface AuthRepository {
     suspend fun generateInscriptionCode(): SoulResult<CloudInscriptionCode>
     suspend fun logOut()
 
-    fun getUser(): Flow<User?>
+    fun getUser(): Flow<ConnectedUser?>
 
     fun getHost(): Flow<String>
 
