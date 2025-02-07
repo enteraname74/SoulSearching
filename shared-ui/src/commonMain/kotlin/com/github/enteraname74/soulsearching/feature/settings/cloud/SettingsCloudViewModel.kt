@@ -19,6 +19,7 @@ import com.github.enteraname74.domain.usecase.datamode.SetCurrentDataModeUseCase
 import com.github.enteraname74.domain.usecase.music.GetCloudUploadMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UploadAllMusicToCloudUseCase
 import com.github.enteraname74.domain.util.FlowResult
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -27,7 +28,9 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefau
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.feature.settings.cloud.composable.SettingsCloudCodeDialog
-import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.composable.SettingsCloudQrCodeReaderBottomSheet
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudLogInFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -102,6 +105,9 @@ class SettingsCloudViewModel(
     private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
     val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
 
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
+
     private val HOST_TEXT_FIELD = "HOST_TEXT_FIELD"
     private var hostJob: Job? = null
     val hostTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
@@ -126,37 +132,54 @@ class SettingsCloudViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val signInFormState: StateFlow<SettingsCloudFormState> =
+    val signInFormState: StateFlow<SettingsCloudSignInFormState> =
         errorInLog.mapLatest { error ->
-            SettingsCloudFormState.Data(
+            SettingsCloudSignInFormState.Data(
                 username = "",
                 password = "",
                 error = error,
-                isSignIn = true,
+                onScanQrCode = ::openQrCodeReaderBottomSheet,
             )
         }.stateIn(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = SettingsCloudFormState.Loading,
+            initialValue = SettingsCloudSignInFormState.Loading,
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val logInFormState: StateFlow<SettingsCloudFormState> =
+    val logInFormState: StateFlow<SettingsCloudLogInFormState> =
         errorInSign.mapLatest { error ->
-            SettingsCloudFormState.Data(
+            SettingsCloudLogInFormState.Data(
                 username = "",
                 password = "",
                 error = error,
-                isSignIn = false,
             )
         }.stateIn(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = SettingsCloudFormState.Loading,
+            initialValue = SettingsCloudLogInFormState.Loading,
         )
 
+    private fun openQrCodeReaderBottomSheet() {
+        _bottomSheetState.value = SettingsCloudQrCodeReaderBottomSheet(
+            onClose = { _bottomSheetState.value = null },
+            onFailure = { error ->
+                screenModelScope.launch {
+                    feedbackPopUpManager.showFeedback(
+                        feedback = error,
+                    )
+                }
+            },
+            onCodeRetrieved = { code ->
+                (signInFormState.value as? SettingsCloudSignInFormState.Data)?.setInscriptionCode(
+                    inscriptionCode = code,
+                )
+            }
+        )
+    }
+
     override fun signIn() {
-        val validForm = (signInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
+        val validForm = (signInFormState.value as? SettingsCloudSignInFormState.Data)?.takeIf { it.isValid() } ?: return
 
         loadingManager.withLoadingOnIO {
             val result: SoulResult<*> = signUserUseCase(
@@ -198,7 +221,7 @@ class SettingsCloudViewModel(
 
     override fun logIn() {
         val dataState = (state.value as? SettingsCloudState.Data) ?: return
-        val validForm = (logInFormState.value as? SettingsCloudFormState.Data)?.takeIf { it.isValid() } ?: return
+        val validForm = (logInFormState.value as? SettingsCloudLogInFormState.Data)?.takeIf { it.isValid() } ?: return
 
         loadingManager.withLoadingOnIO {
             val newUserInformation = User(

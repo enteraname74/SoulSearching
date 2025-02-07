@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SoulBottomSheetHandler(
     onClose: () -> Unit,
-    colors: SoulBottomSheetColors = SoulBottomSheetDefaults.colors(),
+    colors: SoulBottomSheetColors = SoulBottomSheetDefaults.secondaryColors(),
     content: @Composable (closeWithAnim: () -> Unit) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -47,9 +47,21 @@ fun SoulBottomSheetHandler(
 
 object SoulBottomSheetDefaults {
     @Composable
-    fun colors(): SoulBottomSheetColors = SoulBottomSheetColors(
-        containerColor = SoulSearchingColorTheme.colorScheme.secondary,
-        contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+    fun secondaryColors(
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    ): SoulBottomSheetColors = SoulBottomSheetColors(
+        containerColor = containerColor,
+        contentColor = contentColor,
+    )
+
+    @Composable
+    fun primaryColors(
+        containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
+        contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    ): SoulBottomSheetColors = SoulBottomSheetColors(
+        containerColor = containerColor,
+        contentColor = contentColor,
     )
 }
 

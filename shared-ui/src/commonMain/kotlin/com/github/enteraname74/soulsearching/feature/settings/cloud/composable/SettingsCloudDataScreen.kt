@@ -8,7 +8,8 @@ import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuExpandSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.feature.settings.cloud.SettingsCloudListener
-import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudLogInFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
@@ -17,8 +18,8 @@ import com.github.enteraname74.soulsearching.feature.settings.presentation.compo
 fun SettingsCloudDataScreen(
     state: SettingsCloudState.Data,
     uploadState: SettingsCloudUploadState,
-    logInFormState: SettingsCloudFormState,
-    signInFormState: SettingsCloudFormState,
+    logInFormState: SettingsCloudLogInFormState,
+    signInFormState: SettingsCloudSignInFormState,
     hostTextField: SoulTextFieldHolder,
     navigateBack: () -> Unit,
     listener: SettingsCloudListener,

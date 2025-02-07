@@ -14,13 +14,14 @@ import com.github.enteraname74.soulsearching.coreui.tab.SoulTabHeader
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.domain.model.TabData
-import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudLogInFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsCloudConnectionView(
-    logInFormState: SettingsCloudFormState,
-    signInFormState: SettingsCloudFormState,
+    logInFormState: SettingsCloudLogInFormState,
+    signInFormState: SettingsCloudSignInFormState,
     hostTextField: SoulTextFieldHolder,
     signIn: () -> Unit,
     logIn: () -> Unit,
@@ -32,23 +33,29 @@ fun SettingsCloudConnectionView(
         TabData(
             title = strings.cloudLogIn,
             screen = {
-                SettingsCloudFormTab(
-                    formState = logInFormState,
-                    validateButtonTitle = strings.cloudLogIn,
-                    onValidate = logIn,
-                    focusManager = focusManager,
-                )
+                (logInFormState as? SettingsCloudLogInFormState.Data)?.let { state ->
+                    SettingsCloudFormTab(
+                        textFields = state.textFields,
+                        error = state.error,
+                        validateButtonTitle = strings.cloudLogIn,
+                        onValidate = logIn,
+                        focusManager = focusManager,
+                    )
+                }
             }
         ),
         TabData(
             title = strings.cloudSignIn,
             screen = {
-                SettingsCloudFormTab(
-                    formState = signInFormState,
-                    validateButtonTitle = strings.cloudSignIn,
-                    onValidate = signIn,
-                    focusManager = focusManager,
-                )
+                (signInFormState as? SettingsCloudSignInFormState.Data)?.let { state ->
+                    SettingsCloudFormTab(
+                        textFields = state.textFields,
+                        error = state.error,
+                        validateButtonTitle = strings.cloudSignIn,
+                        onValidate = signIn,
+                        focusManager = focusManager,
+                    )
+                }
             }
         )
     )

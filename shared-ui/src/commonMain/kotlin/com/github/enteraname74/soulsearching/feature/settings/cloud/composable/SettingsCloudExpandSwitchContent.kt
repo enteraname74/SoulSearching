@@ -6,14 +6,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
-import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudLogInFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 
 @Composable
 fun SettingsCloudExpandSwitchContent(
     state: SettingsCloudState.Data,
-    logInFormState: SettingsCloudFormState,
-    signInFormState: SettingsCloudFormState,
+    logInFormState: SettingsCloudLogInFormState,
+    signInFormState: SettingsCloudSignInFormState,
     hostTextField: SoulTextFieldHolder,
     signIn: () -> Unit,
     logIn: () -> Unit,

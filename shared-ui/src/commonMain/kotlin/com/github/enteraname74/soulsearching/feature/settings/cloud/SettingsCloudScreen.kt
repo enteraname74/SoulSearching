@@ -7,13 +7,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.cloud.composable.SettingsCloudDataScreen
-import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudLogInFormState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
 
@@ -26,12 +28,14 @@ class SettingsCloudScreen : Screen, SettingPage {
 
         val state: SettingsCloudState by screenModel.state.collectAsState()
         val uploadState: SettingsCloudUploadState by screenModel.uploadState.collectAsState()
-        val logInFormState: SettingsCloudFormState by screenModel.logInFormState.collectAsState()
-        val signInFormState: SettingsCloudFormState by screenModel.signInFormState.collectAsState()
+        val logInFormState: SettingsCloudLogInFormState by screenModel.logInFormState.collectAsState()
+        val signInFormState: SettingsCloudSignInFormState by screenModel.signInFormState.collectAsState()
 
         val dialog: SoulDialog? by screenModel.dialogState.collectAsState()
+        val bottomSheet: SoulBottomSheet? by screenModel.bottomSheetState.collectAsState()
 
         dialog?.Dialog()
+        bottomSheet?.BottomSheet()
 
         Screen(
             state = state,
@@ -50,8 +54,8 @@ class SettingsCloudScreen : Screen, SettingPage {
     private fun Screen(
         state: SettingsCloudState,
         uploadState: SettingsCloudUploadState,
-        logInFormState: SettingsCloudFormState,
-        signInFormState: SettingsCloudFormState,
+        logInFormState: SettingsCloudLogInFormState,
+        signInFormState: SettingsCloudSignInFormState,
         hostTextField: SoulTextFieldHolder,
         navigateBack: () -> Unit,
         listener: SettingsCloudListener,
