@@ -1,13 +1,22 @@
 package com.github.enteraname74.soulsearching.feature.settings.cloud.composable
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.QrCode
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
@@ -15,35 +24,41 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.CloudInscriptionCode
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulBasicDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import qrgenerator.qrkitpainter.rememberQrKitPainter
 
 class SettingsCloudCodeDialog(
     private val onDismiss: () -> Unit,
-    private val code: CloudInscriptionCode,
-): SoulDialog {
+    private val inscriptionCode: CloudInscriptionCode,
+) : SoulDialog {
 
     @Composable
     override fun Dialog() {
         SoulBasicDialog(
             onDismiss = onDismiss,
+            modifier = Modifier
+                .animateContentSize()
         ) {
             Column(
                 modifier = Modifier
                     .widthIn(max = 800.dp)
             ) {
                 TopBar()
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(UiConstants.Spacing.large),
-                    contentAlignment = Alignment.Center,
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 ) {
-                    CodeTextField(code = code)
+                    QrCode(inscriptionCode = inscriptionCode)
+                    CodeTextField(inscriptionCode = inscriptionCode)
                 }
             }
         }
@@ -78,12 +93,12 @@ class SettingsCloudCodeDialog(
 
     @Composable
     private fun CodeTextField(
-        code: CloudInscriptionCode,
+        inscriptionCode: CloudInscriptionCode,
     ) {
         val clipboardManager = LocalClipboardManager.current
 
         SoulTextField(
-            value = code.code,
+            value = inscriptionCode.code,
             onValueChange = { _ -> },
             error = null,
             isInError = false,
@@ -96,10 +111,67 @@ class SettingsCloudCodeDialog(
                 SoulIconButton(
                     icon = Icons.Rounded.ContentCopy,
                     onClick = {
-                        clipboardManager.setText(AnnotatedString(code.code))
+                        clipboardManager.setText(AnnotatedString(inscriptionCode.code))
                     }
                 )
             }
         )
+    }
+
+    @Composable
+    private fun QrCode(
+        inscriptionCode: CloudInscriptionCode
+    ) {
+        var isShown by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        val qrCodePainter = rememberQrKitPainter(data = inscriptionCode.code)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                SoulIconButton(
+                    icon = Icons.Rounded.QrCode,
+                    onClick = {
+                        isShown = !isShown
+                    },
+                    colors = SoulButtonDefaults.colors(
+                        containerColor = if (isShown) {
+                            SoulSearchingColorTheme.colorScheme.secondary
+                        } else {
+                            Color.Transparent
+                        },
+                        contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    )
+                )
+            }
+            AnimatedVisibility(
+                visible = isShown
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Image(
+                        painter = qrCodePainter,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .sizeIn(
+                                minWidth = 200.dp,
+                                minHeight = 200.dp,
+                            )
+                            .fillMaxSize(0.5f)
+                    )
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.settings.aboutpage
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.NewReleases
@@ -83,9 +80,7 @@ class SettingsAboutScreen : Screen, SettingPage {
                     .widthIn(
                         min = CardMinWidth,
                         max = CardMaxWidth,
-                    ).clickableWithHandCursor {
-                        uriHandler.openUri(release.githubUrl)
-                    },
+                    ),
                 colors = CardDefaults.cardColors(
                     contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                     containerColor = SoulSearchingColorTheme.colorScheme.secondary
@@ -93,6 +88,9 @@ class SettingsAboutScreen : Screen, SettingPage {
             ) {
                 Column(
                     modifier = Modifier
+                        .clickableWithHandCursor {
+                            uriHandler.openUri(release.githubUrl)
+                        }
                         .fillMaxWidth()
                         .padding(UiConstants.Spacing.large),
                     verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),

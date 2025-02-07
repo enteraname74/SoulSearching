@@ -277,7 +277,7 @@ class SettingsCloudViewModel(
             (result as? SoulResult.Success)?.data?.let { code ->
                 _dialogState.value = SettingsCloudCodeDialog(
                     onDismiss = { _dialogState.value = null },
-                    code = code,
+                    inscriptionCode = code,
                 )
             }
             feedbackPopUpManager.showResultErrorIfAny(result)

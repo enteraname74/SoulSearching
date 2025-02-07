@@ -63,6 +63,7 @@ kotlin {
                 implementation(libs.coroutines.core)
 
                 implementation(libs.file.kit)
+                implementation(libs.qr.kit)
 
                 implementation(libs.bundles.coil)
             }

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.coreui.dialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Dialog
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -10,6 +11,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulBasicDialog(
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     colors: SoulDialogColors = SoulBasicDialogDefaults.colors(),
     content: @Composable () -> Unit,
 ) {
@@ -17,6 +19,7 @@ fun SoulBasicDialog(
         onDismissRequest = onDismiss,
     ) {
         Card(
+            modifier = modifier,
             colors = CardDefaults.cardColors(
                 containerColor = colors.containerColor,
                 contentColor = colors.contentColor,
