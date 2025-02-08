@@ -22,11 +22,9 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -50,7 +48,7 @@ fun PlayerListView(
 
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -125,7 +123,7 @@ fun PlayerListView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = getStatusBarPadding().toDp())
+                    .padding(bottom = getNavigationBarPadding().toDp())
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
