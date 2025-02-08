@@ -86,14 +86,14 @@ class MediaSessionManager(
 
             override fun onSkipToNext() {
                 super.onSkipToNext()
-                runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.next()
                 }
             }
 
             override fun onSkipToPrevious() {
                 super.onSkipToPrevious()
-                runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.previous()
                 }
             }
