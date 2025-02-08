@@ -107,6 +107,8 @@ fun SearchView(
                 focusManager = focusManager,
                 focusRequester = focusRequester,
                 onClose = {
+                    focusRequester.freeFocus()
+                    focusManager.clearFocus()
                     coroutineScope.launch {
                         draggableState.animateTo(
                             targetValue = BottomSheetStates.COLLAPSED,
