@@ -143,5 +143,8 @@ val domainModule = module {
     singleOf(::GetAllQuickAccessElementsUseCase)
 
     // Release
+    singleOf(::FetchLatestReleaseUseCase)
     singleOf(::GetLatestReleaseUseCase)
+    singleOf(::GetLatestViewedReleaseUseCase)
+    singleOf(::SetLatestViewedReleaseUseCase)
 }

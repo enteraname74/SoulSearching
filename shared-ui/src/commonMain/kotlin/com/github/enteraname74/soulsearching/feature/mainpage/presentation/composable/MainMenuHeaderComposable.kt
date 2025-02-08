@@ -22,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun MainMenuHeaderComposable(
+    shouldShowNewReleasePin: Boolean,
     settingsAction: () -> Unit,
     searchAction: () -> Unit
 ) {
@@ -45,6 +46,11 @@ fun MainMenuHeaderComposable(
             SoulIconButton(
                 icon = Icons.Rounded.Settings,
                 contentDescription = strings.settingsAccessButton,
+                badgeColor = if (shouldShowNewReleasePin) {
+                    SoulSearchingColorTheme.colorScheme.onPrimary
+                } else {
+                    null
+                },
                 colors = SoulButtonDefaults.colors(
                     contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     containerColor = Color.Transparent,

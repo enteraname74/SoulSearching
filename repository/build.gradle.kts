@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 group = "com.github.enteraname74.soulsearching.repository"
@@ -17,10 +18,16 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.koin.core)
+
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)
+
                 implementation(compose.ui)
                 implementation(libs.jaudiotagger)
+
+                implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.serialization.json)
+
                 implementation(project(":domain"))
                 implementation(project(":features:filemanager"))
             }

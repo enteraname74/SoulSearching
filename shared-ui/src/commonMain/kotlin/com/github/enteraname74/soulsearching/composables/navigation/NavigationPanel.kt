@@ -22,12 +22,7 @@ fun NavigationPanel(
             .fillMaxHeight()
             .width(PanelWidth)
     ) {
-        LazyColumn(
-//            contentPadding = PaddingValues(
-//                UiConstants.Spacing.large,
-//            ),
-//            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.veryLarge),
-        ) {
+        LazyColumn {
             items(
                 key = { it.title },
                 contentType = { NAVIGATION_CONTENT_TYPE },

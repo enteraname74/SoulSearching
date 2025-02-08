@@ -29,7 +29,6 @@ import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
 import com.github.enteraname74.soulsearching.ext.safePush
@@ -53,10 +52,6 @@ class SettingsAboutScreen : Screen, SettingPage {
         val navigator = LocalNavigator.currentOrThrow
 
         val state by screenModel.state.collectAsState()
-
-        LaunchInit {
-            screenModel.fetchLatestRelease()
-        }
 
         Screen(
             navigateToDevelopers = { navigator.safePush(SettingsDevelopersScreen()) },
@@ -82,9 +77,7 @@ class SettingsAboutScreen : Screen, SettingPage {
                     .widthIn(
                         min = CardMinWidth,
                         max = CardMaxWidth,
-                    ).clickableWithHandCursor {
-                        uriHandler.openUri(release.githubUrl)
-                    },
+                    ),
                 colors = CardDefaults.cardColors(
                     contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                     containerColor = SoulSearchingColorTheme.colorScheme.secondary
@@ -92,6 +85,9 @@ class SettingsAboutScreen : Screen, SettingPage {
             ) {
                 Column(
                     modifier = Modifier
+                        .clickableWithHandCursor {
+                            uriHandler.openUri(release.githubUrl)
+                        }
                         .fillMaxWidth()
                         .padding(UiConstants.Spacing.large),
                     verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),

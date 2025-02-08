@@ -76,6 +76,7 @@ class MainPageScreen : Screen {
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
         val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
+        val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
 
         val searchDraggableState = mainPageViewModel.searchDraggableState
 
@@ -131,6 +132,7 @@ class MainPageScreen : Screen {
             tabs = tabs,
             currentEnumPage = currentPage,
             isUsingVerticalAccessBar = isUsingVerticalAccessBar,
+            shouldShowNewVersionPin = shouldShowNewVersionPin,
         )
     }
 
@@ -222,6 +224,7 @@ fun MainPageScreenView(
     allAlbumsState: AllAlbumsState,
     allArtistsState: AllArtistsState,
     tabs: List<PagerScreen>,
+    shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isUsingVerticalAccessBar: Boolean,
 ) {
@@ -262,6 +265,7 @@ fun MainPageScreenView(
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
             ) {
                 MainMenuHeaderComposable(
+                    shouldShowNewReleasePin = shouldShowNewVersionPin,
                     settingsAction = navigateToSettings,
                     searchAction = {
                         coroutineScope.launch {
