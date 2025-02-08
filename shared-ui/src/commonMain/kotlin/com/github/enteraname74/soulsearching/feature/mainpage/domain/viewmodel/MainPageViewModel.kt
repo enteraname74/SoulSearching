@@ -201,7 +201,7 @@ class MainPageViewModel(
     val allMusicFoldersState: StateFlow<AllMusicFoldersState> =
         getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
             AllMusicFoldersState(
-                allMusicFolders = allMusicFolders.sortedBy { it.path },
+                allMusicFolders = allMusicFolders.sortedBy { it.name },
             )
         }.stateIn(
             scope = screenModelScope.plus(Dispatchers.IO),
