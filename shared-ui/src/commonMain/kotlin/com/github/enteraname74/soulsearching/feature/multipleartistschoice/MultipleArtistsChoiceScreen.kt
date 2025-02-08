@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DownloadDone
@@ -16,6 +15,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateScreen
@@ -139,7 +139,7 @@ class MultipleArtistsChoiceScreen(
                         TopBarNavigationAction(onClick = navigateBack)
                     },
                 )
-                LazyColumn(
+                LazyColumnCompat(
                     contentPadding = PaddingValues(
                         all = UiConstants.Spacing.medium
                     ),

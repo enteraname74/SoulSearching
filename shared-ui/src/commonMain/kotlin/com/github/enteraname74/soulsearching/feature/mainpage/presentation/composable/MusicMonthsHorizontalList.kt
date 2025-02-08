@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
@@ -10,6 +9,7 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.MonthMusics
 import com.github.enteraname74.soulsearching.composables.BigPreviewComposable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
 import com.github.enteraname74.soulsearching.coreui.list.SoulHorizontalScrollBar
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -37,7 +37,7 @@ fun MusicMonthsHorizontalList(
         )
         if (months.isNotEmpty()) {
             Column {
-                LazyRow(
+                LazyRowCompat(
                     state = lazyListState,
                     modifier = Modifier
                         .fillMaxWidth(),

@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.ext.toPx
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -191,7 +191,7 @@ private fun Content(
                     searchAction = searchAction,
                 )
             }
-            LazyColumn {
+            LazyColumnCompat {
                 if (canShowVerticalInformation) {
                     stickyHeader {
                         Box(

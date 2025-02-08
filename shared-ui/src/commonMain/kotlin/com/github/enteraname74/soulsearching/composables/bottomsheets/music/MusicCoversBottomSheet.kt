@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import com.github.enteraname74.soulsearching.composables.StartTopBar
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
+import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoverSelectionItem
@@ -37,7 +37,7 @@ class MusicCoversBottomSheet(
         coverFile: Cover.CoverFile,
         closeWithAnim: () -> Unit,
     ) {
-        LazyVerticalGrid(
+        LazyVerticalGridCompat(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Adaptive(UiConstants.ImageSize.largePlus),
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
