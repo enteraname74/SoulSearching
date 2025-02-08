@@ -6,6 +6,8 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingDesktopPlayerImpl
+import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.SettingsCloudUploadLauncher
+import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.SettingsCloudUploadLauncherDesktopImpl
 import com.russhwolf.settings.PreferencesSettings
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -28,4 +30,5 @@ actual val platformModule: Module = module {
             )
         )
     }
+    singleOf(::SettingsCloudUploadLauncherDesktopImpl) bind SettingsCloudUploadLauncher::class
 }

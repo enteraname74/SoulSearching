@@ -162,6 +162,8 @@ object EnStrings : Strings {
     override val cloudUploadText = "Upload your songs to the cloud"
     override val cloudServerMetadataSearch = "Use the cloud for settings the metadata of songs"
     override val upload = "Upload"
+    override val cloudNotificationUploadTitle = "Uploading songs"
+    override val cloudNotificationUploadText = "Your songs are being uploaded to the cloud"
 
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
@@ -256,6 +258,11 @@ object EnStrings : Strings {
     override val playlistDoesNotExists = "This playlist doesn't exist"
     override val folderDoesNotExists = "This folder doesn't exist"
     override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
+
+    override val musicNotificationTitle = "Music notification"
+    override val musicNotificationText = "Used for controlling the song that is currently playing."
+    override val uploadNotificationTitle = "Cloud upload notification"
+    override val uploadNotificationText = "Used to show the state of the music upload to the cloud."
 
     override fun musics(total: Int): String {
         return when (total) {

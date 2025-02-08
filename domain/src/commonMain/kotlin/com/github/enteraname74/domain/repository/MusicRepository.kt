@@ -53,6 +53,8 @@ interface MusicRepository {
      */
     suspend fun syncWithCloud(): SoulResult<List<UUID>>
 
-    suspend fun uploadAllMusicToCloud(): SoulResult<Unit>
+    suspend fun uploadAllMusicToCloud(
+        onProgressChanged: suspend (Float) -> Unit,
+    ): SoulResult<Unit>
 
 }

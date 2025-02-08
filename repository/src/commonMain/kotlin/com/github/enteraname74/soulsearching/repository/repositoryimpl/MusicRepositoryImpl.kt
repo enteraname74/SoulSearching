@@ -177,7 +177,9 @@ class MusicRepositoryImpl(
         }
     }
 
-    override suspend fun uploadAllMusicToCloud(): SoulResult<Unit> =
+    override suspend fun uploadAllMusicToCloud(
+        onProgressChanged: suspend (Float) -> Unit,
+    ): SoulResult<Unit> =
         handleFlowResultOn(flow = uploadFlow) { progressFunc ->
             val total = AtomicInteger(0)
             val allLocalSongs: List<Music> = musicLocalDataSource.getAll(DataMode.Local).first()
@@ -205,11 +207,6 @@ class MusicRepositoryImpl(
                     }
                     is SoulResult.Success -> {
                         (uploadResult.data as? UploadedMusicResult.Data)?.let { data ->
-                            total.getAndIncrement()
-                            progressFunc(
-                                total.get().toFloat() / allLocalSongs.size
-                            )
-
                             localIdToRemote[music.musicId] = data.music.musicId
                             musicsToSave.add(data.music)
                             albumsToSave.add(data.album)
@@ -224,6 +221,10 @@ class MusicRepositoryImpl(
                                 }
                             )
                         }
+                        total.getAndIncrement()
+                        val progress = total.get().toFloat() / allLocalSongs.size
+                        progressFunc(progress)
+                        onProgressChanged(progress)
                     }
                 }
             }

@@ -164,6 +164,8 @@ object FrStrings : Strings {
     override val cloudUploadText = "Exporter toutes vos musiques vers le cloud"
     override val cloudServerMetadataSearch = "Utiliser le cloud pour définir les informations des musiques"
     override val upload = "Exporter"
+    override val cloudNotificationUploadTitle = "Exportation de vos musiques"
+    override val cloudNotificationUploadText = "Vos musiques sont en train d'être copiées sur le cloud"
 
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
@@ -258,6 +260,11 @@ object FrStrings : Strings {
     override val playlistDoesNotExists = "La playlist n'existe pas"
     override val folderDoesNotExists = "Le dossier n'existe pas"
     override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
+
+    override val musicNotificationTitle = "Notification de musique"
+    override val musicNotificationText = "Utilisé pour contrôler la musique couramment jouée."
+    override val uploadNotificationTitle = "Notification d'upload pour le cloud"
+    override val uploadNotificationText = "Utilisé pour afficher l'état de l'upload des musiques vers le cloud."
 
     override fun musics(total: Int): String {
         return when (total) {

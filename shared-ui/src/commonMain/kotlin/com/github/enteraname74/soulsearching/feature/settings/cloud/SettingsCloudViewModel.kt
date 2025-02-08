@@ -33,6 +33,7 @@ import com.github.enteraname74.soulsearching.feature.settings.cloud.state.Settin
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudSignInFormState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudState
 import com.github.enteraname74.soulsearching.feature.settings.cloud.state.SettingsCloudUploadState
+import com.github.enteraname74.soulsearching.feature.settings.cloud.worker.SettingsCloudUploadLauncher
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -54,13 +55,13 @@ class SettingsCloudViewModel(
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    private val settingsCloudUploadLauncher: SettingsCloudUploadLauncher,
 ) : ScreenModel, KoinComponent, SettingsCloudListener {
     private val errorInSign: MutableStateFlow<String?> = MutableStateFlow(null)
     private val errorInLog: MutableStateFlow<String?> = MutableStateFlow(null)
     private val getCloudSearchMetadataUseCase: GetCloudSearchMetadataUseCase by inject()
     private val setCloudSearchMetadataUseCase: SetCloudSearchMetadataUseCase by inject()
     private val getCloudUploadMusicUseCase: GetCloudUploadMusicUseCase by inject()
-    private val uploadAllMusicToCloudUseCase: UploadAllMusicToCloudUseCase by inject()
     private val generateInscriptionCodeUseCase: GenerateInscriptionCodeUseCase by inject()
 
     val state: StateFlow<SettingsCloudState> =
@@ -133,7 +134,7 @@ class SettingsCloudViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val signInFormState: StateFlow<SettingsCloudSignInFormState> =
-        errorInLog.mapLatest { error ->
+        errorInSign.mapLatest { error ->
             SettingsCloudSignInFormState.Data(
                 username = "",
                 password = "",
@@ -148,7 +149,7 @@ class SettingsCloudViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val logInFormState: StateFlow<SettingsCloudLogInFormState> =
-        errorInSign.mapLatest { error ->
+        errorInLog.mapLatest { error ->
             SettingsCloudLogInFormState.Data(
                 username = "",
                 password = "",
@@ -289,7 +290,7 @@ class SettingsCloudViewModel(
 
     override fun uploadAllMusicToCloud() {
         CoroutineScope(Dispatchers.IO).launch {
-            uploadAllMusicToCloudUseCase()
+            settingsCloudUploadLauncher.launchWorker()
         }
     }
 

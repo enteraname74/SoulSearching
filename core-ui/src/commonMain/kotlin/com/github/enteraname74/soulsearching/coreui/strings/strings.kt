@@ -174,6 +174,8 @@ interface Strings {
     val cloudUploadText: String
     val cloudServerMetadataSearch: String
     val upload: String
+    val cloudNotificationUploadTitle: String
+    val cloudNotificationUploadText: String
 
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
@@ -262,6 +264,11 @@ interface Strings {
     val playlistDoesNotExists: String
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
+
+    val musicNotificationTitle: String
+    val musicNotificationText: String
+    val uploadNotificationTitle: String
+    val uploadNotificationText: String
 
     /**
      * Shows a text indicating the number of musics.

@@ -71,6 +71,8 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.koin.androidx.compose)
+                implementation(libs.koin.androidx.workmanager)
+
                 implementation(libs.bundles.androidx)
                 implementation(libs.room)
 
