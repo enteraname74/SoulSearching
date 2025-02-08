@@ -133,6 +133,8 @@ class MusicBottomSheetDelegateImpl(
                         music = musicToAdd,
                         selectedPlaylists = selectedPlaylists,
                     )
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
                 },
                 playlistsWithMusics = getAllPlaylistsWithMusics().filter {
                     it.musics.none { music -> music.musicId == musicToAdd.musicId }
