@@ -263,8 +263,8 @@ object FrStrings : Strings {
 
     override val musicNotificationTitle = "Notification de musique"
     override val musicNotificationText = "Utilisé pour contrôler la musique couramment jouée."
-    override val uploadNotificationTitle = "Notification d'upload pour le cloud"
-    override val uploadNotificationText = "Utilisé pour afficher l'état de l'upload des musiques vers le cloud."
+    override val uploadNotificationTitle = "Notification d'export vers le cloud"
+    override val uploadNotificationText = "Utilisé pour afficher l'état de l'export des musiques vers le cloud."
 
     override fun musics(total: Int): String {
         return when (total) {

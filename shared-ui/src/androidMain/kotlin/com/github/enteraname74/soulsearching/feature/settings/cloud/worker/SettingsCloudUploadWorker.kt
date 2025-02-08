@@ -36,7 +36,7 @@ class SettingsCloudUploadWorker(
         }
 
     private fun createNotification(progress: Float): Notification {
-        val strings = StringsUtils.getStrings()
+        val strings = StringsUtils.getStrings(applicationContext)
 
         return NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setContentTitle(strings.cloudNotificationUploadTitle)

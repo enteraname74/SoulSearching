@@ -32,7 +32,7 @@ class App : Application() {
      * Create the channel used by the Notification.
      */
     private fun createNotificationChannel() {
-        val strings = StringsUtils.getStrings()
+        val strings = StringsUtils.getStrings(applicationContext)
 
         val musicChannel = NotificationChannel(
             SoulSearchingAndroidNotification.MUSIC_NOTIFICATION_CHANNEL_ID,
