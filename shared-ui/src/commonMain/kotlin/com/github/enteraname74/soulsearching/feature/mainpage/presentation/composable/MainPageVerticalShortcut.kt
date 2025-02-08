@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
-import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.ext.navigationIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
@@ -27,7 +27,7 @@ fun MainPageVerticalShortcut(
     switchPageAction: (Int) -> Unit,
     visibleElements: List<ElementEnum>
 ) {
-    LazyColumnCompat(
+    LazyColumn(
         modifier = Modifier
             .fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceEvenly
