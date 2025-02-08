@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -203,7 +202,6 @@ private fun BlurredBackground(
             cover = cover,
             size = windowWidth,
             modifier = Modifier
-                .blur(radius = 10.dp)
                 .blurCompat(),
         )
 

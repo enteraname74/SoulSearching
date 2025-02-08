@@ -37,7 +37,7 @@ fun PageHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
                 roundedPercent = 5,
@@ -82,7 +82,7 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
                 size = if (windowSize == WindowSize.Large) {
                     300.dp

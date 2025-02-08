@@ -17,6 +17,8 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
@@ -69,6 +71,13 @@ private fun ModifyArtistScreenView(
     onNewImageSet: (cover: PlatformFile) -> Unit,
     onValidateModification: () -> Unit,
 ) {
+    val imagePickerLauncher = rememberFilePickerLauncher(
+        type = PickerType.Image,
+    ) { file ->
+        if (file == null) return@rememberFilePickerLauncher
+        onNewImageSet(file)
+    }
+
     when {
         state is ModifyArtistState.Data && formState is ModifyArtistFormState.Data -> {
             WriteFilesCheck(
@@ -80,9 +89,7 @@ private fun ModifyArtistScreenView(
                     coverSectionTitle = strings.artistCover,
                     editableElement = state.editableElement,
                     navigateBack = navigateBack,
-                    onSelectCover = {
-                        // TODO
-                    },
+                    onSelectCover = { imagePickerLauncher.launch() },
                     onValidateModification = onSave,
                     textFields = formState.textFields,
                 )

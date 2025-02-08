@@ -55,7 +55,6 @@ fun PlaylistRowView(
     optionalContent: @Composable () -> Unit = {},
 ) {
     val windowSize = rememberWindowSize()
-    val windowHeight = rememberWindowHeightDp()
 
     var topBarHeight: Int by rememberSaveable {
         mutableStateOf(0)

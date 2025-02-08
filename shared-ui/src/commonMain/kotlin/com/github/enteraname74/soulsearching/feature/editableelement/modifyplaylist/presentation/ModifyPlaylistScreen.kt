@@ -16,6 +16,8 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
@@ -71,6 +73,13 @@ private fun ModifyPlaylistScreenView(
     onNewImageSet: (cover: PlatformFile) -> Unit,
     onValidateModification: () -> Unit,
 ) {
+    val imagePickerLauncher = rememberFilePickerLauncher(
+        type = PickerType.Image,
+    ) { file ->
+        if (file == null) return@rememberFilePickerLauncher
+        onNewImageSet(file)
+    }
+
     when {
         state is ModifyPlaylistState.Data && formState is ModifyPlaylistFormState.Data -> {
             EditableElementView(
@@ -78,9 +87,7 @@ private fun ModifyPlaylistScreenView(
                 coverSectionTitle = strings.playlistCover,
                 editableElement = state.editableElement,
                 navigateBack = navigateBack,
-                onSelectCover = {
-                    // TODO
-                },
+                onSelectCover = { imagePickerLauncher.launch() },
                 onValidateModification = onValidateModification,
                 textFields = formState.textFields,
             )
