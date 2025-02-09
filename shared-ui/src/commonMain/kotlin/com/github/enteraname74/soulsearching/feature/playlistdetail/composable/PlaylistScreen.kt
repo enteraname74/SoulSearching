@@ -24,6 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -123,7 +124,7 @@ fun PlaylistScreen(
 
                 val constraintsScope = this
                 val maxHeight = with(LocalDensity.current) {
-                    constraintsScope.maxHeight.toPx()
+                    constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
                 }
 
                 val searchBarFocusRequester = remember { FocusRequester() }

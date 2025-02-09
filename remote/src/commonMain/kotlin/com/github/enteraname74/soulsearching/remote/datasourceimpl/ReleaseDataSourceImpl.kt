@@ -15,13 +15,15 @@ class ReleaseDataSourceImpl(
     override suspend fun getLatestRelease(): Release? {
         val release: RemoteRelease? = try {
             val response = client.get(urlString = LATEST_RELEASE_URL)
+            println("GOT RESPONSE ON GET LATEST RELEASE: $response")
 
             if (response.status.isSuccess()) {
                 response.body<RemoteRelease>()
             } else {
                 null
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            println("GOT EXCEPTION ON GET LATEST RELEASE: $e")
             null
         }
 

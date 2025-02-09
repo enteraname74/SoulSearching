@@ -29,6 +29,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -254,7 +255,7 @@ fun MainPageScreenView(
         ) {
             val constraintsScope = this
             val maxHeight = with(LocalDensity.current) {
-                constraintsScope.maxHeight.toPx()
+                constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
             }
 
             val coroutineScope = rememberCoroutineScope()

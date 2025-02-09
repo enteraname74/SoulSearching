@@ -12,7 +12,8 @@ finish-args:
   - --socket=pulseaudio
   - --filesystem=home
   - --device=dri
-  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
 modules:
   - name: vlc
     buildsystem: autotools
@@ -38,7 +39,7 @@ modules:
       - cp -ru * /app
     sources:
       - type: archive
-        path: build/distributions/soulsearching-0.10.2-linux.tar.gz
+        path: build/distributions/soulsearching-0.11.0-linux.tar.gz
       - type: file
         path: src/main/composeResources/drawable/app_icon_bg.png
       - type: file
