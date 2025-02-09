@@ -32,7 +32,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.app_logo_uni_xml
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -194,7 +194,7 @@ fun TemplateImage(
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(Res.drawable.saxophone_png),
+        painter = painterResource(Res.drawable.app_logo_uni_xml),
         contentDescription = strings.image,
         contentScale = contentScale,
         colorFilter = ColorFilter.tint(tint)
@@ -229,8 +229,8 @@ fun DataImage(
                 it(null)
             }
         },
-        placeholder = painterResource(Res.drawable.saxophone_png),
-        error = painterResource(Res.drawable.saxophone_png),
+        placeholder = painterResource(Res.drawable.app_logo_uni_xml),
+        error = painterResource(Res.drawable.app_logo_uni_xml),
         model = ImageRequest.Builder(LocalPlatformContext.current)
             .builderOptions()
             .data(data)
