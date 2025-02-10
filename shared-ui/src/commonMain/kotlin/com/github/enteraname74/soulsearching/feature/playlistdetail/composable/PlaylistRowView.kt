@@ -192,20 +192,18 @@ private fun Content(
                     shuffleAction = shuffleAction,
                     searchAction = searchAction,
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = SoulSearchingColorTheme.colorScheme.primary
+                        )
+                ) {
+                    optionalContent()
+                }
             }
             LazyColumnCompat {
-                if (canShowVerticalInformation) {
-                    stickyHeader {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = SoulSearchingColorTheme.colorScheme.primary
-                                )
-                        ) {
-                            optionalContent()
-                        }
-                    }
-                } else {
+                if (!canShowVerticalInformation) {
                     item {
                         optionalContent()
                     }
