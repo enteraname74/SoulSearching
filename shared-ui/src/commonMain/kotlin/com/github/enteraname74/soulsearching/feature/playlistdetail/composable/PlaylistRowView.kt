@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
@@ -115,7 +114,6 @@ fun PlaylistRowView(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Content(
     topBarHeight: Dp,
