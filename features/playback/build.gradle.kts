@@ -24,6 +24,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
+                implementation(libs.jlibnotify)
                 implementation(libs.coroutines.core.swing)
                 implementation(libs.vlcj)
             }

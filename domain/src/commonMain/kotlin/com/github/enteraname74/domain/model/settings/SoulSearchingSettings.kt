@@ -212,4 +212,16 @@ object SoulSearchingSettingsKeys {
             defaultValue = 0,
         )
     }
+
+    object Release {
+        val LATEST_VIEWED_RELEASE = settingElementOf(
+            key = "LATEST_VIEWED_RELEASE",
+            defaultValue = "",
+        )
+
+        val LATEST_RELEASE = settingElementOf(
+            key = "LATEST_RELEASE",
+            defaultValue = "",
+        )
+    }
 }

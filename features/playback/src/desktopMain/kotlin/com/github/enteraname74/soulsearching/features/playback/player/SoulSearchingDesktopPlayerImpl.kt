@@ -1,13 +1,10 @@
 package com.github.enteraname74.soulsearching.features.playback.player
 
 import com.github.enteraname74.domain.model.Music
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
@@ -76,13 +73,13 @@ class SoulSearchingDesktopPlayerImpl :
         player.events().addMediaPlayerEventListener(this)
     }
 
-    override fun setMusic(music: Music) {
+    override suspend fun setMusic(music: Music) {
         try {
             if (player.status().state() == State.PLAYING) {
                 player.controls().pause()
             }
             // Necessary to avoid blocking the app.
-            Thread.sleep(500)
+            delay(500)
             player.media().prepare(music.path)
         } catch (e: Exception) {
             println("SET MUSIC EXC: ${e.message}")

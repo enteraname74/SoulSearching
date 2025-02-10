@@ -18,11 +18,16 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.koin.core)
+
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)
+
                 implementation(compose.ui)
                 implementation(libs.jaudiotagger)
-                implementation(libs.bundles.ktor)
+
+                implementation(libs.kotlinx.serialization)
+                implementation(libs.kotlinx.serialization.json)
+
                 implementation(project(":domain"))
                 implementation(project(":features:filemanager"))
             }

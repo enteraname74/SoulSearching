@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.coreui.image
 
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,16 +15,27 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulIcon(
     icon: ImageVector,
+    badgeColor: Color? = null,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     tint: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     size: Dp = UiConstants.ImageSize.smallPlus,
 ) {
-    Icon(
-        modifier = modifier
-            .size(size),
-        imageVector = icon,
-        contentDescription = contentDescription,
-        tint = tint
-    )
+    BadgedBox(
+        badge = {
+            badgeColor?.let {
+                Badge(
+                    containerColor = it,
+                )
+            }
+        }
+    ) {
+        Icon(
+            modifier = modifier
+                .size(size),
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = tint
+        )
+    }
 }

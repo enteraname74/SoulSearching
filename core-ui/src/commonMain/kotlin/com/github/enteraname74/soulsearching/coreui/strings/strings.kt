@@ -95,6 +95,10 @@ interface Strings {
     val artistCover: String
     val playlistInformation: String
     val musicInformation: String
+    val musicPath: String
+    val musicFileCover: String
+    val musicAppCover: String
+    val coverSelection: String
     val artistInformation: String
     val albumInformation: String
 
@@ -162,6 +166,7 @@ interface Strings {
     val personalizationText: String
     val aboutTitle: String
     val aboutText: String
+    val newReleaseAvailableTitle: String
     val statisticsTitle: String
     val statisticsText: String
     val mostPlayedSongs: String
@@ -229,6 +234,13 @@ interface Strings {
 
     val playerVolume: String
 
+    val anErrorOccurred: String
+    val albumDoesNotExists: String
+    val artistDoesNotExists: String
+    val playlistDoesNotExists: String
+    val folderDoesNotExists: String
+    val monthPlaylistDoesNotExists: String
+
     /**
      * Shows a text indicating the number of musics.
      */
@@ -253,4 +265,9 @@ interface Strings {
      * Shows a text indicating the total of selected elements.
      */
     fun selectedElements(total: Int): String
+
+    /**
+     * Shows a text indicating the detail of the new latest release of Soul Searching
+     */
+    fun newReleaseAvailableText(releaseName: String): String
 }

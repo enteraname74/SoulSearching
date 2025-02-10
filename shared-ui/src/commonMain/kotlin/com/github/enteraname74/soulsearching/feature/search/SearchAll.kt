@@ -15,6 +15,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -51,7 +52,7 @@ fun SearchAll(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumn {
+    LazyColumnCompat {
         val foundedPlaylists = allPlaylistsState.playlists.filter {
             it.playlist.name.lowercase().contains(searchText.lowercase())
         }

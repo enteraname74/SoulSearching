@@ -25,6 +25,7 @@ object UiConstants {
      * Spacing values for spacing or simple size.
      */
     object Spacing {
+        val verySmall: Dp = 2.dp
         val small: Dp = 4.dp
         val medium: Dp = 8.dp
         val mediumPlus: Dp = 12.dp
@@ -44,6 +45,7 @@ object UiConstants {
         val medium: Dp = 32.dp
         val mediumPlus: Dp = 40.dp
         val large: Dp = 64.dp
+        val largePlus: Dp = 120.dp
         val veryLarge: Dp
         @Composable
         get() {

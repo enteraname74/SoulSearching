@@ -24,6 +24,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(project(":domain"))
             implementation(project(":repository"))
+            implementation(project(":remote"))
             implementation(project(":features:playback"))
             implementation(project(":features:filemanager"))
             implementation(project(":features:musicmanager"))

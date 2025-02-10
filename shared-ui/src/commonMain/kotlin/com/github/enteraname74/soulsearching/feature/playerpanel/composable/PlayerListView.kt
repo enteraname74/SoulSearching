@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,12 +20,11 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIcon
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
-import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -50,7 +48,7 @@ fun PlayerListView(
 
     val coroutineScope = rememberCoroutineScope()
     val playerListState = rememberLazyListState()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +85,7 @@ fun PlayerListView(
 
             val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-            LazyColumn(
+            LazyColumnCompat(
                 state = playerListState,
                 contentPadding = PaddingValues(
                     bottom = getStatusBarPadding().toDp()
@@ -125,7 +123,7 @@ fun PlayerListView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = getStatusBarPadding().toDp())
+                    .padding(bottom = getNavigationBarPadding().toDp())
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),

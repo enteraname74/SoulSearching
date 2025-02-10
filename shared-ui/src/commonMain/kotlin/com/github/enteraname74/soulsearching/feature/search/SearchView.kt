@@ -24,7 +24,7 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.search.composable.AppSearchBar
+import com.github.enteraname74.soulsearching.feature.search.composable.SoulSearchBar
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -84,7 +84,6 @@ fun SearchView(
                     0f to BottomSheetStates.EXPANDED
                 )
             )
-            .statusBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -95,10 +94,11 @@ fun SearchView(
                         focusManager.clearFocus()
                     })
                 }
+                .statusBarsPadding()
                 .padding(UiConstants.Spacing.medium)
         ) {
 
-            AppSearchBar(
+            SoulSearchBar(
                 searchText = searchText,
                 placeholder = placeholder,
                 updateTextMethod = {
@@ -107,6 +107,8 @@ fun SearchView(
                 focusManager = focusManager,
                 focusRequester = focusRequester,
                 onClose = {
+                    focusRequester.freeFocus()
+                    focusManager.clearFocus()
                     coroutineScope.launch {
                         draggableState.animateTo(
                             targetValue = BottomSheetStates.COLLAPSED,

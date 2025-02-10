@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
  * State for managing a selected month.
  */
 sealed interface SelectedMonthState {
+    data object Error : SelectedMonthState
     data class Data(
         val playlistDetail: PlaylistDetail,
     ): SelectedMonthState

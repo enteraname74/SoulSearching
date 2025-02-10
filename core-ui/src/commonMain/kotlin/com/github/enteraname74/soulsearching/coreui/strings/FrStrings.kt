@@ -81,6 +81,10 @@ object FrStrings : Strings {
     override val artistCover = "Couverture de l'artiste"
     override val playlistInformation = "Informations de la playlist"
     override val musicInformation = "Informations de la musique"
+    override val musicPath = "Chemin de la musique :"
+    override val musicFileCover = "Couverture du fichier"
+    override val musicAppCover = "Couverture de l'application"
+    override val coverSelection = "Sélection d'une couverture"
     override val artistInformation = "Informations de l'artiste"
     override val albumInformation = "Informations de l'album"
 
@@ -152,6 +156,7 @@ object FrStrings : Strings {
     override val personalizationText = "Gérer le lecteur et la vue de la page principale"
     override val aboutTitle = "À propos de Soul Searching"
     override val aboutText = "Développeurs, nom de la version de l'application"
+    override val newReleaseAvailableTitle = "Nouvelle version disponible !"
     override val statisticsTitle = "Statistiques"
     override val statisticsText = "Statistiques sur vos écoutes"
     override val mostPlayedSongs = "Musiques les plus écoutées"
@@ -224,6 +229,13 @@ object FrStrings : Strings {
 
     override val playerVolume = "Volume du lecteur"
 
+    override val anErrorOccurred = "Une erreur est survenue"
+    override val albumDoesNotExists = "L'album n'existe pas"
+    override val artistDoesNotExists = "L'artiste n'existe pas"
+    override val playlistDoesNotExists = "La playlist n'existe pas"
+    override val folderDoesNotExists = "Le dossier n'existe pas"
+    override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"
@@ -255,4 +267,7 @@ object FrStrings : Strings {
             1 -> "Un élément sélectionné"
             else -> "$total éléments sélectionnés"
         }
+
+    override fun newReleaseAvailableText(releaseName: String): String =
+        "Une nouvelle version est disponible, prête à être téléchargée : $releaseName"
 }

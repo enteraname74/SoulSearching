@@ -6,16 +6,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
+import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.utils.OptionalPaddingForPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.utils.PlayerMinimisedHeight
 
@@ -51,7 +49,7 @@ fun <T> MainPageList(
         )
         innerComposable?.let { it() }
         if (list.isNotEmpty()) {
-            LazyVerticalGrid(
+            LazyVerticalGridCompat(
                 columns = GridCells.Adaptive(UiConstants.ImageSize.veryLarge),
                 contentPadding = PaddingValues(
                     start = UiConstants.Spacing.medium,

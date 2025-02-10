@@ -38,6 +38,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.bundles.androidx)
             implementation(libs.bundles.accompanist)
+            implementation(libs.compose.cloudy)
         }
     }
 }

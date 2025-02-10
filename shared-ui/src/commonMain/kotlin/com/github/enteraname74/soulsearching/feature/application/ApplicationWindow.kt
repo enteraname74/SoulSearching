@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
@@ -52,6 +51,8 @@ class ApplicationWindow: Screen {
 
         val state: ApplicationState by applicationViewModel.state.collectAsState()
 
+        val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
+
         when(state) {
             ApplicationState.AppMigration -> {
                 MigrationScreen()
@@ -61,6 +62,7 @@ class ApplicationWindow: Screen {
                     isLoadingManagerLoading = isLoadingManagerLoading,
                     mainPageViewModel = mainPageViewModel,
                     playerViewModel = playerViewModel,
+                    shouldShowNewVersionPin = shouldShowNewVersionPin,
                 )
             }
             ApplicationState.FetchingSongs -> {
@@ -71,6 +73,7 @@ class ApplicationWindow: Screen {
 
     @Composable
     private fun DataView(
+        shouldShowNewVersionPin: Boolean,
         playerViewModel: PlayerViewModel,
         mainPageViewModel: MainPageViewModel,
         isLoadingManagerLoading: Boolean,
@@ -90,6 +93,7 @@ class ApplicationWindow: Screen {
             if (windowSize == WindowSize.Large) {
                 NavigationPanel(
                     rows = navigationRows(
+                        shouldShowNewVersionPin = shouldShowNewVersionPin,
                         generalNavigator = generalNavigator,
                         setCurrentPage = mainPageViewModel::setCurrentPage,
                         tabs = tabs,
@@ -128,6 +132,7 @@ class ApplicationWindow: Screen {
 
     @Composable
     private fun navigationRows(
+        shouldShowNewVersionPin: Boolean,
         setCurrentPage: (ElementEnum) -> Unit,
         currentPage: ElementEnum?,
         tabs: List<PagerScreen>,
@@ -159,7 +164,8 @@ class ApplicationWindow: Screen {
                         )
                     },
                     icon = Icons.Rounded.Settings,
-                    isSelected = generalNavigator?.lastItem is SettingPage
+                    isSelected = generalNavigator?.lastItem is SettingPage,
+                    isBadged = shouldShowNewVersionPin,
                 )
             )
             tabs.forEachIndexed { index, tab ->

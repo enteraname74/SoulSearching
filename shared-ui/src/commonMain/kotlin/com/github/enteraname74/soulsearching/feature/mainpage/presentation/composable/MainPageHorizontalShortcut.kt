@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
+import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
@@ -21,7 +21,7 @@ fun MainPageHorizontalShortcut(
     switchPageAction: (Int) -> Unit,
     visibleElements: List<ElementEnum>
 ) {
-    LazyRow(
+    LazyRowCompat(
         modifier = Modifier
             .fillMaxWidth(),
         contentPadding = PaddingValues(

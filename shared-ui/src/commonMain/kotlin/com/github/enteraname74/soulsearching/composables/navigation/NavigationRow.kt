@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +34,8 @@ fun NavigationRow(
             ),
         horizontalArrangement = Arrangement.spacedBy(
             UiConstants.Spacing.large,
-        )
+        ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         SoulIcon(
             modifier = Modifier
@@ -56,5 +60,10 @@ fun NavigationRow(
                 FontWeight.Normal
             }
         )
+        if (navigationRowSpec.isBadged) {
+            Badge(
+                containerColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+            )
+        }
     }
 }

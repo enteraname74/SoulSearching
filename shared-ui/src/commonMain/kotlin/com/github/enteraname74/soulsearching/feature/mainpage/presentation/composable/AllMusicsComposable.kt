@@ -17,6 +17,7 @@ import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -45,7 +46,7 @@ fun AllMusicsComposable(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumn(
+    LazyColumnCompat(
         modifier = Modifier
             .fillMaxSize()
     ) {

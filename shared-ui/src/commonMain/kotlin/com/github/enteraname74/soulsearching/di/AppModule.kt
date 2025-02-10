@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManager
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionManagerImpl
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.MultipleArtistListener
+import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -27,4 +28,6 @@ val appModule: Module = module {
     singleOf(::MultipleArtistListener)
 
     factoryOf(::MultiSelectionManagerImpl) bind MultiSelectionManager::class
+
+    singleOf(::ShouldInformOfNewReleaseUseCase)
 }

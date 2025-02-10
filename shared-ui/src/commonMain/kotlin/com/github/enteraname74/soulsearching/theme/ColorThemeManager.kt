@@ -143,6 +143,7 @@ class ColorThemeManager(
         playlistDetailCover,
         isInDarkTheme,
         playerViewManager.state,
+        playerViewManager.targetState,
         currentDefaultThemeSettings,
     ) {
         val colorThemeSettings: ColorThemeSettings = it[0] as ColorThemeSettings
@@ -150,15 +151,18 @@ class ColorThemeManager(
         val playlistDetailCover: PlaylistDetailCover? = it[2] as PlaylistDetailCover?
         val isInDarkTheme: Boolean = it[3] as Boolean
         val playerViewState: BottomSheetStates = it[4] as BottomSheetStates
-        val defaultThemeSettings: DefaultThemeSettings = it[5] as DefaultThemeSettings
+        val playerTargetState: BottomSheetStates = it[5] as BottomSheetStates
+        val defaultThemeSettings: DefaultThemeSettings = it[6] as DefaultThemeSettings
 
-        when (playerViewState) {
-            BottomSheetStates.EXPANDED -> buildExpandedPlayerTheme(
-                palette = palette,
-                colorThemeSettings = colorThemeSettings,
-                isInDarkTheme = isInDarkTheme,
-                defaultThemeSettings = defaultThemeSettings,
-            )
+        when {
+            playerViewState == BottomSheetStates.EXPANDED || playerTargetState == BottomSheetStates.EXPANDED -> {
+                buildExpandedPlayerTheme(
+                    palette = palette,
+                    colorThemeSettings = colorThemeSettings,
+                    isInDarkTheme = isInDarkTheme,
+                    defaultThemeSettings = defaultThemeSettings,
+                )
+            }
 
             else -> buildMinimisedPlayerTheme(
                 palette = palette,

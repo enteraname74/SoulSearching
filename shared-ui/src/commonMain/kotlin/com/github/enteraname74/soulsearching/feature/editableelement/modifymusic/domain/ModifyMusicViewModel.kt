@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain
 
+import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
@@ -10,11 +11,16 @@ import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStr
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
+import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicCoversBottomSheet
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.ext.toByteArray
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
@@ -23,7 +29,6 @@ import kotlinx.coroutines.flow.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import java.util.*
-import kotlin.collections.HashMap
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
@@ -34,6 +39,8 @@ class ModifyMusicViewModel(
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
+    private val cachedCoverManager: CachedCoverManager,
+    private val coverFileManager: CoverFileManager,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
@@ -42,6 +49,9 @@ class ModifyMusicViewModel(
         ModifyMusicNavigationState.Idle
     )
     val navigationState: StateFlow<ModifyMusicNavigationState> = _navigationState.asStateFlow()
+
+    private var _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val initialMusic: Flow<Music?> = musicId.flatMapLatest { id ->
@@ -118,17 +128,49 @@ class ModifyMusicViewModel(
         _navigationState.value = ModifyMusicNavigationState.Idle
     }
 
-    /**
-     * Set the cover of the modified music.
-     */
-    fun setNewCover(imageFile: PlatformFile) {
+    private fun setNewCoverFromStorage(imageFile: PlatformFile) {
         screenModelScope.launch {
             newCover.value = imageFile.readBytes()
+            _bottomSheetState.value = null
+        }
+    }
+
+    private fun setNewCoverFromPath(musicPath: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            loadingManager.withLoading {
+                val coverImage: ImageBitmap? =
+                    cachedCoverManager.getCachedImage(musicPath) ?: cachedCoverManager.fetchCoverOfMusicFile(musicPath)
+                newCover.value = coverImage?.toByteArray()
+                _bottomSheetState.value = null
+            }
+        }
+    }
+
+    private fun setNewCoverFromCoverId(coverId: UUID) {
+        CoroutineScope(Dispatchers.IO).launch {
+            loadingManager.withLoading {
+                newCover.value = coverFileManager.getCoverData(coverId)
+                _bottomSheetState.value = null
+            }
         }
     }
 
     fun addArtistField() {
         addedArtists.value = addedArtists.value.plus(Artist(artistName = ""))
+    }
+
+    fun showCoverBottomSheet() {
+        (state.value as? ModifyMusicState.Data)?.let { dataState ->
+            _bottomSheetState.value = MusicCoversBottomSheet(
+                musicCover = dataState.initialMusic.cover,
+                onMusicFileCoverSelected = ::setNewCoverFromPath,
+                onFileCoverSelected = ::setNewCoverFromCoverId,
+                onCoverFromStorageSelected = ::setNewCoverFromStorage,
+                onClose = {
+                    _bottomSheetState.value = null
+                }
+            )
+        }
     }
 
     /**

@@ -81,6 +81,10 @@ object EnStrings : Strings {
     override val artistCover = "Artist's cover"
     override val playlistInformation = "Playlist's information"
     override val musicInformation = "Song's information"
+    override val musicPath = "Song's path:"
+    override val musicFileCover = "File's cover"
+    override val musicAppCover = "App's cover"
+    override val coverSelection = "Cover selection"
     override val artistInformation = "Artist's information"
     override val albumInformation = "Album's information"
 
@@ -150,6 +154,7 @@ object EnStrings : Strings {
     override val personalizationText = "Manage player and main page view"
     override val aboutTitle = "About Soul Searching"
     override val aboutText = "Developers, application's version name"
+    override val newReleaseAvailableTitle = "New release available!"
     override val statisticsTitle = "Statistics"
     override val statisticsText = "Statistics about your plays"
     override val mostPlayedSongs = "Most played songs"
@@ -222,6 +227,13 @@ object EnStrings : Strings {
 
     override val playerVolume = "Player volume"
 
+    override val anErrorOccurred = "An error occurred"
+    override val albumDoesNotExists = "This album doesn't exist"
+    override val artistDoesNotExists = "This artist doesn't exist"
+    override val playlistDoesNotExists = "This playlist doesn't exist"
+    override val folderDoesNotExists = "This folder doesn't exist"
+    override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"
@@ -253,4 +265,7 @@ object EnStrings : Strings {
             1 -> "1 selected element"
             else -> "$total selected elements"
         }
+
+    override fun newReleaseAvailableText(releaseName: String): String =
+        "A new release is available, ready to be downloaded: $releaseName"
 }

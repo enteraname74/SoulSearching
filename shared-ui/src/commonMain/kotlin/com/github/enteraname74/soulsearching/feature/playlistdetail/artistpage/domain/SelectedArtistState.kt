@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.Playl
  * State for managing a selected artist.
  */
 sealed interface SelectedArtistState {
+    data object Error: SelectedArtistState
     data object Loading : SelectedArtistState
     data class Data(
         val playlistDetail: PlaylistDetail,

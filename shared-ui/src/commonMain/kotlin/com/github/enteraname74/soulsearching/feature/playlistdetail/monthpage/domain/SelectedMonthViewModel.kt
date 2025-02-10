@@ -63,7 +63,7 @@ class SelectedMonthViewModel(
         } else {
             getMonthMusicListUseCase(month = month).mapLatest { monthMusicList ->
                 when {
-                    monthMusicList == null -> SelectedMonthState.Loading
+                    monthMusicList == null -> SelectedMonthState.Error
                     else -> SelectedMonthState.Data(
                         playlistDetail = monthMusicList.toPlaylistDetail(),
                     )

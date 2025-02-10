@@ -16,6 +16,7 @@ import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.*
 import com.github.enteraname74.domain.usecase.month.*
 import com.github.enteraname74.domain.usecase.musicfolder.*
+import com.github.enteraname74.domain.usecase.release.*
 
 val domainModule = module {
     // USE CASES
@@ -140,4 +141,10 @@ val domainModule = module {
 
     // QuickAccess
     singleOf(::GetAllQuickAccessElementsUseCase)
+
+    // Release
+    singleOf(::FetchLatestReleaseUseCase)
+    singleOf(::GetLatestReleaseUseCase)
+    singleOf(::GetLatestViewedReleaseUseCase)
+    singleOf(::SetLatestViewedReleaseUseCase)
 }

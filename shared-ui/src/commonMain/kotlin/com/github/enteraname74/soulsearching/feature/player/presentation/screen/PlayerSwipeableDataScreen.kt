@@ -74,7 +74,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
 
     val animatedBackgroundColor =
-        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED || playerViewManager.targetValue == BottomSheetStates.EXPANDED) {
             SoulSearchingColorTheme.colorScheme.primary
         } else {
             SoulSearchingColorTheme.colorScheme.secondary

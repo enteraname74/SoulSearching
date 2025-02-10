@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
@@ -8,8 +9,10 @@ import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheet
+import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
 import com.github.enteraname74.soulsearching.composables.dialog.RemoveMusicFromPlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -20,6 +23,7 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 interface MusicBottomSheetDelegate {
     fun showMusicBottomSheet(
@@ -129,10 +133,14 @@ class MusicBottomSheetDelegateImpl(
                         music = musicToAdd,
                         selectedPlaylists = selectedPlaylists,
                     )
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
                 },
                 playlistsWithMusics = getAllPlaylistsWithMusics().filter {
                     it.musics.none { music -> music.musicId == musicToAdd.musicId }
-                }
+                },
+                setDialogState = setDialogState,
+                selectedMusicIds = listOf(musicToAdd.musicId),
             )
         )
     }

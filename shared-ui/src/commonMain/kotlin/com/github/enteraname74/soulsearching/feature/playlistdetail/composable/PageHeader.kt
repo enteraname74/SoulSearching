@@ -10,30 +10,34 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.composables.SoulImage
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistVIewUiUtils
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
 
 
 @Composable
 fun PageHeader(
     playlistDetail: PlaylistDetail,
-    onSubTitleClicked: () -> Unit = {},
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
+    modifier: Modifier = Modifier,
+    onSubTitleClicked: () -> Unit = {},
 ) {
-    if (!PlaylistVIewUiUtils.canShowVerticalMainInformation()) {
+    if (!PlaylistViewUiUtils.canShowVerticalMainInformation()) {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(UiConstants.Spacing.large),
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
                 roundedPercent = 5,
@@ -66,8 +70,10 @@ fun PageHeader(
             }
         }
     } else {
+        val windowSize = rememberWindowSize()
+
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(
                     horizontal = UiConstants.Spacing.large,
@@ -76,9 +82,13 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
-                size = UiConstants.ImageSize.veryHuge,
+                size = if (windowSize == WindowSize.Large) {
+                    300.dp
+                } else {
+                    225.dp
+                },
                 roundedPercent = 5,
                 onSuccess = onCoverLoaded,
             )
