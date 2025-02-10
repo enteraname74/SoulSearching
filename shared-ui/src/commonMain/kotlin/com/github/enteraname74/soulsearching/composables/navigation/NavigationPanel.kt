@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.composables.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ fun NavigationPanel(
         modifier = Modifier
             .background(color = SoulSearchingColorTheme.colorScheme.secondary)
             .fillMaxHeight()
+            .statusBarsPadding()
             .width(PanelWidth)
     ) {
         LazyColumnCompat {
