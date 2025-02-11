@@ -12,8 +12,7 @@ finish-args:
   - --socket=pulseaudio
   - --filesystem=home
   - --device=dri
-  - --socket=wayland
-  - --socket=fallback-x11
+  - --socket=x11
 modules:
   - name: vlc
     buildsystem: autotools
