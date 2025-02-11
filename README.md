@@ -1,5 +1,9 @@
 # Soul Searching
 
+<div align="center">
+    <img title="" src="screenshots/app_logo_uni.svg" alt="" data-align="center" width="250">
+</div>
+
 Soul Searching is an **offline music application** for the following platforms:
 - Android 8 and above
 - Desktop (Linux)
@@ -30,6 +34,7 @@ You can have a theme that depends on your system settings or the current music c
 - See **lyrics** of songs
 - Multiple **playing modes**
 - Modify songs, albums and artists on app and on the **device**
+- Manage multiple songs with multiple artists
 - Create and manage **playlists**
 - Add an album, artist, playlist or even a song in **quick access**
 - Smart system for managing albums and songs without covers
