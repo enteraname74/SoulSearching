@@ -1,8 +1,8 @@
 [versions]
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
-agp = "8.6.0-alpha07"
-android-version-code = "28"
+agp = "8.5.2"
+android-version-code = "29"
 android-target-sdk = "35"
 android-compile-sdk = "35"
 android-min-sdk = "26"
@@ -26,10 +26,9 @@ jaudiotagger = "3.0.1"
 jlibnotify = "1.2.0"
 kmpalette = "2.2.0"
 kotlin = "2.0.21"
-kotlinx-metadata-jvm = "0.9.0"
 kotlinx-serialization = "1.7.3"
-koin = "3.5.3"
-koin-compose = "1.1.2"
+koin = "4.0.1"
+koin-compose = "4.0.1"
 ktor = "2.3.12"
 media = "1.7.0"
 multiplatform-settings = "1.1.1"
@@ -82,7 +81,6 @@ kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette"
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-kotlinx-metadata-jvm = { module = "org.jetbrains.kotlinx:kotlinx-metadata-jvm", version.ref = "kotlinx-metadata-jvm" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
