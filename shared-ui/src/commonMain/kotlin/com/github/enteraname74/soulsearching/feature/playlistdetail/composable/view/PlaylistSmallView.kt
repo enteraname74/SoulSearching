@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
+package com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceIn
@@ -32,12 +35,15 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidth
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PageHeader
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -46,10 +52,11 @@ import kotlin.math.max
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PlaylistColumnView(
+fun PlaylistSmallView(
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
     navigateBack: () -> Unit,
+    playAction: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
@@ -113,6 +120,10 @@ fun PlaylistColumnView(
                     topBarHeight = layoutCoordinates.size.height
                 },
             leftAction = TopBarNavigationAction(onClick = navigateBack),
+            rightAction = object: TopBarActionSpec {
+                override val icon: ImageVector = Icons.Rounded.Search
+                override val onClick: () -> Unit = searchAction
+            },
             colors = SoulTopBarDefaults.primary(
                 containerColor = backgroundColor,
             )
@@ -147,7 +158,7 @@ fun PlaylistColumnView(
                         playlistDetailListener.onUpdateNbPlayed()
                         shuffleAction()
                     },
-                    searchAction = { searchAction() },
+                    playAction = playAction,
                 )
             }
             item {

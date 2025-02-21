@@ -29,8 +29,12 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistLargeView
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistSmallView
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistRowView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -103,6 +107,21 @@ fun PlaylistScreen(
         }
     }
 
+    val playAction = {
+        if (playlistDetail.musics.isNotEmpty()) {
+            playlistDetailListener.onUpdateNbPlayed()
+            coroutineScope.launch {
+                playbackManager.setCurrentPlaylistAndMusic(
+                    music = playlistDetail.musics.first(),
+                    musicList = playlistDetail.musics,
+                    playlistId = playlistDetail.id,
+                    isMainPlaylist = false
+                )
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
+    }
+
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
 
     CompositionLocalProvider(
@@ -140,10 +159,11 @@ fun PlaylistScreen(
                 }
 
                 val windowSize = rememberWindowSize()
-                when {
-                    windowSize != WindowSize.Small -> {
-                        PlaylistRowView(
+                when (windowSize) {
+                    WindowSize.Small -> {
+                        PlaylistSmallView(
                             navigateBack = navigateBack,
+                            playAction = playAction,
                             shuffleAction = shuffleAction,
                             searchAction = searchAction,
                             onShowMusicBottomSheet = onShowMusicBottomSheet,
@@ -151,24 +171,41 @@ fun PlaylistScreen(
                             playlistDetailListener = playlistDetailListener,
                             optionalContent = optionalContent,
                             onCoverLoaded = onCoverLoaded,
-                            multiSelectionState = multiSelectionState,
                             onLongSelectOnMusic = onLongSelectOnMusic,
+                            multiSelectionState = multiSelectionState,
                         )
                     }
 
                     else -> {
-                        PlaylistColumnView(
-                            navigateBack = navigateBack,
-                            shuffleAction = shuffleAction,
-                            searchAction = searchAction,
-                            onShowMusicBottomSheet = onShowMusicBottomSheet,
-                            playlistDetail = playlistDetail,
-                            playlistDetailListener = playlistDetailListener,
-                            optionalContent = optionalContent,
-                            onCoverLoaded = onCoverLoaded,
-                            onLongSelectOnMusic = onLongSelectOnMusic,
-                            multiSelectionState = multiSelectionState,
-                        )
+                        if (PlaylistViewUiUtils.canShowColumnLayout()) {
+                            PlaylistLargeView(
+                                navigateBack = navigateBack,
+                                shuffleAction = shuffleAction,
+                                playAction = playAction,
+                                searchAction = searchAction,
+                                onShowMusicBottomSheet = onShowMusicBottomSheet,
+                                playlistDetail = playlistDetail,
+                                playlistDetailListener = playlistDetailListener,
+                                optionalContent = optionalContent,
+                                onCoverLoaded = onCoverLoaded,
+                                onLongSelectOnMusic = onLongSelectOnMusic,
+                                multiSelectionState = multiSelectionState,
+                            )
+                        } else {
+                            PlaylistRowView(
+                                navigateBack = navigateBack,
+                                playAction = playAction,
+                                shuffleAction = shuffleAction,
+                                searchAction = searchAction,
+                                onShowMusicBottomSheet = onShowMusicBottomSheet,
+                                playlistDetail = playlistDetail,
+                                playlistDetailListener = playlistDetailListener,
+                                optionalContent = optionalContent,
+                                onCoverLoaded = onCoverLoaded,
+                                onLongSelectOnMusic = onLongSelectOnMusic,
+                                multiSelectionState = multiSelectionState,
+                            )
+                        }
                     }
                 }
 

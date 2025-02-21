@@ -236,6 +236,11 @@ object FrStrings : Strings {
     override val folderDoesNotExists = "Le dossier n'existe pas"
     override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
 
+    override val elementDetailEdit = "Modifier"
+    override val elementDetailPlay = "Lire"
+    override val elementDetailShuffle = "Aléatoire"
+    override val elementDetailTitles = "Titres"
+
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"

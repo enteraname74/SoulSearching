@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import coil3.BitmapImage
 import coil3.Image
 import coil3.annotation.ExperimentalCoilApi
@@ -44,6 +45,51 @@ import java.util.*
 fun SoulImage(
     cover: Cover?,
     size: Dp?,
+    modifier: Modifier = Modifier,
+    roundedPercent: Int = 10,
+    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    contentScale: ContentScale = ContentScale.Crop,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
+) {
+
+    val sizeModifier = if (size != null) {
+        Modifier.size(size)
+    } else {
+        Modifier
+    }
+
+    val baseModifier = Modifier
+        .then(sizeModifier)
+        .clip(RoundedCornerShape(percent = roundedPercent))
+        .then(modifier)
+
+    when (cover) {
+        null -> {
+            TemplateImage(
+                modifier = baseModifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+
+        is Cover.CoverFile -> {
+            FileCover(
+                cover = cover,
+                modifier = baseModifier,
+                contentScale = contentScale,
+                tint = tint,
+                onSuccess = onSuccess,
+                builderOptions = builderOptions,
+            )
+        }
+    }
+}
+
+@Composable
+fun SoulImage(
+    cover: Cover?,
+    size: DpSize?,
     modifier: Modifier = Modifier,
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,

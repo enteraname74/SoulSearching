@@ -1,15 +1,17 @@
-package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
+package com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.max
@@ -27,17 +29,15 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBarDefaults
+import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PageHeader
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
-import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
@@ -46,6 +46,7 @@ fun PlaylistRowView(
     navigateBack: () -> Unit,
     shuffleAction: () -> Unit,
     searchAction: () -> Unit,
+    playAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     onCoverLoaded: (cover: ImageBitmap?) -> Unit,
@@ -54,7 +55,6 @@ fun PlaylistRowView(
     onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
-    val windowSize = rememberWindowSize()
 
     var topBarHeight: Int by rememberSaveable {
         mutableStateOf(0)
@@ -72,45 +72,27 @@ fun PlaylistRowView(
                     topBarHeight = layoutCoordinates.size.height
                 },
             leftAction = TopBarNavigationAction(onClick = navigateBack),
+            rightAction = object: TopBarActionSpec {
+                override val icon: ImageVector = Icons.Rounded.Search
+                override val onClick: () -> Unit = searchAction
+            },
             colors = SoulTopBarDefaults.primary(
                 containerColor = Color.Transparent,
             )
         )
-        if (windowSize == WindowSize.Large) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Content(
-                    modifier = Modifier.fillMaxSize(),
-                    shuffleAction = shuffleAction,
-                    searchAction = searchAction,
-                    onShowMusicBottomSheet = onShowMusicBottomSheet,
-                    playlistDetail = playlistDetail,
-                    playlistDetailListener = playlistDetailListener,
-                    optionalContent = optionalContent,
-                    onCoverLoaded = onCoverLoaded,
-                    onLongSelectOnMusic = onLongSelectOnMusic,
-                    multiSelectionState = multiSelectionState,
-                    topBarHeight = topBarHeightInDp,
-                )
-            }
-        } else {
-            Content(
-                modifier = Modifier.fillMaxSize(),
-                shuffleAction = shuffleAction,
-                searchAction = searchAction,
-                onShowMusicBottomSheet = onShowMusicBottomSheet,
-                playlistDetail = playlistDetail,
-                playlistDetailListener = playlistDetailListener,
-                optionalContent = optionalContent,
-                onCoverLoaded = onCoverLoaded,
-                onLongSelectOnMusic = onLongSelectOnMusic,
-                multiSelectionState = multiSelectionState,
-                topBarHeight = topBarHeightInDp,
-            )
-        }
+        Content(
+            modifier = Modifier.fillMaxSize(),
+            shuffleAction = shuffleAction,
+            playAction = playAction,
+            onShowMusicBottomSheet = onShowMusicBottomSheet,
+            playlistDetail = playlistDetail,
+            playlistDetailListener = playlistDetailListener,
+            optionalContent = optionalContent,
+            onCoverLoaded = onCoverLoaded,
+            onLongSelectOnMusic = onLongSelectOnMusic,
+            multiSelectionState = multiSelectionState,
+            topBarHeight = topBarHeightInDp,
+        )
     }
 }
 
@@ -118,7 +100,7 @@ fun PlaylistRowView(
 private fun Content(
     topBarHeight: Dp,
     shuffleAction: () -> Unit,
-    searchAction: () -> Unit,
+    playAction: () -> Unit,
     onShowMusicBottomSheet: (Music) -> Unit,
     playlistDetail: PlaylistDetail,
     playlistDetailListener: PlaylistDetailListener,
@@ -130,7 +112,6 @@ private fun Content(
     playbackManager: PlaybackManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
 ) {
-    val canShowVerticalInformation = PlaylistViewUiUtils.canShowVerticalMainInformation()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -153,58 +134,22 @@ private fun Content(
                     onSubTitleClicked = playlistDetailListener::onSubtitleClicked,
                     onCoverLoaded = onCoverLoaded,
                 )
-                if (canShowVerticalInformation) {
-                    PlaylistPanel(
-                        containerColor = Color.Transparent,
-                        editAction = playlistDetailListener.onEdit,
-                        shuffleAction = shuffleAction,
-                        searchAction = searchAction,
-                    )
-                }
             }
-        }
-
-        val windowSize = rememberWindowSize()
-        val windowHeight = rememberWindowHeightDp()
-        val windowWidth = rememberWindowWidthDp()
-        val largeModifier: Modifier = if (windowSize == WindowSize.Large) {
-            Modifier
-                .fillMaxSize()
-                .padding(
-                    top = windowHeight * 0.1f,
-                    end = windowWidth * 0.1f
-                )
-        } else {
-            Modifier
         }
 
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(top = topBarHeight)
-                .then(largeModifier)
         ) {
-            if (!canShowVerticalInformation) {
-                PlaylistPanel(
-                    editAction = playlistDetailListener.onEdit,
-                    shuffleAction = shuffleAction,
-                    searchAction = searchAction,
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = SoulSearchingColorTheme.colorScheme.primary
-                        )
-                ) {
-                    optionalContent()
-                }
-            }
+            PlaylistPanel(
+                editAction = playlistDetailListener.onEdit,
+                shuffleAction = shuffleAction,
+                playAction = playAction,
+            )
             LazyColumnCompat {
-                if (!canShowVerticalInformation) {
-                    item {
-                        optionalContent()
-                    }
+                item {
+                    optionalContent()
                 }
 
                 items(
@@ -278,25 +223,7 @@ private fun BlurredBackground(
                 ),
         )
 
-        val windowSize = rememberWindowSize()
-        val windowHeight = rememberWindowHeightDp()
-        val windowWidth = rememberWindowWidthDp()
-        val largeModifier: Modifier = if (windowSize == WindowSize.Large) {
-            Modifier
-                .fillMaxSize()
-                .padding(
-                    top = windowHeight * 0.1f,
-                    start = windowWidth * 0.1f
-                )
-        } else {
-            Modifier
-        }
-
-        Box(
-            modifier = largeModifier,
-        ) {
-            content()
-        }
+        content()
     }
 }
 

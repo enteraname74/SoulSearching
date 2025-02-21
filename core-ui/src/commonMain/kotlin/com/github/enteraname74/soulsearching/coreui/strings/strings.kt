@@ -241,6 +241,11 @@ interface Strings {
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
 
+    val elementDetailEdit: String
+    val elementDetailPlay: String
+    val elementDetailShuffle: String
+    val elementDetailTitles: String
+
     /**
      * Shows a text indicating the number of musics.
      */
