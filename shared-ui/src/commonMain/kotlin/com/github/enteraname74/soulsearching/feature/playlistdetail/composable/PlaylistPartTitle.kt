@@ -12,13 +12,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
 
 @Composable
 fun PlaylistPartTitle(
     title: String
 ) {
-    val canShowColumnLayout = PlaylistViewUiUtils.canShowColumnLayout()
+    val windowSize = rememberWindowSize()
+    val canShowColumnLayout = PlaylistViewUiUtils.canShowColumnLayout() && windowSize != WindowSize.Small
     Text(
         modifier = Modifier
             .padding(

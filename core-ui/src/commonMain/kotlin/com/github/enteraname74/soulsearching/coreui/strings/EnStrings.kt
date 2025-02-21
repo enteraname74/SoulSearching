@@ -234,6 +234,10 @@ object EnStrings : Strings {
     override val folderDoesNotExists = "This folder doesn't exist"
     override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
 
+    override val artistDetailTitle = "Artist"
+    override val monthDetailTitle = "Month"
+    override val folderDetailTitle = "Folder"
+
     override val elementDetailEdit = "Edit"
     override val elementDetailPlay = "Play"
     override val elementDetailShuffle = "Shuffle"

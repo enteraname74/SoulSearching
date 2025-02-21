@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.application
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,10 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.navigationIcon
-import com.github.enteraname74.soulsearching.ext.navigationTitle
-import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.ext.*
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingFeature
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -163,7 +161,8 @@ class ApplicationWindow: Screen {
                             SettingsScreen()
                         )
                     },
-                    icon = Icons.Rounded.Settings,
+                    filledIcon = Icons.Rounded.Settings,
+                    outlinedIcon = Icons.Outlined.Settings,
                     isSelected = generalNavigator?.lastItem is SettingPage,
                     isBadged = shouldShowNewVersionPin,
                 )
@@ -175,7 +174,8 @@ class ApplicationWindow: Screen {
                 add(
                     NavigationRowSpec(
                         title = tab.type.navigationTitle(),
-                        icon = tab.type.navigationIcon(),
+                        filledIcon = tab.type.navigationFilledIcon(),
+                        outlinedIcon = tab.type.navigationOutlinedIcon(),
                         onClick = {
                             setCurrentPage(tab.type)
                             playerAction()

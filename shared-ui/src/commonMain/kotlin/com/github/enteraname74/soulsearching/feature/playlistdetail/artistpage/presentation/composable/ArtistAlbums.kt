@@ -17,6 +17,8 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyRowCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
@@ -30,7 +32,8 @@ fun ArtistAlbums(
     onAlbumLongClick: (AlbumWithMusics) -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
-    val canShowColumnLayout = PlaylistViewUiUtils.canShowColumnLayout()
+    val windowSize = rememberWindowSize()
+    val canShowColumnLayout = PlaylistViewUiUtils.canShowColumnLayout() && windowSize != WindowSize.Small
 
     Column(
         modifier = Modifier

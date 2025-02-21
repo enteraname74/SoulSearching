@@ -55,6 +55,7 @@ import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerV
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
@@ -208,6 +209,17 @@ private fun Header(
                         .padding(horizontal = UiConstants.Spacing.large),
                 ) {
                     Text(
+                        modifier = Modifier.padding(
+                            bottom = UiConstants.Spacing.medium,
+                        ),
+                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                        text = playlistDetail.type.title(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 15.sp
+                    )
+                    Text(
                         color = SoulSearchingColorTheme.colorScheme.onPrimary,
                         text = playlistDetail.title,
                         maxLines = 2,
@@ -341,7 +353,7 @@ private fun BlurredBackground(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            SoulSearchingColorTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            SoulSearchingColorTheme.colorScheme.primary.copy(alpha = 0.3f),
                             SoulSearchingColorTheme.colorScheme.primary,
                         ),
                         startY = 0f,

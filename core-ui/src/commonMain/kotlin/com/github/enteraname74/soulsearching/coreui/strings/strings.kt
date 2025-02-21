@@ -241,6 +241,12 @@ interface Strings {
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
 
+    val playlistDetailTitle: String get() = "Playlist"
+    val artistDetailTitle: String
+    val albumDetailTitle: String get() = "Album"
+    val monthDetailTitle: String
+    val folderDetailTitle: String
+
     val elementDetailEdit: String
     val elementDetailPlay: String
     val elementDetailShuffle: String
