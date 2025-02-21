@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
@@ -38,14 +36,6 @@ fun NavigationRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SoulIcon(
-            modifier = Modifier
-                .alpha(
-                    if (navigationRowSpec.isSelected) {
-                        1f
-                    } else {
-                        0f
-                    }
-                ),
             icon = navigationRowSpec.icon,
             tint = SoulSearchingColorTheme.colorScheme.onSecondary,
             contentDescription = null,
@@ -55,7 +45,7 @@ fun NavigationRow(
             color = SoulSearchingColorTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = if (navigationRowSpec.isSelected) {
-                FontWeight.ExtraBold
+                FontWeight.Black
             } else {
                 FontWeight.Normal
             }
