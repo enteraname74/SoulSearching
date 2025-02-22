@@ -127,10 +127,10 @@ object FrStrings : Strings {
     override val playNext = "Jouer ensuite"
 
     override val personalizedThemeTitle = "Thème personnalisé"
-    override val personalizedThemeText = "Définissez précisémment votre thème de couleur"
-    override val dynamicPlayerView = "Utiliser le thème dynamique pour la vue du player"
-    override val dynamicPlaylistView = "Utiliser le thème dynamique pour la vue des playlists, albums et artistes"
-    override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
+    override val personalizedThemeText = "Appliquer le thème dynamique sur :"
+    override val dynamicPlayerView = "La vue du lecteur"
+    override val dynamicPlaylistView = "La vue des playlists, albums, artistes, mois et dossiers"
+    override val dynamicOtherView = "Les autres vues"
 
     override val settings = "Paramètres"
     override val advancedSettingsTitle = "Paramètres avancés"

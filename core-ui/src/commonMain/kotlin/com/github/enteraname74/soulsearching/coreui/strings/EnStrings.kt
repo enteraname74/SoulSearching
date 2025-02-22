@@ -125,10 +125,10 @@ object EnStrings : Strings {
     override val playNext = "Play next"
 
     override val personalizedThemeTitle = "Personalized theme"
-    override val personalizedThemeText = "Define precisely your color theme"
-    override val dynamicPlayerView = "Use dynamic theme for player view"
-    override val dynamicPlaylistView = "Use dynamic theme for playlist, album and artist view"
-    override val dynamicOtherView = "Use dynamic theme for the other views"
+    override val personalizedThemeText = "Apply dynamic theme on:"
+    override val dynamicPlayerView = "Player view"
+    override val dynamicPlaylistView = "Playlist, album, artist, month and folder view"
+    override val dynamicOtherView = "Other views"
 
     override val settings = "Settings"
     override val advancedSettingsTitle = "Advanced settings"
