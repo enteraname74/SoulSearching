@@ -27,6 +27,9 @@ class AlbumRepositoryImpl(
         albumDataSource.upsertAll(albums)
     }
 
+    override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
+        albumDataSource.getAlbumNamesContainingSearch(search)
+
     override suspend fun upsert(album: Album) = albumDataSource.upsert(
         album = album
     )

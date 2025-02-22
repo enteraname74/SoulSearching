@@ -24,6 +24,8 @@ interface AlbumRepository {
 
     suspend fun upsertAll(albums: List<Album>)
 
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */

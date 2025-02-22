@@ -28,6 +28,9 @@ internal class ArtistDataSourceImpl(
         artistDao.deleteAll(artistsIds)
     }
 
+    override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
+        artistDao.getArtistNamesContainingSearch(search)
+
     override fun getFromId(artistId: UUID): Flow<Artist?> =
         artistDao.getFromId(artistId)
 

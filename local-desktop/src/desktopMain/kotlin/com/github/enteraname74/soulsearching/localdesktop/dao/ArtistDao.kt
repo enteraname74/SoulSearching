@@ -65,6 +65,19 @@ internal class ArtistDao(
         }
     }
 
+    suspend fun getArtistNamesContainingSearch(search: String): List<String> = dbQuery {
+        ArtistTable
+            .selectAll()
+            .where {
+                artistName
+                    .lowerCase()
+                    .like("%${search.lowercase().trim()}%")
+            }
+            .mapNotNull {
+                it.getOrNull(artistName)
+            }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getArtistOfAlbum(albumId: UUID): Flow<Artist?> =
         albumArtistDao.getArtistIdOfAlbum(albumId).flatMapLatest { artistId ->

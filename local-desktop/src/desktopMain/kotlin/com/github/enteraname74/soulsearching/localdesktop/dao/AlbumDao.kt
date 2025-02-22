@@ -7,6 +7,7 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
+import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -56,6 +57,18 @@ internal class AlbumDao(
         flowTransactionOn {
             AlbumTable.deleteWhere { Op.build { id inList ids } }
         }
+    }
+
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String> = dbQuery {
+        AlbumTable
+            .selectAll()
+            .where {
+                AlbumTable
+                    .albumName
+                    .lowerCase()
+                    .like("%${search.lowercase().trim()}%")
+            }
+            .mapNotNull { it.getOrNull(AlbumTable.albumName) }
     }
 
     fun getAll(): Flow<List<Album>> = transaction {
