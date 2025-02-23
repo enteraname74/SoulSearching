@@ -12,7 +12,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":repository"))
-                implementation(project(":features:filemanager"))
+                implementation(project(":filemanager"))
                 implementation(files("exposed-flows-core-0.2.1.jar"))
                 implementation(libs.koin.core)
                 implementation(libs.bundles.exposed)

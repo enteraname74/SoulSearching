@@ -26,11 +26,11 @@ include(":local-desktop")
 include("core-ui")
 include("repository")
 include("shared-di")
-include("features")
-include("features:playback")
-findProject(":features:playback")?.name = "playback"
-include("features:filemanager")
-findProject(":features:filemanager")?.name = "filemanager"
-include("features:musicmanager")
-findProject(":features:musicmanager")?.name = "musicmanager"
+include(":playback")
+include(":filemanager")
+include(":musicmanager")
 include("remote")
+
+project(":playback").projectDir = file("features/playback")
+project(":filemanager").projectDir = file("features/filemanager")
+project(":musicmanager").projectDir = file("features/musicmanager")

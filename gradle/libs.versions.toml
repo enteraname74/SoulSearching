@@ -2,6 +2,7 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.5.2"
+android-gradle-plugin = "8.3.0"
 android-version-code = "29"
 android-target-sdk = "35"
 android-compile-sdk = "35"
@@ -21,7 +22,7 @@ exposed = "0.55.0"
 ffmpeg = "6.0-2"
 file-kit = "0.8.1"
 gradle = "8.5.2"
-gson = "2.11.0"
+gson = "2.12.1"
 jaudiotagger = "3.0.1"
 jlibnotify = "1.2.0"
 kmpalette = "2.2.0"
@@ -88,6 +89,7 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-content-negoctiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor" }
 
 material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "compose" }
 material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "compose" }
@@ -112,6 +114,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [bundles]
 koin = ["koin-compose", "koin-core"]
@@ -119,4 +122,4 @@ accompanist = ["accompanist-pager","accompanist-system-ui-controller", "accompan
 voyager = ["voyager-koin", "voyager-navigator", "voyager-screen-model", "voyager-transitions"]
 exposed = ["exposed-core", "exposed-crypt", "exposed-dao", "exposed-java-time", "exposed-jdbc"]
 androidx = ["androidx-activity-compose", "androidx-lifecycle", "androidx-core", "androidx-annotation", "androidx-appcompat", "androidx-appcompat-resources", "androidx-media"]
-ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core", "ktor-serialization-kotlinx-json"]
+ktor = ["ktor-client-cio", "ktor-client-content-negoctiation", "ktor-client-core"]

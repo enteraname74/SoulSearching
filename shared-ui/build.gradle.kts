@@ -35,9 +35,9 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
-                implementation(project(":features:playback"))
-                implementation(project(":features:filemanager"))
-                implementation(project(":features:musicmanager"))
+                implementation(project(":playback"))
+                implementation(project(":filemanager"))
+                implementation(project(":musicmanager"))
 
                 implementation(libs.bundles.koin)
 
@@ -75,7 +75,6 @@ kotlin {
                 implementation(libs.room)
 
                 implementation(libs.bundles.accompanist)
-                implementation(libs.gson)
             }
         }
     }

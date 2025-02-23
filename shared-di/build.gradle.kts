@@ -25,9 +25,9 @@ kotlin {
             implementation(project(":domain"))
             implementation(project(":repository"))
             implementation(project(":remote"))
-            implementation(project(":features:playback"))
-            implementation(project(":features:filemanager"))
-            implementation(project(":features:musicmanager"))
+            implementation(project(":playback"))
+            implementation(project(":filemanager"))
+            implementation(project(":musicmanager"))
         }
         androidMain.dependencies {
             implementation(project(":local-android"))

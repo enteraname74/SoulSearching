@@ -30,7 +30,7 @@ dependencies {
     implementation(project(":domain"))
 
     implementation(libs.bundles.koin)
-    implementation(project(":features:playback"))
+    implementation(project(":playback"))
     implementation(project(":core-ui"))
 }
 

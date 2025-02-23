@@ -26,6 +26,16 @@ kotlin {
             implementation(project(":repository"))
             implementation(libs.bundles.ktor)
             implementation(libs.koin.core)
+            implementation(libs.kotlinx.serialization.json)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.ktor.serialization.kotlinx.json)
+        }
+        val desktopMain by getting {
+            dependencies {
+                implementation(libs.ktor.serialization.gson)
+            }
         }
     }
 }

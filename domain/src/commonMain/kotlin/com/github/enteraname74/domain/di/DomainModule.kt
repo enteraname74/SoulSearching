@@ -1,22 +1,34 @@
 package com.github.enteraname74.domain.di
 
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
 import com.github.enteraname74.domain.usecase.album.*
-import com.github.enteraname74.domain.usecase.albumartist.*
+import com.github.enteraname74.domain.usecase.albumartist.GetAllAlbumArtistUseCase
+import com.github.enteraname74.domain.usecase.albumartist.UpsertAlbumArtistUseCase
+import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.*
+import com.github.enteraname74.domain.usecase.cover.DeleteCoverUseCase
+import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
+import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.folder.*
-import com.github.enteraname74.domain.usecase.cover.*
-import com.github.enteraname74.domain.usecase.lyrics.*
+import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
+import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
+import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.*
 import com.github.enteraname74.domain.usecase.musicalbum.*
-import com.github.enteraname74.domain.usecase.musicartist.*
-import com.github.enteraname74.domain.usecase.musicplaylist.*
+import com.github.enteraname74.domain.usecase.musicartist.GetAllMusicArtistUseCase
+import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
+import com.github.enteraname74.domain.usecase.musicartist.UpsertMusicIntoArtistUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
+import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
-import com.github.enteraname74.domain.usecase.quickaccess.*
-import com.github.enteraname74.domain.usecase.month.*
-import com.github.enteraname74.domain.usecase.musicfolder.*
-import com.github.enteraname74.domain.usecase.release.*
+import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.GetLatestViewedReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.SetLatestViewedReleaseUseCase
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
 val domainModule = module {
     // USE CASES
@@ -97,7 +109,6 @@ val domainModule = module {
     singleOf(::GetMusicUseCase)
     singleOf(::IsMusicAlreadySavedUseCase)
     singleOf(::IsMusicInFavoritePlaylistUseCase)
-    singleOf(::SaveMusicAndCreateMissingArtistAndAlbumUseCase)
     singleOf(::ToggleMusicFavoriteStatusUseCase)
     singleOf(::UpdateAlbumOfMusicUseCase)
     singleOf(::UpdateMusicNbPlayedUseCase)

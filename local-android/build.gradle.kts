@@ -31,7 +31,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":repository"))
-                implementation(project(":features:filemanager"))
+                implementation(project(":filemanager"))
                 implementation(libs.koin.core)
             }
         }

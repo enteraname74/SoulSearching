@@ -29,7 +29,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":domain"))
-                implementation(project(":features:filemanager"))
+                implementation(project(":filemanager"))
             }
         }
     }
