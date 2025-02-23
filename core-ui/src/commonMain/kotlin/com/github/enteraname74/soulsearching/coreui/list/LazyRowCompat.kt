@@ -40,10 +40,6 @@ fun LazyRowCompat(
         ) {
             content()
         }
-        Spacer(
-            modifier = Modifier
-                .height(SPACER_HEIGHT)
-        )
         SoulHorizontalScrollBar(
             modifier = Modifier
                 .padding(
@@ -54,5 +50,3 @@ fun LazyRowCompat(
         )
     }
 }
-
-private val SPACER_HEIGHT: Dp = 16.dp

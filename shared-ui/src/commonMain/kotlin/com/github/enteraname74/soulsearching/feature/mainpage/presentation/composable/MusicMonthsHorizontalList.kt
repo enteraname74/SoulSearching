@@ -63,9 +63,6 @@ fun MusicMonthsHorizontalList(
                         )
                     }
                 }
-                SoulHorizontalScrollBar(
-                    lazyListState = lazyListState
-                )
             }
         } else {
             NoElementView()

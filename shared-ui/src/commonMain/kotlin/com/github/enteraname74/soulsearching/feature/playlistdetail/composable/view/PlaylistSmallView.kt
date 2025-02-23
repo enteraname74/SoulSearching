@@ -46,6 +46,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.P
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.playlistdetail.ext.title
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -109,6 +110,12 @@ fun PlaylistSmallView(
         Color.Transparent
     }
 
+    val topBarTitle: String? = if (lazyListState.firstVisibleItemIndex >= 1) {
+        playlistDetail.title
+    } else {
+        null
+    }
+
     BlurredBackground(
         cover = playlistDetail.cover,
         backgroundAlpha = backgroundAlpha,
@@ -119,6 +126,7 @@ fun PlaylistSmallView(
                 .onGloballyPositioned { layoutCoordinates ->
                     topBarHeight = layoutCoordinates.size.height
                 },
+            title = topBarTitle,
             leftAction = TopBarNavigationAction(onClick = navigateBack),
             rightAction = object: TopBarActionSpec {
                 override val icon: ImageVector = Icons.Rounded.Search
