@@ -55,7 +55,6 @@ fun PlaylistRowView(
     onLongSelectOnMusic: (Music) -> Unit,
     optionalContent: @Composable () -> Unit = {},
 ) {
-
     var topBarHeight: Int by rememberSaveable {
         mutableStateOf(0)
     }

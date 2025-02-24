@@ -150,6 +150,7 @@ fun PlaylistScreen(
 
                 val searchAction: () -> Unit = {
                     coroutineScope.launch {
+                        multiSelectionManagerImpl.clearMultiSelection()
                         searchDraggableState.animateTo(
                             BottomSheetStates.EXPANDED,
                             tween(UiConstants.AnimationDuration.normal)
