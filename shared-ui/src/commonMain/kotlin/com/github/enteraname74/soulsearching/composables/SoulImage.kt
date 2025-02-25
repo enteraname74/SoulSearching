@@ -52,38 +52,20 @@ fun SoulImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
-
-    val sizeModifier = if (size != null) {
-        Modifier.size(size)
-    } else {
-        Modifier
-    }
-
-    val baseModifier = Modifier
-        .then(sizeModifier)
-        .clip(RoundedCornerShape(percent = roundedPercent))
-        .then(modifier)
-
-    when (cover) {
-        null -> {
-            TemplateImage(
-                modifier = baseModifier,
-                contentScale = contentScale,
-                tint = tint,
-            )
+    InnerSoulImage(
+        cover = cover,
+        modifier = if (size != null) {
+            Modifier.size(size)
+        } else {
+            Modifier
         }
-
-        is Cover.CoverFile -> {
-            FileCover(
-                cover = cover,
-                modifier = baseModifier,
-                contentScale = contentScale,
-                tint = tint,
-                onSuccess = onSuccess,
-                builderOptions = builderOptions,
-            )
-        }
-    }
+            .clip(RoundedCornerShape(percent = roundedPercent))
+            .then(modifier),
+        tint = tint,
+        contentScale = contentScale,
+        onSuccess = onSuccess,
+        builderOptions = builderOptions,
+    )
 }
 
 @Composable
@@ -97,22 +79,35 @@ fun SoulImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
+    InnerSoulImage(
+        cover = cover,
+        modifier = if (size != null) {
+            Modifier.size(size)
+        } else {
+            Modifier
+        }
+            .clip(RoundedCornerShape(percent = roundedPercent))
+            .then(modifier),
+        tint = tint,
+        contentScale = contentScale,
+        onSuccess = onSuccess,
+        builderOptions = builderOptions,
+    )
+}
 
-    val sizeModifier = if (size != null) {
-        Modifier.size(size)
-    } else {
-        Modifier
-    }
-
-    val baseModifier = Modifier
-        .then(sizeModifier)
-        .clip(RoundedCornerShape(percent = roundedPercent))
-        .then(modifier)
-
+@Composable
+fun InnerSoulImage(
+    cover: Cover?,
+    modifier: Modifier,
+    tint: Color,
+    contentScale: ContentScale,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
+) {
     when (cover) {
         null -> {
             TemplateImage(
-                modifier = baseModifier,
+                modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
             )
@@ -121,7 +116,7 @@ fun SoulImage(
         is Cover.CoverFile -> {
             FileCover(
                 cover = cover,
-                modifier = baseModifier,
+                modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
