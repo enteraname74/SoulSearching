@@ -22,7 +22,7 @@ object FrStrings : Strings {
     override val currentSong = "Musique courante"
     override val lyrics = "Paroles"
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
-    override val lyricsProvider = "Paroles proposées par lyrist"
+    override val lyricsProvider = "Paroles proposées par LrcLib"
 
     override val completeApplicationTitle = "Une application de musique complète"
     override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."

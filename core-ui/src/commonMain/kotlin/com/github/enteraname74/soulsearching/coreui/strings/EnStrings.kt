@@ -22,7 +22,7 @@ object EnStrings : Strings {
     override val currentSong = "Current song"
     override val lyrics = "Lyrics"
     override val noLyricsFound = "No lyrics found for this song"
-    override val lyricsProvider = "Lyrics proposed by Lyrist"
+    override val lyricsProvider = "Lyrics proposed by LrcLib"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."

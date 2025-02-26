@@ -2,7 +2,6 @@
 accompanist = "0.28.0"
 accompanist-system-ui-controller = "0.30.1"
 agp = "8.5.2"
-android-gradle-plugin = "8.3.0"
 android-version-code = "29"
 android-target-sdk = "35"
 android-compile-sdk = "35"
@@ -22,7 +21,6 @@ exposed = "0.55.0"
 ffmpeg = "6.0-2"
 file-kit = "0.8.1"
 gradle = "8.5.2"
-gson = "2.12.1"
 jaudiotagger = "3.0.1"
 jlibnotify = "1.2.0"
 kmpalette = "2.2.0"
@@ -74,7 +72,6 @@ ffmpeg = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpeg" }
 foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "compose" }
 file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }
@@ -82,6 +79,9 @@ kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette"
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

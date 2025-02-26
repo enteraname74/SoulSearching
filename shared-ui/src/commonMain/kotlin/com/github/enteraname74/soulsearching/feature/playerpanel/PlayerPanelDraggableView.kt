@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
@@ -34,11 +35,11 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
+    lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
-    onRetrieveLyrics: () -> Unit,
     secondaryColor: Color,
     textColor: Color,
     subTextColor: Color,
@@ -95,8 +96,8 @@ fun PlayerPanelDraggableView(
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
                 playerState = playerState,
+                lyricsState = lyricsState,
                 onMoreClickedOnMusic = onMoreClickedOnMusic,
-                onRetrieveLyrics = onRetrieveLyrics,
                 textColor = textColor,
                 subTextColor = subTextColor,
                 isExpanded = isExpanded,

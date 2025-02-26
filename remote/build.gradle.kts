@@ -28,7 +28,6 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.serialization.json)
         }
-
         androidMain.dependencies {
             implementation(libs.ktor.serialization.kotlinx.json)
         }
@@ -36,6 +35,10 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.serialization.gson)
             }
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }

@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MaxPlayerSidePanelWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils.MinPlayerSidePanelWidth
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
@@ -43,6 +44,7 @@ import kotlinx.coroutines.launch
 fun BoxScope.PlayerSwipeableDataScreen(
     maxHeight: Float,
     state: PlayerViewState.Data,
+    lyricsState: LyricsFetchState,
     settingsState: PlayerViewSettingsState,
     currentMusicProgression: Int,
     onArtistClicked: (selectedArtist: Artist) -> Unit,
@@ -57,7 +59,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
     next: () -> Unit,
-    onRetrieveLyrics: () -> Unit,
     updateCover: (ImageBitmap?) -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
@@ -68,7 +69,6 @@ fun BoxScope.PlayerSwipeableDataScreen(
             closeSelection()
         }
     }
-
 
     val coroutineScope = rememberCoroutineScope()
     val alphaTransition = PlayerUiUtils.getAlphaTransition()
@@ -246,8 +246,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 if (PlayerUiUtils.canShowSidePanel()) {
                     PlayerPanelContent(
                         playerState = state,
+                        lyricsState = lyricsState,
                         onMoreClickedOnMusic = showMusicBottomSheet,
-                        onRetrieveLyrics = onRetrieveLyrics,
                         textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                         subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                         isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
@@ -275,8 +275,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
             PlayerPanelDraggableView(
                 maxHeight = maxHeight,
                 playerState = state,
+                lyricsState = lyricsState,
                 onMoreClickedOnMusic = showMusicBottomSheet,
-                onRetrieveLyrics = onRetrieveLyrics,
                 secondaryColor = SoulSearchingColorTheme.colorScheme.secondary,
                 textColor = SoulSearchingColorTheme.colorScheme.onSecondary,
                 subTextColor = SoulSearchingColorTheme.colorScheme.subSecondaryText,
@@ -297,8 +297,8 @@ fun BoxScope.PlayerSwipeableDataScreen(
             ) {
                 PlayerPanelContent(
                     playerState = state,
+                    lyricsState = lyricsState,
                     onMoreClickedOnMusic = showMusicBottomSheet,
-                    onRetrieveLyrics = onRetrieveLyrics,
                     textColor = SoulSearchingColorTheme.colorScheme.onPrimary,
                     subTextColor = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                     isExpanded = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
