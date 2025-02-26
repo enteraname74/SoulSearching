@@ -1,20 +1,20 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.domain.model.MusicLyrics
 import com.github.enteraname74.domain.model.SyncedLyric
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
@@ -22,6 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import kotlin.math.min
 
 @Composable
 fun MusicLyricsView(
@@ -101,17 +102,66 @@ private fun SyncedLyricsView(
     lyrics: List<SyncedLyric>,
     currentHighlightedLine: Int?,
 ) {
+    val lazyListState = rememberLazyListState()
+
+    println("CURRENT? $currentHighlightedLine")
+
+    val shouldFocusOnLine: Boolean by remember(currentHighlightedLine) {
+        derivedStateOf {
+            if (currentHighlightedLine == null) return@derivedStateOf false
+
+            // We want to focus the user on the current highlighted line if it is in the view of the user.
+            val firstItemIndex: Int = lazyListState.firstVisibleItemIndex
+            val lastItemIndex: Int = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: firstItemIndex
+
+            // We want to reduce the bounds a little to let the user have more freedom when viewing the lyrics.
+            val upperBound = min(firstItemIndex+1, lastItemIndex)
+            val lowerBounds = maxOf(lastItemIndex-1, firstItemIndex)
+
+            println("CURRENT: $currentHighlightedLine, upper: $upperBound, lower: $lowerBounds")
+
+            currentHighlightedLine in upperBound..lowerBounds
+        }
+    }
+
+    println("SHOULD FOCUS: $shouldFocusOnLine")
+
+    var heightOfPreviousItem by remember { mutableStateOf(0) }
+
+    LaunchedEffect(currentHighlightedLine) {
+        if (shouldFocusOnLine) {
+            currentHighlightedLine?.let {
+                lazyListState.animateScrollToItem(
+                    index = it,
+                    scrollOffset = -heightOfPreviousItem,
+                )
+            }
+        }
+    }
+
     LazyColumnCompat(
         horizontalAlignment = Alignment.CenterHorizontally,
+        state = lazyListState,
     ) {
         items(
             count = lyrics.size,
         ) { pos ->
+            val sizeModifier = if (currentHighlightedLine != null && pos == currentHighlightedLine - 1) {
+                Modifier.onGloballyPositioned { layoutCoordinates ->
+                    heightOfPreviousItem = layoutCoordinates.size.height
+                }
+            } else {
+                Modifier
+            }
+
             Text(
                 text = lyrics[pos].line,
+                modifier = Modifier
+                    .padding(vertical = UiConstants.Spacing.mediumPlus)
+                    .then(sizeModifier),
                 fontWeight = if (pos == currentHighlightedLine) FontWeight.Bold else FontWeight.Normal,
                 color = contentColor,
-                fontSize = 14.sp
+                fontSize = 18.sp
             )
         }
 
