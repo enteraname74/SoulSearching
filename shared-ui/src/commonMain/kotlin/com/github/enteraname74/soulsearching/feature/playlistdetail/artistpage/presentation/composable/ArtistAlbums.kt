@@ -94,4 +94,4 @@ fun ArtistAlbums(
 }
 
 private const val ARTIST_ALBUM_CONTENT_TYPE: String = "ARTIST_ALBUM_CONTENT_TYPE"
-private val LARGE_COVER_SIZE: Dp = 182.dp
+private val LARGE_COVER_SIZE: Dp = 174.dp

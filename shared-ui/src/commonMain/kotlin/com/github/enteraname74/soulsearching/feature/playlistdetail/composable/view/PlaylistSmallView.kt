@@ -178,6 +178,8 @@ fun PlaylistSmallView(
                 contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
             ) { elt ->
                 MusicItemComposable(
+                    modifier = Modifier
+                        .animateItem(),
                     music = elt,
                     onClick = { music ->
                         playlistDetailListener.onUpdateNbPlayed()

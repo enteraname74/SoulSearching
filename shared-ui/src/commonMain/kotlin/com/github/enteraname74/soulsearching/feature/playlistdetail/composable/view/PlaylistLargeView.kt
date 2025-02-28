@@ -123,9 +123,8 @@ fun PlaylistLargeView(
         ) { elt ->
             MusicItemComposable(
                 modifier = Modifier
-                    .padding(
-                        horizontal = UiConstants.Spacing.huge,
-                    ),
+                    .animateItem()
+                    .padding(horizontal = UiConstants.Spacing.huge),
                 music = elt,
                 onClick = { music ->
                     playlistDetailListener.onUpdateNbPlayed()
