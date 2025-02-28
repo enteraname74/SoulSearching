@@ -88,7 +88,7 @@ fun PlayerListView(
             LazyColumnCompat(
                 state = playerListState,
                 contentPadding = PaddingValues(
-                    bottom = getStatusBarPadding().toDp()
+                    bottom = getNavigationBarPadding().toDp()
                 )
             ) {
                 items(

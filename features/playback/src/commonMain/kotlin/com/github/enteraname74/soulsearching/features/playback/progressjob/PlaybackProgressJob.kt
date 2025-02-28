@@ -29,9 +29,7 @@ internal class PlaybackProgressJob(
         if (durationJob != null) return
         durationJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
-                withContext(Dispatchers.IO) {
-                    Thread.sleep(ONE_SECOND_DELAY)
-                }
+                delay(DELAY_BEFORE_SENDING_VALUE)
                 val position = callback.getMusicPosition()
                 _state.value = position
                 settings.set(
@@ -55,6 +53,6 @@ internal class PlaybackProgressJob(
     }
 
     companion object {
-        private const val ONE_SECOND_DELAY: Long = 1000L
+        private const val DELAY_BEFORE_SENDING_VALUE: Long = 200L
     }
 }

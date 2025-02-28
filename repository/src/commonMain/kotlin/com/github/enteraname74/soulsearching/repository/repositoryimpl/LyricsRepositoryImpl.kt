@@ -3,12 +3,12 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicLyrics
 import com.github.enteraname74.domain.repository.LyricsRepository
-import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.LyricsRemoteDataSource
 
 class LyricsRepositoryImpl(
-    private val lyricsDataSource: LyricsDataSource,
+    private val lyricsRemoteDataSource: LyricsRemoteDataSource,
 ): LyricsRepository {
     override suspend fun getLyricsOfSong(music: Music): MusicLyrics? =
-        lyricsDataSource.getLyricsOfSong(music)
+        lyricsRemoteDataSource.getLyricsOfSong(music)
 }
 

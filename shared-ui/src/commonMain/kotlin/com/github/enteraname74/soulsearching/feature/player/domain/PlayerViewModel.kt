@@ -115,6 +115,7 @@ class PlayerViewModel(
                         highlightedLyricsLine = lyrics
                             .syncedLyrics
                             ?.indexOfLast { it.timestampMs < progression }
+                            ?.takeIf { it >= 0 }
                     )
                 }
             }

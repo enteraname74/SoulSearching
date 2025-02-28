@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -14,15 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.SyncedLyric
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
-import kotlin.math.min
 
 @Composable
 fun MusicLyricsView(
@@ -61,7 +60,7 @@ private fun FetchingLyricsView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = getStatusBarPadding().toDp())
+            .padding(bottom = getNavigationBarPadding().toDp())
     ) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
@@ -104,29 +103,29 @@ private fun SyncedLyricsView(
 ) {
     val lazyListState = rememberLazyListState()
 
-    println("CURRENT? $currentHighlightedLine")
-
     val shouldFocusOnLine: Boolean by remember(currentHighlightedLine) {
         derivedStateOf {
             if (currentHighlightedLine == null) return@derivedStateOf false
 
-            // We want to focus the user on the current highlighted line if it is in the view of the user.
-            val firstItemIndex: Int = lazyListState.firstVisibleItemIndex
-            val lastItemIndex: Int = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: firstItemIndex
+            // We want to focus the user on the current highlighted line if it is in the view of the user (top of the view).
+            val upperBounds: Int = lazyListState.firstVisibleItemIndex
+            val lowerBounds: Int = upperBounds + SYNCED_LYRICS_LOWER_BOUNDS_LIMIT
 
-            // We want to reduce the bounds a little to let the user have more freedom when viewing the lyrics.
-            val upperBound = min(firstItemIndex+1, lastItemIndex)
-            val lowerBounds = maxOf(lastItemIndex-1, firstItemIndex)
-
-            println("CURRENT: $currentHighlightedLine, upper: $upperBound, lower: $lowerBounds")
-
-            currentHighlightedLine in upperBound..lowerBounds
+            currentHighlightedLine in upperBounds..lowerBounds
         }
     }
 
-    println("SHOULD FOCUS: $shouldFocusOnLine")
-
     var heightOfPreviousItem by remember { mutableStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        // We want to focus the current highlighted lyrics when opening the view
+        currentHighlightedLine?.let {
+            lazyListState.animateScrollToItem(
+                index = it,
+                scrollOffset = -heightOfPreviousItem,
+            )
+        }
+    }
 
     LaunchedEffect(currentHighlightedLine) {
         if (shouldFocusOnLine) {
@@ -141,6 +140,9 @@ private fun SyncedLyricsView(
 
     LazyColumnCompat(
         horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(
+            horizontal = UiConstants.Spacing.medium,
+        ),
         state = lazyListState,
     ) {
         items(
@@ -154,14 +156,17 @@ private fun SyncedLyricsView(
                 Modifier
             }
 
+            val isHighlighted = pos == currentHighlightedLine
+
             Text(
                 text = lyrics[pos].line,
                 modifier = Modifier
-                    .padding(vertical = UiConstants.Spacing.mediumPlus)
-                    .then(sizeModifier),
-                fontWeight = if (pos == currentHighlightedLine) FontWeight.Bold else FontWeight.Normal,
-                color = contentColor,
-                fontSize = 18.sp
+                    .then(sizeModifier)
+                    .padding(vertical = 5.dp),
+                fontWeight = if (isHighlighted) FontWeight.Bold else FontWeight.Normal,
+                color = if (isHighlighted) contentColor else subTextColor,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp
             )
         }
 
@@ -180,7 +185,7 @@ private fun SyncedLyricsView(
         item {
             Spacer(
                 modifier = Modifier
-                    .height(getStatusBarPadding().toDp())
+                    .height(getNavigationBarPadding().toDp())
             )
         }
     }
@@ -221,7 +226,7 @@ private fun PlainLyricsView(
         )
         Spacer(
             modifier = Modifier
-                .height(getStatusBarPadding().toDp())
+                .height(getNavigationBarPadding().toDp())
         )
     }
 }
@@ -234,7 +239,7 @@ private fun NoLyricsFoundView(
         modifier = Modifier
             .fillMaxSize()
             .padding(UiConstants.Spacing.small)
-            .padding(bottom = getStatusBarPadding().toDp())
+            .padding(bottom = getNavigationBarPadding().toDp())
     ) {
         Text(
             modifier = Modifier
@@ -246,3 +251,5 @@ private fun NoLyricsFoundView(
         )
     }
 }
+
+private const val SYNCED_LYRICS_LOWER_BOUNDS_LIMIT: Int = 4
