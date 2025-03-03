@@ -12,7 +12,7 @@ data class RemoteLyrics(
     fun toMusicLyrics(): MusicLyrics? =
         plainLyrics?.let {
             MusicLyrics(
-                plainLyrics = it,
+                plainLyrics = it.split("\n"),
                 syncedLyrics = formatSyncedLyrics()
             )
         }

@@ -1,7 +1,7 @@
 package com.github.enteraname74.domain.model
 
 data class MusicLyrics(
-    val plainLyrics: String,
+    val plainLyrics: List<String>,
     val syncedLyrics: List<SyncedLyric>?,
 )
 

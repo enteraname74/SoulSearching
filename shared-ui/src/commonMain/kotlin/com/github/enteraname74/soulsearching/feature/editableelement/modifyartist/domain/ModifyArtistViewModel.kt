@@ -89,7 +89,7 @@ class ModifyArtistViewModel(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
+    private val artistAllMusicCovers: StateFlow<CoverListState> = state.mapLatest { state ->
         when (state) {
             is ModifyArtistState.Data -> CoverListState.Data(
                 covers = coverRetriever.getAllUniqueCover(
@@ -121,7 +121,7 @@ class ModifyArtistViewModel(
     fun showCoversBottomSheet() {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
             title = { strings.coversOfTheArtist },
-            coverStateFlow = artistsCover,
+            coverStateFlow = artistAllMusicCovers,
             onCoverSelected = { cover ->
                 newCover.value = cover
             },

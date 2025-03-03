@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.coreui.button
 
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
@@ -19,12 +18,13 @@ fun SoulIconButton(
     badgeColor: Color? = null,
     contentDescription: String? = null,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     size: Dp = UiConstants.ImageSize.smallPlus,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
 ) {
     IconButton(
-        modifier = Modifier
+        modifier = modifier
             .pointerHoverIcon(PointerIcon.Hand),
         onClick = onClick,
         enabled = enabled,
@@ -33,18 +33,12 @@ fun SoulIconButton(
             containerColor = colors.containerColor,
         )
     ) {
-        BadgedBox(
-            badge = {
-
-            }
-        ) {
-            SoulIcon(
-                icon = icon,
-                badgeColor = badgeColor,
-                contentDescription = contentDescription,
-                tint = colors.contentColor,
-                size = size,
-            )
-        }
+        SoulIcon(
+            icon = icon,
+            badgeColor = badgeColor,
+            contentDescription = contentDescription,
+            tint = colors.contentColor,
+            size = size,
+        )
     }
 }
