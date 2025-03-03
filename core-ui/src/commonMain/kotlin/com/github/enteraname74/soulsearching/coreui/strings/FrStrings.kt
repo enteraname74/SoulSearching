@@ -114,6 +114,11 @@ object FrStrings : Strings {
     override val modifyArtist = "Modifier cet artiste"
     override val modifyMusic = "Modifier cette musique"
     override val modifyPlaylist = "Modifier cette playlist"
+    override val coversOfTheAlbum = "Couvertures des musiques de l'album"
+    override val coversOfTheArtist = "Couvertures des musiques de l'artiste"
+    override val coversOfThePlaylist = "Couvertures des musiques de la playlist"
+    override val coversOfSongAlbum = "Couvertures présentes dans l'album de la musique"
+    override val noAvailableCovers = "Aucune couverture disponible"
 
     override val deleteAlbum = "Supprimer cet album"
     override val deleteArtist = "Supprimer cet artiste"

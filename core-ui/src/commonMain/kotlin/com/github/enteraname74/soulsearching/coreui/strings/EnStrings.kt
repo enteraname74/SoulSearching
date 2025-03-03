@@ -112,6 +112,11 @@ object EnStrings : Strings {
     override val modifyArtist = "Modify this artist"
     override val modifyMusic = "Modify this song"
     override val modifyPlaylist = "Modify this playlist"
+    override val coversOfTheAlbum = "Covers of the album's songs"
+    override val coversOfTheArtist = "Covers of the artist's songs"
+    override val coversOfThePlaylist = "Covers of the playlist's songs"
+    override val coversOfSongAlbum = "Covers in the song's album"
+    override val noAvailableCovers = "No available covers"
 
     override val deleteAlbum = "Delete this album"
     override val deleteArtist = "Delete this artist"

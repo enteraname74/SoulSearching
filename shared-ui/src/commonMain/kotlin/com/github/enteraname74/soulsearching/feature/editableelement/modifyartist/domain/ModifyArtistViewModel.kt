@@ -7,11 +7,16 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
@@ -26,6 +31,7 @@ class ModifyArtistViewModel(
     private val updateArtistUseCase: UpdateArtistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
+    private val coverRetriever: CoverRetriever,
 ) : ScreenModel {
     private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -33,6 +39,9 @@ class ModifyArtistViewModel(
         ModifyArtistNavigationState.Idle,
     )
     val navigationState: StateFlow<ModifyArtistNavigationState> = _navigationState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val initialArtist: Flow<ArtistWithMusics?> = artistId.flatMapLatest { id ->
@@ -79,6 +88,22 @@ class ModifyArtistViewModel(
         initialValue = ModifyArtistFormState.NoData,
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
+        when (state) {
+            is ModifyArtistState.Data -> CoverListState.Data(
+                covers = coverRetriever.getAllUniqueCover(
+                    covers = state.initialArtist.musics.map { it.cover }
+                )
+            )
+            ModifyArtistState.Loading -> CoverListState.Loading
+        }
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = CoverListState.Loading,
+    )
+
     fun init(artistId: UUID) {
         this.artistId.value = artistId
     }
@@ -87,10 +112,26 @@ class ModifyArtistViewModel(
         _navigationState.value = ModifyArtistNavigationState.Idle
     }
 
-    fun setNewCover(imageFile: PlatformFile) {
+    private fun setNewCover(imageFile: PlatformFile) {
         screenModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
+    }
+
+    fun showCoversBottomSheet() {
+        _bottomSheetState.value = EditableElementCoversBottomSheet(
+            title = { strings.coversOfTheArtist },
+            coverStateFlow = artistsCover,
+            onCoverSelected = { cover ->
+                newCover.value = cover
+            },
+            onCoverFromStorageSelected = { imageFile ->
+                setNewCover(imageFile = imageFile)
+            },
+            onClose = {
+                _bottomSheetState.value = null
+            }
+        )
     }
 
     /**

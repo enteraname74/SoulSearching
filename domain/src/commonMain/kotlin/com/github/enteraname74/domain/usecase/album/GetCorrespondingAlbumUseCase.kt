@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithArtist
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicAlbumRepository
 import kotlinx.coroutines.flow.first
@@ -50,5 +51,14 @@ class GetCorrespondingAlbumUseCase(
             musicId = musicId
         ) ?: return null
         return albumRepository.getFromId(albumId = albumId).first()
+    }
+
+    suspend fun withMusics(
+        musicId: UUID
+    ): AlbumWithMusics? {
+        val albumId: UUID = musicAlbumRepository.getAlbumIdFromMusicId(
+            musicId = musicId
+        ) ?: return null
+        return albumRepository.getAlbumWithMusics(albumId = albumId).first()
     }
 }

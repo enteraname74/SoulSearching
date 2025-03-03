@@ -125,6 +125,11 @@ interface Strings {
     val modifyArtist: String
     val modifyMusic: String
     val modifyPlaylist: String
+    val coversOfTheAlbum: String
+    val coversOfTheArtist: String
+    val coversOfThePlaylist: String
+    val coversOfSongAlbum: String
+    val noAvailableCovers: String
 
     val deleteAlbum: String
     val deleteArtist: String

@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
@@ -16,9 +17,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
-import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.PickerType
-import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
 /**
@@ -37,6 +35,9 @@ data class ModifyPlaylistScreen(
         val state: ModifyPlaylistState by screenModel.state.collectAsState()
         val formState: ModifyPlaylistFormState by screenModel.formState.collectAsState()
         val navigationState: ModifyPlaylistNavigationState by screenModel.navigationState.collectAsState()
+
+        val bottomSheetState: SoulBottomSheet? by screenModel.bottomSheetState.collectAsState()
+        bottomSheetState?.BottomSheet()
 
         LaunchedEffect(navigationState) {
             when (navigationState) {
@@ -59,7 +60,7 @@ data class ModifyPlaylistScreen(
             state = state,
             formState = formState,
             navigateBack = { navigator.pop() },
-            onNewImageSet = screenModel::setNewCover,
+            onSelectCover = screenModel::showCoversBottomSheet,
             onValidateModification = screenModel::updatePlaylist,
         )
     }
@@ -70,16 +71,9 @@ private fun ModifyPlaylistScreenView(
     state: ModifyPlaylistState,
     formState: ModifyPlaylistFormState,
     navigateBack: () -> Unit,
-    onNewImageSet: (cover: PlatformFile) -> Unit,
+    onSelectCover: () -> Unit,
     onValidateModification: () -> Unit,
 ) {
-    val imagePickerLauncher = rememberFilePickerLauncher(
-        type = PickerType.Image,
-    ) { file ->
-        if (file == null) return@rememberFilePickerLauncher
-        onNewImageSet(file)
-    }
-
     when {
         state is ModifyPlaylistState.Data && formState is ModifyPlaylistFormState.Data -> {
             EditableElementView(
@@ -87,7 +81,7 @@ private fun ModifyPlaylistScreenView(
                 coverSectionTitle = strings.playlistCover,
                 editableElement = state.editableElement,
                 navigateBack = navigateBack,
-                onSelectCover = { imagePickerLauncher.launch() },
+                onSelectCover = onSelectCover,
                 onValidateModification = onValidateModification,
                 textFields = formState.textFields,
             )

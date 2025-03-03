@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.composables.bottomsheets.music
+package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.domain.model.Cover
@@ -19,15 +21,20 @@ import com.github.enteraname74.soulsearching.coreui.list.LazyVerticalGridCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoverSelectionItem
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.editableElementCoversChoice
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
+import kotlinx.coroutines.flow.StateFlow
 import java.util.*
 
 class MusicCoversBottomSheet(
     private val musicCover: Cover,
+    private val albumCoversStateFlow: StateFlow<CoverListState>,
     private val onMusicFileCoverSelected: (path: String) -> Unit,
     private val onFileCoverSelected: (coverId: UUID) -> Unit,
+    private val onAlbumCoverSelected: (ByteArray) -> Unit,
     private val onCoverFromStorageSelected: (imageFile: PlatformFile) -> Unit,
     private val onClose: () -> Unit,
 ): SoulBottomSheet {
@@ -37,6 +44,8 @@ class MusicCoversBottomSheet(
         coverFile: Cover.CoverFile,
         closeWithAnim: () -> Unit,
     ) {
+        val coverState: CoverListState by albumCoversStateFlow.collectAsState()
+
         LazyVerticalGridCompat(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Adaptive(UiConstants.ImageSize.largePlus),
@@ -72,6 +81,15 @@ class MusicCoversBottomSheet(
                     )
                 }
             }
+
+            editableElementCoversChoice(
+                coverState = coverState,
+                onCoverSelected = {
+                    closeWithAnim()
+                    onAlbumCoverSelected(it)
+                },
+                sectionTitle = strings.coversOfSongAlbum,
+            )
         }
     }
 
@@ -85,6 +103,7 @@ class MusicCoversBottomSheet(
                 type = PickerType.Image,
             ) { file ->
                 if (file == null) return@rememberFilePickerLauncher
+                closeWithAnim()
                 onCoverFromStorageSelected(file)
             }
 
