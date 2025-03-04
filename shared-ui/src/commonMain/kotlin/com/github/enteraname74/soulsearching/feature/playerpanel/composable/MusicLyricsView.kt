@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Sync
+import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -18,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -34,7 +37,9 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -187,11 +192,9 @@ private fun SwitchLyricsModeButton(
         exit = slideOutVertically(targetOffsetY = { it * 2 }),
     ) {
         SoulIconButton(
-            modifier = Modifier.size(
-                UiConstants.ImageSize.mediumPlus
-            ),
-            icon = Icons.Rounded.Sync,
-            size = UiConstants.ImageSize.medium,
+            modifier = Modifier.size(44.dp),
+            icon = Icons.Rounded.SyncAlt,
+            size = 28.dp,
             colors = SoulButtonDefaults.primaryColors(),
             onClick = onSwitch
         )
