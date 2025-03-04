@@ -96,7 +96,6 @@ private fun CoverImage(
 ) {
     SoulByteArrayImage(
         data = cover,
-        key = cover.contentHashCode().toString(),
         size = null,
         modifier = Modifier
             .fillMaxWidth()

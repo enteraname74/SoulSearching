@@ -40,7 +40,7 @@ fun PlayerPanelDraggableView(
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
-    secondaryColor: Color,
+    containerColor: Color,
     textColor: Color,
     subTextColor: Color,
     buttonColors: SoulButtonColors,
@@ -85,7 +85,7 @@ fun PlayerPanelDraggableView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = secondaryColor,
+                    color = containerColor,
                     shape = RoundedCornerShape(
                         topStartPercent = 4,
                         topEndPercent = 4
@@ -98,7 +98,8 @@ fun PlayerPanelDraggableView(
                 playerState = playerState,
                 lyricsState = lyricsState,
                 onMoreClickedOnMusic = onMoreClickedOnMusic,
-                textColor = textColor,
+                contentColor = textColor,
+                containerColor = containerColor,
                 subTextColor = subTextColor,
                 isExpanded = isExpanded,
                 buttonColors = buttonColors,
