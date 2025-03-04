@@ -31,6 +31,7 @@ koin-compose = "4.0.1"
 ktor = "2.3.12"
 media = "1.7.0"
 multiplatform-settings = "1.1.1"
+reorderable = "2.4.3"
 room = "2.6.1"
 sqlite-jdbc = "3.41.2.2"
 vlcj = "4.8.3"
@@ -94,6 +95,8 @@ ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.
 material-desktop = { module = "org.jetbrains.compose.material:material-desktop", version.ref = "compose" }
 material3-desktop = { module = "org.jetbrains.compose.material3:material3-desktop", version.ref = "compose" }
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 vlcj = { module  = "uk.co.caprica:vlcj", version.ref = "vlcj"}
 

@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -11,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -40,6 +43,8 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -98,6 +103,25 @@ fun PlayerListView(
 
             val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
+            var uiList by remember {
+                mutableStateOf(playedList)
+            }
+
+            val reorderableLazyListState = rememberReorderableLazyListState(playerListState) { from, to ->
+                uiList = uiList.toMutableList().apply {
+                    add(to.index, removeAt(from.index))
+                }
+            }
+
+            LaunchedEffect(playedList) {
+                // If the played list was updated, but we were in a dragged state, we don't update the ui list.
+                if (!reorderableLazyListState.isAnyItemDragging) {
+                    uiList = playedList
+                }
+            }
+
+
+
             LazyColumnCompat(
                 state = playerListState,
                 contentPadding = PaddingValues(
@@ -105,37 +129,59 @@ fun PlayerListView(
                 )
             ) {
                 items(
-                    items = playedList,
+                    items = uiList,
                     key = { it.musicId },
                     contentType = { PLAYER_LIST_CONTENT_TYPE }
                 ) { elt ->
 
-                    Swipeable(
-                        modifier = Modifier
-                            .animateItem(),
-                        music = elt,
-                        contentColor = contentColor,
-                        containerColor = containerColor,
-                    ) {
-                        MusicItemComposable(
-                            music = elt,
-                            onClick = { music ->
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    playbackManager.setAndPlayMusic(music)
-                                }
-                            },
-                            onMoreClicked = {
-                                coroutineScope.launch {
-                                    onMoreClickedOnMusic(elt)
-                                }
-                            },
-                            onLongClick = { onLongSelectOnMusic(elt) },
-                            textColor = contentColor,
-                            isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                            isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                            isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                            selectedIconColors = selectedIconColors,
-                        )
+                    ReorderableItem(
+                        state = reorderableLazyListState,
+                        key = elt.musicId
+                    ) { isDragging ->
+                        val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
+
+                        Surface(shadowElevation = elevation) {
+                            Swipeable(
+                                modifier = Modifier
+                                    .animateItem(),
+                                music = elt,
+                                contentColor = contentColor,
+                                containerColor = containerColor,
+                            ) {
+                                MusicItemComposable(
+                                    modifier = Modifier
+                                        .background(containerColor),
+                                    music = elt,
+                                    reorderableModifier = Modifier
+                                        .draggableHandle(
+                                            onDragStopped = {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    playbackManager.updatePlayedListAfterReorder(
+                                                        newList = uiList
+                                                    )
+                                                }
+                                            }
+                                        ),
+                                    onClick = { music ->
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            playbackManager.setAndPlayMusic(music)
+                                        }
+                                    },
+                                    onMoreClicked = {
+                                        coroutineScope.launch {
+                                            onMoreClickedOnMusic(elt)
+                                        }
+                                    },
+                                    onLongClick = { onLongSelectOnMusic(elt) },
+                                    textColor = contentColor,
+                                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                                    selectedIconColors = selectedIconColors,
+                                )
+                            }
+                        }
+
                     }
                 }
             }
@@ -253,8 +299,9 @@ private fun DeletionIndicator(
     )
 
     Box(
-        modifier = modifier
-            .background(actualContainerColor),
+        modifier = Modifier
+            .background(actualContainerColor)
+            .then(modifier),
         contentAlignment = Alignment.Center,
     ) {
         SoulIcon(
@@ -271,4 +318,4 @@ private enum class MusicItemSwipeableState {
 
 private const val PLAYER_LIST_CONTENT_TYPE: String = "PLAYER_LIST_CONTENT_TYPE"
 private const val DELETION_OFFSET_RATIO: Float = 0.3f
-private const val DELETION_ZONE_CONTENT_COLOR_RATIO: Float = 0.7f
+private const val DELETION_ZONE_CONTENT_COLOR_RATIO: Float = 0.6f

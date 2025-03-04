@@ -121,6 +121,25 @@ internal class PlaybackListManager(
         }
     }
 
+    /**
+     * Updates the played list after a reorder in it.
+     */
+    suspend fun updatePlayedListAfterReorder(
+        newList: List<Music>
+    ) {
+        withDataState {
+            _state.value = this.copy(
+                playedList = newList,
+            )
+
+            savePlayedList(list = newList)
+            settings.saveCurrentMusicInformation(
+                currentMusicIndex = newList.indexOf(currentMusic),
+                currentMusicPosition = playbackCallback.getMusicPosition(),
+            )
+        }
+    }
+
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
         if (musics.isEmpty()) return
         /*

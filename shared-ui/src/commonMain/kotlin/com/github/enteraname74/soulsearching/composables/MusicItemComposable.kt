@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +38,7 @@ fun MusicItemComposable(
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
     isPlayedMusic: Boolean,
     onLongClick: () -> Unit = {},
+    reorderableModifier: Modifier? = null,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
 ) {
@@ -91,12 +93,21 @@ fun MusicItemComposable(
                 )
 
             }
-            SoulIcon(
-                modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
-                icon = Icons.Rounded.MoreVert,
-                contentDescription = strings.moreButton,
-                tint = textColor
-            )
+
+            if (reorderableModifier != null) {
+                SoulIcon(
+                    modifier = reorderableModifier,
+                    icon = Icons.Rounded.DragHandle,
+                    tint = textColor
+                )
+            } else {
+                SoulIcon(
+                    modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
+                    icon = Icons.Rounded.MoreVert,
+                    contentDescription = strings.moreButton,
+                    tint = textColor
+                )
+            }
         }
     }
 }
