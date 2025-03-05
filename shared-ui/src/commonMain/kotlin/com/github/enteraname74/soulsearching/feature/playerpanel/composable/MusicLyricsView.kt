@@ -257,11 +257,11 @@ private fun SyncedLyricsView(
     ) {
 
         var firstPreviousHeight: Int by rememberSaveable {
-            mutableStateOf(0)
+            mutableIntStateOf(0)
         }
 
         var secondPreviousHeight: Int by rememberSaveable {
-            mutableStateOf(0)
+            mutableIntStateOf(0)
         }
 
         LazyColumnCompat(
