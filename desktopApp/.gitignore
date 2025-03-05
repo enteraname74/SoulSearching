@@ -1,0 +1,10 @@
+/build
+.gradle
+
+*.db
+
+# Flatpak
+build-dir
+repo
+.flatpak-builder
+*.flatpak
