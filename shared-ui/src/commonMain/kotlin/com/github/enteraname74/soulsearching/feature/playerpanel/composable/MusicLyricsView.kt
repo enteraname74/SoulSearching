@@ -125,7 +125,7 @@ private fun LyricsView(
 
     val pagerState = rememberPagerState(
         initialPage = if (hasSyncedLyrics) 1 else 0,
-        pageCount = { 2 }
+        pageCount = { if (hasSyncedLyrics) 2 else 1 }
     )
 
     val coroutineScope = rememberCoroutineScope()
