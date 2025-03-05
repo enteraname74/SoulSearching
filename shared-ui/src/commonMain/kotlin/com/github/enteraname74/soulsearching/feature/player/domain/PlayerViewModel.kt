@@ -47,7 +47,7 @@ class PlayerViewModel(
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val getArtistsOfMusicIdUseCase: GetArtistsOfMusicUseCase,
+    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
@@ -88,7 +88,7 @@ class PlayerViewModel(
         playbackManager.mainState.flatMapLatest { playbackState ->
             when (playbackState) {
                 is PlaybackManagerState.Data -> {
-                    getArtistsOfMusicIdUseCase(
+                    getArtistsOfMusicUseCase(
                         musicId = playbackState.currentMusic.musicId,
                     )
                 }
@@ -153,7 +153,7 @@ class PlayerViewModel(
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
-                    artistsOfCurrentMusic = currentMusicArtists.sortedBy { it.artistName },
+                    artistsOfCurrentMusic = currentMusicArtists,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     playedList = playbackMainState.playedList,
