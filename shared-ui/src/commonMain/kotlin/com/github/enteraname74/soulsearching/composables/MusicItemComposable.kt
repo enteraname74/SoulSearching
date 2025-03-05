@@ -29,7 +29,6 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.composable.So
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun MusicItemComposable(
@@ -46,65 +45,70 @@ fun MusicItemComposable(
     isSelectionModeOn: Boolean = false,
     padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium)
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .combinedClickableWithRightClick(
-                onClick = {
-                    if (isSelectionModeOn) {
-                        onLongClick()
-                    } else {
-                        onClick(music)
-                    }
-                },
-                onLongClick = onLongClick,
-            )
-            .padding(padding),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    BoxWithConstraints(
+        modifier = modifier,
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+            modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickableWithRightClick(
+                    onClick = {
+                        if (isSelectionModeOn) {
+                            onLongClick()
+                        } else {
+                            onClick(music)
+                        }
+                    },
+                    onLongClick = onLongClick,
+                )
+                .padding(padding),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            FlippableImage(
-                shouldRotate = isSelected,
-                cover = music.cover,
-                tint = textColor,
-                selectedIconColors = selectedIconColors,
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                FlippableImage(
+                    shouldRotate = isSelected,
+                    cover = music.cover,
+                    tint = textColor,
+                    selectedIconColors = selectedIconColors,
+                )
 
-            val fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
-            when(rememberWindowSize()) {
-                WindowSize.Large -> {
-                    MusicInformationWideView(
-                        music = music,
-                        textColor = textColor,
-                        fontWeight = fontWeight,
+                val fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
+
+                when {
+                    this@BoxWithConstraints.maxWidth > WindowSize.Medium.maxValue -> {
+                        MusicInformationWideView(
+                            music = music,
+                            textColor = textColor,
+                            fontWeight = fontWeight,
+                        )
+                    }
+                    else -> {
+                        MusicInformationDefaultView(
+                            music = music,
+                            textColor = textColor,
+                            fontWeight = fontWeight,
+                        )
+                    }
+                }
+
+                if (reorderableModifier != null) {
+                    SoulIcon(
+                        modifier = reorderableModifier,
+                        icon = Icons.Rounded.DragHandle,
+                        tint = textColor
+                    )
+                } else {
+                    SoulIcon(
+                        modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
+                        icon = Icons.Rounded.MoreVert,
+                        contentDescription = strings.moreButton,
+                        tint = textColor
                     )
                 }
-                else -> {
-                    MusicInformationDefaultView(
-                        music = music,
-                        textColor = textColor,
-                        fontWeight = fontWeight,
-                    )
-                }
-            }
-
-            if (reorderableModifier != null) {
-                SoulIcon(
-                    modifier = reorderableModifier,
-                    icon = Icons.Rounded.DragHandle,
-                    tint = textColor
-                )
-            } else {
-                SoulIcon(
-                    modifier = Modifier.clickableWithHandCursor { onMoreClicked() },
-                    icon = Icons.Rounded.MoreVert,
-                    contentDescription = strings.moreButton,
-                    tint = textColor
-                )
             }
         }
     }
