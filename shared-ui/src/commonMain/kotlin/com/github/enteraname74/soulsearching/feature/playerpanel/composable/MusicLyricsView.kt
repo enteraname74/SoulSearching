@@ -5,6 +5,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -129,9 +131,17 @@ private fun LyricsView(
     )
 
     val coroutineScope = rememberCoroutineScope()
+    val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+            ) {
+                isSwitchLyricsVisible = !isSwitchLyricsVisible
+            }
     ) {
 
         HorizontalPager(
@@ -266,7 +276,7 @@ private fun SyncedLyricsView(
 
         LazyColumnCompat(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .nestedScroll(nestedScrollConnection),
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(
@@ -410,7 +420,7 @@ private fun PlainLyricsView(
 ) {
     LazyColumnCompat(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .nestedScroll(nestedScrollConnection),
         contentPadding = PaddingValues(
             top = UiConstants.Spacing.medium,
