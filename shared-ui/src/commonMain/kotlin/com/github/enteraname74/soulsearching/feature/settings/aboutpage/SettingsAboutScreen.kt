@@ -86,7 +86,6 @@ class SettingsAboutScreen : Screen, SettingPage {
                 Column(
                     modifier = Modifier
                         .clickableWithHandCursor {
-                            println("WILL OPEN: $release")
                             uriHandler.openUri(release.githubUrl)
                         }
                         .fillMaxWidth()
