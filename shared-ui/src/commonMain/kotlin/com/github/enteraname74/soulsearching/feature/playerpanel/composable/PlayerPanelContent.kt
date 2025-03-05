@@ -69,6 +69,7 @@ fun PlayerPanelContent(
             screen = {
                 MusicLyricsView(
                     contentColor = contentColor,
+                    containerColor = containerColor,
                     noLyricsColor = subTextColor,
                     lyricsState = lyricsState,
                     isExpanded = isExpanded,

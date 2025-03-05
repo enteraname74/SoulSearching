@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playerpanel.composable
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -11,7 +12,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -37,9 +38,7 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidth
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import kotlinx.coroutines.launch
 import kotlin.math.max
@@ -48,6 +47,7 @@ import kotlin.math.max
 fun MusicLyricsView(
     noLyricsColor: Color,
     contentColor: Color,
+    containerColor: Color,
     lyricsState: LyricsFetchState,
     isExpanded: Boolean,
 ) {
@@ -63,8 +63,9 @@ fun MusicLyricsView(
 
             is LyricsFetchState.FoundLyrics -> LyricsView(
                 contentColor = contentColor,
+                containerColor = containerColor,
                 subTextColor = noLyricsColor,
-                lyricsState = lyricsState
+                lyricsState = lyricsState,
             )
 
             LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
@@ -93,6 +94,7 @@ private fun FetchingLyricsView(
 @Composable
 private fun LyricsView(
     contentColor: Color,
+    containerColor: Color,
     subTextColor: Color,
     lyricsState: LyricsFetchState.FoundLyrics,
 ) {
@@ -148,6 +150,7 @@ private fun LyricsView(
                 else -> {
                     SyncedLyricsView(
                         contentColor = contentColor,
+                        containerColor = containerColor,
                         subTextColor = subTextColor,
                         lyrics = lyricsState.lyrics.syncedLyrics!!,
                         currentHighlightedLine = lyricsState.highlightedLyricsLine,
@@ -214,6 +217,7 @@ private suspend fun LazyListState.animateToHighlightedLine(
 @Composable
 private fun SyncedLyricsView(
     contentColor: Color,
+    containerColor: Color,
     subTextColor: Color,
     lyrics: List<SyncedLyric>,
     currentHighlightedLine: Int?,
@@ -244,87 +248,152 @@ private fun SyncedLyricsView(
         }
     }
 
-    LazyColumnCompat(
-        modifier = Modifier
-            .fillMaxWidth()
-            .nestedScroll(nestedScrollConnection),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(
-            horizontal = UiConstants.Spacing.medium,
-        ),
-        state = lazyListState,
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(
-            count = lyrics.size,
-        ) { pos ->
-            val isHighlighted = pos == currentHighlightedLine
 
-            val highlightedLineState = HighlightedLineState(
-                line = pos,
-                isHighlighted = isHighlighted,
-                isFocused = shouldFocusOnLine,
-            )
+        var firstPreviousHeight: Int by rememberSaveable {
+            mutableStateOf(0)
+        }
 
-            val weight: Int by animateIntAsState(
-                targetValue = (if (highlightedLineState.isHighlightedAndFocused) {
-                    FontWeight.ExtraBold
-                } else if (isHighlighted) {
-                    FontWeight.Bold
+        var secondPreviousHeight: Int by rememberSaveable {
+            mutableStateOf(0)
+        }
+
+        LazyColumnCompat(
+            modifier = Modifier
+                .fillMaxWidth()
+                .nestedScroll(nestedScrollConnection),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(
+                horizontal = UiConstants.Spacing.medium,
+            ),
+            state = lazyListState,
+        ) {
+            items(
+                count = lyrics.size,
+            ) { pos ->
+                val isHighlighted = pos == currentHighlightedLine
+
+                val highlightedLineState = HighlightedLineState(
+                    line = pos,
+                    isHighlighted = isHighlighted,
+                    isFocused = shouldFocusOnLine,
+                )
+
+                val weight: Int by animateIntAsState(
+                    targetValue = (if (highlightedLineState.isHighlightedAndFocused) {
+                        FontWeight.ExtraBold
+                    } else if (isHighlighted) {
+                        FontWeight.Bold
+                    } else {
+                        FontWeight.Medium
+                    }).weight,
+                    animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION)
+                )
+
+                val color: Color by animateColorAsState(
+                    targetValue = if (isHighlighted) {
+                        contentColor
+                    } else {
+                        subTextColor
+                    },
+                    animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                )
+
+                val fontSize: Int by animateIntAsState(
+                    targetValue = if (highlightedLineState.isHighlightedAndFocused) {
+                        SYNCED_LYRIC_FOCUSED_SIZE
+                    } else {
+                        SYNCED_LYRIC_DEFAULT_SIZE
+                    },
+                    animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                )
+
+                val sizeModifier = if (currentHighlightedLine != null && pos == currentHighlightedLine - 1) {
+                    Modifier.onGloballyPositioned { layoutCoordinates ->
+                        firstPreviousHeight = layoutCoordinates.size.height
+                    }
+                } else if (currentHighlightedLine != null && pos == currentHighlightedLine - 2) {
+                    Modifier.onGloballyPositioned { layoutCoordinates ->
+                        secondPreviousHeight = layoutCoordinates.size.height
+                    }
                 } else {
-                    FontWeight.Medium
-                }).weight,
-                animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION)
-            )
+                    Modifier
+                }
 
-            val color: Color by animateColorAsState(
-                targetValue = if (isHighlighted) {
-                    contentColor
-                } else {
-                    subTextColor
-                },
-                animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
-            )
+                Text(
+                    text = lyrics[pos].line,
+                    modifier = sizeModifier
+                        .fillMaxWidth()
+                        .animateItem(
+                            fadeInSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                            placementSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                            fadeOutSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                        )
+                        .animateContentSize(
+                            animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+                            alignment = Alignment.Center,
+                        )
+                        .padding(vertical = SYNCED_LYRIC_VERTICAL_PADDING),
+                    fontWeight = FontWeight(weight),
+                    color = color,
+                    textAlign = TextAlign.Center,
+                    fontSize = fontSize.sp
+                )
+            }
 
-            val fontSize: Int by animateIntAsState(
-                targetValue = if (highlightedLineState.isHighlightedAndFocused) {
-                    SYNCED_LYRIC_FOCUSED_SIZE
-                } else {
-                    SYNCED_LYRIC_DEFAULT_SIZE
-                },
-                animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
-            )
+            item {
+                LyricsProvider(color = subTextColor)
+            }
 
-            Text(
-                text = lyrics[pos].line,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateItem(
-                        fadeInSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
-                        placementSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
-                        fadeOutSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(getNavigationBarPadding().toDp())
+                )
+            }
+        }
+
+        val previousItemsSize = (firstPreviousHeight + secondPreviousHeight).toDp()
+
+        val alpha: Float by animateFloatAsState(
+            targetValue = if (shouldFocusOnLine) {
+                0.8f
+            } else {
+                0.0f
+            },
+            animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(previousItemsSize)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            containerColor.copy(alpha = alpha),
+                            Color.Transparent,
+                        ),
                     )
-                    .animateContentSize(
-                        animationSpec = tween(TEXT_SIZE_ANIMATION_DURATION),
-                        alignment = Alignment.Center,
+                ),
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .height(maxHeight * 0.4f)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            containerColor.copy(alpha = alpha),
+                        ),
                     )
-                    .padding(vertical = SYNCED_LYRIC_VERTICAL_PADDING),
-                fontWeight = FontWeight(weight),
-                color = color,
-                textAlign = TextAlign.Center,
-                fontSize = fontSize.sp
-            )
-        }
-
-        item {
-            LyricsProvider(color = subTextColor)
-        }
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(getNavigationBarPadding().toDp())
-            )
-        }
+                ),
+        )
     }
 }
 
