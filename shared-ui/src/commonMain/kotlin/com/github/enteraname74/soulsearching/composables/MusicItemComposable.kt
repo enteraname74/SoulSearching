@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
@@ -27,6 +28,8 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.composable.So
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun MusicItemComposable(
@@ -41,6 +44,7 @@ fun MusicItemComposable(
     reorderableModifier: Modifier? = null,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
+    padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium)
 ) {
     Row(
         modifier = modifier
@@ -55,7 +59,7 @@ fun MusicItemComposable(
                 },
                 onLongClick = onLongClick,
             )
-            .padding(UiConstants.Spacing.medium),
+            .padding(padding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -69,29 +73,23 @@ fun MusicItemComposable(
                 tint = textColor,
                 selectedIconColors = selectedIconColors,
             )
-            Column(
-                modifier = Modifier
-                    .height(UiConstants.CoverSize.small)
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = music.name,
-                    color = textColor,
-                    style = MaterialTheme.typography.labelLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
-                )
-                Text(
-                    text = music.informationText,
-                    color = textColor,
-                    style = MaterialTheme.typography.labelLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
-                )
 
+            val fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
+            when(rememberWindowSize()) {
+                WindowSize.Large -> {
+                    MusicInformationWideView(
+                        music = music,
+                        textColor = textColor,
+                        fontWeight = fontWeight,
+                    )
+                }
+                else -> {
+                    MusicInformationDefaultView(
+                        music = music,
+                        textColor = textColor,
+                        fontWeight = fontWeight,
+                    )
+                }
             }
 
             if (reorderableModifier != null) {
@@ -113,6 +111,83 @@ fun MusicItemComposable(
 }
 
 @Composable
+private fun RowScope.MusicInformationDefaultView(
+    music: Music,
+    textColor: Color,
+    fontWeight: FontWeight,
+) {
+    Column(
+        modifier = Modifier
+            .height(UiConstants.CoverSize.small)
+            .weight(1f),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = music.name,
+            color = textColor,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = fontWeight
+        )
+        Text(
+            text = music.informationText,
+            color = textColor,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = fontWeight
+        )
+    }
+}
+
+@Composable
+private fun RowScope.MusicInformationWideView(
+    music: Music,
+    textColor: Color,
+    fontWeight: FontWeight,
+) {
+    Row(
+        modifier = Modifier
+            .height(UiConstants.CoverSize.small)
+            .weight(1f),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
+    ) {
+        Text(
+            text = music.name,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            color = textColor,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = fontWeight
+        )
+        Text(
+            text = music.album,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            color = textColor,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = fontWeight
+        )
+        Text(
+            text = music.artist,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            color = textColor,
+            style = MaterialTheme.typography.labelLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = fontWeight
+        )
+    }
+}
+
+@Composable
 private fun FlippableImage(
     shouldRotate: Boolean,
     cover: Cover,
@@ -120,21 +195,7 @@ private fun FlippableImage(
     selectedIconColors: SoulSelectedIconColors,
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if (shouldRotate) 180f else 0f,
-        animationSpec = tween(
-            durationMillis = UiConstants.AnimationDuration.normal,
-        )
-    )
-
-    val animateFront by animateFloatAsState(
-        targetValue = if (!shouldRotate) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = UiConstants.AnimationDuration.normal,
-        )
-    )
-
-    val animateBack by animateFloatAsState(
-        targetValue = if (shouldRotate) 1f else 0f,
+        targetValue = if (shouldRotate) MAX_ROTATION else 0f,
         animationSpec = tween(
             durationMillis = UiConstants.AnimationDuration.normal,
         )
@@ -144,19 +205,14 @@ private fun FlippableImage(
         modifier = Modifier
             .graphicsLayer {
                 rotationY = rotation
-                cameraDistance = 8 * density
+                cameraDistance = PERSPECTIVE_RATIO * density
             }
     ) {
-        if (!shouldRotate) {
+        if (rotation <= MAX_ROTATION / 2) {
             SoulImage(
                 cover = cover,
                 size = UiConstants.CoverSize.small,
                 tint = tint,
-                modifier = Modifier
-                    .graphicsLayer {
-                        alpha = animateFront
-                        rotationY = rotation
-                    }
             )
         } else {
             SoulSelectedIcon(
@@ -164,10 +220,12 @@ private fun FlippableImage(
                 size = UiConstants.CoverSize.small,
                 modifier = Modifier
                     .graphicsLayer {
-                        alpha = animateBack
-                        rotationY = rotation
+                        rotationY = MAX_ROTATION
                     }
             )
         }
     }
 }
+
+private const val MAX_ROTATION: Float = 180f
+private const val PERSPECTIVE_RATIO: Int = 8

@@ -144,6 +144,9 @@ fun PlaylistLargeView(
                 isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
                 isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
                 isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                padding = PaddingValues(
+                    vertical = UiConstants.Spacing.medium,
+                )
             )
         }
         item { SoulPlayerSpacer() }
@@ -355,8 +358,6 @@ private fun BlurredBackground(
                             SoulSearchingColorTheme.colorScheme.primary.copy(alpha = 0.3f),
                             SoulSearchingColorTheme.colorScheme.primary,
                         ),
-                        startY = 0f,
-                        endY = height.toPx(),
                     )
                 ),
         )
