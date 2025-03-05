@@ -243,7 +243,11 @@ private fun SyncedLyricsView(
     }
 
     LaunchedEffect(currentHighlightedLine) {
-        if (shouldFocusOnLine) {
+        // If we were in the focus zone or if we were at the very limit of it
+
+        val wasAtLimitOfZone = (lazyListState.firstVisibleItemIndex + SYNCED_LYRICS_LOWER_BOUNDS_LIMIT + 1) == currentHighlightedLine
+
+        if (shouldFocusOnLine || wasAtLimitOfZone) {
             lazyListState.animateToHighlightedLine(currentHighlightedLine)
         }
     }
