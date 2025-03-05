@@ -21,6 +21,7 @@ exposed = "0.55.0"
 ffmpeg = "6.0-2"
 file-kit = "0.8.1"
 gradle = "8.5.2"
+gson = "2.12.1"
 jaudiotagger = "3.0.1"
 jlibnotify = "1.2.0"
 kmpalette = "2.2.0"
@@ -73,6 +74,7 @@ ffmpeg = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpeg" }
 foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "compose" }
 file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }
 jlibnotify = { module = "es.blackleg:jlibnotify", version.ref = "jlibnotify" }
 kmpalette = { module = "com.kmpalette:kmpalette-core", version.ref = "kmpalette" }

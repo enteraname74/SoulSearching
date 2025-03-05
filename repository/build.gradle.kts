@@ -1,13 +1,10 @@
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 group = "com.github.enteraname74.soulsearching.repository"
-description = "Repoistory layer of the app"
+description = "Repository layer of the app"
 
 kotlin {
     androidTarget()
@@ -22,14 +19,11 @@ kotlin {
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)
 
-                implementation(compose.ui)
                 implementation(libs.jaudiotagger)
-
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":domain"))
                 implementation(project(":filemanager"))
+                implementation(project(":serialization"))
             }
         }
     }

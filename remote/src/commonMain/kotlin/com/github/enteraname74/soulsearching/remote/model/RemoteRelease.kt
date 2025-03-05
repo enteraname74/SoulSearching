@@ -12,7 +12,7 @@ data class RemoteRelease(
     fun toRelease(): Release =
         Release(
             name = name,
-            tag = html_url,
-            githubUrl = tag_name,
+            tag = tag_name,
+            githubUrl = html_url,
         )
 }
