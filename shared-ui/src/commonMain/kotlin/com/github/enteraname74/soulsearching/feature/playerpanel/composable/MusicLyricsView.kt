@@ -247,9 +247,9 @@ private fun SyncedLyricsView(
         }
     }
 
-    LaunchedEffect(Unit) {
-        // We want to focus the current highlighted lyrics when opening the view
-        lazyListState.animateToHighlightedLine(currentHighlightedLine)
+    LaunchedEffect(lyrics) {
+        // We want to focus the current highlighted lyrics when opening the view or at the top of the list
+        lazyListState.animateToHighlightedLine(currentHighlightedLine ?: 0)
     }
 
     LaunchedEffect(currentHighlightedLine) {
@@ -418,7 +418,15 @@ private fun PlainLyricsView(
     lyrics: List<String>,
     nestedScrollConnection: NestedScrollConnection,
 ) {
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(lyrics) {
+        // We want to focus to the top of the list when first loading the lyrics
+        lazyListState.animateScrollToItem(0)
+    }
+
     LazyColumnCompat(
+        state = lazyListState,
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection),
