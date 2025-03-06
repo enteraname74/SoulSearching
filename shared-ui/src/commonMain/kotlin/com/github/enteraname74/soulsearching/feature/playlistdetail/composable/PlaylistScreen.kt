@@ -19,10 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
-import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
+import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
@@ -75,22 +72,12 @@ fun PlaylistScreen(
         }
     }
 
-    var bitmap: ImageBitmap? by remember {
-        mutableStateOf(null)
-    }
-
-    val hasFoundImage by derivedStateOf {
-        bitmap != null
-    }
-
-    LaunchedEffect(hasFoundImage) {
-        colorThemeManager.setNewPlaylistCover(
-            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
-        )
-    }
-
-    val onCoverLoaded: (ImageBitmap?) -> Unit = {
-        bitmap = it
+    val onCoverLoaded: (ImageBitmap?) -> Unit = { cover ->
+        cover?.let { bitmap ->
+            colorThemeManager.setNewPlaylistCover(
+                playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
+            )
+        }
     }
 
     SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
@@ -123,6 +110,10 @@ fun PlaylistScreen(
     }
 
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
+
+    LaunchedEffect(playlistPalette) {
+        println("COVER -- PALETTE: ${playlistPalette?.primary} AND BASE: ${SoulSearchingPalettes.lightTheme.primary}")
+    }
 
     CompositionLocalProvider(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
