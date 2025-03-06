@@ -65,7 +65,6 @@ class PlayerService : Service(), KoinComponent {
     companion object : KoinComponent {
         private val musicNotification: SoulSearchingAndroidNotification by inject()
         const val RESTART_SERVICE = "RESTART_SERVICE"
-        const val SERVICE_BROADCAST = "SERVICE_BROADCAST"
 
         /**
          * Launch the foreground service used to handle the notification.

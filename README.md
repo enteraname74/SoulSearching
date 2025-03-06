@@ -31,7 +31,7 @@ You can have a theme that depends on your system settings or the current music c
 
 - Listen all the songs on your device
 - handle multiple artists for one song
-- See **lyrics** of songs
+- See **lyrics** (classic and **synced**) of songs
 - Multiple **playing modes**
 - Modify songs, albums and artists on app and on the **device**
 - Manage multiple songs with multiple artists
