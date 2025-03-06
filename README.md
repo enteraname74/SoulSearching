@@ -46,5 +46,5 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/modify_music.png" alt="" data-align="center" width="270">
     <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="270">
     <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="270">
-    <img title="" src="screenshots/perso_second_example.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/perso_first_example.png" alt="" data-align="center" width="270">
 </div>
