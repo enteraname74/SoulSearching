@@ -38,7 +38,7 @@ modules:
       - cp -ru * /app
     sources:
       - type: archive
-        path: build/distributions/soulsearching-0.11.0-linux.tar.gz
+        path: build/distributions/soulsearching-0.12.0-linux.tar.gz
       - type: file
         path: src/main/composeResources/drawable/app_icon_bg.png
       - type: file
