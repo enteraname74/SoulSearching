@@ -111,10 +111,6 @@ fun PlaylistScreen(
 
     val playlistPalette: SoulSearchingPalette? by colorThemeManager.playlistsColorTheme.collectAsState()
 
-    LaunchedEffect(playlistPalette) {
-        println("COVER -- PALETTE: ${playlistPalette?.primary} AND BASE: ${SoulSearchingPalettes.lightTheme.primary}")
-    }
-
     CompositionLocalProvider(
         LocalColors provides AnimatedColorPaletteBuilder.animate(playlistPalette.orDefault())
     ) {
