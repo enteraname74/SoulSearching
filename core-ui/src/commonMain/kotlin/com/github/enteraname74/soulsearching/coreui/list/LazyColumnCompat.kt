@@ -41,9 +41,6 @@ fun LazyColumnCompat(
         ) {
             content()
         }
-        SoulVerticalScrollBar(
-            modifier = Modifier,
-            lazyListState = state,
-        )
+        SoulVerticalScrollBar(lazyListState = state)
     }
 }

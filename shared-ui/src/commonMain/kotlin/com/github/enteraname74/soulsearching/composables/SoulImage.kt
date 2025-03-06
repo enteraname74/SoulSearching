@@ -12,12 +12,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import coil3.BitmapImage
 import coil3.Image
 import coil3.annotation.ExperimentalCoilApi
@@ -51,22 +51,62 @@ fun SoulImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
+    InnerSoulImage(
+        cover = cover,
+        modifier = if (size != null) {
+            Modifier.size(size)
+        } else {
+            Modifier
+        }
+            .clip(RoundedCornerShape(percent = roundedPercent))
+            .then(modifier),
+        tint = tint,
+        contentScale = contentScale,
+        onSuccess = onSuccess,
+        builderOptions = builderOptions,
+    )
+}
 
-    val sizeModifier = if (size != null) {
-        Modifier.size(size)
-    } else {
-        Modifier
-    }
+@Composable
+fun SoulImage(
+    cover: Cover?,
+    size: DpSize?,
+    modifier: Modifier = Modifier,
+    roundedPercent: Int = 10,
+    tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary,
+    contentScale: ContentScale = ContentScale.Crop,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
+) {
+    InnerSoulImage(
+        cover = cover,
+        modifier = if (size != null) {
+            Modifier.size(size)
+        } else {
+            Modifier
+        }
+            .clip(RoundedCornerShape(percent = roundedPercent))
+            .then(modifier),
+        tint = tint,
+        contentScale = contentScale,
+        onSuccess = onSuccess,
+        builderOptions = builderOptions,
+    )
+}
 
-    val baseModifier = Modifier
-        .then(sizeModifier)
-        .clip(RoundedCornerShape(percent = roundedPercent))
-        .then(modifier)
-
+@Composable
+fun InnerSoulImage(
+    cover: Cover?,
+    modifier: Modifier,
+    tint: Color,
+    contentScale: ContentScale,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)?,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
+) {
     when (cover) {
         null -> {
             TemplateImage(
-                modifier = baseModifier,
+                modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
             )
@@ -75,7 +115,7 @@ fun SoulImage(
         is Cover.CoverFile -> {
             FileCover(
                 cover = cover,
-                modifier = baseModifier,
+                modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
                 onSuccess = onSuccess,
@@ -201,11 +241,11 @@ fun TemplateImage(
     )
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun DataImage(
     data: Any?,
     modifier: Modifier,
+    tint: Color,
     contentScale: ContentScale,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
@@ -229,8 +269,14 @@ fun DataImage(
                 it(null)
             }
         },
-        placeholder = painterResource(Res.drawable.app_logo_uni_xml),
-        error = painterResource(Res.drawable.app_logo_uni_xml),
+        placeholder = forwardingPainter(
+            painter = painterResource(Res.drawable.app_logo_uni_xml),
+            colorFilter = ColorFilter.tint(tint),
+        ),
+        error = forwardingPainter(
+            painter = painterResource(Res.drawable.app_logo_uni_xml),
+            colorFilter = ColorFilter.tint(tint),
+        ),
         model = ImageRequest.Builder(LocalPlatformContext.current)
             .builderOptions()
             .data(data)
@@ -273,6 +319,7 @@ private fun CoverIdImage(
             contentScale = contentScale,
             builderOptions = builderOptions,
             onSuccess = onSuccess,
+            tint = tint,
         )
     } else {
         TemplateImage(
@@ -283,4 +330,53 @@ private fun CoverIdImage(
     }
 }
 
+private fun forwardingPainter(
+    painter: Painter,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    onDraw: DrawScope.(ForwardingDrawInfo) -> Unit = DefaultOnDraw,
+): Painter = ForwardingPainter(painter, alpha, colorFilter, onDraw)
 
+private data class ForwardingDrawInfo(
+    val painter: Painter,
+    val alpha: Float,
+    val colorFilter: ColorFilter?,
+)
+
+private class ForwardingPainter(
+    private val painter: Painter,
+    private var alpha: Float,
+    private var colorFilter: ColorFilter?,
+    private val onDraw: DrawScope.(ForwardingDrawInfo) -> Unit,
+) : Painter() {
+
+    private var info = newInfo()
+
+    override val intrinsicSize get() = painter.intrinsicSize
+
+    override fun applyAlpha(alpha: Float): Boolean {
+        if (alpha != DefaultAlpha) {
+            this.alpha = alpha
+            this.info = newInfo()
+        }
+        return true
+    }
+
+    override fun applyColorFilter(colorFilter: ColorFilter?): Boolean {
+        if (colorFilter != null) {
+            this.colorFilter = colorFilter
+            this.info = newInfo()
+        }
+        return true
+    }
+
+    override fun DrawScope.onDraw() = onDraw(info)
+
+    private fun newInfo() = ForwardingDrawInfo(painter, alpha, colorFilter)
+}
+
+private val DefaultOnDraw: DrawScope.(ForwardingDrawInfo) -> Unit = { info ->
+    with(info.painter) {
+        draw(size, info.alpha, info.colorFilter)
+    }
+}

@@ -23,14 +23,13 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.composa
 fun PlayerMinimisedMainInfo(
     imageSize: Dp,
     playerViewManager: PlayerViewManager = injectElement(),
-    currentMusic: Music?,
+    currentMusic: Music,
     isPlaying: Boolean,
     alphaTransition: Float,
     previous: () -> Unit,
     togglePlayPause: () -> Unit,
     next: () -> Unit,
 ) {
-
     Row(
         modifier = Modifier
             .height(imageSize)
@@ -46,20 +45,24 @@ fun PlayerMinimisedMainInfo(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxHeight()
                 .weight(1f, fill= false),
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = currentMusic?.name.orEmpty(),
+                text = currentMusic.name,
                 color = SoulSearchingColorTheme.colorScheme.onSecondary,
                 maxLines = 1,
                 fontSize = 15.sp,
+                lineHeight = 15.sp,
                 fontWeight = FontWeight.Medium,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = currentMusic?.artist.orEmpty(),
+                text = currentMusic.artist,
                 color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
-                fontSize = 12.sp,
+                fontSize = 13.sp,
+                lineHeight = 13.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

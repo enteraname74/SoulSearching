@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.MusicLyrics
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -46,7 +47,7 @@ class PlayerViewModel(
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val getArtistsOfMusicIdUseCase: GetArtistsOfMusicUseCase,
+    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
@@ -87,7 +88,7 @@ class PlayerViewModel(
         playbackManager.mainState.flatMapLatest { playbackState ->
             when (playbackState) {
                 is PlaybackManagerState.Data -> {
-                    getArtistsOfMusicIdUseCase(
+                    getArtistsOfMusicUseCase(
                         musicId = playbackState.currentMusic.musicId,
                     )
                 }
@@ -97,10 +98,33 @@ class PlayerViewModel(
             }
         }
 
-    private val currentMusicLyrics: MutableStateFlow<LyricsFetchState> =
-        MutableStateFlow(LyricsFetchState.NoLyricsFound)
-
     val currentSongProgressionState = playbackManager.currentSongProgressionState
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val lyricsState: StateFlow<LyricsFetchState> = playbackManager.currentSong.flatMapLatest { music ->
+        if (music == null) {
+            flowOf(LyricsFetchState.FetchingLyrics)
+        } else {
+            val lyrics: MusicLyrics? = getLyricsOfSongUseCase(music = music)
+            if (lyrics == null) {
+                flowOf(LyricsFetchState.NoLyricsFound)
+            } else {
+                currentSongProgressionState.mapLatest { progression ->
+                    LyricsFetchState.FoundLyrics(
+                        lyrics = lyrics,
+                        highlightedLyricsLine = lyrics
+                            .syncedLyrics
+                            ?.indexOfLast { it.timestampMs < progression }
+                            ?.takeIf { it >= 0 }
+                    )
+                }
+            }
+        }
+    }.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = LyricsFetchState.FetchingLyrics
+    )
 
     val viewSettingsState: StateFlow<PlayerViewSettingsState> = combine(
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
@@ -123,21 +147,19 @@ class PlayerViewModel(
         playbackManager.mainState,
         getAllPlaylistWithMusicsUseCase(),
         currentMusicFavoriteStatusState,
-        currentMusicLyrics,
         currentMusicArtists
-    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicLyrics, currentMusicArtists ->
+    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicArtists ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
-                    artistsOfCurrentMusic = currentMusicArtists.sortedBy { it.artistName },
+                    artistsOfCurrentMusic = currentMusicArtists,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     playedList = playbackMainState.playedList,
                     playerMode = playbackMainState.playerMode,
                     isPlaying = playbackMainState.isPlaying,
                     playlistsWithMusics = playlists,
-                    currentMusicLyrics = currentMusicLyrics,
                     aroundSongs = getAroundSongs(playbackMainState.currentMusic),
                     initPlayerWithMinimiseView = playbackMainState.minimisePlayer,
                 )
@@ -228,24 +250,6 @@ class PlayerViewModel(
     private fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
         return runBlocking(context = Dispatchers.IO) {
             getAlbumIdFromMusicIdUseCase(musicId)
-        }
-    }
-
-    /**
-     * Set the lyrics of the current music.
-     */
-    fun setLyricsOfCurrentMusic() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentMusic: Music = (state.value as? PlayerViewState.Data)?.currentMusic ?: return@launch
-            currentMusicLyrics.value = LyricsFetchState.FetchingLyrics
-            val lyrics = getLyricsOfSongUseCase(music = currentMusic)
-            currentMusicLyrics.value = if (lyrics == null) {
-                LyricsFetchState.NoLyricsFound
-            } else {
-                LyricsFetchState.FoundLyrics(
-                    lyrics = lyrics
-                )
-            }
         }
     }
 

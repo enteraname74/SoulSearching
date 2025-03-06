@@ -35,9 +35,9 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
-                implementation(project(":features:playback"))
-                implementation(project(":features:filemanager"))
-                implementation(project(":features:musicmanager"))
+                implementation(project(":playback"))
+                implementation(project(":filemanager"))
+                implementation(project(":musicmanager"))
 
                 implementation(libs.bundles.koin)
 
@@ -66,6 +66,8 @@ kotlin {
 
                 implementation(libs.coil)
                 implementation(libs.coil.compose)
+
+                implementation(libs.reorderable)
             }
         }
         androidMain {
@@ -75,7 +77,6 @@ kotlin {
                 implementation(libs.room)
 
                 implementation(libs.bundles.accompanist)
-                implementation(libs.gson)
             }
         }
     }
@@ -90,7 +91,8 @@ android {
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
         versionCode = libs.versions.android.version.code.get().toInt()
-        versionName = libs.versions.application.version.name.get()
+        // For FDroid
+        versionName = "0.12.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

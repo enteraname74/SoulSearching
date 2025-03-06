@@ -22,7 +22,7 @@ object FrStrings : Strings {
     override val currentSong = "Musique courante"
     override val lyrics = "Paroles"
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
-    override val lyricsProvider = "Paroles proposées par lyrist"
+    override val lyricsProvider = "Paroles proposées par LrcLib"
 
     override val completeApplicationTitle = "Une application de musique complète"
     override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."
@@ -114,6 +114,11 @@ object FrStrings : Strings {
     override val modifyArtist = "Modifier cet artiste"
     override val modifyMusic = "Modifier cette musique"
     override val modifyPlaylist = "Modifier cette playlist"
+    override val coversOfTheAlbum = "Couvertures des musiques de l'album"
+    override val coversOfTheArtist = "Couvertures des musiques de l'artiste"
+    override val coversOfThePlaylist = "Couvertures des musiques de la playlist"
+    override val coversOfSongAlbum = "Couvertures présentes dans l'album de la musique"
+    override val noAvailableCovers = "Aucune couverture disponible"
 
     override val deleteAlbum = "Supprimer cet album"
     override val deleteArtist = "Supprimer cet artiste"
@@ -127,10 +132,10 @@ object FrStrings : Strings {
     override val playNext = "Jouer ensuite"
 
     override val personalizedThemeTitle = "Thème personnalisé"
-    override val personalizedThemeText = "Définissez précisémment votre thème de couleur"
-    override val dynamicPlayerView = "Utiliser le thème dynamique pour la vue du player"
-    override val dynamicPlaylistView = "Utiliser le thème dynamique pour la vue des playlists, albums et artistes"
-    override val dynamicOtherView = "Utiliser le thème dynamique pour les autres vues"
+    override val personalizedThemeText = "Appliquer le thème dynamique sur :"
+    override val dynamicPlayerView = "La vue du lecteur"
+    override val dynamicPlaylistView = "La vue des playlists, albums, artistes, mois et dossiers"
+    override val dynamicOtherView = "Les autres vues"
 
     override val settings = "Paramètres"
     override val advancedSettingsTitle = "Paramètres avancés"
@@ -235,6 +240,15 @@ object FrStrings : Strings {
     override val playlistDoesNotExists = "La playlist n'existe pas"
     override val folderDoesNotExists = "Le dossier n'existe pas"
     override val monthPlaylistDoesNotExists = "La playlist de mois n'existe pas"
+
+    override val artistDetailTitle = "Artiste"
+    override val monthDetailTitle = "Mois"
+    override val folderDetailTitle = "Dossier"
+
+    override val elementDetailEdit = "Modifier"
+    override val elementDetailPlay = "Lire"
+    override val elementDetailShuffle = "Aléatoire"
+    override val elementDetailTitles = "Titres"
 
     override fun musics(total: Int): String {
         return when (total) {

@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 
 enum class WindowSize(val maxValue: Dp) {
     Small(600.dp),
-    Medium(900.dp),
+    Medium(MediumThreshold),
     Large(Dp.Infinity);
 
     companion object {
@@ -18,6 +18,8 @@ enum class WindowSize(val maxValue: Dp) {
             }
     }
 }
+
+internal expect val MediumThreshold: Dp
 
 @Composable
 expect fun rememberWindowSize(): WindowSize

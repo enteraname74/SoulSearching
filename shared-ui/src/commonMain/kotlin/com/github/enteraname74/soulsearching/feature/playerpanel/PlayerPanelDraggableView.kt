@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerUiUtils
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.playerpanel.composable.PlayerPanelContent
@@ -34,12 +35,12 @@ fun PlayerPanelDraggableView(
     maxHeight: Float,
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
+    lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
     multiSelectionState: MultiSelectionState,
     closeSelection: () -> Unit,
-    onRetrieveLyrics: () -> Unit,
-    secondaryColor: Color,
+    containerColor: Color,
     textColor: Color,
     subTextColor: Color,
     buttonColors: SoulButtonColors,
@@ -84,7 +85,7 @@ fun PlayerPanelDraggableView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = secondaryColor,
+                    color = containerColor,
                     shape = RoundedCornerShape(
                         topStartPercent = 4,
                         topEndPercent = 4
@@ -95,9 +96,10 @@ fun PlayerPanelDraggableView(
             DragHandler(subTextColor = subTextColor)
             PlayerPanelContent(
                 playerState = playerState,
+                lyricsState = lyricsState,
                 onMoreClickedOnMusic = onMoreClickedOnMusic,
-                onRetrieveLyrics = onRetrieveLyrics,
-                textColor = textColor,
+                contentColor = textColor,
+                containerColor = containerColor,
                 subTextColor = subTextColor,
                 isExpanded = isExpanded,
                 buttonColors = buttonColors,

@@ -29,8 +29,8 @@ fun PersonalizedColorThemeCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = UiConstants.Spacing.large),
-            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
+                .padding(top = UiConstants.Spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small)
         ) {
             SoulMenuSwitch(
                 title = strings.dynamicPlayerView,

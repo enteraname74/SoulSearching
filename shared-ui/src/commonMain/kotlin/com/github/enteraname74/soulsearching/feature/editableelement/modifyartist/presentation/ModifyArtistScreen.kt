@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
@@ -17,9 +18,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
-import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.PickerType
-import io.github.vinceglb.filekit.core.PlatformFile
 import java.util.*
 
 data class ModifyArtistScreen(
@@ -35,6 +33,9 @@ data class ModifyArtistScreen(
         val state: ModifyArtistState by screenModel.state.collectAsState()
         val formState: ModifyArtistFormState by screenModel.formState.collectAsState()
         val navigationState: ModifyArtistNavigationState by screenModel.navigationState.collectAsState()
+        val bottomSheetState: SoulBottomSheet? by screenModel.bottomSheetState.collectAsState()
+
+        bottomSheetState?.BottomSheet()
 
         LaunchInit {
             screenModel.init(artistId = artistId)
@@ -57,7 +58,7 @@ data class ModifyArtistScreen(
             state = state,
             formState = formState,
             navigateBack = { navigator.pop() },
-            onNewImageSet = screenModel::setNewCover,
+            onSelectCover = screenModel::showCoversBottomSheet,
             onValidateModification = screenModel::updateArtist,
         )
     }
@@ -68,16 +69,9 @@ private fun ModifyArtistScreenView(
     state: ModifyArtistState,
     formState: ModifyArtistFormState,
     navigateBack: () -> Unit,
-    onNewImageSet: (cover: PlatformFile) -> Unit,
+    onSelectCover: () -> Unit,
     onValidateModification: () -> Unit,
 ) {
-    val imagePickerLauncher = rememberFilePickerLauncher(
-        type = PickerType.Image,
-    ) { file ->
-        if (file == null) return@rememberFilePickerLauncher
-        onNewImageSet(file)
-    }
-
     when {
         state is ModifyArtistState.Data && formState is ModifyArtistFormState.Data -> {
             WriteFilesCheck(
@@ -89,7 +83,7 @@ private fun ModifyArtistScreenView(
                     coverSectionTitle = strings.artistCover,
                     editableElement = state.editableElement,
                     navigateBack = navigateBack,
-                    onSelectCover = { imagePickerLauncher.launch() },
+                    onSelectCover = onSelectCover,
                     onValidateModification = onSave,
                     textFields = formState.textFields,
                 )

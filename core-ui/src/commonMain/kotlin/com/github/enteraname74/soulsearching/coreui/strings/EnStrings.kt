@@ -22,7 +22,7 @@ object EnStrings : Strings {
     override val currentSong = "Current song"
     override val lyrics = "Lyrics"
     override val noLyricsFound = "No lyrics found for this song"
-    override val lyricsProvider = "Lyrics proposed by Lyrist"
+    override val lyricsProvider = "Lyrics proposed by LrcLib"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."
@@ -112,6 +112,11 @@ object EnStrings : Strings {
     override val modifyArtist = "Modify this artist"
     override val modifyMusic = "Modify this song"
     override val modifyPlaylist = "Modify this playlist"
+    override val coversOfTheAlbum = "Covers of the album's songs"
+    override val coversOfTheArtist = "Covers of the artist's songs"
+    override val coversOfThePlaylist = "Covers of the playlist's songs"
+    override val coversOfSongAlbum = "Covers in the song's album"
+    override val noAvailableCovers = "No available covers"
 
     override val deleteAlbum = "Delete this album"
     override val deleteArtist = "Delete this artist"
@@ -125,10 +130,10 @@ object EnStrings : Strings {
     override val playNext = "Play next"
 
     override val personalizedThemeTitle = "Personalized theme"
-    override val personalizedThemeText = "Define precisely your color theme"
-    override val dynamicPlayerView = "Use dynamic theme for player view"
-    override val dynamicPlaylistView = "Use dynamic theme for playlist, album and artist view"
-    override val dynamicOtherView = "Use dynamic theme for the other views"
+    override val personalizedThemeText = "Apply dynamic theme on:"
+    override val dynamicPlayerView = "Player view"
+    override val dynamicPlaylistView = "Playlist, album, artist, month and folder view"
+    override val dynamicOtherView = "Other views"
 
     override val settings = "Settings"
     override val advancedSettingsTitle = "Advanced settings"
@@ -233,6 +238,15 @@ object EnStrings : Strings {
     override val playlistDoesNotExists = "This playlist doesn't exist"
     override val folderDoesNotExists = "This folder doesn't exist"
     override val monthPlaylistDoesNotExists = "This month playlist doesn't exist"
+
+    override val artistDetailTitle = "Artist"
+    override val monthDetailTitle = "Month"
+    override val folderDetailTitle = "Folder"
+
+    override val elementDetailEdit = "Edit"
+    override val elementDetailPlay = "Play"
+    override val elementDetailShuffle = "Shuffle"
+    override val elementDetailTitles = "Title"
 
     override fun musics(total: Int): String {
         return when (total) {

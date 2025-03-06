@@ -11,13 +11,16 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconColors
 import com.github.enteraname74.soulsearching.coreui.multiselection.composable.SoulSelectedIconDefaults
 import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -28,12 +31,13 @@ fun PlayerPanelContent(
     playbackManager: PlaybackManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
+    lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
-    onRetrieveLyrics: () -> Unit,
     multiSelectionState: MultiSelectionState,
-    textColor: Color,
+    contentColor: Color,
     subTextColor: Color,
+    containerColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
     selectedIconColors: SoulSelectedIconColors = SoulSelectedIconDefaults.secondary(),
@@ -49,7 +53,8 @@ fun PlayerPanelContent(
                     playbackManager = playbackManager,
                     playedList = playerState.playedList,
                     onMoreClickedOnMusic = onMoreClickedOnMusic,
-                    secondaryColor = textColor,
+                    contentColor = contentColor,
+                    containerColor = containerColor,
                     isExpanded = isExpanded,
                     buttonColors = buttonColors,
                     currentMusicIndex = playerState.currentMusicIndex,
@@ -63,11 +68,10 @@ fun PlayerPanelContent(
             title = strings.lyrics,
             screen = {
                 MusicLyricsView(
-                    contentColor = textColor,
+                    contentColor = contentColor,
+                    containerColor = containerColor,
                     noLyricsColor = subTextColor,
-                    lyricsState = playerState.currentMusicLyrics,
-                    currentMusic = playerState.currentMusic,
-                    onRetrieveLyrics = onRetrieveLyrics,
+                    lyricsState = lyricsState,
                     isExpanded = isExpanded,
                 )
             }
@@ -85,8 +89,6 @@ fun PlayerPanelContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = UiConstants.Spacing.medium,
-                    end = UiConstants.Spacing.medium,
                     bottom = UiConstants.Spacing.small
                 ),
         ) {
@@ -99,7 +101,7 @@ fun PlayerPanelContent(
                         .fillMaxWidth()
                         .weight(1f),
                     title = page.title,
-                    contentColor = if (isSelected && isExpanded) textColor else subTextColor,
+                    contentColor = if (isSelected && isExpanded) contentColor else subTextColor,
                     isSelected = isExpanded && isSelected,
                     onSelected = {
                         coroutineScope.launch {

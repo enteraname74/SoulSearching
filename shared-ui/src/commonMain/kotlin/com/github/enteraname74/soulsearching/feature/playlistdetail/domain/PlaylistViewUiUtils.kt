@@ -6,10 +6,10 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeightDp
 
 object PlaylistViewUiUtils {
-    private val minHeightForSmallView: Dp = 400.dp
+    private val minHeightForSmallView: Dp = 500.dp
 
     @Composable
-    fun canShowVerticalMainInformation(): Boolean {
+    fun canShowColumnLayout(): Boolean {
         val maxHeight = rememberWindowHeightDp()
         return maxHeight > minHeightForSmallView
     }

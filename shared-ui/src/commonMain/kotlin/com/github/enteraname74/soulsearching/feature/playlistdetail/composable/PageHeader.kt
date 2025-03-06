@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun PageHeader(
     modifier: Modifier = Modifier,
     onSubTitleClicked: () -> Unit = {},
 ) {
-    if (!PlaylistViewUiUtils.canShowVerticalMainInformation()) {
+    if (!PlaylistViewUiUtils.canShowColumnLayout()) {
         Row(
             modifier = modifier
                 .fillMaxSize()

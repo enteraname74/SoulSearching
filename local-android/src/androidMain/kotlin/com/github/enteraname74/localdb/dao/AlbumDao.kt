@@ -29,6 +29,9 @@ internal interface AlbumDao {
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%')")
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String>
+
     @Query("SELECT * FROM RoomAlbum INNER JOIN RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId AND RoomAlbumArtist.artistId = :artistId")
     fun getAllAlbumsFromArtist(artistId: UUID) : Flow<List<RoomAlbum>>
 

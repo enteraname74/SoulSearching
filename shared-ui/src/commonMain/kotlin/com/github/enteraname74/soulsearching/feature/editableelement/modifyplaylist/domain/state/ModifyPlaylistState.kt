@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state
 
-import androidx.compose.ui.graphics.ImageBitmap
-import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 
 /**
@@ -9,7 +8,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
  */
 sealed interface ModifyPlaylistState {
     data class Data(
-        val initialPlaylist: Playlist,
+        val initialPlaylist: PlaylistWithMusics,
         val editableElement: EditableElement,
     ): ModifyPlaylistState
     data object Loading: ModifyPlaylistState

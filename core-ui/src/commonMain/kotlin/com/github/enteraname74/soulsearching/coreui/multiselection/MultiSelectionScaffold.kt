@@ -1,8 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.multiselection
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -46,8 +44,8 @@ fun MultiSelectionScaffold(
         content()
         AnimatedVisibility(
             visible = isMultiSelectionActive,
-            enter = slideInVertically(),
-            exit = slideOutVertically()
+            enter = expandVertically(),
+            exit = shrinkVertically()
         ) {
             MultiSelectionTopBar(
                 total = state.selectedIds.size,

@@ -9,11 +9,16 @@ import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
@@ -29,6 +34,7 @@ class ModifyAlbumViewModel(
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
+    private val coverRetriever: CoverRetriever,
 ) : ScreenModel {
     private val albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
@@ -36,6 +42,9 @@ class ModifyAlbumViewModel(
         ModifyAlbumNavigationState.Idle,
     )
     val navigationState: StateFlow<ModifyAlbumNavigationState> = _navigationState.asStateFlow()
+
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val initialAlbum: Flow<AlbumWithMusics?> = albumId.flatMapLatest { id ->
@@ -83,6 +92,23 @@ class ModifyAlbumViewModel(
         initialValue = ModifyAlbumFormState.NoData,
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val artistsCover: StateFlow<CoverListState> = state.mapLatest { state ->
+        when (state) {
+            is ModifyAlbumState.Data -> CoverListState.Data(
+                covers = coverRetriever.getAllUniqueCover(
+                    covers = state.initialAlbum.musics.map { it.cover }
+                )
+            )
+
+            ModifyAlbumState.Loading -> CoverListState.Loading
+        }
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = CoverListState.Loading,
+    )
+
     /**
      * Set the selected album for the modify screen information.
      */
@@ -93,7 +119,7 @@ class ModifyAlbumViewModel(
     /**
      * Set the new cover name to show to the user.
      */
-    fun setNewCover(imageFile: PlatformFile) {
+    private fun setNewCover(imageFile: PlatformFile) {
         screenModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
@@ -101,6 +127,22 @@ class ModifyAlbumViewModel(
 
     fun consumeNavigation() {
         _navigationState.value = ModifyAlbumNavigationState.Back
+    }
+
+    fun showCoversBottomSheet() {
+        _bottomSheetState.value = EditableElementCoversBottomSheet(
+            title = { strings.coversOfTheAlbum },
+            coverStateFlow = artistsCover,
+            onCoverSelected = { cover ->
+                newCover.value = cover
+            },
+            onCoverFromStorageSelected = { imageFile ->
+                setNewCover(imageFile = imageFile)
+            },
+            onClose = {
+                _bottomSheetState.value = null
+            }
+        )
     }
 
     /**

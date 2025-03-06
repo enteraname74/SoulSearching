@@ -17,7 +17,7 @@ import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.ext.navigationIcon
+import com.github.enteraname74.soulsearching.ext.navigationFilledIcon
 import com.github.enteraname74.soulsearching.ext.navigationTitle
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 
@@ -65,7 +65,7 @@ fun MainPageVerticalShortcut(
                             }
                         ),
                     colorFilter = ColorFilter.tint(SoulSearchingColorTheme.colorScheme.onPrimary),
-                    imageVector = it.navigationIcon(),
+                    imageVector = it.navigationFilledIcon(),
                     contentDescription = ""
                 )
                 Text(

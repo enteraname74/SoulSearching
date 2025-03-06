@@ -8,9 +8,8 @@ Soul Searching is an **offline music application** for the following platforms:
 - Android 8 and above
 - Desktop (Linux)
 
-<div align="enter">
-    <img title="" src="screenshots/soul_searching_android.png" alt="" data-align="center" width="270">
-    <img title="" src="screenshots/soul_searching_desktop.png" alt="" data-align="center" width="960">
+<div align="center">
+    <img title="" src="screenshots/soul_searching_platforms.png">
 </div>
 
 ## General look
@@ -27,27 +26,25 @@ You can have a theme that depends on your system settings or the current music c
     <img title="" src="screenshots/all_albums_view.png" alt="" data-align="center" width="270">
 </div>
 
-## Functionalities
+## Features
 
 - Listen all the songs on your device
-- handle multiple artists for one song
-- See **lyrics** of songs
+- See **lyrics** (classic and **synced**) of songs
+- Customizable UI
 - Multiple **playing modes**
 - Modify songs, albums and artists on app and on the **device**
-- Manage multiple songs with multiple artists
+- Manage songs with multiple artists
 - Create and manage **playlists**
 - Add an album, artist, playlist or even a song in **quick access**
 - Smart system for managing albums and songs without covers
-- Manage current played music list
-- Current played music list and current played music are saved when closing the app
+- Manage current played music list with ease
 - Search throughout all your elements
 - See songs by **added month** or **folders**
-- A **music notification** and an **audio manager** are used to improve the user's experience
 - See statistics about your most listened songs, artists...
 
 <div align="center">
-    <img title="" src="screenshots/modify_album.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/modify_music.png" alt="" data-align="center" width="270">
     <img title="" src="screenshots/search_view.png" alt="" data-align="center" width="270">
     <img title="" src="screenshots/lyrics.png" alt="" data-align="center" width="270">
-    <img title="" src="screenshots/perso_second_example.png" alt="" data-align="center" width="270">
+    <img title="" src="screenshots/perso_first_example.png" alt="" data-align="center" width="270">
 </div>

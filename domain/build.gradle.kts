@@ -1,8 +1,6 @@
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -17,10 +15,8 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.coroutines.core)
                 implementation(libs.coroutines.core.jvm)
-                implementation(compose.ui)
                 implementation(libs.jaudiotagger)
-
-                implementation(libs.bundles.ktor)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

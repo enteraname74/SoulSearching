@@ -96,6 +96,7 @@ class SettingsAboutScreen : Screen, SettingPage {
                     SoulIcon(
                         icon = Icons.Rounded.NewReleases,
                         size = UiConstants.ImageSize.mediumPlus,
+                        tint = SoulSearchingColorTheme.colorScheme.onSecondary,
                     )
                     Text(
                         text = strings.newReleaseAvailableTitle,

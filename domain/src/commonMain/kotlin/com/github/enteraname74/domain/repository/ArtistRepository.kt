@@ -21,6 +21,8 @@ interface ArtistRepository {
 
     suspend fun deleteAll(artistsIds: List<UUID>)
 
+    suspend fun getArtistNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves an Artist from its id.
      */

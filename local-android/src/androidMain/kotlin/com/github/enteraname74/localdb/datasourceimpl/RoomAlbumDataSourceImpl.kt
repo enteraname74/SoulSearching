@@ -40,6 +40,9 @@ internal class RoomAlbumDataSourceImpl(
         )
     }
 
+    override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
+        appDatabase.albumDao.getAlbumNamesContainingSearch(search)
+
     override fun getAlbumsOfArtist(artistId: UUID): Flow<List<Album>> {
         return appDatabase.albumDao.getAllAlbumsFromArtist(
             artistId = artistId

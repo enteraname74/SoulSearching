@@ -27,7 +27,8 @@ fun LazyVerticalGridCompat(
     Row {
         LazyVerticalGrid(
             columns = columns,
-            modifier = modifier,
+            modifier = modifier
+                .weight(1f),
             state = state,
             contentPadding = contentPadding,
             horizontalArrangement = horizontalArrangement,

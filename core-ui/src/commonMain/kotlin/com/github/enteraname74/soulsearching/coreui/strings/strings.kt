@@ -125,6 +125,11 @@ interface Strings {
     val modifyArtist: String
     val modifyMusic: String
     val modifyPlaylist: String
+    val coversOfTheAlbum: String
+    val coversOfTheArtist: String
+    val coversOfThePlaylist: String
+    val coversOfSongAlbum: String
+    val noAvailableCovers: String
 
     val deleteAlbum: String
     val deleteArtist: String
@@ -240,6 +245,17 @@ interface Strings {
     val playlistDoesNotExists: String
     val folderDoesNotExists: String
     val monthPlaylistDoesNotExists: String
+
+    val playlistDetailTitle: String get() = "Playlist"
+    val artistDetailTitle: String
+    val albumDetailTitle: String get() = "Album"
+    val monthDetailTitle: String
+    val folderDetailTitle: String
+
+    val elementDetailEdit: String
+    val elementDetailPlay: String
+    val elementDetailShuffle: String
+    val elementDetailTitles: String
 
     /**
      * Shows a text indicating the number of musics.

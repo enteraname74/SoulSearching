@@ -25,6 +25,8 @@ interface AlbumDataSource {
 
     suspend fun deleteAll(ids: List<UUID>)
 
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */

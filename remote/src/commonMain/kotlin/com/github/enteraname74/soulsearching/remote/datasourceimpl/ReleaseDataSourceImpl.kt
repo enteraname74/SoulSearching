@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 
 class ReleaseDataSourceImpl(
@@ -15,7 +16,6 @@ class ReleaseDataSourceImpl(
     override suspend fun getLatestRelease(): Release? {
         val release: RemoteRelease? = try {
             val response = client.get(urlString = LATEST_RELEASE_URL)
-            println("GOT RESPONSE ON GET LATEST RELEASE: $response")
 
             if (response.status.isSuccess()) {
                 response.body<RemoteRelease>()

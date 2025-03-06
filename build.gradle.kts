@@ -19,7 +19,9 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.kotlin.android) apply false
 }
 repositories {
     google()
+    mavenCentral()
 }
