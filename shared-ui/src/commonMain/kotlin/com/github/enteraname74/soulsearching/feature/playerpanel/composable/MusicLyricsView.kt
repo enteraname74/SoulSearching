@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.SyncedLyric
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
@@ -50,6 +51,7 @@ fun MusicLyricsView(
     noLyricsColor: Color,
     contentColor: Color,
     containerColor: Color,
+    buttonColor: SoulButtonColors,
     lyricsState: LyricsFetchState,
     isExpanded: Boolean,
 ) {
@@ -68,6 +70,7 @@ fun MusicLyricsView(
                 containerColor = containerColor,
                 subTextColor = noLyricsColor,
                 lyricsState = lyricsState,
+                buttonColor = buttonColor,
             )
 
             LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
@@ -98,6 +101,7 @@ private fun LyricsView(
     contentColor: Color,
     containerColor: Color,
     subTextColor: Color,
+    buttonColor: SoulButtonColors,
     lyricsState: LyricsFetchState.FoundLyrics,
 ) {
     val hasSyncedLyrics = lyricsState.lyrics.syncedLyrics?.takeIf { it.isNotEmpty() } != null
@@ -173,6 +177,7 @@ private fun LyricsView(
         if (hasSyncedLyrics) {
             SwitchLyricsModeButton(
                 modifier = Modifier.align(Alignment.BottomEnd),
+                buttonColor = buttonColor,
                 isButtonVisible = isSwitchLyricsVisible,
                 onSwitch = {
                     coroutineScope.launch {
@@ -191,6 +196,7 @@ private fun LyricsView(
 private fun SwitchLyricsModeButton(
     onSwitch: () -> Unit,
     isButtonVisible: Boolean,
+    buttonColor: SoulButtonColors,
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -208,7 +214,7 @@ private fun SwitchLyricsModeButton(
             modifier = Modifier.size(44.dp),
             icon = Icons.Rounded.SyncAlt,
             size = 28.dp,
-            colors = SoulButtonDefaults.primaryColors(),
+            colors = buttonColor,
             onClick = onSwitch
         )
     }

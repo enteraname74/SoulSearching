@@ -46,6 +46,7 @@ fun MultipleArtistsWarningCard() {
                 SoulIcon(
                     icon = Icons.Rounded.Groups,
                     size = UiConstants.ImageSize.mediumPlus,
+                    tint = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
                 Text(
                     text = strings.multipleArtistsText,

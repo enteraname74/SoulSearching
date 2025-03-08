@@ -73,6 +73,7 @@ fun PlayerPanelContent(
                     noLyricsColor = subTextColor,
                     lyricsState = lyricsState,
                     isExpanded = isExpanded,
+                    buttonColor = buttonColors,
                 )
             }
         )
