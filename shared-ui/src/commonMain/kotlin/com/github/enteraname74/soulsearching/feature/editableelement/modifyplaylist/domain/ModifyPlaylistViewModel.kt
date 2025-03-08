@@ -102,7 +102,7 @@ class ModifyPlaylistViewModel(
 
     fun showCoversBottomSheet() {
         _bottomSheetState.value = EditableElementCoversBottomSheet(
-            title = { strings.coversOfTheArtist },
+            title = { strings.coversOfThePlaylist },
             coverStateFlow = artistsCover,
             onCoverSelected = { cover ->
                 newCover.value = cover
