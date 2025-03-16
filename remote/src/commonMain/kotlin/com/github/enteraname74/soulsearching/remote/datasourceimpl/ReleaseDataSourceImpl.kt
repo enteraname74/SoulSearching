@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSo
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 
 class ReleaseDataSourceImpl(
@@ -21,7 +22,8 @@ class ReleaseDataSourceImpl(
             } else {
                 null
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            println("GOT EXCEPTION ON GET LATEST RELEASE: $e")
             null
         }
 

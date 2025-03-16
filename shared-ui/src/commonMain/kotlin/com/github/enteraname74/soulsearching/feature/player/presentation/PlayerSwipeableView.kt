@@ -52,6 +52,7 @@ fun PlayerDraggableView(
     val coroutineScope = rememberCoroutineScope()
 
     val state by playerViewModel.state.collectAsState()
+    val lyricsState by playerViewModel.lyricsState.collectAsState()
     val settingsState by playerViewModel.viewSettingsState.collectAsState()
     val multiSelectionState by playerViewModel.multiSelectionState.collectAsState()
 
@@ -191,6 +192,7 @@ fun PlayerDraggableView(
                         PlayerSwipeableDataScreen(
                             maxHeight = maxHeight,
                             state = state as PlayerViewState.Data,
+                            lyricsState = lyricsState,
                             onArtistClicked = {
                                 coroutineScope.launch {
                                     playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
@@ -211,7 +213,6 @@ fun PlayerDraggableView(
                             next = playerViewModel::next,
                             updateCover = playerViewModel::setCurrentMusicCover,
                             togglePlayPause = playerViewModel::togglePlayPause,
-                            onRetrieveLyrics = playerViewModel::setLyricsOfCurrentMusic,
                             currentMusicProgression = currentMusicProgressionState,
                             settingsState = settingsState,
                             onLongSelectOnMusic = {

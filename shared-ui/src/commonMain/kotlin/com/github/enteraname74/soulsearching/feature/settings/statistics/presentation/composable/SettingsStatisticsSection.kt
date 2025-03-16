@@ -1,12 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.NoElementView
@@ -41,7 +43,7 @@ private fun SmallScreen(
     title: String,
     elements: List<ListenedElement>
 ) {
-    LazyColumn(
+    LazyColumnCompat(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = UiConstants.Spacing.large),
@@ -96,17 +98,20 @@ private fun LargeScreen(
                         element = elements.first(),
                     )
                 }
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
                 ) {
-                    with(SettingsStatisticsSectionFactory) {
-                        if (elements.isNotEmpty()) {
-                            list(elements.drop(1))
-                        } else {
-                            emptyContent()
-                        }
-                        item {
-                            SoulPlayerSpacer()
+                    LazyColumnCompat {
+                        with(SettingsStatisticsSectionFactory) {
+                            if (elements.isNotEmpty()) {
+                                list(elements.drop(1))
+                            } else {
+                                emptyContent()
+                            }
+                            item {
+                                SoulPlayerSpacer()
+                            }
                         }
                     }
                 }

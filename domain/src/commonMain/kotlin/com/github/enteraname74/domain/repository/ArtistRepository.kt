@@ -23,6 +23,8 @@ interface ArtistRepository {
     suspend fun deleteAll(artistsIds: List<UUID>): SoulResult<Unit>
     suspend fun deleteAll(dataMode: DataMode)
 
+    suspend fun getArtistNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves an Artist from its id.
      */

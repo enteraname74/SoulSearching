@@ -27,6 +27,9 @@ internal interface ArtistDao {
     @Query("DELETE FROM RoomArtist WHERE dataMode = :dataMode")
     suspend fun deleteAll(dataMode: String)
 
+    @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%')")
+    suspend fun getArtistNamesContainingSearch(search: String): List<String>
+
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getFromId(artistId: UUID): Flow<RoomArtist?>
 

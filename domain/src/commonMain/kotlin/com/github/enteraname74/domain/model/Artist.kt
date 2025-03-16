@@ -3,9 +3,8 @@ package com.github.enteraname74.domain.model
 import com.github.enteraname74.domain.util.serializer.LocalDateTimeSerializer
 import com.github.enteraname74.domain.util.serializer.UUIDSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 /**
  * Represent an artist with information related to it.

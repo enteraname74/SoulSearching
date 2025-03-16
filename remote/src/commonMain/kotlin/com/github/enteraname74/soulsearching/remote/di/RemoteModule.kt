@@ -5,8 +5,7 @@ import com.github.enteraname74.soulsearching.remote.cloud.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.*
 import com.github.enteraname74.soulsearching.remote.ext.toBearerTokens
 import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
-import com.github.enteraname74.soulsearching.remote.model.JSON
-import com.github.enteraname74.soulsearching.repository.datasource.LyricsDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistRemoteDataSource
@@ -20,8 +19,6 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -29,17 +26,13 @@ import org.koin.dsl.module
 val remoteModule = module {
     single(named(HttpClientNames.GENERIC)) {
         HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(JSON)
-            }
+            provideContentNegotiation()
         }
     }
 
     single(named(HttpClientNames.CLOUD_AUTH)) {
         HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(JSON)
-            }
+            provideContentNegotiation()
 
             engine {
                 requestTimeout = 60_000L
@@ -67,8 +60,8 @@ val remoteModule = module {
         }
     }
 
-    single<LyricsDataSource> {
-        LyricsDataSourceImpl(
+    single<LyricsRemoteDataSource> {
+        LyricsRemoteDataSourceImpl(
             client = get(named(HttpClientNames.GENERIC))
         )
     }

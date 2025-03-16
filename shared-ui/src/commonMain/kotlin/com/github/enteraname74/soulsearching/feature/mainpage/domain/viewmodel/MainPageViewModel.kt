@@ -28,8 +28,10 @@ import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsU
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.CreatePlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
+import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
@@ -41,10 +43,10 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.domain.model.ElementsVisibility
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
+import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
-import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
@@ -102,6 +104,16 @@ class MainPageViewModel(
 
     private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase by inject()
     private val syncDataWithCloudUseCase: SyncDataWithCloudUseCase by inject()
+
+    private val fetchLatestReleaseUseCase: FetchLatestReleaseUseCase by inject()
+    private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
+
+    val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
+        .stateIn(
+            scope = screenModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = false
+        )
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
@@ -214,7 +226,7 @@ class MainPageViewModel(
     val allMusicFoldersState: StateFlow<AllMusicFoldersState> =
         getAllMusicFolderListUseCase().mapLatest { allMusicFolders ->
             AllMusicFoldersState(
-                allMusicFolders = allMusicFolders.sortedBy { it.path },
+                allMusicFolders = allMusicFolders.sortedBy { it.name },
             )
         }.stateIn(
             scope = screenModelScope.plus(Dispatchers.IO),
@@ -387,6 +399,10 @@ class MainPageViewModel(
                     )
                 )
             }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            fetchLatestReleaseUseCase()
         }
     }
 

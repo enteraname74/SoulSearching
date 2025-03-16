@@ -62,6 +62,9 @@ class AlbumRepositoryImpl(
         albumLocalDataSource.upsertAll(albums)
     }
 
+    override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
+        albumLocalDataSource.getAlbumNamesContainingSearch(search)
+
     override suspend fun upsert(
         album: Album,
         artist: String,

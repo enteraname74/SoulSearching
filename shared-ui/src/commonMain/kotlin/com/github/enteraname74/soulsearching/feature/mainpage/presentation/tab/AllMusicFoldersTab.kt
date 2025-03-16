@@ -54,7 +54,7 @@ fun allMusicFoldersTab(
                 modifier = Modifier
                     .animateItem(),
                 cover = element.cover,
-                title = element.path,
+                title = element.name,
                 imageSize = null,
                 text = strings.musics(total = element.musics.size),
                 onClick = {

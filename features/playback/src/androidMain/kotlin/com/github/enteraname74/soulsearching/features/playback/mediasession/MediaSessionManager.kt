@@ -28,7 +28,7 @@ class MediaSessionManager(
     private var seekToJob: Job? = null
 
     private val standardNotificationBitmap: Bitmap = Bitmap.createScaledBitmap(
-        BitmapFactory.decodeResource(context.resources, R.drawable.notification_default),
+        BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default),
         DEFAULT_NOTIFICATION_SIZE,
         DEFAULT_NOTIFICATION_SIZE,
         false
@@ -86,14 +86,14 @@ class MediaSessionManager(
 
             override fun onSkipToNext() {
                 super.onSkipToNext()
-                runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.next()
                 }
             }
 
             override fun onSkipToPrevious() {
                 super.onSkipToPrevious()
-                runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
                     playbackManager.previous()
                 }
             }

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.application
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,10 +22,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.ext.isComingFromPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.navigationIcon
-import com.github.enteraname74.soulsearching.ext.navigationTitle
-import com.github.enteraname74.soulsearching.ext.safePush
+import com.github.enteraname74.soulsearching.ext.*
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingFeature
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
@@ -35,7 +33,6 @@ import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewMod
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
-import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.coroutines.launch
 
@@ -45,6 +42,8 @@ class ApplicationWindow: Screen {
         val applicationViewModel: ApplicationViewModel = koinScreenModel()
 
         val state: ApplicationState by applicationViewModel.state.collectAsState()
+
+        val shouldShowNewVersionPin: Boolean by applicationViewModel.shouldShowNewVersionPin.collectAsState()
 
         when(state) {
             ApplicationState.AppMigration -> {
@@ -61,6 +60,7 @@ class ApplicationWindow: Screen {
                     isLoadingManagerLoading = isLoadingManagerLoading,
                     mainPageViewModel = mainPageViewModel,
                     playerViewModel = playerViewModel,
+                    shouldShowNewVersionPin = shouldShowNewVersionPin,
                 )
             }
             ApplicationState.FetchingSongs -> {
@@ -71,6 +71,7 @@ class ApplicationWindow: Screen {
 
     @Composable
     private fun DataView(
+        shouldShowNewVersionPin: Boolean,
         playerViewModel: PlayerViewModel,
         mainPageViewModel: MainPageViewModel,
         isLoadingManagerLoading: Boolean,
@@ -89,6 +90,7 @@ class ApplicationWindow: Screen {
             if (windowSize == WindowSize.Large) {
                 NavigationPanel(
                     rows = navigationRows(
+                        shouldShowNewVersionPin = shouldShowNewVersionPin,
                         generalNavigator = generalNavigator,
                         setCurrentPage = mainPageViewModel::setCurrentPage,
                         tabs = tabs,
@@ -127,6 +129,7 @@ class ApplicationWindow: Screen {
 
     @Composable
     private fun navigationRows(
+        shouldShowNewVersionPin: Boolean,
         setCurrentPage: (ElementEnum) -> Unit,
         currentPage: ElementEnum?,
         tabs: List<PagerScreen>,
@@ -157,8 +160,10 @@ class ApplicationWindow: Screen {
                             SettingsScreen()
                         )
                     },
-                    icon = Icons.Rounded.Settings,
-                    isSelected = generalNavigator?.lastItem is SettingPage
+                    filledIcon = Icons.Rounded.Settings,
+                    outlinedIcon = Icons.Outlined.Settings,
+                    isSelected = generalNavigator?.lastItem is SettingPage,
+                    isBadged = shouldShowNewVersionPin,
                 )
             )
             tabs.forEachIndexed { index, tab ->
@@ -168,7 +173,8 @@ class ApplicationWindow: Screen {
                 add(
                     NavigationRowSpec(
                         title = tab.type.navigationTitle(),
-                        icon = tab.type.navigationIcon(),
+                        filledIcon = tab.type.navigationFilledIcon(),
+                        outlinedIcon = tab.type.navigationOutlinedIcon(),
                         onClick = {
                             setCurrentPage(tab.type)
                             playerAction()

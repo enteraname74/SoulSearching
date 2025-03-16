@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.coreui.ext
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
@@ -50,6 +49,14 @@ fun Modifier.optionalClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)
             onLongClick = onLongClick,
         )
     }
+
+fun Modifier.chainIf(
+    condition: Boolean,
+    modifier: () -> Modifier,
+): Modifier {
+    val addedModifier = if (condition) modifier() else Modifier
+    return this.then(addedModifier)
+}
 
 /**
  * Disable the focus and click action on a composable.

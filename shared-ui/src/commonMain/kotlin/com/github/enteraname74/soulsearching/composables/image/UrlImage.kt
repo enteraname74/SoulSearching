@@ -43,7 +43,7 @@ internal fun UrlImage(
         tint = tint,
     ) { foundUrl ->
         if (url?.startsWith("music/cover/") == true) {
-            DataImage(
+            SoulDataImage(
                 data = "$host/$foundUrl",
                 contentScale = contentScale,
                 modifier = modifier,
@@ -64,7 +64,7 @@ internal fun UrlImage(
                 tint = tint,
             )
         } else {
-            DataImage(
+            SoulDataImage(
                 data = foundUrl,
                 contentScale = contentScale,
                 modifier = modifier,

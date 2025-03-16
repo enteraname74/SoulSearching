@@ -14,30 +14,28 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun SoulByteArrayImage(
     data: ByteArray?,
-    size: Dp,
+    size : Dp?,
     modifier: Modifier = Modifier,
     roundedPercent: Int = 10,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
-    val modifierBase = Modifier
-        .size(size)
+    val modifierBase = if (size != null) {
+        Modifier.size(size)
+    } else {
+        Modifier
+    }
         .clip(RoundedCornerShape(percent = roundedPercent))
         .composed {
             modifier
         }
 
-    AnimatedImage(
+    SoulDataImage(
         data = data,
-        contentScale = ContentScale.Crop,
         modifier = modifierBase,
+        contentScale = ContentScale.Crop,
         tint = tint,
-    ) { byteArray ->
-        DataImage(
-            data = byteArray,
-            modifier = modifierBase,
-            contentScale = ContentScale.Crop,
-            contentDescription = null,
-            tint = tint,
-        )
-    }
+        builderOptions = { this },
+        onSuccess = {},
+        contentDescription = null,
+    )
 }

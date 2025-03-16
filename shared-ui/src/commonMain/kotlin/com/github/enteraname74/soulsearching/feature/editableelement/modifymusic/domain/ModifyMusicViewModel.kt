@@ -3,27 +3,31 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
+import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.datamode.GetCurrentDataModeWithUserUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicCoversBottomSheet
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
+import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.EditableElement
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.core.PlatformFile
@@ -40,12 +44,14 @@ class ModifyMusicViewModel(
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
     private val getCurrentDataModeWithUserUseCase: GetCurrentDataModeWithUserUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
+    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
     private val feedbackPopUpManager: FeedbackPopUpManager,
+    private val coverRetriever: CoverRetriever,
 ) : ScreenModel {
     private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
     private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
@@ -55,7 +61,7 @@ class ModifyMusicViewModel(
     )
     val navigationState: StateFlow<ModifyMusicNavigationState> = _navigationState.asStateFlow()
 
-    private var _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
+    private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -121,6 +127,26 @@ class ModifyMusicViewModel(
         initialValue = ModifyMusicFormState.NoData,
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val coversOfAlbum: StateFlow<CoverListState> = musicId.mapLatest { id ->
+        if (id != null) {
+            val album: AlbumWithMusics? = getCorrespondingAlbumUseCase.withMusics(musicId = id)
+            CoverListState.Data(
+                covers = album?.let {
+                    coverRetriever.getAllUniqueCover(
+                        covers = it.musics.map { it.cover }
+                    )
+                } ?: emptyList()
+            )
+        } else {
+            CoverListState.Loading
+        }
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = CoverListState.Loading,
+    )
+
     /**
      * Define the selected music in the state from a given id.
      * It will also fetch the cover of the music.
@@ -136,7 +162,6 @@ class ModifyMusicViewModel(
     private fun setNewCoverFromStorage(imageFile: PlatformFile) {
         screenModelScope.launch {
             newCover.value = imageFile.readBytes()
-            _bottomSheetState.value = null
         }
     }
 
@@ -146,7 +171,6 @@ class ModifyMusicViewModel(
                 val coverImage: ImageBitmap? =
                     cachedCoverManager.getCachedImage(musicPath) ?: cachedCoverManager.fetchCoverOfMusicFile(musicPath)
                 newCover.value = coverImage?.toByteArray()
-                _bottomSheetState.value = null
             }
         }
     }
@@ -180,6 +204,10 @@ class ModifyMusicViewModel(
                 onCoverFromStorageSelected = ::setNewCoverFromStorage,
                 onClose = {
                     _bottomSheetState.value = null
+                },
+                albumCoversStateFlow = coversOfAlbum,
+                onAlbumCoverSelected = { cover ->
+                    newCover.value = cover
                 }
             )
         }
@@ -190,15 +218,10 @@ class ModifyMusicViewModel(
      */
     @OptIn(ExperimentalResourceApi::class)
     fun updateMusic() {
-        CoroutineScope(Dispatchers.IO).launch {
+        val state = (state.value as? ModifyMusicState.Data) ?: return
+        val form = (formState.value as? ModifyMusicFormState.Data)?.takeIf { it.isFormValid() } ?: return
 
-            val state = (state.value as? ModifyMusicState.Data) ?: return@launch
-            val form = (formState.value as? ModifyMusicFormState.Data) ?: return@launch
-
-            if (!form.isFormValid()) return@launch
-
-            loadingManager.startLoading()
-
+        loadingManager.withLoadingOnIO {
             val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
@@ -242,8 +265,6 @@ class ModifyMusicViewModel(
                     }.getOrNull()
                 )
             }
-
-            loadingManager.stopLoading()
 
             _navigationState.value = ModifyMusicNavigationState.Back
         }

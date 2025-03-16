@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Search
@@ -28,8 +27,6 @@ import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
-import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 
 @Composable
 fun SoulSearchBar(
@@ -44,19 +41,15 @@ fun SoulSearchBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
-        val windowSize = rememberWindowSize()
-
-        if (windowSize != WindowSize.Small) {
-            SoulIconButton(
-                icon = Icons.Rounded.KeyboardArrowDown,
-                contentDescription = strings.cancel,
-                onClick = onClose,
-                colors = SoulButtonDefaults.colors(
-                    contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
-                    containerColor = Color.Transparent
-                )
+        SoulIconButton(
+            icon = Icons.Rounded.KeyboardArrowDown,
+            contentDescription = strings.cancel,
+            onClick = onClose,
+            colors = SoulButtonDefaults.colors(
+                contentColor = SoulSearchingColorTheme.colorScheme.onPrimary,
+                containerColor = Color.Transparent
             )
-        }
+        )
 
         TextField(
             modifier = Modifier

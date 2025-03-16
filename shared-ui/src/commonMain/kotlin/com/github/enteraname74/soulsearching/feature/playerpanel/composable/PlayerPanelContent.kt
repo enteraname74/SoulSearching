@@ -19,9 +19,10 @@ import com.github.enteraname74.soulsearching.coreui.tab.SoulTabHeader
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.TabData
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
+import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerMusicListViewManager
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerViewState
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
@@ -30,12 +31,13 @@ fun PlayerPanelContent(
     playbackManager: PlaybackManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
     playerState: PlayerViewState.Data,
+    lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
-    onRetrieveLyrics: () -> Unit,
     multiSelectionState: MultiSelectionState,
-    textColor: Color,
+    contentColor: Color,
     subTextColor: Color,
+    containerColor: Color,
     isExpanded: Boolean,
     buttonColors: SoulButtonColors,
     playerViewManager: PlayerViewManager = injectElement(),
@@ -52,7 +54,8 @@ fun PlayerPanelContent(
                     playbackManager = playbackManager,
                     playedList = playerState.playedList,
                     onMoreClickedOnMusic = onMoreClickedOnMusic,
-                    secondaryColor = textColor,
+                    contentColor = contentColor,
+                    containerColor = containerColor,
                     isExpanded = isExpanded,
                     buttonColors = buttonColors,
                     currentMusicIndex = playerState.currentMusicIndex,
@@ -66,12 +69,12 @@ fun PlayerPanelContent(
             title = strings.lyrics,
             screen = {
                 MusicLyricsView(
-                    contentColor = textColor,
+                    contentColor = contentColor,
+                    containerColor = containerColor,
                     noLyricsColor = subTextColor,
-                    lyricsState = playerState.currentMusicLyrics,
-                    currentMusic = playerState.currentMusic,
-                    onRetrieveLyrics = onRetrieveLyrics,
+                    lyricsState = lyricsState,
                     isExpanded = isExpanded,
+                    buttonColor = buttonColors,
                 )
             }
         )
@@ -88,8 +91,6 @@ fun PlayerPanelContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    start = UiConstants.Spacing.medium,
-                    end = UiConstants.Spacing.medium,
                     bottom = UiConstants.Spacing.small
                 ),
         ) {
@@ -102,7 +103,7 @@ fun PlayerPanelContent(
                         .fillMaxWidth()
                         .weight(1f),
                     title = page.title,
-                    contentColor = if (isSelected && isExpanded) textColor else subTextColor,
+                    contentColor = if (isSelected && isExpanded) contentColor else subTextColor,
                     isSelected = isExpanded && isSelected,
                     isClickable = playerViewManager.currentValue == BottomSheetStates.EXPANDED,
                     onClick = {

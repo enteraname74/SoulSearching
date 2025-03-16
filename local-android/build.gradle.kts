@@ -3,19 +3,17 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
     kotlin("kapt")
 }
 
 kotlin {
     androidTarget()
-    jvm("desktop")
 
     sourceSets {
         androidMain {
             dependencies {
                 implementation(libs.room)
+                // Used for injecting app context in database module
                 implementation(libs.koin.androidx.compose)
 
                 configurations.getByName("kapt").dependencies.add(
@@ -31,7 +29,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain"))
                 implementation(project(":repository"))
-                implementation(project(":features:filemanager"))
+                implementation(project(":filemanager"))
                 implementation(libs.koin.core)
             }
         }

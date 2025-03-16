@@ -24,7 +24,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting {
             dependencies {
-                implementation(libs.jlibnotify)
+//                implementation(libs.jlibnotify)
                 implementation(libs.coroutines.core.swing)
                 implementation(libs.vlcj)
             }
@@ -35,7 +35,7 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(project(":remote"))
-            implementation(project(":features:filemanager"))
+            implementation(project(":filemanager"))
             implementation(libs.bundles.ktor)
         }
 

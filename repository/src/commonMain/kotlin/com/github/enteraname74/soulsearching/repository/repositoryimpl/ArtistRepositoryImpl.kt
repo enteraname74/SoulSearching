@@ -84,6 +84,9 @@ class ArtistRepositoryImpl(
         artistLocalDataSource.deleteAll(dataMode)
     }
 
+    override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
+        artistLocalDataSource.getArtistNamesContainingSearch(search)
+
     /**
      * Retrieves an Artist from its id.
      */

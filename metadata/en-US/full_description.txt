@@ -1,0 +1,12 @@
+Soul Searching is an application for listening to your music files.
+
+With the latter, you can:
+- manage your music and files
+- access the lyrics (both normal and synced) of the played music
+- manage several artists linked to a music
+- manage your albums
+- create playlists
+- manage your played list
+- see statistics on your listenings
+
+The application also offers several customization elements (color theme, player view...).

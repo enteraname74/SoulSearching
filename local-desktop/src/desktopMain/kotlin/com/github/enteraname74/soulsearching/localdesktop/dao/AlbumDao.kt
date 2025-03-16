@@ -68,6 +68,18 @@ internal class AlbumDao(
         }
     }
 
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String> = dbQuery {
+        AlbumTable
+            .selectAll()
+            .where {
+                AlbumTable
+                    .albumName
+                    .lowerCase()
+                    .like("%${search.lowercase().trim()}%")
+            }
+            .mapNotNull { it.getOrNull(AlbumTable.albumName) }
+    }
+
     fun getAll(dataMode: String): Flow<List<Album>> = transaction {
         AlbumTable
             .selectAll()

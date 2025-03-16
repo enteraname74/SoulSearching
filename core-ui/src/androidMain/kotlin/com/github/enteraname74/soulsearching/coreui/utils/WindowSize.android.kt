@@ -7,6 +7,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+internal actual val MediumThreshold: Dp = 1200.dp
+
 @Composable
 actual fun rememberWindowSize(): WindowSize {
     LocalContext.current

@@ -68,10 +68,21 @@ internal class ArtistDao(
         }
     }
 
-    suspend fun deleteAll(dataMode: String) {
-        flowTransactionOn {
-            ArtistTable.deleteWhere { ArtistTable.dataMode eq dataMode }
-        }
+    suspend fun deleteAll(dataMode: String) = flowTransactionOn {
+        ArtistTable.deleteWhere { ArtistTable.dataMode eq dataMode }
+    }
+
+    suspend fun getArtistNamesContainingSearch(search: String): List<String> = dbQuery {
+        ArtistTable
+            .selectAll()
+            .where {
+                artistName
+                    .lowerCase()
+                    .like("%${search.lowercase().trim()}%")
+            }
+            .mapNotNull {
+                it.getOrNull(artistName)
+            }
     }
 
     fun getFromId(artistId: UUID): Flow<Artist?> = transaction {
@@ -95,7 +106,7 @@ internal class ArtistDao(
     suspend fun getAll(artistIds: List<UUID>): List<Artist> = dbQuery {
         ArtistTable
             .selectAll()
-            .where { ArtistTable.id inList artistIds}
+            .where { ArtistTable.id inList artistIds }
             .mapNotNull { it.toArtist() }
     }
 

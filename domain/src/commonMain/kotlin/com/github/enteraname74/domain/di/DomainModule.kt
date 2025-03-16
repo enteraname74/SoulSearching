@@ -22,7 +22,10 @@ import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListU
 import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
 import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.GetLatestViewedReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.SetLatestViewedReleaseUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -152,10 +155,15 @@ val domainModule = module {
     singleOf(::GetAllQuickAccessElementsUseCase)
 
     // Release
+    singleOf(::FetchLatestReleaseUseCase)
     singleOf(::GetLatestReleaseUseCase)
 
     // DataMode
     singleOf(::GetCurrentDataModeUseCase)
     singleOf(::GetCurrentDataModeWithUserUseCase)
     singleOf(::SetCurrentDataModeUseCase)
+
+    // Release
+    singleOf(::GetLatestViewedReleaseUseCase)
+    singleOf(::SetLatestViewedReleaseUseCase)
 }

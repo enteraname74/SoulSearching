@@ -109,7 +109,6 @@ data class ModifyMusicScreen(
         onValidateModification: () -> Unit,
         addArtistField: () -> Unit,
     ) {
-
         when {
             state is ModifyMusicState.Data && formState is ModifyMusicFormState.Data -> {
 

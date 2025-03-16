@@ -24,6 +24,8 @@ interface AlbumLocalDataSource {
     suspend fun deleteAll(ids: List<UUID>)
     suspend fun deleteAll(dataMode: DataMode)
 
+    suspend fun getAlbumNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves all Albums from an Artist as a flow.
      */

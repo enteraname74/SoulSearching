@@ -4,7 +4,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 data class NavigationRowSpec(
     val title: String,
-    val icon: ImageVector,
+    private val filledIcon: ImageVector,
+    private val outlinedIcon: ImageVector,
+    val isBadged: Boolean = false,
     val onClick: () -> Unit,
     val isSelected: Boolean,
-)
+) {
+    val icon: ImageVector
+        get() = if (isSelected) {
+            filledIcon
+        } else {
+            outlinedIcon
+        }
+}

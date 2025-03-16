@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.search
 
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
@@ -21,6 +22,7 @@ import com.github.enteraname74.soulsearching.feature.search.composable.SearchTyp
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchMusics(
     searchText: String,
@@ -36,7 +38,7 @@ fun SearchMusics(
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
-    LazyColumn {
+    LazyColumnCompat {
         val foundedMusics = allMusics.filter {
             it.name.lowercase().contains(searchText.lowercase())
                     || it.artist.lowercase().contains(searchText.lowercase())

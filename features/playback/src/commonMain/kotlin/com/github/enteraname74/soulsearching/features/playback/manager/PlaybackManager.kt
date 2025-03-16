@@ -286,6 +286,15 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         playbackListManager.addMusicToPlayNext(music = music)
     }
 
+    /**
+     * Updates the played list after a reorder in it.
+     */
+    suspend fun updatePlayedListAfterReorder(
+        newList: List<Music>
+    ) {
+        playbackListManager.updatePlayedListAfterReorder(newList = newList)
+    }
+
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
         playbackListManager.addMultipleMusicsToPlayNext(musics = musics)
     }

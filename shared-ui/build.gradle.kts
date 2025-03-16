@@ -35,9 +35,9 @@ kotlin {
                 implementation(project(":domain"))
                 implementation(project(":core-ui"))
                 implementation(project(":shared-di"))
-                implementation(project(":features:playback"))
-                implementation(project(":features:filemanager"))
-                implementation(project(":features:musicmanager"))
+                implementation(project(":playback"))
+                implementation(project(":filemanager"))
+                implementation(project(":musicmanager"))
 
                 implementation(libs.bundles.koin)
 
@@ -64,8 +64,8 @@ kotlin {
 
                 implementation(libs.file.kit)
                 implementation(libs.qr.kit)
-
                 implementation(libs.bundles.coil)
+                implementation(libs.reorderable)
             }
         }
         androidMain {
@@ -77,7 +77,6 @@ kotlin {
                 implementation(libs.room)
 
                 implementation(libs.bundles.accompanist)
-                implementation(libs.gson)
             }
         }
     }
@@ -91,8 +90,8 @@ android {
         applicationId = "com.github.enteraname74.soulsearching"
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = libs.versions.android.version.code.get().toInt()
-        versionName = libs.versions.application.version.name.get()
+        versionCode = 31
+        versionName = "0.12.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -164,5 +163,12 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    // For F-Droid
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
     }
 }

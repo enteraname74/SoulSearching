@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.skydoves.cloudy.cloudy
 
+@OptIn(ExperimentalFoundationApi::class)
 actual fun Modifier.combinedClickableWithRightClick(
     onClick: () -> Unit,
     onLongClick: () -> Unit

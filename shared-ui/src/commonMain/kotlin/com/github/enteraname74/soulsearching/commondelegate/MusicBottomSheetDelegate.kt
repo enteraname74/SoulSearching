@@ -116,6 +116,7 @@ class MusicBottomSheetDelegateImpl(
             AddToPlaylistBottomSheet(
                 onClose = { setAddToPlaylistBottomSheetState(null) },
                 addMusicToSelectedPlaylists = { selectedPlaylists ->
+                    multiSelectionManagerImpl?.clearMultiSelection()
                     setAddToPlaylistBottomSheetState(null)
                     setBottomSheetState(null)
 

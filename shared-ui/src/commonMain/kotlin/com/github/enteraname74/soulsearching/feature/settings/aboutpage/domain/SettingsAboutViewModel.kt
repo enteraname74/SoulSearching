@@ -2,24 +2,26 @@ package com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Release
 import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
-import com.github.enteraname74.soulsearching.domain.AppVersion
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.github.enteraname74.domain.usecase.release.SetLatestViewedReleaseUseCase
+import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 
 class SettingsAboutViewModel(
-    private val getLatestReleaseUseCase: GetLatestReleaseUseCase,
+    getLatestReleaseUseCase: GetLatestReleaseUseCase,
+    private val setLatestViewedReleaseUseCase: SetLatestViewedReleaseUseCase,
 ): ScreenModel {
-    private val latestReleaseState: MutableStateFlow<Release?> = MutableStateFlow(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val state: StateFlow<SettingsAboutState> = latestReleaseState.mapLatest { latestRelease ->
+    val state: StateFlow<SettingsAboutState> = getLatestReleaseUseCase().mapLatest { latestRelease ->
         SettingsAboutState(
-            moreRecentRelease = latestRelease?.takeIf { isNewerThanCurrentVersion(it) }
+            moreRecentRelease = latestRelease?.takeIf { it.isNewerThanCurrentVersion() }?.also { release ->
+                setLatestViewedReleaseUseCase(releaseTag = release.tag)
+            }
         )
     }.stateIn(
         scope = screenModelScope,
@@ -28,17 +30,4 @@ class SettingsAboutViewModel(
             moreRecentRelease = null,
         )
     )
-
-    fun fetchLatestRelease() {
-        CoroutineScope(Dispatchers.IO).launch {
-            latestReleaseState.value = getLatestReleaseUseCase()
-        }
-    }
-
-    private fun isNewerThanCurrentVersion(release: Release): Boolean {
-        val currentVersion = AppVersion.versionName.split("-").first()
-        val cleanedReleaseVersion = release.tag.replace("v", "")
-
-        return currentVersion != cleanedReleaseVersion
-    }
 }

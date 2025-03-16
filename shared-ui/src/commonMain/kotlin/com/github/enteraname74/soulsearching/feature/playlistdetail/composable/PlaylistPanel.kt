@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
@@ -22,8 +23,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 @Composable
 fun PlaylistPanel(
     editAction: (() -> Unit)?,
+    playAction: () -> Unit,
     shuffleAction: () -> Unit,
-    searchAction: () -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     secondaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
@@ -40,7 +41,7 @@ fun PlaylistPanel(
         ImagesButton(
             editAction = editAction,
             shuffleAction = shuffleAction,
-            searchAction = searchAction,
+            playAction = playAction,
             tint = tint,
             primaryColor = secondaryColor
         )
@@ -51,8 +52,8 @@ fun PlaylistPanel(
 @Composable
 private fun ImagesButton(
     editAction: (() -> Unit)?,
+    playAction: () -> Unit,
     shuffleAction: () -> Unit,
-    searchAction: () -> Unit,
     primaryColor: Color = SoulSearchingColorTheme.colorScheme.secondary,
     tint: Color = SoulSearchingColorTheme.colorScheme.onSecondary
 ) {
@@ -70,19 +71,18 @@ private fun ImagesButton(
                         contentPadding = SoulButtonDefaults.contentPadding(),
                     )
                 )
-
             }
             add(
                 SoulSegmentedIconButton(
-                    data = Icons.Rounded.Shuffle,
-                    onClick = shuffleAction,
+                    data = Icons.Rounded.PlayArrow,
+                    onClick = playAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )
             )
             add(
                 SoulSegmentedIconButton(
-                    data = Icons.Rounded.Search,
-                    onClick = searchAction,
+                    data = Icons.Rounded.Shuffle,
+                    onClick = shuffleAction,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                 )
             )

@@ -28,8 +28,8 @@ interface CacheManager {
     suspend fun getAllSavedFiles(): List<File> =
         folder.listFiles()?.toList() ?: emptyList()
 
-    suspend fun getFileData(coverId: UUID): ByteArray? {
-        val coverFile = File(folder, buildFileName(id = coverId))
+    suspend fun getFileData(fileId: UUID): ByteArray? {
+        val coverFile = File(folder, buildFileName(id = fileId))
 
         return if (coverFile.exists()) {
             return coverFile.readBytes()

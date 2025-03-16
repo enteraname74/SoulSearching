@@ -39,6 +39,9 @@ internal class ArtistLocalDataSourceImpl(
     override suspend fun getAll(artistIds: List<UUID>): List<Artist> =
         artistDao.getAll(artistIds)
 
+    override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
+        artistDao.getArtistNamesContainingSearch(search)
+
     override fun getFromId(artistId: UUID): Flow<Artist?> =
         artistDao.getFromId(artistId)
 

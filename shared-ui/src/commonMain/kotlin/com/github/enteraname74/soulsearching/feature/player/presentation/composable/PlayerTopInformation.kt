@@ -51,7 +51,6 @@ fun PlayerTopInformation(
             .statusBarsPadding()
             .fillMaxWidth()
             .alpha(alphaTransition),
-        verticalAlignment = Alignment.CenterVertically
     ) {
 
         val statusBarPadding: Int = getStatusBarPadding()
@@ -59,6 +58,7 @@ fun PlayerTopInformation(
         SoulIcon(
             icon = Icons.Rounded.KeyboardArrowDown,
             modifier = Modifier
+                .padding(top = UiConstants.Spacing.medium)
                 .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                     coroutineScope.launch {
                         if (playerMusicListViewManager.currentValue != BottomSheetStates.COLLAPSED) {
@@ -138,6 +138,7 @@ fun PlayerTopInformation(
             SoulIcon(
                 icon = Icons.Rounded.Menu,
                 modifier = Modifier
+                    .padding(top = UiConstants.Spacing.medium)
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                         onShowPanel()
                     },
@@ -148,6 +149,7 @@ fun PlayerTopInformation(
             SoulIcon(
                 icon = Icons.Rounded.MoreVert,
                 modifier = Modifier
+                    .padding(top = UiConstants.Spacing.medium)
                     .clickableIf(enabled = playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
                         onSongInfoClicked()
                     },

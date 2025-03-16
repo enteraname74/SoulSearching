@@ -19,17 +19,19 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.navigation.SoulBackHandler
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.theme.color.AnimatedColorPaletteBuilder
-import com.github.enteraname74.soulsearching.coreui.theme.color.LocalColors
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
-import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingPalette
+import com.github.enteraname74.soulsearching.coreui.theme.color.*
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistLargeView
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistSmallView
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.view.PlaylistRowView
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
+import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistViewUiUtils
 import com.github.enteraname74.soulsearching.feature.search.SearchMusics
 import com.github.enteraname74.soulsearching.feature.search.SearchView
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -70,22 +72,12 @@ fun PlaylistScreen(
         }
     }
 
-    var bitmap: ImageBitmap? by remember {
-        mutableStateOf(null)
-    }
-
-    val hasFoundImage by derivedStateOf {
-        bitmap != null
-    }
-
-    LaunchedEffect(hasFoundImage) {
-        colorThemeManager.setNewPlaylistCover(
-            playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
-        )
-    }
-
-    val onCoverLoaded: (ImageBitmap?) -> Unit = {
-        bitmap = it
+    val onCoverLoaded: (ImageBitmap?) -> Unit = { cover ->
+        cover?.let { bitmap ->
+            colorThemeManager.setNewPlaylistCover(
+                playlistDetailCover = PlaylistDetailCover.fromImageBitmap(bitmap)
+            )
+        }
     }
 
     SoulBackHandler(playerViewManager.currentValue != BottomSheetStates.EXPANDED) {
@@ -97,6 +89,21 @@ fun PlaylistScreen(
             playlistDetailListener.onUpdateNbPlayed()
             coroutineScope.launch {
                 playbackManager.playShuffle(musicList = playlistDetail.musics)
+                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+            }
+        }
+    }
+
+    val playAction = {
+        if (playlistDetail.musics.isNotEmpty()) {
+            playlistDetailListener.onUpdateNbPlayed()
+            coroutineScope.launch {
+                playbackManager.setCurrentPlaylistAndMusic(
+                    music = playlistDetail.musics.first(),
+                    musicList = playlistDetail.musics,
+                    playlistId = playlistDetail.id,
+                    isMainPlaylist = false
+                )
                 playerViewManager.animateTo(BottomSheetStates.EXPANDED)
             }
         }
@@ -123,13 +130,14 @@ fun PlaylistScreen(
 
                 val constraintsScope = this
                 val maxHeight = with(LocalDensity.current) {
-                    constraintsScope.maxHeight.toPx()
+                    constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
                 }
 
                 val searchBarFocusRequester = remember { FocusRequester() }
 
                 val searchAction: () -> Unit = {
                     coroutineScope.launch {
+                        multiSelectionManagerImpl.clearMultiSelection()
                         searchDraggableState.animateTo(
                             BottomSheetStates.EXPANDED,
                             tween(UiConstants.AnimationDuration.normal)
@@ -139,10 +147,11 @@ fun PlaylistScreen(
                 }
 
                 val windowSize = rememberWindowSize()
-                when {
-                    windowSize != WindowSize.Small -> {
-                        PlaylistRowView(
+                when (windowSize) {
+                    WindowSize.Small -> {
+                        PlaylistSmallView(
                             navigateBack = navigateBack,
+                            playAction = playAction,
                             shuffleAction = shuffleAction,
                             searchAction = searchAction,
                             onShowMusicBottomSheet = onShowMusicBottomSheet,
@@ -150,24 +159,41 @@ fun PlaylistScreen(
                             playlistDetailListener = playlistDetailListener,
                             optionalContent = optionalContent,
                             onCoverLoaded = onCoverLoaded,
-                            multiSelectionState = multiSelectionState,
                             onLongSelectOnMusic = onLongSelectOnMusic,
+                            multiSelectionState = multiSelectionState,
                         )
                     }
 
                     else -> {
-                        PlaylistColumnView(
-                            navigateBack = navigateBack,
-                            shuffleAction = shuffleAction,
-                            searchAction = searchAction,
-                            onShowMusicBottomSheet = onShowMusicBottomSheet,
-                            playlistDetail = playlistDetail,
-                            playlistDetailListener = playlistDetailListener,
-                            optionalContent = optionalContent,
-                            onCoverLoaded = onCoverLoaded,
-                            onLongSelectOnMusic = onLongSelectOnMusic,
-                            multiSelectionState = multiSelectionState,
-                        )
+                        if (PlaylistViewUiUtils.canShowColumnLayout()) {
+                            PlaylistLargeView(
+                                navigateBack = navigateBack,
+                                shuffleAction = shuffleAction,
+                                playAction = playAction,
+                                searchAction = searchAction,
+                                onShowMusicBottomSheet = onShowMusicBottomSheet,
+                                playlistDetail = playlistDetail,
+                                playlistDetailListener = playlistDetailListener,
+                                optionalContent = optionalContent,
+                                onCoverLoaded = onCoverLoaded,
+                                onLongSelectOnMusic = onLongSelectOnMusic,
+                                multiSelectionState = multiSelectionState,
+                            )
+                        } else {
+                            PlaylistRowView(
+                                navigateBack = navigateBack,
+                                playAction = playAction,
+                                shuffleAction = shuffleAction,
+                                searchAction = searchAction,
+                                onShowMusicBottomSheet = onShowMusicBottomSheet,
+                                playlistDetail = playlistDetail,
+                                playlistDetailListener = playlistDetailListener,
+                                optionalContent = optionalContent,
+                                onCoverLoaded = onCoverLoaded,
+                                onLongSelectOnMusic = onLongSelectOnMusic,
+                                multiSelectionState = multiSelectionState,
+                            )
+                        }
                     }
                 }
 

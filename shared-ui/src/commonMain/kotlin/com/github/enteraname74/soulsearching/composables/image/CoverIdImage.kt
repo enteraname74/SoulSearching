@@ -43,7 +43,7 @@ internal fun CoverIdImage(
         contentScale = contentScale,
         tint = tint,
     ) {
-        DataImage(
+        SoulDataImage(
             data = coverPath,
             modifier = modifier,
             contentScale = contentScale,

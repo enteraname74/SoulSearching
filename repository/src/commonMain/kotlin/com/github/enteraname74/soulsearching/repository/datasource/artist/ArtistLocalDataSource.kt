@@ -26,6 +26,8 @@ interface ArtistLocalDataSource {
     suspend fun deleteAll(artistsIds: List<UUID>)
     suspend fun deleteAll(dataMode: DataMode)
 
+    suspend fun getArtistNamesContainingSearch(search: String): List<String>
+
     /**
      * Retrieves an Artist from its id.
      */

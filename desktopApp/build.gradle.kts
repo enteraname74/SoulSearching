@@ -11,8 +11,8 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
     implementation(project(":domain"))
 
     implementation(libs.bundles.koin)
-    implementation(project(":features:playback"))
+    implementation(project(":playback"))
     implementation(project(":core-ui"))
 }
 

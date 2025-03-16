@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.saxophone_png
+import com.github.enteraname74.soulsearching.shared_ui.generated.resources.app_logo_uni_xml
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -19,7 +19,7 @@ fun TemplateImage(
 ) {
     Image(
         modifier = modifier,
-        painter = painterResource(Res.drawable.saxophone_png),
+        painter = painterResource(Res.drawable.app_logo_uni_xml),
         contentDescription = strings.image,
         contentScale = contentScale,
         colorFilter = ColorFilter.tint(tint)

@@ -29,6 +29,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
@@ -76,7 +77,9 @@ class MainPageScreen : Screen {
         val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
         val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
         val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
+
         val isInCloudMode: Boolean by mainPageViewModel.isInCloudMode.collectAsState()
+        val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
 
         val searchDraggableState = mainPageViewModel.searchDraggableState
 
@@ -133,6 +136,7 @@ class MainPageScreen : Screen {
             currentEnumPage = currentPage,
             isUsingVerticalAccessBar = isUsingVerticalAccessBar,
             isInCloudMode = isInCloudMode,
+            shouldShowNewVersionPin = shouldShowNewVersionPin,
         )
     }
 
@@ -224,6 +228,7 @@ fun MainPageScreenView(
     allAlbumsState: AllAlbumsState,
     allArtistsState: AllArtistsState,
     tabs: List<PagerScreen>,
+    shouldShowNewVersionPin: Boolean,
     currentEnumPage: ElementEnum?,
     isInCloudMode: Boolean,
     isUsingVerticalAccessBar: Boolean,
@@ -254,7 +259,7 @@ fun MainPageScreenView(
         ) {
             val constraintsScope = this
             val maxHeight = with(LocalDensity.current) {
-                constraintsScope.maxHeight.toPx()
+                constraintsScope.maxHeight.toPx() + getNavigationBarPadding()
             }
 
             val coroutineScope = rememberCoroutineScope()
@@ -265,6 +270,7 @@ fun MainPageScreenView(
                     .background(color = SoulSearchingColorTheme.colorScheme.primary)
             ) {
                 MainMenuHeaderComposable(
+                    shouldShowNewReleasePin = shouldShowNewVersionPin,
                     settingsAction = navigateToSettings,
                     isInCloudMode = isInCloudMode,
                     searchAction = {

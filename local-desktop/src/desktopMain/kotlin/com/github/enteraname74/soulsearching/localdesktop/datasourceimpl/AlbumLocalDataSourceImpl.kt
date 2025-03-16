@@ -35,6 +35,9 @@ internal class AlbumLocalDataSourceImpl(
         albumDao.deleteAll(dataMode = dataMode.value)
     }
 
+    override suspend fun getAlbumNamesContainingSearch(search: String): List<String> =
+        albumDao.getAlbumNamesContainingSearch(search)
+
     override fun getAlbumsWithMusicsOfArtist(artistId: UUID): Flow<List<AlbumWithMusics>> =
         albumDao.getAlbumsWithMusicsOfArtist(artistId)
 

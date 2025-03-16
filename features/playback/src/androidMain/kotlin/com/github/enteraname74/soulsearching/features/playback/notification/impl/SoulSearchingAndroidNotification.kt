@@ -61,7 +61,7 @@ abstract class SoulSearchingAndroidNotification(
         state: SoulSearchingAndroidNotificationState.Active
     ): NotificationCompat.Builder =
         this
-            .setSmallIcon(R.drawable.ic_saxophone_svg)
+            .setSmallIcon(R.drawable.app_logo)
             .setContentTitle(state.music.name)
             .setContentText(state.music.artist)
             .setContentIntent(activityPendingIntent)

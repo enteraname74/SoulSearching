@@ -1,7 +1,6 @@
 package com.github.enteraname74.soulsearching.coreui.bottomsheet
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -11,11 +10,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.coreui.utils.WindowSize
+import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import kotlinx.coroutines.launch
+
+@Composable
+fun SoulBottomSheetHandler(
+    onClose: () -> Unit,
+    colors: SoulBottomSheetColors = SoulBottomSheetDefaults.secondaryColors(),
+    content: @Composable (closeWithAnim: () -> Unit) -> Unit,
+) {
+    val windowSize = rememberWindowSize()
+
+    when (windowSize) {
+        WindowSize.Large -> {
+            SoulDrawer(
+                onClose = onClose,
+                colors = colors,
+                content = content,
+            )
+        }
+        else -> {
+            BottomSheet(
+                onClose = onClose,
+                colors = colors,
+                content = content,
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SoulBottomSheetHandler(
+private fun BottomSheet(
     onClose: () -> Unit,
     colors: SoulBottomSheetColors = SoulBottomSheetDefaults.secondaryColors(),
     content: @Composable (closeWithAnim: () -> Unit) -> Unit,
@@ -30,8 +57,6 @@ fun SoulBottomSheetHandler(
             onClose()
         }
     }
-
-    BottomSheetDefaults.ExpandedShape
 
     ModalBottomSheet(
         onDismissRequest = onClose,

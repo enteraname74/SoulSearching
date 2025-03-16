@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.composable
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,7 @@ fun PageHeader(
     modifier: Modifier = Modifier,
     onSubTitleClicked: () -> Unit = {},
 ) {
-    if (!PlaylistViewUiUtils.canShowVerticalMainInformation()) {
+    if (!PlaylistViewUiUtils.canShowColumnLayout()) {
         Row(
             modifier = modifier
                 .fillMaxSize()
@@ -37,7 +37,7 @@ fun PageHeader(
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
                 size = UiConstants.ImageSize.huge,
                 roundedPercent = 5,
@@ -82,7 +82,7 @@ fun PageHeader(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SoulImage(
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 cover = playlistDetail.cover,
                 size = if (windowSize == WindowSize.Large) {
                     300.dp

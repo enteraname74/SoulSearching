@@ -44,6 +44,9 @@ internal class RoomArtistLocalDataSourceImpl(
         appDatabase.artistDao.deleteAll(dataMode = dataMode.value)
     }
 
+    override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
+        appDatabase.artistDao.getArtistNamesContainingSearch(search)
+
     override fun getFromId(artistId: UUID): Flow<Artist?> {
         return appDatabase.artistDao.getFromId(
             artistId = artistId
