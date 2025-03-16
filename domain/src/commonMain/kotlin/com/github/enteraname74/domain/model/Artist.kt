@@ -22,8 +22,8 @@ data class Artist(
     var isInQuickAccess: Boolean = false
 ) {
     fun isComposedOfMultipleArtists(): Boolean =
-        artistName.split(",").size > 1
+        artistName.split(",", "&").size > 1
 
     fun getMultipleArtists(): List<String> =
-        artistName.split(",").map { it.trim() }
+        artistName.split(",", "&").map { it.trim() }
 }
