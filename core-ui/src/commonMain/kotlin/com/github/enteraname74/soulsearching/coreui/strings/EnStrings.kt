@@ -20,7 +20,11 @@ object EnStrings : Strings {
         "You must accept all permissions required by the application for it to work properly."
     override val playedList = "Played list"
     override val currentSong = "Current song"
+
     override val lyrics = "Lyrics"
+    override val activateRemoteLyricsFetchTitle = "Activate remote lyrics fetch"
+    override val activateRemoteLyricsFetchText = "The app needs your permission to search for the lyrics of the current music via an external service."
+    override val activateRemoteLyricsFetchHint = "The application will use a song's name, album and artist to find lyrics from a remote source."
     override val noLyricsFound = "No lyrics found for this song"
     override val lyricsProvider = "Lyrics proposed by LrcLib"
 

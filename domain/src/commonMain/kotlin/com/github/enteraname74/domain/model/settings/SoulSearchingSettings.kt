@@ -131,6 +131,10 @@ object SoulSearchingSettingsKeys {
             key = "PLAYER_VOLUME",
             defaultValue = 1f,
         )
+        val IS_REMOTE_LYRICS_FETCH_ENABLED = settingElementOf(
+            key = "IS_REMOTE_LYRICS_FETCH_ENABLED",
+            defaultValue = false,
+        )
     }
 
     object ColorTheme {

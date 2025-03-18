@@ -44,6 +44,7 @@ fun PlayerDraggableView(
     navigateToAlbum: (String) -> Unit,
     navigateToArtist: (String) -> Unit,
     navigateToModifyMusic: (String) -> Unit,
+    navigateToRemoteLyricsSettings: () -> Unit,
     playerViewModel: PlayerViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
     playerViewManager: PlayerViewManager = injectElement(),
@@ -102,6 +103,18 @@ fun PlayerDraggableView(
                 val artistId = (navigationState as? PlayerNavigationState.ToArtist)?.artistId ?: return@LaunchedEffect
                 navigateToArtist(artistId.toString())
                 playerViewModel.consumeNavigation()
+            }
+
+            PlayerNavigationState.ToRemoteLyricsSettings -> {
+                coroutineScope.launch {
+                    if (shouldCloseMusicListDraggableView()) {
+                        playerMusicListViewManager.animateTo(newState = BottomSheetStates.COLLAPSED)
+                    }
+                    playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
+                }.invokeOnCompletion {
+                    navigateToRemoteLyricsSettings()
+                    playerViewModel.consumeNavigation()
+                }
             }
         }
     }
@@ -223,6 +236,7 @@ fun PlayerDraggableView(
                             },
                             multiSelectionState = multiSelectionState,
                             closeSelection = playerViewModel::clearMultiSelection,
+                            onActivateRemoteLyrics = playerViewModel::navigateToRemoteLyricsSettings,
                         )
 
                         /*

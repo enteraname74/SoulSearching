@@ -42,7 +42,7 @@ import java.util.*
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
-    settings: SoulSearchingSettings,
+    private val settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
@@ -101,24 +101,33 @@ class PlayerViewModel(
     val currentSongProgressionState = playbackManager.currentSongProgressionState
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val lyricsState: StateFlow<LyricsFetchState> = playbackManager.currentSong.flatMapLatest { music ->
-        if (music == null) {
-            flowOf(LyricsFetchState.FetchingLyrics)
-        } else {
-            val lyrics: MusicLyrics? = getLyricsOfSongUseCase(music = music)
-            if (lyrics == null) {
-                flowOf(LyricsFetchState.NoLyricsFound)
-            } else {
-                currentSongProgressionState.mapLatest { progression ->
-                    LyricsFetchState.FoundLyrics(
-                        lyrics = lyrics,
-                        highlightedLyricsLine = lyrics
-                            .syncedLyrics
-                            ?.indexOfLast { it.timestampMs < progression }
-                            ?.takeIf { it >= 0 }
-                    )
+    val lyricsState: StateFlow<LyricsFetchState> = settings.getFlowOn(
+        SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
+    ).flatMapLatest { isRemoteFetchEnabled ->
+        if (isRemoteFetchEnabled) {
+            playbackManager.currentSong.flatMapLatest { music ->
+                if (music == null) {
+                    flowOf(LyricsFetchState.FetchingLyrics)
+                } else {
+                    val lyrics: MusicLyrics? = getLyricsOfSongUseCase(music = music)
+                    if (lyrics == null) {
+                        flowOf(LyricsFetchState.NoLyricsFound)
+                    } else {
+                        currentSongProgressionState.mapLatest { progression ->
+                            LyricsFetchState.FoundLyrics(
+                                lyrics = lyrics,
+                                currentMusicId = music.musicId,
+                                highlightedLyricsLine = lyrics
+                                    .syncedLyrics
+                                    ?.indexOfLast { it.timestampMs < progression }
+                                    ?.takeIf { it >= 0 }
+                            )
+                        }
+                    }
                 }
             }
+        } else {
+            flowOf(LyricsFetchState.NoPermission)
         }
     }.stateIn(
         scope = screenModelScope,
@@ -332,6 +341,10 @@ class PlayerViewModel(
                 }
             }
         }
+    }
+
+    fun navigateToRemoteLyricsSettings() {
+        _navigationState.value = PlayerNavigationState.ToRemoteLyricsSettings
     }
 
     fun handleMultiSelectionBottomSheet() {

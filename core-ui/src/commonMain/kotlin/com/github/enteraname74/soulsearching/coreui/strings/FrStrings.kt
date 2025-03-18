@@ -21,6 +21,9 @@ object FrStrings : Strings {
     override val playedList = "Liste jouée"
     override val currentSong = "Musique courante"
     override val lyrics = "Paroles"
+    override val activateRemoteLyricsFetchTitle = "Activer la récupération des paroles à distance"
+    override val activateRemoteLyricsFetchText = "L'application a besoin de votre permission pour rechercher les paroles de la musique courante via un service externe."
+    override val activateRemoteLyricsFetchHint = "L'application utilisera le nom, album et artiste d'une musique pour trouver les paroles de cette dernière via une source distante."
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
     override val lyricsProvider = "Paroles proposées par LrcLib"
 

@@ -36,7 +36,11 @@ interface Strings {
     val missingPermissions: String
     val playedList: String
     val currentSong: String
+
     val lyrics: String
+    val activateRemoteLyricsFetchTitle: String
+    val activateRemoteLyricsFetchText: String
+    val activateRemoteLyricsFetchHint: String
     val noLyricsFound: String
     val lyricsProvider: String
 
