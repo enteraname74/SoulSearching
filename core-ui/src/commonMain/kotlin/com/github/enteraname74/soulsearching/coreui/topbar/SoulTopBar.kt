@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -24,13 +25,16 @@ fun SoulTopBar(
     leftAction: TopBarActionSpec?,
     rightAction: TopBarActionSpec? = null,
     isElevated: Boolean = false,
+    withStatusBarPadding: Boolean = true,
     colors: TopBarColors = SoulTopBarDefaults.primary(),
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(colors.containerColorWithElevation(isElevated))
-            .statusBarsPadding(),
+            .chainIf(withStatusBarPadding) {
+                Modifier.statusBarsPadding()
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

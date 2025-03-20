@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
@@ -56,12 +57,16 @@ fun SoulTemplateScreen(
 fun SoulTemplateComposable(
     icon: ImageVector,
     text: String,
+    iconSize: Dp = UiConstants.ImageSize.veryLarge,
     buttonSpec: TemplateScreenButtonSpec?,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(
+                horizontal = UiConstants.Spacing.medium,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -71,7 +76,7 @@ fun SoulTemplateComposable(
         ) {
             SoulIcon(
                 icon = icon,
-                size = UiConstants.ImageSize.veryLarge,
+                size = iconSize,
             )
             Text(
                 text = text,

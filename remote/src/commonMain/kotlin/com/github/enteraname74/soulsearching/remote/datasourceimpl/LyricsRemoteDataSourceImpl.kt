@@ -25,6 +25,7 @@ class LyricsRemoteDataSourceImpl(
 
     private suspend fun getLyrics(music: Music, principalArtistName: String, withAlbum: Boolean): MusicLyrics? =
         try {
+            println("LYRICS")
             val response = client.get(
                 buildUrl(
                     music = music,

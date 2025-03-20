@@ -27,6 +27,7 @@ import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
 import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
 import com.github.enteraname74.domain.usecase.release.GetLatestViewedReleaseUseCase
 import com.github.enteraname74.domain.usecase.release.SetLatestViewedReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -158,4 +159,5 @@ val domainModule = module {
     singleOf(::GetLatestReleaseUseCase)
     singleOf(::GetLatestViewedReleaseUseCase)
     singleOf(::SetLatestViewedReleaseUseCase)
+    singleOf(::DeleteLatestReleaseUseCase)
 }

@@ -8,16 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun SoulAlertDialog(
     confirmAction: () -> Unit,
     dismissAction: () -> Unit,
-    title: String,
+    title: String? = null,
     text: String = "",
     icon: @Composable (() -> Unit)? = null,
-    confirmText: String,
+    confirmText: String = strings.ok,
     dismissText: String? = null,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
@@ -42,12 +43,14 @@ fun SoulAlertDialog(
                 }
             }
         },
-        title = {
-            Text(
-                text = title,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
+        title = title?.let {
+            {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         },
         text = {
             Text(
@@ -70,9 +73,9 @@ fun SoulAlertDialog(
     title: String,
     content: @Composable () -> Unit,
     icon: @Composable (() -> Unit)? = null,
-    confirmText: String,
+    confirmText: String = strings.ok,
     isConfirmButtonEnabled: Boolean = true,
-    dismissText: String,
+    dismissText: String = strings.cancel,
     backgroundColor: Color = SoulSearchingColorTheme.colorScheme.primary,
     contentColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary
 ) {

@@ -19,6 +19,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerD
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -71,7 +72,9 @@ fun PlayerViewScaffold(
             },
             navigateToRemoteLyricsSettings = {
                 generalNavigator?.safePush(
-                    SettingsAdvancedScreen()
+                    SettingsAdvancedScreen(
+                        focusedElement = SettingsAdvancedScreenFocusedElement.LyricsPermission,
+                    )
                 )
             },
             playerViewModel = playerViewModel,

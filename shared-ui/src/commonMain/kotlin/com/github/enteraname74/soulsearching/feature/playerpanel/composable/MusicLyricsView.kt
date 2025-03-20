@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.SyncedLyric
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
@@ -90,6 +89,7 @@ fun MusicLyricsView(
             LyricsFetchState.NoPermission -> {
                 NoPermissionView(
                     onActivateRemoteLyrics = onActivateRemoteLyrics,
+                    buttonColor = buttonColor,
                 )
             }
         }
@@ -98,20 +98,18 @@ fun MusicLyricsView(
 
 @Composable
 private fun NoPermissionView(
+    buttonColor: SoulButtonColors,
     onActivateRemoteLyrics: () -> Unit,
 ) {
     SoulTemplateComposable(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = UiConstants.Spacing.medium,
-            ),
+            .fillMaxSize(),
         icon = Icons.Rounded.Lyrics,
         text = strings.activateRemoteLyricsFetchText,
         buttonSpec = TemplateScreenButtonSpec(
             text = strings.activateRemoteLyricsFetchTitle,
             onClick = onActivateRemoteLyrics,
-            colors = { SoulButtonDefaults.primaryColors() },
+            colors = { buttonColor },
         )
     )
 }

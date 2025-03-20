@@ -43,6 +43,7 @@ interface Strings {
     val activateRemoteLyricsFetchHint: String
     val noLyricsFound: String
     val lyricsProvider: String
+    val lyricsProviderName: String get() = "LrcLib"
 
     val completeApplicationTitle: String
     val completeApplicationText: String
@@ -164,6 +165,11 @@ interface Strings {
 
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
+
+    val activateGithubReleaseFetchTitle: String
+    val activateGithubReleaseFetchText: String
+    val activateGithubReleaseFetchHint: String
+    val goToSettings: String
 
     val manageMusicsTitle: String
     val manageMusicsText: String

@@ -22,4 +22,9 @@ interface ReleaseRepository {
      */
     suspend fun setLatestViewedReleaseTag(tag: String)
 
+    /**
+     * Delete the saved latest release
+     */
+    suspend fun deleteLatestRelease()
+
 }

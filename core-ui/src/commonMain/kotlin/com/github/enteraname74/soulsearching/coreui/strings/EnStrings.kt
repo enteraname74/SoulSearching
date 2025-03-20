@@ -22,9 +22,13 @@ object EnStrings : Strings {
     override val currentSong = "Current song"
 
     override val lyrics = "Lyrics"
-    override val activateRemoteLyricsFetchTitle = "Activate remote lyrics fetch"
-    override val activateRemoteLyricsFetchText = "The app needs your permission to search for the lyrics of the current music via an external service."
-    override val activateRemoteLyricsFetchHint = "The application will use a song's name, album and artist to find lyrics from a remote source."
+    override val activateRemoteLyricsFetchTitle = "Enable remote lyrics fetch"
+    override val activateRemoteLyricsFetchText by lazy {
+        "The app needs your permission to search for the lyrics of the current music via an external service ($lyricsProviderName)."
+    }
+    override val activateRemoteLyricsFetchHint by lazy {
+        "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName)."
+    }
     override val noLyricsFound = "No lyrics found for this song"
     override val lyricsProvider = "Lyrics proposed by LrcLib"
 
@@ -151,6 +155,11 @@ object EnStrings : Strings {
 
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
+
+    override val activateGithubReleaseFetchTitle = "Enable checking for new versions from GitHub"
+    override val activateGithubReleaseFetchHint = "You will receive an in-app notification when a new version of the app is available on GitHub."
+    override val activateGithubReleaseFetchText = "Do you want to receive an in-app notification when a new version of the app is available on GitHub?"
+    override val goToSettings = "Go to settings"
 
     override val manageMusicsTitle = "Manage songs"
     override val manageMusicsText = "Modify and add new songs, manage used folders"
