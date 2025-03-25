@@ -43,6 +43,11 @@ class SoulSearchingSettingsImpl(
             }
         }
 
+    override fun <T> delete(element: SoulSearchingSettingElement<T>) {
+        settings.remove(key = element.key)
+        updateFlowValue<T>(key = element.key)
+    }
+
     /**
      * Set the current played music index and position to the settings.
      */

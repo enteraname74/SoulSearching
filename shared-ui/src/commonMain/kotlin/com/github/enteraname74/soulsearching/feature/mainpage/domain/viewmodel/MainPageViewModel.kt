@@ -26,6 +26,7 @@ import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsU
 import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
+import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
 import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
@@ -45,8 +46,10 @@ import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewRel
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
@@ -101,6 +104,7 @@ class MainPageViewModel(
     private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
 
     private val fetchLatestReleaseUseCase: FetchLatestReleaseUseCase by inject()
+    private val deleteLatestReleaseUseCase: DeleteLatestReleaseUseCase by inject()
     private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
@@ -371,7 +375,34 @@ class MainPageViewModel(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            fetchLatestReleaseUseCase()
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
+                if (isEnabled) {
+                    fetchLatestReleaseUseCase()
+                } else {
+                    deleteLatestReleaseUseCase()
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT).collectLatest { shouldShow ->
+                if (shouldShow) {
+                    _bottomSheetState.value = GitHubReleaseBottomSheet(
+                        onClose = {
+                            _bottomSheetState.value = null
+                            settings.set(
+                                key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
+                                value = false,
+                            )
+                        },
+                        onNavigateToGithubReleasePermission = {
+                            _navigationState.value = MainPageNavigationState.ToAdvancedSettings(
+                                focusedElement = SettingsAdvancedScreenFocusedElement.ReleasePermission,
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 

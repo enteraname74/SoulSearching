@@ -53,6 +53,7 @@ import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.pr
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.search.SearchAll
 import com.github.enteraname74.soulsearching.feature.search.SearchView
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
 import kotlinx.coroutines.launch
 
@@ -202,8 +203,12 @@ class MainPageScreen : Screen {
                 )
             }
 
-            else -> {
-                /*no-op*/
+            is MainPageNavigationState.ToAdvancedSettings -> {
+                navigator.safePush(
+                    SettingsAdvancedScreen(
+                        focusedElement = navigationState.focusedElement,
+                    )
+                )
             }
         }
         consumeNavigation()

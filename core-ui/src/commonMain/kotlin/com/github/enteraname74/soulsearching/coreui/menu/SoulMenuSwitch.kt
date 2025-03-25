@@ -3,13 +3,14 @@ package com.github.enteraname74.soulsearching.coreui.menu
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -19,6 +20,7 @@ fun SoulMenuSwitch(
     subTitle: String? = null,
     toggleAction: () -> Unit,
     isChecked: Boolean,
+    trailingIcon: SoulMenuLeadingIconSpec? = null,
     maxLines: Int = 2,
     titleColor: Color = SoulSearchingColorTheme.colorScheme.onPrimary,
     textColor: Color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
@@ -52,17 +54,38 @@ fun SoulMenuSwitch(
                 titleMaxLines = maxLines,
             )
         }
-        Switch(
-            checked = isChecked,
-            onCheckedChange = { toggleAction() },
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = textColor,
-                checkedTrackColor = titleColor,
-                checkedBorderColor = titleColor,
-                uncheckedThumbColor = textColor,
-                uncheckedTrackColor = Color.Transparent,
-                uncheckedBorderColor = textColor,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+        ) {
+            trailingIcon?.let { iconSpec ->
+                SoulIconButton(
+                    size = UiConstants.ImageSize.medium,
+                    icon = iconSpec.icon,
+                    onClick = iconSpec.onClick,
+                    colors = SoulButtonColors(
+                        contentColor = titleColor,
+                        containerColor = Color.Transparent,
+                    )
+                )
+            }
+            Switch(
+                checked = isChecked,
+                onCheckedChange = { toggleAction() },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = textColor,
+                    checkedTrackColor = titleColor,
+                    checkedBorderColor = titleColor,
+                    uncheckedThumbColor = textColor,
+                    uncheckedTrackColor = Color.Transparent,
+                    uncheckedBorderColor = textColor,
+                )
             )
-        )
+        }
     }
 }
+
+data class SoulMenuLeadingIconSpec(
+    val icon: ImageVector,
+    val onClick: () -> Unit,
+)

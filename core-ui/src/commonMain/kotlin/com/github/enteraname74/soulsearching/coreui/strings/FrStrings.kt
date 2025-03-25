@@ -21,6 +21,13 @@ object FrStrings : Strings {
     override val playedList = "Liste jouée"
     override val currentSong = "Musique courante"
     override val lyrics = "Paroles"
+    override val activateRemoteLyricsFetchTitle = "Activer la récupération des paroles à distance"
+    override val activateRemoteLyricsFetchText by lazy {
+        "L'application a besoin de votre permission pour rechercher les paroles de la musique courante via un service externe ($lyricsProviderName)."
+    }
+    override val activateRemoteLyricsFetchHint by lazy {
+        "L'application utilisera le nom, album et artiste d'une musique pour trouver les paroles de cette dernière via une source distante ($lyricsProviderName)."
+    }
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
     override val lyricsProvider = "Paroles proposées par LrcLib"
 
@@ -149,6 +156,11 @@ object FrStrings : Strings {
 
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
+
+    override val activateGithubReleaseFetchTitle = "Activer la recherche de nouvelles versions provenant de GitHub"
+    override val activateGithubReleaseFetchHint = "Vous recevrez une notification dans l'application lorsqu'une nouvelle version de cette dernière est disponible sur GitHub."
+    override val activateGithubReleaseFetchText = "Voulez-vous recevoir une notification dans l'application lorsqu'une nouvelle version de cette dernière est disponible sur GitHub ?"
+    override val goToSettings = "Aller aux paramètres"
 
     override val manageMusicsTitle = "Gérer les musiques"
     override val manageMusicsText = "Modification et ajout de musiques, gestion des dossiers utilisés"

@@ -18,6 +18,7 @@ class SettingsAboutViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<SettingsAboutState> = getLatestReleaseUseCase().mapLatest { latestRelease ->
+        println("RELEASE: $latestRelease")
         SettingsAboutState(
             moreRecentRelease = latestRelease?.takeIf { it.isNewerThanCurrentVersion() }?.also { release ->
                 setLatestViewedReleaseUseCase(releaseTag = release.tag)

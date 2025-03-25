@@ -4,13 +4,16 @@ import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
  */
 interface SoulSearchingSettings {
-    fun <T>set(key: String, value: T)
-    fun <T>get(settingElement: SoulSearchingSettingElement<T>): T
+    fun <T> set(key: String, value: T)
+    fun <T> get(settingElement: SoulSearchingSettingElement<T>): T
+    fun <T> delete(element: SoulSearchingSettingElement<T>)
 
     /**
      * Set the current played music index and position to the settings.
@@ -20,11 +23,11 @@ interface SoulSearchingSettings {
         currentMusicPosition: Int
     )
 
-    fun <DataType>updateFlowValue(key: String) {
+    fun <DataType> updateFlowValue(key: String) {
         SettingsFlowSystem.update<DataType>(key = key)
     }
 
-    fun <T>getFlowOn(settingElement: SoulSearchingSettingElement<T>): Flow<T> {
+    fun <T> getFlowOn(settingElement: SoulSearchingSettingElement<T>): Flow<T> = channelFlow {
         val settingFlowInformation = SettingFlowInformation(
             key = settingElement.key,
             retrieveValue = { get(settingElement) }
@@ -32,7 +35,10 @@ interface SoulSearchingSettings {
         val returnedFlow: SettingFlowInformation<T> = SettingsFlowSystem.addFlowIfNotExist(
             settingFlowInformation = settingFlowInformation,
         )
-        return returnedFlow.flow
+
+        returnedFlow.flow.collectLatest {
+            send(it)
+        }
     }
 }
 
@@ -41,7 +47,7 @@ interface SoulSearchingSettingElement<T> {
     val defaultValue: T
 }
 
-fun <T>settingElementOf(key: String, defaultValue: T): SoulSearchingSettingElement<T> =
+fun <T> settingElementOf(key: String, defaultValue: T): SoulSearchingSettingElement<T> =
     object : SoulSearchingSettingElement<T> {
         override val key: String = key
         override val defaultValue: T = defaultValue
@@ -131,6 +137,10 @@ object SoulSearchingSettingsKeys {
             key = "PLAYER_VOLUME",
             defaultValue = 1f,
         )
+        val IS_REMOTE_LYRICS_FETCH_ENABLED = settingElementOf(
+            key = "IS_REMOTE_LYRICS_FETCH_ENABLED",
+            defaultValue = false,
+        )
     }
 
     object ColorTheme {
@@ -214,11 +224,18 @@ object SoulSearchingSettingsKeys {
     }
 
     object Release {
+        val IS_FETCH_RELEASE_FROM_GITHUB_ENABLED = settingElementOf(
+            key = "IS_FETCH_RELEASE_FROM_GITHUB_ENABLED",
+            defaultValue = false,
+        )
+        val SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT = settingElementOf(
+            key = "SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT",
+            defaultValue = true,
+        )
         val LATEST_VIEWED_RELEASE = settingElementOf(
             key = "LATEST_VIEWED_RELEASE",
             defaultValue = "",
         )
-
         val LATEST_RELEASE = settingElementOf(
             key = "LATEST_RELEASE",
             defaultValue = "",

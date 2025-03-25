@@ -1,6 +1,8 @@
 package com.github.enteraname74.domain.model.settings
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 
 internal data class SettingFlowInformation<DataType>(
@@ -16,19 +18,23 @@ internal data class SettingFlowInformation<DataType>(
 
 internal object SettingsFlowSystem {
     private val allFlows: ArrayList<SettingFlowInformation<*>> = arrayListOf()
+    private val mutex: Mutex = Mutex()
 
     /**
      * Adds a flow to the list of flows of the system if it doesn't exist.
      * Returns the added or found flow.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <DataType> addFlowIfNotExist(settingFlowInformation: SettingFlowInformation<DataType>): SettingFlowInformation<DataType> {
-        val foundElement: SettingFlowInformation<*>? = allFlows.firstOrNull { it.key == settingFlowInformation.key }
-        return if (foundElement == null) {
-            allFlows.add(settingFlowInformation)
-            settingFlowInformation
-        } else {
-            foundElement as SettingFlowInformation<DataType>
+    suspend fun <DataType> addFlowIfNotExist(settingFlowInformation: SettingFlowInformation<DataType>): SettingFlowInformation<DataType> {
+        mutex.withLock {
+            val foundElement: SettingFlowInformation<*>? = allFlows.firstOrNull { it.key == settingFlowInformation.key }
+            return if (foundElement == null) {
+
+                allFlows.add(settingFlowInformation)
+                settingFlowInformation
+            } else {
+                foundElement as SettingFlowInformation<DataType>
+            }
         }
     }
 

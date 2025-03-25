@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material.icons.rounded.SyncAlt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -36,10 +37,11 @@ import androidx.compose.ui.unit.sp
 import com.github.enteraname74.domain.model.SyncedLyric
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
-import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
+import com.github.enteraname74.soulsearching.coreui.screen.SoulTemplateComposable
+import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
@@ -54,6 +56,7 @@ fun MusicLyricsView(
     buttonColor: SoulButtonColors,
     lyricsState: LyricsFetchState,
     isExpanded: Boolean,
+    onActivateRemoteLyrics: () -> Unit,
 ) {
     if (!isExpanded) {
         FetchingLyricsView(
@@ -61,23 +64,54 @@ fun MusicLyricsView(
         )
     } else {
         when (lyricsState) {
-            LyricsFetchState.FetchingLyrics -> FetchingLyricsView(
-                contentColor = contentColor
-            )
+            LyricsFetchState.FetchingLyrics -> {
+                FetchingLyricsView(
+                    contentColor = contentColor
+                )
+            }
 
-            is LyricsFetchState.FoundLyrics -> LyricsView(
-                contentColor = contentColor,
-                containerColor = containerColor,
-                subTextColor = noLyricsColor,
-                lyricsState = lyricsState,
-                buttonColor = buttonColor,
-            )
+            is LyricsFetchState.FoundLyrics -> {
+                LyricsView(
+                    contentColor = contentColor,
+                    containerColor = containerColor,
+                    subTextColor = noLyricsColor,
+                    lyricsState = lyricsState,
+                    buttonColor = buttonColor,
+                )
+            }
 
-            LyricsFetchState.NoLyricsFound -> NoLyricsFoundView(
-                contentColor = noLyricsColor
-            )
+            LyricsFetchState.NoLyricsFound -> {
+                NoLyricsFoundView(
+                    contentColor = noLyricsColor
+                )
+            }
+
+            LyricsFetchState.NoPermission -> {
+                NoPermissionView(
+                    onActivateRemoteLyrics = onActivateRemoteLyrics,
+                    buttonColor = buttonColor,
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun NoPermissionView(
+    buttonColor: SoulButtonColors,
+    onActivateRemoteLyrics: () -> Unit,
+) {
+    SoulTemplateComposable(
+        modifier = Modifier
+            .fillMaxSize(),
+        icon = Icons.Rounded.Lyrics,
+        text = strings.activateRemoteLyricsFetchText,
+        buttonSpec = TemplateScreenButtonSpec(
+            text = strings.activateRemoteLyricsFetchTitle,
+            onClick = onActivateRemoteLyrics,
+            colors = { buttonColor },
+        )
+    )
 }
 
 @Composable

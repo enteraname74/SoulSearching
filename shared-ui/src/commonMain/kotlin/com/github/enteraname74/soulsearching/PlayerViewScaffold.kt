@@ -12,12 +12,14 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerDraggableView
+import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -65,6 +67,13 @@ fun PlayerViewScaffold(
                 generalNavigator?.safePush(
                     ModifyMusicScreen(
                         selectedMusicId = musicId
+                    )
+                )
+            },
+            navigateToRemoteLyricsSettings = {
+                generalNavigator?.safePush(
+                    SettingsAdvancedScreen(
+                        focusedElement = SettingsAdvancedScreenFocusedElement.LyricsPermission,
                     )
                 )
             },

@@ -34,6 +34,7 @@ fun PlayerPanelContent(
     lyricsState: LyricsFetchState,
     onMoreClickedOnMusic: (Music) -> Unit,
     onLongSelectOnMusic: (Music) -> Unit,
+    onActivateRemoteLyrics: () -> Unit,
     multiSelectionState: MultiSelectionState,
     contentColor: Color,
     subTextColor: Color,
@@ -74,6 +75,7 @@ fun PlayerPanelContent(
                     lyricsState = lyricsState,
                     isExpanded = isExpanded,
                     buttonColor = buttonColors,
+                    onActivateRemoteLyrics = onActivateRemoteLyrics,
                 )
             }
         )

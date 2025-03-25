@@ -1,7 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced
 
+import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.github.enteraname74.domain.model.*
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
@@ -10,16 +17,22 @@ import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistsUseCase
 import com.github.enteraname74.domain.usecase.playlist.UpsertAllPlaylistsUseCase
+import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
+import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.coreui.strings.strings
+import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedNavigationState
+import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedPermissionState
+import com.github.enteraname74.soulsearching.feature.settings.advanced.state.SettingsAdvancedState
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class SettingsAdvancedViewModel(
     private val loadingManager: LoadingManager,
@@ -31,19 +44,161 @@ class SettingsAdvancedViewModel(
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
     private val upsertAllPlaylistsUseCase: UpsertAllPlaylistsUseCase,
+    private val deleteLatestReleaseUseCase: DeleteLatestReleaseUseCase,
+    private val fetchLatestReleaseUseCase: FetchLatestReleaseUseCase,
     private val coverFileManager: CoverFileManager,
     private val playbackManager: PlaybackManager,
+    private val settings: SoulSearchingSettings,
 ) : ScreenModel {
-    private val _state: MutableStateFlow<SettingsAdvancedState> = MutableStateFlow(SettingsAdvancedState())
+    private val _state: MutableStateFlow<SettingsAdvancedState> = MutableStateFlow(
+        SettingsAdvancedState()
+    )
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
 
-    fun toggleImageReloadPanelExpandedState() {
+    val permissionState: StateFlow<SettingsAdvancedPermissionState> = combine(
+        settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
+        settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
+    ) { lyricsPermission, githubPermission ->
+        SettingsAdvancedPermissionState(
+            isLyricsPermissionEnabled = lyricsPermission,
+            isGitHubReleaseFetchPermissionEnabled = githubPermission,
+        )
+    }.stateIn(
+        scope = screenModelScope.plus(Dispatchers.IO),
+        started = SharingStarted.Eagerly,
+        initialValue = SettingsAdvancedPermissionState(
+            isLyricsPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
+            isGitHubReleaseFetchPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED),
+        ),
+    )
+
+    private val _navigationState: MutableStateFlow<SettingsAdvancedNavigationState> = MutableStateFlow(
+        SettingsAdvancedNavigationState.Idle
+    )
+    val navigationState: StateFlow<SettingsAdvancedNavigationState> = _navigationState.asStateFlow()
+
+    private val _dialogState: MutableStateFlow<SoulDialog?> = MutableStateFlow(null)
+    val dialogState: StateFlow<SoulDialog?> = _dialogState.asStateFlow()
+
+    fun onAction(action: SettingsAdvancedAction) {
+        when (action) {
+            SettingsAdvancedAction.ReloadImages -> {
+                reloadImages()
+            }
+
+            SettingsAdvancedAction.ShowLyricsPermissionDialog -> {
+                showLyricsPermissionDialog()
+            }
+
+            SettingsAdvancedAction.ToMultipleArtists -> {
+                navigateToMultipleArtists()
+            }
+
+            SettingsAdvancedAction.ToggleAlbumsCovers -> {
+                toggleReloadAlbumsCovers()
+            }
+
+            SettingsAdvancedAction.ToggleArtistsCovers -> {
+                toggleReloadArtistsCovers()
+            }
+
+            SettingsAdvancedAction.ToggleExpandReloadImage -> {
+                toggleImageReloadPanelExpandedState()
+            }
+
+            SettingsAdvancedAction.ToggleLyricsPermission -> {
+                toggleLyricsPermission()
+            }
+
+            SettingsAdvancedAction.ToggleMusicsCover -> {
+                toggleReloadMusicsCovers()
+            }
+
+            SettingsAdvancedAction.TogglePlaylistsCovers -> {
+                toggleDeletePlaylistsCovers()
+            }
+
+            SettingsAdvancedAction.ToggleGithubReleaseFetchPermission -> {
+                toggleGitHubReleasePermission()
+            }
+
+            SettingsAdvancedAction.ShowGitHubReleasePermissionDialog -> {
+                showGitHubReleasePermissionDialog()
+            }
+        }
+    }
+
+    fun consumeNavigation() {
+        _navigationState.value = SettingsAdvancedNavigationState.Idle
+    }
+
+    private fun toggleLyricsPermission() {
+        settings.set(
+            key = SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED.key,
+            value = !settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED)
+        )
+    }
+
+    private fun toggleGitHubReleasePermission() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val newState = !settings.get(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
+            settings.set(
+                key = SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED.key,
+                value = newState
+            )
+            if (!newState) {
+                deleteLatestReleaseUseCase()
+            } else {
+                fetchLatestReleaseUseCase()
+            }
+        }
+    }
+
+    private fun showGitHubReleasePermissionDialog() {
+        _dialogState.value = object : SoulDialog {
+            @Composable
+            override fun Dialog() {
+                SoulAlertDialog(
+                    text = strings.activateGithubReleaseFetchHint,
+                    confirmAction = {
+                        _dialogState.value = null
+                    },
+                    dismissAction = {
+                        _dialogState.value = null
+                    }
+                )
+            }
+        }
+    }
+
+    private fun navigateToMultipleArtists() {
+        _navigationState.value = SettingsAdvancedNavigationState.ToMultipleArtists
+    }
+
+    private fun showLyricsPermissionDialog() {
+        _dialogState.value = object : SoulDialog {
+            @Composable
+            override fun Dialog() {
+                SoulAlertDialog(
+                    text = strings.activateRemoteLyricsFetchHint,
+                    confirmAction = {
+                        _dialogState.value = null
+                    },
+                    dismissAction = {
+                        _dialogState.value = null
+                    }
+                )
+            }
+        }
+    }
+
+    private fun toggleImageReloadPanelExpandedState() {
         _state.value = _state.value.copy(
             isImageReloadPanelExpanded = !_state.value.isImageReloadPanelExpanded,
         )
     }
 
-    fun reloadImages() {
+    private fun reloadImages() {
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
                 checkAndReloadSongs()
@@ -55,25 +210,25 @@ class SettingsAdvancedViewModel(
         }
     }
 
-    fun toggleReloadMusicsCovers() {
+    private fun toggleReloadMusicsCovers() {
         _state.value = _state.value.copy(
             shouldReloadSongsCovers = !_state.value.shouldReloadSongsCovers,
         )
     }
 
-    fun toggleReloadArtistsCovers() {
+    private fun toggleReloadArtistsCovers() {
         _state.value = _state.value.copy(
             shouldReloadArtistsCovers = !_state.value.shouldReloadArtistsCovers,
         )
     }
 
-    fun toggleReloadAlbumsCovers() {
+    private fun toggleReloadAlbumsCovers() {
         _state.value = _state.value.copy(
             shouldReloadAlbumsCovers = !_state.value.shouldReloadAlbumsCovers,
         )
     }
 
-    fun toggleDeletePlaylistsCovers() {
+    private fun toggleDeletePlaylistsCovers() {
         _state.value = _state.value.copy(
             shouldDeletePlaylistsCovers = !_state.value.shouldDeletePlaylistsCovers,
         )

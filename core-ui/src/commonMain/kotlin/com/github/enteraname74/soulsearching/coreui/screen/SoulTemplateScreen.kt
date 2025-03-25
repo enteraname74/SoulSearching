@@ -9,9 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
+import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
@@ -39,7 +42,9 @@ fun SoulTemplateScreen(
                 leftAction = leftAction,
                 rightAction = rightAction,
             )
-            TemplateScreenContent(
+            SoulTemplateComposable(
+                modifier = Modifier
+                    .weight(1f),
                 icon = icon,
                 text = text,
                 buttonSpec = buttonSpec,
@@ -49,15 +54,19 @@ fun SoulTemplateScreen(
 }
 
 @Composable
-private fun ColumnScope.TemplateScreenContent(
+fun SoulTemplateComposable(
     icon: ImageVector,
     text: String,
+    iconSize: Dp = UiConstants.ImageSize.veryLarge,
     buttonSpec: TemplateScreenButtonSpec?,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
-            .weight(1f)
-            .verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(
+                horizontal = UiConstants.Spacing.medium,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -67,7 +76,7 @@ private fun ColumnScope.TemplateScreenContent(
         ) {
             SoulIcon(
                 icon = icon,
-                size = UiConstants.ImageSize.veryLarge,
+                size = iconSize,
             )
             Text(
                 text = text,
@@ -76,7 +85,8 @@ private fun ColumnScope.TemplateScreenContent(
             )
             buttonSpec?.let { spec ->
                 SoulButton(
-                    onClick = spec.onClick
+                    onClick = spec.onClick,
+                    colors = spec.colors(),
                 ) {
                     Text(
                         text = spec.text,
@@ -93,4 +103,5 @@ private fun ColumnScope.TemplateScreenContent(
 data class TemplateScreenButtonSpec(
     val text: String,
     val onClick: () -> Unit,
+    val colors: @Composable () -> SoulButtonColors = { SoulButtonDefaults.secondaryColors() },
 )

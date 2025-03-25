@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.state
 
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import java.util.*
 
 sealed interface MainPageNavigationState {
@@ -15,5 +16,7 @@ sealed interface MainPageNavigationState {
     data class ToMonth(val month: String): MainPageNavigationState
     data class ToFolder(val folderPath: String): MainPageNavigationState
 
-    data object ToArtistChoice: MainPageNavigationState
+    data class ToAdvancedSettings(
+        val focusedElement: SettingsAdvancedScreenFocusedElement?,
+    ): MainPageNavigationState
 }

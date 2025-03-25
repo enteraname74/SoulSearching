@@ -60,6 +60,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
     togglePlayPause: () -> Unit,
     next: () -> Unit,
     updateCover: (ImageBitmap?) -> Unit,
+    onActivateRemoteLyrics: () -> Unit,
     playerViewManager: PlayerViewManager = injectElement(),
     playerMusicListViewManager: PlayerMusicListViewManager = injectElement(),
 ) {
@@ -266,6 +267,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                             ),
                         multiSelectionState = multiSelectionState,
                         onLongSelectOnMusic = onLongSelectOnMusic,
+                        onActivateRemoteLyrics = onActivateRemoteLyrics,
                     )
                 }
             }
@@ -285,6 +287,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                 multiSelectionState = multiSelectionState,
                 onLongSelectOnMusic = onLongSelectOnMusic,
                 closeSelection = closeSelection,
+                onActivateRemoteLyrics = onActivateRemoteLyrics,
             )
         } else if (!PlayerUiUtils.canShowRowControlPanel()) {
             BoxWithConstraints(
@@ -312,6 +315,7 @@ fun BoxScope.PlayerSwipeableDataScreen(
                         ),
                     onLongSelectOnMusic = onLongSelectOnMusic,
                     multiSelectionState = multiSelectionState,
+                    onActivateRemoteLyrics = onActivateRemoteLyrics,
                 )
             }
         }
