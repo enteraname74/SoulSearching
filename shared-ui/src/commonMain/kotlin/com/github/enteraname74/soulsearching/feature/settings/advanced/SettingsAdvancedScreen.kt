@@ -160,6 +160,7 @@ class SettingsAdvancedScreen(
                         title = strings.activateRemoteLyricsFetchTitle,
                         toggleAction = { onAction(SettingsAdvancedAction.ToggleLyricsPermission) },
                         isChecked = permissionState.isLyricsPermissionEnabled,
+                        maxLines = Int.MAX_VALUE,
                         trailingIcon = SoulMenuLeadingIconSpec(
                             icon = Icons.Rounded.Info,
                             onClick = { onAction(SettingsAdvancedAction.ShowLyricsPermissionDialog) },
@@ -181,6 +182,7 @@ class SettingsAdvancedScreen(
                         title = strings.activateGithubReleaseFetchTitle,
                         toggleAction = { onAction(SettingsAdvancedAction.ToggleGithubReleaseFetchPermission) },
                         isChecked = permissionState.isGitHubReleaseFetchPermissionEnabled,
+                        maxLines = Int.MAX_VALUE,
                         trailingIcon = SoulMenuLeadingIconSpec(
                             icon = Icons.Rounded.Info,
                             onClick = { onAction(SettingsAdvancedAction.ShowGitHubReleasePermissionDialog) },

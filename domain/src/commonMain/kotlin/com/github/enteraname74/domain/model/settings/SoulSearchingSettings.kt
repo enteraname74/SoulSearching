@@ -4,6 +4,8 @@ import com.github.enteraname74.domain.model.PlayerMode
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Represent the settings of a SoulSearching application where we can save key-value elements.
@@ -25,7 +27,7 @@ interface SoulSearchingSettings {
         SettingsFlowSystem.update<DataType>(key = key)
     }
 
-    fun <T> getFlowOn(settingElement: SoulSearchingSettingElement<T>): Flow<T> {
+    fun <T> getFlowOn(settingElement: SoulSearchingSettingElement<T>): Flow<T> = channelFlow {
         val settingFlowInformation = SettingFlowInformation(
             key = settingElement.key,
             retrieveValue = { get(settingElement) }
@@ -33,7 +35,10 @@ interface SoulSearchingSettings {
         val returnedFlow: SettingFlowInformation<T> = SettingsFlowSystem.addFlowIfNotExist(
             settingFlowInformation = settingFlowInformation,
         )
-        return returnedFlow.flow
+
+        returnedFlow.flow.collectLatest {
+            send(it)
+        }
     }
 }
 
