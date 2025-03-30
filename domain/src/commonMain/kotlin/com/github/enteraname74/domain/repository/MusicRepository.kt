@@ -15,6 +15,7 @@ interface MusicRepository {
      */
     suspend fun upsert(
         music: Music,
+        newCoverId: UUID? = null,
         artists: List<String> = emptyList(),
     ): SoulResult<Unit>
     suspend fun upsertAll(musics: List<Music>)

@@ -12,6 +12,7 @@ import coil3.network.httpHeaders
 import coil3.request.ImageRequest
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.composables.TemplateImage
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 
@@ -42,7 +43,13 @@ internal fun UrlImage(
         modifier = modifier,
         tint = tint,
     ) { foundUrl ->
-        if (url?.startsWith("music/cover/") == true) {
+        if (host.isEmpty() || accessToken.isEmpty()) {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        } else {
             SoulDataImage(
                 data = "$host/$foundUrl",
                 contentScale = contentScale,
@@ -60,16 +67,6 @@ internal fun UrlImage(
                                 .build()
                         )
                 },
-                contentDescription = contentDescription,
-                tint = tint,
-            )
-        } else {
-            SoulDataImage(
-                data = foundUrl,
-                contentScale = contentScale,
-                modifier = modifier,
-                onSuccess = onSuccess,
-                builderOptions = builderOptions,
                 contentDescription = contentDescription,
                 tint = tint,
             )

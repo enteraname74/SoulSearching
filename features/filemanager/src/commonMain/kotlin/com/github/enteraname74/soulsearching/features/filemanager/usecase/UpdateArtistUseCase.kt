@@ -100,7 +100,7 @@ class UpdateArtistUseCase(
                                 (it.album.albumName == entry.key)
                                         && (it.artist!!.artistId == artist.artistId)
                             }!!.album.albumId
-                        )
+                        ),
                     )
                 }
                 // We delete the previous album

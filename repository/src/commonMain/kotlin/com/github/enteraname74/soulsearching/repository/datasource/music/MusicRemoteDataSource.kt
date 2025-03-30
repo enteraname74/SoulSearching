@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.music
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -29,6 +30,7 @@ interface MusicRemoteDataSource {
 
     suspend fun update(
         music: Music,
+        newCover: File?,
         artists: List<String>,
     ): SoulResult<Unit>
 }

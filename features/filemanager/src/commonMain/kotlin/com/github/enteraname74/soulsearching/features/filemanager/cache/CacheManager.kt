@@ -10,16 +10,16 @@ interface CacheManager {
 
     suspend fun save(id: UUID, data: ByteArray) {
         if (getPath(id = id) == null) {
-            val coverFile = File(folder, buildFileName(id = id))
-            coverFile.writeBytes(data)
+            val file = File(folder, buildFileName(id = id))
+            file.writeBytes(data)
         }
     }
 
     suspend fun getPath(id: UUID): String? {
-        val coverFile = File(folder, buildFileName(id = id))
+        val file = File(folder, buildFileName(id = id))
 
-        return if (coverFile.exists()) {
-            coverFile.absolutePath
+        return if (file.exists()) {
+            file.absolutePath
         } else {
             null
         }
@@ -29,10 +29,10 @@ interface CacheManager {
         folder.listFiles()?.toList() ?: emptyList()
 
     suspend fun getFileData(fileId: UUID): ByteArray? {
-        val coverFile = File(folder, buildFileName(id = fileId))
+        val file = File(folder, buildFileName(id = fileId))
 
-        return if (coverFile.exists()) {
-            return coverFile.readBytes()
+        return if (file.exists()) {
+            return file.readBytes()
         } else {
             null
         }

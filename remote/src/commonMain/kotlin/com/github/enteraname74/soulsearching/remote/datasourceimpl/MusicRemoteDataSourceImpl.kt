@@ -4,29 +4,28 @@ import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
-import com.github.enteraname74.soulsearching.remote.model.*
+import com.github.enteraname74.soulsearching.remote.ext.appendFile
+import com.github.enteraname74.soulsearching.remote.ext.appendJson
+import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.model.music.CustomMusicMetadata
 import com.github.enteraname74.soulsearching.remote.model.music.RemoteMusic
 import com.github.enteraname74.soulsearching.remote.model.music.RemoteUploadedMusicData
 import com.github.enteraname74.soulsearching.remote.model.music.toModifiedMusic
+import com.github.enteraname74.soulsearching.remote.model.safeRequest
+import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import io.ktor.utils.io.streams.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
 import java.io.File
-import java.nio.file.Files
 import java.time.LocalDateTime
 import java.util.*
 
 class MusicRemoteDataSourceImpl(
     private val client: HttpClient
-): MusicRemoteDataSource {
+) : MusicRemoteDataSource {
     override suspend fun checkForDeletedSongs(musicIds: List<UUID>): SoulResult<List<UUID>> {
         val result: SoulResult<List<String>> = client.safeRequest {
             get(urlString = ServerRoutes.Music.CHECK) {
@@ -70,13 +69,34 @@ class MusicRemoteDataSourceImpl(
             }
         }.toSimpleResult()
 
-    override suspend fun update(music: Music, artists: List<String>): SoulResult<Unit> =
-        client.safeSimpleRequest {
-            put(urlString = ServerRoutes.Music.UPDATE) {
-                setBody(music.toModifiedMusic(artists))
-                contentType(ContentType.Application.Json)
+    override suspend fun update(
+        music: Music,
+        newCover: File?,
+        artists: List<String>,
+    ): SoulResult<Unit> {
+        val contentType: String = newCover?.contentType() ?: ""
+
+        return client.safeSimpleRequest {
+            submitFormWithBinaryData(
+                url = ServerRoutes.Music.UPDATE,
+                formData = formData {
+                    newCover?.let {
+                        appendFile(
+                            key = "cover",
+                            contentType = contentType,
+                            file = it,
+                        )
+                    }
+                    appendJson(
+                        key = "metadata",
+                        value = music.toModifiedMusic(artists),
+                    )
+                }
+            ) {
+                this.method = HttpMethod.Put
             }
         }.toSimpleResult()
+    }
 
     override suspend fun uploadMusicToCloud(
         music: Music,
@@ -84,50 +104,29 @@ class MusicRemoteDataSourceImpl(
         artists: List<String>,
     ): SoulResult<UploadedMusicResult> {
         val file: File = File(music.path).takeIf { it.exists() } ?: return SoulResult.Error(null)
+        val contentType = file.contentType()
 
-        val contentType = withContext(Dispatchers.IO) {
-            Files.probeContentType(file.toPath())
-        } ?: "application/octet-stream"
-
-        val result: SoulResult<String> = client.safeRequest {
+        val result: SoulResult<RemoteUploadedMusicData> = client.safeRequest {
             submitFormWithBinaryData(
                 url = ServerRoutes.Music.upload(searchMetadata),
                 formData = formData {
-                    append(
-                        key = "file".quote(),
-                        value = InputProvider(file.length()) {
-                            file.inputStream().asInput()
-                        },
-                        headers = Headers.build {
-                            append(HttpHeaders.ContentDisposition, "filename=${file.name.quote()}")
-                            append(HttpHeaders.ContentType, contentType)
-                        }
+                    appendFile(
+                        key = "file",
+                        file = file,
+                        contentType = contentType,
                     )
-                    append(
-                        "metadata",
-                        JSON.encodeToString(
-                            CustomMusicMetadata
-                                .fromMusic(
-                                    music = music,
-                                    artists = artists,
-                                ),
-                        ),
-                        Headers.build {
-                            append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                        }
+                    appendJson(
+                        key = "metadata",
+                        value = CustomMusicMetadata
+                            .fromMusic(
+                                music = music,
+                                artists = artists,
+                            ),
                     )
                 }
             )
         }
 
-        return result.map {
-            try {
-                JSON.decodeFromString<RemoteUploadedMusicData>(it).toUploadMusicData()
-            } catch (_: Exception) {
-                UploadedMusicResult.AlreadySaved(
-                    message = it,
-                )
-            }
-        }
+        return result.map { it.toUploadMusicData() }
     }
 }

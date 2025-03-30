@@ -13,7 +13,7 @@ class UpdateMusicNbPlayedUseCase(
         musicRepository.upsert(
             music = music.copy(
                 nbPlayed = music.nbPlayed + 1
-            )
+            ),
         )
     }
 }

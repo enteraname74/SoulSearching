@@ -11,6 +11,6 @@ class ToggleMusicQuickAccessStateUseCase(
         musicRepository.upsert(
             music = music.copy(
                 isInQuickAccess = !music.isInQuickAccess,
-            )
+            ),
         )
 }

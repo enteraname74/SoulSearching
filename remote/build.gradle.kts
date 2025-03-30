@@ -24,6 +24,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":domain"))
             implementation(project(":repository"))
+            implementation(project(":serialization"))
             implementation(libs.bundles.ktor)
             implementation(libs.koin.core)
             implementation(libs.kotlinx.serialization.json)

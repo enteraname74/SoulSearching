@@ -10,6 +10,7 @@ import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import java.util.UUID
 
 class UpdateMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -138,6 +139,7 @@ class UpdateMusicUseCase(
         previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
+        shouldUpdateMusicCover: Boolean,
     ): SoulResult<Unit> {
         if (previousArtists.map { it.artistName } != newArtistsNames) {
             handleMultipleArtistsOfMusic(
@@ -166,9 +168,12 @@ class UpdateMusicUseCase(
                 albumId = musicRepository.getFromId(
                     legacyMusic.musicId
                 ).first()!!.albumId
-            )
+            ),
         )
-        musicFileUpdater.updateMusic(music = newMusicInformation)
+        musicFileUpdater.updateMusic(
+            music = newMusicInformation,
+            shouldUpdateMusicCover = shouldUpdateMusicCover,
+        )
 
         return SoulResult.ofSuccess()
     }
@@ -186,6 +191,7 @@ class UpdateMusicUseCase(
         previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
+        newCoverId: UUID?,
     ): SoulResult<Unit> =
         when(legacyMusic.dataMode) {
             DataMode.Local -> {
@@ -194,12 +200,14 @@ class UpdateMusicUseCase(
                     newMusicInformation = newMusicInformation,
                     previousArtists = previousArtists,
                     newArtistsNames = newArtistsNames,
+                    shouldUpdateMusicCover = newCoverId != null,
                 )
             }
             DataMode.Cloud -> {
                 musicRepository.upsert(
                     music = newMusicInformation,
                     artists = newArtistsNames,
+                    newCoverId = newCoverId,
                 )
             }
         }

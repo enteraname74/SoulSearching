@@ -11,7 +11,7 @@ data class RemoteUploadedMusicData(
     val album: RemoteAlbum,
     val artists: List<RemoteArtist>,
 ) {
-    fun toUploadMusicData(): UploadedMusicResult.Data = UploadedMusicResult.Data(
+    fun toUploadMusicData(): UploadedMusicResult = UploadedMusicResult(
         music = music.toMusic(),
         album = album.toAlbum(),
         artists = artists.map { it.toArtist() },

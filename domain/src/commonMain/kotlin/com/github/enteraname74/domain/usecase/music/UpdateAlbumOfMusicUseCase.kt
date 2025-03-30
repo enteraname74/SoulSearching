@@ -50,7 +50,7 @@ class UpdateAlbumOfMusicUseCase(
         musicRepository.upsert(
             music = legacyMusic.copy(
                 albumId = newMusicAlbum.albumId,
-            )
+            ),
         )
 
         // We remove the legacy album if there is no music left in it.

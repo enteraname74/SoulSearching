@@ -46,8 +46,11 @@ class UpdateArtistNameOfMusicUseCase(
             artist = newArtistsOfMusic,
         )
         musicRepository.upsert(
-            newMusicInformation
+            music = newMusicInformation,
         )
-        musicFileUpdater.updateMusic(music = newMusicInformation)
+        musicFileUpdater.updateMusic(
+            music = newMusicInformation,
+            shouldUpdateMusicCover = false,
+        )
     }
 }

@@ -24,7 +24,10 @@ class MusicFileUpdater : KoinComponent {
      * Updates the file metadata of a music.
      * Does nothing if the user has not accepted files to be modified.
      */
-    suspend fun updateMusic(music: Music) {
+    suspend fun updateMusic(
+        music: Music,
+        shouldUpdateMusicCover: Boolean,
+    ) {
         if (!settings.get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)) return
         try {
             val musicFile = File(music.path)
@@ -37,7 +40,7 @@ class MusicFileUpdater : KoinComponent {
             tag.setField(FieldKey.ALBUM, music.album)
             tag.setField(FieldKey.ARTIST, music.artist)
 
-            (music.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
+            (music.cover as? Cover.CoverFile)?.fileCoverId?.takeIf { shouldUpdateMusicCover }?.let { coverId ->
                 val coverData: ByteArray? = coverFileManager.getFileData(fileId = coverId)
 
                 coverData?.let { currentArtwork ->

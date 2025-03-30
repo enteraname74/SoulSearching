@@ -2,11 +2,13 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.CloudRepository
+import com.github.enteraname74.domain.repository.CoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -41,6 +44,7 @@ class MusicRepositoryImpl(
     private val cloudLocalDataSource: CloudLocalDataSource,
     private val playlistRepository: PlaylistRepository,
     private val cloudCacheManager: CloudCacheManager,
+    private val coverFileManager: CoverFileManager,
 ) : MusicRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
@@ -50,6 +54,7 @@ class MusicRepositoryImpl(
 
     override suspend fun upsert(
         music: Music,
+        newCoverId: UUID?,
         artists: List<String>,
     ): SoulResult<Unit> =
         when(music.dataMode) {
@@ -61,7 +66,11 @@ class MusicRepositoryImpl(
                 val result = musicRemoteDataSource.update(
                     music = music,
                     artists = artists,
+                    newCover = newCoverId?.let {
+                        coverFileManager.getPath(id = it)?.let(::File)
+                    },
                 )
+                println("RESULT HERE: $result")
                 cloudRepository.syncDataWithCloud()
                 result
             }
@@ -206,21 +215,20 @@ class MusicRepositoryImpl(
                         /*no-op*/
                     }
                     is SoulResult.Success -> {
-                        (uploadResult.data as? UploadedMusicResult.Data)?.let { data ->
-                            localIdToRemote[music.musicId] = data.music.musicId
-                            musicsToSave.add(data.music)
-                            albumsToSave.add(data.album)
-                            artistsToSave.addAll(data.artists)
-                            musicArtistsToSave.addAll(
-                                data.artists.map { artist ->
-                                    MusicArtist(
-                                        musicId = data.music.musicId,
-                                        artistId = artist.artistId,
-                                        dataMode = DataMode.Cloud,
-                                    )
-                                }
-                            )
-                        }
+                        val uploadedMusicResult: UploadedMusicResult = uploadResult.data
+                        localIdToRemote[music.musicId] = uploadedMusicResult.music.musicId
+                        musicsToSave.add(uploadedMusicResult.music)
+                        albumsToSave.add(uploadedMusicResult.album)
+                        artistsToSave.addAll(uploadedMusicResult.artists)
+                        musicArtistsToSave.addAll(
+                            uploadedMusicResult.artists.map { artist ->
+                                MusicArtist(
+                                    musicId = uploadedMusicResult.music.musicId,
+                                    artistId = artist.artistId,
+                                    dataMode = DataMode.Cloud,
+                                )
+                            }
+                        )
                         total.getAndIncrement()
                         val progress = total.get().toFloat() / allLocalSongs.size
                         progressFunc(progress)

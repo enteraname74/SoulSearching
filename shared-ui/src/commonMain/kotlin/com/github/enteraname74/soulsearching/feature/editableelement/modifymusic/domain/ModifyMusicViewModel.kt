@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifymusi
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import coil3.PlatformContext
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
@@ -217,12 +218,12 @@ class ModifyMusicViewModel(
      * Update selected music information.
      */
     @OptIn(ExperimentalResourceApi::class)
-    fun updateMusic() {
+    fun updateMusic(coilContext: PlatformContext) {
         val state = (state.value as? ModifyMusicState.Data) ?: return
         val form = (formState.value as? ModifyMusicFormState.Data)?.takeIf { it.isFormValid() } ?: return
 
         loadingManager.withLoadingOnIO {
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
+            val newCoverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
                     id = newCoverId,
@@ -239,7 +240,7 @@ class ModifyMusicViewModel(
 
             val newMusicInformation = state.initialMusic.copy(
                 cover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
-                    fileCoverId = coverFile,
+                    fileCoverId = newCoverId,
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
@@ -251,8 +252,19 @@ class ModifyMusicViewModel(
                 newMusicInformation = newMusicInformation,
                 previousArtists = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
+                newCoverId = newCoverId,
             )
             feedbackPopUpManager.showResultErrorIfAny(result)
+
+            if (!result.isError() && state.editableElement.newCover != null) {
+                (newMusicInformation.cover as? Cover.CoverUrl)?.let { urlCover ->
+                    cachedCoverManager.clearUrlCachedImage(
+                        cover = urlCover,
+                        context = coilContext,
+                    )
+                }
+
+            }
 
             playbackManager.updateMusic(newMusicInformation)
             if (
