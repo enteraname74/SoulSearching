@@ -28,7 +28,6 @@ kotlin {
             }
         }
         commonMain.dependencies {
-            implementation(project(":domain"))
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(libs.components.resources)
@@ -37,7 +36,9 @@ kotlin {
             implementation(libs.coroutines.core)
             implementation(libs.coroutines.core.jvm)
             implementation(libs.bundles.coil)
+            implementation(project(":domain"))
             implementation(project(":core-ui"))
+            implementation(project(":httpclient"))
         }
 
         androidMain.dependencies {

@@ -94,7 +94,7 @@ class SoulSearchingAndroidPlayerImpl(
 
         // Else, we fetch it from the cloud.
         val result = client.safeReadBytes {
-            client.get(urlString = music.path)
+            get(urlString = music.path)
         }
 
         (result as? SoulResult.Success)?.data?.let { musicData ->

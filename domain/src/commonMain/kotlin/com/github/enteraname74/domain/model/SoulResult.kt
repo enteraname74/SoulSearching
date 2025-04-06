@@ -22,4 +22,10 @@ sealed interface SoulResult<T> {
     companion object {
         fun ofSuccess(): Success<Unit> = Success(Unit)
     }
+
+    fun getOrNull(): T? =
+        when(this) {
+            is Error<T> -> null
+            is Success<T> -> data
+        }
 }

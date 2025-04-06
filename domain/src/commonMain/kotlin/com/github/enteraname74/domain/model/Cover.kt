@@ -19,5 +19,8 @@ sealed interface Cover {
     ): Cover {
         override fun isEmpty(): Boolean =
             url == null
+
+        fun isFromCloud(): Boolean =
+            url?.startsWith("music/cover") == true
     }
 }

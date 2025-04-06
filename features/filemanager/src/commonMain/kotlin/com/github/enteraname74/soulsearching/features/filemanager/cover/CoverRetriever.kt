@@ -2,15 +2,22 @@ package com.github.enteraname74.soulsearching.features.filemanager.cover
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.features.httpclient.safeReadBytes
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
 
 class CoverRetriever(
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
+    private val settings: SoulSearchingSettings,
+    private val httpClient: HttpClient,
 ) {
-    private suspend fun getCoverByteArray(cover: Cover): ByteArray? =
-        when(cover) {
+    private suspend fun getCoverByteArray(cover: Cover): ByteArray? {
+        return when(cover) {
             is Cover.CoverFile -> {
                 when {
                     cover.fileCoverId != null -> {
@@ -18,6 +25,7 @@ class CoverRetriever(
                             fileId = cover.fileCoverId!!,
                         )
                     }
+
                     cover.initialCoverPath != null -> {
                         cachedCoverManager.getCachedImageByteArray(
                             key = cover.initialCoverPath!!,
@@ -25,12 +33,27 @@ class CoverRetriever(
                             musicPath = cover.initialCoverPath!!,
                         )
                     }
+
                     else -> null
                 }
             }
 
-            is Cover.CoverUrl -> TODO("Implement CoverUrl support")
+            is Cover.CoverUrl -> {
+                if (cover.url == null) return null
+
+                val url: String = if (cover.isFromCloud()) {
+                    val host = settings.get(SoulSearchingSettingsKeys.Cloud.HOST)
+                    "$host/${cover.url}"
+                } else {
+                    cover.url!!
+                }
+
+                httpClient.safeReadBytes {
+                    get(urlString = url)
+                }.getOrNull()
+            }
         }
+    }
 
     @OptIn(ExperimentalResourceApi::class)
     suspend fun getImageBitmap(cover: Cover): ImageBitmap? =
