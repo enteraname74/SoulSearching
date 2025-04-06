@@ -17,7 +17,7 @@ val fileManagerModule: Module = module {
             cachedCoverManager = get(),
             coverFileManager = get(),
             settings = get(),
-            httpClient = get(named(HttpClientNames.CLOUD_AUTH))
+            httpClient = get(named(HttpClientNames.CLOUD_AUTH)),
         )
     }
 

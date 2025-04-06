@@ -75,8 +75,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         combine(
             playbackListManager.state,
             player.state,
-            _currentCoverState,
-        ) { listState, playerState, cover ->
+        ) { listState, playerState ->
             when (listState) {
                 is PlaybackListState.NoData -> {
                     notification.dismissNotification()
@@ -94,7 +93,6 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
                     playbackProgressJob.launchDurationJobIfNecessary()
                     notification.updateNotification(
                         playbackManagerState = state,
-                        cover = cover,
                     )
                     state
                 }
@@ -123,7 +121,6 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     val currentSongProgressionState: StateFlow<Int> = playbackProgressJob.state
 
     private val _currentCoverState: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
-    val currentCoverState: StateFlow<ImageBitmap?> = _currentCoverState.asStateFlow()
 
     suspend fun initPlaybackList(): SoulResult<Unit> =
         playbackListManager.init()
@@ -152,7 +149,6 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
      */
     suspend fun stopPlayback(resetPlayedList: Boolean = true) {
         playbackProgressJob.releaseDurationJob()
-        updateCover(cover = null)
         playbackListManager.clear(resetPlayedList = resetPlayedList)
         player.dismiss()
     }
@@ -183,7 +179,6 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         (mainState.value as? PlaybackManagerState.Data)?.let {
             notification.updateNotification(
                 playbackManagerState = it,
-                cover = _currentCoverState.value,
             )
         }
     }
@@ -270,6 +265,9 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         playbackListManager.setAndPlayMusic(music)
     }
 
+    /**
+     * Updates a given music in the playback music lists if it was found there.
+     */
     suspend fun updateMusic(music: Music) {
         playbackListManager.updateMusic(music)
     }

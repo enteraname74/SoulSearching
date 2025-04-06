@@ -15,7 +15,7 @@ class SoulSearchingDesktopNotification : SoulSearchingNotification {
 //        libNotify?.init("Soul Searching")
 //    }
 
-    override suspend fun updateNotification(playbackManagerState: PlaybackManagerState.Data, cover: ImageBitmap?) {
+    override suspend fun updateNotification(playbackManagerState: PlaybackManagerState.Data) {
 //        if (libNotify?.isInitted == false) {
 //            libNotify?.init("Soul Searching")
 //        }

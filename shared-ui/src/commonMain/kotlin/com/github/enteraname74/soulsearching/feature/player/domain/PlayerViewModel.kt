@@ -3,11 +3,7 @@ package com.github.enteraname74.soulsearching.feature.player.domain
 import androidx.compose.ui.graphics.ImageBitmap
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Artist
-import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicLyrics
-import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
@@ -250,7 +246,6 @@ class PlayerViewModel(
      * Set the current music cover.
      */
     fun setCurrentMusicCover(cover: ImageBitmap?) {
-        playbackManager.updateCover(cover = cover)
         colorThemeManager.setCurrentCover(cover = cover)
     }
 

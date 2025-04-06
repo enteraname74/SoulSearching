@@ -23,6 +23,7 @@ kotlin {
 
                 implementation(project(":domain"))
                 implementation(project(":filemanager"))
+                implementation(project(":playback"))
                 implementation(project(":serialization"))
             }
         }

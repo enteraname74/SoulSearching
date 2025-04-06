@@ -6,7 +6,6 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 interface SoulSearchingNotification {
     suspend fun updateNotification(
         playbackManagerState: PlaybackManagerState.Data,
-        cover: ImageBitmap?,
     )
     fun dismissNotification()
 }

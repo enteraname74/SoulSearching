@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.app.NotificationCompat
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.playback.PlayerService
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -24,6 +25,7 @@ abstract class SoulSearchingAndroidNotification(
     private val context: Context,
 ) : SoulSearchingNotification, KoinComponent {
     private val mediaSessionManager: MediaSessionManager by inject()
+    private val coverRetriever: CoverRetriever by inject()
 
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     protected val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
@@ -83,8 +85,8 @@ abstract class SoulSearchingAndroidNotification(
 
     override suspend fun updateNotification(
         playbackManagerState: PlaybackManagerState.Data,
-        cover: ImageBitmap?,
     ) {
+        val cover: ImageBitmap? = coverRetriever.getImageBitmap(cover = playbackManagerState.currentMusic.cover)
         withContext(Dispatchers.Main) {
             val mediaSessionToken = mediaSessionManager.getUpdatedMediaSessionToken(
                 playbackState = playbackManagerState,

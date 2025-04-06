@@ -7,6 +7,7 @@ import coil3.PlatformContext
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
@@ -218,7 +219,7 @@ class ModifyMusicViewModel(
      * Update selected music information.
      */
     @OptIn(ExperimentalResourceApi::class)
-    fun updateMusic(coilContext: PlatformContext) {
+    fun updateMusic() {
         val state = (state.value as? ModifyMusicState.Data) ?: return
         val form = (formState.value as? ModifyMusicFormState.Data)?.takeIf { it.isFormValid() } ?: return
 
@@ -263,19 +264,12 @@ class ModifyMusicViewModel(
                         context = coilContext,
                     )*/
                 }
-
             }
 
-            playbackManager.updateMusic(newMusicInformation)
-            if (
-                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = newMusicInformation.musicId)
-                && state.editableElement.newCover != null
-            ) {
-                playbackManager.updateCover(
-                    cover = runCatching {
-                        state.editableElement.newCover.decodeToImageBitmap()
-                    }.getOrNull()
-                )
+            // Logic for updating a remote music is done in repo layer.
+            // TODO: Move playback music update entirely on playback layer with flow on musics.
+            if (newMusicInformation.dataMode == DataMode.Local) {
+                playbackManager.updateMusic(newMusicInformation)
             }
 
             _navigationState.value = ModifyMusicNavigationState.Back

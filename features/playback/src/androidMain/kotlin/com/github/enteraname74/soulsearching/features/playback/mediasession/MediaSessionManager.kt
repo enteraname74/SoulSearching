@@ -11,6 +11,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.first
 class MediaSessionManager(
     private val context: Context,
     private val playbackManager: PlaybackManager,
+    private val coverRetriever: CoverRetriever,
 ) {
     private var mediaSession: MediaSessionCompat? = null
     private var seekToJob: Job? = null
@@ -114,7 +116,8 @@ class MediaSessionManager(
      * Update media session data with information the current played song in the player view model.
      */
     private suspend fun updateMetadata(playbackState: PlaybackManagerState.Data) {
-        val bitmap = playbackManager.currentCoverState.first()?.asAndroidBitmap() ?: standardNotificationBitmap
+        // TODO: Test this new fetch method of cover on Android.
+        val bitmap = coverRetriever.getImageBitmap(cover = playbackState.currentMusic.cover)?.asAndroidBitmap() ?: standardNotificationBitmap
 
         mediaSession?.setMetadata(
             MediaMetadataCompat.Builder()

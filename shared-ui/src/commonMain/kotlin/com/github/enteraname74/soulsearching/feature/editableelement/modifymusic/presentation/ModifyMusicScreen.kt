@@ -13,14 +13,12 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import coil3.compose.LocalPlatformContext
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.coreui.utils.LaunchInit
-import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.editableelement.WriteFilesCheck
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementAddArtist
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementScreen
@@ -29,7 +27,6 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import java.util.*
 
 /**
@@ -43,7 +40,6 @@ data class ModifyMusicScreen(
     @Composable
     override fun Content() {
         val screenModel = koinScreenModel<ModifyMusicViewModel>()
-        val coilContext = LocalPlatformContext.current
         val navigator = LocalNavigator.currentOrThrow
 
         val state: ModifyMusicState by screenModel.state.collectAsState()
@@ -74,7 +70,7 @@ data class ModifyMusicScreen(
             formState = formState,
             navigateBack = { navigator.pop() },
             onSelectCover = screenModel::showCoverBottomSheet,
-            onValidateModification = { screenModel.updateMusic(coilContext = coilContext) },
+            onValidateModification = screenModel::updateMusic,
             addArtistField = screenModel::addArtistField,
         )
     }

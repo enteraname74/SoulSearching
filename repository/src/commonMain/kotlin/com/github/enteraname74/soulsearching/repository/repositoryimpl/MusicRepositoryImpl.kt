@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.util.FlowResult
 import com.github.enteraname74.domain.util.handleFlowResultOn
 import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
+import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
@@ -45,6 +46,7 @@ class MusicRepositoryImpl(
     private val coverFileManager: CoverFileManager,
 ) : MusicRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
+    private val playbackManager: PlaybackManager by inject()
 
     override val uploadFlow: MutableStateFlow<FlowResult<Unit>> = MutableStateFlow(
         FlowResult.Success(null)
@@ -175,8 +177,12 @@ class MusicRepositoryImpl(
                         currentPage += 1
                         val musics: List<Music> = songsFromCloud.data
                         musicLocalDataSource.upsertAll(
-                            musics = songsFromCloud.data,
+                            musics = musics,
                         )
+                        musics.forEach {
+                            println("Updating music: $it")
+                            playbackManager.updateMusic(music = it)
+                        }
                     }
                 }
             }
