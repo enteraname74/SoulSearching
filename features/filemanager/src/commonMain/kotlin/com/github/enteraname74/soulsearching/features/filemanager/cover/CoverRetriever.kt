@@ -16,6 +16,21 @@ class CoverRetriever(
     private val settings: SoulSearchingSettings,
     private val httpClient: HttpClient,
 ) {
+    private suspend fun getRemoteImage(cover: Cover.CoverUrl): ByteArray? {
+        if (cover.url == null) return null
+
+        val url: String = if (cover.isFromCloud()) {
+            val host = settings.get(SoulSearchingSettingsKeys.Cloud.HOST)
+            "$host/${cover.url}"
+        } else {
+            cover.url!!
+        }
+
+        return httpClient.safeReadBytes {
+            get(urlString = url)
+        }.getOrNull()
+    }
+
     private suspend fun getCoverByteArray(cover: Cover): ByteArray? {
         return when(cover) {
             is Cover.CoverFile -> {
@@ -38,20 +53,7 @@ class CoverRetriever(
                 }
             }
 
-            is Cover.CoverUrl -> {
-                if (cover.url == null) return null
-
-                val url: String = if (cover.isFromCloud()) {
-                    val host = settings.get(SoulSearchingSettingsKeys.Cloud.HOST)
-                    "$host/${cover.url}"
-                } else {
-                    cover.url!!
-                }
-
-                httpClient.safeReadBytes {
-                    get(urlString = url)
-                }.getOrNull()
-            }
+            is Cover.CoverUrl -> getRemoteImage(cover)
         }
     }
 
@@ -76,10 +78,7 @@ class CoverRetriever(
                 }
             }
 
-            is Cover.CoverUrl -> {
-                // TODO: Implement logic for retrieving image
-                null
-            }
+            is Cover.CoverUrl -> getRemoteImage(cover)?.decodeToImageBitmap()
         }
 
     suspend fun getAllUniqueCover(covers: List<Cover>): List<ByteArray> =
