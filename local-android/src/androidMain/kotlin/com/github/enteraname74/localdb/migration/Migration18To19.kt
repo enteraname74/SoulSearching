@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.DataMode
 
 object Migration18To19 : Migration(18, 19) {
     private fun artistMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomArtist ADD COLUMN coverUrl TEXT")
         db.execSQL("ALTER TABLE RoomArtist ADD COLUMN dataMode TEXT NOT NULL DEFAULT '${DataMode.Local.value}'")
     }
 

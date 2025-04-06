@@ -9,18 +9,21 @@ sealed interface Cover {
     data class CoverFile(
         val initialCoverPath: String? = null,
         val fileCoverId: UUID? = null,
-    ): Cover {
+    ) : Cover {
         override fun isEmpty(): Boolean =
             initialCoverPath == null && fileCoverId == null
     }
 
     data class CoverUrl(
         val url: String?,
-    ): Cover {
+    ) : Cover {
         override fun isEmpty(): Boolean =
             url == null
 
         fun isFromCloud(): Boolean =
             url?.startsWith("music/cover") == true
+                    || url?.startsWith("artist/cover") == true
+                    || url?.startsWith("album/cover") == true
+                    || url?.startsWith("playlist/cover") == true
     }
 }

@@ -13,7 +13,10 @@ interface ArtistRepository {
     /**
      * Inserts or updates an artist.
      */
-    suspend fun upsert(artist: Artist): SoulResult<Unit>
+    suspend fun upsert(
+        artist: Artist,
+        newCoverId: UUID? = null,
+    ): SoulResult<Unit>
     suspend fun upsertAll(artists: List<Artist>)
 
     /**

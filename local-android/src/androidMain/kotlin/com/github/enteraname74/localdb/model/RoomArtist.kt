@@ -17,11 +17,25 @@ internal data class RoomArtist(
     val artistId: UUID = UUID.randomUUID(),
     var artistName: String = "",
     var coverId: UUID? = null,
+    var coverUrl: String? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     val dataMode: String = DataMode.Local.value,
-)
+) {
+    fun buildCover(): Cover? =
+        if (coverUrl != null) {
+            Cover.CoverUrl(
+                url = coverUrl
+            )
+        } else {
+            coverId?.let {
+                Cover.CoverFile(
+                    fileCoverId = it,
+                )
+            }
+        }
+}
 
 /**
  * Converts a RoomArtist to an Artist.
@@ -29,7 +43,7 @@ internal data class RoomArtist(
 internal fun RoomArtist.toArtist(): Artist = Artist(
     artistId = artistId,
     artistName = artistName,
-    cover = Cover.CoverFile(fileCoverId = coverId),
+    cover = buildCover(),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
@@ -43,6 +57,7 @@ internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     artistId = artistId,
     artistName = artistName,
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
+    coverUrl = (cover as? Cover.CoverUrl)?.url,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,

@@ -18,14 +18,6 @@ class CoverRepositoryImpl(
         )
     }
 
-    override suspend fun delete(cover: Cover) {
-        (cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
-            coverFileManager.deleteFromId(
-                id = coverId,
-            )
-        }
-    }
-
     override suspend fun delete(coverId: UUID) {
         coverFileManager.deleteFromId(
             id = coverId,

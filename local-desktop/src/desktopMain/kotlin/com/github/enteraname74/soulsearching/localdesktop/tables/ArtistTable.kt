@@ -14,11 +14,25 @@ import org.jetbrains.exposed.sql.javatime.datetime
 internal object ArtistTable: UUIDTable() {
     val artistName = varchar("artistName", 128)
     val coverId = uuid("coverId").nullable()
+    val coverUrl = mediumText("coverUrl").nullable()
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
     val dataMode = varchar("dataMode", 32).default(DataMode.Local.value)
 }
+
+private fun ResultRow.buildCover(): Cover? =
+    if (this[ArtistTable.coverUrl] != null) {
+        Cover.CoverUrl(
+            url = this[ArtistTable.coverUrl],
+        )
+    } else {
+        this[ArtistTable.coverId]?.let { coverId ->
+            Cover.CoverFile(
+                fileCoverId = coverId,
+            )
+        }
+    }
 
 /**
  * Builds an Artist from a ResultRow.
@@ -28,11 +42,7 @@ internal fun ResultRow.toArtist(): Artist? =
         Artist(
             artistId = this[ArtistTable.id].value,
             artistName = this[ArtistTable.artistName],
-            cover = this[ArtistTable.coverId]?.let { coverId ->
-                Cover.CoverFile(
-                    fileCoverId = coverId,
-                )
-            },
+            cover = buildCover(),
             addedDate = this[ArtistTable.addedDate],
             nbPlayed = this[ArtistTable.nbPlayed],
             isInQuickAccess = this[ArtistTable.isInQuickAccess],

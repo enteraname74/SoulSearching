@@ -12,6 +12,7 @@ interface MusicRepository {
     /**
      * Upsert a music.
      * @param artists the list of artists name of the music. Used for the cloud to update the artists of the music.
+     * @param newCoverId the new cover id of the music, used for the cloud to fetch the file cover.
      */
     suspend fun upsert(
         music: Music,

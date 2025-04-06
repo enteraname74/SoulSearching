@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
@@ -148,7 +149,7 @@ class ModifyArtistViewModel(
         val form = (formState.value as? ModifyArtistFormState.Data)?.takeIf { it.isFormValid() } ?: return
 
         loadingManager.withLoadingOnIO {
-            val coverFile: UUID? =
+            val newCoverId: UUID? =
                 state.editableElement.newCover?.let { coverData ->
                     val newCoverId: UUID = UUID.randomUUID()
                     upsertImageCoverUseCase(
@@ -161,22 +162,28 @@ class ModifyArtistViewModel(
             val newArtistInformation = state.initialArtist.copy(
                 artist = state.initialArtist.artist.copy(
                     cover = (state.initialArtist.artist.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile
-                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
+                        fileCoverId = newCoverId
+                    ) ?: newCoverId?.let { Cover.CoverFile(fileCoverId = it) },
                     artistName = form.getArtistName().trim(),
                 )
             )
 
             val result: SoulResult<Unit> =
-                updateArtistUseCase(newArtistWithMusicsInformation = newArtistInformation)
+                updateArtistUseCase(
+                    newArtistWithMusicsInformation = newArtistInformation,
+                    newCoverId = newCoverId,
+                )
             feedbackPopUpManager.showResultErrorIfAny(result)
 
-            val newArtistWithMusics: ArtistWithMusics = getArtistWithMusicsUseCase(
-                artistId = newArtistInformation.artist.artistId,
-            ).first() ?: return@withLoadingOnIO
+            // TODO: Move playback music update entirely on playback layer with flow on musics.
+            if (newArtistInformation.artist.dataMode == DataMode.Local) {
+                val newArtistWithMusics: ArtistWithMusics = getArtistWithMusicsUseCase(
+                    artistId = newArtistInformation.artist.artistId,
+                ).first() ?: return@withLoadingOnIO
 
-            // We need to update the artist's songs that are in the played list.
-            for (music in newArtistWithMusics.musics) playbackManager.updateMusic(music)
+                // We need to update the artist's songs that are in the played list.
+                for (music in newArtistWithMusics.musics) playbackManager.updateMusic(music)
+            }
 
             _navigationState.value = ModifyArtistNavigationState.Back
 

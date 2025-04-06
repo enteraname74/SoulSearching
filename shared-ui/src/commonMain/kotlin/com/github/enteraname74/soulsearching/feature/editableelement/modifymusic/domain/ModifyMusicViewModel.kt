@@ -257,15 +257,6 @@ class ModifyMusicViewModel(
             )
             feedbackPopUpManager.showResultErrorIfAny(result)
 
-            if (!result.isError() && state.editableElement.newCover != null) {
-                (newMusicInformation.cover as? Cover.CoverUrl)?.let { urlCover ->
- /*                   cachedCoverManager.clearUrlCachedImage(
-                        cover = urlCover,
-                        context = coilContext,
-                    )*/
-                }
-            }
-
             // Logic for updating a remote music is done in repo layer.
             // TODO: Move playback music update entirely on playback layer with flow on musics.
             if (newMusicInformation.dataMode == DataMode.Local) {

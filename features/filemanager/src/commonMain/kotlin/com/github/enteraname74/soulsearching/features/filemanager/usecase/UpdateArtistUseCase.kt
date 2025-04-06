@@ -8,6 +8,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.GetDuplicatedArtistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import java.util.UUID
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
@@ -17,10 +18,16 @@ class UpdateArtistUseCase(
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
 ) {
-    suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<Unit> =
+    suspend operator fun invoke(
+        newArtistWithMusicsInformation: ArtistWithMusics,
+        newCoverId: UUID?,
+    ): SoulResult<Unit> =
         when (newArtistWithMusicsInformation.artist.dataMode) {
             DataMode.Local -> localUpdate(newArtistWithMusicsInformation)
-            DataMode.Cloud -> artistRepository.upsert(newArtistWithMusicsInformation.artist)
+            DataMode.Cloud -> artistRepository.upsert(
+                artist = newArtistWithMusicsInformation.artist,
+                newCoverId = newCoverId,
+            )
         }
 
     private suspend fun localUpdate(newArtistWithMusicsInformation: ArtistWithMusics): SoulResult<Unit> {

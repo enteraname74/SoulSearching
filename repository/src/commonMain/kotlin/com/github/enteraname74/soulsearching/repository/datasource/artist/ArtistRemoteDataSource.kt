@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.artist
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.SoulResult
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,5 +23,6 @@ interface ArtistRemoteDataSource {
 
     suspend fun update(
         artist: Artist,
+        newCover: File?,
     ): SoulResult<Unit>
 }

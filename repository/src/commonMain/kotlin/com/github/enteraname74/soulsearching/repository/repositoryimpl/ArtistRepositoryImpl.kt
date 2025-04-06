@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.CloudRepository
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistLocalDataSource
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -28,10 +30,14 @@ class ArtistRepositoryImpl(
     private val artistRemoteDataSource: ArtistRemoteDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
+    private val coverFileManager: CoverFileManager,
 ): ArtistRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
-    override suspend fun upsert(artist: Artist): SoulResult<Unit> =
+    override suspend fun upsert(
+        artist: Artist,
+        newCoverId: UUID?,
+    ): SoulResult<Unit> =
         when(artist.dataMode) {
             DataMode.Local -> {
                 artistLocalDataSource.upsert(
@@ -40,7 +46,12 @@ class ArtistRepositoryImpl(
                 SoulResult.ofSuccess()
             }
             DataMode.Cloud -> {
-                val result = artistRemoteDataSource.update(artist)
+                val result = artistRemoteDataSource.update(
+                    artist = artist,
+                    newCover = newCoverId?.let {
+                        coverFileManager.getPath(id = it)?.let(::File)
+                    },
+                )
                 cloudRepository.syncDataWithCloud()
                 result
             }

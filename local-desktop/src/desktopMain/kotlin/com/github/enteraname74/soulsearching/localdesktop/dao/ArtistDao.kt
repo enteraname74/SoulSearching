@@ -12,6 +12,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverUrl
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.dataMode
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
@@ -34,6 +35,7 @@ internal class ArtistDao(
                 it[id] = artist.artistId
                 it[artistName] = artist.artistName
                 it[coverId] = (artist.cover as? Cover.CoverFile)?.fileCoverId
+                it[coverUrl] = (artist.cover as? Cover.CoverUrl)?.url
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
@@ -48,6 +50,7 @@ internal class ArtistDao(
                 this[id] = it.artistId
                 this[artistName] = it.artistName
                 this[coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId
+                this[coverUrl] = (it.cover as? Cover.CoverUrl)?.url
                 this[addedDate] = it.addedDate
                 this[nbPlayed] = it.nbPlayed
                 this[isInQuickAccess] = it.isInQuickAccess
