@@ -3,6 +3,8 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
+import com.github.enteraname74.soulsearching.features.httpclient.safeSimpleRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.ext.appendFile
 import com.github.enteraname74.soulsearching.remote.ext.appendJson
@@ -11,8 +13,6 @@ import com.github.enteraname74.soulsearching.remote.model.music.CustomMusicMetad
 import com.github.enteraname74.soulsearching.remote.model.music.RemoteMusic
 import com.github.enteraname74.soulsearching.remote.model.music.RemoteUploadedMusicData
 import com.github.enteraname74.soulsearching.remote.model.music.toModifiedMusic
-import com.github.enteraname74.soulsearching.remote.model.safeRequest
-import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
 import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import io.ktor.client.*

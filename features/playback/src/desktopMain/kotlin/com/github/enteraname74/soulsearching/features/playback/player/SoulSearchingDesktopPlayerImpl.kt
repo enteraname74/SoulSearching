@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.features.filemanager.cloud.CloudCacheManager
-import com.github.enteraname74.soulsearching.remote.model.safeReadBytes
+import com.github.enteraname74.soulsearching.features.httpclient.safeReadBytes
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.*

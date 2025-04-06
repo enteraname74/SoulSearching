@@ -34,7 +34,7 @@ kotlin {
             implementation(compose.ui)
             implementation(libs.koin.core)
 
-            implementation(project(":remote"))
+            implementation(project(":httpclient"))
             implementation(project(":filemanager"))
             implementation(libs.bundles.ktor)
         }

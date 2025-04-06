@@ -12,9 +12,7 @@ sealed interface PlaybackManagerState {
         val playerMode: PlayerMode,
         val isPlaying: Boolean,
         val minimisePlayer: Boolean,
-    ): PlaybackManagerState {
-        val currentMusicDuration: Int = currentMusic.duration.toInt()
-    }
+    ): PlaybackManagerState
 
     fun isEmpty(): Boolean =
         (this as? Data)?.playedList?.isEmpty() != false

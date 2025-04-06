@@ -3,11 +3,11 @@ package com.github.enteraname74.soulsearching.remote.datasourceimpl
 import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
+import com.github.enteraname74.soulsearching.features.httpclient.safeSimpleRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.artist.RemoteArtist
 import com.github.enteraname74.soulsearching.remote.model.artist.toModifiedArtist
-import com.github.enteraname74.soulsearching.remote.model.safeRequest
-import com.github.enteraname74.soulsearching.remote.model.safeSimpleRequest
 import com.github.enteraname74.soulsearching.repository.datasource.artist.ArtistRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.request.*

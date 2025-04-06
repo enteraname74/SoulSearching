@@ -1,13 +1,14 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
 import com.github.enteraname74.domain.model.CloudInscriptionCode
-import com.github.enteraname74.domain.model.ConnectedUser
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.model.User
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.features.httpclient.HttpClientNames
+import com.github.enteraname74.soulsearching.features.httpclient.clearToken
+import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
-import com.github.enteraname74.soulsearching.remote.model.*
 import com.github.enteraname74.soulsearching.remote.model.user.*
 import com.github.enteraname74.soulsearching.repository.datasource.auth.AuthRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UserAuth

@@ -258,10 +258,10 @@ class ModifyMusicViewModel(
 
             if (!result.isError() && state.editableElement.newCover != null) {
                 (newMusicInformation.cover as? Cover.CoverUrl)?.let { urlCover ->
-                    cachedCoverManager.clearUrlCachedImage(
+ /*                   cachedCoverManager.clearUrlCachedImage(
                         cover = urlCover,
                         context = coilContext,
-                    )
+                    )*/
                 }
 
             }

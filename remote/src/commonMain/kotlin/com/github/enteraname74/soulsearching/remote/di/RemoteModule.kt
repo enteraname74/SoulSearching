@@ -1,10 +1,11 @@
 package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.httpclient.HttpClientNames
+import com.github.enteraname74.soulsearching.features.httpclient.ext.provideContentNegotiation
 import com.github.enteraname74.soulsearching.remote.cloud.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.*
 import com.github.enteraname74.soulsearching.remote.ext.toBearerTokens
-import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
 import com.github.enteraname74.soulsearching.repository.datasource.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource

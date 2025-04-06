@@ -40,6 +40,8 @@ fun PlayerMusicCover(
     currentMusic: Music,
     onCoverLoaded: (ImageBitmap?) -> Unit,
 ) {
+    println("PLAYER MUSIC COVER -- Current music: $currentMusic")
+
     val imageModifier = if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
         Modifier.combinedClickableWithRightClick(
             onLongClick = onLongClick,

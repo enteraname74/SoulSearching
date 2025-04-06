@@ -1,6 +1,5 @@
-package com.github.enteraname74.soulsearching.remote.di
+package com.github.enteraname74.soulsearching.features.httpclient.ext
 
-import com.google.gson.*
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.features.playback.di
 
+import com.github.enteraname74.soulsearching.features.httpclient.HttpClientNames
 import com.github.enteraname74.soulsearching.features.playback.mediasession.MediaSessionManager
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
 import com.github.enteraname74.soulsearching.features.playback.notification.impl.SoulSearchingAndroidNotification
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingAndroidPlayerImpl
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
-import com.github.enteraname74.soulsearching.remote.model.HttpClientNames
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf

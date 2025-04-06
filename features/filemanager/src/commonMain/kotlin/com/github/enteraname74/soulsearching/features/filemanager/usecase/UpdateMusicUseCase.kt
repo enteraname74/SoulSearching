@@ -185,6 +185,7 @@ class UpdateMusicUseCase(
      * (used for comparison between the legacy and new music information for better updating).
      * @param newArtistsNames the new list of artists the music should belong to.
      * @param newMusicInformation the new music information to save.
+     *
      */
     suspend operator fun invoke(
         legacyMusic: Music,

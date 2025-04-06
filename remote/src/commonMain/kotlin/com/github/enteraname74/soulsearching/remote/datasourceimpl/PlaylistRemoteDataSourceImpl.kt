@@ -4,10 +4,10 @@ import com.github.enteraname74.domain.ext.toUUID
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.SoulResult
+import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
 import com.github.enteraname74.soulsearching.remote.model.RemoteMusicPlaylist
 import com.github.enteraname74.soulsearching.remote.model.playlist.*
-import com.github.enteraname74.soulsearching.remote.model.safeRequest
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedPlaylistResult
 import io.ktor.client.*

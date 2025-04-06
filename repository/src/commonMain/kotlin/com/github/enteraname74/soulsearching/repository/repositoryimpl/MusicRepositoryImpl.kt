@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.CloudRepository
-import com.github.enteraname74.domain.repository.CoverRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.repository.PlaylistRepository
 import com.github.enteraname74.domain.util.FlowResult
@@ -18,7 +17,7 @@ import com.github.enteraname74.soulsearching.repository.datasource.music.MusicRe
 import com.github.enteraname74.soulsearching.repository.datasource.musicartist.MusicArtistLocalDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedMusicResult
 import com.github.enteraname74.soulsearching.repository.utils.DeleteAllHelper
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -29,7 +28,6 @@ import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.collections.HashMap
 
 /**
  * Repository for handling Music related work.
@@ -70,7 +68,6 @@ class MusicRepositoryImpl(
                         coverFileManager.getPath(id = it)?.let(::File)
                     },
                 )
-                println("RESULT HERE: $result")
                 cloudRepository.syncDataWithCloud()
                 result
             }
@@ -176,11 +173,11 @@ class MusicRepositoryImpl(
                         return SoulResult.Success(idsToDelete)
                     } else {
                         currentPage += 1
+                        val musics: List<Music> = songsFromCloud.data
                         musicLocalDataSource.upsertAll(
                             musics = songsFromCloud.data,
                         )
                     }
-
                 }
             }
         }

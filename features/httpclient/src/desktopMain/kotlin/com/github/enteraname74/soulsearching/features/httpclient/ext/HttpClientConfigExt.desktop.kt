@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.remote.di
+package com.github.enteraname74.soulsearching.features.httpclient.ext
 
 import io.ktor.client.*
 import io.ktor.client.engine.*

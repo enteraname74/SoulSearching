@@ -3,11 +3,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.kotlinSerialization)
 }
 
-group = "com.github.enteraname74.soulsearching.remote"
-description = "Remote data access"
+group = "com.github.enteraname74.soulsearching.features.httpclient"
+description = "Http client related elements used in the app"
 
 kotlin {
     jvmToolchain(17)
@@ -22,27 +21,20 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":domain"))
-            implementation(project(":repository"))
-            implementation(project(":serialization"))
-            api(project(":httpclient"))
-
             implementation(libs.bundles.ktor)
-            implementation(libs.koin.core)
-            implementation(libs.kotlinx.serialization.json)
+            implementation(project(":domain"))
+            implementation(project(":serialization"))
         }
-        androidMain.dependencies {
-            implementation(libs.ktor.serialization.kotlinx.json)
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+        val desktopMain by getting {
+            dependencies {
+                implementation(libs.ktor.serialization.gson)
+            }
         }
     }
 }
 
 android {
-    namespace = "com.github.enteraname74.soulsearching.remote"
+    namespace = "com.github.enteraname74.soulsearching.httpclient"
     compileSdk = libs.versions.android.compile.sdk.get().toInt()
 
     defaultConfig {

@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.remote.model
+package com.github.enteraname74.soulsearching.features.httpclient
 
 import com.github.enteraname74.domain.model.SoulResult
 import io.ktor.client.*
