@@ -6,12 +6,17 @@ import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
 import com.github.enteraname74.soulsearching.features.httpclient.safeSimpleRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
+import com.github.enteraname74.soulsearching.remote.ext.appendFile
+import com.github.enteraname74.soulsearching.remote.ext.appendJson
+import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.model.album.RemoteAlbum
 import com.github.enteraname74.soulsearching.remote.model.album.toModifiedAlbum
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -61,11 +66,33 @@ class AlbumRemoteDataSourceImpl(
             }
         }.toSimpleResult()
 
-    override suspend fun update(album: Album, artist: String): SoulResult<Unit> =
-        client.safeSimpleRequest {
-            put(urlString = ServerRoutes.Album.UPDATE) {
-                setBody(album.toModifiedAlbum(artist))
-                contentType(ContentType.Application.Json)
+    override suspend fun update(
+        album: Album,
+        artist: String,
+        newCover: File?,
+    ): SoulResult<Unit> {
+        val contentType: String = newCover?.contentType() ?: ""
+
+        return client.safeSimpleRequest {
+            submitFormWithBinaryData(
+                url = ServerRoutes.Album.UPDATE,
+                formData = formData {
+                    newCover?.let {
+                        appendFile(
+                            key = "cover",
+                            contentType = contentType,
+                            file = it,
+                        )
+                    }
+                    appendJson(
+                        key = "metadata",
+                        value = album.toModifiedAlbum(artist),
+                    )
+                }
+            ) {
+                this.method = HttpMethod.Put
             }
         }.toSimpleResult()
+    }
+
 }

@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.DataMode
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
@@ -157,9 +158,8 @@ class ModifyAlbumViewModel(
 
         loadingManager.withLoadingOnIO {
             // If the image has changed, we need to save it and retrieve its id.
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
+            val newCoverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
-
                 upsertImageCoverUseCase(
                     id = newCoverId,
                     data = coverData,
@@ -178,23 +178,29 @@ class ModifyAlbumViewModel(
             val newAlbumWithArtistInformation: AlbumWithArtist = albumWithArtist.copy(
                 album = albumWithArtist.album.copy(
                     cover = (albumWithArtist.album.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile,
-                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
+                        fileCoverId = newCoverId,
+                    ) ?: newCoverId?.let { Cover.CoverFile(fileCoverId = it) }
                 )
             )
 
             // We update the information of the album.
             val result: SoulResult<Unit> =
-                updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
+                updateAlbumUseCase(
+                    newAlbumWithArtistInformation = newAlbumWithArtistInformation,
+                    newCoverId = newCoverId,
+                )
             feedbackPopUpManager.showResultErrorIfAny(result)
 
-            // We retrieve the updated album
-            val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
-                albumId = newAlbumWithArtistInformation.album.albumId
-            ).first() ?: return@withLoadingOnIO
+            // TODO: Move playback music update entirely on playback layer with flow on musics.
+            if (newAlbumWithArtistInformation.album.dataMode == DataMode.Local) {
+                // We retrieve the updated album
+                val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
+                    albumId = newAlbumWithArtistInformation.album.albumId
+                ).first() ?: return@withLoadingOnIO
 
-            // We need to update the album's songs that are in the played list.
-            for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
+                // We need to update the album's songs that are in the played list.
+                for (music in newAlbumWithMusics.musics) playbackManager.updateMusic(music)
+            }
 
             _navigationState.value = ModifyAlbumNavigationState.Back
 

@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource.album
 
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.SoulResult
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -23,5 +24,6 @@ interface AlbumRemoteDataSource {
     suspend fun update(
         album: Album,
         artist: String,
+        newCover: File?,
     ): SoulResult<Unit>
 }

@@ -18,10 +18,12 @@ interface AlbumRepository {
     /**
      * Inserts a new Album.
      * @param artist the name of the artist of the album. Used by the cloud to update the artist of the album.
+     * @param newCoverId the new cover id of the album, stored temporary on the device, used for the cloud to fetch the file cover and send it.
      */
     suspend fun upsert(
         album: Album,
         artist: String = "",
+        newCoverId: UUID? = null,
     ): SoulResult<Unit>
     suspend fun upsertAll(albums: List<Album>)
 

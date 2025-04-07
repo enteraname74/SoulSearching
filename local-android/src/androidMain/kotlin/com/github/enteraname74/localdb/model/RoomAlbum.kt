@@ -28,13 +28,27 @@ internal data class RoomAlbum(
     val albumId: UUID = UUID.randomUUID(),
     var albumName: String = "",
     var coverId: UUID? = null,
+    var coverUrl: UUID? = null,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     @ColumnInfo(index = true)
     val artistId: UUID,
     val dataMode: String = DataMode.Local.value,
-)
+) {
+    fun buildCover(): Cover? =
+        if (coverUrl != null) {
+            Cover.CoverUrl(
+                url = coverUrl
+            )
+        } else {
+            coverId?.let {
+                Cover.CoverFile(
+                    fileCoverId = it,
+                )
+            }
+        }
+}
 
 /**
  * Converts a RoomAlbum to an Album.
@@ -42,7 +56,7 @@ internal data class RoomAlbum(
 internal fun RoomAlbum.toAlbum(): Album = Album(
     albumId = albumId,
     albumName = albumName,
-    cover = Cover.CoverFile(fileCoverId = coverId),
+    cover = buildCover(),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
@@ -57,6 +71,7 @@ internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     albumId = albumId,
     albumName = albumName,
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
+    coverUrl = (cover as? Cover.CoverUrl)?.url,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,

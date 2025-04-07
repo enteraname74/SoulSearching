@@ -9,6 +9,7 @@ import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
 import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
+import com.github.enteraname74.soulsearching.localdesktop.tables.AlbumTable.coverUrl
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import org.jetbrains.exposed.sql.*
@@ -26,6 +27,7 @@ internal class AlbumDao(
                 it[id] = album.albumId
                 it[albumName] = album.albumName
                 it[coverId] = (album.cover as? Cover.CoverFile)?.fileCoverId
+                it[coverUrl] = (album.cover as? Cover.CoverUrl)?.url
                 it[addedDate] = album.addedDate
                 it[nbPlayed] = album.nbPlayed
                 it[isInQuickAccess] = album.isInQuickAccess
@@ -41,6 +43,7 @@ internal class AlbumDao(
                 this[AlbumTable.id] = it.albumId
                 this[AlbumTable.albumName] = it.albumName
                 this[AlbumTable.coverId] = (it.cover as? Cover.CoverFile)?.fileCoverId
+                this[AlbumTable.coverUrl] = (it.cover as? Cover.CoverUrl)?.url
                 this[AlbumTable.addedDate] = it.addedDate
                 this[AlbumTable.nbPlayed] = it.nbPlayed
                 this[AlbumTable.isInQuickAccess] = it.isInQuickAccess

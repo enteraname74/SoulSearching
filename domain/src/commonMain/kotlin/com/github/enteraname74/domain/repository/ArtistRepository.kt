@@ -12,6 +12,7 @@ import java.util.*
 interface ArtistRepository {
     /**
      * Inserts or updates an artist.
+     * @param newCoverId the new cover id of the artist, stored temporary on the device, used for the cloud to fetch the file cover and send it.
      */
     suspend fun upsert(
         artist: Artist,

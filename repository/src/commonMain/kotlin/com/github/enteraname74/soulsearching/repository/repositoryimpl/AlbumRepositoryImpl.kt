@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.CloudRepository
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.album.AlbumLocalDataSource
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -25,6 +27,7 @@ class AlbumRepositoryImpl(
     private val albumRemoteDataSource: AlbumRemoteDataSource,
     private val dataModeDataSource: DataModeDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
+    private val coverFileManager: CoverFileManager,
 ) : AlbumRepository, KoinComponent {
     private val cloudRepository: CloudRepository by inject()
 
@@ -68,6 +71,7 @@ class AlbumRepositoryImpl(
     override suspend fun upsert(
         album: Album,
         artist: String,
+        newCoverId: UUID?,
     ): SoulResult<Unit> =
         when (album.dataMode) {
             DataMode.Local -> {
@@ -81,6 +85,9 @@ class AlbumRepositoryImpl(
                 val result = albumRemoteDataSource.update(
                     album = album,
                     artist = artist,
+                    newCover = newCoverId?.let {
+                        coverFileManager.getPath(id = it)?.let(::File)
+                    },
                 )
                 cloudRepository.syncDataWithCloud()
                 result

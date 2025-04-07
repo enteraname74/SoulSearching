@@ -64,6 +64,7 @@ object Migration18To19 : Migration(18, 19) {
     }
 
     private fun albumMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomAlbum ADD COLUMN coverUrl TEXT")
         db.execSQL("ALTER TABLE RoomAlbum ADD COLUMN dataMode TEXT NOT NULL DEFAULT '${DataMode.Local.value}'")
 
         db.execSQL(
@@ -72,6 +73,7 @@ object Migration18To19 : Migration(18, 19) {
                 albumId BLOB PRIMARY KEY NOT NULL,
                 albumName TEXT NOT NULL,
                 coverId BLOB,
+                coverUrl TEXT,
                 addedDate TEXT NOT NULL,
                 nbPlayed INTEGER NOT NULL,
                 isInQuickAccess INTEGER NOT NULL,
@@ -85,10 +87,10 @@ object Migration18To19 : Migration(18, 19) {
         db.execSQL(
             """
             INSERT INTO RoomAlbum_new (
-                albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId, dataMode
+                albumId, albumName, coverId, coverUrl, addedDate, nbPlayed, isInQuickAccess, artistId, dataMode
             )
             SELECT 
-                RoomAlbum.albumId, RoomAlbum.albumName, RoomAlbum.coverId, 
+                RoomAlbum.albumId, RoomAlbum.albumName, RoomAlbum.coverId, RoomAlbum.coverUrl, 
                 RoomAlbum.addedDate, RoomAlbum.nbPlayed, RoomAlbum.isInQuickAccess,
                 (SELECT artistId FROM RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId),
                 RoomAlbum.dataMode

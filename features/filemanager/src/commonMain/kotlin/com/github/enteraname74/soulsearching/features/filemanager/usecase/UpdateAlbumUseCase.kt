@@ -18,12 +18,14 @@ class UpdateAlbumUseCase(
 ) {
     suspend operator fun invoke(
         newAlbumWithArtistInformation: AlbumWithArtist,
+        newCoverId: UUID?,
     ): SoulResult<Unit> =
         when(newAlbumWithArtistInformation.album.dataMode) {
             DataMode.Local -> localUpdate(newAlbumWithArtistInformation)
             DataMode.Cloud -> albumRepository.upsert(
                 album = newAlbumWithArtistInformation.album,
                 artist = newAlbumWithArtistInformation.artist?.artistName.orEmpty(),
+                newCoverId = newCoverId,
             )
         }
 
