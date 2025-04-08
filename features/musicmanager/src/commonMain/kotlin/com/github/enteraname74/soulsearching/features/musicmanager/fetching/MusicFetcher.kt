@@ -1,30 +1,15 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
 import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithArtistUseCase
-import com.github.enteraname74.domain.usecase.albumartist.GetAllAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
-import com.github.enteraname74.domain.usecase.musicalbum.GetAllMusicAlbumUseCase
-import com.github.enteraname74.domain.usecase.musicartist.GetAllMusicArtistUseCase
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.AlbumInformation
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
-import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Utilities for fetching musics on current device.
  */
 abstract class MusicFetcher : KoinComponent {
-    private val getAllMusicUseCase: GetAllMusicUseCase by inject()
-    private val getAllArtistsUseCase: GetAllArtistsUseCase by inject()
-    private val getAllAlbumsWithArtistUseCase: GetAllAlbumsWithArtistUseCase by inject()
-    private val getAllMusicAlbumUseCase: GetAllMusicAlbumUseCase by inject()
-    private val getAllMusicArtistUseCase: GetAllMusicArtistUseCase by inject()
-    private val getAllAlbumArtistUseCase: GetAllAlbumArtistUseCase by inject()
-
     /**
      * Fetch all musics on the device.
      */
@@ -42,23 +27,6 @@ abstract class MusicFetcher : KoinComponent {
 
     var optimizedCachedData = OptimizedCachedData()
         protected set
-
-    private suspend fun init() {
-        optimizedCachedData.musicsByPath =
-            getAllMusicUseCase().first().associateBy { it.path } as HashMap<String, Music>
-        optimizedCachedData.artistsByName =
-            getAllArtistsUseCase().first().associateBy { it.artistName } as HashMap<String, Artist>
-        optimizedCachedData.albumsByInfo = getAllAlbumsWithArtistUseCase().first().associate {
-            AlbumInformation(
-                name = it.album.albumName,
-                artist = it.artist?.artistName.orEmpty(),
-            ) to it.album
-        } as HashMap<AlbumInformation, Album>
-
-        optimizedCachedData.albumArtists = ArrayList(getAllAlbumArtistUseCase())
-        optimizedCachedData.musicArtists = ArrayList(getAllMusicArtistUseCase())
-        optimizedCachedData.musicAlbums = ArrayList(getAllMusicAlbumUseCase())
-    }
 
     private fun createAlbumOfSong(
         music: Music,

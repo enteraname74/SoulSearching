@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumPosition
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.duration
@@ -41,6 +42,7 @@ internal class MusicDao {
                 it[nbPlayed] = music.nbPlayed
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
+                it[albumPosition] = music.albumPosition
             }
         }
     }
@@ -60,6 +62,7 @@ internal class MusicDao {
                 this[nbPlayed] = music.nbPlayed
                 this[isInQuickAccess] = music.isInQuickAccess
                 this[isHidden] = music.isHidden
+                this[albumPosition] = music.albumPosition
             }
         }
     }
@@ -110,6 +113,7 @@ internal class MusicDao {
             additionalConstraint = { (MusicAlbumTable.albumId eq albumId) and (isHidden eq false) }
         )
             .selectAll()
+            .orderBy(albumPosition to SortOrder.ASC_NULLS_LAST)
             .asFlow()
             .mapResultRow { it.toMusic() }
             .map { it.filterNotNull() }

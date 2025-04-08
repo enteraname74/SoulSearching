@@ -21,6 +21,7 @@ internal object MusicTable : UUIDTable() {
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
     val isHidden = bool("isHidden")
+    val albumPosition = integer("albumPosition").nullable()
 }
 
 /**
@@ -43,8 +44,9 @@ internal fun ResultRow.toMusic(): Music? =
             addedDate = this[MusicTable.addedDate],
             nbPlayed = this[MusicTable.nbPlayed],
             isInQuickAccess = this[MusicTable.isInQuickAccess],
-            isHidden = this[MusicTable.isHidden]
+            isHidden = this[MusicTable.isHidden],
+            albumPosition = this[MusicTable.albumPosition],
         )
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }

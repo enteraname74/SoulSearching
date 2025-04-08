@@ -14,6 +14,7 @@ data class Music(
     val artist: String = "",
     var cover: Cover,
     var duration: Long = 0L,
+    val albumPosition: Int?,
     var path: String = "",
     var folder: String = "",
     var addedDate: LocalDateTime = LocalDateTime.now(),

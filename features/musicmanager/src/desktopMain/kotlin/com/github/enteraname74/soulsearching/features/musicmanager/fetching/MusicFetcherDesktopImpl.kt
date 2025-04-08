@@ -12,6 +12,7 @@ import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
 import java.io.File
+import java.lang.reflect.Field
 import java.net.URLConnection
 import java.nio.file.Files
 import java.util.*
@@ -90,11 +91,12 @@ internal class MusicFetcherDesktopImpl(
                         folder = file.parent,
                         cover = Cover.CoverFile(
                             initialCoverPath = file.path,
-                        )
+                        ),
+                        albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
                     )
                     onMusicFetched(musicToAdd)
-                } catch (_: Exception) {
-                    println("Failed to access information about the following file: ${file.path}")
+                } catch (e: Exception) {
+                    println("Failed to access information about the following file: ${file.path} with error: $e")
                 }
             }
 
