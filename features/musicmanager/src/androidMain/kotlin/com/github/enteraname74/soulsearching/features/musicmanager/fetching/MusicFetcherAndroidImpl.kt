@@ -36,6 +36,7 @@ internal class MusicFetcherAndroidImpl(
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.TRACK,
         )
 
         val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -60,6 +61,7 @@ internal class MusicFetcherAndroidImpl(
                 path = this.getString(4),
                 folder = File(this.getString(4)).parent ?: "",
                 cover = Cover.CoverFile(initialCoverPath = this.getString(4)),
+                albumPosition = this.getString(5)?.toIntOrNull(),
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

@@ -5,6 +5,7 @@ import com.github.enteraname74.localdb.datasourceimpl.*
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
 import com.github.enteraname74.localdb.migration.Migration17To18
+import com.github.enteraname74.localdb.migration.Migration18To19
 import com.github.enteraname74.soulsearching.repository.datasource.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
@@ -21,7 +22,10 @@ val localAndroidModule: Module = module {
                 Migration16To17(
                     coverFileManager = get(),
                 ),
-                Migration17To18
+                Migration17To18,
+                Migration18To19(
+                    musicMetadataHelper = get(),
+                )
             )
             .addCallback(
                 EndMigrationCallback(

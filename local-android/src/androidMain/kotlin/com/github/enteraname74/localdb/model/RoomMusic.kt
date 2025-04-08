@@ -24,7 +24,8 @@ internal data class RoomMusic(
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
-    var isHidden: Boolean = false
+    var isHidden: Boolean = false,
+    var albumPosition: Int?
 )
 
 /**
@@ -47,6 +48,7 @@ internal fun RoomMusic.toMusic(): Music {
         nbPlayed = nbPlayed,
         isInQuickAccess = isInQuickAccess,
         isHidden = isHidden,
+        albumPosition = albumPosition,
     )
 }
 
@@ -66,4 +68,5 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
     isHidden = isHidden,
+    albumPosition = albumPosition,
 )
