@@ -11,6 +11,7 @@ object Migration18To19 : Migration(18, 19) {
     }
 
     private fun playlistMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomPlaylist ADD COLUMN coverUrl TEXT")
         db.execSQL("ALTER TABLE RoomPlaylist ADD COLUMN dataMode TEXT NOT NULL DEFAULT '${DataMode.Local.value}'")
     }
 

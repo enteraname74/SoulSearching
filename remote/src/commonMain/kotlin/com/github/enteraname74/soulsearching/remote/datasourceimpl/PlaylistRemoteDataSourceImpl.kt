@@ -5,14 +5,22 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.features.httpclient.safeRequest
+import com.github.enteraname74.soulsearching.features.httpclient.safeSimpleRequest
 import com.github.enteraname74.soulsearching.remote.cloud.ServerRoutes
+import com.github.enteraname74.soulsearching.remote.ext.appendFile
+import com.github.enteraname74.soulsearching.remote.ext.appendJson
+import com.github.enteraname74.soulsearching.remote.ext.contentType
 import com.github.enteraname74.soulsearching.remote.model.RemoteMusicPlaylist
+import com.github.enteraname74.soulsearching.remote.model.artist.toModifiedArtist
 import com.github.enteraname74.soulsearching.remote.model.playlist.*
 import com.github.enteraname74.soulsearching.repository.datasource.playlist.PlaylistRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.model.UploadedPlaylistResult
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -54,15 +62,35 @@ class PlaylistRemoteDataSourceImpl(
             it.toPlaylist()
         }
 
-    override suspend fun update(playlist: Playlist): SoulResult<Playlist> =
-        client.safeRequest<RemotePlaylist> { 
-            put(urlString = ServerRoutes.Playlist.UPDATE) {
-                setBody(playlist.toModifiedPlaylist())
-                contentType(ContentType.Application.Json)
+    override suspend fun update(
+        playlist: Playlist,
+        newCover: File?,
+    ): SoulResult<Playlist> {
+        val contentType: String = newCover?.contentType() ?: ""
+
+        return client.safeRequest<RemotePlaylist> {
+            submitFormWithBinaryData(
+                url = ServerRoutes.Playlist.UPDATE,
+                formData = formData {
+                    newCover?.let {
+                        appendFile(
+                            key = "cover",
+                            contentType = contentType,
+                            file = it,
+                        )
+                    }
+                    appendJson(
+                        key = "metadata",
+                        value = playlist.toModifiedPlaylist(),
+                    )
+                }
+            ) {
+                this.method = HttpMethod.Put
             }
         }.map {
             it.toPlaylist()
         }
+    }
 
     override suspend fun deleteAll(playlistIds: List<UUID>): SoulResult<Unit> =
         client.safeRequest<String> {

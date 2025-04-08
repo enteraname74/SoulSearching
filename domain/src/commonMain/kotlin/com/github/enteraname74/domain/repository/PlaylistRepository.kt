@@ -11,7 +11,10 @@ interface PlaylistRepository {
     suspend fun create(playlist: Playlist): SoulResult<Playlist>
     suspend fun upsertAll(playlists: List<Playlist>)
 
-    suspend fun update(playlist: Playlist): SoulResult<Unit>
+    suspend fun update(
+        playlist: Playlist,
+        newCoverId: UUID? = null,
+    ): SoulResult<Unit>
     /**
      * Deletes a Playlist.
      */

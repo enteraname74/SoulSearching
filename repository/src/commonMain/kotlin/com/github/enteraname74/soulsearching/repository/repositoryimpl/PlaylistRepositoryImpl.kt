@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.PlaylistRepository
+import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.repository.datasource.CloudLocalDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.DataModeDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.musicplaylist.MusicPlaylistLocalDataSource
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 
@@ -26,6 +28,7 @@ class PlaylistRepositoryImpl(
     private val musicPlaylistLocalDataSource: MusicPlaylistLocalDataSource,
     private val cloudLocalDataSource: CloudLocalDataSource,
     private val dataModeDataSource: DataModeDataSource,
+    private val coverFileManager: CoverFileManager,
 ) : PlaylistRepository {
     override suspend fun create(playlist: Playlist): SoulResult<Playlist> =
         when (playlist.dataMode) {
@@ -106,7 +109,10 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun update(playlist: Playlist): SoulResult<Unit> =
+    override suspend fun update(
+        playlist: Playlist,
+        newCoverId: UUID?,
+    ): SoulResult<Unit> =
         when (playlist.dataMode) {
             DataMode.Local -> {
                 playlistLocalDataSource.upsert(playlist = playlist)
@@ -116,6 +122,9 @@ class PlaylistRepositoryImpl(
             DataMode.Cloud -> {
                 val result: SoulResult<Playlist> = playlistRemoteDataSource.update(
                     playlist = playlist,
+                    newCover = newCoverId?.let {
+                        coverFileManager.getPath(id = it)?.let(::File)
+                    },
                 )
                 (result as? SoulResult.Success)?.data?.let {
                     playlistLocalDataSource.upsert(it)

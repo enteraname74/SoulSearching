@@ -17,12 +17,26 @@ internal data class RoomPlaylist(
     val playlistId: UUID = UUID.randomUUID(),
     var name: String = "",
     var coverId: UUID? = null,
+    var coverUrl: String? = null,
     val isFavorite: Boolean = false,
     var addedDate: LocalDateTime = LocalDateTime.now(),
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     var dataMode: String = DataMode.Local.value,
-)
+) {
+    fun buildCover(): Cover? =
+        if (coverUrl != null) {
+            Cover.CoverUrl(
+                url = coverUrl
+            )
+        } else {
+            coverId?.let {
+                Cover.CoverFile(
+                    fileCoverId = it,
+                )
+            }
+        }
+}
 
 /**
  * Converts a RoomPlaylist to a Playlist.
@@ -30,7 +44,7 @@ internal data class RoomPlaylist(
 internal fun RoomPlaylist.toPlaylist(): Playlist = Playlist(
     playlistId = playlistId,
     name = name,
-    cover = Cover.CoverFile(fileCoverId = coverId),
+    cover = buildCover(),
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
@@ -47,6 +61,7 @@ internal fun Playlist.toRoomPlaylist(): RoomPlaylist = RoomPlaylist(
     playlistId = playlistId,
     name = name,
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
+    coverUrl = (cover as? Cover.CoverUrl)?.url,
     isFavorite = isFavorite,
     addedDate = addedDate,
     nbPlayed = nbPlayed,

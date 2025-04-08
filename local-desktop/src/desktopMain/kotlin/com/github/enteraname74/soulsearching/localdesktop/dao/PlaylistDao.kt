@@ -30,6 +30,7 @@ internal class PlaylistDao(
                 it[id] = playlist.playlistId
                 it[name] = playlist.name
                 it[coverId] = (playlist.cover as? Cover.CoverFile)?.fileCoverId
+                it[coverUrl] = (playlist.cover as? Cover.CoverUrl)?.url
                 it[isFavorite] = playlist.isFavorite
                 it[addedDate] = playlist.addedDate
                 it[nbPlayed] = playlist.nbPlayed
@@ -45,6 +46,7 @@ internal class PlaylistDao(
                 this[PlaylistTable.id] = playlist.playlistId
                 this[PlaylistTable.name] = playlist.name
                 this[PlaylistTable.coverId] = (playlist.cover as? Cover.CoverFile)?.fileCoverId
+                this[PlaylistTable.coverUrl] = (playlist.cover as? Cover.CoverUrl)?.url
                 this[PlaylistTable.isFavorite] = playlist.isFavorite
                 this[PlaylistTable.addedDate] = playlist.addedDate
                 this[PlaylistTable.nbPlayed] = playlist.nbPlayed

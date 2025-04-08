@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.SoulResult
 import com.github.enteraname74.soulsearching.repository.model.UploadedPlaylistResult
+import java.io.File
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -22,6 +23,7 @@ interface PlaylistRemoteDataSource {
 
     suspend fun update(
         playlist: Playlist,
+        newCover: File?,
     ): SoulResult<Playlist>
 
     suspend fun deleteAll(

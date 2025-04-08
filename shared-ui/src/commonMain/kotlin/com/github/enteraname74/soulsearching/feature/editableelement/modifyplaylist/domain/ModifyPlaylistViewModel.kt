@@ -127,7 +127,7 @@ class ModifyPlaylistViewModel(
         val form = (formState.value as? ModifyPlaylistFormState.Data)?.takeIf { it.isFormValid() } ?: return
 
         loadingManager.withLoadingOnIO {
-            val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
+            val newCoverId: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
                 upsertImageCoverUseCase(
                     id = newCoverId,
@@ -138,13 +138,14 @@ class ModifyPlaylistViewModel(
 
             val newPlaylistInformation = state.initialPlaylist.playlist.copy(
                 cover = (state.initialPlaylist.cover as? Cover.CoverFile)?.copy(
-                    fileCoverId = coverFile,
-                ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) },
+                    fileCoverId = newCoverId,
+                ) ?: newCoverId?.let { Cover.CoverFile(fileCoverId = it) },
                 name = form.getPlaylistName().trim(),
             )
 
             val result: SoulResult<Unit> = updatePlaylistUseCase(
                 playlist = newPlaylistInformation,
+                newCoverId = newCoverId,
             )
             feedbackPopUpManager.showResultErrorIfAny(result)
         }
