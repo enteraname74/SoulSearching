@@ -247,6 +247,7 @@ interface Strings {
     val multipleSelection: String
 
     val fieldCannotBeEmpty: String
+    val fieldMustBeANumber: String
 
     val playerVolume: String
 

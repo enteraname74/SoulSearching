@@ -243,6 +243,7 @@ object EnStrings : Strings {
     override val multipleSelection = "Multiple selection"
 
     override val fieldCannotBeEmpty = "Field cannot be empty"
+    override val fieldMustBeANumber = "Field must be a number"
 
     override val playerVolume = "Player volume"
 

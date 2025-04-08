@@ -244,6 +244,7 @@ object FrStrings : Strings {
     override val multipleSelection = "Sélection multiple"
 
     override val fieldCannotBeEmpty = "Ce champ ne peut pas être vide"
+    override val fieldMustBeANumber = "Ce champ doit être un nombre"
 
     override val playerVolume = "Volume du lecteur"
 

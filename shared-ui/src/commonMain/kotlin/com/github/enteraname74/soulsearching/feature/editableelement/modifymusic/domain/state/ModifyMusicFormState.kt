@@ -69,11 +69,11 @@ sealed interface ModifyMusicFormState {
                     modifier = Modifier
                         .fillMaxWidth(),
                     id = POSITION_IN_ALBUM,
-                    isValid = { it.isNotBlank() },
+                    isValid = { it.toIntOrNull() != null || it.isBlank() },
                     initialValue = savedData[POSITION_IN_ALBUM] ?: initialMusic.albumPosition?.toString().orEmpty(),
                     getLabel = { strings.musicAlbumPosition },
                     style = SoulTextFieldStyle.Body,
-                    getError = { strings.fieldCannotBeEmpty },
+                    getError = { strings.fieldMustBeANumber },
                     onChange = {
                         onFieldChange(POSITION_IN_ALBUM, it)
                     },
