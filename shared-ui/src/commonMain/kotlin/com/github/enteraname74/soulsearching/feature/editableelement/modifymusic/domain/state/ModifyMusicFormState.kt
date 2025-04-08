@@ -64,6 +64,25 @@ sealed interface ModifyMusicFormState {
                     )
                 )
             )
+            add(
+                SoulTextFieldHolderImpl(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    id = POSITION_IN_ALBUM,
+                    isValid = { it.isNotBlank() },
+                    initialValue = savedData[POSITION_IN_ALBUM] ?: initialMusic.albumPosition?.toString().orEmpty(),
+                    getLabel = { strings.musicAlbumPosition },
+                    style = SoulTextFieldStyle.Body,
+                    getError = { strings.fieldCannotBeEmpty },
+                    onChange = {
+                        onFieldChange(POSITION_IN_ALBUM, it)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Number,
+                    )
+                )
+            )
 
             artistsOfMusic.forEachIndexed { index, artist ->
                 val artistId = artist.artistId.toString()
@@ -114,13 +133,15 @@ sealed interface ModifyMusicFormState {
 
         fun isFormValid(): Boolean = textFields.all { it.isValid() }
 
-        fun getMusicName(): String = textFields[0].value
-        fun getAlbumName(): String = textFields[1].value
-        fun getArtistsName(): List<String> = (2 until textFields.size).map { textFields[it].value }
+        fun getMusicName(): String = textFields.first { it.id == MUSIC_NAME }.value
+        fun getAlbumName(): String = textFields.first { it.id == ALBUM_NAME }.value
+        fun getPositionInAlbum(): String = textFields.first { it.id == POSITION_IN_ALBUM }.value
+        fun getArtistsName(): List<String> = (3 until textFields.size).map { textFields[it].value }
 
         companion object {
             private const val MUSIC_NAME = "MUSIC_NAME"
             private const val ALBUM_NAME = "ALBUM_NAME"
+            private const val POSITION_IN_ALBUM = "POSITION_IN_ALBUM"
         }
     }
 }

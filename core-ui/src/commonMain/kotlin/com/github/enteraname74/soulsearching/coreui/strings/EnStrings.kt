@@ -82,6 +82,7 @@ object EnStrings : Strings {
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
     override val musicName = "Song's name"
+    override val musicAlbumPosition = "Position in album"
     override val albumName = "Album's name"
     override val artistName = "Artist's name"
     override val playlistCover = "Playlist's cover"

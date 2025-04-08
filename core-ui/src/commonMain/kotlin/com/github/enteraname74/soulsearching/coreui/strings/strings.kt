@@ -93,6 +93,7 @@ interface Strings {
     val createPlaylistDialogTitle: String
     val playlistName: String
     val musicName: String
+    val musicAlbumPosition: String
     val albumName: String
     val artistName: String
     val playlistCover: String

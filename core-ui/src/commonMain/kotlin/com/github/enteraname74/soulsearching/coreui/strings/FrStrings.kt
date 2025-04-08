@@ -81,6 +81,7 @@ object FrStrings : Strings {
     override val createPlaylistDialogTitle = "Créer une nouvelle playlist"
     override val playlistName = "Nom de la playlist"
     override val musicName = "Nom de la musique"
+    override val musicAlbumPosition = "Position dans l'album"
     override val albumName = "Nom de l'album"
     override val artistName = "Nom de l'artiste"
     override val playlistCover = "Couverture de la playlist"

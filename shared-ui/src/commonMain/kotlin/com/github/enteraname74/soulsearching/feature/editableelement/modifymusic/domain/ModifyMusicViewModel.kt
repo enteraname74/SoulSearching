@@ -235,6 +235,7 @@ class ModifyMusicViewModel(
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
+                albumPosition = form.getPositionInAlbum().trim().toIntOrNull(),
                 artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 
