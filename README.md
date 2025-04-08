@@ -8,6 +8,12 @@ Soul Searching is an **offline music application** for the following platforms:
 - Android 8 and above
 - Desktop (Linux)
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.github.enteraname74.soulsearching/)
+
+Or download the latest APK from the [Releases Section](https://github.com/enteraname74/SoulSearching/releases/latest).
+
 <div align="center">
     <img title="" src="screenshots/soul_searching_platforms.png">
 </div>
