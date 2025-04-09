@@ -15,7 +15,7 @@ class RemoteLyricsTests {
 
         val actualMusicLyrics: MusicLyrics? = remoteLyrics.toMusicLyrics()
         val expectedMusicLyrics = MusicLyrics(
-            plainLyrics = "First line\nSecond line\nThird line",
+            plainLyrics = "First line\nSecond line\nThird line".split("\n"),
             syncedLyrics = listOf(
                 SyncedLyric(
                     line = "First line",
