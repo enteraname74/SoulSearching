@@ -19,14 +19,13 @@ class Migration18To19(
 
         while(cursor.moveToNext()) {
             val coverIdBlob: ByteArray = cursor.getBlob(cursor.getColumnIndex("musicId"))
-            val musicId = Uuid.fromByteArray(coverIdBlob).toJavaUuid()
 
             val path = cursor.getString(cursor.getColumnIndex("path"))
 
             val albumPosition: Int? = musicMetadataHelper.getMusicAlbumPosition(musicPath = path)
             val sqlValue: String = albumPosition?.toString() ?: "NULL"
 
-            db.execSQL("UPDATE RoomMusic SET albumPosition = $sqlValue WHERE musicId = $musicId")
+            db.execSQL("UPDATE RoomMusic SET albumPosition = $sqlValue WHERE musicId = '$coverIdBlob'")
         }
     }
 }
