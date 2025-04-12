@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsA
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
+import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -42,6 +43,7 @@ internal val viewModelModule: Module = module {
     factoryOf(::SettingsStatisticsViewModel)
     factoryOf(::SettingsThemeSelectionViewModel)
     factoryOf(::SettingsAdvancedViewModel)
+    factoryOf(::SettingsArtistCoverMethodViewModel)
     factoryOf(::SettingsAboutViewModel)
 
     // Main page

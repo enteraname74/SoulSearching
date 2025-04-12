@@ -19,10 +19,25 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import io.github.vinceglb.filekit.core.PlatformFile
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import java.util.*
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import java.util.UUID
 
 class ModifyArtistViewModel(
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,

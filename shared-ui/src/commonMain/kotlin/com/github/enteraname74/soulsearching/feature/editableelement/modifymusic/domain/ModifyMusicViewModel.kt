@@ -13,7 +13,6 @@ import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStr
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
@@ -22,17 +21,33 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import io.github.vinceglb.filekit.core.PlatformFile
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
-import java.util.*
+import java.util.UUID
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,

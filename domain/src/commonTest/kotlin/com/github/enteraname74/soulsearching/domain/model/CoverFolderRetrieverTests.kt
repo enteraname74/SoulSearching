@@ -10,10 +10,14 @@ class CoverFolderRetrieverTests {
     fun givenDynamicFolderSettings_whenBuildingDynamicPath_thenPathShouldFollowGivenSettings() {
         var settings = CoverFolderRetriever(
             folderPath = "my/initial/folder",
+            filePath = "",
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
-            isLowerCase = true,
-            whiteSpaceReplacement = "_",
+            lowerCaseRule = true,
+            whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
+                isActivated = true,
+                replacement = "_"
+            ),
         )
 
         var actualPath = settings.buildDynamicCoverPath("John Doe")
@@ -26,10 +30,14 @@ class CoverFolderRetrieverTests {
 
         settings = CoverFolderRetriever(
             folderPath = "my/initial/folder",
+            filePath = "",
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
-            isLowerCase = false,
-            whiteSpaceReplacement = null,
+            lowerCaseRule = false,
+            whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
+                isActivated = false,
+                replacement = "_"
+            ),
         )
 
         actualPath = settings.buildDynamicCoverPath("John Doe")
@@ -44,11 +52,15 @@ class CoverFolderRetrieverTests {
     @Test
     fun givenDynamicFileSettings_whenBuildingDynamicPath_thenPathShouldFollowGivenSettings() {
         var settings = CoverFolderRetriever(
-            folderPath = "my/folder/path",
+            folderPath = "",
+            filePath = "my/folder/path",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
-            isLowerCase = true,
-            whiteSpaceReplacement = "_",
+            lowerCaseRule = true,
+            whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
+                isActivated = true,
+                replacement = "_"
+            ),
         )
 
         var actualPath = settings.buildDynamicCoverPath("John Doe")
@@ -60,11 +72,15 @@ class CoverFolderRetrieverTests {
         )
 
         settings = CoverFolderRetriever(
-            folderPath = "my/folder/path",
+            folderPath = "",
+            filePath = "my/folder/path",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
-            isLowerCase = false,
-            whiteSpaceReplacement = "",
+            lowerCaseRule = false,
+            whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
+                isActivated = true,
+                replacement = ""
+            ),
         )
 
         actualPath = settings.buildDynamicCoverPath("John Doe")
@@ -80,10 +96,14 @@ class CoverFolderRetrieverTests {
     fun givenDynamicSettings_whenSerializingSettings_thenDeserializedSettingsShouldBeTheSame() {
         var settings = CoverFolderRetriever(
             folderPath = "my/folder/path",
+            filePath = "",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
-            isLowerCase = true,
-            whiteSpaceReplacement = "_",
+            lowerCaseRule = true,
+            whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
+                isActivated = true,
+                replacement = "_"
+            ),
         )
         val serializedSettings = SerializationUtils.serialize(settings)
         val deserialized: CoverFolderRetriever = SerializationUtils.deserialize(serializedSettings)

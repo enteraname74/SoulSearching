@@ -158,6 +158,18 @@ object FrStrings : Strings {
     override val splitMultipleArtistsTitle = "Séparer les artistes"
     override val splitMultipleArtistsText = "Sélectionner et séparer les artistes composés de plusieurs artistes"
 
+    override val artistCoverMethodTitle = "Source des images d'artistes"
+    override val artistCoverMethodText = "Choisir le mode de récupération des images d'artistes"
+    override val activateArtistCoverMethod = "Activer la récupération par chemin"
+    override val artistCoverMethodDynamicNameTitle = "Traitement du nom de l'artiste"
+    override val coverFolderRetrieverFolderTitle = "Dossier dynamique"
+    override val coverFolderRetrieverFolderText = "Le nom du dossier correspond au nom de l'artiste"
+    override val coverFolderRetrieverFolderPathSelectionTitle = "Sélectionner le dossier parent"
+    override val coverFolderRetrieverFolderDynamicNameUppercase = "Majuscule"
+    override val coverFolderRetrieverFolderDynamicNameNoTreatment = "Aucun traitement"
+    override val coverFolderRetrieverFolderDynamicNameLowercase = "Minuscule"
+    override val coverFolderRetrieverDynamicFileTitle = "Nom du fichier de l'image"
+
     override val activateGithubReleaseFetchTitle = "Activer la recherche de nouvelles versions provenant de GitHub"
     override val activateGithubReleaseFetchHint = "Vous recevrez une notification dans l'application lorsqu'une nouvelle version de cette dernière est disponible sur GitHub."
     override val activateGithubReleaseFetchText = "Voulez-vous recevoir une notification dans l'application lorsqu'une nouvelle version de cette dernière est disponible sur GitHub ?"

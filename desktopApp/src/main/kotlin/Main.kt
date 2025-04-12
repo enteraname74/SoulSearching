@@ -16,13 +16,14 @@ import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.res
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
 import java.awt.Frame
 import java.awt.Toolkit
 
 fun main() = application {
-
+    FileKit.init(appId = "io.github.enteraname74.soulsearching")
     KoinApplication(
         application = {
             modules(appModule)

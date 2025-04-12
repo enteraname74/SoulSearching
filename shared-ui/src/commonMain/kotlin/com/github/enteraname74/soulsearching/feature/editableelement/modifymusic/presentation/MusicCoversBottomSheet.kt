@@ -23,9 +23,9 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarActionSpec
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.EditableElementCoverSelectionItem
 import com.github.enteraname74.soulsearching.feature.editableelement.composable.editableElementCoversChoice
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.PickerType
-import io.github.vinceglb.filekit.core.PlatformFile
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
 
@@ -100,7 +100,7 @@ class MusicCoversBottomSheet(
         ) { closeWithAnim ->
 
             val imagePickerLauncher = rememberFilePickerLauncher(
-                type = PickerType.Image,
+                type = FileKitType.Image,
             ) { file ->
                 if (file == null) return@rememberFilePickerLauncher
                 closeWithAnim()

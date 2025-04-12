@@ -94,6 +94,10 @@ class SettingsAdvancedViewModel(
                 navigateToMultipleArtists()
             }
 
+            SettingsAdvancedAction.ToArtistCoverMethod -> {
+                navigateToArtistCoverMethod()
+            }
+
             SettingsAdvancedAction.ToggleAlbumsCovers -> {
                 toggleReloadAlbumsCovers()
             }
@@ -173,6 +177,10 @@ class SettingsAdvancedViewModel(
 
     private fun navigateToMultipleArtists() {
         _navigationState.value = SettingsAdvancedNavigationState.ToMultipleArtists
+    }
+
+    private fun navigateToArtistCoverMethod() {
+        _navigationState.value = SettingsAdvancedNavigationState.ToArtistCoverMethod
     }
 
     private fun showLyricsPermissionDialog() {

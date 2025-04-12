@@ -157,6 +157,28 @@ object EnStrings : Strings {
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
 
+    override val artistCoverMethodTitle: String
+        get() = TODO("Not yet implemented")
+    override val artistCoverMethodText: String
+        get() = TODO("Not yet implemented")
+    override val activateArtistCoverMethod: String
+        get() = TODO("Not yet implemented")
+    override val artistCoverMethodDynamicNameTitle: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderTitle: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderText: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderPathSelectionTitle: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderDynamicNameUppercase: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderDynamicNameNoTreatment: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderDynamicNameLowercase: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverDynamicFileTitle: String
+        get() = TODO("Not yet implemented")
     override val activateGithubReleaseFetchTitle = "Enable checking for new versions from GitHub"
     override val activateGithubReleaseFetchHint = "You will receive an in-app notification when a new version of the app is available on GitHub."
     override val activateGithubReleaseFetchText = "Do you want to receive an in-app notification when a new version of the app is available on GitHub?"

@@ -19,7 +19,7 @@ dbus = "3.3.2"
 exposed = "0.55.0"
 exposed-flows = "v0.2.1"
 ffmpeg = "6.0-2"
-file-kit = "0.8.1"
+file-kit = "0.10.0-beta01"
 gradle = "8.5.2"
 gson = "2.12.1"
 jaudiotagger = "3.0.1"
@@ -73,7 +73,7 @@ exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", versio
 
 ffmpeg = { module = "com.arthenica:ffmpeg-kit-full", version.ref = "ffmpeg" }
 foundation-desktop = { module = "org.jetbrains.compose.foundation:foundation-desktop", version.ref = "compose" }
-file-kit = { module = "io.github.vinceglb:filekit-compose", version.ref = "file-kit" }
+file-kit = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "file-kit" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jaudiotagger = { module = "net.jthink:jaudiotagger", version.ref = "jaudiotagger" }

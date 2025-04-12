@@ -1,12 +1,21 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,9 +35,9 @@ import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationActio
 import com.github.enteraname74.soulsearching.coreui.utils.getStatusBarPadding
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowHeight
 import com.github.enteraname74.soulsearching.feature.editableelement.domain.CoverListState
-import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.PickerType
-import io.github.vinceglb.filekit.core.PlatformFile
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.coroutines.flow.StateFlow
 
 class EditableElementCoversBottomSheet(
@@ -53,7 +62,7 @@ class EditableElementCoversBottomSheet(
         ) { closeWithAnim ->
 
             val imagePickerLauncher = rememberFilePickerLauncher(
-                type = PickerType.Image,
+                type = FileKitType.Image,
             ) { file ->
                 if (file == null) return@rememberFilePickerLauncher
                 closeWithAnim()

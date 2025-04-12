@@ -167,6 +167,20 @@ interface Strings {
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
 
+    val artistCoverMethodTitle: String
+    val artistCoverMethodText: String
+    val activateArtistCoverMethod: String
+    val artistCoverMethodDynamicNameTitle: String
+
+    val coverFolderRetrieverFolderTitle: String
+    val coverFolderRetrieverFolderText: String
+    val coverFolderRetrieverFolderPathSelectionTitle: String
+    val coverFolderRetrieverFolderDynamicNameUppercase: String
+    val coverFolderRetrieverFolderDynamicNameNoTreatment: String
+    val coverFolderRetrieverFolderDynamicNameLowercase: String
+
+    val coverFolderRetrieverDynamicFileTitle: String
+
     val activateGithubReleaseFetchTitle: String
     val activateGithubReleaseFetchText: String
     val activateGithubReleaseFetchHint: String

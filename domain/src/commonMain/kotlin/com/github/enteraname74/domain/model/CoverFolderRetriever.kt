@@ -2,24 +2,24 @@ package com.github.enteraname74.domain.model
 
 import kotlinx.serialization.Serializable
 
-typealias RuleMapper = (String) -> String
-
 @Serializable
 data class CoverFolderRetriever(
+    val isActivated: Boolean = true,
     val folderPath: String,
+    val filePath: String,
     val coverFileName: String,
-    val whiteSpaceReplacement: String?,
-    val isLowerCase: Boolean?,
+    val whiteSpaceRule: WhiteSpaceRule,
+    val lowerCaseRule: Boolean?,
     val mode: DynamicMode,
 ) {
 
     fun String.applyWhiteSpaceRule(): String =
-        whiteSpaceReplacement?.let { replacement ->
+        whiteSpaceRule.takeIf { it.isActivated }?.replacement?.let { replacement ->
             replace(" ", replacement)
         } ?: this
 
     fun String.applyLowerCaseRule(): String =
-        isLowerCase?.let { lowerCase ->
+        lowerCaseRule?.let { lowerCase ->
             if (lowerCase) {
                 lowercase()
             } else {
@@ -34,7 +34,7 @@ data class CoverFolderRetriever(
 
         return when(mode) {
             DynamicMode.Folder -> "$folderPath/$finalDynamicName/$coverFileName"
-            DynamicMode.File -> "$folderPath/$finalDynamicName.png"
+            DynamicMode.File -> "$filePath/$finalDynamicName.png"
         }
     }
 
@@ -42,4 +42,10 @@ data class CoverFolderRetriever(
         Folder,
         File;
     }
+
+    @Serializable
+    data class WhiteSpaceRule(
+        val isActivated: Boolean,
+        val replacement: String,
+    )
 }

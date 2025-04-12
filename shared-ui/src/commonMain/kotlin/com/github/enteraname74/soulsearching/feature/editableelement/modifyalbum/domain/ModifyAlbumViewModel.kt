@@ -21,7 +21,8 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import io.github.vinceglb.filekit.core.PlatformFile
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*

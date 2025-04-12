@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 
 sealed interface SettingsAdvancedAction {
     data object ToMultipleArtists: SettingsAdvancedAction
+    data object ToArtistCoverMethod: SettingsAdvancedAction
     data object ToggleMusicsCover: SettingsAdvancedAction
     data object TogglePlaylistsCovers: SettingsAdvancedAction
     data object ToggleAlbumsCovers: SettingsAdvancedAction

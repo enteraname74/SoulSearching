@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.material.desktop)
     implementation(libs.foundation.desktop)
     implementation(compose.components.resources)
+    implementation(libs.file.kit)
 
     implementation(project(":shared-ui"))
     implementation(project(":domain"))
@@ -62,7 +63,6 @@ compose.desktop {
             description = "Music player application."
 
             linux {
-
                 packageName = "SoulSearching"
                 packageVersion = appVersion
                 appCategory = "AudioVideo;Player;"
