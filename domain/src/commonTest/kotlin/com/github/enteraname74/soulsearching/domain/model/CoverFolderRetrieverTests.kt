@@ -9,8 +9,8 @@ class CoverFolderRetrieverTests {
     @Test
     fun givenDynamicFolderSettings_whenBuildingDynamicPath_thenPathShouldFollowGivenSettings() {
         var settings = CoverFolderRetriever(
-            folderPath = "my/initial/folder",
-            filePath = "",
+            folderModePath = "my/initial/folder",
+            fileModePath = "",
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
             lowerCaseRule = true,
@@ -29,8 +29,8 @@ class CoverFolderRetrieverTests {
         )
 
         settings = CoverFolderRetriever(
-            folderPath = "my/initial/folder",
-            filePath = "",
+            folderModePath = "my/initial/folder",
+            fileModePath = "",
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
             lowerCaseRule = false,
@@ -52,8 +52,8 @@ class CoverFolderRetrieverTests {
     @Test
     fun givenDynamicFileSettings_whenBuildingDynamicPath_thenPathShouldFollowGivenSettings() {
         var settings = CoverFolderRetriever(
-            folderPath = "",
-            filePath = "my/folder/path",
+            folderModePath = "",
+            fileModePath = "my/folder/path",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
             lowerCaseRule = true,
@@ -72,8 +72,8 @@ class CoverFolderRetrieverTests {
         )
 
         settings = CoverFolderRetriever(
-            folderPath = "",
-            filePath = "my/folder/path",
+            folderModePath = "",
+            fileModePath = "my/folder/path",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
             lowerCaseRule = false,
@@ -95,8 +95,8 @@ class CoverFolderRetrieverTests {
     @Test
     fun givenDynamicSettings_whenSerializingSettings_thenDeserializedSettingsShouldBeTheSame() {
         var settings = CoverFolderRetriever(
-            folderPath = "my/folder/path",
-            filePath = "",
+            folderModePath = "my/folder/path",
+            fileModePath = "",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
             lowerCaseRule = true,

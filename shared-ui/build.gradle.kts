@@ -38,6 +38,7 @@ kotlin {
                 implementation(project(":playback"))
                 implementation(project(":filemanager"))
                 implementation(project(":musicmanager"))
+                implementation(project(":serialization"))
 
                 implementation(libs.bundles.koin)
 

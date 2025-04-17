@@ -162,12 +162,20 @@ object FrStrings : Strings {
     override val artistCoverMethodText = "Choisir le mode de récupération des images d'artistes"
     override val activateArtistCoverMethod = "Activer la récupération par chemin"
     override val artistCoverMethodDynamicNameTitle = "Traitement du nom de l'artiste"
+
+    override val coverFolderRetrieverPathSelectionTitle = "Sélectionner le dossier parent"
+    override val coverFolderRetrieverPathSelectionNoPathSelected = "Aucun dossier sélectionné"
+
     override val coverFolderRetrieverFolderTitle = "Dossier dynamique"
     override val coverFolderRetrieverFolderText = "Le nom du dossier correspond au nom de l'artiste"
-    override val coverFolderRetrieverFolderPathSelectionTitle = "Sélectionner le dossier parent"
+
     override val coverFolderRetrieverFolderDynamicNameUppercase = "Majuscule"
     override val coverFolderRetrieverFolderDynamicNameNoTreatment = "Aucun traitement"
     override val coverFolderRetrieverFolderDynamicNameLowercase = "Minuscule"
+
+    override val coverFolderRetrieverFileTitle = "Fichier d'image dynamique"
+    override val coverFolderRetrieverFileText = "Le nom du fichier de l'image correspond au nom de l'artiste"
+
     override val coverFolderRetrieverDynamicFileTitle = "Nom du fichier de l'image"
 
     override val activateGithubReleaseFetchTitle = "Activer la recherche de nouvelles versions provenant de GitHub"
@@ -310,4 +318,7 @@ object FrStrings : Strings {
 
     override fun newReleaseAvailableText(releaseName: String): String =
         "Une nouvelle version est disponible, prête à être téléchargée : $releaseName"
+
+    override fun artistCoverMethodExampleTitle(artist: String): String =
+        "Exemple de chemin avec l'artiste $artist :"
 }

@@ -79,6 +79,7 @@ class CreatePlaylistDialog(
                         style = SoulTextFieldStyle.Unique,
                         error = strings.fieldCannotBeEmpty,
                         isInError = playlistName.isBlank(),
+                        isReadOnly = false,
                     )
                 }
             }

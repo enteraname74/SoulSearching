@@ -201,6 +201,13 @@ object SoulSearchingSettingsKeys {
         )
     }
 
+    object Cover {
+        val ARTIST_COVER_FOLDER_RETRIEVER = settingElementOf(
+            key = "ARTIST_COVER_FOLDER_RETRIEVER",
+            defaultValue = "",
+        )
+    }
+
     object Desktop {
         val WINDOW_HEIGHT = settingElementOf(
             key = "WINDOW_HEIGHT",

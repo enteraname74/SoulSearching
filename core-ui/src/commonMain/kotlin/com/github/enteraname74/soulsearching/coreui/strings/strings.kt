@@ -172,12 +172,17 @@ interface Strings {
     val activateArtistCoverMethod: String
     val artistCoverMethodDynamicNameTitle: String
 
+    val coverFolderRetrieverPathSelectionTitle: String
+    val coverFolderRetrieverPathSelectionNoPathSelected: String
+
     val coverFolderRetrieverFolderTitle: String
     val coverFolderRetrieverFolderText: String
-    val coverFolderRetrieverFolderPathSelectionTitle: String
     val coverFolderRetrieverFolderDynamicNameUppercase: String
     val coverFolderRetrieverFolderDynamicNameNoTreatment: String
     val coverFolderRetrieverFolderDynamicNameLowercase: String
+
+    val coverFolderRetrieverFileTitle: String
+    val coverFolderRetrieverFileText: String
 
     val coverFolderRetrieverDynamicFileTitle: String
 
@@ -312,4 +317,9 @@ interface Strings {
      * Shows a text indicating the detail of the new latest release of Soul Searching
      */
     fun newReleaseAvailableText(releaseName: String): String
+
+    /**
+     * Builds the title of the example part of the artist cover method screen.
+     */
+    fun artistCoverMethodExampleTitle(artist: String): String
 }

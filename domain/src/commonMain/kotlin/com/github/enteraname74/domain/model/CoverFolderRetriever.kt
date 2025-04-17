@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CoverFolderRetriever(
     val isActivated: Boolean = true,
-    val folderPath: String,
-    val filePath: String,
-    val coverFileName: String,
+    val folderModePath: String?,
+    val fileModePath: String?,
+    val coverFileName: String?,
     val whiteSpaceRule: WhiteSpaceRule,
     val lowerCaseRule: Boolean?,
     val mode: DynamicMode,
@@ -27,14 +27,22 @@ data class CoverFolderRetriever(
             }
         } ?: this
 
-    fun buildDynamicCoverPath(dynamicName: String): String {
+    private fun isValid(): Boolean =
+        when(mode) {
+            DynamicMode.Folder -> folderModePath?.takeIf { it.isNotBlank() }  != null && coverFileName?.takeIf { it.isNotBlank() } != null
+            DynamicMode.File -> fileModePath?.takeIf { it.isNotBlank() }  != null
+        }
+
+    fun buildDynamicCoverPath(dynamicName: String): String? {
+        if (!isValid()) return null
+
         var finalDynamicName = dynamicName
             .applyLowerCaseRule()
             .applyWhiteSpaceRule()
 
         return when(mode) {
-            DynamicMode.Folder -> "$folderPath/$finalDynamicName/$coverFileName"
-            DynamicMode.File -> "$filePath/$finalDynamicName.png"
+            DynamicMode.Folder -> "$folderModePath/$finalDynamicName/$coverFileName"
+            DynamicMode.File -> "$fileModePath/$finalDynamicName.png"
         }
     }
 
@@ -48,4 +56,20 @@ data class CoverFolderRetriever(
         val isActivated: Boolean,
         val replacement: String,
     )
+
+    companion object {
+        // TODO: Change default mode to File.
+        val default: CoverFolderRetriever = CoverFolderRetriever(
+            isActivated = false,
+            folderModePath = null,
+            fileModePath = null,
+            coverFileName = null,
+            whiteSpaceRule = WhiteSpaceRule(
+                isActivated = false,
+                replacement = "",
+            ),
+            lowerCaseRule = null,
+            mode = DynamicMode.Folder,
+        )
+    }
 }

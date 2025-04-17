@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -39,6 +40,7 @@ fun SoulSegmentedOptionButton(
             .border(
                 width = BORDER_THICKNESS,
                 color = colors.containerColor,
+                shape = RoundedCornerShape(percent = 50)
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -106,7 +108,7 @@ private fun InnerButtons(
     }
 }
 
-private val DIVIDER_THICKNESS: Dp = 1.dp
+private val DIVIDER_THICKNESS: Dp = 2.dp
 private const val DIVIDER_HEIGHT: Float = .8f
 
 @Composable
@@ -119,7 +121,7 @@ private fun Divider(
             .fillMaxHeight()
             .background(color = colors.containerColor)
             .fillMaxHeight(DIVIDER_HEIGHT)
-            .background(color = colors.contentColor)
+            .background(color = colors.containerColor)
     )
 }
 
@@ -163,6 +165,8 @@ data class SoulSegmentedOptionTextButton(
             color = contentColor,
             text = data,
             fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

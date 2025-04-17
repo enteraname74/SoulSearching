@@ -165,12 +165,17 @@ object EnStrings : Strings {
         get() = TODO("Not yet implemented")
     override val artistCoverMethodDynamicNameTitle: String
         get() = TODO("Not yet implemented")
+
+    override val coverFolderRetrieverPathSelectionTitle: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverPathSelectionNoPathSelected: String
+        get() = TODO("Not yet implemented")
+
     override val coverFolderRetrieverFolderTitle: String
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverFolderText: String
         get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFolderPathSelectionTitle: String
-        get() = TODO("Not yet implemented")
+
     override val coverFolderRetrieverFolderDynamicNameUppercase: String
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverFolderDynamicNameNoTreatment: String
@@ -179,6 +184,11 @@ object EnStrings : Strings {
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverDynamicFileTitle: String
         get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFileTitle: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFileText: String
+        get() = TODO("Not yet implemented")
+
     override val activateGithubReleaseFetchTitle = "Enable checking for new versions from GitHub"
     override val activateGithubReleaseFetchHint = "You will receive an in-app notification when a new version of the app is available on GitHub."
     override val activateGithubReleaseFetchText = "Do you want to receive an in-app notification when a new version of the app is available on GitHub?"
@@ -319,4 +329,7 @@ object EnStrings : Strings {
 
     override fun newReleaseAvailableText(releaseName: String): String =
         "A new release is available, ready to be downloaded: $releaseName"
+
+    override fun artistCoverMethodExampleTitle(artist: String): String =
+        "Path example with artist $artist:"
 }

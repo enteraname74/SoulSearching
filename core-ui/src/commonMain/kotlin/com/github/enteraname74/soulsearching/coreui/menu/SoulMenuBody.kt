@@ -12,7 +12,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
-internal fun SoulMenuBody(
+fun SoulMenuBody(
     title: String,
     text: String?,
     titleMaxLines: Int = 1,

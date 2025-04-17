@@ -39,6 +39,7 @@ fun SoulTextField(
     onValueChange: (String) -> Unit,
     error: String?,
     isInError: Boolean,
+    isReadOnly: Boolean,
     labelName: String?,
     focusManager: FocusManager,
     modifier: Modifier = Modifier,
@@ -72,6 +73,8 @@ fun SoulTextField(
         ) {
             BasicTextField(
                 modifier = modifier,
+                readOnly = isReadOnly,
+                enabled = !isReadOnly,
                 value = value,
                 onValueChange = onValueChange,
                 interactionSource = interactionSource,
@@ -84,7 +87,7 @@ fun SoulTextField(
                 decorationBox = { innerTextField ->
                     TextFieldDefaults.DecorationBox(
                         isError = isInError,
-                        enabled = true,
+                        enabled = !isReadOnly,
                         value = value,
                         singleLine = true,
                         interactionSource = interactionSource,
@@ -148,6 +151,7 @@ class SoulTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val isReadOnly: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val style: SoulTextFieldStyle = SoulTextFieldStyle.Unique,
@@ -188,6 +192,7 @@ class SoulTextFieldHolderImpl(
             colors = colors,
             error = error,
             isInError = isInError,
+            isReadOnly = isReadOnly,
             leadingIcon = leadingIconSpec?.let {
                 {
                     SoulIcon(

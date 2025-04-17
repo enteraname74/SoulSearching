@@ -1,14 +1,14 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -16,9 +16,10 @@ import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionTextButton
+import com.github.enteraname74.soulsearching.coreui.ext.chainIf
+import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextField
-import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
+import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverActions
 
@@ -27,30 +28,42 @@ fun CoverFolderRetrieverRules(
     actions: CoverFolderRetrieverActions,
     coverFolderRetriever: CoverFolderRetriever,
     title: String,
+    whiteSpaceReplacementTextField: SoulTextFieldHolder,
 ) {
-    Column {
-        Text(
-            text = title,
-            style = UiConstants.Typography.bodyTitle,
-            color = SoulSearchingColorTheme.colorScheme.onPrimary,
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = SoulSearchingColorTheme.colorScheme.secondary,
+            contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
         )
-        WhiteSpaceRule(
-            whiteSpaceRule = coverFolderRetriever.whiteSpaceRule,
-            onUpdateReplacement = actions::updateWhiteSpaceReplacement,
-            onToggleWhiteSpaceRule = actions::toggleWhiteSpace,
-        )
-        LowerCaseRule(
-            lowerCaseRule = coverFolderRetriever.lowerCaseRule,
-            onUpdateLowerCaseRule = actions::updateLowerCase,
-        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(UiConstants.Spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+        ) {
+            Text(
+                text = title,
+                style = UiConstants.Typography.bodyTitle,
+                color = SoulSearchingColorTheme.colorScheme.onPrimary,
+            )
+            WhiteSpaceRule(
+                whiteSpaceRule = coverFolderRetriever.whiteSpaceRule,
+                onToggleWhiteSpaceRule = actions::toggleWhiteSpace,
+                textField = whiteSpaceReplacementTextField,
+            )
+            LowerCaseRule(
+                lowerCaseRule = coverFolderRetriever.lowerCaseRule,
+                onUpdateLowerCaseRule = actions::updateLowerCase,
+            )
+        }
     }
 }
 
 @Composable
 private fun WhiteSpaceRule(
     whiteSpaceRule: CoverFolderRetriever.WhiteSpaceRule,
-    onUpdateReplacement: (String) -> Unit,
     onToggleWhiteSpaceRule: () -> Unit,
+    textField: SoulTextFieldHolder,
 ) {
     Row(
         modifier = Modifier
@@ -62,15 +75,18 @@ private fun WhiteSpaceRule(
             checked = whiteSpaceRule.isActivated,
             onCheckedChange = { onToggleWhiteSpaceRule() },
         )
-        SoulTextField(
-            value = whiteSpaceRule.replacement,
-            onValueChange = onUpdateReplacement,
-            error = null,
-            isInError = false,
-            labelName = null,
-            focusManager = LocalFocusManager.current,
-            style = SoulTextFieldStyle.Unique,
-        )
+        Box(
+            modifier = Modifier
+                .chainIf(!whiteSpaceRule.isActivated) {
+                    Modifier.disableFocus()
+                }
+        ) {
+            textField.TextField(
+                modifier = Modifier
+                    .alpha(if (whiteSpaceRule.isActivated) 1f else ContentAlpha.disabled),
+                focusManager = LocalFocusManager.current,
+            )
+        }
     }
 }
 
@@ -85,6 +101,7 @@ private fun LowerCaseRule(
         contentAlignment = Alignment.Center,
     ) {
         SoulSegmentedOptionButton(
+            colors = SoulButtonDefaults.primaryColors(),
             buttons = listOf(
                 SoulSegmentedOptionTextButton(
                     data = strings.coverFolderRetrieverFolderDynamicNameLowercase,
