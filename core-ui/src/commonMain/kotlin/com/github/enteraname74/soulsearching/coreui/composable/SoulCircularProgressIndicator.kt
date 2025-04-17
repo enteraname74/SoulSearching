@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.coreui
+package com.github.enteraname74.soulsearching.coreui.composable
 
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable

@@ -177,9 +177,12 @@ interface Strings {
 
     val coverFolderRetrieverFolderTitle: String
     val coverFolderRetrieverFolderText: String
-    val coverFolderRetrieverFolderDynamicNameUppercase: String
-    val coverFolderRetrieverFolderDynamicNameNoTreatment: String
-    val coverFolderRetrieverFolderDynamicNameLowercase: String
+    val coverFolderRetrieverFolderIncomplete: String
+    val coverFolderRetrieverRulesWhiteSpace: String
+    val coverFolderRetrieverRulesReplacement: String
+    val coverFolderRetrieverRulesDynamicNameUppercase: String
+    val coverFolderRetrieverRulesDynamicNameNoTreatment: String
+    val coverFolderRetrieverRulesDynamicNameLowercase: String
 
     val coverFolderRetrieverFileTitle: String
     val coverFolderRetrieverFileText: String

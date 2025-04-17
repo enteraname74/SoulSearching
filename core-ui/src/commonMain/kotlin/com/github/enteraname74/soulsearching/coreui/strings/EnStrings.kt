@@ -175,12 +175,17 @@ object EnStrings : Strings {
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverFolderText: String
         get() = TODO("Not yet implemented")
-
-    override val coverFolderRetrieverFolderDynamicNameUppercase: String
+    override val coverFolderRetrieverFolderIncomplete: String
         get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFolderDynamicNameNoTreatment: String
+    override val coverFolderRetrieverRulesWhiteSpace: String
         get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFolderDynamicNameLowercase: String
+    override val coverFolderRetrieverRulesReplacement: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverRulesDynamicNameUppercase: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverRulesDynamicNameNoTreatment: String
+        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverRulesDynamicNameLowercase: String
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverDynamicFileTitle: String
         get() = TODO("Not yet implemented")

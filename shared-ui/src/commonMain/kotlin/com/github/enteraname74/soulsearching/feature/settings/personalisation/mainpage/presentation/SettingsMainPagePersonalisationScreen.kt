@@ -15,6 +15,7 @@ import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuAction
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
@@ -135,12 +136,7 @@ class SettingsMainPagePersonalisationScreen: Screen, SettingPage {
                 )
             }
             item {
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(vertical = UiConstants.Spacing.large),
-                    thickness = 1.dp,
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                )
+                SoulDivider()
             }
             item {
                 Column(

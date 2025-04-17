@@ -14,8 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.github.enteraname74.soulsearching.coreui.SoulCircularProgressIndicator
+import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 

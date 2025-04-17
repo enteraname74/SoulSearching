@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
+import com.github.enteraname74.soulsearching.coreui.button.SoulSwitchDefaults
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
@@ -69,16 +71,12 @@ fun SoulMenuSwitch(
                     )
                 )
             }
-            Switch(
-                checked = isChecked,
-                onCheckedChange = { toggleAction() },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = textColor,
-                    checkedTrackColor = titleColor,
-                    checkedBorderColor = titleColor,
-                    uncheckedThumbColor = textColor,
-                    uncheckedTrackColor = Color.Transparent,
-                    uncheckedBorderColor = textColor,
+            SoulSwitch(
+                isChecked = isChecked,
+                onClick = toggleAction,
+                colors = SoulSwitchDefaults.colors(
+                    outer = textColor,
+                    inner = titleColor,
                 )
             )
         }

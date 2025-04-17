@@ -1,5 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Text
@@ -13,11 +16,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
-import com.github.enteraname74.soulsearching.coreui.button.SoulCheckBox
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionTextButton
-import com.github.enteraname74.soulsearching.coreui.ext.chainIf
-import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
+import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
+import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
+import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
@@ -39,7 +42,7 @@ fun CoverFolderRetrieverRules(
         Column(
             modifier = Modifier
                 .padding(UiConstants.Spacing.medium),
-            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
             Text(
                 text = title,
@@ -65,21 +68,33 @@ private fun WhiteSpaceRule(
     onToggleWhiteSpaceRule: () -> Unit,
     textField: SoulTextFieldHolder,
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
     ) {
-        SoulCheckBox(
-            checked = whiteSpaceRule.isActivated,
-            onCheckedChange = { onToggleWhiteSpaceRule() },
-        )
-        Box(
+        Row(
             modifier = Modifier
-                .chainIf(!whiteSpaceRule.isActivated) {
-                    Modifier.disableFocus()
-                }
+                .fillMaxWidth()
+                .clickableWithHandCursor { onToggleWhiteSpaceRule() },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = strings.coverFolderRetrieverRulesWhiteSpace,
+                color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                style = UiConstants.Typography.bodyLarge,
+            )
+            SoulSwitch(
+                isChecked = whiteSpaceRule.isActivated,
+                onClick = onToggleWhiteSpaceRule,
+            )
+        }
+        AnimatedVisibility(
+            visible = whiteSpaceRule.isActivated,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
         ) {
             textField.TextField(
                 modifier = Modifier
@@ -104,19 +119,19 @@ private fun LowerCaseRule(
             colors = SoulButtonDefaults.primaryColors(),
             buttons = listOf(
                 SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverFolderDynamicNameLowercase,
+                    data = strings.coverFolderRetrieverRulesDynamicNameLowercase,
                     isSelected = lowerCaseRule == true,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                     onClick = { onUpdateLowerCaseRule(true) }
                 ),
                 SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverFolderDynamicNameNoTreatment,
+                    data = strings.coverFolderRetrieverRulesDynamicNameNoTreatment,
                     isSelected = lowerCaseRule == null,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                     onClick = { onUpdateLowerCaseRule(null) }
                 ),
                 SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverFolderDynamicNameUppercase,
+                    data = strings.coverFolderRetrieverRulesDynamicNameUppercase,
                     isSelected = lowerCaseRule == false,
                     contentPadding = SoulButtonDefaults.contentPadding(),
                     onClick = { onUpdateLowerCaseRule(false) }

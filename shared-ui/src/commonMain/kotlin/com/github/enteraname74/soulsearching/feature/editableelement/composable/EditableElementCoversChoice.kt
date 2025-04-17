@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.soulsearching.composables.SoulByteArrayImage
-import com.github.enteraname74.soulsearching.coreui.SoulCircularProgressIndicator
+import com.github.enteraname74.soulsearching.coreui.composable.SoulCircularProgressIndicator
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.strings.strings

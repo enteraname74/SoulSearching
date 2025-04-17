@@ -2,10 +2,9 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfol
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,26 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
 fun CoverFolderRetrieverExamplePath(
-    coverFolderRetriever: CoverFolderRetriever,
-    modifier: Modifier = Modifier,
+    path: String?,
 ) {
-    val path = coverFolderRetriever.buildDynamicCoverPath(
-        dynamicName = EXAMPLE_ARTIST_NAME,
-    )
+
     AnimatedVisibility(
         visible = path != null,
         enter = expandVertically(),
-        exit = shrinkVertically(),
+        exit = slideOutVertically(
+            targetOffsetY = { it }
+        ),
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .background(
                     color = SoulSearchingColorTheme.colorScheme.secondary,
@@ -56,5 +53,4 @@ fun CoverFolderRetrieverExamplePath(
     }
 }
 
-private const val EXAMPLE_ARTIST_NAME = "John Doe"
 private val RoundedCorners = 10.dp

@@ -34,9 +34,9 @@ class CoverFolderRetrieverViewModelDelegate(
         id = COVER_FILE_NAME_ID,
         initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
             .whiteSpaceRule.replacement,
-        getLabel = { null },
+        getLabel = { strings.coverFolderRetrieverRulesReplacement },
         getError = { null },
-        onChange = { updateCoverFileName(it) },
+        onChange = { updateWhiteSpaceReplacement(it) },
         isValid = { true },
         style = SoulTextFieldStyle.Unique,
         getColors = { SoulTextFieldDefaults.primaryColors() },

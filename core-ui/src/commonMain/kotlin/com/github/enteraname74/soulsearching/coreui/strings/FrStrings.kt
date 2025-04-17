@@ -168,10 +168,12 @@ object FrStrings : Strings {
 
     override val coverFolderRetrieverFolderTitle = "Dossier dynamique"
     override val coverFolderRetrieverFolderText = "Le nom du dossier correspond au nom de l'artiste"
-
-    override val coverFolderRetrieverFolderDynamicNameUppercase = "Majuscule"
-    override val coverFolderRetrieverFolderDynamicNameNoTreatment = "Aucun traitement"
-    override val coverFolderRetrieverFolderDynamicNameLowercase = "Minuscule"
+    override val coverFolderRetrieverFolderIncomplete = "Les données requises sont incomplètes"
+    override val coverFolderRetrieverRulesWhiteSpace = "Remplacer les espaces"
+    override val coverFolderRetrieverRulesReplacement = "Remplacement"
+    override val coverFolderRetrieverRulesDynamicNameUppercase = "Majuscule"
+    override val coverFolderRetrieverRulesDynamicNameNoTreatment = "Aucun traitement"
+    override val coverFolderRetrieverRulesDynamicNameLowercase = "Minuscule"
 
     override val coverFolderRetrieverFileTitle = "Fichier d'image dynamique"
     override val coverFolderRetrieverFileText = "Le nom du fichier de l'image correspond au nom de l'artiste"

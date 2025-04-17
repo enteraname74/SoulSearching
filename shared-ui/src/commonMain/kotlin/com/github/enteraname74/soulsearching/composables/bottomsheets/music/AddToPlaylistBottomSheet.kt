@@ -21,7 +21,7 @@ import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlayl
 import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
-import com.github.enteraname74.soulsearching.coreui.SoulPlayerSpacer
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
