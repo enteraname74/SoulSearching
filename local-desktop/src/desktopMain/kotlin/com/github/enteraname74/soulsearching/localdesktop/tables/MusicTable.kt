@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 internal object MusicTable : UUIDTable() {
     val name = varchar("name", 128)
     val album = varchar("album", 128)
+    val albumArtist = varchar("albumArtist", 128).nullable()
     val artist = varchar("artist", 128)
     val coverId = uuid("coverId").nullable()
     val duration = long("duration")
@@ -33,6 +34,7 @@ internal fun ResultRow.toMusic(): Music? =
             musicId = this[MusicTable.id].value,
             name = this[MusicTable.name],
             album = this[MusicTable.album],
+            albumArtist = this[MusicTable.albumArtist],
             artist = this[MusicTable.artist],
             cover = Cover.CoverFile(
                 fileCoverId = this[MusicTable.coverId],

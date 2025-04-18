@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumArtist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumPosition
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
@@ -33,6 +34,7 @@ internal class MusicDao {
                 it[id] = music.musicId
                 it[name] = music.name
                 it[album] = music.album
+                it[albumArtist] = music.albumArtist
                 it[artist] = music.artist
                 it[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
                 it[duration] = music.duration
@@ -49,10 +51,11 @@ internal class MusicDao {
 
     suspend fun upsertAll(musics: List<Music>) {
         flowTransactionOn {
-            MusicTable.batchUpsert(musics) {music ->
+            MusicTable.batchUpsert(musics) { music ->
                 this[MusicTable.id] = music.musicId
                 this[MusicTable.name] = music.name
                 this[album] = music.album
+                this[albumArtist] = music.albumArtist
                 this[artist] = music.artist
                 this[coverId] = (music.cover as? Cover.CoverFile)?.fileCoverId
                 this[duration] = music.duration

@@ -43,13 +43,13 @@ abstract class MusicFetcher : KoinComponent {
     }
 
 
-    private fun createArtistOfSong(
-        music: Music,
-        artistId: UUID,
+    private fun createArtist(
+        name: String,
+        id: UUID,
     ) {
         val artistToAdd = Artist(
-            artistId = artistId,
-            artistName = music.artist
+            artistId = id,
+            artistName = name,
         )
         optimizedCachedData.artistsByName[artistToAdd.artistName] = artistToAdd
     }
@@ -82,7 +82,12 @@ abstract class MusicFetcher : KoinComponent {
         if (optimizedCachedData.musicsByPath[musicToAdd.path] != null) return
 
         val correspondingArtist: Artist? = optimizedCachedData.artistsByName[musicToAdd.artist]
-        val correspondingAlbum: Album? = correspondingArtist?.let { artist ->
+        val correspondingAlbumArtist: Artist? = if (musicToAdd.hasDifferentAlbumArtist()) {
+            optimizedCachedData.artistsByName[musicToAdd.albumArtist]
+        } else {
+            correspondingArtist
+        }
+        val correspondingAlbum: Album? = correspondingAlbumArtist?.let { artist ->
             val info = AlbumInformation(
                 name = musicToAdd.album,
                 artist = artist.artistName,
@@ -92,6 +97,11 @@ abstract class MusicFetcher : KoinComponent {
 
         val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()
         val artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
+        val albumArtistId: UUID? = if (musicToAdd.hasDifferentAlbumArtist()) {
+            correspondingAlbumArtist?.artistId ?: UUID.randomUUID()
+        } else {
+            null
+        }
 
         if (correspondingAlbum == null) {
 
@@ -101,16 +111,25 @@ abstract class MusicFetcher : KoinComponent {
             )
 
             if (correspondingArtist == null) {
-                createArtistOfSong(
-                    music = musicToAdd,
-                    artistId = artistId,
+                createArtist(
+                    name = musicToAdd.artist,
+                    id = artistId,
                 )
+            }
+
+            if (correspondingAlbumArtist == null && albumArtistId != null) {
+                musicToAdd.albumArtist?.let { albumArtistName ->
+                    createArtist(
+                        name = albumArtistName,
+                        id = albumArtistId,
+                    )
+                }
             }
 
             optimizedCachedData.albumArtists.add(
                 AlbumArtist(
                     albumId = albumId,
-                    artistId = artistId,
+                    artistId = albumArtistId ?: artistId,
                 )
             )
         }
@@ -128,6 +147,14 @@ abstract class MusicFetcher : KoinComponent {
                 artistId = artistId,
             )
         )
+        albumArtistId?.let { safeId ->
+            optimizedCachedData.musicArtists.add(
+                MusicArtist(
+                    musicId = musicToAdd.musicId,
+                    artistId = safeId,
+                )
+            )
+        }
         onSongSaved()
     }
 }

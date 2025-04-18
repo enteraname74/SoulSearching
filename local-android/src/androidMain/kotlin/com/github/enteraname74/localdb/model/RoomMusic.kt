@@ -16,6 +16,7 @@ internal data class RoomMusic(
     val musicId: UUID = UUID.randomUUID(),
     var name: String = "",
     val album: String = "",
+    val albumArtist: String? = null,
     val artist: String = "",
     var coverId: UUID? = null,
     var duration: Long = 0L,
@@ -36,6 +37,7 @@ internal fun RoomMusic.toMusic(): Music {
         musicId = musicId,
         name = name,
         album = album,
+        albumArtist = albumArtist,
         artist = artist,
         cover = Cover.CoverFile(
             initialCoverPath = path,
@@ -59,6 +61,7 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     musicId = musicId,
     name = name,
     album = album,
+    albumArtist = albumArtist,
     artist = artist,
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     duration = duration,

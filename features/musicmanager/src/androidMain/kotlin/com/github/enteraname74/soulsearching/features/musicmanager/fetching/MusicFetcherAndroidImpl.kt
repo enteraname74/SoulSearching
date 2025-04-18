@@ -37,6 +37,7 @@ internal class MusicFetcherAndroidImpl(
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.TRACK,
+            MediaStore.Audio.Media.ALBUM_ARTIST,
         )
 
         val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -56,6 +57,7 @@ internal class MusicFetcherAndroidImpl(
             Music(
                 name = this.getString(0).trim(),
                 album = this.getString(2).trim(),
+                albumArtist = this.getString(6).takeIf { it.isNotBlank() },
                 artist = this.getString(1).trim(),
                 duration = this.getLong(3),
                 path = this.getString(4),

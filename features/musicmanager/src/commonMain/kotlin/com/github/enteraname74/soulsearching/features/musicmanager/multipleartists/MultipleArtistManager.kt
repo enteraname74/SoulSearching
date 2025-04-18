@@ -153,7 +153,4 @@ abstract class MultipleArtistManager {
 
     fun doMusicsHaveMultipleArtists(musics: List<Music>): Boolean =
         musics.any { it.hasPotentialMultipleArtists() }
-
-    fun doArtistsHaveMultipleArtists(artists: List<Artist>): Boolean =
-        artists.any { it.isComposedOfMultipleArtists() }
 }

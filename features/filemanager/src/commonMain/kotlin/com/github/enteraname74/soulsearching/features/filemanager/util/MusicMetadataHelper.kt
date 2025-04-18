@@ -13,4 +13,11 @@ class MusicMetadataHelper {
             val tag: Tag = audioFile.tag
             tag.getFirst(FieldKey.TRACK)?.toIntOrNull()
         }.getOrNull()
+
+    fun getAlbumArtist(musicPath: String): String? =
+        runCatching {
+            val audioFile: AudioFile = AudioFileIO.read(File(musicPath))
+            val tag: Tag = audioFile.tag
+            tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() }
+        }.getOrNull()
 }

@@ -85,6 +85,7 @@ internal class MusicFetcherDesktopImpl(
                     val musicToAdd = Music(
                         name = tag.getFirst(FieldKey.TITLE),
                         album = tag.getFirst(FieldKey.ALBUM),
+                        albumArtist = tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() },
                         artist = tag.getFirst(FieldKey.ARTIST),
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
