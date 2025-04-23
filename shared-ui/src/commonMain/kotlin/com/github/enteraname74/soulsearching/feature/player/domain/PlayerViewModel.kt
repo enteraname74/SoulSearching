@@ -42,7 +42,7 @@ import java.util.*
  */
 class PlayerViewModel(
     private val playbackManager: PlaybackManager,
-    private val settings: SoulSearchingSettings,
+    settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
     private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,

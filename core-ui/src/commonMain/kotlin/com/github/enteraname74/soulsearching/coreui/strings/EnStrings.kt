@@ -84,6 +84,7 @@ object EnStrings : Strings {
     override val musicName = "Song's name"
     override val musicAlbumPosition = "Position in album"
     override val albumName = "Album's name"
+    override val albumArtistName = "Album's artist name"
     override val artistName = "Artist's name"
     override val playlistCover = "Playlist's cover"
     override val albumCover = "Album's cover"

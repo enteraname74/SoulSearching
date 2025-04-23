@@ -83,6 +83,25 @@ sealed interface ModifyMusicFormState {
                     )
                 )
             )
+            add(
+                SoulTextFieldHolderImpl(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    id = ALBUM_ARTIST,
+                    isValid = { true },
+                    initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.albumArtist.orEmpty(),
+                    getLabel = { strings.albumArtistName },
+                    style = SoulTextFieldStyle.Body,
+                    getError = { null },
+                    onChange = {
+                        onFieldChange(ALBUM_ARTIST, it)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text,
+                    )
+                )
+            )
 
             artistsOfMusic.forEachIndexed { index, artist ->
                 val artistId = artist.artistId.toString()
@@ -136,12 +155,14 @@ sealed interface ModifyMusicFormState {
         fun getMusicName(): String = textFields.first { it.id == MUSIC_NAME }.value
         fun getAlbumName(): String = textFields.first { it.id == ALBUM_NAME }.value
         fun getPositionInAlbum(): String = textFields.first { it.id == POSITION_IN_ALBUM }.value
-        fun getArtistsName(): List<String> = (3 until textFields.size).map { textFields[it].value }
+        fun getAlbumArtist(): String = textFields.first { it.id == ALBUM_ARTIST }.value
+        fun getArtistsName(): List<String> = (4 until textFields.size).map { textFields[it].value }
 
         companion object {
             private const val MUSIC_NAME = "MUSIC_NAME"
             private const val ALBUM_NAME = "ALBUM_NAME"
             private const val POSITION_IN_ALBUM = "POSITION_IN_ALBUM"
+            private const val ALBUM_ARTIST = "ALBUM_ARTIST"
         }
     }
 }

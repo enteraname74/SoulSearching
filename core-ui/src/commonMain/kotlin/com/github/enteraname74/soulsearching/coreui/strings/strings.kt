@@ -95,6 +95,7 @@ interface Strings {
     val musicName: String
     val musicAlbumPosition: String
     val albumName: String
+    val albumArtistName: String
     val artistName: String
     val playlistCover: String
     val albumCover: String

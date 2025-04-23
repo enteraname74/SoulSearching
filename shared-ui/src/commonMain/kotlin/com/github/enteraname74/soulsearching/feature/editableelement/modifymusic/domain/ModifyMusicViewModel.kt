@@ -251,6 +251,7 @@ class ModifyMusicViewModel(
                 name = form.getMusicName().trim(),
                 album = form.getAlbumName().trim(),
                 albumPosition = form.getPositionInAlbum().trim().toIntOrNull(),
+                albumArtist = form.getAlbumArtist().trim().takeIf { it.isNotBlank() },
                 artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 

@@ -69,9 +69,6 @@ abstract class MusicFetcher : KoinComponent {
                 },
             )
         }
-        println("AFTER CACHE: ${optimizedCachedData.albumArtists}")
-        println("AFTER CACHE: ${optimizedCachedData.artistsByName.map { Pair(it.key, it.value.artistName) }}")
-        println("AFTER CACHE: ${optimizedCachedData.albumsByInfo.map { Pair(it.key, it.value.albumName) }}")
     }
 
     /**
@@ -103,28 +100,28 @@ abstract class MusicFetcher : KoinComponent {
             null
         }
 
+        if (correspondingArtist == null) {
+            createArtist(
+                name = musicToAdd.artist,
+                id = artistId,
+            )
+        }
+
+        if (correspondingAlbumArtist == null && albumArtistId != null) {
+            musicToAdd.albumArtist?.let { albumArtistName ->
+                createArtist(
+                    name = albumArtistName,
+                    id = albumArtistId,
+                )
+            }
+        }
+
         if (correspondingAlbum == null) {
 
             createAlbumOfSong(
                 music = musicToAdd,
                 albumId = albumId,
             )
-
-            if (correspondingArtist == null) {
-                createArtist(
-                    name = musicToAdd.artist,
-                    id = artistId,
-                )
-            }
-
-            if (correspondingAlbumArtist == null && albumArtistId != null) {
-                musicToAdd.albumArtist?.let { albumArtistName ->
-                    createArtist(
-                        name = albumArtistName,
-                        id = albumArtistId,
-                    )
-                }
-            }
 
             optimizedCachedData.albumArtists.add(
                 AlbumArtist(
