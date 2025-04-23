@@ -114,11 +114,16 @@ class SettingsAddMusicsViewModel(
             .map { it.artist }
             .distinct()
 
-        val multipleArtists =  musicFetcher
+        println("HOW MUCH? ${multipleArtistNameOfSelectedMusics.size}")
+
+        val multipleArtists = musicFetcher
             .optimizedCachedData
             .artistsByName
             .filter { it.value.artistName in multipleArtistNameOfSelectedMusics }
             .map { it.value }
+
+        println("AFTER ? ${multipleArtists.map { it.artistName }}")
+        println("AFTER ? ${multipleArtists.size}")
 
         return multipleArtists
     }
@@ -149,6 +154,7 @@ class SettingsAddMusicsViewModel(
                 optimizedCachedData = musicFetcher.optimizedCachedData,
             )
             if (multipleArtistManager.doMusicsHaveMultipleArtists(musics = selectedMusics)) {
+                println("THERE WITH MULTIPLE ARTISTS")
                 _navigationState.value = SettingsAddMusicsNavigationState.ToMultipleArtists(
                     multipleArtists = getMultipleArtists(selectedMusics)
                 )

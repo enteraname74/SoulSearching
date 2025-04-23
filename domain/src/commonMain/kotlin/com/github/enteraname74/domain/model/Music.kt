@@ -37,5 +37,5 @@ data class Music(
      * Checks if the album artist is different from the artist of the music.
      */
     fun hasDifferentAlbumArtist(): Boolean =
-        albumArtist != null && albumArtist != artist
+        albumArtist != null && albumArtist.trim() != artist.trim()
 }

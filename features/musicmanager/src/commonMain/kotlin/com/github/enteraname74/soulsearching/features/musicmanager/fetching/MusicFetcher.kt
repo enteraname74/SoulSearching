@@ -38,7 +38,7 @@ abstract class MusicFetcher : KoinComponent {
         )
         optimizedCachedData.albumsByInfo[AlbumInformation(
             name = albumToAdd.albumName,
-            artist = music.artist
+            artist = music.artistOfAlbum,
         )] = albumToAdd
     }
 
@@ -69,6 +69,9 @@ abstract class MusicFetcher : KoinComponent {
                 },
             )
         }
+        println("AFTER CACHE: ${optimizedCachedData.albumArtists}")
+        println("AFTER CACHE: ${optimizedCachedData.artistsByName.map { Pair(it.key, it.value.artistName) }}")
+        println("AFTER CACHE: ${optimizedCachedData.albumsByInfo.map { Pair(it.key, it.value.albumName) }}")
     }
 
     /**
@@ -82,11 +85,8 @@ abstract class MusicFetcher : KoinComponent {
         if (optimizedCachedData.musicsByPath[musicToAdd.path] != null) return
 
         val correspondingArtist: Artist? = optimizedCachedData.artistsByName[musicToAdd.artist]
-        val correspondingAlbumArtist: Artist? = if (musicToAdd.hasDifferentAlbumArtist()) {
-            optimizedCachedData.artistsByName[musicToAdd.albumArtist]
-        } else {
-            correspondingArtist
-        }
+        val correspondingAlbumArtist: Artist? = optimizedCachedData.artistsByName[musicToAdd.artistOfAlbum]
+
         val correspondingAlbum: Album? = correspondingAlbumArtist?.let { artist ->
             val info = AlbumInformation(
                 name = musicToAdd.album,
