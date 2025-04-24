@@ -1,7 +1,6 @@
 package com.github.enteraname74.localdb.dao
 
 import androidx.room.*
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomArtistWithMusics
 import kotlinx.coroutines.flow.Flow
@@ -48,10 +47,6 @@ internal interface ArtistDao {
     @Query("SELECT * FROM RoomArtist WHERE artistId = :artistId")
     fun getArtistWithMusics(artistId: UUID): Flow<RoomArtistWithMusics?>
 
-    @Query("SELECT * FROM RoomArtist INNER JOIN RoomMusicArtist WHERE RoomArtist.artistId = RoomMusicArtist.artistId AND RoomMusicArtist.musicId = :musicId " +
-            "AND RoomArtist.artistName != :albumArtist")
-    fun getArtistsOfMusic(
-        musicId: UUID,
-        albumArtist: String?,
-    ): Flow<List<RoomArtist>>
+    @Query("SELECT * FROM RoomArtist INNER JOIN RoomMusicArtist WHERE RoomArtist.artistId = RoomMusicArtist.artistId AND RoomMusicArtist.musicId = :musicId")
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<RoomArtist>>
 }

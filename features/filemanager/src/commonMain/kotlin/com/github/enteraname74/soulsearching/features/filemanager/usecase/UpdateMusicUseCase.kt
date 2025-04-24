@@ -177,6 +177,16 @@ class UpdateMusicUseCase(
                     newAlbumName = newMusicInformation.album,
                     artistId = artist.artistId
                 )
+
+                if (shouldLinkMusicAlbumToAlbumArtist) {
+                    // We will ensure that the album artist is linked to the music:
+                    musicArtistRepository.upsertMusicIntoArtist(
+                        musicArtist = MusicArtist(
+                            musicId = newMusicInformation.musicId,
+                            artistId = artistForAlbum.artistId
+                        )
+                    )
+                }
             }
 
             /*
@@ -185,16 +195,16 @@ class UpdateMusicUseCase(
             and we must remove the previous link with the legacy album artist
              */
             if (shouldLinkMusicAlbumToAlbumArtist) {
-                legacyMusic.albumArtist?.let { albumArtist ->
-                    val artist: Artist? = artistRepository.getFromName(artistName = albumArtist)
-                    artist?.artistId?.let { artistId ->
+                legacyMusic.albumArtist?.let { legacyAlbumArtist ->
+                    val legacyArtist: Artist? = artistRepository.getFromName(artistName = legacyAlbumArtist)
+                    legacyArtist?.artistId?.let { legacyArtistId ->
                         musicArtistRepository.deleteMusicArtist(
                             musicArtist = MusicArtist(
-                                musicId = legacyMusic.musicId,
-                                artistId = artistId,
+                                musicId = newMusicInformation.musicId,
+                                artistId = legacyArtistId,
                             )
                         )
-                        deleteArtistIfEmptyUseCase(artistId = artistId)
+                        deleteArtistIfEmptyUseCase(artistId = legacyArtistId)
                     }
                 }
             }

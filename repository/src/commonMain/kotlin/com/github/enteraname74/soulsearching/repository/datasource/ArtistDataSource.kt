@@ -57,8 +57,5 @@ interface ArtistDataSource {
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(
-        music: Music,
-        withAlbumArtist: Boolean,
-    ): Flow<List<Artist>>
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
 }

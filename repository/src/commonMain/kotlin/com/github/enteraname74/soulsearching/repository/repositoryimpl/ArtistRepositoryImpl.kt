@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.*
 
 /**
@@ -77,9 +78,12 @@ class ArtistRepositoryImpl(
         music: Music,
         withAlbumArtist: Boolean,
     ): Flow<List<Artist>> =
-        artistDataSource.getArtistsOfMusic(
-            music = music,
-            withAlbumArtist = withAlbumArtist,
-        )
+        artistDataSource.getArtistsOfMusic(musicId = music.musicId).map { artists ->
+            if (!withAlbumArtist && artists.size > 1) {
+                artists.filter { it.artistName != music.albumArtist }
+            } else {
+                artists
+            }
+        }
 
 }

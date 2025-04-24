@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.localdesktop.dao
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
@@ -151,20 +150,13 @@ internal class ArtistDao(
             }
         }
 
-    fun getArtistsOfMusic(
-        music: Music,
-        albumArtist: String?,
-    ): Flow<List<Artist>> = transaction {
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> = transaction {
         ArtistTable.join(
             otherTable = MusicArtistTable,
             joinType = JoinType.INNER,
             onColumn = ArtistTable.id,
             otherColumn = MusicArtistTable.artistId,
-            additionalConstraint = {
-                (MusicArtistTable.musicId eq music.musicId) and (albumArtist?.let {
-                    artistName neq albumArtist
-                } ?: Op.TRUE)
-            }
+            additionalConstraint = { MusicArtistTable.musicId eq musicId }
         )
             .selectAll()
             .asFlow()

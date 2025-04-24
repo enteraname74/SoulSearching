@@ -51,15 +51,6 @@ internal class ArtistDataSourceImpl(
     override fun getArtistWithMusics(artistId: UUID): Flow<ArtistWithMusics?> =
         artistDao.getArtistWithMusics(artistId)
 
-    override fun getArtistsOfMusic(
-        music: Music,
-        withAlbumArtist: Boolean,
-    ): Flow<List<Artist>> =
-        artistDao.getArtistsOfMusic(
-            music = music,
-            albumArtist = music.albumArtist?.takeIf { !withAlbumArtist },
-        ).map {
-            println("ALL? ${it.map { it.artistName }}, with? ${music.albumArtist?.takeIf { withAlbumArtist }}")
-            it
-        }
+    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+        artistDao.getArtistsOfMusic(musicId = musicId)
 }

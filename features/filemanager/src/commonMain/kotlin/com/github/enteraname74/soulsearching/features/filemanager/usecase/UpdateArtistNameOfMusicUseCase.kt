@@ -24,11 +24,20 @@ class UpdateArtistNameOfMusicUseCase(
         newArtistName: String,
         music: Music,
     ) {
+        val isAlbumArtist = legacyArtistName == music.albumArtist
+
+        // We replace the legacy artist with the new one if it's not an album artist.
         val artistsOfMusic: ArrayList<String> = ArrayList(
             artistRepository.getArtistsOfMusic(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
         )
 
-        // We replace the legacy artist with the new one.
+        // If the current
+        if (isAlbumArtist) {
+            artistsOfMusic.removeIf { artistName ->
+                artistName == newArtistName
+            }
+        }
+
         artistsOfMusic.replaceAll { artistOfMusic ->
             if (artistOfMusic == legacyArtistName) {
                 newArtistName
@@ -38,13 +47,19 @@ class UpdateArtistNameOfMusicUseCase(
         }
 
         // Additional check if the new one was already linked to the music
-        val newArtistsOfMusic: String = artistsOfMusic
+        val newArtistsOfMusic = artistsOfMusic
             .distinct()
             .joinToString(separator = ", ")
 
-        val newMusicInformation = music.copy(
+        val newMusicInformation: Music = music.copy(
             artist = newArtistsOfMusic,
+            albumArtist = if (isAlbumArtist) {
+                newArtistName
+            } else {
+                music.albumArtist
+            }
         )
+
         musicRepository.upsert(
             newMusicInformation
         )
