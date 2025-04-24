@@ -13,7 +13,10 @@ class LyricsRepositoryImpl(
 ): LyricsRepository {
     override suspend fun getLyricsOfSong(music: Music): MusicLyrics? {
         val principalArtistName: String = artistDataSource
-            .getArtistsOfMusic(musicId = music.musicId)
+            .getArtistsOfMusic(
+                music = music,
+                withAlbumArtist = false,
+            )
             .firstOrNull()
             ?.firstOrNull()
             ?.artistName ?: music.artist

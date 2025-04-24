@@ -29,7 +29,7 @@ class UpdateAlbumOfMusicUseCase(
         artistId: UUID,
         newAlbumName: String
     ) {
-        val legacyAlbum = getCorrespondingAlbumUseCase(musicId = legacyMusic.musicId)
+        val legacyAlbum: Album? = getCorrespondingAlbumUseCase(musicId = legacyMusic.musicId)
 
         var newMusicAlbum = getCorrespondingAlbumUseCase(
             albumName = newAlbumName,

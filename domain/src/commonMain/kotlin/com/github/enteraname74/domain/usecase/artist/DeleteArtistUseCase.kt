@@ -24,7 +24,10 @@ class DeleteArtistUseCase(
          */
         val linkedArtists: List<Artist> = buildList {
             artistWithMusics.musics.forEach { music ->
-                getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull()?.let {
+                getArtistsOfMusicUseCase(
+                    music = music,
+                    withAlbumArtist = true,
+                ).firstOrNull()?.let {
                     addAll(it)
                 }
             }

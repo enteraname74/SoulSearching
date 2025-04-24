@@ -111,7 +111,7 @@ class ModifyMusicViewModel(
         if (music == null) {
             flowOf(ModifyMusicFormState.NoData)
         } else {
-            getArtistsOfMusicUseCase(music.musicId).flatMapLatest { artists ->
+            getArtistsOfMusicUseCase(music = music).flatMapLatest { artists ->
                 addedArtists.flatMapLatest { addedArtists ->
                     deletedArtistIds.mapLatest { ids ->
                         ModifyMusicFormState.Data(
@@ -258,7 +258,7 @@ class ModifyMusicViewModel(
             updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtists = getArtistsOfMusicUseCase(state.initialMusic.musicId).firstOrNull() ?: emptyList(),
+                previousArtists = getArtistsOfMusicUseCase(music = state.initialMusic).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
             )
 

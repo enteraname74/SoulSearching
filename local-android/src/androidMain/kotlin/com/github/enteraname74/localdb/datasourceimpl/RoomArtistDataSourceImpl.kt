@@ -2,6 +2,7 @@ package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
 import com.github.enteraname74.localdb.model.toArtistWithMusics
@@ -77,8 +78,14 @@ internal class RoomArtistDataSourceImpl(
         ).map { it?.toArtistWithMusics() }
     }
 
-    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
-        appDatabase.artistDao.getArtistsOfMusic(musicId).map { list ->
+    override fun getArtistsOfMusic(
+        music: Music,
+        withAlbumArtist: Boolean,
+    ): Flow<List<Artist>> =
+        appDatabase.artistDao.getArtistsOfMusic(
+            musicId = music.musicId,
+            albumArtist = music.albumArtist?.takeIf { !withAlbumArtist },
+        ).map { list ->
             list.map { it.toArtist() }
         }
 }

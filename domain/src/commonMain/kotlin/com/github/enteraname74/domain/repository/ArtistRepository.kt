@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -53,5 +54,8 @@ interface ArtistRepository {
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+    fun getArtistsOfMusic(
+        music: Music,
+        withAlbumArtist: Boolean = false,
+    ): Flow<List<Artist>>
 }

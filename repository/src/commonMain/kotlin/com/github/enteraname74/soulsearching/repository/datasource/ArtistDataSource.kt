@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -56,5 +57,8 @@ interface ArtistDataSource {
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+    fun getArtistsOfMusic(
+        music: Music,
+        withAlbumArtist: Boolean,
+    ): Flow<List<Artist>>
 }

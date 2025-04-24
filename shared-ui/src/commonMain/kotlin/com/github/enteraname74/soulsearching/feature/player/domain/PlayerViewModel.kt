@@ -89,7 +89,7 @@ class PlayerViewModel(
             when (playbackState) {
                 is PlaybackManagerState.Data -> {
                     getArtistsOfMusicUseCase(
-                        musicId = playbackState.currentMusic.musicId,
+                        music = playbackState.currentMusic,
                     )
                 }
                 PlaybackManagerState.Stopped -> {

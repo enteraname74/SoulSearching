@@ -25,7 +25,10 @@ class DeleteMusicUseCase(
     }
 
     private suspend fun deleteMusic(music: Music) {
-        val artists: List<Artist> = getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull() ?: emptyList()
+        val artists: List<Artist> = getArtistsOfMusicUseCase(
+            music = music,
+            withAlbumArtist = true,
+        ).firstOrNull() ?: emptyList()
         val album: Album? = getCorrespondingAlbumUseCase(musicId = music.musicId)
 
         musicRepository.delete(music = music)

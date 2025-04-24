@@ -2,6 +2,7 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
@@ -72,7 +73,13 @@ class ArtistRepositoryImpl(
             artistId = artistId
         )
 
-    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
-        artistDataSource.getArtistsOfMusic(musicId)
+    override fun getArtistsOfMusic(
+        music: Music,
+        withAlbumArtist: Boolean,
+    ): Flow<List<Artist>> =
+        artistDataSource.getArtistsOfMusic(
+            music = music,
+            withAlbumArtist = withAlbumArtist,
+        )
 
 }

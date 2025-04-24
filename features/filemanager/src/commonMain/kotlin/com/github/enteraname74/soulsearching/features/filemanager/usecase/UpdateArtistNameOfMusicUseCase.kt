@@ -25,7 +25,7 @@ class UpdateArtistNameOfMusicUseCase(
         music: Music,
     ) {
         val artistsOfMusic: ArrayList<String> = ArrayList(
-            artistRepository.getArtistsOfMusic(music.musicId).firstOrNull()?.map { it.artistName } ?: emptyList()
+            artistRepository.getArtistsOfMusic(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
         )
 
         // We replace the legacy artist with the new one.

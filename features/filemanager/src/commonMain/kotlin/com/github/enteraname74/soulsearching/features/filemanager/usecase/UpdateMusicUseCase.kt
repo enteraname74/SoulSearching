@@ -49,6 +49,7 @@ class UpdateMusicUseCase(
         newMusicInformation: Music,
         previousArtist: Artist,
         newArtist: String,
+        shouldPossessAlbum: Boolean,
     ) {
         // It's the same artist, we got nothing to do.
         if (previousArtist.artistName == newArtist) return
@@ -66,11 +67,13 @@ class UpdateMusicUseCase(
             ),
         )
 
-        updateAlbumOfMusicUseCase(
-            artistId = existingNewArtist.artistId,
-            legacyMusic = legacyMusic,
-            newAlbumName = newMusicInformation.album,
-        )
+        if (shouldPossessAlbum) {
+            updateAlbumOfMusicUseCase(
+                artistId = existingNewArtist.artistId,
+                legacyMusic = legacyMusic,
+                newAlbumName = newMusicInformation.album,
+            )
+        }
 
         musicArtistRepository.deleteMusicArtist(
             musicArtist = MusicArtist(
@@ -85,7 +88,8 @@ class UpdateMusicUseCase(
         legacyMusic: Music,
         newMusicInformation: Music,
         previousArtists: List<Artist>,
-        newArtistsName: List<String>
+        newArtistsName: List<String>,
+        shouldFirstArtistPossessAlbum: Boolean,
     ) {
         // We first need to handle the first artist of the song (it's the one that possess the album of the song)
         handleFirstArtistOfMusic(
@@ -93,6 +97,7 @@ class UpdateMusicUseCase(
             newMusicInformation = newMusicInformation,
             previousArtist = previousArtists.first(),
             newArtist = newArtistsName.first(),
+            shouldPossessAlbum = shouldFirstArtistPossessAlbum,
         )
 
         val previousArtistsWithoutFirstOne: List<Artist> = previousArtists
@@ -143,24 +148,55 @@ class UpdateMusicUseCase(
         newArtistsNames: List<String>,
         newMusicInformation: Music,
     ) {
+        val shouldLinkMusicAlbumToAlbumArtist = newMusicInformation.albumArtist != null
+                && legacyMusic.albumArtist != newMusicInformation.albumArtist
+
         if (previousArtists.map { it.artistName } != newArtistsNames) {
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
                 newMusicInformation = newMusicInformation,
                 previousArtists = previousArtists,
                 newArtistsName = newArtistsNames,
+                shouldFirstArtistPossessAlbum = !shouldLinkMusicAlbumToAlbumArtist,
             )
-        } else if (legacyMusic.album != newMusicInformation.album) {
-            val musicFirstArtist: Artist? = getArtistsOfMusicUseCase(musicId = legacyMusic.musicId)
-                .firstOrNull()
-                ?.firstOrNull()
+        } else if (legacyMusic.album != newMusicInformation.album || shouldLinkMusicAlbumToAlbumArtist) {
+            val artistForAlbum: Artist? = if (shouldLinkMusicAlbumToAlbumArtist) {
+                getOrCreateArtist(
+                    artistName = newMusicInformation.albumArtist.orEmpty(),
+                    music = newMusicInformation,
+                )
+            } else {
+                getArtistsOfMusicUseCase(music = legacyMusic)
+                    .firstOrNull()
+                    ?.firstOrNull()
+            }
 
-            musicFirstArtist?.let { artist ->
+            artistForAlbum?.let { artist ->
                 updateAlbumOfMusicUseCase(
                     legacyMusic = legacyMusic,
                     newAlbumName = newMusicInformation.album,
                     artistId = artist.artistId
                 )
+            }
+
+            /*
+            If we changed the album artist of the music,
+            we must check if the previous artist album can be deleted,
+            and we must remove the previous link with the legacy album artist
+             */
+            if (shouldLinkMusicAlbumToAlbumArtist) {
+                legacyMusic.albumArtist?.let { albumArtist ->
+                    val artist: Artist? = artistRepository.getFromName(artistName = albumArtist)
+                    artist?.artistId?.let { artistId ->
+                        musicArtistRepository.deleteMusicArtist(
+                            musicArtist = MusicArtist(
+                                musicId = legacyMusic.musicId,
+                                artistId = artistId,
+                            )
+                        )
+                        deleteArtistIfEmptyUseCase(artistId = artistId)
+                    }
+                }
             }
         }
 
