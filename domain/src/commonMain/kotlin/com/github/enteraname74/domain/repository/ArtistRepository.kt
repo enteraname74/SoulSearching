@@ -54,8 +54,5 @@ interface ArtistRepository {
     /**
      * Retrieves all artists linked to a music.
      */
-    fun getArtistsOfMusic(
-        music: Music,
-        withAlbumArtist: Boolean = false,
-    ): Flow<List<Artist>>
+    fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
 }

@@ -74,16 +74,6 @@ class ArtistRepositoryImpl(
             artistId = artistId
         )
 
-    override fun getArtistsOfMusic(
-        music: Music,
-        withAlbumArtist: Boolean,
-    ): Flow<List<Artist>> =
-        artistDataSource.getArtistsOfMusic(musicId = music.musicId).map { artists ->
-            if (!withAlbumArtist && artists.size > 1) {
-                artists.filter { it.artistName != music.albumArtist }
-            } else {
-                artists
-            }
-        }
-
+    override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
+        artistDataSource.getArtistsOfMusic(musicId = musicId)
 }

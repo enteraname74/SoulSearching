@@ -20,6 +20,7 @@ class UpdateMusicUseCase(
     private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
+    private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
     private suspend fun getOrCreateArtist(
@@ -151,15 +152,35 @@ class UpdateMusicUseCase(
         val shouldLinkMusicAlbumToAlbumArtist = newMusicInformation.albumArtist != null
                 && legacyMusic.albumArtist != newMusicInformation.albumArtist
 
-        if (previousArtists.map { it.artistName } != newArtistsNames) {
+        val shouldDelegateToMultipleArtists = previousArtists.map { it.artistName } != newArtistsNames
+
+        // We must unlink the album artist to the music
+        if (newMusicInformation.albumArtist == null && legacyMusic.albumArtist != null) {
+            val albumArtist: Artist? = artistRepository.getFromName(legacyMusic.albumArtist!!)
+
+            albumArtist?.let {
+                musicArtistRepository.deleteMusicArtist(
+                    musicArtist = MusicArtist(
+                        musicId = legacyMusic.musicId,
+                        artistId = it.artistId,
+                    )
+                )
+            }
+        }
+
+        if (shouldDelegateToMultipleArtists) {
+            println("WIll delegate to multiple musics")
             handleMultipleArtistsOfMusic(
                 legacyMusic = legacyMusic,
                 newMusicInformation = newMusicInformation,
                 previousArtists = previousArtists,
                 newArtistsName = newArtistsNames,
-                shouldFirstArtistPossessAlbum = !shouldLinkMusicAlbumToAlbumArtist,
+                shouldFirstArtistPossessAlbum = newMusicInformation.albumArtist == null,
             )
-        } else if (legacyMusic.album != newMusicInformation.album || shouldLinkMusicAlbumToAlbumArtist) {
+        }
+
+        if ((!shouldDelegateToMultipleArtists && legacyMusic.album != newMusicInformation.album) || shouldLinkMusicAlbumToAlbumArtist) {
+            println("Album or album artist has changed")
             val artistForAlbum: Artist? = if (shouldLinkMusicAlbumToAlbumArtist) {
                 getOrCreateArtist(
                     artistName = newMusicInformation.albumArtist.orEmpty(),
@@ -210,7 +231,11 @@ class UpdateMusicUseCase(
             }
         }
 
-        musicRepository.upsert(newMusicInformation)
+        musicRepository.upsert(
+            newMusicInformation.copy(
+                artist = updateArtistNameOfMusicUseCase.buildUpdatedMusicArtistsString(music = newMusicInformation),
+            )
+        )
         musicFileUpdater.updateMusic(music = newMusicInformation)
     }
 }

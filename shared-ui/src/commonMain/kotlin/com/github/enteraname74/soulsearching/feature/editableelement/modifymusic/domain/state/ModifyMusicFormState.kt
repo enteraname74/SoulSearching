@@ -84,7 +84,7 @@ sealed interface ModifyMusicFormState {
                 )
             )
             add(
-                SoulTextFieldHolderImpl(
+                SoulDropdownTextFieldHolderImpl(
                     modifier = Modifier
                         .fillMaxWidth(),
                     id = ALBUM_ARTIST,
@@ -96,6 +96,7 @@ sealed interface ModifyMusicFormState {
                     onChange = {
                         onFieldChange(ALBUM_ARTIST, it)
                     },
+                    updateProposedValues = updateFoundArtists,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         keyboardType = KeyboardType.Text,
