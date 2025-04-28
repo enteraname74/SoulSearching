@@ -37,14 +37,11 @@ class UpdateArtistNameOfMusicUseCase(
         newArtistName: String,
         music: Music,
     ) {
-        println("UpdateArtistNameOfMusicUseCase - Legacy artist name: $legacyArtistName, newArtist: $newArtistName")
         val isAlbumArtist = legacyArtistName == music.albumArtist
 
         val artistsOfMusic: ArrayList<String> = ArrayList(
             getArtistsOfMusicUseCase(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
         )
-
-        println("UpdateArtistNameOfMusicUseCase - Current artists of music before name update: $artistsOfMusic")
 
         /*
         If the artist was the album artist of the current music,
@@ -75,7 +72,6 @@ class UpdateArtistNameOfMusicUseCase(
         } else {
             music.albumArtist
         }
-        println("UpdateArtistNameOfMusicUseCase - new album artist: $newAlbumArtist, new artists to save in name: $newArtistsOfMusic")
 
         val newMusicInformation: Music = music.copy(
             artist = newArtistsOfMusic,

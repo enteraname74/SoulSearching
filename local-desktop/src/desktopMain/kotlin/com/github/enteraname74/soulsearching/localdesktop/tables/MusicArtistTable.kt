@@ -16,6 +16,7 @@ internal object MusicArtistTable: LongIdTable() {
 internal fun ResultRow.toMusicArtist(): MusicArtist? =
     try {
         MusicArtist(
+            id = this[MusicArtistTable.id].value,
             musicId = this[MusicArtistTable.musicId].value,
             artistId = this[MusicArtistTable.artistId].value,
         )

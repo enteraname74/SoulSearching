@@ -45,16 +45,11 @@ class UpdateMusicUseCase(
         return existingNewArtist
     }
 
-    private suspend fun handleFirstArtistOfMusic(
+    private suspend fun handlePrimaryArtistOfMusic(
         legacyMusic: Music,
         newMusicInformation: Music,
-        previousArtist: Artist,
         newArtist: String,
-        shouldPossessAlbum: Boolean,
     ) {
-        // It's the same artist, we got nothing to do.
-        if (previousArtist.artistName == newArtist) return
-
         val existingNewArtist = getOrCreateArtist(
             artistName = newArtist,
             music = newMusicInformation
@@ -68,44 +63,21 @@ class UpdateMusicUseCase(
             ),
         )
 
-        if (shouldPossessAlbum) {
-            updateAlbumOfMusicUseCase(
-                artistId = existingNewArtist.artistId,
-                legacyMusic = legacyMusic,
-                newAlbumName = newMusicInformation.album,
-            )
-        }
-
-        musicArtistRepository.deleteMusicArtist(
-            musicArtist = MusicArtist(
-                musicId = legacyMusic.musicId,
-                artistId = previousArtist.artistId,
-            )
+        updateAlbumOfMusicUseCase(
+            artistId = existingNewArtist.artistId,
+            legacyMusic = legacyMusic,
+            newAlbumName = newMusicInformation.album,
         )
-        deleteArtistIfEmptyUseCase(artistId = previousArtist.artistId)
     }
 
-    private suspend fun handleMultipleArtistsOfMusic(
+    private suspend fun handleArtists(
         legacyMusic: Music,
         newMusicInformation: Music,
         previousArtists: List<Artist>,
         newArtistsName: List<String>,
-        shouldFirstArtistPossessAlbum: Boolean,
     ) {
-        // We first need to handle the first artist of the song (it's the one that possess the album of the song)
-        handleFirstArtistOfMusic(
-            legacyMusic = legacyMusic,
-            newMusicInformation = newMusicInformation,
-            previousArtist = previousArtists.first(),
-            newArtist = newArtistsName.first(),
-            shouldPossessAlbum = shouldFirstArtistPossessAlbum,
-        )
-
-        val previousArtistsWithoutFirstOne: List<Artist> = previousArtists
-            .subList(1, previousArtists.size)
-
         // We will remove the link of the music to all its other previous artists
-        previousArtistsWithoutFirstOne.forEach { artist ->
+        previousArtists.forEach { artist ->
             musicArtistRepository.deleteMusicArtist(
                 musicArtist = MusicArtist(
                     musicId = legacyMusic.musicId,
@@ -113,6 +85,13 @@ class UpdateMusicUseCase(
                 )
             )
         }
+
+        // We then need to handle the primary artist of the song (it's the one that possess the album of the song)
+        handlePrimaryArtistOfMusic(
+            legacyMusic = legacyMusic,
+            newMusicInformation = newMusicInformation,
+            newArtist = newArtistsName.first(),
+        )
 
         // We then link the music to its new artists
         newArtistsName.subList(1, newArtistsName.size).forEach { newArtistName ->
@@ -129,7 +108,7 @@ class UpdateMusicUseCase(
         }
 
         // We finally check if the previous artists can be deleted :
-        previousArtistsWithoutFirstOne.forEach { artist ->
+        previousArtists.forEach { artist ->
             deleteArtistIfEmptyUseCase(
                 artistId = artist.artistId,
             )
@@ -149,39 +128,38 @@ class UpdateMusicUseCase(
         newArtistsNames: List<String>,
         newMusicInformation: Music,
     ) {
-        val shouldLinkMusicAlbumToAlbumArtist = newMusicInformation.albumArtist != null
-                && legacyMusic.albumArtist != newMusicInformation.albumArtist
-
-        val shouldDelegateToMultipleArtists = previousArtists.map { it.artistName } != newArtistsNames
-
-        // We must unlink the album artist to the music
-        if (newMusicInformation.albumArtist == null && legacyMusic.albumArtist != null) {
-            val albumArtist: Artist? = artistRepository.getFromName(legacyMusic.albumArtist!!)
-
-            albumArtist?.let {
-                musicArtistRepository.deleteMusicArtist(
-                    musicArtist = MusicArtist(
-                        musicId = legacyMusic.musicId,
-                        artistId = it.artistId,
-                    )
-                )
+        /*
+        We will put the album artist with the other artists.
+        It will be in the first place as it's the artist that possess the album.
+         */
+        val allPreviousArtists: List<Artist> = buildList {
+            legacyMusic.albumArtist?.let { name ->
+                artistRepository.getFromName(artistName = name)?.let { add(it) }
             }
-        }
+            addAll(previousArtists)
+        }.distinctBy { it.artistName }
 
-        if (shouldDelegateToMultipleArtists) {
-            println("WIll delegate to multiple musics")
-            handleMultipleArtistsOfMusic(
+        /*
+        Same for the new artists. It will be easier to handle them all at once.
+         */
+        val allNewArtistsNames: List<String> = buildList {
+            newMusicInformation.albumArtist?.let {
+                add(it)
+            }
+            addAll(newArtistsNames)
+        }.distinct()
+
+        val hasArtistsChanged = allPreviousArtists.map { it.artistName } != allNewArtistsNames
+
+        if (hasArtistsChanged) {
+            handleArtists(
                 legacyMusic = legacyMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtists = previousArtists,
-                newArtistsName = newArtistsNames,
-                shouldFirstArtistPossessAlbum = newMusicInformation.albumArtist == null,
+                previousArtists = allPreviousArtists,
+                newArtistsName = allNewArtistsNames,
             )
-        }
-
-        if ((!shouldDelegateToMultipleArtists && legacyMusic.album != newMusicInformation.album) || shouldLinkMusicAlbumToAlbumArtist) {
-            println("Album or album artist has changed")
-            val artistForAlbum: Artist? = if (shouldLinkMusicAlbumToAlbumArtist) {
+        } else if (legacyMusic.album != newMusicInformation.album) {
+            val artistForAlbum: Artist? = if (newMusicInformation.albumArtist != null) {
                 getOrCreateArtist(
                     artistName = newMusicInformation.albumArtist.orEmpty(),
                     music = newMusicInformation,
@@ -198,36 +176,6 @@ class UpdateMusicUseCase(
                     newAlbumName = newMusicInformation.album,
                     artistId = artist.artistId
                 )
-
-                if (shouldLinkMusicAlbumToAlbumArtist) {
-                    // We will ensure that the album artist is linked to the music:
-                    musicArtistRepository.upsertMusicIntoArtist(
-                        musicArtist = MusicArtist(
-                            musicId = newMusicInformation.musicId,
-                            artistId = artistForAlbum.artistId
-                        )
-                    )
-                }
-            }
-
-            /*
-            If we changed the album artist of the music,
-            we must check if the previous artist album can be deleted,
-            and we must remove the previous link with the legacy album artist
-             */
-            if (shouldLinkMusicAlbumToAlbumArtist) {
-                legacyMusic.albumArtist?.let { legacyAlbumArtist ->
-                    val legacyArtist: Artist? = artistRepository.getFromName(artistName = legacyAlbumArtist)
-                    legacyArtist?.artistId?.let { legacyArtistId ->
-                        musicArtistRepository.deleteMusicArtist(
-                            musicArtist = MusicArtist(
-                                musicId = newMusicInformation.musicId,
-                                artistId = legacyArtistId,
-                            )
-                        )
-                        deleteArtistIfEmptyUseCase(artistId = legacyArtistId)
-                    }
-                }
             }
         }
 
