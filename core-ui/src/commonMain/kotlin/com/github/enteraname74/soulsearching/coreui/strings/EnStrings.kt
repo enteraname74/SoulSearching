@@ -138,6 +138,7 @@ object EnStrings : Strings {
     override val deleteSelectedMusics = "Delete selected songs"
 
     override val playNext = "Play next"
+    override val addToQueue = "Add to queue"
 
     override val personalizedThemeTitle = "Personalized theme"
     override val personalizedThemeText = "Apply dynamic theme on:"

@@ -282,7 +282,17 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     }
 
     suspend fun addMusicToPlayNext(music: Music) {
-        playbackListManager.addMusicToPlayNext(music = music)
+        playbackListManager.addMusicToList(
+            music = music,
+            mode = PlaybackListManager.AddMusicMode.Next,
+        )
+    }
+
+    suspend fun addMusicToQueue(music: Music) {
+        playbackListManager.addMusicToList(
+            music = music,
+            mode = PlaybackListManager.AddMusicMode.Queue,
+        )
     }
 
     /**
@@ -295,7 +305,17 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
-        playbackListManager.addMultipleMusicsToPlayNext(musics = musics)
+        playbackListManager.addMultipleMusicsToList(
+            musics = musics,
+            mode = PlaybackListManager.AddMusicMode.Next,
+        )
+    }
+
+    suspend fun addMultipleMusicsToQueue(musics: List<Music>) {
+        playbackListManager.addMultipleMusicsToList(
+            musics = musics,
+            mode = PlaybackListManager.AddMusicMode.Queue,
+        )
     }
 
     fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =

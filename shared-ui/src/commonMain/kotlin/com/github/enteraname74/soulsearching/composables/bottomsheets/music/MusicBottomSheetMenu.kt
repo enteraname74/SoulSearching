@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlaylistRemove
@@ -25,6 +26,7 @@ fun MusicBottomSheetMenu(
     quickAccessAction: () -> Unit,
     addToPlaylistAction: () -> Unit,
     playNextAction : () -> Unit,
+    addToQueueAction: () -> Unit,
     musicBottomSheetState: MusicBottomSheetState = MusicBottomSheetState.NORMAL,
     isInQuickAccess: Boolean,
     isCurrentlyPlaying: Boolean,
@@ -56,6 +58,11 @@ fun MusicBottomSheetMenu(
                     icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
                     text = strings.playNext,
                     onClick = playNextAction,
+                )
+                BottomSheetRow(
+                    icon = Icons.AutoMirrored.Rounded.QueueMusic,
+                    text = strings.addToQueue,
+                    onClick = addToQueueAction,
                 )
             }
             if (musicBottomSheetState == MusicBottomSheetState.PLAYLIST) {

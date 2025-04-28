@@ -139,6 +139,7 @@ object FrStrings : Strings {
     override val deleteSelectedMusics = "Supprimer les musiques sélectionnées"
 
     override val playNext = "Jouer ensuite"
+    override val addToQueue = "Ajouter à la file d'attente"
 
     override val personalizedThemeTitle = "Thème personnalisé"
     override val personalizedThemeText = "Appliquer le thème dynamique sur :"

@@ -148,6 +148,7 @@ interface Strings {
     val deleteSelectedMusics: String
 
     val playNext: String
+    val addToQueue: String
 
     val personalizedThemeTitle: String
     val personalizedThemeText: String

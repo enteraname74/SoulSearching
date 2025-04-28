@@ -25,6 +25,7 @@ class MusicBottomSheet(
     private val selectedMusic: Music,
     private val onModifyMusic: () -> Unit,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val onDeleteMusic: () -> Unit,
     private val onRemoveFromPlaylist: () -> Unit,
@@ -87,6 +88,10 @@ class MusicBottomSheet(
             playNextAction = {
                 closeWithAnim()
                 onPlayNext()
+            },
+            addToQueueAction = {
+                closeWithAnim()
+                onAddToQueue()
             },
             isInQuickAccess = selectedMusic.isInQuickAccess,
             isCurrentlyPlaying = playbackManager.isSameMusicAsCurrentPlayedOne(selectedMusic.musicId),
