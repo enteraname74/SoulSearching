@@ -112,6 +112,7 @@ internal class PlaybackListManager(
                             updatedPlayedList.add(nextSongIndex, music)
                         }
                     }
+
                     AddMusicMode.Queue -> {
                         updatedPlayedList.add(music)
                     }
@@ -155,32 +156,45 @@ internal class PlaybackListManager(
         mode: AddMusicMode,
     ) {
         if (musics.isEmpty()) return
-        /*
-        If we have not initialized the player and if we have more than 2 songs, we need to do the following :
-        - Add the first song
-        - Add all the other songs in reverse.
-         */
-        if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
-            addMusicToList(
-                music = musics[0],
-                mode = mode,
-            )
-            if (musics.size > 1) {
-                musics.subList(1, musics.size).reversed().forEach { music ->
+        when (mode) {
+            AddMusicMode.Next -> {
+                /*
+                If we have not initialized the player and if we have more than 2 songs, we need to do the following :
+                - Add the first song
+                - Add all the other songs in reverse.
+                 */
+                if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
                     addMusicToList(
-                        music = music,
+                        music = musics[0],
+                        mode = mode,
+                    )
+                    if (musics.size > 1) {
+                        musics.subList(1, musics.size).reversed().forEach { music ->
+                            addMusicToList(
+                                music = music,
+                                mode = mode,
+                            )
+                        }
+                    }
+                }
+
+                if (_state.value is PlaybackListState.Data) {
+                    musics.reversed().forEach { music ->
+                        addMusicToList(
+                            music = music,
+                            mode = mode,
+                        )
+                    }
+                }
+            }
+
+            AddMusicMode.Queue -> {
+                musics.forEach {
+                    addMusicToList(
+                        music = it,
                         mode = mode,
                     )
                 }
-            }
-        }
-
-        if (_state.value is PlaybackListState.Data) {
-            musics.reversed().forEach { music ->
-                addMusicToList(
-                    music = music,
-                    mode = mode,
-                )
             }
         }
     }

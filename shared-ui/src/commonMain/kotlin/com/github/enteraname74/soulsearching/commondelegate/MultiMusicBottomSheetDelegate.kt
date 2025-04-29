@@ -196,6 +196,16 @@ class MultiMusicBottomSheetDelegateImpl(
                     multiSelectionManagerImpl?.clearMultiSelection()
                     setBottomSheetState(null)
                 },
+                onAddToQueue = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
+                        playbackManager.addMultipleMusicsToQueue(
+                            musics = selectedMusics,
+                        )
+                    }
+                    multiSelectionManagerImpl?.clearMultiSelection()
+                    setBottomSheetState(null)
+                },
                 onRemoveFromPlayedList = {
                     CoroutineScope(Dispatchers.IO).launch {
                         playbackManager.removeSongsFromPlayedPlaylist(
@@ -206,7 +216,6 @@ class MultiMusicBottomSheetDelegateImpl(
                     setBottomSheetState(null)
                 },
                 musicBottomSheetState = musicBottomSheetState,
-                multiSelectionManagerImpl = multiSelectionManagerImpl,
             )
         )
     }

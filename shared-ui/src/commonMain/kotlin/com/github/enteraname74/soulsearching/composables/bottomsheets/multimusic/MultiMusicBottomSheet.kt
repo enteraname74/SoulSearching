@@ -20,11 +20,11 @@ import org.koin.core.component.inject
 import java.util.*
 
 class MultiMusicBottomSheet(
-    private val multiSelectionManagerImpl: MultiSelectionManagerImpl?,
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
     private val onDeleteAll: () -> Unit,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val onRemoveFromPlaylist: () -> Unit,
     private val onAddToPlaylist: () -> Unit,
@@ -60,6 +60,10 @@ class MultiMusicBottomSheet(
             playNextAction = {
                 closeWithAnim()
                 onPlayNext()
+            },
+            addToQueueAction = {
+                closeWithAnim()
+                onAddToQueue()
             },
             isPlayedListEmpty = (playbackState as? PlaybackManagerState.Data)?.playedList?.isEmpty() != false,
         )
