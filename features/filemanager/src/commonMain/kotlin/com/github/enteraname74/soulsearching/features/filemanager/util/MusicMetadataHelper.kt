@@ -7,17 +7,31 @@ import org.jaudiotagger.tag.Tag
 import java.io.File
 
 class MusicMetadataHelper {
-    fun getMusicAlbumPosition(musicPath: String): Int? =
+    fun getFields(
+        musicPath: String,
+        fields: List<MetadataField>,
+    ): Map<MetadataField, String> =
         runCatching {
             val audioFile: AudioFile = AudioFileIO.read(File(musicPath))
             val tag: Tag = audioFile.tag
-            tag.getFirst(FieldKey.TRACK)?.toIntOrNull()
-        }.getOrNull()
 
-    fun getAlbumArtist(musicPath: String): String? =
-        runCatching {
-            val audioFile: AudioFile = AudioFileIO.read(File(musicPath))
-            val tag: Tag = audioFile.tag
-            tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() }
-        }.getOrNull()
+            buildMap {
+                fields.forEach { field ->
+                    tag.getFirst(field.toFieldKey())?.takeIf { it.isNotBlank() }?.let {
+                        put(field, it)
+                    }
+                }
+            }
+        }.getOrElse { emptyMap() }
+
+    private fun MetadataField.toFieldKey(): FieldKey =
+        when(this) {
+            MetadataField.Track -> FieldKey.TRACK
+            MetadataField.AlbumArtist -> FieldKey.ALBUM_ARTIST
+        }
+}
+
+enum class MetadataField {
+    Track,
+    AlbumArtist;
 }
