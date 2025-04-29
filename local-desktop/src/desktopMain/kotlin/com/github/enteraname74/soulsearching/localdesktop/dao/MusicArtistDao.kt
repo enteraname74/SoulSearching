@@ -31,13 +31,13 @@ internal class MusicArtistDao {
     }
 
     suspend fun delete(musicArtist: MusicArtist) = flowTransactionOn {
-        MusicArtistTable.deleteWhere { musicId eq musicArtist.musicId and (artistId eq musicArtist.artistId) }
+        MusicArtistTable.deleteWhere { id eq musicArtist.id }
     }
 
     suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) {
         flowTransactionOn {
             MusicArtistTable.upsert {
-                if (musicArtist.id != 0L) it[id] = musicArtist.id
+                it[id] = musicArtist.id
                 it[musicId] = musicArtist.musicId
                 it[artistId] = musicArtist.artistId
             }
@@ -47,7 +47,7 @@ internal class MusicArtistDao {
     suspend fun upsertAll(musicArtists: List<MusicArtist>) {
         flowTransactionOn {
             MusicArtistTable.batchUpsert(musicArtists) {musicArtist ->
-                if (musicArtist.id != 0L) this[id] = musicArtist.id
+                this[id] = musicArtist.id
                 this[musicId] = musicArtist.musicId
                 this[artistId] = musicArtist.artistId
             }

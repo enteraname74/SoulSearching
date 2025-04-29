@@ -18,13 +18,8 @@ class MusicArtistRepositoryImpl(
         musicArtistDataSource.get(artistId, musicId)
 
     override suspend fun upsertMusicIntoArtist(musicArtist: MusicArtist) {
-        val id: Long = get(
-            artistId = musicArtist.artistId,
-            musicId = musicArtist.musicId,
-        )?.id ?: musicArtist.id
-
         musicArtistDataSource.upsertMusicIntoArtist(
-            musicArtist = musicArtist.copy(id = id)
+            musicArtist = musicArtist,
         )
     }
 

@@ -15,7 +15,63 @@ class Migration18To19: ExposedMigration(
 ), KoinComponent {
     private val musicMetadataHelper by inject<MusicMetadataHelper>()
 
+    private fun Transaction.mxnTableMigration(
+        tableName: String,
+        mColumnName: String,
+        nColumnName: String,
+        mTableName: String,
+        nTableName: String,
+    ) {
+        exec(
+            """
+            CREATE TABLE ${tableName}_new (
+                id VARCHAR(256) PRIMARY KEY NOT NULL,
+                $mColumnName UUID NOT NULL,
+                $nColumnName UUID NOT NULL,
+                FOREIGN KEY (${mColumnName}) REFERENCES ${mTableName}(id) ON DELETE CASCADE,
+                FOREIGN KEY (${nColumnName}) REFERENCES ${nTableName}(id) ON DELETE CASCADE
+            )
+        """
+        )
+
+        exec(
+            """
+            INSERT INTO ${tableName}_new (id, ${mColumnName}, ${nColumnName})
+            SELECT $mColumnName || $nColumnName, ${mColumnName}, $nColumnName FROM $tableName
+        """
+        )
+
+        exec("DROP TABLE $tableName")
+        exec("ALTER TABLE ${tableName}_new RENAME TO $tableName")
+
+        exec("CREATE INDEX index_${tableName}_${mColumnName} ON ${tableName}(${mColumnName})")
+        exec("CREATE INDEX index_${tableName}_${nColumnName} ON ${tableName}(${nColumnName})")
+    }
+
+    private fun Transaction.musicArtistMigration() {
+        mxnTableMigration(
+            tableName = "MusicArtist",
+            mColumnName = "musicId",
+            nColumnName = "artistId",
+            mTableName = "Music",
+            nTableName = "Artist",
+        )
+    }
+
+    private fun Transaction.musicPlaylistMigration() {
+        mxnTableMigration(
+            tableName = "MusicPlaylist",
+            mColumnName = "musicId",
+            nColumnName = "playlistId",
+            mTableName = "Music",
+            nTableName = "Playlist"
+        )
+    }
+
     override fun Transaction.migrate() {
+        musicArtistMigration()
+        musicPlaylistMigration()
+
         MusicTable
             .select(MusicTable.id, MusicTable.path)
             .forEach { row ->

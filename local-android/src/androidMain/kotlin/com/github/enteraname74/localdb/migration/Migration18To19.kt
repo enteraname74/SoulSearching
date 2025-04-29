@@ -11,9 +11,20 @@ import kotlin.uuid.toJavaUuid
 class Migration18To19(
     private val musicMetadataHelper: MusicMetadataHelper,
 ) : Migration(18, 19) {
+    private fun artistMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomArtist ADD COLUMN coverUrl TEXT")
+    }
+
+    private fun playlistMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomPlaylist ADD COLUMN coverUrl TEXT")
+    }
+
     @SuppressLint("Range")
     @OptIn(ExperimentalUuidApi::class)
     override fun migrate(db: SupportSQLiteDatabase) {
+        artistMigration(db)
+        playlistMigration(db)
+
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN albumPosition INTEGER")
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN albumArtist TEXT")
 

@@ -16,7 +16,7 @@ internal class MusicPlaylistDao {
     suspend fun upsertMusicIntoPlaylist(musicPlaylist: MusicPlaylist) {
         flowTransactionOn {
             MusicPlaylistTable.upsert {
-                if (musicPlaylist.id != 0L) it[id] = musicPlaylist.id
+                it[id] = musicPlaylist.id
                 it[musicId] = musicPlaylist.musicId
                 it[playlistId] = musicPlaylist.playlistId
             }
