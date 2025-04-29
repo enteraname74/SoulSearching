@@ -15,6 +15,7 @@ class MultiArtistBottomSheet(
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val onDelete: () -> Unit,
 ): SoulBottomSheet, KoinComponent {
@@ -42,6 +43,10 @@ class MultiArtistBottomSheet(
             playNextAction = {
                 closeWithAnim()
                 onPlayNext()
+            },
+            addToQueueAction = {
+                closeWithAnim()
+                onAddToQueue()
             },
             removeFromPlayedListAction = {
                 closeWithAnim()

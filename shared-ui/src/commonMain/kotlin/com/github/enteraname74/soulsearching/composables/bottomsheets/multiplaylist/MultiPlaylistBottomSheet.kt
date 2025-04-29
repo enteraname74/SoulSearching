@@ -15,6 +15,7 @@ class MultiPlaylistBottomSheet(
     private val onClose: () -> Unit,
     private val selectedIds: List<UUID>,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val onDelete: () -> Unit,
 ): SoulBottomSheet, KoinComponent {
@@ -37,6 +38,7 @@ class MultiPlaylistBottomSheet(
             total = selectedIds.size,
             deleteAction = onDelete,
             playNextAction = onPlayNext,
+            addToQueueAction = onAddToQueue,
             removeFromPlayedListAction = onRemoveFromPlayedList,
             isPlayedListEmpty = playbackState.isEmpty(),
         )

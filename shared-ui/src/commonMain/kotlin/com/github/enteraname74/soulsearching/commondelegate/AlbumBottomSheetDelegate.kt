@@ -87,6 +87,15 @@ class AlbumBottomSheetDelegateImpl(
                         setBottomSheetState(null)
                     }
                 },
+                onAddToQueue = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playbackManager.addMultipleMusicsToQueue(
+                            musics = albumWithMusics.musics,
+                        )
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                },
                 onRemoveFromPlayedList = {
                     CoroutineScope(Dispatchers.IO).launch {
                         playbackManager.removeSongsFromPlayedPlaylist(

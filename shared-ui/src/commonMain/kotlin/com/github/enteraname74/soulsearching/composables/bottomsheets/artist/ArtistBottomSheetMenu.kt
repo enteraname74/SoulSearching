@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.composables.bottomsheets.artist
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlaylistRemove
@@ -18,6 +19,7 @@ fun ArtistBottomSheetMenu(
     modifyAction: () -> Unit,
     deleteAction: () -> Unit,
     playNextAction: () -> Unit,
+    addToQueueAction: () -> Unit,
     quickAccessAction: () -> Unit,
     isInQuickAccess: Boolean,
     selectedArtist: ArtistWithMusics,
@@ -44,6 +46,11 @@ fun ArtistBottomSheetMenu(
                 icon = Icons.AutoMirrored.Rounded.PlaylistPlay,
                 text = strings.playNext,
                 onClick = playNextAction,
+            )
+            BottomSheetRow(
+                icon = Icons.AutoMirrored.Rounded.QueueMusic,
+                text = strings.addToQueue,
+                onClick = addToQueueAction,
             )
             if (!isPlayedListEmpty) {
                 BottomSheetRow(

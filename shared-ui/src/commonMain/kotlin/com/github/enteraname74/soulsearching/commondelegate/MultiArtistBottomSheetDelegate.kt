@@ -98,6 +98,27 @@ class MultiArtistBottomSheetDelegateImpl(
                         setBottomSheetState(null)
                     }
                 },
+                onAddToQueue = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val musics: List<Music> = buildList {
+                            selectedIds
+                                .forEach { artistId ->
+                                    getArtistWithMusicsUseCase(
+                                        artistId = artistId
+                                    ).firstOrNull()?.let { artistWithMusics ->
+                                        addAll(artistWithMusics.musics)
+                                    }
+                                }
+                        }
+
+                        playbackManager.addMultipleMusicsToQueue(
+                            musics = musics,
+                        )
+
+                        multiSelectionManagerImpl?.clearMultiSelection()
+                        setBottomSheetState(null)
+                    }
+                },
                 onRemoveFromPlayedList = {
                     CoroutineScope(Dispatchers.IO).launch {
                         selectedIds.forEach { artistId ->

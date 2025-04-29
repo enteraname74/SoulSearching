@@ -16,6 +16,7 @@ class ArtistBottomSheet(
     private val selectedArtist: ArtistWithMusics,
     private val onModifyArtist: () -> Unit,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val onDeleteArtist: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
@@ -52,6 +53,10 @@ class ArtistBottomSheet(
             playNextAction = {
                 closeWithAnim()
                 onPlayNext()
+            },
+            addToQueueAction = {
+                closeWithAnim()
+                onAddToQueue()
             },
             removeFromPlayedListAction = {
                 closeWithAnim()

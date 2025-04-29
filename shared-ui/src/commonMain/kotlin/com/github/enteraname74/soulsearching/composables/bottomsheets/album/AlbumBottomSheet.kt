@@ -8,9 +8,6 @@ import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -19,6 +16,7 @@ class AlbumBottomSheet(
     private val selectedAlbum: AlbumWithMusics,
     private val onModifyAlbum: () -> Unit,
     private val onPlayNext: () -> Unit,
+    private val onAddToQueue: () -> Unit,
     private val onDeleteAlbum: () -> Unit,
     private val onRemoveFromPlayedList: () -> Unit,
     private val toggleQuickAccess: () -> Unit,
@@ -55,6 +53,10 @@ class AlbumBottomSheet(
             playNextAction = {
                 closeWithAnim()
                 onPlayNext()
+            },
+            addToQueueAction = {
+                closeWithAnim()
+                onAddToQueue()
             },
             removeFromPlayedListAction = {
                 closeWithAnim()
