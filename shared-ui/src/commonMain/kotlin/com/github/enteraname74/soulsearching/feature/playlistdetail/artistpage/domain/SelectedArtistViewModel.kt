@@ -5,8 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.album.GetAlbumsWithMusicsOfArtistUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.artist.UpdateArtistNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
@@ -31,7 +30,7 @@ import java.util.*
 class SelectedArtistViewModel(
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
-    private val getAlbumsWithMusicsOfArtistUseCase: GetAlbumsWithMusicsOfArtistUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val updateArtistNbPlayedUseCase: UpdateArtistNbPlayedUseCase,
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
@@ -71,7 +70,7 @@ class SelectedArtistViewModel(
             flowOf(SelectedArtistState.Loading)
         } else {
             combine(
-                getAlbumsWithMusicsOfArtistUseCase(artistId = artistId),
+                commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
                 getArtistWithMusicsUseCase(artistId = artistId),
             ) { albums, artistWithMusics ->
                 when {

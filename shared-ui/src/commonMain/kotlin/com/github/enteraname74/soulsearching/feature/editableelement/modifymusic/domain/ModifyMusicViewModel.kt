@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
@@ -29,30 +29,16 @@ import com.github.enteraname74.soulsearching.features.filemanager.usecase.Update
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
-import java.util.UUID
+import java.util.*
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
     private val getMusicUseCase: GetMusicUseCase,
-    private val getAlbumsNameFromSearchStringUseCase: GetAlbumsNameFromSearchStringUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
@@ -116,7 +102,7 @@ class ModifyMusicViewModel(
                     deletedArtistIds.mapLatest { ids ->
                         ModifyMusicFormState.Data(
                             initialMusic = music,
-                            updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
+                            updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
                             updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
                             artistsOfMusic = artists.plus(addedArtists).filter { it.artistId !in ids },
                             onDeleteArtist = { artistId ->

@@ -2,10 +2,10 @@ package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.*
-import com.github.enteraname74.domain.usecase.album.GetDuplicatedAlbumUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
 import kotlinx.coroutines.flow.first
-import java.util.UUID
+import java.util.*
 
 class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
@@ -13,7 +13,7 @@ class UpdateAlbumUseCase(
     private val musicRepository: MusicRepository,
     private val musicAlbumRepository: MusicAlbumRepository,
     private val albumArtistRepository: AlbumArtistRepository,
-    private val getDuplicatedAlbumUseCase: GetDuplicatedAlbumUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicArtistRepository: MusicArtistRepository,
@@ -53,7 +53,7 @@ class UpdateAlbumUseCase(
         }
 
         // We then check if there is an album with the same name and artist that already exist.
-        val duplicateAlbum = getDuplicatedAlbumUseCase(
+        val duplicateAlbum = commonAlbumUseCase.getDuplicatedAlbum(
             albumId = newAlbumWithArtistInformation.album.albumId,
             albumName = newAlbumWithArtistInformation.album.albumName,
             artistId = albumArtistToSave.artistId

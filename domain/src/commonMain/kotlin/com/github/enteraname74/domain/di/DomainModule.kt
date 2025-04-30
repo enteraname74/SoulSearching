@@ -23,37 +23,18 @@ import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlayl
 import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
-import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.GetLatestReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.GetLatestViewedReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.SetLatestViewedReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.*
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
     // USE CASES
     // Album
+    singleOf(::CommonAlbumUseCase)
     singleOf(::DeleteAlbumIfEmptyUseCase)
     singleOf(::DeleteAlbumUseCase)
-    singleOf(::DeleteAllAlbumsUseCase)
-    singleOf(::GetAlbumsNameFromSearchStringUseCase)
-    singleOf(::GetAlbumsOfArtistUseCase)
-    singleOf(::GetAlbumsWithMusicsOfArtistUseCase)
-    singleOf(::GetAlbumUseCase)
-    singleOf(::GetAlbumWithMusicsUseCase)
-    singleOf(::GetAllAlbumsUseCase)
-    singleOf(::GetAllAlbumsWithMusicsFromQuickAccessUseCase)
-    singleOf(::GetAllAlbumsWithArtistUseCase)
-    singleOf(::GetAllAlbumsWithMusicsUseCase)
     singleOf(::GetAllAlbumWithMusicsSortedUseCase)
     singleOf(::GetCorrespondingAlbumUseCase)
-    singleOf(::GetDuplicatedAlbumUseCase)
-    singleOf(::GetNumberOfAlbumsWithCoverIdUseCase)
-    singleOf(::UpdateAlbumCoverUseCase)
-    singleOf(::UpdateAlbumNbPlayedUseCase)
-    singleOf(::UpsertAlbumUseCase)
-    singleOf(::UpsertAllAlbumsUseCase)
 
     // AlbumArtist
     singleOf(::GetAllAlbumArtistUseCase)

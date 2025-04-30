@@ -9,8 +9,7 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
@@ -37,10 +36,9 @@ import kotlinx.coroutines.plus
 class SettingsAdvancedViewModel(
     private val loadingManager: LoadingManager,
     private val getAllMusicUseCase: GetAllMusicUseCase,
-    private val getAllAlbumsUseCase: GetAllAlbumsUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val getAllArtistsUseCase: GetAllArtistsUseCase,
     private val getAllPlaylistsUseCase: GetAllPlaylistsUseCase,
-    private val upsertAllAlbumsUseCase: UpsertAllAlbumsUseCase,
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
     private val upsertAllPlaylistsUseCase: UpsertAllPlaylistsUseCase,
@@ -270,8 +268,8 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadAlbums() {
         if (_state.value.shouldReloadAlbumsCovers) {
-            val allAlbums: List<Album> = getAllAlbumsUseCase().first()
-            upsertAllAlbumsUseCase(
+            val allAlbums: List<Album> = commonAlbumUseCase.getAll().first()
+            commonAlbumUseCase.upsertAll(
                 albums = allAlbums.map { album ->
                     album.cover = null
                     album

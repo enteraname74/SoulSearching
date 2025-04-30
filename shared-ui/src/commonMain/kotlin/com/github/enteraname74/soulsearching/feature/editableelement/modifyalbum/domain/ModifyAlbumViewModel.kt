@@ -5,8 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAlbumsNameFromSearchStringUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
 import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -28,9 +27,8 @@ import kotlinx.coroutines.flow.*
 import java.util.*
 
 class ModifyAlbumViewModel(
-    private val getAlbumsNameFromSearchStringUseCase: GetAlbumsNameFromSearchStringUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
     private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val playbackManager: PlaybackManager,
@@ -52,7 +50,7 @@ class ModifyAlbumViewModel(
         if (id == null) {
             flowOf(null)
         } else {
-            getAlbumWithMusicsUseCase(albumId = id)
+            commonAlbumUseCase.getAlbumWithMusics(albumId = id)
         }
     }
 
@@ -83,7 +81,7 @@ class ModifyAlbumViewModel(
         } else {
             ModifyAlbumFormState.Data(
                 initialAlbum = album,
-                updateFoundAlbums = { getAlbumsNameFromSearchStringUseCase(it) },
+                updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
                 updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
             )
         }
@@ -186,7 +184,7 @@ class ModifyAlbumViewModel(
                 updateAlbumUseCase(newAlbumWithArtistInformation = newAlbumWithArtistInformation)
 
                 // We retrieve the updated album
-                val newAlbumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
+                val newAlbumWithMusics: AlbumWithMusics = commonAlbumUseCase.getAlbumWithMusics(
                     albumId = newAlbumWithArtistInformation.album.albumId
                 ).first() ?: return@withLoading
 

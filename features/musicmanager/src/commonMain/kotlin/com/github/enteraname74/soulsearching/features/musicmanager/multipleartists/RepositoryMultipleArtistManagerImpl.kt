@@ -4,8 +4,8 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumArtist
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.MusicArtist
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetAlbumsOfArtistUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.*
@@ -17,7 +17,7 @@ import org.koin.core.component.inject
 import java.util.*
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
-    private val getAlbumsOfArtistUseCase: GetAlbumsOfArtistUseCase by inject()
+    private val commonAlbumUseCase: CommonAlbumUseCase by inject()
     private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase by inject()
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
     private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
@@ -34,7 +34,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     private val cachedAlbumArtists: ArrayList<AlbumArtist> = arrayListOf()
 
     override suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album> =
-        getAlbumsOfArtistUseCase(artistId = artist.artistId).firstOrNull() ?: emptyList()
+        commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId).firstOrNull() ?: emptyList()
 
     override suspend fun createNewArtist(artistName: String): Artist {
         val newArtist = Artist(
@@ -64,7 +64,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
             ?: emptyList()
 
     override suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID> =
-        getAlbumsOfArtistUseCase(artistId = artist.artistId)
+        commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId)
             .firstOrNull()
             ?.map { it.albumId }
             ?: emptyList()

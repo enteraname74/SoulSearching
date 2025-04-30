@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.features.musicmanager.persistence
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.album.UpsertAllAlbumsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
@@ -21,7 +21,7 @@ class MusicPersistence(
     private val optimizedCachedData: OptimizedCachedData,
 ): KoinComponent {
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase by inject()
-    private val upsertAllAlbumsUseCase: UpsertAllAlbumsUseCase by inject()
+    private val commonAlbumUseCase: CommonAlbumUseCase by inject()
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase by inject()
     private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase by inject()
     private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
@@ -31,7 +31,7 @@ class MusicPersistence(
 
     suspend fun saveAll() {
         upsertAllArtistsUseCase(optimizedCachedData.artistsByName.values.toList())
-        upsertAllAlbumsUseCase(optimizedCachedData.albumsByInfo.values.toList())
+        commonAlbumUseCase.upsertAll(optimizedCachedData.albumsByInfo.values.toList())
         upsertAllMusicsUseCase(optimizedCachedData.musicsByPath.values.toList())
         upsertAllAlbumArtistUseCase(optimizedCachedData.albumArtists)
         upsertAllMusicAlbumUseCase(optimizedCachedData.musicAlbums)

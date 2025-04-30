@@ -3,13 +3,9 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumsWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
@@ -20,16 +16,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class SettingsAllFoldersViewModel(
     private val getAllFoldersUseCase: GetAllFoldersUseCase,
     private val upsertFolderUseCase: UpsertFolderUseCase,
     private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
-    private val getAllAlbumWithMusicsUseCase: GetAllAlbumsWithMusicsUseCase,
     private val getAllArtistWithMusicsUseCase: GetAllArtistWithMusicsUseCase,
-    private val deleteAllAlbumUseCase: DeleteAllAlbumsUseCase,
+    private val commonAlbumsUseCase: CommonAlbumUseCase,
     private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
@@ -101,7 +96,7 @@ class SettingsAllFoldersViewModel(
                         deleteAllMusicsUseCase(ids = musicsFromFolder)
                         playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
 
-                        val albumsToDelete = getAllAlbumWithMusicsUseCase()
+                        val albumsToDelete = commonAlbumsUseCase.getAllAlbumsWithMusics()
                             .first()
                             .filter { it.musics.isEmpty() }
                             .map { it.album.albumId }
@@ -111,7 +106,7 @@ class SettingsAllFoldersViewModel(
                             .filter { it.musics.isEmpty() }
                             .map { it.artist.artistId }
 
-                        deleteAllAlbumUseCase(albumsIds = albumsToDelete)
+                        commonAlbumsUseCase.deleteAll(albumsIds = albumsToDelete)
                         deleteAllArtistsUseCase(artistsIds = artistsToDelete)
                     }
                 }

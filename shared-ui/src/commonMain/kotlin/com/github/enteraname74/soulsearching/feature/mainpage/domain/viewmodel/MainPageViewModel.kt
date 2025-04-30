@@ -9,7 +9,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
@@ -94,7 +94,7 @@ class MainPageViewModel(
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
     private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
     private val getMusicUseCase: GetMusicUseCase by inject()
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase by inject()
+    private val commonAlbumUseCase: CommonAlbumUseCase by inject()
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
     private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase by inject()
 
@@ -591,7 +591,7 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedAlbum: AlbumWithMusics =
-                getAlbumWithMusicsUseCase(albumId = selectedIds[0]).firstOrNull() ?: return
+                commonAlbumUseCase.getAlbumWithMusics(albumId = selectedIds[0]).firstOrNull() ?: return
             showAlbumBottomSheet(albumWithMusics = selectedAlbum)
         } else {
             multiAlbumBottomSheetDelegateImpl.showMultiAlbumBottomSheet()

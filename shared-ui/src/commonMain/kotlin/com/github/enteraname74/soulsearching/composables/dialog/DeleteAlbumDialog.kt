@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ColorFilter
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -26,7 +26,7 @@ class DeleteAlbumDialog(
     private val onClose: () -> Unit,
 ): SoulDialog, KoinComponent {
     private val playbackManager: PlaybackManager by inject()
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase by inject()
+    private val commonAlbumUseCase: CommonAlbumUseCase by inject()
 
     @Composable
     override fun Dialog() {
@@ -34,7 +34,7 @@ class DeleteAlbumDialog(
             confirmAction =  {
                 onDelete()
                 CoroutineScope(Dispatchers.IO).launch {
-                    val albumWithMusics: AlbumWithMusics = getAlbumWithMusicsUseCase(
+                    val albumWithMusics: AlbumWithMusics = commonAlbumUseCase.getAlbumWithMusics(
                         albumId = selectedAlbum.albumId,
                     ).first() ?: return@launch
                     playbackManager.removeSongsFromPlayedPlaylist(

@@ -1,8 +1,7 @@
 package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.album.DeleteAllAlbumsUseCase
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multialbum.MultiAlbumBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiAlbumDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -21,8 +20,7 @@ interface MultiAlbumBottomSheetDelegate {
 }
 
 class MultiAlbumBottomSheetDelegateImpl(
-    private val deleteAllAlbumsUseCase: DeleteAllAlbumsUseCase,
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): MultiAlbumBottomSheetDelegate {
@@ -49,7 +47,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             selectedIdsToDelete.forEach { albumId ->
-                                getAlbumWithMusicsUseCase(
+                                commonAlbumUseCase.getAlbumWithMusics(
                                     albumId = albumId
                                 ).firstOrNull()?.let { albumWithMusics ->
                                     playbackManager.removeSongsFromPlayedPlaylist(
@@ -57,7 +55,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                                     )
                                 }
                             }
-                            deleteAllAlbumsUseCase(selectedIdsToDelete)
+                            commonAlbumUseCase.deleteAll(selectedIdsToDelete)
                             multiSelectionManagerImpl?.clearMultiSelection()
                         }
                         setDialogState(null)
@@ -82,7 +80,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                         val musics: List<Music> = buildList {
                             selectedIds
                                 .forEach { albumId ->
-                                    getAlbumWithMusicsUseCase(
+                                    commonAlbumUseCase.getAlbumWithMusics(
                                         albumId = albumId
                                     ).firstOrNull()?.let { albumWithMusics ->
                                         addAll(albumWithMusics.musics)
@@ -103,7 +101,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                         val musics: List<Music> = buildList {
                             selectedIds
                                 .forEach { albumId ->
-                                    getAlbumWithMusicsUseCase(
+                                    commonAlbumUseCase.getAlbumWithMusics(
                                         albumId = albumId
                                     ).firstOrNull()?.let { albumWithMusics ->
                                         addAll(albumWithMusics.musics)
@@ -122,7 +120,7 @@ class MultiAlbumBottomSheetDelegateImpl(
                 onRemoveFromPlayedList = {
                     CoroutineScope(Dispatchers.IO).launch {
                         selectedIds.forEach { albumId ->
-                            getAlbumWithMusicsUseCase(
+                            commonAlbumUseCase.getAlbumWithMusics(
                                 albumId = albumId
                             ).firstOrNull()?.let { albumWithMusics ->
                                 playbackManager.removeSongsFromPlayedPlaylist(

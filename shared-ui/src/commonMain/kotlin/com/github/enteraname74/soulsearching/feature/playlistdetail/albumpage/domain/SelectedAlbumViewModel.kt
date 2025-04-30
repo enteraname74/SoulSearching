@@ -4,8 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.album.GetAlbumWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.album.UpdateAlbumNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
@@ -29,8 +28,7 @@ import java.util.*
 
 class SelectedAlbumViewModel(
     getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val getAlbumWithMusicsUseCase: GetAlbumWithMusicsUseCase,
-    private val updateAlbumNbPlayedUseCase: UpdateAlbumNbPlayedUseCase,
+    private val commonAlbumUseCase: CommonAlbumUseCase,
     private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
@@ -64,7 +62,7 @@ class SelectedAlbumViewModel(
         if (albumId == null) {
             flowOf(SelectedAlbumState.Loading)
         } else {
-            getAlbumWithMusicsUseCase(albumId = albumId).mapLatest { albumWithMusics ->
+            commonAlbumUseCase.getAlbumWithMusics(albumId = albumId).mapLatest { albumWithMusics ->
                 when {
                     albumWithMusics == null -> SelectedAlbumState.Error
                     else -> SelectedAlbumState.Data(
@@ -139,7 +137,7 @@ class SelectedAlbumViewModel(
     override fun onUpdateNbPlayed() {
         screenModelScope.launch {
             val albumId: UUID = (state.value as? SelectedAlbumState.Data)?.playlistDetail?.id ?: return@launch
-            updateAlbumNbPlayedUseCase(albumId = albumId)
+            commonAlbumUseCase.incrementAlbumNbPlayed(albumId = albumId)
         }
     }
 
