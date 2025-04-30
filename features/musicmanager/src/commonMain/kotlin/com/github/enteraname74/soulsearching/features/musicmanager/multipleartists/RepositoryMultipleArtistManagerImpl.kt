@@ -8,7 +8,10 @@ import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.*
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpdateMusicsAlbumUseCase
 import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
 import kotlinx.coroutines.flow.firstOrNull
@@ -18,7 +21,7 @@ import java.util.*
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
     private val commonAlbumUseCase: CommonAlbumUseCase by inject()
-    private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase by inject()
+    private val commonArtistUseCase: CommonArtistUseCase by inject()
     private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
     private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
     private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase by inject()
@@ -26,7 +29,6 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     private val updateMusicsAlbumUseCase: UpdateMusicsAlbumUseCase by inject()
     private val deleteAlbumUseCase: DeleteAlbumUseCase by inject()
     private val getAllArtistWithMusicsUseCase: GetAllArtistWithMusicsUseCase by inject()
-    private val getAllArtistsWithNameUseCase: GetAllArtistsWithNameUseCase by inject()
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase by inject()
 
     private val cachedArtists: ArrayList<Artist> = arrayListOf()
@@ -45,12 +47,12 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     }
 
     override suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist> =
-        getAllArtistsWithNameUseCase(artistsNames)
+        commonArtistUseCase.getAllFromName(artistsNames)
 
     override suspend fun deleteArtists(
         artists: List<Artist>,
     ) {
-        deleteAllArtistsUseCase(artistsIds = artists.map { it.artistId })
+        commonArtistUseCase.deleteAll(artistsIds = artists.map { it.artistId })
     }
 
     override suspend fun getArtistFromName(artistName: String): Artist? =

@@ -3,7 +3,7 @@ package com.github.enteraname74.soulsearching.features.filemanager.usecase
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.repository.*
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
 import java.util.*
 
@@ -14,7 +14,7 @@ class UpdateAlbumUseCase(
     private val musicAlbumRepository: MusicAlbumRepository,
     private val albumArtistRepository: AlbumArtistRepository,
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicArtistRepository: MusicArtistRepository,
 ) {
@@ -79,7 +79,7 @@ class UpdateAlbumUseCase(
         albumRepository.upsert(albumToSave)
 
         // We check and delete the initial artist if it no longer possess songs.
-        deleteArtistIfEmptyUseCase(artistId = initialArtist.artistId)
+        commonArtistUseCase.deleteIfEmpty(artistId = initialArtist.artistId)
     }
 
     private suspend fun replaceArtistOfMusic(

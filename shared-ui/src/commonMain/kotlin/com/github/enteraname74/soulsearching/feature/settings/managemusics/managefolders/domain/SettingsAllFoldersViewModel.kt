@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.DeleteAllArtistsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
 import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
 import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
@@ -25,7 +25,7 @@ class SettingsAllFoldersViewModel(
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
     private val getAllArtistWithMusicsUseCase: GetAllArtistWithMusicsUseCase,
     private val commonAlbumsUseCase: CommonAlbumUseCase,
-    private val deleteAllArtistsUseCase: DeleteAllArtistsUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): ScreenModel {
@@ -107,7 +107,7 @@ class SettingsAllFoldersViewModel(
                             .map { it.artist.artistId }
 
                         commonAlbumsUseCase.deleteAll(albumsIds = albumsToDelete)
-                        deleteAllArtistsUseCase(artistsIds = artistsToDelete)
+                        commonArtistUseCase.deleteAll(artistsIds = artistsToDelete)
                     }
                 }
             }

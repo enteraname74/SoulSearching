@@ -6,7 +6,7 @@ import com.github.enteraname74.domain.ext.getFirstsOrMax
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedByMostSongsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
@@ -22,7 +22,7 @@ class SettingsStatisticsViewModel(
     getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
     getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
-    getAllArtistWithMusicsSortedByMostSongsUseCase: GetAllArtistWithMusicsSortedByMostSongsUseCase,
+    commonArtistUseCase: CommonArtistUseCase,
 ) : ScreenModel {
     val state: StateFlow<SettingsStatisticsState> = combine(
         getAllMusicsSortedUseCase(
@@ -41,7 +41,7 @@ class SettingsStatisticsViewModel(
             sortDirection = SortDirection.DESC,
             sortType = SortType.NB_PLAYED,
         ),
-        getAllArtistWithMusicsSortedByMostSongsUseCase(),
+        commonArtistUseCase.getAllSortedByMostSongs(),
     ) { allMusics, allAlbums, allPlaylists, allArtists, allArtistsWithMostSongs ->
         SettingsStatisticsState(
             mostListenedMusics = allMusics

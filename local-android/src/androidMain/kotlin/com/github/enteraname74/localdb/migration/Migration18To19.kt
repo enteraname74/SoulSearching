@@ -73,28 +73,37 @@ class Migration18To19(
 
         val cursor = db.query("SELECT musicId, path FROM RoomMusic")
 
+        val mainInformation: HashMap<String, ByteArray> = hashMapOf()
         val cachedData: MutableList<CachedMusicUpdate> = mutableListOf()
 
         while (cursor.moveToNext()) {
             val musicIdAsBlob: ByteArray = cursor.getBlob(cursor.getColumnIndex("musicId"))
-            val path = cursor.getString(cursor.getColumnIndex("path"))
+            val path: String = cursor.getString(cursor.getColumnIndex("path"))
 
-            val metadata: Map<MetadataField, String> = musicMetadataHelper.getFields(
-                musicPath = path,
-                fields = listOf(
-                    MetadataField.Track,
-                    MetadataField.AlbumArtist,
-                )
-            )
-
-            cachedData.add(
-                CachedMusicUpdate(
-                    musicIdAsBlob = musicIdAsBlob,
-                    albumPosition = metadata[MetadataField.Track],
-                    albumArtist = metadata[MetadataField.AlbumArtist]
-                )
-            )
+            mainInformation[path] = musicIdAsBlob
         }
+
+        val metadata: Map<String, Map<MetadataField, String>> = musicMetadataHelper.getMetadataFromPaths(
+            musicPaths = mainInformation.keys.toList(),
+            fields = listOf(
+                MetadataField.Track,
+                MetadataField.AlbumArtist,
+            )
+        )
+
+        cachedData.addAll(
+            metadata.mapNotNull { (path, fields) ->
+                val id: ByteArray? = mainInformation[path]
+
+                id?.let {
+                    CachedMusicUpdate(
+                        musicIdAsBlob = id,
+                        albumPosition = fields[MetadataField.Track],
+                        albumArtist = fields[MetadataField.AlbumArtist]
+                    )
+                }
+            }
+        )
 
         cachedData.chunked(BATCH_SIZE).forEach { chunk ->
             val stringBuilder = StringBuilder()
@@ -119,14 +128,13 @@ class Migration18To19(
         }
     }
 
-    fun String?.formattedForDb(): String =
+    private fun String?.formattedForDb(): String =
         this?.let { "'${it.replace("'", "''")}'" } ?: "NULL"
 
     private fun ByteArray.toSQLiteHexLiteral(): String {
         return "X'" + joinToString("") { "%02x".format(it) } + "'"
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     override fun migrate(db: SupportSQLiteDatabase) {
         musicArtistMigration(db)
         musicPlaylistMigration(db)

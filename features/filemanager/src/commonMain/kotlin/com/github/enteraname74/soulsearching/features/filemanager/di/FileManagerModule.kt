@@ -11,7 +11,6 @@ import org.koin.dsl.module
 val fileManagerModule: Module = module {
     includes(fileManagerPlatformModule)
     singleOf(::MusicFileUpdater)
-    singleOf(::MusicMetadataHelper)
     singleOf(::CoverRetriever)
 
     // Use cases

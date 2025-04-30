@@ -7,14 +7,13 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
 
 class DeleteArtistUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(artistWithMusics: ArtistWithMusics) {
         /*
@@ -54,7 +53,7 @@ class DeleteArtistUseCase(
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            deleteArtistIfEmptyUseCase(it.artistId)
+            commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
     }
 }

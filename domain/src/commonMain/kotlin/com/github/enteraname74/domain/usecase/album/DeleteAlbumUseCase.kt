@@ -3,17 +3,17 @@ package com.github.enteraname74.domain.usecase.album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 
 class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(albumId: UUID) {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
@@ -45,14 +45,14 @@ class DeleteAlbumUseCase(
 
         // Finally we can check if we can delete the artist of the deleted album.
         albumWithMusics.artist?.let {
-            deleteArtistIfEmptyUseCase(
+            commonArtistUseCase.deleteIfEmpty(
                 artistId = it.artistId,
             )
         }
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            deleteArtistIfEmptyUseCase(it.artistId)
+            commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
     }
 

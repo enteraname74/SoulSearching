@@ -24,31 +24,27 @@ import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlayl
 import com.github.enteraname74.domain.usecase.playlist.*
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.*
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
     // USE CASES
     // Album
-    singleOf(::CommonAlbumUseCase)
-    singleOf(::DeleteAlbumIfEmptyUseCase)
-    singleOf(::DeleteAlbumUseCase)
-    singleOf(::GetAllAlbumWithMusicsSortedUseCase)
-    singleOf(::GetCorrespondingAlbumUseCase)
+    factoryOf(::CommonAlbumUseCase)
+    factoryOf(::DeleteAlbumIfEmptyUseCase)
+    factoryOf(::DeleteAlbumUseCase)
+    factoryOf(::GetAllAlbumWithMusicsSortedUseCase)
+    factoryOf(::GetCorrespondingAlbumUseCase)
 
     // AlbumArtist
-    singleOf(::GetAllAlbumArtistUseCase)
-    singleOf(::UpsertAlbumArtistUseCase)
-    singleOf(::UpsertAllAlbumArtistUseCase)
+    factoryOf(::GetAllAlbumArtistUseCase)
+    factoryOf(::UpsertAlbumArtistUseCase)
+    factoryOf(::UpsertAllAlbumArtistUseCase)
 
     // Artist
-    singleOf(::DeleteAllArtistsUseCase)
-    singleOf(::DeleteArtistIfEmptyUseCase)
+    factoryOf(::CommonArtistUseCase)
     singleOf(::DeleteArtistUseCase)
-    singleOf(::GetAllArtistsUseCase)
-    singleOf(::GetAllArtistsWithNameUseCase)
-    singleOf(::GetAllArtistWithMusicsFromQuickAccessUseCase)
-    singleOf(::GetAllArtistWithMusicsSortedByMostSongsUseCase)
     singleOf(::GetAllArtistWithMusicsSortedUseCase)
     singleOf(::GetAllArtistWithMusicsUseCase)
     singleOf(::GetArtistFromNameUseCase)

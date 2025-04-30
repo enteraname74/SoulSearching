@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
@@ -18,7 +18,7 @@ class UpdateMusicUseCase(
     private val artistRepository: ArtistRepository,
     private val musicArtistRepository: MusicArtistRepository,
     private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicFileUpdater: MusicFileUpdater,
@@ -109,7 +109,7 @@ class UpdateMusicUseCase(
 
         // We finally check if the previous artists can be deleted :
         previousArtists.forEach { artist ->
-            deleteArtistIfEmptyUseCase(
+            commonArtistUseCase.deleteIfEmpty(
                 artistId = artist.artistId,
             )
         }

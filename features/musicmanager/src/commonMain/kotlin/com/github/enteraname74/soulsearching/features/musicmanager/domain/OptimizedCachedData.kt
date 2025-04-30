@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.features.musicmanager.domain
 
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
@@ -30,13 +30,13 @@ data class OptimizedCachedData(
 
     companion object : KoinComponent {
         private val getAllMusicUseCase: GetAllMusicUseCase by inject()
-        private val getAllArtistsUseCase: GetAllArtistsUseCase by inject()
+        private val commonArtistUseCase: CommonArtistUseCase by inject()
         private val commonAlbumUseCase: CommonAlbumUseCase by inject()
 
         suspend fun fromDb(): OptimizedCachedData = OptimizedCachedData(
             musicsByPath = getAllMusicUseCase().first().associateBy { it.path } as HashMap<String, Music>,
             artistsByName =
-            getAllArtistsUseCase().first().associateBy { it.artistName } as HashMap<String, Artist>,
+            commonArtistUseCase.getAll().first().associateBy { it.artistName } as HashMap<String, Artist>,
             albumsByInfo = commonAlbumUseCase.getAllAlbumsWithArtist().first().associate {
                 AlbumInformation(
                     name = it.album.albumName,

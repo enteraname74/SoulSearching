@@ -6,18 +6,18 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 
 class DeleteMusicUseCase(
     private val musicRepository: MusicRepository,
     private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(musicId: UUID) {
         val musicToRemove: Music = musicRepository.getFromId(musicId = musicId).first() ?: return
@@ -37,7 +37,7 @@ class DeleteMusicUseCase(
             deleteAlbumIfEmptyUseCase(albumId = musicAlbum.albumId)
         }
         artists.forEach { musicArtist ->
-            deleteArtistIfEmptyUseCase(artistId = musicArtist.artistId)
+            commonArtistUseCase.deleteIfEmpty(artistId = musicArtist.artistId)
         }
     }
 

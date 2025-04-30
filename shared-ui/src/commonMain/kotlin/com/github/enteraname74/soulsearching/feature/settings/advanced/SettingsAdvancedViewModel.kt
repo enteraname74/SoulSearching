@@ -10,7 +10,7 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
@@ -37,7 +37,7 @@ class SettingsAdvancedViewModel(
     private val loadingManager: LoadingManager,
     private val getAllMusicUseCase: GetAllMusicUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val getAllArtistsUseCase: GetAllArtistsUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val getAllPlaylistsUseCase: GetAllPlaylistsUseCase,
     private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
     private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
@@ -280,7 +280,7 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadArtists() {
         if (_state.value.shouldReloadArtistsCovers) {
-            val allArtists: List<Artist> = getAllArtistsUseCase().first()
+            val allArtists: List<Artist> = commonArtistUseCase.getAll().first()
             upsertAllArtistsUseCase(
                 allArtists = allArtists.map { artist ->
                     artist.cover = null
