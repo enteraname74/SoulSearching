@@ -31,8 +31,8 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.Res
-import com.github.enteraname74.soulsearching.shared_ui.generated.resources.app_logo_uni_xml
+import com.github.enteraname74.soulsearching.app.generated.resources.Res
+import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

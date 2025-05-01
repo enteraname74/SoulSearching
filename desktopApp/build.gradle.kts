@@ -26,8 +26,8 @@ dependencies {
     implementation(libs.foundation.desktop)
     implementation(compose.components.resources)
     implementation(libs.file.kit)
+    implementation(project(":app"))
 
-    implementation(project(":shared-ui"))
     implementation(project(":domain"))
 
     implementation(libs.bundles.koin)
