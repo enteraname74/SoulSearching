@@ -42,7 +42,8 @@ interface Strings {
     val activateRemoteLyricsFetchText: String
     val activateRemoteLyricsFetchHint: String
     val noLyricsFound: String
-    val lyricsProvider: String
+    val localLyricsProvider: String
+    val remoteLyricsProvider: String
     val lyricsProviderName: String get() = "LrcLib"
 
     val completeApplicationTitle: String

@@ -94,7 +94,7 @@ class CoverFolderRetrieverTests {
 
     @Test
     fun givenDynamicSettings_whenSerializingSettings_thenDeserializedSettingsShouldBeTheSame() {
-        var settings = CoverFolderRetriever(
+        val settings = CoverFolderRetriever(
             folderModePath = "my/folder/path",
             fileModePath = "",
             mode = CoverFolderRetriever.DynamicMode.File,

@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.remote.model
+package com.github.enteraname74.domain.model.lyrics
 
 class StringTimestampConverter(
     private val stringTimestamp: String
@@ -22,11 +22,11 @@ class StringTimestampConverter(
         return total
     }
 
-    companion object {
-        private val preciseRegex = Regex("""\[(\d*):(\d\d).(\d\d)]""")
+    private companion object {
+        val preciseRegex = Regex("""\[(\d*):(\d\d).(\d{1,2})]""")
 
-        private const val MINUTES_INDEX = 0
-        private const val SECONDS_INDEX = 1
-        private const val MILLISECONDS_INDEX = 2
+        const val MINUTES_INDEX = 0
+        const val SECONDS_INDEX = 1
+        const val MILLISECONDS_INDEX = 2
     }
 }

@@ -24,13 +24,16 @@ object EnStrings : Strings {
     override val lyrics = "Lyrics"
     override val activateRemoteLyricsFetchTitle = "Enable remote lyrics fetch"
     override val activateRemoteLyricsFetchText by lazy {
-        "The app needs your permission to search for the lyrics of the current music via an external service ($lyricsProviderName)."
+        "The app needs your permission to search for the lyrics of the current song via an external service ($lyricsProviderName) " +
+                "when no lyrics is found in the song's file."
     }
     override val activateRemoteLyricsFetchHint by lazy {
-        "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName)."
+        "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName) " +
+                "when no lyrics where found in the song's file."
     }
     override val noLyricsFound = "No lyrics found for this song"
-    override val lyricsProvider = "Lyrics proposed by LrcLib"
+    override val localLyricsProvider = "Lyrics from the metadata of the music file"
+    override val remoteLyricsProvider = "Lyrics proposed by LrcLib"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."

@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -34,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.enteraname74.domain.model.SyncedLyric
+import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonColors
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
@@ -45,6 +46,7 @@ import com.github.enteraname74.soulsearching.coreui.screen.TemplateScreenButtonS
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPadding
 import com.github.enteraname74.soulsearching.feature.player.domain.model.LyricsFetchState
+import com.github.enteraname74.soulsearching.feature.playerpanel.ext.description
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -186,15 +188,17 @@ private fun LyricsView(
             state = pagerState,
             userScrollEnabled = false
         ) { page ->
-            when(page) {
+            when (page) {
                 0 -> {
                     PlainLyricsView(
                         contentColor = contentColor,
                         subTextColor = subTextColor,
                         lyrics = lyricsState.lyrics.plainLyrics,
                         nestedScrollConnection = nestedScrollConnection,
+                        provider = lyricsState.lyrics.provider,
                     )
                 }
+
                 else -> {
                     SyncedLyricsView(
                         contentColor = contentColor,
@@ -203,6 +207,7 @@ private fun LyricsView(
                         lyrics = lyricsState.lyrics.syncedLyrics!!,
                         currentHighlightedLine = lyricsState.highlightedLyricsLine,
                         nestedScrollConnection = nestedScrollConnection,
+                        provider = lyricsState.lyrics.provider,
                     )
                 }
             }
@@ -264,12 +269,14 @@ private suspend fun LazyListState.animateToHighlightedLine(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SyncedLyricsView(
     contentColor: Color,
     containerColor: Color,
     subTextColor: Color,
-    lyrics: List<SyncedLyric>,
+    lyrics: List<MusicLyrics.SyncedLyric>,
+    provider: MusicLyrics.Provider,
     currentHighlightedLine: Int?,
     nestedScrollConnection: NestedScrollConnection,
 ) {
@@ -295,12 +302,14 @@ private fun SyncedLyricsView(
     LaunchedEffect(currentHighlightedLine) {
         // If we were in the focus zone or if we were at the very limit of it
 
-        val wasAtLimitOfZone = (lazyListState.firstVisibleItemIndex + SYNCED_LYRICS_LOWER_BOUNDS_LIMIT + 1) == currentHighlightedLine
-
+        val wasAtLimitOfZone =
+            (lazyListState.firstVisibleItemIndex + SYNCED_LYRICS_LOWER_BOUNDS_LIMIT + 1) == currentHighlightedLine
         if (shouldFocusOnLine || wasAtLimitOfZone) {
             lazyListState.animateToHighlightedLine(currentHighlightedLine)
         }
     }
+
+    val canScroll = lazyListState.canScrollForward || lazyListState.canScrollBackward
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -324,6 +333,15 @@ private fun SyncedLyricsView(
             ),
             state = lazyListState,
         ) {
+            if (!canScroll) {
+                stickyHeader {
+                    LyricsProvider(
+                        color = subTextColor,
+                        provider = provider,
+                    )
+                }
+            }
+
             items(
                 count = lyrics.size,
             ) { pos ->
@@ -397,8 +415,15 @@ private fun SyncedLyricsView(
                 )
             }
 
-            item {
-                LyricsProvider(color = subTextColor)
+            if (canScroll) {
+                item {
+                    LyricsProvider(
+                        modifier = Modifier
+                            .padding(top = UiConstants.Spacing.veryLarge),
+                        color = subTextColor,
+                        provider = provider,
+                    )
+                }
             }
 
             item {
@@ -451,11 +476,13 @@ private fun SyncedLyricsView(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PlainLyricsView(
     contentColor: Color,
     subTextColor: Color,
     lyrics: List<String>,
+    provider: MusicLyrics.Provider,
     nestedScrollConnection: NestedScrollConnection,
 ) {
     val lazyListState = rememberLazyListState()
@@ -464,6 +491,8 @@ private fun PlainLyricsView(
         // We want to focus to the top of the list when first loading the lyrics
         lazyListState.animateScrollToItem(0)
     }
+
+    val canScroll = lazyListState.canScrollForward || lazyListState.canScrollBackward
 
     LazyColumnCompat(
         state = lazyListState,
@@ -475,8 +504,17 @@ private fun PlainLyricsView(
             start = UiConstants.Spacing.medium,
             end = UiConstants.Spacing.medium,
         ),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.small),
     ) {
+        if (!canScroll) {
+            stickyHeader {
+                LyricsProvider(
+                    color = subTextColor,
+                    provider = provider,
+                )
+            }
+        }
+
         items(
             items = lyrics
         ) {
@@ -487,8 +525,15 @@ private fun PlainLyricsView(
             )
         }
 
-        item {
-            LyricsProvider(color = subTextColor)
+        if (canScroll) {
+            item {
+                LyricsProvider(
+                    modifier = Modifier
+                        .padding(top = UiConstants.Spacing.veryLarge),
+                    color = subTextColor,
+                    provider = provider,
+                )
+            }
         }
         item {
             Spacer(
@@ -502,12 +547,13 @@ private fun PlainLyricsView(
 @Composable
 private fun LyricsProvider(
     color: Color,
+    provider: MusicLyrics.Provider,
+    modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = UiConstants.Spacing.veryLarge),
-        text = strings.lyricsProvider,
+        modifier = modifier
+            .fillMaxWidth(),
+        text = provider.description(),
         fontSize = 12.sp,
         color = color,
         textAlign = TextAlign.End

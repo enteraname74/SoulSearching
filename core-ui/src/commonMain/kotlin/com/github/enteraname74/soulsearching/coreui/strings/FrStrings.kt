@@ -23,13 +23,16 @@ object FrStrings : Strings {
     override val lyrics = "Paroles"
     override val activateRemoteLyricsFetchTitle = "Activer la récupération des paroles à distance"
     override val activateRemoteLyricsFetchText by lazy {
-        "L'application a besoin de votre permission pour rechercher les paroles de la musique courante via un service externe ($lyricsProviderName)."
+        "L'application a besoin de votre permission pour rechercher les paroles de la musique courante via un service externe ($lyricsProviderName) " +
+                "lorsque aucune parole n'est trouvée dans le fichier de la musique."
     }
     override val activateRemoteLyricsFetchHint by lazy {
-        "L'application utilisera le nom, album et artiste d'une musique pour trouver les paroles de cette dernière via une source distante ($lyricsProviderName)."
+        "L'application utilisera le nom, album et artiste d'une musique pour trouver les paroles de cette dernière via une source distante ($lyricsProviderName) " +
+                "lorsque aucune parole n'a été trouvée dans le fichier de la musique.."
     }
     override val noLyricsFound = "Aucune parole n'a été trouvée pour cette musique"
-    override val lyricsProvider = "Paroles proposées par LrcLib"
+    override val localLyricsProvider = "Paroles provenant du fichier de la musique"
+    override val remoteLyricsProvider = "Paroles proposées par LrcLib"
 
     override val completeApplicationTitle = "Une application de musique complète"
     override val completeApplicationText = "Écoutez toutes vos musiques, tous vos albums, artistes et playlists."

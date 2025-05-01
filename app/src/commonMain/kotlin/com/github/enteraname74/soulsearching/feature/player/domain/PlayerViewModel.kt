@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicLyrics
+import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -104,30 +104,34 @@ class PlayerViewModel(
     val lyricsState: StateFlow<LyricsFetchState> = settings.getFlowOn(
         SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED
     ).flatMapLatest { isRemoteFetchEnabled ->
-        if (isRemoteFetchEnabled) {
-            playbackManager.currentSong.flatMapLatest { music ->
-                if (music == null) {
-                    flowOf(LyricsFetchState.FetchingLyrics)
-                } else {
-                    val lyrics: MusicLyrics? = commonLyricsUseCase.getLyricsForMusic(music = music)
-                    if (lyrics == null) {
+        playbackManager.currentSong.flatMapLatest { music ->
+            if (music == null) {
+                flowOf(LyricsFetchState.FetchingLyrics)
+            } else {
+                var lyrics: MusicLyrics? = commonLyricsUseCase.getLocalLyricsForMusic(music = music)
+                if (lyrics == null && isRemoteFetchEnabled) {
+                    lyrics = commonLyricsUseCase.getRemoteLyricsForMusic(music = music)
+                }
+
+                if (lyrics == null) {
+                    if (isRemoteFetchEnabled) {
                         flowOf(LyricsFetchState.NoLyricsFound)
                     } else {
-                        currentSongProgressionState.mapLatest { progression ->
-                            LyricsFetchState.FoundLyrics(
-                                lyrics = lyrics,
-                                currentMusicId = music.musicId,
-                                highlightedLyricsLine = lyrics
-                                    .syncedLyrics
-                                    ?.indexOfLast { it.timestampMs < progression }
-                                    ?.takeIf { it >= 0 }
-                            )
-                        }
+                        flowOf(LyricsFetchState.NoPermission)
+                    }
+                } else {
+                    currentSongProgressionState.mapLatest { progression ->
+                        LyricsFetchState.FoundLyrics(
+                            lyrics = lyrics,
+                            currentMusicId = music.musicId,
+                            highlightedLyricsLine = lyrics
+                                .syncedLyrics
+                                ?.indexOfLast { it.timestampMs < progression }
+                                ?.takeIf { it >= 0 }
+                        )
                     }
                 }
             }
-        } else {
-            flowOf(LyricsFetchState.NoPermission)
         }
     }.stateIn(
         scope = screenModelScope,

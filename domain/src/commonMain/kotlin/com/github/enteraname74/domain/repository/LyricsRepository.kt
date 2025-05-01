@@ -1,15 +1,12 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicLyrics
+import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 
 /**
  * Repository for songs lyrics
  */
 interface LyricsRepository {
-    /**
-     * Retrieves the lyrics of a song.
-     * If no lyrics are found, returns null.
-     */
-    suspend fun getLyricsOfSong(music: Music): MusicLyrics?
+    suspend fun getLocalLyricsOfSong(music: Music): MusicLyrics?
+    suspend fun getRemoteLyricsOfSong(music: Music): MusicLyrics?
 }

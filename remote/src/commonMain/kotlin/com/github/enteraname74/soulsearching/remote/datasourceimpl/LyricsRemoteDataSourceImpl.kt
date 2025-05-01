@@ -1,9 +1,9 @@
 package com.github.enteraname74.soulsearching.remote.datasourceimpl
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.MusicLyrics
+import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.soulsearching.remote.model.RemoteLyrics
-import com.github.enteraname74.soulsearching.repository.datasource.LyricsRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

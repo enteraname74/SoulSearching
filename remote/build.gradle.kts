@@ -36,10 +36,6 @@ kotlin {
                 implementation(libs.ktor.serialization.gson)
             }
         }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
     }
 }
 
