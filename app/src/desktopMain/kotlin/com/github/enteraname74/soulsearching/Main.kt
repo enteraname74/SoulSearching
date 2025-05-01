@@ -1,4 +1,7 @@
+package com.github.enteraname74.soulsearching
+
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -9,13 +12,14 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.SoulSearchingDesktop
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.resources.Res
-import com.github.enteraname74.soulsearching.desktopapp.desktopapp.generated.resources.app_icon
+import com.github.enteraname74.soulsearching.app.generated.resources.Res
+import com.github.enteraname74.soulsearching.app.generated.resources.app_icon
 import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
+import com.github.enteraname74.soulsearching.shareddi.LocalDatabaseInitializer
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
@@ -82,4 +86,17 @@ fun main() = application {
             }
         }
     }
+}
+
+@Composable
+private fun SoulSearchingDesktop() {
+    LocalDatabaseInitializer.init()
+    val applicationViewModel = injectElement<ApplicationViewModel>()
+
+    with(applicationViewModel) {
+        isReadPermissionGranted = true
+        isPostNotificationGranted = true
+    }
+
+    SoulSearchingApplication()
 }

@@ -19,7 +19,6 @@ rootProject.name = "SoulSearching"
 include(":domain")
 include(":local-android")
 include(":app")
-include(":desktopApp")
 include(":local-desktop")
 include("core-ui")
 include("repository")

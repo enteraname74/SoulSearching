@@ -1,8 +1,13 @@
 package com.github.enteraname74.soulsearching.localdesktop.migration.impl
 
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.soulsearching.features.filemanager.util.MetadataField
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicMetadataHelper
+import com.github.enteraname74.soulsearching.localdesktop.dao.MusicDao
 import com.github.enteraname74.soulsearching.localdesktop.migration.ExposedMigration
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -14,6 +19,7 @@ class Migration18To19: ExposedMigration(
     toVersion = 19,
 ), KoinComponent {
     private val musicMetadataHelper by inject<MusicMetadataHelper>()
+    private val musicDao by inject<MusicDao>()
 
     private fun Transaction.mxnTableMigration(
         tableName: String,
@@ -68,21 +74,33 @@ class Migration18To19: ExposedMigration(
         )
     }
 
+    private suspend fun musicMigration() {
+        val allMusics: List<Music> = musicDao.getAll().first()
+        val metadata: Map<String, Map<MetadataField, String>> = musicMetadataHelper.getMetadataFromPaths(
+            musicPaths = allMusics.map { it.path },
+            fields = listOf(
+                MetadataField.Track,
+                MetadataField.AlbumArtist,
+            )
+        )
+        musicDao.upsertAll(
+            musics = allMusics.map { music ->
+                val fields: Map<MetadataField, String>? = metadata[music.path]
+                fields?.let {
+                    music.copy(
+                        albumArtist = fields[MetadataField.AlbumArtist],
+                        albumPosition = fields[MetadataField.Track]?.toIntOrNull()
+                    )
+                } ?: music
+            }
+        )
+    }
+
     override fun Transaction.migrate() {
         musicArtistMigration()
         musicPlaylistMigration()
-
-        MusicTable
-            .select(MusicTable.id, MusicTable.path)
-            .forEach { row ->
-                val id = row[MusicTable.id]
-                val path = row[MusicTable.path]
-
-                val albumPosition: Int? = musicMetadataHelper.getMusicAlbumPosition(musicPath = path)
-
-                MusicTable.update({ MusicTable.id eq id}) {
-                    it[MusicTable.albumPosition] = albumPosition
-                }
-            }
+        runBlocking {
+            musicMigration()
+        }
     }
 }
