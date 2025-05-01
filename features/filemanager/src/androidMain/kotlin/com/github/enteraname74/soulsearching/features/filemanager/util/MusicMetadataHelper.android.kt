@@ -19,7 +19,7 @@ actual class MusicMetadataHelper(
 
         val pathChunks = musicPaths.chunked(CHUNK_SIZE)
 
-        var data: HashMap<String, Map<MetadataField, String>> = HashMap()
+        val data: HashMap<String, Map<MetadataField, String>> = HashMap()
 
         pathChunks.forEach { chunk ->
             val placeholders = chunk.joinToString(",") { "?" }
@@ -35,21 +35,20 @@ actual class MusicMetadataHelper(
             )
 
             cursor?.use { safeCursor ->
-                val dataIndex: Int? = safeCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
+                val dataIndex: Int = safeCursor.getColumnIndex(MediaStore.Audio.Media.DATA)
 
                 while (safeCursor.moveToNext()) {
-                    val filePath: String? = dataIndex?.let { safeCursor.getString(it) }
+                    val filePath: String? = safeCursor.getString(dataIndex)
 
                     filePath?.let { path ->
                         val metadataMap: Map<MetadataField, String> = buildMap {
                             fields.forEach { field ->
-                                val index: Int? = safeCursor.getColumnIndex(field.toProjectionElement())
-                                val value: String? = index?.let {
+                                val index: Int = safeCursor.getColumnIndex(field.toProjectionElement())
+                                val value: String? =
                                     safeCursor.getField(
-                                        index = it,
+                                        index = index,
                                         field = field,
                                     )
-                                }
 
                                 value?.let {
                                     put(field, it)
