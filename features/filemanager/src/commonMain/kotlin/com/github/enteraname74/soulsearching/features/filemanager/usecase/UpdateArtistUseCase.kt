@@ -4,7 +4,7 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.*
-import com.github.enteraname74.domain.usecase.artist.GetDuplicatedArtistUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -15,7 +15,7 @@ class UpdateArtistUseCase(
     private val musicArtistRepository: MusicArtistRepository,
     private val albumArtistRepository: AlbumArtistRepository,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
-    private val getDuplicatedArtistUseCase: GetDuplicatedArtistUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
         val legacyArtist: Artist = artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
@@ -37,7 +37,7 @@ class UpdateArtistUseCase(
 
         // We check if there is not two times the artist name.
         val possibleDuplicatedArtist: ArtistWithMusics? =
-            getDuplicatedArtistUseCase(
+            commonArtistUseCase.getDuplicatedArtist(
                 artistName = newArtistWithMusicsInformation.artist.artistName,
                 artistId = newArtistWithMusicsInformation.artist.artistId
             )

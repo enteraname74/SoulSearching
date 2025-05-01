@@ -5,11 +5,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
-import com.github.enteraname74.domain.usecase.folder.UpsertFolderUseCase
-import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicFromFolderPathUseCase
+import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
@@ -19,11 +16,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class SettingsAllFoldersViewModel(
-    private val getAllFoldersUseCase: GetAllFoldersUseCase,
-    private val upsertFolderUseCase: UpsertFolderUseCase,
-    private val getAllMusicFromFolderPathUseCase: GetAllMusicFromFolderPathUseCase,
-    private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
-    private val getAllArtistWithMusicsUseCase: GetAllArtistWithMusicsUseCase,
+    private val commonFolderUseCase: CommonFolderUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val commonAlbumsUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val loadingManager: LoadingManager,
@@ -52,7 +46,7 @@ class SettingsAllFoldersViewModel(
     private fun updateFolders() {
         CoroutineScope(Dispatchers.IO).launch {
             isFetchingFolders.value = true
-            val folders: List<Folder> = getAllFoldersUseCase().first()
+            val folders: List<Folder> = commonFolderUseCase.getAll().first()
             this@SettingsAllFoldersViewModel.folders.value = folders
             isFetchingFolders.value = false
         }
@@ -82,7 +76,7 @@ class SettingsAllFoldersViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
                 folders.value.forEach { folder ->
-                    upsertFolderUseCase(
+                    commonFolderUseCase.upsert(
                         Folder(
                             folderPath = folder.folderPath,
                             isSelected = folder.isSelected
@@ -90,10 +84,10 @@ class SettingsAllFoldersViewModel(
                     )
 
                     if (!folder.isSelected) {
-                        val musicsFromFolder: List<UUID> = getAllMusicFromFolderPathUseCase(folder.folderPath)
+                        val musicsFromFolder: List<UUID> = commonMusicUseCase.getAllFromFolderPath(folder.folderPath)
                             .first()
                             .map { it.musicId }
-                        deleteAllMusicsUseCase(ids = musicsFromFolder)
+                        commonMusicUseCase.deleteAll(ids = musicsFromFolder)
                         playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
 
                         val albumsToDelete = commonAlbumsUseCase.getAllAlbumsWithMusics()
@@ -101,7 +95,7 @@ class SettingsAllFoldersViewModel(
                             .filter { it.musics.isEmpty() }
                             .map { it.album.albumId }
 
-                        val artistsToDelete = getAllArtistWithMusicsUseCase()
+                        val artistsToDelete = commonArtistUseCase.getAllArtistWithMusics()
                             .first()
                             .filter { it.musics.isEmpty() }
                             .map { it.artist.artistId }

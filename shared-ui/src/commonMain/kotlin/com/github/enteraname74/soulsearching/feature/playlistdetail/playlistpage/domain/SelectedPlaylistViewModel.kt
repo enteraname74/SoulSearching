@@ -3,11 +3,9 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpag
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpdatePlaylistNbPlayedUseCase
+import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
@@ -27,13 +25,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class SelectedPlaylistViewModel(
-    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
-    private val updatePlaylistNbPlayedUseCase: UpdatePlaylistNbPlayedUseCase,
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
-    private val getMusicUseCase: GetMusicUseCase,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
 ) : ScreenModel,
     PlaylistDetailListener,
@@ -48,7 +43,7 @@ class SelectedPlaylistViewModel(
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val allPlaylists = getAllPlaylistWithMusicsUseCase()
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
@@ -62,7 +57,7 @@ class SelectedPlaylistViewModel(
         if (playlistId == null) {
             flowOf(SelectedPlaylistState.Loading)
         } else {
-            getPlaylistWithMusicsUseCase(playlistId).mapLatest { playlistWithMusics ->
+            commonPlaylistUseCase.getWithMusics(playlistId).mapLatest { playlistWithMusics ->
                 when {
                     playlistWithMusics == null -> SelectedPlaylistState.Error
                     else -> SelectedPlaylistState.Data(
@@ -134,7 +129,7 @@ class SelectedPlaylistViewModel(
 
     override fun onUpdateNbPlayed(musicId: UUID) {
         screenModelScope.launch {
-            updateMusicNbPlayedUseCase(musicId = musicId)
+            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
 
@@ -142,7 +137,7 @@ class SelectedPlaylistViewModel(
         screenModelScope.launch {
             val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
                 ?: return@launch
-            updatePlaylistNbPlayedUseCase(playlistId = playlistId)
+            commonPlaylistUseCase.incrementNbPlayed(playlistId = playlistId)
         }
     }
 
@@ -159,7 +154,7 @@ class SelectedPlaylistViewModel(
             val selectedIds = multiSelectionState.value.selectedIds
             val currentPlaylist = (state.value as SelectedPlaylistState.Data).selectedPlaylist
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
                 showMusicBottomSheet(
                     selectedMusic = selectedMusic,
                     currentPlaylist = currentPlaylist,

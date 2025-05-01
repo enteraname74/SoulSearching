@@ -11,23 +11,20 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.domain.usecase.cover.IsCoverUsedUseCase
-import com.github.enteraname74.domain.usecase.folder.DeleteAllFoldersUseCase
-import com.github.enteraname74.domain.usecase.folder.GetAllFoldersUseCase
+import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
-import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
@@ -50,7 +47,6 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
-import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -73,7 +69,6 @@ class MainPageViewModel(
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
@@ -85,27 +80,24 @@ class MainPageViewModel(
     SortingInformationDelegate by sortingInformationDelegateImpl,
     MultiSelectionManager by multiSelectionManagerImpl {
 
-    private val getAllFoldersUseCase: GetAllFoldersUseCase by inject()
-    private val deleteAllFoldersUseCase: DeleteAllFoldersUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
-    private val coverFileManager: CoverFileManager by inject()
     private val getAllMusicsSortedUseCase: GetAllMusicsSortedUseCase by inject()
     private val deleteMusicUseCase: DeleteMusicUseCase by inject()
     private val feedbackPopUpManager: FeedbackPopUpManager by inject()
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
-    private val getMusicUseCase: GetMusicUseCase by inject()
+
+    private val commonMusicUseCase: CommonMusicUseCase by inject()
     private val commonAlbumUseCase: CommonAlbumUseCase by inject()
-    private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase by inject()
-    private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase by inject()
+    private val commonArtistUseCase: CommonArtistUseCase by inject()
+    private val commonCoverUseCase: CommonCoverUseCase by inject()
+    private val commonPlaylistUseCase: CommonPlaylistUseCase by inject()
+    private val commonFolderUseCase: CommonFolderUseCase by inject()
+    private val commonReleaseUseCase: CommonReleaseUseCase by inject()
+    private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl by inject()
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl by inject()
     private val multiArtistBottomSheetDelegateImpl: MultiArtistBottomSheetDelegateImpl by inject()
     private val multiPlaylistBottomSheetDelegateImpl: MultiPlaylistBottomSheetDelegateImpl by inject()
-
-    private val fetchLatestReleaseUseCase: FetchLatestReleaseUseCase by inject()
-    private val deleteLatestReleaseUseCase: DeleteLatestReleaseUseCase by inject()
-    private val shouldInformOfNewReleaseUseCase: ShouldInformOfNewReleaseUseCase by inject()
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
@@ -146,7 +138,7 @@ class MainPageViewModel(
     val searchDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
-    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistWithMusicsUseCase()
+    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
             scope = screenModelScope.plus(Dispatchers.IO),
             started = SharingStarted.Eagerly,
@@ -360,26 +352,26 @@ class MainPageViewModel(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            val allCoverIds: List<UUID> = coverFileManager.getAllCoverIds()
+            val allCoverIds: List<UUID> = commonCoverUseCase.getAllCoverIds()
             allCoverIds.forEach { coverId ->
                 if (!isCoverUsedUseCase(coverId = coverId)) {
-                    coverFileManager.deleteFromId(id = coverId)
+                    commonCoverUseCase.delete(coverId = coverId)
                 }
             }
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            val allFolders = getAllFoldersUseCase().first()
+            val allFolders = commonFolderUseCase.getAll().first()
             val foldersToDelete = allFolders.filter { !File(it.folderPath).exists() }
-            deleteAllFoldersUseCase(foldersToDelete)
+            commonFolderUseCase.deleteAll(foldersToDelete)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
                 if (isEnabled) {
-                    fetchLatestReleaseUseCase()
+                    commonReleaseUseCase.fetchLatest()
                 } else {
-                    deleteLatestReleaseUseCase()
+                    commonReleaseUseCase.deleteLatest()
                 }
             }
         }
@@ -443,7 +435,7 @@ class MainPageViewModel(
             onConfirm = { playlistName ->
                 if (playlistName.isNotBlank()) {
                     screenModelScope.launch {
-                        upsertPlaylistUseCase(
+                        commonPlaylistUseCase.upsert(
                             playlist = Playlist(name = playlistName)
                         )
                     }
@@ -580,7 +572,7 @@ class MainPageViewModel(
     private suspend fun handleMultiSelectionMusicBottomSheet() {
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
-            val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return
+            val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
             showMusicBottomSheet(selectedMusic = selectedMusic)
         } else {
             multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet()
@@ -602,7 +594,7 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedArtist: ArtistWithMusics =
-                getArtistWithMusicsUseCase(artistId = selectedIds[0]).firstOrNull() ?: return
+                commonArtistUseCase.getArtistWithMusic(artistId = selectedIds[0]).firstOrNull() ?: return
             showArtistBottomSheet(selectedArtist = selectedArtist)
         } else {
             multiArtistBottomSheetDelegateImpl.showMultiArtistBottomSheet()
@@ -613,7 +605,7 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedPlaylist: PlaylistWithMusics =
-                getPlaylistWithMusicsUseCase(playlistId = selectedIds[0]).firstOrNull() ?: return
+                commonPlaylistUseCase.getWithMusics(playlistId = selectedIds[0]).firstOrNull() ?: return
             showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist.toPlaylistWithMusicsNumber())
         } else {
             multiPlaylistBottomSheetDelegateImpl.showMultiPlaylistBottomSheet()

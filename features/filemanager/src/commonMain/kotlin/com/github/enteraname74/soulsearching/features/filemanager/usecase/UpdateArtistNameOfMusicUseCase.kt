@@ -1,21 +1,20 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateArtistNameOfMusicUseCase(
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val musicRepository: MusicRepository,
     private val musicFileUpdater: MusicFileUpdater
 ) {
 
     suspend fun buildUpdatedMusicArtistsString(music: Music): String {
         val artistsOfMusic: ArrayList<String> = ArrayList(
-            getArtistsOfMusicUseCase(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
+            commonArtistUseCase.getArtistsOfMusic(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
         )
 
         val newArtistsOfMusic = artistsOfMusic
@@ -40,7 +39,7 @@ class UpdateArtistNameOfMusicUseCase(
         val isAlbumArtist = legacyArtistName == music.albumArtist
 
         val artistsOfMusic: ArrayList<String> = ArrayList(
-            getArtistsOfMusicUseCase(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
+            commonArtistUseCase.getArtistsOfMusic(music = music).firstOrNull()?.map { it.artistName } ?: emptyList()
         )
 
         /*

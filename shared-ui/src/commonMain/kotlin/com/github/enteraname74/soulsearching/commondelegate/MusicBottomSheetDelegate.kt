@@ -4,10 +4,9 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.DeleteMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertMusicUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.MusicBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMusicDialog
@@ -29,10 +28,9 @@ interface MusicBottomSheetDelegate {
 }
 
 class MusicBottomSheetDelegateImpl(
+    private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase,
     private val deleteMusicUseCase: DeleteMusicUseCase,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
-    private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
-    private val upsertMusicUseCase: UpsertMusicUseCase,
     private val playbackManager: PlaybackManager,
 ) : MusicBottomSheetDelegate {
 
@@ -88,7 +86,7 @@ class MusicBottomSheetDelegateImpl(
             RemoveMusicFromPlaylistDialog(
                 onConfirm = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        deleteMusicFromPlaylistUseCase(
+                        commonMusicPlaylistUseCase.delete(
                             musicId = musicToRemove.musicId,
                             playlistId = currentPlaylist.playlistId,
                         )
@@ -110,7 +108,7 @@ class MusicBottomSheetDelegateImpl(
     private fun addMusicToPlaylists(music: Music, selectedPlaylists: List<PlaylistWithMusics>) {
         CoroutineScope(Dispatchers.IO).launch {
             for (selectedPlaylist in selectedPlaylists) {
-                upsertMusicIntoPlaylistUseCase(
+                commonMusicPlaylistUseCase.upsert(
                     MusicPlaylist(
                         musicId = music.musicId,
                         playlistId = selectedPlaylist.playlist.playlistId,
@@ -163,7 +161,7 @@ class MusicBottomSheetDelegateImpl(
                 onAddToPlaylist = { showAddToPlaylistsBottomSheet(musicToAdd = selectedMusic) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertMusicUseCase(
+                        commonMusicUseCase.upsert(
                             music = selectedMusic.copy(
                                 isInQuickAccess = !selectedMusic.isInQuickAccess,
                             )

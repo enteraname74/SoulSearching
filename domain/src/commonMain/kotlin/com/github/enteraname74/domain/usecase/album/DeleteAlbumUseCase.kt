@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
@@ -12,7 +11,6 @@ import java.util.*
 class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(albumId: UUID) {
@@ -25,7 +23,7 @@ class DeleteAlbumUseCase(
          */
         val linkedArtists: List<Artist> = buildList {
             albumWithMusics.musics.forEach { music ->
-                getArtistsOfMusicUseCase(
+                commonArtistUseCase.getArtistsOfMusic(
                     music = music,
                     withAlbumArtist = true,
                 ).firstOrNull()?.let {

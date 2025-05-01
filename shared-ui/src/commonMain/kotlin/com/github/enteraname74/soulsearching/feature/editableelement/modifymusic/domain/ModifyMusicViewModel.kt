@@ -9,10 +9,9 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
-import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.ext.toByteArray
@@ -37,12 +36,11 @@ import java.util.*
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
-    private val getMusicUseCase: GetMusicUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
-    private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
+    private val commonCoverUseCase: CommonCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
@@ -65,7 +63,7 @@ class ModifyMusicViewModel(
         if (id == null) {
             flowOf(null)
         } else {
-            getMusicUseCase(musicId = id)
+            commonMusicUseCase.getFromId(musicId = id)
         }
     }
 
@@ -97,13 +95,13 @@ class ModifyMusicViewModel(
         if (music == null) {
             flowOf(ModifyMusicFormState.NoData)
         } else {
-            getArtistsOfMusicUseCase(music = music).flatMapLatest { artists ->
+            commonArtistUseCase.getArtistsOfMusic(music = music).flatMapLatest { artists ->
                 addedArtists.flatMapLatest { addedArtists ->
                     deletedArtistIds.mapLatest { ids ->
                         ModifyMusicFormState.Data(
                             initialMusic = music,
                             updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
-                            updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
+                            updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
                             artistsOfMusic = artists.plus(addedArtists).filter { it.artistId !in ids },
                             onDeleteArtist = { artistId ->
                                 deletedArtistIds.value = deletedArtistIds.value.plus(artistId)
@@ -217,7 +215,7 @@ class ModifyMusicViewModel(
 
             val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
-                upsertImageCoverUseCase(
+                commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,
                 )
@@ -244,7 +242,7 @@ class ModifyMusicViewModel(
             updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtists = getArtistsOfMusicUseCase(music = state.initialMusic).firstOrNull() ?: emptyList(),
+                previousArtists = commonArtistUseCase.getArtistsOfMusic(music = state.initialMusic).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
             )
 

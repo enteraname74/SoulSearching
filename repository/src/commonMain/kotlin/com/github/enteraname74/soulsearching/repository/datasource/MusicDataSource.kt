@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 
 /**
  * Data source of a Music.
@@ -21,11 +21,6 @@ interface MusicDataSource {
     suspend fun delete(music: Music)
 
     suspend fun deleteAll(ids: List<UUID>)
-
-    /**
-     * Tries to retrieve a Music from its path.
-     */
-    suspend fun getFromPath(musicPath: String): Music?
 
     /**
      * Retrieve a music from its id.

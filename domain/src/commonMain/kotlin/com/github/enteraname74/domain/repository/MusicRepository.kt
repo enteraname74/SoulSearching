@@ -25,8 +25,6 @@ interface MusicRepository {
      */
     fun getFromId(musicId: UUID): Flow<Music?>
 
-    suspend fun getFromPath(musicPath: String): Music?
-
     /**
      * Retrieves a flow of all Music.
      */

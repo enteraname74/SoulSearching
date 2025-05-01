@@ -1,12 +1,12 @@
 package com.github.enteraname74.domain.usecase.cover
 
 import com.github.enteraname74.domain.repository.CoverRepository
-import java.util.UUID
+import java.util.*
 
-class UpsertImageCoverUseCase(
+class CommonCoverUseCase(
     private val coverRepository: CoverRepository,
 ) {
-    suspend operator fun invoke(
+    suspend fun upsert(
         id: UUID,
         data: ByteArray,
     ) {
@@ -15,4 +15,13 @@ class UpsertImageCoverUseCase(
             data = data,
         )
     }
+
+    suspend fun delete(coverId: UUID) {
+        coverRepository.delete(
+            coverId = coverId,
+        )
+    }
+
+    suspend fun getAllCoverIds(): List<UUID> =
+        coverRepository.getAllCoverIds()
 }

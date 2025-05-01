@@ -8,7 +8,6 @@ import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 import kotlinx.coroutines.flow.firstOrNull
@@ -19,7 +18,6 @@ class UpdateMusicUseCase(
     private val musicArtistRepository: MusicArtistRepository,
     private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
@@ -165,7 +163,7 @@ class UpdateMusicUseCase(
                     music = newMusicInformation,
                 )
             } else {
-                getArtistsOfMusicUseCase(music = legacyMusic)
+                commonArtistUseCase.getArtistsOfMusic(music = legacyMusic)
                     .firstOrNull()
                     ?.firstOrNull()
             }

@@ -13,9 +13,6 @@ import java.util.*
 internal class RoomMusicArtistDataSourceImpl(
     private val appDatabase: AppDatabase
 ) : MusicArtistDataSource {
-    override suspend fun getAll(): List<MusicArtist> =
-        appDatabase.musicArtistDao.getAll().map { it.toMusicArtist() }
-
     override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
         appDatabase.musicArtistDao.get(
             artistId = artistId,

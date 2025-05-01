@@ -2,8 +2,8 @@ package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertArtistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.artist.ArtistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -20,7 +20,7 @@ interface ArtistBottomSheetDelegate {
 
 class ArtistBottomSheetDelegateImpl(
     private val deleteArtistUseCase: DeleteArtistUseCase,
-    private val upsertArtistUseCase: UpsertArtistUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val playbackManager: PlaybackManager,
 ) : ArtistBottomSheetDelegate {
     private var setDialogState: (SoulDialog?) -> Unit = {}
@@ -67,7 +67,7 @@ class ArtistBottomSheetDelegateImpl(
                 onModifyArtist = { onModifyArtist(selectedArtist.artist) },
                 toggleQuickAccess = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertArtistUseCase(
+                        commonArtistUseCase.upsert(
                             artist = selectedArtist.artist.copy(
                                 isInQuickAccess = !selectedArtist.artist.isInQuickAccess,
                             )

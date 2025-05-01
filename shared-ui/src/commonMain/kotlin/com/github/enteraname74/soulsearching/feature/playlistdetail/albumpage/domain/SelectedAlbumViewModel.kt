@@ -5,9 +5,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
@@ -27,12 +26,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class SelectedAlbumViewModel(
-    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
+    commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
-    private val getMusicUseCase: GetMusicUseCase,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
 ) :
     ScreenModel,
@@ -50,7 +48,7 @@ class SelectedAlbumViewModel(
         )
     private var _albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
 
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistWithMusicsUseCase()
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
@@ -130,7 +128,7 @@ class SelectedAlbumViewModel(
 
     override fun onUpdateNbPlayed(musicId: UUID) {
         screenModelScope.launch {
-            updateMusicNbPlayedUseCase(musicId)
+            commonMusicUseCase.incrementNbPlayed(musicId)
         }
     }
 
@@ -158,7 +156,7 @@ class SelectedAlbumViewModel(
         screenModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
                 showMusicBottomSheet(selectedMusic = selectedMusic)
             } else {
                 showMultiMusicBottomSheet()

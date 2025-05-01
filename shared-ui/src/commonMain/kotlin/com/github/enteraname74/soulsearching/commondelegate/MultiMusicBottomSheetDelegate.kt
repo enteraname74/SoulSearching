@@ -4,11 +4,9 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.music.DeleteAllMusicsUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.DeleteMusicFromPlaylistUseCase
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multimusic.MultiMusicBottomSheet
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiMusicDialog
@@ -35,15 +33,13 @@ interface MultiMusicBottomSheetDelegate {
 }
 
 class MultiMusicBottomSheetDelegateImpl(
-    getAllPlaylistsWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val deleteAllMusicsUseCase: DeleteAllMusicsUseCase,
-    private val deleteMusicFromPlaylistUseCase: DeleteMusicFromPlaylistUseCase,
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase,
-    private val getMusicUseCase: GetMusicUseCase,
+    commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
+    private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): MultiMusicBottomSheetDelegate {
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistsWithMusicsUseCase()
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
             scope = CoroutineScope(Dispatchers.IO),
             started = SharingStarted.Eagerly,
@@ -78,7 +74,7 @@ class MultiMusicBottomSheetDelegateImpl(
                 onDelete = {
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
-                            deleteAllMusicsUseCase(selectedIdsToDelete)
+                            commonMusicUseCase.deleteAll(selectedIdsToDelete)
                             playbackManager.removeSongsFromPlayedPlaylist(selectedIdsToDelete)
 
                             setDialogState(null)
@@ -100,7 +96,7 @@ class MultiMusicBottomSheetDelegateImpl(
         CoroutineScope(Dispatchers.IO).launch {
             for (selectedPlaylist in selectedPlaylists) {
                 if (selectedPlaylist.musics.find { it.musicId == musicId } == null) {
-                    upsertMusicIntoPlaylistUseCase(
+                    commonMusicPlaylistUseCase.upsert(
                         MusicPlaylist(
                             musicId = musicId,
                             playlistId = selectedPlaylist.playlist.playlistId,
@@ -145,7 +141,7 @@ class MultiMusicBottomSheetDelegateImpl(
                 onConfirm = {
                     CoroutineScope(Dispatchers.IO).launch {
                         musicIdsToRemove.forEach { musicId ->
-                            deleteMusicFromPlaylistUseCase(
+                            commonMusicPlaylistUseCase.delete(
                                 musicId = musicId,
                                 playlistId = currentPlaylist.playlistId,
                             )
@@ -188,7 +184,7 @@ class MultiMusicBottomSheetDelegateImpl(
                 },
                 onPlayNext = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
+                        val selectedMusics: List<Music> = selectedIds.mapNotNull { commonMusicUseCase.getFromId(it).firstOrNull() }
                         playbackManager.addMultipleMusicsToPlayNext(
                             musics = selectedMusics,
                         )
@@ -198,7 +194,7 @@ class MultiMusicBottomSheetDelegateImpl(
                 },
                 onAddToQueue = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val selectedMusics: List<Music> = selectedIds.mapNotNull { getMusicUseCase(it).firstOrNull() }
+                        val selectedMusics: List<Music> = selectedIds.mapNotNull { commonMusicUseCase.getFromId(it).firstOrNull() }
                         playbackManager.addMultipleMusicsToQueue(
                             musics = selectedMusics,
                         )

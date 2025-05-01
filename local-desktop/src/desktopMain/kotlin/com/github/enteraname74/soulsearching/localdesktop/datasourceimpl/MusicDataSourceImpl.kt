@@ -30,9 +30,6 @@ internal class MusicDataSourceImpl(
         )
     }
 
-    override suspend fun getFromPath(musicPath: String): Music? =
-        musicDao.getFromPath(musicPath)
-
     override fun getFromId(musicId: UUID): Flow<Music?> =
         musicDao.getFromId(musicId)
 

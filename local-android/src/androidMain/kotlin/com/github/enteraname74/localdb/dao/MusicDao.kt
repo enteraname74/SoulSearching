@@ -1,6 +1,9 @@
 package com.github.enteraname74.localdb.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Upsert
 import com.github.enteraname74.localdb.model.RoomMusic
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -21,9 +24,6 @@ internal interface MusicDao {
 
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
-
-    @Query("SELECT * FROM RoomMusic WHERE path = :musicPath")
-    suspend fun getMusicFromPath(musicPath : String) : RoomMusic?
 
     @Query("SELECT * FROM RoomMusic WHERE musicId = :musicId LIMIT 1")
     fun getFromId(musicId : UUID): Flow<RoomMusic?>

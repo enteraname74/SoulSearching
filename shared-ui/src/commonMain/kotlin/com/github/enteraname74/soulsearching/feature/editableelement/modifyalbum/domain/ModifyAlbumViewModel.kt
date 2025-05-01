@@ -6,8 +6,8 @@ import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsNameFromSearchStringUseCase
-import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -28,8 +28,8 @@ import java.util.*
 
 class ModifyAlbumViewModel(
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val getArtistsNameFromSearchStringUseCase: GetArtistsNameFromSearchStringUseCase,
-    private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
+    private val commonCoverUseCase: CommonCoverUseCase,
     private val updateAlbumUseCase: UpdateAlbumUseCase,
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
@@ -82,7 +82,7 @@ class ModifyAlbumViewModel(
             ModifyAlbumFormState.Data(
                 initialAlbum = album,
                 updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
-                updateFoundArtists = { getArtistsNameFromSearchStringUseCase(it) },
+                updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
             )
         }
     }.stateIn(
@@ -157,7 +157,7 @@ class ModifyAlbumViewModel(
                 val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                     val newCoverId: UUID = UUID.randomUUID()
 
-                    upsertImageCoverUseCase(
+                    commonCoverUseCase.upsert(
                         id = newCoverId,
                         data = coverData,
                     )

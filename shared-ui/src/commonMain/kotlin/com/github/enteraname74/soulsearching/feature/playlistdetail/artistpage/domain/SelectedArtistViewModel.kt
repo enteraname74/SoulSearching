@@ -6,11 +6,9 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.artist.UpdateArtistNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.*
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -28,16 +26,14 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class SelectedArtistViewModel(
-    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
-    private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
+    commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
-    private val updateArtistNbPlayedUseCase: UpdateArtistNbPlayedUseCase,
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl,
-    private val getMusicUseCase: GetMusicUseCase,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
 ) :
     ScreenModel,
@@ -57,7 +53,7 @@ class SelectedArtistViewModel(
 
     private val _artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
 
-    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = getAllPlaylistWithMusicsUseCase()
+    private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
             scope = screenModelScope,
             started = SharingStarted.Eagerly,
@@ -71,7 +67,7 @@ class SelectedArtistViewModel(
         } else {
             combine(
                 commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
-                getArtistWithMusicsUseCase(artistId = artistId),
+                commonArtistUseCase.getArtistWithMusic(artistId = artistId),
             ) { albums, artistWithMusics ->
                 when {
                     artistWithMusics == null -> SelectedArtistState.Error
@@ -157,14 +153,14 @@ class SelectedArtistViewModel(
 
     override fun onUpdateNbPlayed(musicId: UUID) {
         screenModelScope.launch {
-            updateMusicNbPlayedUseCase(musicId = musicId)
+            commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
 
     override fun onUpdateNbPlayed() {
         screenModelScope.launch {
             val artistId: UUID = (state.value as? SelectedArtistState.Data)?.playlistDetail?.id ?: return@launch
-            updateArtistNbPlayedUseCase(artistId = artistId)
+            commonArtistUseCase.incrementArtistNbPlayed(artistId = artistId)
         }
     }
 
@@ -179,7 +175,7 @@ class SelectedArtistViewModel(
     private suspend fun handleMultiSelectionMusicBottomSheet() {
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
-            val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return
+            val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
             showMusicBottomSheet(selectedMusic = selectedMusic)
         } else {
             showMultiMusicBottomSheet()

@@ -9,9 +9,6 @@ import java.util.*
 internal class MusicArtistDataSourceImpl(
     private val musicArtistDao: MusicArtistDao
 ): MusicArtistDataSource {
-    override suspend fun getAll(): List<MusicArtist> =
-        musicArtistDao.getAll()
-
     override suspend fun get(artistId: UUID, musicId: UUID): MusicArtist? =
         musicArtistDao.get(
             musicId = musicId,

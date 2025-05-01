@@ -1,18 +1,17 @@
 package com.github.enteraname74.domain.usecase.musicfolder
 
 import com.github.enteraname74.domain.model.MusicFolderList
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
+import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
-import java.io.File
 
 class GetMusicFolderListUseCase(
-    private val getAllMusicUseCase: GetAllMusicUseCase,
+    private val musicRepository: MusicRepository,
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(path: String): Flow<MusicFolderList?> =
-        getAllMusicUseCase().mapLatest { allMusics ->
+        musicRepository.getAll().mapLatest { allMusics ->
             val musics = allMusics.filter { it.folder == path }
 
             if (musics.isEmpty()) return@mapLatest null

@@ -10,15 +10,10 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.MusicArtistTabl
 import com.github.enteraname74.soulsearching.localdesktop.tables.toMusicArtist
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 
 internal class MusicArtistDao {
-    fun getAll(): List<MusicArtist> = transaction {
-        MusicArtistTable.selectAll().mapNotNull { it.toMusicArtist() }
-    }
-
     suspend fun get(
         musicId: UUID,
         artistId: UUID,

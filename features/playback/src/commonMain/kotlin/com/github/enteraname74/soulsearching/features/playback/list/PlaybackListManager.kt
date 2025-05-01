@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ internal class PlaybackListManager(
     private val player: SoulSearchingPlayer,
     private val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
 ) {
     private val _state: MutableStateFlow<PlaybackListState> = MutableStateFlow(PlaybackListState.NoData)
     val state: StateFlow<PlaybackListState> = _state.asStateFlow()
@@ -424,7 +424,7 @@ internal class PlaybackListManager(
             updateMusicNbPlayedJob?.cancel()
             updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
                 delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
-                updateMusicNbPlayedUseCase(musicId = music.musicId)
+                commonMusicUseCase.incrementNbPlayed(musicId = music.musicId)
             }
         }
     }

@@ -3,16 +3,14 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
 import java.io.File
-import java.lang.reflect.Field
 import java.net.URLConnection
 import java.nio.file.Files
 import java.util.*
@@ -22,8 +20,7 @@ import java.util.*
  * Class handling music fetching for desktop application.
  */
 internal class MusicFetcherDesktopImpl(
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
-    private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : MusicFetcher() {
 
     private val foldersNamesBlackList: List<String> = listOf(
@@ -121,8 +118,8 @@ internal class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::cacheMusic
         )
-        if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
-            upsertPlaylistUseCase(
+        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
+            commonPlaylistUseCase.upsert(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = strings.favorite,

@@ -17,14 +17,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.github.enteraname74.domain.model.MusicPlaylist
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.musicplaylist.UpsertMusicIntoPlaylistUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.musicplaylist.CommonMusicPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.composables.PlaylistSelectableComposable
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheetHandler
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
@@ -50,8 +50,8 @@ class AddToPlaylistBottomSheet(
     private val addMusicToSelectedPlaylists: (selectedPlaylists: List<PlaylistWithMusics>) -> Unit,
     private val playlistsWithMusics: List<PlaylistWithMusics>,
 ) : SoulBottomSheet, KoinComponent {
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase by inject()
-    private val upsertMusicIntoPlaylistUseCase: UpsertMusicIntoPlaylistUseCase by inject()
+    private val commonPlaylistUseCase: CommonPlaylistUseCase by inject()
+    private val commonMusicPlaylistUseCase: CommonMusicPlaylistUseCase by inject()
 
     private fun showCreatePlaylistDialog(
         closeWithAnim: () -> Unit,
@@ -63,9 +63,9 @@ class AddToPlaylistBottomSheet(
                     CoroutineScope(Dispatchers.IO).launch {
                         if (playlistName.isNotBlank()) {
                             val newPlaylist = Playlist(name = playlistName)
-                            upsertPlaylistUseCase(playlist = newPlaylist)
+                            commonPlaylistUseCase.upsert(playlist = newPlaylist)
                             selectedMusicIds.forEach { musicId ->
-                                upsertMusicIntoPlaylistUseCase(
+                                commonMusicPlaylistUseCase.upsert(
                                     MusicPlaylist(
                                         musicId = musicId,
                                         playlistId = newPlaylist.playlistId,

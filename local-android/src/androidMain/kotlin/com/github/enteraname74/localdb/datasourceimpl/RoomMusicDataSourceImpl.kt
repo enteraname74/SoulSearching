@@ -1,13 +1,13 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toMusic
 import com.github.enteraname74.localdb.model.toRoomMusic
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.UUID
+import java.util.*
 
 /**
  * Implementation of the MusicDataSource with Room's DAO.
@@ -35,12 +35,6 @@ internal class RoomMusicDataSourceImpl(
         appDatabase.musicDao.deleteAll(
             ids = ids,
         )
-    }
-
-    override suspend fun getFromPath(musicPath: String): Music? {
-        return appDatabase.musicDao.getMusicFromPath(
-            musicPath = musicPath
-        )?.toMusic()
     }
 
     override fun getFromId(musicId: UUID): Flow<Music?> {

@@ -11,13 +11,9 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertAllPlaylistsUseCase
-import com.github.enteraname74.domain.usecase.release.DeleteLatestReleaseUseCase
-import com.github.enteraname74.domain.usecase.release.FetchLatestReleaseUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
+import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulAlertDialog
 import com.github.enteraname74.soulsearching.coreui.dialog.SoulDialog
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
@@ -34,16 +30,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
 class SettingsAdvancedViewModel(
-    private val loadingManager: LoadingManager,
-    private val getAllMusicUseCase: GetAllMusicUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val getAllPlaylistsUseCase: GetAllPlaylistsUseCase,
-    private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase,
-    private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase,
-    private val upsertAllPlaylistsUseCase: UpsertAllPlaylistsUseCase,
-    private val deleteLatestReleaseUseCase: DeleteLatestReleaseUseCase,
-    private val fetchLatestReleaseUseCase: FetchLatestReleaseUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonReleaseUseCase: CommonReleaseUseCase,
+    private val loadingManager: LoadingManager,
     private val coverFileManager: CoverFileManager,
     private val playbackManager: PlaybackManager,
     private val settings: SoulSearchingSettings,
@@ -149,9 +141,9 @@ class SettingsAdvancedViewModel(
                 value = newState
             )
             if (!newState) {
-                deleteLatestReleaseUseCase()
+                commonReleaseUseCase.deleteLatest()
             } else {
-                fetchLatestReleaseUseCase()
+                commonReleaseUseCase.fetchLatest()
             }
         }
     }
@@ -242,9 +234,9 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
-            val allSongs: List<Music> = getAllMusicUseCase().first()
+            val allSongs: List<Music> = commonMusicUseCase.getAll().first()
 
-            upsertAllMusicsUseCase(
+            commonMusicUseCase.upsertAll(
                 allMusics = allSongs.map { music ->
                     playbackManager.updateMusic(music)
                     music.cover = coverFileManager.getCleanFileCoverForMusic(music)
@@ -256,8 +248,8 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadPlaylists() {
         if (_state.value.shouldDeletePlaylistsCovers) {
-            val allPlaylists: List<Playlist> = getAllPlaylistsUseCase().first()
-            upsertAllPlaylistsUseCase(
+            val allPlaylists: List<Playlist> = commonPlaylistUseCase.getAll().first()
+            commonPlaylistUseCase.upsertAll(
                 playlists = allPlaylists.map { playlist ->
                     playlist.cover = null
                     playlist
@@ -281,7 +273,7 @@ class SettingsAdvancedViewModel(
     private suspend fun checkAndReloadArtists() {
         if (_state.value.shouldReloadArtistsCovers) {
             val allArtists: List<Artist> = commonArtistUseCase.getAll().first()
-            upsertAllArtistsUseCase(
+            commonArtistUseCase.upsertAll(
                 allArtists = allArtists.map { artist ->
                     artist.cover = null
                     artist

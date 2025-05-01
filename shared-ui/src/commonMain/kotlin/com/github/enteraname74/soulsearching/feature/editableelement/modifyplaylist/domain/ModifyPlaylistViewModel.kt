@@ -4,9 +4,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistWithMusics
-import com.github.enteraname74.domain.usecase.cover.UpsertImageCoverUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetPlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -19,27 +18,13 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyplayl
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import java.util.UUID
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import java.util.*
 
 class ModifyPlaylistViewModel(
-    private val getPlaylistWithMusicsUseCase: GetPlaylistWithMusicsUseCase,
-    private val upsertImageCoverUseCase: UpsertImageCoverUseCase,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
+    private val commonCoverUseCase: CommonCoverUseCase,
     private val loadingManager: LoadingManager,
     private val coverRetriever: CoverRetriever,
 ) : ScreenModel {
@@ -58,7 +43,7 @@ class ModifyPlaylistViewModel(
         if (id == null) {
             flowOf(null)
         } else {
-            getPlaylistWithMusicsUseCase(playlistId = id)
+            commonPlaylistUseCase.getWithMusics(playlistId = id)
         }
     }
 
@@ -144,7 +129,7 @@ class ModifyPlaylistViewModel(
 
             val coverFile: UUID? = state.editableElement.newCover?.let { coverData ->
                 val newCoverId: UUID = UUID.randomUUID()
-                upsertImageCoverUseCase(
+                commonCoverUseCase.upsert(
                     id = newCoverId,
                     data = coverData,
                 )
@@ -158,7 +143,7 @@ class ModifyPlaylistViewModel(
                 name = form.getPlaylistName().trim(),
             )
 
-            upsertPlaylistUseCase(
+            commonPlaylistUseCase.upsert(
                 playlist = newPlaylistInformation,
             )
 

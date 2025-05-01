@@ -9,13 +9,13 @@ import com.github.enteraname74.domain.model.MusicLyrics
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
-import com.github.enteraname74.domain.usecase.lyrics.GetLyricsOfSongUseCase
-import com.github.enteraname74.domain.usecase.music.GetMusicUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
-import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
@@ -44,16 +44,16 @@ class PlayerViewModel(
     private val playbackManager: PlaybackManager,
     settings: SoulSearchingSettings,
     private val colorThemeManager: ColorThemeManager,
-    private val getLyricsOfSongUseCase: GetLyricsOfSongUseCase,
+    private val commonLyricsUseCase: CommonLyricsUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
     private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-    private val getMusicUseCase: GetMusicUseCase,
-    getAllPlaylistWithMusicsUseCase: GetAllPlaylistWithMusicsUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
+    commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : ScreenModel,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
@@ -88,7 +88,7 @@ class PlayerViewModel(
         playbackManager.mainState.flatMapLatest { playbackState ->
             when (playbackState) {
                 is PlaybackManagerState.Data -> {
-                    getArtistsOfMusicUseCase(
+                    commonArtistUseCase.getArtistsOfMusic(
                         music = playbackState.currentMusic,
                     )
                 }
@@ -109,7 +109,7 @@ class PlayerViewModel(
                 if (music == null) {
                     flowOf(LyricsFetchState.FetchingLyrics)
                 } else {
-                    val lyrics: MusicLyrics? = getLyricsOfSongUseCase(music = music)
+                    val lyrics: MusicLyrics? = commonLyricsUseCase.getLyricsForMusic(music = music)
                     if (lyrics == null) {
                         flowOf(LyricsFetchState.NoLyricsFound)
                     } else {
@@ -154,7 +154,7 @@ class PlayerViewModel(
 
     val state: StateFlow<PlayerViewState> = combine(
         playbackManager.mainState,
-        getAllPlaylistWithMusicsUseCase(),
+        commonPlaylistUseCase.getAllWithMusics(),
         currentMusicFavoriteStatusState,
         currentMusicArtists
     ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicArtists ->
@@ -351,7 +351,7 @@ class PlayerViewModel(
         screenModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
-                val selectedMusic: Music = getMusicUseCase(musicId = selectedIds[0]).firstOrNull() ?: return@launch
+                val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
                 showMusicBottomSheet(selectedMusic = selectedMusic)
             } else {
                 showMultiMusicBottomSheet()

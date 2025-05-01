@@ -5,11 +5,11 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.UpsertAllArtistsUseCase
-import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
-import com.github.enteraname74.domain.usecase.music.UpsertAllMusicsUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
+import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.musicalbum.UpsertAllMusicAlbumUseCase
-import com.github.enteraname74.domain.usecase.musicartist.UpsertAllMusicArtistsUseCase
+import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,23 +20,23 @@ import org.koin.core.component.inject
 class MusicPersistence(
     private val optimizedCachedData: OptimizedCachedData,
 ): KoinComponent {
-    private val upsertAllArtistsUseCase: UpsertAllArtistsUseCase by inject()
+    private val commonArtistUseCase: CommonArtistUseCase by inject()
     private val commonAlbumUseCase: CommonAlbumUseCase by inject()
-    private val upsertAllMusicsUseCase: UpsertAllMusicsUseCase by inject()
-    private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase by inject()
-    private val upsertAllMusicArtistsUseCase: UpsertAllMusicArtistsUseCase by inject()
+    private val commonMusicsUseCase: CommonMusicUseCase by inject()
+    private val commonFolderUseCase: CommonFolderUseCase by inject()
+    private val commonMusicArtistUseCase: CommonMusicArtistUseCase by inject()
     private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase by inject()
     private val upsertAllMusicAlbumUseCase: UpsertAllMusicAlbumUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
 
     suspend fun saveAll() {
-        upsertAllArtistsUseCase(optimizedCachedData.artistsByName.values.toList())
+        commonArtistUseCase.upsertAll(optimizedCachedData.artistsByName.values.toList())
         commonAlbumUseCase.upsertAll(optimizedCachedData.albumsByInfo.values.toList())
-        upsertAllMusicsUseCase(optimizedCachedData.musicsByPath.values.toList())
+        commonMusicsUseCase.upsertAll(optimizedCachedData.musicsByPath.values.toList())
         upsertAllAlbumArtistUseCase(optimizedCachedData.albumArtists)
         upsertAllMusicAlbumUseCase(optimizedCachedData.musicAlbums)
-        upsertAllMusicArtistsUseCase(optimizedCachedData.musicArtists)
-        upsertAllFoldersUseCase(
+        commonMusicArtistUseCase.upsertAll(optimizedCachedData.musicArtists)
+        commonFolderUseCase.upsertAll(
             optimizedCachedData.musicsByPath.values.map { Folder(folderPath = it.folder) }.distinctBy { it.folderPath }
         )
 

@@ -5,9 +5,8 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.usecase.folder.GetHiddenFoldersPathUseCase
-import com.github.enteraname74.domain.usecase.folder.UpsertAllFoldersUseCase
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
+import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsState
@@ -23,9 +22,8 @@ import java.util.*
 
 class SettingsAddMusicsViewModel(
     private val musicFetcher: MusicFetcher,
-    private val getHiddenFoldersPathUseCase: GetHiddenFoldersPathUseCase,
-    private val getAllMusicUseCase: GetAllMusicUseCase,
-    private val upsertAllFoldersUseCase: UpsertAllFoldersUseCase,
+    private val commonFolderUseCase: CommonFolderUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
     private val multipleArtistListener: MultipleArtistListener,
 ) : ScreenModel {
     private val _state: MutableStateFlow<SettingsAddMusicsState> = MutableStateFlow(
@@ -83,8 +81,8 @@ class SettingsAddMusicsViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             multipleArtistListener.consumeStep()
 
-            val hiddenFoldersPaths: List<String> = getHiddenFoldersPathUseCase()
-            val allMusicsPaths: List<String> = getAllMusicUseCase().first().map { it.path }
+            val hiddenFoldersPaths: List<String> = commonFolderUseCase.getHiddenFoldersPath()
+            val allMusicsPaths: List<String> = commonMusicUseCase.getAll().first().map { it.path }
 
             _state.value = SettingsAddMusicsState.Fetching
 
@@ -96,7 +94,7 @@ class SettingsAddMusicsViewModel(
             // We save the folders to let the user easily removed unwanted one before adding new songs
             val folders: List<Folder> = newMusics.map { Folder(it.music.folder) }.distinctBy { it.folderPath }
 
-            upsertAllFoldersUseCase(
+            commonFolderUseCase.upsertAll(
                 allFolders = folders,
             )
 

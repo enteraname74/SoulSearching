@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.commondelegate
 
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistWithMusicsUseCase
 import com.github.enteraname74.soulsearching.composables.bottomsheets.multiartist.MultiArtistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.DeleteMultiArtistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -22,7 +21,6 @@ interface MultiArtistBottomSheetDelegate {
 
 class MultiArtistBottomSheetDelegateImpl(
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val getArtistWithMusicsUseCase: GetArtistWithMusicsUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ) : MultiArtistBottomSheetDelegate {
@@ -49,7 +47,7 @@ class MultiArtistBottomSheetDelegateImpl(
                     CoroutineScope(Dispatchers.IO).launch {
                         loadingManager.withLoading {
                             selectedIdsToDelete.forEach { albumId ->
-                                getArtistWithMusicsUseCase(
+                                commonArtistUseCase.getArtistWithMusic(
                                     artistId = albumId
                                 ).firstOrNull()?.let { artistWithMusics ->
                                     playbackManager.removeSongsFromPlayedPlaylist(
@@ -82,7 +80,7 @@ class MultiArtistBottomSheetDelegateImpl(
                         val musics: List<Music> = buildList {
                             selectedIds
                                 .forEach { artistId ->
-                                    getArtistWithMusicsUseCase(
+                                    commonArtistUseCase.getArtistWithMusic(
                                         artistId = artistId
                                     ).firstOrNull()?.let { artistWithMusics ->
                                         addAll(artistWithMusics.musics)
@@ -103,7 +101,7 @@ class MultiArtistBottomSheetDelegateImpl(
                         val musics: List<Music> = buildList {
                             selectedIds
                                 .forEach { artistId ->
-                                    getArtistWithMusicsUseCase(
+                                    commonArtistUseCase.getArtistWithMusic(
                                         artistId = artistId
                                     ).firstOrNull()?.let { artistWithMusics ->
                                         addAll(artistWithMusics.musics)
@@ -122,7 +120,7 @@ class MultiArtistBottomSheetDelegateImpl(
                 onRemoveFromPlayedList = {
                     CoroutineScope(Dispatchers.IO).launch {
                         selectedIds.forEach { artistId ->
-                            getArtistWithMusicsUseCase(
+                            commonArtistUseCase.getArtistWithMusic(
                                 artistId = artistId
                             ).firstOrNull()?.let { artistWithMusics ->
                                 playbackManager.removeSongsFromPlayedPlaylist(

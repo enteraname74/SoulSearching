@@ -6,7 +6,6 @@ import com.github.enteraname74.exposedflows.asFlow
 import com.github.enteraname74.exposedflows.flowTransactionOn
 import com.github.enteraname74.exposedflows.mapResultRow
 import com.github.enteraname74.exposedflows.mapSingleResultRow
-import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
@@ -80,14 +79,6 @@ internal class MusicDao {
         flowTransactionOn {
             MusicTable.deleteWhere { Op.build { id inList ids } }
         }
-    }
-
-    suspend fun getFromPath(musicPath: String): Music? = dbQuery {
-        MusicTable
-            .selectAll()
-            .where { path eq musicPath }
-            .firstOrNull()
-            ?.toMusic()
     }
 
     fun getFromId(musicId: UUID): Flow<Music?> = transaction {

@@ -6,13 +6,12 @@ import android.provider.MediaStore
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -22,9 +21,8 @@ import java.util.*
  */
 internal class MusicFetcherAndroidImpl(
     private val context: Context,
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
     private val feedbackPopUpManager: FeedbackPopUpManager,
-    private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : MusicFetcher() {
     /**
      * Build a cursor for fetching musics on device.
@@ -95,8 +93,8 @@ internal class MusicFetcherAndroidImpl(
                     updateProgress((count * 1F) / cursor.count, null)
                 }
                 cursor.close()
-                if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
-                    upsertPlaylistUseCase(
+                if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
+                    commonPlaylistUseCase.upsert(
                         Playlist(
                             playlistId = UUID.randomUUID(),
                             name = strings.favorite,

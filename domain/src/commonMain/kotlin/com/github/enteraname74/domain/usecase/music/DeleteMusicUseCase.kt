@@ -7,14 +7,12 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
 
 class DeleteMusicUseCase(
     private val musicRepository: MusicRepository,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
@@ -25,7 +23,7 @@ class DeleteMusicUseCase(
     }
 
     private suspend fun deleteMusic(music: Music) {
-        val artists: List<Artist> = getArtistsOfMusicUseCase(
+        val artists: List<Artist> = commonArtistUseCase.getArtistsOfMusic(
             music = music,
             withAlbumArtist = true,
         ).firstOrNull() ?: emptyList()
