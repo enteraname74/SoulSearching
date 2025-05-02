@@ -69,38 +69,38 @@ object SoulSearchingSettingsKeys {
     object Sort {
         val SORT_MUSICS_TYPE_KEY = settingElementOf(
             key = "SORT_MUSICS_TYPE",
-            defaultValue = SortType.NAME,
+            defaultValue = SortType.DEFAULT.value,
         )
         val SORT_MUSICS_DIRECTION_KEY = settingElementOf(
             key = "SORT_MUSICS_DIRECTION",
-            defaultValue = SortDirection.ASC,
+            defaultValue = SortDirection.DEFAULT.value,
         )
 
         val SORT_ALBUMS_TYPE_KEY = settingElementOf(
             key = "SORT_ALBUMS_TYPE",
-            defaultValue = SortType.NAME,
+            defaultValue = SortType.DEFAULT.value,
         )
         val SORT_ALBUMS_DIRECTION_KEY = settingElementOf(
             key = "SORT_ALBUMS_DIRECTION",
-            defaultValue = SortDirection.ASC,
+            defaultValue = SortDirection.DEFAULT.value,
         )
 
         val SORT_ARTISTS_TYPE_KEY = settingElementOf(
             key = "SORT_ARTISTS_TYPE",
-            defaultValue = SortType.NAME,
+            defaultValue = SortType.DEFAULT.value,
         )
         val SORT_ARTISTS_DIRECTION_KEY = settingElementOf(
             key = "SORT_ARTISTS_DIRECTION",
-            defaultValue = SortDirection.ASC,
+            defaultValue = SortDirection.DEFAULT.value,
         )
 
         val SORT_PLAYLISTS_TYPE_KEY = settingElementOf(
             key = "SORT_PLAYLISTS_TYPE",
-            defaultValue = SortType.NAME,
+            defaultValue = SortType.DEFAULT.value,
         )
         val SORT_PLAYLISTS_DIRECTION_KEY = settingElementOf(
             key = "SORT_PLAYLISTS_DIRECTION",
-            defaultValue = SortDirection.ASC
+            defaultValue = SortDirection.DEFAULT.value,
         )
     }
 

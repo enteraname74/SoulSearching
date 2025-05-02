@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.map
 class GetAllMusicsSortedUseCase(
     private val musicRepository: MusicRepository,
 ) {
-    operator fun invoke(sortDirection: Int, sortType: Int) : Flow<List<Music>> =
+    operator fun invoke(
+        sortDirection: SortDirection,
+        sortType: SortType,
+        ) : Flow<List<Music>> =
         musicRepository.getAll().map { list ->
             list.sorted(
                 sortDirection = sortDirection,
@@ -18,19 +21,19 @@ class GetAllMusicsSortedUseCase(
             )
         }
 
-    private fun List<Music>.sortedByType(sortType: Int): List<Music> =
+    private fun List<Music>.sortedByType(sortType: SortType): List<Music> =
         when (sortType) {
             SortType.NB_PLAYED -> this.sortedBy { it.nbPlayed }
             SortType.ADDED_DATE -> this.sortedBy{ it.addedDate }
-            else -> this.sortedBy { it.name }
+            SortType.NAME -> this.sortedBy { it.name }
         }
 
     private fun List<Music>.sorted(
-        sortDirection: Int,
-        sortType: Int,
+        sortDirection: SortDirection,
+        sortType: SortType,
     ): List<Music> =
         when(sortDirection) {
             SortDirection.DESC -> this.sortedByType(sortType).asReversed()
-            else -> this.sortedByType(sortType)
+            SortDirection.ASC -> this.sortedByType(sortType)
         }
 }

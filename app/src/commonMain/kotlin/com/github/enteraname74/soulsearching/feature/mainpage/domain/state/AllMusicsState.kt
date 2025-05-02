@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.*
  */
 data class AllMusicsState(
     val musics: List<Music> = listOf(),
-    var sortType: Int = SortDirection.ASC,
-    var sortDirection: Int = SortDirection.ASC,
+    var sortType: SortType = SortType.DEFAULT,
+    var sortDirection: SortDirection = SortDirection.DEFAULT,
     var monthMusics: List<MonthMusics> = listOf(),
 )

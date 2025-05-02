@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -33,7 +34,7 @@ fun AllMusicsComposable(
     musicState: AllMusicsState,
     multiSelectionState: MultiSelectionState,
     navigateToMonth: (month: String) -> Unit,
-    setSortType: (Int) -> Unit,
+    setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit = {},
     isUsingSort: Boolean = true,
     onLongClick: (Music) -> Unit,

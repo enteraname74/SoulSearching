@@ -72,10 +72,9 @@ interface Strings {
     val searchForMusics: String
     val searchAll: String
 
-    val sortByDateAdded: String
+    val sortByAddedDate: String
     val sortByMostListened: String
     val sortByName: String
-    val sortByAscOrDesc: String
 
     val removeFromQuickAccess: String
     val removeFromPlaylist: String

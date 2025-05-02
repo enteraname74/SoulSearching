@@ -64,10 +64,9 @@ object EnStrings : Strings {
     override val byMonths = "By months"
     override val quickAccess = "Quick Access"
 
-    override val sortByDateAdded = "Sort by date added"
-    override val sortByMostListened = "Sort by most listened"
-    override val sortByName = "Sort by name"
-    override val sortByAscOrDesc = "ascending or descending Sort"
+    override val sortByAddedDate = "Added date"
+    override val sortByMostListened = "Most listened"
+    override val sortByName = "Alphabetical"
 
     override val removeFromQuickAccess = "Remove from quick access"
     override val removeFromPlaylist = "Remove from playlist"

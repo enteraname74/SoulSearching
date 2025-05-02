@@ -1,13 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.button
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -98,8 +92,8 @@ private val RIGHT_BUTTON_SHAPE = RoundedCornerShape(
     bottomEndPercent = 50,
 )
 
-private val DIVIDER_THICKNESS: Dp = 1.dp
-private const val DIVIDER_HEIGHT: Float = .8f
+private val DIVIDER_THICKNESS: Dp = 2.dp
+private val DIVIDER_PADDING: Dp = 4.dp
 
 @Composable
 private fun Divider(
@@ -110,7 +104,7 @@ private fun Divider(
             .width(DIVIDER_THICKNESS)
             .fillMaxHeight()
             .background(color = colors.containerColor)
-            .fillMaxHeight(DIVIDER_HEIGHT)
+            .padding(vertical = DIVIDER_PADDING)
             .background(color = colors.contentColor)
     )
 }

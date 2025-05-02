@@ -9,6 +9,6 @@ import com.github.enteraname74.domain.model.SortType
  */
 data class AllArtistsState(
     val artists: List<ArtistWithMusics> = emptyList(),
-    var sortType: Int = SortType.NAME,
-    var sortDirection: Int = SortDirection.ASC
+    var sortType: SortType = SortType.DEFAULT,
+    var sortDirection: SortDirection = SortDirection.DEFAULT,
 )

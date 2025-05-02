@@ -63,10 +63,9 @@ object FrStrings : Strings {
     override val byMonths = "Par mois"
     override val quickAccess = "Accès rapides"
 
-    override val sortByDateAdded = "Trier par data d'ajout"
-    override val sortByMostListened = "Trier par le nombre d'écoutes"
-    override val sortByName = "Trier par nom"
-    override val sortByAscOrDesc = "Tri ascendant ou descendant"
+    override val sortByAddedDate = "Date d'ajout"
+    override val sortByMostListened = "Nombre d'écoutes"
+    override val sortByName = "Alphabétique"
 
     override val removeFromQuickAccess = "Retirer des accès rapides"
     override val removeFromPlaylist = "Retirer de la playlist"
