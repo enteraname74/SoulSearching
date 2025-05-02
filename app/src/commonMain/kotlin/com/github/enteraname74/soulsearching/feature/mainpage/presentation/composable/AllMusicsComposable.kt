@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Shuffle
@@ -14,9 +13,8 @@ import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
-import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -67,10 +65,6 @@ fun AllMusicsComposable(
             contentType = ALL_MUSICS_STICKY_CONTENT_TYPE,
         ) {
             SubMenuComposable(
-                modifier = Modifier
-                    .padding(
-                        bottom = UiConstants.Spacing.mediumPlus,
-                    ),
                 title = strings.musics,
                 setSortType = setSortType,
                 toggleSortDirection = toggleSortDirection,

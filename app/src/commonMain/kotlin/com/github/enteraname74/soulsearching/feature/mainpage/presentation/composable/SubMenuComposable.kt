@@ -22,7 +22,6 @@ fun SubMenuComposable(
     setSortType: (SortType) -> Unit,
     toggleSortDirection: () -> Unit,
     rightComposable: @Composable (() -> Unit) = {},
-    leftComposable: @Composable (() -> Unit) = {},
     sortType: SortType,
     sortDirection: SortDirection,
     isUsingSort: Boolean = true,
@@ -31,9 +30,8 @@ fun SubMenuComposable(
         modifier = modifier
             .fillMaxWidth()
             .background(color = SoulSearchingColorTheme.colorScheme.primary)
-            .padding(
-                horizontal = UiConstants.Spacing.medium,
-            ),
+            .padding(horizontal = UiConstants.Spacing.medium)
+            .padding(bottom = UiConstants.Spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -50,7 +48,6 @@ fun SubMenuComposable(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
-            leftComposable()
             if (isUsingSort) {
                 SortOptionsComposable(
                     setSortType = setSortType,

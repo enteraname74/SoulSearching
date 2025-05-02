@@ -36,7 +36,6 @@ fun <T> MainPageList(
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.mediumPlus)
     ) {
         SubMenuComposable(
             title = title,

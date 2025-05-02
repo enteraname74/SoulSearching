@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedButton
 import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedIconButton
+import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -33,6 +34,7 @@ fun PlaylistPanel(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .disableFocus()
             .background(containerColor)
             .padding(vertical = UiConstants.Spacing.mediumPlus),
         verticalAlignment = Alignment.CenterVertically,
