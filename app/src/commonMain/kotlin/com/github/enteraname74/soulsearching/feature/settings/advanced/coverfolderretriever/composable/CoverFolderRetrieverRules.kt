@@ -16,10 +16,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionButton
-import com.github.enteraname74.soulsearching.coreui.button.SoulSegmentedOptionTextButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButton
+import com.github.enteraname74.soulsearching.coreui.button.SoulChoiceButtonData
 import com.github.enteraname74.soulsearching.coreui.button.SoulSwitch
-import com.github.enteraname74.soulsearching.coreui.composable.SoulDivider
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
@@ -110,33 +109,30 @@ private fun LowerCaseRule(
     lowerCaseRule: Boolean?,
     onUpdateLowerCaseRule: (Boolean?) -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center,
-    ) {
-        SoulSegmentedOptionButton(
-            colors = SoulButtonDefaults.primaryColors(),
-            buttons = listOf(
-                SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverRulesDynamicNameLowercase,
-                    isSelected = lowerCaseRule == true,
-                    contentPadding = SoulButtonDefaults.contentPadding(),
-                    onClick = { onUpdateLowerCaseRule(true) }
-                ),
-                SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverRulesDynamicNameNoTreatment,
-                    isSelected = lowerCaseRule == null,
-                    contentPadding = SoulButtonDefaults.contentPadding(),
-                    onClick = { onUpdateLowerCaseRule(null) }
-                ),
-                SoulSegmentedOptionTextButton(
-                    data = strings.coverFolderRetrieverRulesDynamicNameUppercase,
-                    isSelected = lowerCaseRule == false,
-                    contentPadding = SoulButtonDefaults.contentPadding(),
-                    onClick = { onUpdateLowerCaseRule(false) }
-                )
+    SoulChoiceButton(
+        choices = listOf(
+            SoulChoiceButtonData(
+                icon = null,
+                data = true,
+                title = strings.coverFolderRetrieverRulesDynamicNameLowercase,
+            ),
+            SoulChoiceButtonData(
+                icon = null,
+                data = null,
+                title = strings.coverFolderRetrieverRulesDynamicNameNoTreatment,
+            ),
+            SoulChoiceButtonData(
+                icon = null,
+                data = false,
+                title = strings.coverFolderRetrieverRulesDynamicNameUppercase,
             )
-        )
-    }
+        ),
+        currentChoiceName = when (lowerCaseRule) {
+            true -> strings.coverFolderRetrieverRulesDynamicNameLowercase
+            false -> strings.coverFolderRetrieverRulesDynamicNameUppercase
+            null -> strings.coverFolderRetrieverRulesDynamicNameNoTreatment
+        },
+        onClick = onUpdateLowerCaseRule,
+        colors = SoulButtonDefaults.primaryColors(),
+    )
 }

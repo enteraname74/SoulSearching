@@ -77,9 +77,6 @@ fun CoverFolderRetrieverScreen(
                         dynamicName = EXAMPLE_ARTIST_NAME,
                     )
 
-                    CoverFolderRetrieverIncomplete(
-                        isComplete = path == null,
-                    )
                     CoverFolderRetrieverExamplePath(
                         path = path,
                     )
