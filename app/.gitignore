@@ -1,4 +1,12 @@
 /build
 /release
 
+# desktop app
 *.db
+*.log
+
+# Flatpak
+build-dir/
+repo/
+.flatpak-builder/
+*.flatpak
