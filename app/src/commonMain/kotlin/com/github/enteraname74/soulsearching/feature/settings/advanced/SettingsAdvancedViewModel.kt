@@ -275,8 +275,11 @@ class SettingsAdvancedViewModel(
             val allArtists: List<Artist> = commonArtistUseCase.getAll().first()
             commonArtistUseCase.upsertAll(
                 allArtists = allArtists.map { artist ->
-                    artist.cover = null
-                    artist
+                    artist.cover?.ifCoverFile { coverFile ->
+                        artist.copy(
+                            cover = coverFile.copy(fileCoverId = null)
+                        )
+                    } ?: artist
                 }
             )
         }
