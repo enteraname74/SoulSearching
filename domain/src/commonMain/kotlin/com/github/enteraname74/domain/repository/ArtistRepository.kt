@@ -36,6 +36,8 @@ interface ArtistRepository {
 
     suspend fun getAllFromName(artistsNames: List<String>): List<Artist>
 
+    suspend fun toggleCoverFolderMode(isActivated: Boolean)
+
     /**
      * Retrieves a flow of all Artist.
      */

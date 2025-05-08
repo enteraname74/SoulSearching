@@ -115,4 +115,8 @@ class CommonArtistUseCase(
     suspend fun upsert(artist: Artist) {
         artistRepository.upsert(artist)
     }
+
+    suspend fun toggleCoverFolderMode(isActivated: Boolean) {
+        artistRepository.toggleCoverFolderMode(isActivated)
+    }
 }

@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.localdesktop.dbQuery
 import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.artistName
+import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverFolderKey
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.coverId
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
@@ -36,6 +37,7 @@ internal class ArtistDao(
                 it[addedDate] = artist.addedDate
                 it[nbPlayed] = artist.nbPlayed
                 it[isInQuickAccess] = artist.isInQuickAccess
+                it[coverFolderKey] = (artist.cover as? Cover.CoverFile)?.devicePathSpec?.settingsKey
             }
         }
     }
@@ -49,6 +51,7 @@ internal class ArtistDao(
                 this[addedDate] = it.addedDate
                 this[nbPlayed] = it.nbPlayed
                 this[isInQuickAccess] = it.isInQuickAccess
+                this[coverFolderKey] = (it.cover as? Cover.CoverFile)?.devicePathSpec?.settingsKey
             }
         }
     }
@@ -62,6 +65,16 @@ internal class ArtistDao(
     suspend fun deleteAll(artistsIds: List<UUID>) {
         flowTransactionOn {
             ArtistTable.deleteWhere { Op.build { id inList artistsIds } }
+        }
+    }
+
+    suspend fun toggleCoverDeviceFolderMode(key: String?) {
+        flowTransactionOn {
+            ArtistTable.update {
+                with(SqlExpressionBuilder) {
+                    it[coverFolderKey] = key
+                }
+            }
         }
     }
 

@@ -1,23 +1,27 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.composable
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
-import com.github.enteraname74.soulsearching.coreui.ext.chainIf
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
+import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverActions
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.CoverFolderRetrieverState
@@ -56,48 +60,78 @@ fun CoverFolderRetrieverScreen(
             )
         }
         item {
-            val interactionSource = remember { MutableInteractionSource() }
 
-            Column(
-                modifier = Modifier
-                    .alpha(disabledAlpha)
-                    .chainIf(!state.coverFolderRetriever.isActivated) {
-                        Modifier.disableFocus()
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                                onClick = {}
-                            )
-                    },
-                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
-            ) {
-                val path = state.coverFolderRetriever.buildDynamicCoverPath(
-                    dynamicName = EXAMPLE_ARTIST_NAME,
-                )
+            var coverSectionHeight by rememberSaveable { mutableIntStateOf(0) }
 
-                CoverFolderRetrieverIncomplete(
-                    isComplete = path == null,
-                )
-                CoverFolderRetrieverExamplePath(
-                    path = path,
-                )
-                CoverFolderRetrieverRules(
-                    actions = actions,
-                    coverFolderRetriever = state.coverFolderRetriever,
-                    title = ui.dynamicNameTitle,
-                    whiteSpaceReplacementTextField = ui.whiteSpaceReplacementTextField,
-                )
-                CoverFolderRetrieverFolderMode(
-                    actions = actions,
-                    coverFolderRetriever = state.coverFolderRetriever,
-                    coverFilNameTextField = ui.coverFileNameTextField
-                )
-                CoverFolderRetrieverFileMode(
-                    actions = actions,
-                    coverFolderRetriever = state.coverFolderRetriever,
+            Box {
+                Column(
+                    modifier = Modifier
+                        .alpha(disabledAlpha)
+                        .onGloballyPositioned { layoutCoordinates ->
+                            coverSectionHeight = layoutCoordinates.size.height
+                        }
+                        .padding(horizontal = UiConstants.Spacing.large),
+                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.large)
+                ) {
+                    val path = state.coverFolderRetriever.buildDynamicCoverPath(
+                        dynamicName = EXAMPLE_ARTIST_NAME,
+                    )
+
+                    CoverFolderRetrieverIncomplete(
+                        isComplete = path == null,
+                    )
+                    CoverFolderRetrieverExamplePath(
+                        path = path,
+                    )
+                    CoverFolderRetrieverRules(
+                        actions = actions,
+                        coverFolderRetriever = state.coverFolderRetriever,
+                        title = ui.dynamicNameTitle,
+                        whiteSpaceReplacementTextField = ui.whiteSpaceReplacementTextField,
+                    )
+                    CoverFolderRetrieverFolderMode(
+                        actions = actions,
+                        coverFolderRetriever = state.coverFolderRetriever,
+                        coverFilNameTextField = ui.coverFileNameTextField
+                    )
+                    CoverFolderRetrieverFileMode(
+                        actions = actions,
+                        coverFolderRetriever = state.coverFolderRetriever,
+                    )
+                }
+                DisabledHover(
+                    modifier = Modifier
+                        .height(coverSectionHeight.toDp()),
+                    isVisible = !state.coverFolderRetriever.isActivated
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DisabledHover(
+    isVisible: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = fadeIn(
+            animationSpec = tween(
+                durationMillis = UiConstants.AnimationDuration.short
+            )
+        ),
+        exit = fadeOut(
+            animationSpec = tween(
+                durationMillis = UiConstants.AnimationDuration.short
+            )
+        ),
+    ) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .disableFocus()
+        )
     }
 }
 

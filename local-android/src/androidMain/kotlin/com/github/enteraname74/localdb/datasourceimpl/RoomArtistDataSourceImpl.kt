@@ -2,6 +2,8 @@ package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toArtist
 import com.github.enteraname74.localdb.model.toArtistWithMusics
@@ -41,6 +43,16 @@ internal class RoomArtistDataSourceImpl(
 
     override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
         appDatabase.artistDao.getArtistNamesContainingSearch(search)
+
+    override suspend fun toggleCoverFolderMode(isActivated: Boolean) {
+        if (isActivated) {
+            appDatabase.artistDao.activateCoverFolderMode(
+                key = SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER.key
+            )
+        } else {
+            appDatabase.artistDao.deactivateCoverFolderMode()
+        }
+    }
 
     override fun getFromId(artistId: UUID): Flow<Artist?> {
         return appDatabase.artistDao.getFromId(

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfol
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefaults
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
@@ -11,12 +12,13 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel.Companion.COVER_FILE_NAME_ID
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 
-class CoverFolderRetrieverViewModelDelegate(
+abstract class CoverFolderRetrieverViewModelDelegate(
     private val settings: SoulSearchingSettings,
+    private val loadingManager: LoadingManager,
 ): CoverFolderRetrieverActions {
 
     var coverFolderRetriever: CoverFolderRetriever = CoverFolderRetriever.default
-    lateinit var settingsKey: String
+    abstract val settingsKey: String
 
     override val coverFileNameTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = COVER_FILE_NAME_ID,
@@ -47,15 +49,21 @@ class CoverFolderRetrieverViewModelDelegate(
             SerializationUtils.deserialize(it)
         } ?: CoverFolderRetriever.default
 
+    abstract suspend fun handleToggleActivation(isActivated: Boolean)
+
     override fun onToggleActivation() {
-        settings.set(
-            key = settingsKey,
-            value = SerializationUtils.serialize(
-                coverFolderRetriever.copy(
-                    isActivated = !coverFolderRetriever.isActivated,
+        loadingManager.withLoadingOnIO {
+            val newIsActivated = !coverFolderRetriever.isActivated
+            settings.set(
+                key = settingsKey,
+                value = SerializationUtils.serialize(
+                    coverFolderRetriever.copy(
+                        isActivated = newIsActivated,
+                    )
                 )
             )
-        )
+            handleToggleActivation(newIsActivated)
+        }
     }
 
     override fun updateFolderPath(newPath: String) {

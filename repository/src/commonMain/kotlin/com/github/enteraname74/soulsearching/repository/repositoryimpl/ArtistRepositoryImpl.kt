@@ -2,11 +2,9 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.util.*
 
 /**
@@ -53,6 +51,10 @@ class ArtistRepositoryImpl(
 
     override suspend fun getAllFromName(artistsNames: List<String>): List<Artist> =
         artistDataSource.getAllFromName(artistsNames)
+
+    override suspend fun toggleCoverFolderMode(isActivated: Boolean) {
+        artistDataSource.toggleCoverFolderMode(isActivated)
+    }
 
     /**
      * Retrieves a flow of all Artist, sorted by name asc.

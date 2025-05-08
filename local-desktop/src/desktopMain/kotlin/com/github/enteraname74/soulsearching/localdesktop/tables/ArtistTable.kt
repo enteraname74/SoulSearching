@@ -15,6 +15,7 @@ internal object ArtistTable: UUIDTable() {
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
+    val coverFolderKey = varchar("coverFolderKey", 128).nullable()
 }
 
 /**
@@ -25,15 +26,27 @@ internal fun ResultRow.toArtist(): Artist? =
         Artist(
             artistId = this[ArtistTable.id].value,
             artistName = this[ArtistTable.artistName],
-            cover = this[ArtistTable.coverId]?.let { coverId ->
-                Cover.CoverFile(
-                    fileCoverId = coverId,
-                )
-            },
+            cover = buildCover(),
             addedDate = this[ArtistTable.addedDate],
             nbPlayed = this[ArtistTable.nbPlayed],
-            isInQuickAccess = this[ArtistTable.isInQuickAccess]
+            isInQuickAccess = this[ArtistTable.isInQuickAccess],
         )
     } catch (_: Exception) {
         null
     }
+
+private fun ResultRow.buildCover(): Cover? {
+    val coverFolderKey: String? = this[ArtistTable.coverFolderKey]
+    val coverId = this[ArtistTable.coverId]
+
+    return Cover.CoverFile(
+        fileCoverId = coverId,
+        devicePathSpec = coverFolderKey?.let { key ->
+            Cover.CoverFile.DevicePathSpec(
+                settingsKey = key,
+                dynamicElementName = this[ArtistTable.artistName],
+                fallback = Cover.CoverFile(fileCoverId = coverId),
+            )
+        },
+    )
+}

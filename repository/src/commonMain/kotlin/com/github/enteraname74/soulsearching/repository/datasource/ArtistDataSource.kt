@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -26,6 +25,8 @@ interface ArtistDataSource {
     suspend fun deleteAll(artistsIds: List<UUID>)
 
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
+
+    suspend fun toggleCoverFolderMode(isActivated: Boolean)
 
     /**
      * Retrieves an Artist from its id.

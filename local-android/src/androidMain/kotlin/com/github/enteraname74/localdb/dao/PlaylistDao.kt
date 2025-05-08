@@ -44,13 +44,4 @@ internal interface PlaylistDao {
 
     @Query("SELECT COUNT(*) FROM RoomPlaylist WHERE coverId = :coverId")
     suspend fun getNumberOfPlaylistsWithCoverId(coverId : UUID) : Int
-
-    @Query("UPDATE RoomPlaylist SET isInQuickAccess = :newQuickAccessState WHERE playlistId = :playlistId")
-    suspend fun updateQuickAccessState(newQuickAccessState: Boolean, playlistId: UUID)
-
-    @Query("SELECT nbPlayed FROM RoomPlaylist WHERE playlistId = :playlistId")
-    suspend fun getNbPlayedOfPlaylist(playlistId: UUID): Int
-
-    @Query("UPDATE RoomPlaylist SET nbPlayed = :newNbPlayed WHERE playlistId = :playlistId")
-    suspend fun updateNbPlayed(newNbPlayed: Int, playlistId: UUID)
 }

@@ -24,6 +24,12 @@ internal interface ArtistDao {
     @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query("UPDATE RoomArtist SET coverFolderKey = :key")
+    suspend fun activateCoverFolderMode(key: String)
+
+    @Query("UPDATE RoomArtist SET coverFolderKey = NULL")
+    suspend fun deactivateCoverFolderMode()
+
     @Query("SELECT artistName FROM RoomArtist WHERE LOWER(artistName) LIKE LOWER('%' || :search || '%')")
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 

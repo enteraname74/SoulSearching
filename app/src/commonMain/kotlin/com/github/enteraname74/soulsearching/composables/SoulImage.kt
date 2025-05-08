@@ -20,19 +20,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import coil3.BitmapImage
 import coil3.Image
-import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.CoverFolderRetriever
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
+import com.github.enteraname74.soulsearching.app.generated.resources.Res
+import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
-import com.github.enteraname74.soulsearching.app.generated.resources.Res
-import com.github.enteraname74.soulsearching.app.generated.resources.app_logo_uni_xml
+import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -135,6 +138,17 @@ private fun FileCover(
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder = { this },
 ) {
     when {
+        cover.devicePathSpec != null -> {
+            CoverFolderImage(
+                devicePathSpec = cover.devicePathSpec!!,
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+                onSuccess = onSuccess,
+                builderOptions = builderOptions,
+            )
+        }
+
         cover.fileCoverId != null -> {
             CoverIdImage(
                 coverId = cover.fileCoverId,
@@ -164,6 +178,48 @@ private fun FileCover(
             )
         }
     }
+}
+
+@Composable
+private fun CoverFolderImage(
+    devicePathSpec: Cover.CoverFile.DevicePathSpec,
+    modifier: Modifier,
+    contentScale: ContentScale,
+    tint: Color,
+    onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
+    builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
+    settings: SoulSearchingSettings = injectElement(),
+) {
+    var path: String? by rememberSaveable {
+        mutableStateOf(null)
+    }
+    var job: Job? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(devicePathSpec) {
+        if (job?.isActive == true) {
+            return@LaunchedEffect
+        }
+
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val fetchedPath: String? = settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER)
+                .takeIf { it.isNotBlank() }?.let {
+                    runCatching {
+                        val coverFolderRetriever: CoverFolderRetriever = SerializationUtils.deserialize(it)
+                        coverFolderRetriever.buildDynamicCoverPath(dynamicName = devicePathSpec.dynamicElementName)
+                    }.getOrNull()
+                }
+            path = fetchedPath
+        }
+    }
+
+    DataImage(
+        data = path,
+        modifier = modifier,
+        contentScale = contentScale,
+        builderOptions = builderOptions,
+        onSuccess = onSuccess,
+        tint = tint,
+    )
 }
 
 @Composable

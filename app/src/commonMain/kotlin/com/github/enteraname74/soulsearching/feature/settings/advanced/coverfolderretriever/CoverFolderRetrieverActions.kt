@@ -1,8 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever
 
+import cafe.adriel.voyager.core.model.ScreenModel
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 
-interface CoverFolderRetrieverActions {
+interface CoverFolderRetrieverActions: ScreenModel {
     val coverFileNameTextField: SoulTextFieldHolder
     val whiteSpaceReplacementTextField: SoulTextFieldHolder
 

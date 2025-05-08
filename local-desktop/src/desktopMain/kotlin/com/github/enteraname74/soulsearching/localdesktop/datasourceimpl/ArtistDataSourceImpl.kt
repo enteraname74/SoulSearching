@@ -2,12 +2,11 @@ package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
-import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.localdesktop.dao.ArtistDao
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import java.util.UUID
+import java.util.*
 
 internal class ArtistDataSourceImpl(
     private val artistDao: ArtistDao
@@ -32,6 +31,12 @@ internal class ArtistDataSourceImpl(
 
     override suspend fun getArtistNamesContainingSearch(search: String): List<String> =
         artistDao.getArtistNamesContainingSearch(search)
+
+    override suspend fun toggleCoverFolderMode(isActivated: Boolean) {
+        artistDao.toggleCoverDeviceFolderMode(
+            key = SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER.key.takeIf { isActivated },
+        )
+    }
 
     override fun getFromId(artistId: UUID): Flow<Artist?> =
         artistDao.getFromId(artistId)

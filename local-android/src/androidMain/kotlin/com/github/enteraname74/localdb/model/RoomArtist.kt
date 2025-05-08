@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
+import com.github.enteraname74.domain.model.Cover.CoverFile.DevicePathSpec
 import java.time.LocalDateTime
 import java.util.*
 
@@ -14,11 +15,12 @@ import java.util.*
 internal data class RoomArtist(
     @PrimaryKey
     val artistId: UUID = UUID.randomUUID(),
-    var artistName: String = "",
-    var coverId: UUID? = null,
-    var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    val artistName: String,
+    val coverId: UUID? = null,
+    val coverFolderKey: String? = null,
+    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val nbPlayed: Int = 0,
+    val isInQuickAccess: Boolean = false,
 )
 
 /**
@@ -27,7 +29,16 @@ internal data class RoomArtist(
 internal fun RoomArtist.toArtist(): Artist = Artist(
     artistId = artistId,
     artistName = artistName,
-    cover = Cover.CoverFile(fileCoverId = coverId),
+    cover = Cover.CoverFile(
+        fileCoverId = coverId,
+        devicePathSpec = coverFolderKey?.let { key ->
+            DevicePathSpec(
+                settingsKey = key,
+                dynamicElementName = artistName,
+                fallback = Cover.CoverFile(fileCoverId = coverId),
+            )
+        },
+    ),
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess
@@ -42,5 +53,6 @@ internal fun Artist.toRoomArtist(): RoomArtist = RoomArtist(
     coverId = (cover as? Cover.CoverFile)?.fileCoverId,
     addedDate = addedDate,
     nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess
+    isInQuickAccess = isInQuickAccess,
+    coverFolderKey = (cover as? Cover.CoverFile)?.devicePathSpec?.settingsKey,
 )

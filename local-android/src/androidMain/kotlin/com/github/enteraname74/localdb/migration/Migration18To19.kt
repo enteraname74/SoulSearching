@@ -79,6 +79,10 @@ class Migration18To19(
         )
     }
 
+    private fun artistMigration(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE RoomArtist ADD COLUMN coverFolderKey TEXT")
+    }
+
     /**
      * Migrates musics and returns the list of [CachedMusicUpdate] that possess an album artist.
      */
@@ -299,6 +303,7 @@ class Migration18To19(
     }
 
     override fun migrate(db: SupportSQLiteDatabase) {
+        artistMigration(db)
         musicArtistMigration(db)
         musicPlaylistMigration(db)
         val musicsWithAlbumArtist: List<CachedMusicUpdate> = musicMigration(db)
