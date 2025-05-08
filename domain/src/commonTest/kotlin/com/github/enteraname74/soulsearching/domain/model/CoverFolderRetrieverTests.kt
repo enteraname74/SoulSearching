@@ -14,6 +14,7 @@ class CoverFolderRetrieverTests {
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
             lowerCaseRule = true,
+            fileExtension = null,
             whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
                 isActivated = true,
                 replacement = "_"
@@ -34,6 +35,7 @@ class CoverFolderRetrieverTests {
             coverFileName = "cover.png",
             mode = CoverFolderRetriever.DynamicMode.Folder,
             lowerCaseRule = false,
+            fileExtension = null,
             whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
                 isActivated = false,
                 replacement = "_"
@@ -57,6 +59,7 @@ class CoverFolderRetrieverTests {
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
             lowerCaseRule = true,
+            fileExtension = "png",
             whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
                 isActivated = true,
                 replacement = "_"
@@ -76,6 +79,7 @@ class CoverFolderRetrieverTests {
             fileModePath = "my/folder/path",
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
+            fileExtension = ".jpg",
             lowerCaseRule = false,
             whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
                 isActivated = true,
@@ -84,7 +88,7 @@ class CoverFolderRetrieverTests {
         )
 
         actualPath = settings.buildDynamicCoverPath("John Doe")
-        expectedPath = "my/folder/path/JOHNDOE.png"
+        expectedPath = "my/folder/path/JOHNDOE.jpg"
 
         assertEquals(
             expected = expectedPath,
@@ -100,6 +104,7 @@ class CoverFolderRetrieverTests {
             mode = CoverFolderRetriever.DynamicMode.File,
             coverFileName = "",
             lowerCaseRule = true,
+            fileExtension = ".png",
             whiteSpaceRule = CoverFolderRetriever.WhiteSpaceRule(
                 isActivated = true,
                 replacement = "_"

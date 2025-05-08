@@ -8,6 +8,7 @@ data class CoverFolderRetriever(
     val folderModePath: String?,
     val fileModePath: String?,
     val coverFileName: String?,
+    val fileExtension: String?,
     val whiteSpaceRule: WhiteSpaceRule,
     val lowerCaseRule: Boolean?,
     val mode: DynamicMode,
@@ -36,13 +37,19 @@ data class CoverFolderRetriever(
     fun buildDynamicCoverPath(dynamicName: String): String? {
         if (!isValid()) return null
 
-        var finalDynamicName = dynamicName
+        val finalDynamicName = dynamicName
             .applyLowerCaseRule()
             .applyWhiteSpaceRule()
 
         return when(mode) {
             DynamicMode.Folder -> "$folderModePath/$finalDynamicName/$coverFileName"
-            DynamicMode.File -> "$fileModePath/$finalDynamicName.png"
+            DynamicMode.File -> {
+                if (fileExtension == null) {
+                    return null
+                }
+                val cleanedExtension = fileExtension.replace(".", "")
+                "$fileModePath/$finalDynamicName.$cleanedExtension"
+            }
         }
     }
 
@@ -70,6 +77,7 @@ data class CoverFolderRetriever(
             ),
             lowerCaseRule = null,
             mode = DynamicMode.Folder,
+            fileExtension = "jpg",
         )
     }
 }

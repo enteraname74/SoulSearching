@@ -6,6 +6,9 @@ sealed interface Cover {
 
     fun isEmpty(): Boolean
 
+    fun <T>ifCoverFile(block: (CoverFile) -> T) : T? =
+        (this as? CoverFile)?.let { block(this) }
+
     data class CoverFile(
         val initialCoverPath: String? = null,
         val fileCoverId: UUID? = null,

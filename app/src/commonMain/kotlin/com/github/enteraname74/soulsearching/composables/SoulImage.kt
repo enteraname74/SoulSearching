@@ -193,6 +193,7 @@ private fun CoverFolderImage(
     var path: String? by rememberSaveable {
         mutableStateOf(null)
     }
+    var shouldUseFallback: Boolean by rememberSaveable { mutableStateOf(false) }
     var job: Job? by remember { mutableStateOf(null) }
 
     LaunchedEffect(devicePathSpec) {
@@ -208,18 +209,45 @@ private fun CoverFolderImage(
                         coverFolderRetriever.buildDynamicCoverPath(dynamicName = devicePathSpec.dynamicElementName)
                     }.getOrNull()
                 }
+            shouldUseFallback = fetchedPath == null
             path = fetchedPath
         }
     }
 
-    DataImage(
-        data = path,
-        modifier = modifier,
-        contentScale = contentScale,
-        builderOptions = builderOptions,
-        onSuccess = onSuccess,
-        tint = tint,
-    )
+    when {
+        shouldUseFallback && (devicePathSpec.fallback as? Cover.CoverFile) != null -> {
+            FileCover(
+                cover = devicePathSpec.fallback as Cover.CoverFile,
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+                onSuccess = onSuccess,
+                builderOptions = builderOptions,
+            )
+        }
+        path == null -> {
+            TemplateImage(
+                modifier = modifier,
+                contentScale = contentScale,
+                tint = tint,
+            )
+        }
+        else -> {
+            DataImage(
+                data = path,
+                modifier = modifier,
+                contentScale = contentScale,
+                builderOptions = builderOptions,
+                onSuccess = { bitmap ->
+                    if (bitmap == null) {
+                        shouldUseFallback = true
+                    }
+                    onSuccess?.invoke(bitmap)
+                },
+                tint = tint,
+            )
+        }
+    }
 }
 
 @Composable
