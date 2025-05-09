@@ -38,8 +38,4 @@ class SettingsArtistCoverMethodViewModel(
             coverFolderRetriever = CoverFolderRetriever.default,
         )
     )
-
-    companion object {
-        const val COVER_FILE_NAME_ID = "COVER_FILE_NAME"
-    }
 }

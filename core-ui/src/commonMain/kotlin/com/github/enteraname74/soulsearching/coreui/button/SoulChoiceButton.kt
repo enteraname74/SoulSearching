@@ -1,7 +1,13 @@
 package com.github.enteraname74.soulsearching.coreui.button
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -10,19 +16,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.image.SoulIcon
 
 @Composable
-fun <T>SoulChoiceButton(
+fun <T> SoulChoiceButton(
     choices: List<SoulChoiceButtonData<T>>,
     currentChoiceName: String,
     onClick: (T) -> Unit,
@@ -30,11 +37,18 @@ fun <T>SoulChoiceButton(
     enabled: Boolean = true,
     shape: Shape = SoulButtonDefaults.LIGHT_ROUND_SHAPE,
     colors: SoulButtonColors = SoulButtonDefaults.secondaryColors(),
-    contentPadding: PaddingValues = SoulButtonDefaults.contentPadding(),
+    contentPadding: PaddingValues = SoulButtonDefaults.contentPadding(
+        horizontal = UiConstants.Spacing.medium,
+    ),
 ) {
     var isExpanded by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val iconRotation by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f,
+        animationSpec = tween(UiConstants.AnimationDuration.normal),
+    )
 
     Box {
         SoulButton(
@@ -45,12 +59,27 @@ fun <T>SoulChoiceButton(
             colors = colors,
             contentPadding = contentPadding,
         ) {
-            Text(
-                text = currentChoiceName,
-                textAlign = TextAlign.Center,
-                color = colors.contentColor,
-                fontSize = 14.sp
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(
+                            weight = 1f,
+                            fill = false,
+                        ),
+                    text = currentChoiceName,
+                    color = colors.contentColor,
+                    fontSize = 14.sp
+                )
+                SoulIcon(
+                    modifier = Modifier
+                        .rotate(iconRotation),
+                    icon = Icons.Rounded.ArrowDropDown,
+                    tint = colors.contentColor,
+                )
+            }
         }
         DropdownMenu(
             expanded = isExpanded,

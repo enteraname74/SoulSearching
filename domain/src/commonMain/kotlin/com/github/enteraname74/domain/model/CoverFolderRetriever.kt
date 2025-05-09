@@ -31,7 +31,7 @@ data class CoverFolderRetriever(
     private fun isValid(): Boolean =
         when(mode) {
             DynamicMode.Folder -> folderModePath?.takeIf { it.isNotBlank() }  != null && coverFileName?.takeIf { it.isNotBlank() } != null
-            DynamicMode.File -> fileModePath?.takeIf { it.isNotBlank() }  != null
+            DynamicMode.File -> fileModePath?.takeIf { it.isNotBlank() }  != null && fileExtension?.takeIf { it.isNotBlank() } != null
         }
 
     fun buildDynamicCoverPath(dynamicName: String): String? {
@@ -65,12 +65,11 @@ data class CoverFolderRetriever(
     )
 
     companion object {
-        // TODO: Change default mode to File.
         val default: CoverFolderRetriever = CoverFolderRetriever(
             isActivated = false,
             folderModePath = null,
             fileModePath = null,
-            coverFileName = null,
+            coverFileName = "cover.jpg",
             whiteSpaceRule = WhiteSpaceRule(
                 isActivated = false,
                 replacement = "",

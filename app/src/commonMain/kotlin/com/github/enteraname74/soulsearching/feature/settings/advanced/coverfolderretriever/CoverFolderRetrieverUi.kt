@@ -7,5 +7,6 @@ data class CoverFolderRetrieverUi(
     val activateText: String,
     val dynamicNameTitle: String,
     val whiteSpaceReplacementTextField: SoulTextFieldHolder,
-    val coverFileNameTextField: SoulTextFieldHolder
+    val coverFileNameTextField: SoulTextFieldHolder,
+    val extensionTextField: SoulTextFieldHolder
 )

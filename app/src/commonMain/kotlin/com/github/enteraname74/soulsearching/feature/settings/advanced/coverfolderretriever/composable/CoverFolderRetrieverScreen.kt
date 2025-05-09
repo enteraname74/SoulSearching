@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ContentAlpha
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +19,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.unit.dp
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
@@ -89,11 +89,12 @@ fun CoverFolderRetrieverScreen(
                     CoverFolderRetrieverFolderMode(
                         actions = actions,
                         coverFolderRetriever = state.coverFolderRetriever,
-                        coverFilNameTextField = ui.coverFileNameTextField
+                        coverFileNameTextField = ui.coverFileNameTextField
                     )
                     CoverFolderRetrieverFileMode(
                         actions = actions,
                         coverFolderRetriever = state.coverFolderRetriever,
+                        extensionTextField = ui.extensionTextField,
                     )
                 }
                 DisabledHover(

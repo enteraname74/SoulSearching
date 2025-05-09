@@ -177,6 +177,8 @@ interface Strings {
     val coverFolderRetrieverPathSelectionTitle: String
     val coverFolderRetrieverPathSelectionNoPathSelected: String
 
+    val coverFolderRetrieverFileExtension: String
+
     val coverFolderRetrieverFolderTitle: String
     val coverFolderRetrieverFolderText: String
     val coverFolderRetrieverFolderIncomplete: String

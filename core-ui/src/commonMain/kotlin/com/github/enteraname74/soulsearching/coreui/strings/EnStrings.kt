@@ -175,6 +175,10 @@ object EnStrings : Strings {
     override val coverFolderRetrieverPathSelectionNoPathSelected: String
         get() = TODO("Not yet implemented")
 
+
+    override val coverFolderRetrieverFileExtension: String
+        get() = TODO("Not yet implemented")
+
     override val coverFolderRetrieverFolderTitle: String
         get() = TODO("Not yet implemented")
     override val coverFolderRetrieverFolderText: String

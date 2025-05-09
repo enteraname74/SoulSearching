@@ -30,6 +30,7 @@ class SettingsArtistCoverMethodScreen: Screen, SettingPage {
                 dynamicNameTitle = strings.artistCoverMethodDynamicNameTitle,
                 whiteSpaceReplacementTextField = screenModel.whiteSpaceReplacementTextField,
                 coverFileNameTextField = screenModel.coverFileNameTextField,
+                extensionTextField = screenModel.extensionTextField,
             ),
             state = state,
             actions = screenModel,

@@ -170,6 +170,8 @@ object FrStrings : Strings {
     override val coverFolderRetrieverPathSelectionTitle = "Sélectionner le dossier parent"
     override val coverFolderRetrieverPathSelectionNoPathSelected = "Aucun dossier sélectionné"
 
+    override val coverFolderRetrieverFileExtension = "Extension de l'image"
+
     override val coverFolderRetrieverFolderTitle = "Dossier dynamique"
     override val coverFolderRetrieverFolderText = "Le nom du dossier correspond au nom de l'artiste"
     override val coverFolderRetrieverFolderIncomplete = "Les données requises sont incomplètes"

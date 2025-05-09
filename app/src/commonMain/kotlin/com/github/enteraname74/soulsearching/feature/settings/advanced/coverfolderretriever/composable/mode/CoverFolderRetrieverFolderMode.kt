@@ -19,7 +19,7 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfold
 fun CoverFolderRetrieverFolderMode(
     actions: CoverFolderRetrieverActions,
     coverFolderRetriever: CoverFolderRetriever,
-    coverFilNameTextField: SoulTextFieldHolder,
+    coverFileNameTextField: SoulTextFieldHolder,
 ) {
     val isSelected = coverFolderRetriever.mode == CoverFolderRetriever.DynamicMode.Folder
     CoverFolderRetrieverExpander(
@@ -41,10 +41,10 @@ fun CoverFolderRetrieverFolderMode(
             verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium)
         ) {
             CoverFolderRetrieverFolderSelection(
-                onSelectedFolder = actions::updateFolderPath,
+                onSelectedFolder = actions::updateFolderModePath,
                 currentFolder = coverFolderRetriever.folderModePath,
             )
-            CoverName(textField = coverFilNameTextField)
+            CoverName(textField = coverFileNameTextField)
         }
     }
 }

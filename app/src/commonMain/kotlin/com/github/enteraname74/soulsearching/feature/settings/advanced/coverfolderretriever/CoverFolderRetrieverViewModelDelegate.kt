@@ -9,7 +9,6 @@ import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldDefau
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolder
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldHolderImpl
 import com.github.enteraname74.soulsearching.coreui.textfield.SoulTextFieldStyle
-import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel.Companion.COVER_FILE_NAME_ID
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
 
 abstract class CoverFolderRetrieverViewModelDelegate(
@@ -19,6 +18,18 @@ abstract class CoverFolderRetrieverViewModelDelegate(
 
     var coverFolderRetriever: CoverFolderRetriever = CoverFolderRetriever.default
     abstract val settingsKey: String
+
+    override val whiteSpaceReplacementTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
+        id = REPLACEMENT_ID,
+        initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
+            .whiteSpaceRule.replacement,
+        getLabel = { strings.coverFolderRetrieverRulesReplacement },
+        getError = { null },
+        onChange = { updateWhiteSpaceReplacement(it) },
+        isValid = { true },
+        style = SoulTextFieldStyle.Unique,
+        getColors = { SoulTextFieldDefaults.primaryColors() },
+    )
 
     override val coverFileNameTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
         id = COVER_FILE_NAME_ID,
@@ -32,14 +43,14 @@ abstract class CoverFolderRetrieverViewModelDelegate(
         getColors = { SoulTextFieldDefaults.primaryColors() },
     )
 
-    override val whiteSpaceReplacementTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
-        id = COVER_FILE_NAME_ID,
+    override val extensionTextField: SoulTextFieldHolder = SoulTextFieldHolderImpl(
+        id = EXTENSION_ID,
         initialValue = deserializeCoverFolderRetriever(settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER))
-            .whiteSpaceRule.replacement,
-        getLabel = { strings.coverFolderRetrieverRulesReplacement },
-        getError = { null },
-        onChange = { updateWhiteSpaceReplacement(it) },
-        isValid = { true },
+            .fileExtension.orEmpty(),
+        getLabel = { strings.coverFolderRetrieverFileExtension },
+        getError = { strings.fieldCannotBeEmpty },
+        onChange = { updateFileExtension(it) },
+        isValid = { it.isNotBlank() },
         style = SoulTextFieldStyle.Unique,
         getColors = { SoulTextFieldDefaults.primaryColors() },
     )
@@ -66,12 +77,23 @@ abstract class CoverFolderRetrieverViewModelDelegate(
         }
     }
 
-    override fun updateFolderPath(newPath: String) {
+    override fun updateFolderModePath(newPath: String) {
         settings.set(
             key = settingsKey,
             value = SerializationUtils.serialize(
                 coverFolderRetriever.copy(
                     folderModePath = newPath,
+                )
+            )
+        )
+    }
+
+    override fun updateFileModePath(newPath: String) {
+        settings.set(
+            key = settingsKey,
+            value = SerializationUtils.serialize(
+                coverFolderRetriever.copy(
+                    fileModePath = newPath,
                 )
             )
         )
@@ -83,6 +105,17 @@ abstract class CoverFolderRetrieverViewModelDelegate(
             value = SerializationUtils.serialize(
                 coverFolderRetriever.copy(
                     coverFileName = newName,
+                )
+            )
+        )
+    }
+
+    override fun updateFileExtension(newExtension: String) {
+        settings.set(
+            key = settingsKey,
+            value = SerializationUtils.serialize(
+                coverFolderRetriever.copy(
+                    fileExtension = newExtension,
                 )
             )
         )
@@ -137,5 +170,11 @@ abstract class CoverFolderRetrieverViewModelDelegate(
                 )
             )
         )
+    }
+
+    private companion object {
+        const val COVER_FILE_NAME_ID = "COVER_FILE_NAME"
+        const val REPLACEMENT_ID = "REPLACEMENT_ID"
+        const val EXTENSION_ID = "EXTENSION_ID"
     }
 }
