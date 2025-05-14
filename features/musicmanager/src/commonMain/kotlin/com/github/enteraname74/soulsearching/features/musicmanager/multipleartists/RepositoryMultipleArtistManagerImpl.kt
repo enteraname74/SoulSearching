@@ -1,15 +1,13 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.multipleartists
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumArtist
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.DeleteAlbumUseCase
 import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
-import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.musicalbum.UpdateMusicsAlbumUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.component.KoinComponent
@@ -17,17 +15,15 @@ import org.koin.core.component.inject
 import java.util.*
 
 class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinComponent {
+    private val commonMusicUseCase: CommonMusicUseCase by inject()
     private val commonAlbumUseCase: CommonAlbumUseCase by inject()
     private val commonArtistUseCase: CommonArtistUseCase by inject()
     private val commonMusicArtistUseCase: CommonMusicArtistUseCase by inject()
-    private val upsertAllAlbumArtistUseCase: UpsertAllAlbumArtistUseCase by inject()
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase by inject()
-    private val updateMusicsAlbumUseCase: UpdateMusicsAlbumUseCase by inject()
     private val deleteAlbumUseCase: DeleteAlbumUseCase by inject()
-
     private val cachedArtists: ArrayList<Artist> = arrayListOf()
     private val cachedMusicArtists: ArrayList<MusicArtist> = arrayListOf()
-    private val cachedAlbumArtists: ArrayList<AlbumArtist> = arrayListOf()
+    private val cachedAlbums: ArrayList<Album> = arrayListOf()
 
     override suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album> =
         commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId).firstOrNull() ?: emptyList()
@@ -76,11 +72,10 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
         )
     }
 
-    override suspend fun linkAlbumToArtist(albumId: UUID, artistId: UUID) {
-        cachedAlbumArtists.add(
-            AlbumArtist(
-                albumId = albumId,
-                artistId = artistId,
+    override suspend fun linkAlbumToArtist(album: Album, artist: Artist) {
+        cachedAlbums.add(
+            album.copy(
+                artistId = artist.artistId,
             )
         )
     }
@@ -92,7 +87,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
         )
 
     override suspend fun moveSongsOfAlbum(fromAlbum: Album, toAlbum: Album, multipleArtistName: String) {
-        updateMusicsAlbumUseCase(
+        commonMusicUseCase.updateMusicsAlbum(
             newAlbumId = toAlbum.albumId,
             legacyAlbumId = fromAlbum.albumId,
         )
@@ -110,6 +105,6 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
         super.handleMultipleArtists(artistsToDivide)
         commonArtistUseCase.upsertAll(cachedArtists)
         commonMusicArtistUseCase.upsertAll(cachedMusicArtists)
-        upsertAllAlbumArtistUseCase(cachedAlbumArtists)
+        commonAlbumUseCase.upsertAll(cachedAlbums)
     }
 }

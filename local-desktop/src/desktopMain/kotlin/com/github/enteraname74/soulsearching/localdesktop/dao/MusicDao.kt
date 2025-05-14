@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.*
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.addedDate
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.album
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumArtist
+import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumId
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.albumPosition
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.artist
 import com.github.enteraname74.soulsearching.localdesktop.tables.MusicTable.coverId
@@ -44,6 +45,7 @@ internal class MusicDao {
                 it[isInQuickAccess] = music.isInQuickAccess
                 it[isHidden] = music.isHidden
                 it[albumPosition] = music.albumPosition
+                it[albumId] = music.albumId
             }
         }
     }
@@ -65,6 +67,17 @@ internal class MusicDao {
                 this[isInQuickAccess] = music.isInQuickAccess
                 this[isHidden] = music.isHidden
                 this[albumPosition] = music.albumPosition
+                this[albumId] = music.albumId
+            }
+        }
+    }
+
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        flowTransactionOn {
+            MusicTable.update(
+                where = { albumId eq legacyAlbumId }
+            ) {
+                it[albumId] = newAlbumId
             }
         }
     }

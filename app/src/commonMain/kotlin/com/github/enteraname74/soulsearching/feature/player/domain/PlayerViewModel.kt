@@ -5,8 +5,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
-import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
@@ -14,7 +14,6 @@ import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
-import com.github.enteraname74.domain.usecase.musicalbum.GetAlbumIdFromMusicIdUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegate
 import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
@@ -33,9 +32,11 @@ import com.github.enteraname74.soulsearching.feature.player.domain.state.PlayerV
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.launch
 
 /**
  * Handler for managing the PlayerViewModel.
@@ -48,7 +49,6 @@ class PlayerViewModel(
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val getAlbumIdFromMusicIdUseCase: GetAlbumIdFromMusicIdUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
@@ -258,15 +258,6 @@ class PlayerViewModel(
     }
 
     /**
-     * Retrieve the album id of a music.
-     */
-    private fun getAlbumIdFromMusicId(musicId: UUID): UUID? {
-        return runBlocking(context = Dispatchers.IO) {
-            getAlbumIdFromMusicIdUseCase(musicId)
-        }
-    }
-
-    /**
      * Set the current music cover.
      */
     fun setCurrentMusicCover(cover: ImageBitmap?) {
@@ -337,12 +328,9 @@ class PlayerViewModel(
     fun navigateToAlbum() {
         (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
             screenModelScope.launch {
-                val albumId: UUID? = getAlbumIdFromMusicId(musicId = currentMusic.musicId)
-                albumId?.let {
-                    _navigationState.value = PlayerNavigationState.ToAlbum(
-                        albumId = it,
-                    )
-                }
+                _navigationState.value = PlayerNavigationState.ToAlbum(
+                    albumId = currentMusic.albumId,
+                )
             }
         }
     }

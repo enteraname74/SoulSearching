@@ -1,6 +1,8 @@
 package com.github.enteraname74.localdb.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
@@ -10,7 +12,16 @@ import java.util.UUID
 /**
  * Room representation of a song.
  */
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = RoomAlbum::class,
+            parentColumns = ["albumId"],
+            childColumns = ["albumId"],
+            onDelete = ForeignKey.CASCADE,
+        )
+    ]
+)
 internal data class RoomMusic(
     @PrimaryKey
     val musicId: UUID = UUID.randomUUID(),
@@ -26,7 +37,9 @@ internal data class RoomMusic(
     var nbPlayed: Int = 0,
     var isInQuickAccess: Boolean = false,
     var isHidden: Boolean = false,
-    var albumPosition: Int?
+    var albumPosition: Int?,
+    @ColumnInfo(index = true)
+    val albumId: UUID
 )
 
 /**
@@ -51,6 +64,7 @@ internal fun RoomMusic.toMusic(): Music {
         isInQuickAccess = isInQuickAccess,
         isHidden = isHidden,
         albumPosition = albumPosition,
+        albumId = albumId,
     )
 }
 
@@ -72,4 +86,5 @@ internal fun Music.toRoomMusic(): RoomMusic = RoomMusic(
     isInQuickAccess = isInQuickAccess,
     isHidden = isHidden,
     albumPosition = albumPosition,
+    albumId = albumId,
 )

@@ -10,11 +10,9 @@ import org.koin.dsl.module
 
 val localDesktopModule: Module = module {
     // DAO
-    singleOf(::AlbumArtistDao)
     singleOf(::AlbumDao)
     singleOf(::ArtistDao)
     singleOf(::FolderDao)
-    singleOf(::MusicAlbumDao)
     singleOf(::MusicArtistDao)
     singleOf(::MusicDao)
     singleOf(::MusicPlaylistDao)
@@ -22,11 +20,9 @@ val localDesktopModule: Module = module {
     singleOf(::PlaylistDao)
 
     // DATA SOURCE IMPL
-    singleOf(::AlbumArtistDataSourceImpl) bind AlbumArtistDataSource::class
     singleOf(::AlbumDataSourceImpl) bind AlbumDataSource::class
     singleOf(::ArtistDataSourceImpl) bind ArtistDataSource::class
     singleOf(::FolderDataSourceImpl) bind FolderDataSource::class
-    singleOf(::MusicAlbumDataSourceImpl) bind MusicAlbumDataSource::class
     singleOf(::MusicArtistDataSourceImpl) bind MusicArtistDataSource::class
     singleOf(::MusicDataSourceImpl) bind MusicDataSource::class
     singleOf(::MusicPlaylistDataSourceImpl) bind MusicPlaylistDataSource::class

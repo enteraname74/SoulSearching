@@ -34,4 +34,6 @@ interface MusicRepository {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 }

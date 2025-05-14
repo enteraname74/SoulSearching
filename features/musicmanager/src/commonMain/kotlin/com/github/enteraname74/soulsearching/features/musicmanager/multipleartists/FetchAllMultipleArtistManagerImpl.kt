@@ -32,7 +32,6 @@ open class FetchAllMultipleArtistManagerImpl(
             optimizedCachedData.artistsByName.remove(artist.artistName)
         }
         optimizedCachedData.musicArtists.removeIf { it.artistId in ids }
-        optimizedCachedData.albumArtists.removeIf { it.artistId in ids }
     }
 
     override suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist> =
@@ -59,12 +58,14 @@ open class FetchAllMultipleArtistManagerImpl(
         )
     }
 
-    override suspend fun linkAlbumToArtist(albumId: UUID, artistId: UUID) {
-        optimizedCachedData.albumArtists.add(
-            AlbumArtist(
-                albumId = albumId,
-                artistId = artistId,
+    override suspend fun linkAlbumToArtist(album: Album, artist: Artist) {
+        optimizedCachedData.albumsByInfo[
+            AlbumInformation(
+                name = album.albumName,
+                artist = artist.artistName
             )
+        ] = album.copy(
+            artistId = artist.artistId,
         )
     }
 
@@ -82,22 +83,15 @@ open class FetchAllMultipleArtistManagerImpl(
         multipleArtistName: String,
     ) {
         // We redirect the songs of the multiple artist album
-        val musicsIdsOfAlbumWithMultipleArtists =
+        val musicsOfAlbumWithMultipleArtists =
             optimizedCachedData.musicsByPath.filter {
                 it.value.album == fromAlbum.albumName && it.value.artist == multipleArtistName
-            }.map { it.value.musicId }
+            }
 
-        musicsIdsOfAlbumWithMultipleArtists.forEach { musicId ->
-            optimizedCachedData.musicAlbums.add(
-                MusicAlbum(
-                    musicId = musicId,
-                    albumId = toAlbum.albumId,
-                )
-            )
+        musicsOfAlbumWithMultipleArtists.forEach { (path, music) ->
+            optimizedCachedData.musicsByPath[path] = music.copy(albumId = toAlbum.albumId)
         }
         // We delete the multiple artists album
-        optimizedCachedData.musicAlbums.removeIf { it.albumId == fromAlbum.albumId }
-        optimizedCachedData.albumArtists.removeIf { it.albumId == fromAlbum.albumId }
         optimizedCachedData.albumsByInfo.remove(
             AlbumInformation(
                 name = fromAlbum.albumName,

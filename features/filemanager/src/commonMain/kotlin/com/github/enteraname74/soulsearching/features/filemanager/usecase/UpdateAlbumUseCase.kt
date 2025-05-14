@@ -1,7 +1,10 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
 import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
@@ -11,8 +14,6 @@ class UpdateAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val artistRepository: ArtistRepository,
     private val musicRepository: MusicRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
@@ -44,11 +45,6 @@ class UpdateAlbumUseCase(
                     artist = newArtist
                 )
             }
-            // We update the link between the album and its artist.
-            albumArtistRepository.update(
-                albumId = newAlbumWithArtistInformation.album.albumId,
-                newArtistId = newArtist.artistId
-            )
             albumArtistToSave = newArtist
         }
 
@@ -72,7 +68,8 @@ class UpdateAlbumUseCase(
         // We adapt the quick access status with the potential duplicate album.
         val albumToSave = newAlbumWithArtistInformation.album.copy(
             isInQuickAccess = newAlbumWithArtistInformation.album.isInQuickAccess
-                    || duplicateAlbum?.isInQuickAccess == true
+                    || duplicateAlbum?.isInQuickAccess == true,
+            artistId = albumArtistToSave.artistId,
         )
 
         // Finally, we can update the information of the album.
@@ -150,13 +147,9 @@ class UpdateAlbumUseCase(
      */
     private suspend fun mergeAlbums(from: Album, to: Album) {
         // We update the link of the musics of the duplicated album to the new album id.
-        musicAlbumRepository.updateMusicsAlbum(
+        musicRepository.updateMusicsAlbum(
             newAlbumId = to.albumId,
             legacyAlbumId = from.albumId
-        )
-        // We remove the previous album.
-        albumArtistRepository.delete(
-            albumId = from.albumId
         )
         albumRepository.delete(
             album = from

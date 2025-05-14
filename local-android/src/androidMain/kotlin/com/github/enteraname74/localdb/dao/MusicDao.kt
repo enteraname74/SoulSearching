@@ -33,4 +33,7 @@ internal interface MusicDao {
 
     @Query("SELECT RoomMusic.* FROM RoomMusic INNER JOIN RoomMusicAlbum WHERE RoomMusic.musicId = RoomMusicAlbum.musicId AND RoomMusicAlbum.albumId = :albumId AND RoomMusic.isHidden = 0")
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomMusic>
+
+    @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 }

@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.localdesktop.tables
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Cover
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
 
@@ -15,6 +16,9 @@ internal object AlbumTable: UUIDTable() {
     val addedDate = datetime("addedDate")
     val nbPlayed = integer("nbPlayed")
     val isInQuickAccess = bool("isInQuickAccess")
+    val artistId = reference("artistId", ArtistTable.id, ReferenceOption.CASCADE).index(
+        customIndexName = "index_AlbumTable_artistId",
+    )
 }
 
 /**
@@ -33,6 +37,7 @@ internal fun ResultRow.toAlbum(): Album? =
             addedDate = this[AlbumTable.addedDate],
             nbPlayed = this[AlbumTable.nbPlayed],
             isInQuickAccess = this[AlbumTable.isInQuickAccess],
+            artistId = this[AlbumTable.artistId].value,
         )
     } catch (_: Exception) {
         null

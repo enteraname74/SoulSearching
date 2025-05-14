@@ -35,11 +35,9 @@ val localAndroidModule: Module = module {
             .build()
     }
 
-    single<AlbumArtistDataSource> { RoomAlbumArtistDataSourceImpl(get()) }
     single<AlbumDataSource> { RoomAlbumDataSourceImpl(get()) }
     single<ArtistDataSource> { RoomArtistDataSourceImpl(get()) }
     single<FolderDataSource> { RoomFolderDataSourceImpl(get()) }
-    single<MusicAlbumDataSource> { RoomMusicAlbumDataSourceImpl(get()) }
     single<MusicArtistDataSource> { RoomMusicArtistDataSourceImpl(get()) }
     single<MusicDataSource> { RoomMusicDataSourceImpl(get()) }
     single<MusicPlaylistDataSource> { RoomMusicPlaylistDataSourceImpl(get()) }

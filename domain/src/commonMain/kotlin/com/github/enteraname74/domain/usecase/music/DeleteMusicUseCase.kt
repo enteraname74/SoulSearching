@@ -27,7 +27,7 @@ class DeleteMusicUseCase(
             music = music,
             withAlbumArtist = true,
         ).firstOrNull() ?: emptyList()
-        val album: Album? = getCorrespondingAlbumUseCase(musicId = music.musicId)
+        val album: Album? = getCorrespondingAlbumUseCase(music = music)
 
         musicRepository.delete(music = music)
 

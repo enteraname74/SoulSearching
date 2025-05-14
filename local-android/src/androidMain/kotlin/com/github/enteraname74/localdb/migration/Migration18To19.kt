@@ -1,17 +1,18 @@
 package com.github.enteraname74.localdb.migration
 
+import android.database.Cursor
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.localdb.migration.ext.getId
-import com.github.enteraname74.localdb.migration.ext.getString
-import com.github.enteraname74.localdb.migration.ext.toSQLId
-import com.github.enteraname74.localdb.migration.ext.toSQLValue
+import com.github.enteraname74.localdb.converters.Converters
+import com.github.enteraname74.localdb.migration.ext.*
+import com.github.enteraname74.localdb.model.RoomAlbum
 import com.github.enteraname74.localdb.model.RoomArtist
 import com.github.enteraname74.localdb.model.RoomMusicArtist
 import com.github.enteraname74.localdb.model.toRoomMusicArtist
 import com.github.enteraname74.soulsearching.features.filemanager.util.MetadataField
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicMetadataHelper
+import java.util.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
@@ -19,6 +20,14 @@ import kotlin.uuid.toKotlinUuid
 
 private typealias AlbumArtistName = String
 private typealias SqlUuid = ByteArray
+
+@OptIn(ExperimentalUuidApi::class)
+private fun SqlUuid.toUUID(): UUID =
+    Uuid.fromByteArray(this).toJavaUuid()
+
+@OptIn(ExperimentalUuidApi::class)
+private fun UUID.toSqlUuid(): SqlUuid =
+    this.toKotlinUuid().toByteArray()
 
 class Migration18To19(
     private val musicMetadataHelper: MusicMetadataHelper,
@@ -87,20 +96,64 @@ class Migration18To19(
      * Migrates musics and returns the list of [CachedMusicUpdate] that possess an album artist.
      */
     private fun musicMigration(db: SupportSQLiteDatabase): List<CachedMusicUpdate> {
+        // We will add the album id to the music directly.
+        db.execSQL(
+            """
+            CREATE TABLE RoomMusic_new (
+                musicId BLOB PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                album TEXT NOT NULL,
+                artist TEXT NOT NULL,
+                coverId BLOB,
+                duration INTEGER NOT NULL,
+                path TEXT NOT NULL,
+                folder TEXT NOT NULL,
+                addedDate TEXT NOT NULL,
+                nbPlayed INTEGER NOT NULL,
+                isInQuickAccess INTEGER NOT NULL,
+                isHidden INTEGER NOT NULL,
+                albumId BLOB NOT NULL,
+                FOREIGN KEY (albumId) REFERENCES RoomAlbum(albumId) ON DELETE CASCADE
+            )
+        """
+        )
+
+        db.execSQL(
+            """
+            INSERT INTO RoomMusic_new (
+                musicId, name, album, artist, coverId, duration, path, folder, addedDate, nbPlayed, isInQuickAccess, isHidden, albumId
+            )
+            SELECT 
+                RoomMusic.musicId, RoomMusic.name, RoomMusic.album, RoomMusic.artist, 
+                RoomMusic.coverId, RoomMusic.duration, RoomMusic.path, RoomMusic.folder, 
+                RoomMusic.addedDate, RoomMusic.nbPlayed, RoomMusic.isInQuickAccess, RoomMusic.isHidden,
+                (SELECT albumId FROM RoomMusicAlbum WHERE RoomMusic.musicId = RoomMusicAlbum.musicId)
+            FROM RoomMusic
+        """
+        )
+
+        db.execSQL("DROP TABLE RoomMusic")
+        db.execSQL("ALTER TABLE RoomMusic_new RENAME TO RoomMusic")
+        db.execSQL("CREATE INDEX index_RoomMusic_albumId ON RoomMusic(albumId)")
+        db.execSQL("DROP TABLE RoomMusicAlbum")
+
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN albumPosition INTEGER")
         db.execSQL("ALTER TABLE RoomMusic ADD COLUMN albumArtist TEXT")
 
-        val cursor = db.query("SELECT musicId, path FROM RoomMusic")
+        val cursor = db.query("SELECT musicId, album, albumId, path FROM RoomMusic")
 
-        val mainInformation: HashMap<String, SqlUuid> = hashMapOf()
+        val mainInformation: HashMap<String, MusicInformation> = hashMapOf()
         val cachedData: MutableList<CachedMusicUpdate> = mutableListOf()
 
         cursor.use {
             while (cursor.moveToNext()) {
-                val musicIdAsBlob: SqlUuid = cursor.getId("musicId")
                 val path: String = cursor.getString("path")
 
-                mainInformation[path] = musicIdAsBlob
+                mainInformation[path] = MusicInformation(
+                    musicId = cursor.getId("musicId"),
+                    albumId = cursor.getId("albumId"),
+                    albumName = cursor.getString("album"),
+                )
             }
         }
 
@@ -114,13 +167,15 @@ class Migration18To19(
 
         cachedData.addAll(
             metadata.mapNotNull { (path, fields) ->
-                val id: SqlUuid? = mainInformation[path]
+                val information: MusicInformation? = mainInformation[path]
 
-                id?.let {
+                information?.let {
                     CachedMusicUpdate(
-                        musicIdAsBlob = id,
+                        musicIdAsBlob = it.musicId,
+                        albumAsBlobId = it.albumId,
                         albumPosition = fields[MetadataField.Track],
-                        albumArtist = fields[MetadataField.AlbumArtist]
+                        albumArtist = fields[MetadataField.AlbumArtist],
+                        albumName = it.albumName,
                     )
                 }
             }
@@ -151,6 +206,40 @@ class Migration18To19(
         return cachedData.filter { it.albumArtist != null }
     }
 
+    private fun albumMigration(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE RoomAlbum_new (
+                albumId BLOB PRIMARY KEY NOT NULL,
+                albumName TEXT NOT NULL,
+                coverId BLOB,
+                addedDate TEXT NOT NULL,
+                nbPlayed INTEGER NOT NULL,
+                isInQuickAccess INTEGER NOT NULL,
+                artistId BLOB NOT NULL,
+                FOREIGN KEY (artistId) REFERENCES RoomArtist(artistId) ON DELETE CASCADE
+            )
+        """
+        )
+
+        db.execSQL(
+            """
+            INSERT INTO RoomAlbum_new (
+                albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId
+            )
+            SELECT 
+                RoomAlbum.albumId, RoomAlbum.albumName, RoomAlbum.coverId, 
+                RoomAlbum.addedDate, RoomAlbum.nbPlayed, RoomAlbum.isInQuickAccess,
+                (SELECT artistId FROM RoomAlbumArtist WHERE RoomAlbum.albumId = RoomAlbumArtist.albumId)
+            FROM RoomAlbum
+        """
+        )
+
+        db.execSQL("DROP TABLE RoomAlbum")
+        db.execSQL("ALTER TABLE RoomAlbum_new RENAME TO RoomAlbum")
+        db.execSQL("CREATE INDEX index_RoomAlbum_artistId ON RoomAlbum(artistId)")
+        db.execSQL("DROP TABLE RoomAlbumArtist")
+    }
 
     private fun getMusicArtists(
         db: SupportSQLiteDatabase,
@@ -176,6 +265,56 @@ class Migration18To19(
 
         return musicArtists
     }
+
+    private fun getAlbum(
+        db: SupportSQLiteDatabase,
+        name: String,
+        artistId: SqlUuid,
+    ): RoomAlbum? {
+        val cursor = db.query("SELECT * FROM RoomAlbum WHERE artistId = ${artistId.toSQLId()} AND albumName = ${name.toSQLValue()}")
+        cursor.use {
+            while (cursor.moveToNext()) {
+                cursor.toRoomAlbum()?.let {
+                    return it
+                }
+            }
+        }
+
+        return null
+    }
+
+    private fun getAlbums(
+        db: SupportSQLiteDatabase,
+        albumIds: List<SqlUuid>,
+    ): List<RoomAlbum> {
+        val albums = ArrayList<RoomAlbum>()
+        albumIds.chunked(CHUNK_SIZE).forEach { chunk ->
+            val ids = chunk.joinToString { it.toSQLId() }
+            val cursor = db.query("SELECT * FROM RoomAlbum WHERE albumId IN ($ids)")
+            cursor.use {
+                while (cursor.moveToNext()) {
+                    cursor.toRoomAlbum()?.let {
+                        albums.add(it)
+                    }
+                }
+            }
+        }
+
+        return albums
+    }
+
+    private fun Cursor.toRoomAlbum(): RoomAlbum? =
+        runCatching {
+            RoomAlbum(
+                albumId = getId("albumId").toUUID(),
+                albumName = getString("albumName"),
+                coverId = getId("coverId").toUUID(),
+                addedDate = Converters.stringToLocalDate(getString("addedDate")),
+                nbPlayed = getInt("nbPlayed"),
+                isInQuickAccess = getBool("isInQuickAccess"),
+                artistId = getId("artistId").toUUID(),
+            )
+        }.getOrNull()
 
     /**
      * Retrieves a mapping of an AlbumArtist name and its id in the db.
@@ -212,10 +351,10 @@ class Migration18To19(
         musicsWithAlbumArtist: List<CachedMusicUpdate>,
         musicArtists: List<SQLMusicArtist>,
         albumsArtistsIds: Map<AlbumArtistName, SqlUuid>,
-    ): Map<SqlUuid, SqlUuid> {
+    ): Map<CachedMusicUpdate, SqlUuid> {
         val newArtistsToSave: ArrayList<RoomArtist> = arrayListOf()
         val newMusicArtistToSave: ArrayList<RoomMusicArtist> = arrayListOf()
-        val musicsToArtists: HashMap<SqlUuid, SqlUuid> = hashMapOf()
+        val musicsToAlbumArtists: HashMap<CachedMusicUpdate, SqlUuid> = hashMapOf()
 
         for (music in musicsWithAlbumArtist) {
             val correspondingAlbumArtistId: SqlUuid? = albumsArtistsIds[music.albumArtist!!]
@@ -226,11 +365,11 @@ class Migration18To19(
                 newArtistsToSave.add(artist)
                 newMusicArtistToSave.add(
                     MusicArtist(
-                        musicId = Uuid.fromByteArray(music.musicIdAsBlob).toJavaUuid(),
+                        musicId = music.musicIdAsBlob.toUUID(),
                         artistId = artist.artistId,
                     ).toRoomMusicArtist()
                 )
-                musicsToArtists[music.musicIdAsBlob] = artist.artistId.toKotlinUuid().toByteArray()
+                musicsToAlbumArtists[music] = artist.artistId.toKotlinUuid().toByteArray()
                 continue
             }
 
@@ -242,11 +381,11 @@ class Migration18To19(
             if (!isLinkedToMusic) {
                 newMusicArtistToSave.add(
                     MusicArtist(
-                        musicId = Uuid.fromByteArray(music.musicIdAsBlob).toJavaUuid(),
-                        artistId = Uuid.fromByteArray(correspondingAlbumArtistId).toJavaUuid(),
+                        musicId = music.musicIdAsBlob.toUUID(),
+                        artistId = correspondingAlbumArtistId.toUUID(),
                     ).toRoomMusicArtist()
                 )
-                musicsToArtists[music.musicIdAsBlob] = correspondingAlbumArtistId
+                musicsToAlbumArtists[music] = correspondingAlbumArtistId
             }
         }
 
@@ -299,14 +438,63 @@ class Migration18To19(
             db.execSQL(insertStatement.toString())
         }
 
-        return musicsToArtists
+        return musicsToAlbumArtists
     }
 
-    override fun migrate(db: SupportSQLiteDatabase) {
-        artistMigration(db)
-        musicArtistMigration(db)
-        musicPlaylistMigration(db)
+    /**
+     * Updates the link between each music in the [musicsToAlbumArtists] list and their album,
+     * based on the albumPosition field.
+     *
+     * @return the list of album to check for deletion if empty.
+     */
+    private fun updateMusicAlbum(
+        db: SupportSQLiteDatabase,
+        musicsToAlbumArtists: Map<CachedMusicUpdate, SqlUuid>,
+        albums: List<RoomAlbum>
+    ): List<RoomAlbum> {
+        val musicIdToNewAlbumId = HashMap<SqlUuid, SqlUuid>()
+        val newAlbumsToSave = ArrayList<RoomAlbum>()
+        val albumsToCheck = ArrayList<RoomAlbum>()
+        for (musicToAlbumArtist in musicsToAlbumArtists) {
+            // We retrieve the current album of the song.
+            val musicAlbum: RoomAlbum = albums.firstOrNull { it.albumId == musicToAlbumArtist.key.albumAsBlobId.toUUID() } ?: continue
+            // If the album artist id is not the same as the artist of the song's album, we will need to move the song.
+            val shouldMoveAlbumOfMusic = !musicAlbum.artistId.toSqlUuid().contentEquals(musicToAlbumArtist.value)
+
+            if (!shouldMoveAlbumOfMusic) {
+                continue
+            }
+
+            val existingAlbumWithAlbumArtist: RoomAlbum? = newAlbumsToSave.firstOrNull {
+                it.artistId == musicToAlbumArtist.value && it.albumName == musicToAlbumArtist.key.albumName
+            } ?: getAlbum(
+                db = db,
+                artistId = musicToAlbumArtist.value,
+                name = musicToAlbumArtist.key.albumName,
+            )
+
+            // There is no album
+            if (existingAlbumWithAlbumArtist == null) {
+                val album = musicAlbum.copy(
+                    albumId = UUID.randomUUID(),
+                    artistId = musicToAlbumArtist.value.toUUID(),
+                )
+                newAlbumsToSave.add(album)
+                musicIdToNewAlbumId[musicToAlbumArtist.key.musicIdAsBlob] = album.albumId.toSqlUuid()
+                continue
+            }
+
+            // There is already an album existing, we will just link the music to it.
+            musicIdToNewAlbumId[musicToAlbumArtist.key.musicIdAsBlob] = existingAlbumWithAlbumArtist.albumId.toSqlUuid()
+        }
+
+        return albumsToCheck
+    }
+
+    private fun musicMigrationAndUpdateData(db: SupportSQLiteDatabase) {
         val musicsWithAlbumArtist: List<CachedMusicUpdate> = musicMigration(db)
+
+        // Update the links of music and artists with new album artist field.
         val musicArtists: List<SQLMusicArtist> = getMusicArtists(
             db = db,
             cachedMusicUpdates = musicsWithAlbumArtist,
@@ -315,13 +503,26 @@ class Migration18To19(
             db = db,
             artistNames = musicsWithAlbumArtist.mapNotNull { it.albumArtist },
         )
-
-        val musicsToArtists: Map<SqlUuid, SqlUuid> = updateMusicArtists(
+        val musicsToAlbumArtists: Map<CachedMusicUpdate, SqlUuid> = updateMusicArtists(
             db = db,
             musicsWithAlbumArtist = musicsWithAlbumArtist,
             musicArtists = musicArtists,
             albumsArtistsIds = albumsArtistsIds,
         )
+
+        // Update the music-album link with the new album artist field.
+        val albumsOfMusicsWithAlbumArtist: List<RoomAlbum> = getAlbums(
+            db = db,
+            albumIds = musicsWithAlbumArtist.map { it.albumAsBlobId },
+        )
+    }
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        artistMigration(db)
+        musicArtistMigration(db)
+        musicPlaylistMigration(db)
+        albumMigration(db)
+        musicMigrationAndUpdateData(db)
     }
 
     private data class SQLMusicArtist(
@@ -347,10 +548,39 @@ class Migration18To19(
         }
     }
 
+    private data class MusicInformation(
+        val musicId: SqlUuid,
+        val albumId: SqlUuid,
+        val albumName: String,
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as MusicInformation
+
+            if (!musicId.contentEquals(other.musicId)) return false
+            if (!albumId.contentEquals(other.albumId)) return false
+            if (albumName != other.albumName) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = musicId.contentHashCode()
+            result = 31 * result + albumId.contentHashCode()
+            result = 31 * result + albumName.hashCode()
+            return result
+        }
+
+    }
+
     private data class CachedMusicUpdate(
         val musicIdAsBlob: SqlUuid,
         val albumPosition: String?,
+        val albumName: String,
         val albumArtist: String?,
+        val albumAsBlobId: SqlUuid,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -361,16 +591,19 @@ class Migration18To19(
             if (!musicIdAsBlob.contentEquals(other.musicIdAsBlob)) return false
             if (albumPosition != other.albumPosition) return false
             if (albumArtist != other.albumArtist) return false
+            if (!albumAsBlobId.contentEquals(other.albumAsBlobId)) return false
 
             return true
         }
 
         override fun hashCode(): Int {
             var result = musicIdAsBlob.contentHashCode()
-            result = 31 * result + albumPosition.hashCode()
-            result = 31 * result + albumArtist.hashCode()
+            result = 31 * result + (albumPosition?.hashCode() ?: 0)
+            result = 31 * result + (albumArtist?.hashCode() ?: 0)
+            result = 31 * result + albumAsBlobId.contentHashCode()
             return result
         }
+
     }
 
     private companion object {

@@ -50,4 +50,8 @@ class CommonMusicUseCase(
     suspend fun upsert(music: Music) {
         musicRepository.upsert(music = music)
     }
+
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        musicRepository.updateMusicsAlbum(newAlbumId, legacyAlbumId)
+    }
 }

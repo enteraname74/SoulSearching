@@ -39,4 +39,8 @@ class MusicRepositoryImpl(
         musicDataSource.getAllMusicFromAlbum(
             albumId = albumId
         )
+
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)
+    }
 }

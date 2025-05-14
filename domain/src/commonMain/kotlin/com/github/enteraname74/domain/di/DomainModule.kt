@@ -1,9 +1,6 @@
 package com.github.enteraname74.domain.di
 
 import com.github.enteraname74.domain.usecase.album.*
-import com.github.enteraname74.domain.usecase.albumartist.GetAllAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.albumartist.UpsertAlbumArtistUseCase
-import com.github.enteraname74.domain.usecase.albumartist.UpsertAllAlbumArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.DeleteArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
@@ -14,7 +11,6 @@ import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.month.GetAllMonthMusicUseCase
 import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
 import com.github.enteraname74.domain.usecase.music.*
-import com.github.enteraname74.domain.usecase.musicalbum.*
 import com.github.enteraname74.domain.usecase.musicartist.CommonMusicArtistUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetAllMusicFolderListUseCase
 import com.github.enteraname74.domain.usecase.musicfolder.GetMusicFolderListUseCase
@@ -34,11 +30,6 @@ val domainModule = module {
     factoryOf(::DeleteAlbumUseCase)
     factoryOf(::GetAllAlbumWithMusicsSortedUseCase)
     factoryOf(::GetCorrespondingAlbumUseCase)
-
-    // AlbumArtist
-    factoryOf(::GetAllAlbumArtistUseCase)
-    factoryOf(::UpsertAlbumArtistUseCase)
-    factoryOf(::UpsertAllAlbumArtistUseCase)
 
     // Artist
     factoryOf(::CommonArtistUseCase)
@@ -66,13 +57,6 @@ val domainModule = module {
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
     factoryOf(::UpdateAlbumOfMusicUseCase)
-
-    // MusicAlbum
-    factoryOf(::GetAlbumIdFromMusicIdUseCase)
-    factoryOf(::GetAllMusicAlbumUseCase)
-    factoryOf(::UpdateMusicsAlbumUseCase)
-    factoryOf(::UpsertAllMusicAlbumUseCase)
-    factoryOf(::UpsertMusicIntoAlbumUseCase)
 
     // MusicArtist
     factoryOf(::CommonMusicArtistUseCase)

@@ -16,8 +16,9 @@ import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.cov
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.id
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.isInQuickAccess
 import com.github.enteraname74.soulsearching.localdesktop.tables.ArtistTable.nbPlayed
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -25,7 +26,6 @@ import java.util.*
 
 
 internal class ArtistDao(
-    private val albumArtistDao: AlbumArtistDao,
     private val musicDao: MusicDao,
 ) {
     suspend fun upsert(artist: Artist) {
@@ -88,16 +88,6 @@ internal class ArtistDao(
             }
             .mapNotNull {
                 it.getOrNull(artistName)
-            }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun getArtistOfAlbum(albumId: UUID): Flow<Artist?> =
-        albumArtistDao.getArtistIdOfAlbum(albumId).flatMapLatest { artistId ->
-            if (artistId != null) {
-                getFromId(artistId)
-            } else {
-                flowOf(null)
             }
     }
 

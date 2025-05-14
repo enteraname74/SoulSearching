@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.firstOrNull
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
-    private val musicAlbumRepository: MusicAlbumRepository,
+    private val musicRepository: MusicRepository,
     private val musicArtistRepository: MusicArtistRepository,
-    private val albumArtistRepository: AlbumArtistRepository,
     private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
 ) {
@@ -84,12 +83,13 @@ class UpdateArtistUseCase(
                 // The album has a duplicate!
                 // We redirect the album's songs to the one with the actual artist id.
                 for (music in albumWithMusicToUpdate!!.musics) {
-                    musicAlbumRepository.updateAlbumOfMusic(
-                        musicId = music.musicId,
-                        newAlbumId = legacyAlbumsOfArtist.find {
-                            (it.album.albumName == entry.key)
-                                    && (it.artist!!.artistId == artist.artistId)
-                        }!!.album.albumId
+                    musicRepository.upsert(
+                        music = music.copy(
+                            albumId = legacyAlbumsOfArtist.find {
+                                (it.album.albumName == entry.key)
+                                        && (it.artist!!.artistId == artist.artistId)
+                            }!!.album.albumId
+                        )
                     )
                 }
                 // We delete the previous album
@@ -98,9 +98,10 @@ class UpdateArtistUseCase(
                 )
             } else if (albumWithMusicToUpdate != null) {
                 // Else, we update the artist's id.
-                albumArtistRepository.update(
-                    albumId = albumWithMusicToUpdate.album.albumId,
-                    newArtistId = artist.artistId
+                albumRepository.upsert(
+                    album = albumWithMusicToUpdate.album.copy(
+                        artistId = artist.artistId,
+                    )
                 )
             }
         }

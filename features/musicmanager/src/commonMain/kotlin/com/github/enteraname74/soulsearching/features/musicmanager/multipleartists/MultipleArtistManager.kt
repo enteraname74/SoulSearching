@@ -30,8 +30,8 @@ abstract class MultipleArtistManager {
     )
 
     protected abstract suspend fun linkAlbumToArtist(
-        albumId: UUID,
-        artistId: UUID,
+        album: Album,
+        artist: Artist,
     )
 
     /**
@@ -83,11 +83,11 @@ abstract class MultipleArtistManager {
                 )
             } else {
                 linkAlbumToArtist(
-                    albumId = album.albumId,
-                    artistId = (
+                    album = album,
+                    artist = (
                             existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
                                 firstArtistName
-                            ) ?: createNewArtist(firstArtistName)).artistId,
+                            ) ?: createNewArtist(firstArtistName)),
                 )
             }
         }

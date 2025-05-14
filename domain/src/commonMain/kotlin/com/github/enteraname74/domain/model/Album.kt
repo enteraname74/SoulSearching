@@ -9,9 +9,10 @@ import java.util.UUID
  */
 data class Album(
     val albumId: UUID = UUID.randomUUID(),
-    var albumName: String = "",
-    var cover: Cover? = null,
-    var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    val albumName: String = "",
+    val cover: Cover? = null,
+    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val nbPlayed: Int = 0,
+    val isInQuickAccess: Boolean = false,
+    val artistId: UUID,
 )
