@@ -447,14 +447,14 @@ class Migration18To19(
      *
      * @return the list of album to check for deletion if empty.
      */
+    @OptIn(ExperimentalUuidApi::class)
     private fun updateMusicAlbum(
         db: SupportSQLiteDatabase,
         musicsToAlbumArtists: Map<CachedMusicUpdate, SqlUuid>,
         albums: List<RoomAlbum>
-    ): List<RoomAlbum> {
+    ) {
         val musicIdToNewAlbumId = HashMap<SqlUuid, SqlUuid>()
         val newAlbumsToSave = ArrayList<RoomAlbum>()
-        val albumsToCheck = ArrayList<RoomAlbum>()
         for (musicToAlbumArtist in musicsToAlbumArtists) {
             // We retrieve the current album of the song.
             val musicAlbum: RoomAlbum = albums.firstOrNull { it.albumId == musicToAlbumArtist.key.albumAsBlobId.toUUID() } ?: continue
@@ -466,7 +466,7 @@ class Migration18To19(
             }
 
             val existingAlbumWithAlbumArtist: RoomAlbum? = newAlbumsToSave.firstOrNull {
-                it.artistId == musicToAlbumArtist.value && it.albumName == musicToAlbumArtist.key.albumName
+                it.artistId == musicToAlbumArtist.value.toUUID() && it.albumName == musicToAlbumArtist.key.albumName
             } ?: getAlbum(
                 db = db,
                 artistId = musicToAlbumArtist.value,
@@ -475,7 +475,8 @@ class Migration18To19(
 
             // There is no album
             if (existingAlbumWithAlbumArtist == null) {
-                val album = musicAlbum.copy(
+                val album = RoomAlbum(
+                    albumName = musicAlbum.albumName,
                     albumId = UUID.randomUUID(),
                     artistId = musicToAlbumArtist.value.toUUID(),
                 )
@@ -488,7 +489,68 @@ class Migration18To19(
             musicIdToNewAlbumId[musicToAlbumArtist.key.musicIdAsBlob] = existingAlbumWithAlbumArtist.albumId.toSqlUuid()
         }
 
-        return albumsToCheck
+        // We then save the new albums
+        newAlbumsToSave.chunked(CHUNK_SIZE).forEach { chunk ->
+            val insertStatement = StringBuilder()
+            insertStatement.append("INSERT INTO RoomAlbum (albumId, albumName, coverId, addedDate, nbPlayed, isInQuickAccess, artistId) VALUES ")
+
+            val values = chunk.joinToString(", ") { album ->
+                val albumId = album.albumId.toKotlinUuid().toByteArray().toSQLId()
+                val name = album.albumName.toSQLValue()
+                val coverId = album.coverId?.toKotlinUuid()?.toByteArray()?.toSQLId() ?: "NULL"
+                val addedDate = album.addedDate.toString().toSQLValue()
+                val nbPlayed = album.nbPlayed
+                val isInQuickAccess = album.isInQuickAccess.toSQLValue()
+                val artistId = album.albumId.toKotlinUuid().toByteArray().toSQLId()
+
+                "($albumId, $name, $coverId, $addedDate, $nbPlayed, $isInQuickAccess, $artistId)"
+            }
+
+            insertStatement.append(values)
+
+            insertStatement.append(
+                """
+                ON CONFLICT(albumId) DO UPDATE SET 
+                    albumName=excluded.albumName,
+                    coverId=excluded.coverId,
+                    addedDate=excluded.addedDate,
+                    nbPlayed=excluded.nbPlayed,
+                    isInQuickAccess=excluded.isInQuickAccess,
+                    artistId=excluded.artistId
+            """
+            )
+
+            db.execSQL(insertStatement.toString())
+        }
+
+        // We also update the music-album links for the concerned musics :
+        musicIdToNewAlbumId.entries.chunked(CHUNK_SIZE).forEach { chunk ->
+            val stringBuilder = StringBuilder()
+            stringBuilder.append("UPDATE RoomMusic SET ")
+
+            stringBuilder.append("albumId = CASE musicId ")
+            chunk.forEach { cachedMusicUpdate ->
+                stringBuilder.append("WHEN ${cachedMusicUpdate.key.toSQLId()} THEN ${cachedMusicUpdate.value.toSQLId()} ")
+            }
+            stringBuilder.append("END ")
+
+            val musicIds = chunk.joinToString { it.key.toSQLId() }
+            stringBuilder.append("WHERE musicId IN ($musicIds)")
+
+            db.execSQL(stringBuilder.toString())
+        }
+
+        // Finally, we check if we can delete empty albums
+        db.execSQL(
+            """
+                DELETE FROM RoomAlbum
+                WHERE albumId NOT IN (
+                    SELECT DISTINCT albumId
+                    FROM RoomMusic
+                    WHERE albumId IS NOT NULL
+                );
+            """
+        )
     }
 
     private fun musicMigrationAndUpdateData(db: SupportSQLiteDatabase) {
@@ -514,6 +576,12 @@ class Migration18To19(
         val albumsOfMusicsWithAlbumArtist: List<RoomAlbum> = getAlbums(
             db = db,
             albumIds = musicsWithAlbumArtist.map { it.albumAsBlobId },
+        )
+
+        updateMusicAlbum(
+            db = db,
+            musicsToAlbumArtists = musicsToAlbumArtists,
+            albums = albumsOfMusicsWithAlbumArtist,
         )
     }
 
