@@ -423,7 +423,7 @@ class Migration18To19(
 
         newMusicArtistToSave.chunked(CHUNK_SIZE).forEach { chunk ->
             val insertStatement = StringBuilder()
-            insertStatement.append("INSERT INTO RoomArtist (id, artistId, musicId) VALUES ")
+            insertStatement.append("INSERT INTO RoomMusicArtist (id, artistId, musicId) VALUES ")
 
             val values = chunk.joinToString(", ") { musicArtist ->
                 val id = "${musicArtist.musicId}${musicArtist.artistId}".toSQLValue()

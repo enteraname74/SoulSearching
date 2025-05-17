@@ -239,8 +239,9 @@ class SettingsAdvancedViewModel(
             commonMusicUseCase.upsertAll(
                 allMusics = allSongs.map { music ->
                     playbackManager.updateMusic(music)
-                    music.cover = coverFileManager.getCleanFileCoverForMusic(music)
-                    music
+                    music.copy(
+                        cover = coverFileManager.getCleanFileCoverForMusic(music)
+                    )
                 }
             )
         }
@@ -251,8 +252,9 @@ class SettingsAdvancedViewModel(
             val allPlaylists: List<Playlist> = commonPlaylistUseCase.getAll().first()
             commonPlaylistUseCase.upsertAll(
                 playlists = allPlaylists.map { playlist ->
-                    playlist.cover = null
-                    playlist
+                    playlist.copy(
+                        cover = null
+                    )
                 }
             )
         }
@@ -263,8 +265,9 @@ class SettingsAdvancedViewModel(
             val allAlbums: List<Album> = commonAlbumUseCase.getAll().first()
             commonAlbumUseCase.upsertAll(
                 albums = allAlbums.map { album ->
-                    album.cover = null
-                    album
+                    album.copy(
+                        cover = null
+                    )
                 }
             )
         }

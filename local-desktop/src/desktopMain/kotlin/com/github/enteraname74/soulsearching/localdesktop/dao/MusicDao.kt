@@ -112,14 +112,9 @@ internal class MusicDao {
     }
 
     fun getAllMusicFromAlbum(albumId: UUID): Flow<List<Music>> = transaction {
-        MusicTable.join(
-            otherTable = MusicAlbumTable,
-            joinType = JoinType.INNER,
-            onColumn = MusicTable.id,
-            otherColumn = MusicAlbumTable.musicId,
-            additionalConstraint = { (MusicAlbumTable.albumId eq albumId) and (isHidden eq false) }
-        )
+        MusicTable
             .selectAll()
+            .where { MusicTable.albumId eq albumId }
             .orderBy(albumPosition to SortOrder.ASC_NULLS_LAST)
             .asFlow()
             .mapResultRow { it.toMusic() }

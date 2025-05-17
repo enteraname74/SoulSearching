@@ -31,10 +31,12 @@ abstract class MusicFetcher : KoinComponent {
     private fun createAlbumOfSong(
         music: Music,
         albumId: UUID,
+        artistId: UUID,
     ) {
         val albumToAdd = Album(
             albumId = albumId,
             albumName = music.album,
+            artistId = artistId,
         )
         optimizedCachedData.albumsByInfo[AlbumInformation(
             name = albumToAdd.albumName,
@@ -121,22 +123,12 @@ abstract class MusicFetcher : KoinComponent {
             createAlbumOfSong(
                 music = musicToAdd,
                 albumId = albumId,
-            )
-
-            optimizedCachedData.albumArtists.add(
-                AlbumArtist(
-                    albumId = albumId,
-                    artistId = albumArtistId ?: artistId,
-                )
+                artistId = albumArtistId ?: artistId,
             )
         }
 
-        optimizedCachedData.musicsByPath[musicToAdd.path] = musicToAdd
-        optimizedCachedData.musicAlbums.add(
-            MusicAlbum(
-                musicId = musicToAdd.musicId,
-                albumId = albumId,
-            )
+        optimizedCachedData.musicsByPath[musicToAdd.path] = musicToAdd.copy(
+            albumId = albumId,
         )
         optimizedCachedData.musicArtists.add(
             MusicArtist(

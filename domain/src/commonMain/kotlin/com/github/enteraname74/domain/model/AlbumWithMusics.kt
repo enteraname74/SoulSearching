@@ -9,7 +9,7 @@ data class AlbumWithMusics(
     val album: Album,
     val musics : List<Music>,
     val artist: Artist?,
-    override var isInQuickAccess: Boolean = album.isInQuickAccess,
+    override val isInQuickAccess: Boolean = album.isInQuickAccess,
 ): QuickAccessible {
 
     val cover: Cover? = if (album.cover?.isEmpty() == false) {

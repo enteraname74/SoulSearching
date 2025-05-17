@@ -1,7 +1,6 @@
 package com.github.enteraname74.localdb.model
 
 import androidx.room.Embedded
-import androidx.room.Junction
 import androidx.room.Relation
 import com.github.enteraname74.domain.ext.coverFromSongs
 import com.github.enteraname74.domain.model.AlbumWithArtist
@@ -11,19 +10,17 @@ import com.github.enteraname74.domain.model.AlbumWithMusics
  * Room representation of an AlbumWithMusics.
  */
 internal data class RoomAlbumWithMusics(
-    @Embedded val roomAlbum: RoomAlbum = RoomAlbum(),
+    @Embedded val roomAlbum: RoomAlbum,
     @Relation(
         parentColumn = "albumId",
-        entityColumn = "musicId",
-        associateBy = Junction(RoomMusicAlbum::class)
+        entityColumn = "albumId",
     )
-    val roomMusics : List<RoomMusic> = emptyList(),
+    val roomMusics : List<RoomMusic>,
     @Relation(
-        parentColumn = "albumId",
+        parentColumn = "artistId",
         entityColumn = "artistId",
-        associateBy = Junction(RoomAlbumArtist::class)
     )
-    val roomArtist: RoomArtist? = RoomArtist()
+    val roomArtist: RoomArtist?
 ) {
 
     fun toAlbumWithArtist(): AlbumWithArtist {

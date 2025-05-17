@@ -91,6 +91,8 @@ internal class MusicFetcherDesktopImpl(
                             initialCoverPath = file.path,
                         ),
                         albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
+                        // Will be set after, when caching the music.
+                        albumId = UUID.randomUUID(),
                     )
                     onMusicFetched(musicToAdd)
                 } catch (e: Exception) {

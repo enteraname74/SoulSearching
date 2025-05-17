@@ -9,13 +9,13 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
  * Room representation of an ArtistWithMusics.
  */
 internal data class RoomArtistWithMusics(
-    @Embedded val roomArtist: RoomArtist = RoomArtist(),
+    @Embedded val roomArtist: RoomArtist,
     @Relation(
         parentColumn = "artistId",
         entityColumn = "musicId",
         associateBy = Junction(RoomMusicArtist::class)
     )
-    val roomMusics : List<RoomMusic> = emptyList()
+    val roomMusics : List<RoomMusic>,
 )
 
 /**
@@ -26,10 +26,3 @@ internal fun RoomArtistWithMusics.toArtistWithMusics(): ArtistWithMusics = Artis
     musics = roomMusics.map { it.toMusic() }
 )
 
-/**
- * Converts an ArtistWithMusics to a RoomArtistWithMusics.
- */
-internal fun ArtistWithMusics.toRoomArtistWithMusics(): RoomArtistWithMusics = RoomArtistWithMusics(
-    roomArtist = artist.toRoomArtist(),
-    roomMusics = musics.map { it.toRoomMusic() }
-)

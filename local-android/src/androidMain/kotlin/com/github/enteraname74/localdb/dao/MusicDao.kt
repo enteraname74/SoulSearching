@@ -31,7 +31,7 @@ internal interface MusicDao {
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomMusic>>
 
-    @Query("SELECT RoomMusic.* FROM RoomMusic INNER JOIN RoomMusicAlbum WHERE RoomMusic.musicId = RoomMusicAlbum.musicId AND RoomMusicAlbum.albumId = :albumId AND RoomMusic.isHidden = 0")
+    @Query("SELECT * FROM RoomMusic WHERE albumId = :albumId AND RoomMusic.isHidden = 0")
     suspend fun getAllMusicFromAlbum(albumId : UUID) : List<RoomMusic>
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
