@@ -161,46 +161,29 @@ object EnStrings : Strings {
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
 
-    override val artistCoverMethodTitle: String
-        get() = TODO("Not yet implemented")
-    override val artistCoverMethodText: String
-        get() = TODO("Not yet implemented")
-    override val activateArtistCoverMethod: String
-        get() = TODO("Not yet implemented")
-    override val artistCoverMethodDynamicNameTitle: String
-        get() = TODO("Not yet implemented")
+    override val artistCoverMethodTitle: String = "Artists covers source"
+    override val artistCoverMethodText: String = "Select artists cover retrieve mode"
+    override val activateArtistCoverMethod: String = "Enable fetch by path"
+    override val artistCoverMethodDynamicNameTitle: String = "Artist name processing"
 
-    override val coverFolderRetrieverPathSelectionTitle: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverPathSelectionNoPathSelected: String
-        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverPathSelectionTitle: String = "Select parent folder"
+    override val coverFolderRetrieverPathSelectionNoPathSelected: String = "No folder selected"
 
+    override val coverFolderRetrieverFileExtension: String = "Image extension"
 
-    override val coverFolderRetrieverFileExtension: String
-        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFolderTitle: String = "Dynamic folder"
+    override val coverFolderRetrieverFolderText: String = "The folder name corresponds to the artist's name"
+    override val coverFolderRetrieverFolderIncomplete: String = "The required data is incomplete"
+    override val coverFolderRetrieverRulesWhiteSpace: String = "Replace whitespaces"
+    override val coverFolderRetrieverRulesReplacement: String = "Replacement"
+    override val coverFolderRetrieverRulesDynamicNameUppercase: String = "Uppercase"
+    override val coverFolderRetrieverRulesDynamicNameNoTreatment: String = "No treatment"
+    override val coverFolderRetrieverRulesDynamicNameLowercase: String = "Lowercase"
 
-    override val coverFolderRetrieverFolderTitle: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFolderText: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFolderIncomplete: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverRulesWhiteSpace: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverRulesReplacement: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverRulesDynamicNameUppercase: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverRulesDynamicNameNoTreatment: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverRulesDynamicNameLowercase: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverDynamicFileTitle: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFileTitle: String
-        get() = TODO("Not yet implemented")
-    override val coverFolderRetrieverFileText: String
-        get() = TODO("Not yet implemented")
+    override val coverFolderRetrieverFileTitle: String = "Dynamic cover file"
+    override val coverFolderRetrieverFileText: String = "The image file name corresponds to the artist's name"
+
+    override val coverFolderRetrieverDynamicFileTitle: String = "Cover file name"
 
     override val activateGithubReleaseFetchTitle = "Enable checking for new versions from GitHub"
     override val activateGithubReleaseFetchHint = "You will receive an in-app notification when a new version of the app is available on GitHub."
