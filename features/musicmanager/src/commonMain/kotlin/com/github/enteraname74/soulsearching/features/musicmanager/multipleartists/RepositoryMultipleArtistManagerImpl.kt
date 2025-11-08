@@ -21,6 +21,7 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     private val commonMusicArtistUseCase: CommonMusicArtistUseCase by inject()
     private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase by inject()
     private val deleteAlbumUseCase: DeleteAlbumUseCase by inject()
+
     private val cachedArtists: ArrayList<Artist> = arrayListOf()
     private val cachedMusicArtists: ArrayList<MusicArtist> = arrayListOf()
     private val cachedAlbums: ArrayList<Album> = arrayListOf()
@@ -34,7 +35,15 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     override suspend fun deleteArtists(
         artists: List<Artist>,
     ) {
-        commonArtistUseCase.deleteAll(artistsIds = artists.map { it.artistId })
+        // no-op, deleting artists will be done at the very end
+    }
+
+    override fun createNewArtist(artistName: String): Artist {
+        val newArtist = Artist(
+            artistName = artistName,
+        )
+        cachedArtists.add(newArtist)
+        return newArtist
     }
 
     override suspend fun getArtistFromName(artistName: String): Artist? =
@@ -91,16 +100,21 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     }
 
     suspend fun getPotentialMultipleArtists(): List<Artist> =
-        commonArtistUseCase.getAllArtistWithMusics()
+        commonArtistUseCase.getAll()
             .firstOrNull()
-            ?.filter { it.artist.isComposedOfMultipleArtists() }
-            ?.map { it.artist }
+            ?.filter { it.isComposedOfMultipleArtists() }
             ?: emptyList()
 
     override suspend fun handleMultipleArtists(artistsToDivide: List<Artist>) {
         super.handleMultipleArtists(artistsToDivide)
+
         commonArtistUseCase.upsertAll(cachedArtists)
         commonMusicArtistUseCase.upsertAll(cachedMusicArtists)
         commonAlbumUseCase.upsertAll(cachedAlbums)
+
+        artistsToDivide.forEach { artist ->
+            commonMusicArtistUseCase.deleteOfArtist(artistId = artist.artistId)
+        }
+        commonArtistUseCase.deleteAll(artistsIds = artistsToDivide.map { it.artistId })
     }
 }

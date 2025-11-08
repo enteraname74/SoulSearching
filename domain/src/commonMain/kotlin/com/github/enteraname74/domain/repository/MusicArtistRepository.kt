@@ -15,4 +15,6 @@ interface MusicArtistRepository {
     suspend fun upsertAll(musicArtists: List<MusicArtist>)
 
     suspend fun deleteMusicArtist(musicArtist: MusicArtist)
+
+    suspend fun deleteOfArtist(artistId: UUID)
 }

@@ -12,6 +12,10 @@ import java.util.*
 abstract class MultipleArtistManager {
     protected abstract suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album>
     protected abstract suspend fun getArtistFromName(artistName: String): Artist?
+
+    /**
+     * Retrieve all artists from a list of names, from a storage.
+     */
     protected abstract suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist>
 
     /**
@@ -52,6 +56,8 @@ abstract class MultipleArtistManager {
         multipleArtistName: String,
     )
 
+    protected abstract fun createNewArtist(artistName: String): Artist
+
     /**
      * For a song with multiple artists, its albums should be linked to the first artist.
      * If there is already an existing album, with the same name and artist,
@@ -84,7 +90,7 @@ abstract class MultipleArtistManager {
             } else {
                 val artist = (existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
                     firstArtistName
-                ) ?: Artist(artistName = firstArtistName))
+                ) ?: createNewArtist(artistName = firstArtistName))
 
                 linkAlbumToArtist(
                     album = album,
@@ -107,7 +113,7 @@ abstract class MultipleArtistManager {
         val separatedArtists: List<Artist> = allArtistsName.map { name ->
             existingArtists.firstOrNull { it.artistName == name }
                 ?: getArtistFromName(name)
-                ?: Artist(artistName = name)
+                ?: createNewArtist(artistName = name)
         }
 
         musicIdsOfInitialArtist.forEach { musicId ->

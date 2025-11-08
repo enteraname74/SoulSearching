@@ -93,6 +93,8 @@ open class FetchAllMultipleArtistManagerImpl(
         }
     }
 
+    override fun createNewArtist(artistName: String): Artist = Artist(artistName = artistName)
+
     fun getPotentialMultipleArtists(): List<Artist> =
         optimizedCachedData.musicsByPath.values
             .flatMap { it.artists }
