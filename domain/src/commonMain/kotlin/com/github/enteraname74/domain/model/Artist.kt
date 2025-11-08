@@ -14,7 +14,7 @@ import java.util.*
 data class Artist(
     @Serializable(with = UUIDSerializer::class)
     val artistId: UUID = UUID.randomUUID(),
-    val artistName: String = "",
+    val artistName: String,
     val cover: Cover? = null,
     @Serializable(with = LocalDateTimeSerializer::class)
     val addedDate: LocalDateTime = LocalDateTime.now(),
@@ -26,4 +26,7 @@ data class Artist(
 
     fun getMultipleArtists(): List<String> =
         artistName.split(",", "&").map { it.trim() }
+
+    override fun toString(): String =
+        "Artist(name: $artistName, id: $artistId)"
 }

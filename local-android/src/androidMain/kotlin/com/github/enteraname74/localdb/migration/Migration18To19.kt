@@ -271,7 +271,8 @@ class Migration18To19(
         name: String,
         artistId: SqlUuid,
     ): RoomAlbum? {
-        val cursor = db.query("SELECT * FROM RoomAlbum WHERE artistId = ${artistId.toSQLId()} AND albumName = ${name.toSQLValue()}")
+        val cursor =
+            db.query("SELECT * FROM RoomAlbum WHERE artistId = ${artistId.toSQLId()} AND albumName = ${name.toSQLValue()}")
         cursor.use {
             while (cursor.moveToNext()) {
                 cursor.toRoomAlbum()?.let {
@@ -287,12 +288,14 @@ class Migration18To19(
         db: SupportSQLiteDatabase,
         albumIds: List<SqlUuid>,
     ): List<RoomAlbum> {
+        println("MIGRATION - All albumIds? ${albumIds.size}")
         val albums = ArrayList<RoomAlbum>()
         albumIds.chunked(CHUNK_SIZE).forEach { chunk ->
             val ids = chunk.joinToString { it.toSQLId() }
             val cursor = db.query("SELECT * FROM RoomAlbum WHERE albumId IN ($ids)")
             cursor.use {
                 while (cursor.moveToNext()) {
+                    println("MIGRATION - got value in cursor: $cursor")
                     cursor.toRoomAlbum()?.let {
                         albums.add(it)
                     }
@@ -304,17 +307,20 @@ class Migration18To19(
     }
 
     private fun Cursor.toRoomAlbum(): RoomAlbum? =
-        runCatching {
+        try {
             RoomAlbum(
                 albumId = getId("albumId").toUUID(),
                 albumName = getString("albumName"),
-                coverId = getId("coverId").toUUID(),
+                coverId = runCatching { getId("coverId").toUUID() }.getOrNull(),
                 addedDate = Converters.stringToLocalDate(getString("addedDate")),
                 nbPlayed = getInt("nbPlayed"),
                 isInQuickAccess = getBool("isInQuickAccess"),
                 artistId = getId("artistId").toUUID(),
             )
-        }.getOrNull()
+        } catch (e: Exception) {
+            println("MIGRATION - Exc during album creation: $e")
+            null
+        }
 
     /**
      * Retrieves a mapping of an AlbumArtist name and its id in the db.
@@ -457,7 +463,8 @@ class Migration18To19(
         val newAlbumsToSave = ArrayList<RoomAlbum>()
         for (musicToAlbumArtist in musicsToAlbumArtists) {
             // We retrieve the current album of the song.
-            val musicAlbum: RoomAlbum = albums.firstOrNull { it.albumId == musicToAlbumArtist.key.albumAsBlobId.toUUID() } ?: continue
+            val musicAlbum: RoomAlbum =
+                albums.firstOrNull { it.albumId == musicToAlbumArtist.key.albumAsBlobId.toUUID() } ?: continue
             // If the album artist id is not the same as the artist of the song's album, we will need to move the song.
             val shouldMoveAlbumOfMusic = !musicAlbum.artistId.toSqlUuid().contentEquals(musicToAlbumArtist.value)
 
@@ -556,33 +563,43 @@ class Migration18To19(
     private fun musicMigrationAndUpdateData(db: SupportSQLiteDatabase) {
         val musicsWithAlbumArtist: List<CachedMusicUpdate> = musicMigration(db)
 
+        /*
+        println("MIGRATION - musicsWithAlbumArtist = ${musicsWithAlbumArtist.size}, names? ${musicsWithAlbumArtist.mapNotNull { it.albumArtist }}")
+
         // Update the links of music and artists with new album artist field.
         val musicArtists: List<SQLMusicArtist> = getMusicArtists(
             db = db,
             cachedMusicUpdates = musicsWithAlbumArtist,
         )
+        println("MIGRATION - musicArtists = ${musicArtists.size}")
         val albumsArtistsIds: Map<AlbumArtistName, SqlUuid> = getAlbumArtistsIds(
             db = db,
             artistNames = musicsWithAlbumArtist.mapNotNull { it.albumArtist },
         )
+        println("MIGRATION - albumsArtistsIds = ${albumsArtistsIds.size}")
         val musicsToAlbumArtists: Map<CachedMusicUpdate, SqlUuid> = updateMusicArtists(
             db = db,
             musicsWithAlbumArtist = musicsWithAlbumArtist,
             musicArtists = musicArtists,
             albumsArtistsIds = albumsArtistsIds,
         )
+        println("MIGRATION - musicsToAlbumArtists = ${musicsToAlbumArtists.size}")
 
-        // Update the music-album link with the new album artist field.
         val albumsOfMusicsWithAlbumArtist: List<RoomAlbum> = getAlbums(
             db = db,
             albumIds = musicsWithAlbumArtist.map { it.albumAsBlobId },
         )
 
+        println("MIGRATION - musicsToAlbumArtists = $musicsToAlbumArtists")
+        println("MIGRATION - albumsOfMusicsWithAlbumArtist = $albumsOfMusicsWithAlbumArtist")
+
+        // Update the music-album link with the new album artist field.
         updateMusicAlbum(
             db = db,
             musicsToAlbumArtists = musicsToAlbumArtists,
             albums = albumsOfMusicsWithAlbumArtist,
         )
+        */
     }
 
     override fun migrate(db: SupportSQLiteDatabase) {

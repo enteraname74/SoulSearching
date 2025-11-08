@@ -50,7 +50,7 @@ sealed interface ModifyMusicFormState {
                         .fillMaxWidth(),
                     id = ALBUM_NAME,
                     isValid = { it.isNotBlank() },
-                    initialValue = savedData[ALBUM_NAME] ?: initialMusic.album,
+                    initialValue = savedData[ALBUM_NAME] ?: initialMusic.album.albumName,
                     updateProposedValues = updateFoundAlbums,
                     getLabel = { strings.albumName },
                     style = SoulTextFieldStyle.Body,
@@ -83,26 +83,27 @@ sealed interface ModifyMusicFormState {
                     )
                 )
             )
-            add(
-                SoulDropdownTextFieldHolderImpl(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    id = ALBUM_ARTIST,
-                    isValid = { true },
-                    initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.albumArtist.orEmpty(),
-                    getLabel = { strings.albumArtistName },
-                    style = SoulTextFieldStyle.Body,
-                    getError = { null },
-                    onChange = {
-                        onFieldChange(ALBUM_ARTIST, it)
-                    },
-                    updateProposedValues = updateFoundArtists,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Text,
-                    )
-                )
-            )
+            // TODO: Fix support for album artist
+//            add(
+//                SoulDropdownTextFieldHolderImpl(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    id = ALBUM_ARTIST,
+//                    isValid = { true },
+//                    initialValue = savedData[ALBUM_ARTIST] ?: initialMusic.albumArtist.orEmpty(),
+//                    getLabel = { strings.albumArtistName },
+//                    style = SoulTextFieldStyle.Body,
+//                    getError = { null },
+//                    onChange = {
+//                        onFieldChange(ALBUM_ARTIST, it)
+//                    },
+//                    updateProposedValues = updateFoundArtists,
+//                    keyboardOptions = KeyboardOptions(
+//                        imeAction = ImeAction.Next,
+//                        keyboardType = KeyboardType.Text,
+//                    )
+//                )
+//            )
 
             artistsOfMusic.forEachIndexed { index, artist ->
                 val artistId = artist.artistId.toString()
@@ -156,7 +157,7 @@ sealed interface ModifyMusicFormState {
         fun getMusicName(): String = textFields.first { it.id == MUSIC_NAME }.value
         fun getAlbumName(): String = textFields.first { it.id == ALBUM_NAME }.value
         fun getPositionInAlbum(): String = textFields.first { it.id == POSITION_IN_ALBUM }.value
-        fun getAlbumArtist(): String = textFields.first { it.id == ALBUM_ARTIST }.value
+//        fun getAlbumArtist(): String = textFields.first { it.id == ALBUM_ARTIST }.value
         fun getArtistsName(): List<String> = (4 until textFields.size).map { textFields[it].value }
 
         companion object {

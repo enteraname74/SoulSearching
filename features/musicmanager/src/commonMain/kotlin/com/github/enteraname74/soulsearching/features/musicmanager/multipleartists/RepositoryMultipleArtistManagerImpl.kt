@@ -28,14 +28,6 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
     override suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album> =
         commonAlbumUseCase.getAlbumsOfArtist(artistId = artist.artistId).firstOrNull() ?: emptyList()
 
-    override suspend fun createNewArtist(artistName: String): Artist {
-        val newArtist = Artist(
-            artistName = artistName,
-        )
-        cachedArtists.add(newArtist)
-        return newArtist
-    }
-
     override suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist> =
         commonArtistUseCase.getAllFromName(artistsNames)
 
@@ -61,21 +53,25 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
             ?.map { it.albumId }
             ?: emptyList()
 
-    override suspend fun linkSongsToArtist(musicIds: List<UUID>, artistId: UUID) {
+    override suspend fun linkMusicToArtists(musicId: UUID, artists: List<Artist>) {
         cachedMusicArtists.addAll(
-            musicIds.map {
+            artists.map { artist ->
                 MusicArtist(
-                    musicId = it,
-                    artistId = artistId,
+                    musicId = musicId,
+                    artistId = artist.artistId,
                 )
             }
         )
     }
 
-    override suspend fun linkAlbumToArtist(album: Album, artist: Artist) {
+    override suspend fun linkAlbumToArtist(
+        album: Album,
+        artist: Artist,
+        multipleArtistName: String,
+    ) {
         cachedAlbums.add(
             album.copy(
-                artistId = artist.artistId,
+                artist = artist,
             )
         )
     }

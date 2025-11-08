@@ -13,9 +13,10 @@ internal data class RoomPlaylistWithMusics(
     @Relation(
         parentColumn = "playlistId",
         entityColumn = "musicId",
-        associateBy = Junction(RoomMusicPlaylist::class)
+        associateBy = Junction(RoomMusicPlaylist::class),
+        entity = RoomMusic::class,
     )
-    val roomMusics: List<RoomMusic> = emptyList()
+    val roomMusics: List<RoomCompleteMusic>
 )
 
 /**

@@ -59,7 +59,7 @@ fun PlayerMinimisedMainInfo(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = currentMusic.artist,
+                text = currentMusic.artistsNames,
                 color = SoulSearchingColorTheme.colorScheme.subSecondaryText,
                 fontSize = 13.sp,
                 lineHeight = 13.sp,

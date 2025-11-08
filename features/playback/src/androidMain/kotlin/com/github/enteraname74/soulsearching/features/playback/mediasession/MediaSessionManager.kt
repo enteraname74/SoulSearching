@@ -145,7 +145,7 @@ class MediaSessionManager(
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_ARTIST,
-                    playbackState.currentMusic.artist
+                    playbackState.currentMusic.artistsNames
                 )
                 // A small bitmap for the artwork is also recommended
                 .putBitmap(

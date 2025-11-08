@@ -100,9 +100,8 @@ fun PlayerTopInformation(
                 verticalArrangement = Arrangement.Center,
                 maxLines = 2,
             ) {
-                state.artistsOfCurrentMusic.forEachIndexed { index, artist ->
-
-                    val formattedText = if (index == state.artistsOfCurrentMusic.lastIndex) {
+                state.currentMusic.artists.forEachIndexed { index, artist ->
+                    val formattedText = if (index == state.currentMusic.artists.lastIndex) {
                         artist.artistName
                     } else {
                         "${artist.artistName}, "
@@ -123,7 +122,7 @@ fun PlayerTopInformation(
                 }
             }
             Text(
-                text = state.currentMusic.album,
+                text = state.currentMusic.album.albumName,
                 color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
                 fontSize = 15.sp,
                 maxLines = 1,

@@ -3,36 +3,27 @@ package com.github.enteraname74.soulsearching.features.filemanager.usecase
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.MusicArtist
-import com.github.enteraname74.domain.repository.*
+import com.github.enteraname74.domain.repository.AlbumRepository
+import com.github.enteraname74.domain.repository.ArtistRepository
+import com.github.enteraname74.domain.repository.MusicArtistRepository
+import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateArtistUseCase(
     private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
     private val musicArtistRepository: MusicArtistRepository,
-    private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(newArtistWithMusicsInformation: ArtistWithMusics) {
-        val legacyArtist: Artist = artistRepository.getFromId(newArtistWithMusicsInformation.artist.artistId).firstOrNull() ?: return
-
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist
         )
 
         // We redirect the possible artists albums that do not share the same artist id.
         redirectAlbumsToCorrectArtist(artist = newArtistWithMusicsInformation.artist)
-
-        for (music in newArtistWithMusicsInformation.musics) {
-            updateArtistNameOfMusicUseCase(
-                music = music,
-                legacyArtistName = legacyArtist.artistName,
-                newArtistName = newArtistWithMusicsInformation.artist.artistName,
-            )
-        }
 
         // We check if there is not two times the artist name.
         val possibleDuplicatedArtist: ArtistWithMusics? =
@@ -63,7 +54,7 @@ class UpdateArtistUseCase(
      */
     private suspend fun redirectAlbumsToCorrectArtist(artist: Artist) {
         val legacyAlbumsOfArtist = albumRepository.getAllAlbumWithMusics().first().filter {
-            it.artist?.artistName == artist.artistName
+            it.album.artist.artistName == artist.artistName
         }
 
         /*
@@ -77,7 +68,7 @@ class UpdateArtistUseCase(
         for (entry in albumsOrderedByAppearance.entries) {
             val albumWithMusicToUpdate = legacyAlbumsOfArtist.find {
                 (it.album.albumName == entry.key)
-                        && (it.artist!!.artistId != artist.artistId)
+                        && (it.album.artist.artistId != artist.artistId)
             }
             if (entry.value == 2) {
                 // The album has a duplicate!
@@ -85,10 +76,10 @@ class UpdateArtistUseCase(
                 for (music in albumWithMusicToUpdate!!.musics) {
                     musicRepository.upsert(
                         music = music.copy(
-                            albumId = legacyAlbumsOfArtist.find {
+                            album = legacyAlbumsOfArtist.find {
                                 (it.album.albumName == entry.key)
-                                        && (it.artist!!.artistId == artist.artistId)
-                            }!!.album.albumId
+                                        && (it.album.artist.artistId == artist.artistId)
+                            }!!.album
                         )
                     )
                 }
@@ -100,7 +91,7 @@ class UpdateArtistUseCase(
                 // Else, we update the artist's id.
                 albumRepository.upsert(
                     album = albumWithMusicToUpdate.album.copy(
-                        artistId = artist.artistId,
+                        artist = artist,
                     )
                 )
             }

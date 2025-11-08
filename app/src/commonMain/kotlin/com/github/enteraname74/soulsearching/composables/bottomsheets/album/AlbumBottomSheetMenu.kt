@@ -29,7 +29,7 @@ fun AlbumBottomSheetMenu(
     Column {
         BottomSheetElementInformation(
             title = selectedAlbum.album.albumName,
-            subTitle = selectedAlbum.artist?.artistName.orEmpty(),
+            subTitle = selectedAlbum.album.artist.artistName.orEmpty(),
             cover = selectedAlbum.cover,
         )
 

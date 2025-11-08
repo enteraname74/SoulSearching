@@ -9,10 +9,13 @@ import java.util.UUID
  */
 data class Album(
     val albumId: UUID = UUID.randomUUID(),
-    val albumName: String = "",
+    val albumName: String,
+    val artist: Artist,
     val cover: Cover? = null,
     val addedDate: LocalDateTime = LocalDateTime.now(),
     val nbPlayed: Int = 0,
     val isInQuickAccess: Boolean = false,
-    val artistId: UUID,
-)
+) {
+    override fun toString(): String =
+        "Album(name: $albumName, id: $albumId, artist: $artist)"
+}

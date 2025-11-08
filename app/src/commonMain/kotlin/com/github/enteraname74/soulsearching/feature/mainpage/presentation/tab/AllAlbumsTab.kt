@@ -48,7 +48,7 @@ fun allAlbumsTab(
                     .animateItem(),
                 cover = element.cover,
                 title = element.album.albumName,
-                text = element.artist?.artistName.orEmpty(),
+                text = element.album.artist.artistName,
                 onClick = {
                     navigateToAlbum(element.album.albumId)
                 },

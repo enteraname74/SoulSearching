@@ -35,19 +35,6 @@ internal data class RoomAlbum(
 )
 
 /**
- * Converts a RoomAlbum to an Album.
- */
-internal fun RoomAlbum.toAlbum(): Album = Album(
-    albumId = albumId,
-    albumName = albumName,
-    cover = Cover.CoverFile(fileCoverId = coverId),
-    addedDate = addedDate,
-    nbPlayed = nbPlayed,
-    isInQuickAccess = isInQuickAccess,
-    artistId = artistId,
-)
-
-/**
  * Converts an Album to a RoomAlbum
  */
 internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
@@ -57,5 +44,5 @@ internal fun Album.toRoomAlbum(): RoomAlbum = RoomAlbum(
     addedDate = addedDate,
     nbPlayed = nbPlayed,
     isInQuickAccess = isInQuickAccess,
-    artistId = artistId
+    artistId = artist.artistId,
 )

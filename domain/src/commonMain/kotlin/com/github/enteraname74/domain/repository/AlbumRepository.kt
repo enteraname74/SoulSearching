@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -52,9 +51,4 @@ interface AlbumRepository {
      * Retrieves a flow of all AlbumsWithMusics.
      */
     fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
-
-    /**
-     * Retrieves all AlbumsWithArtist.
-     */
-    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
 }

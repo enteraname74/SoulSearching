@@ -1,12 +1,10 @@
 package com.github.enteraname74.soulsearching.localdesktop.datasourceimpl
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.soulsearching.localdesktop.dao.AlbumDao
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.util.*
 
 internal class AlbumDataSourceImpl(
@@ -53,9 +51,4 @@ internal class AlbumDataSourceImpl(
         albumDao.getAlbumWithMusics(
             albumId = albumId
         )
-
-    override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> =
-        albumDao.getAllAlbumsWithMusics().map { list ->
-            list.map { it.toAlbumWithArtist() }
-        }
 }

@@ -39,10 +39,11 @@ fun SearchMusics(
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
 
     LazyColumnCompat {
+        // TODO: Normalise with accents.
         val foundedMusics = allMusics.filter {
             it.name.lowercase().contains(searchText.lowercase())
-                    || it.artist.lowercase().contains(searchText.lowercase())
-                    || it.album.lowercase().contains(searchText.lowercase())
+                    || it.artistsNames.lowercase().contains(searchText.lowercase())
+                    || it.album.albumName.lowercase().contains(searchText.lowercase())
 
         }
 

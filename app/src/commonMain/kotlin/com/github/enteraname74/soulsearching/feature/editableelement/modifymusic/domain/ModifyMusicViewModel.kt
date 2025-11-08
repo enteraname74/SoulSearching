@@ -95,23 +95,21 @@ class ModifyMusicViewModel(
         if (music == null) {
             flowOf(ModifyMusicFormState.NoData)
         } else {
-            commonArtistUseCase.getArtistsOfMusic(music = music).flatMapLatest { artists ->
-                addedArtists.flatMapLatest { addedArtists ->
-                    deletedArtistIds.mapLatest { ids ->
-                        ModifyMusicFormState.Data(
-                            initialMusic = music,
-                            updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
-                            updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
-                            artistsOfMusic = artists.plus(addedArtists).filter { it.artistId !in ids },
-                            onDeleteArtist = { artistId ->
-                                deletedArtistIds.value = deletedArtistIds.value.plus(artistId)
-                            },
-                            savedData = savedData,
-                            onFieldChange = { id, value ->
-                                savedData[id] = value
-                            }
-                        )
-                    }
+            addedArtists.flatMapLatest { addedArtists ->
+                deletedArtistIds.mapLatest { ids ->
+                    ModifyMusicFormState.Data(
+                        initialMusic = music,
+                        updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
+                        updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
+                        artistsOfMusic = music.artists.plus(addedArtists).filter { it.artistId !in ids },
+                        onDeleteArtist = { artistId ->
+                            deletedArtistIds.value = deletedArtistIds.value.plus(artistId)
+                        },
+                        savedData = savedData,
+                        onFieldChange = { id, value ->
+                            savedData[id] = value
+                        }
+                    )
                 }
             }
         }
@@ -233,16 +231,15 @@ class ModifyMusicViewModel(
                     fileCoverId = coverFile,
                 ) ?: state.initialMusic.cover,
                 name = form.getMusicName().trim(),
-                album = form.getAlbumName().trim(),
+                // TODO: Better update system
+//                album = form.getAlbumName().trim(),
                 albumPosition = form.getPositionInAlbum().trim().toIntOrNull(),
-                albumArtist = form.getAlbumArtist().trim().takeIf { it.isNotBlank() },
-                artist = cleanedNewArtistsName.joinToString(separator = ", "),
+//                artist = cleanedNewArtistsName.joinToString(separator = ", "),
             )
 
             updateMusicUseCase(
                 legacyMusic = state.initialMusic,
                 newMusicInformation = newMusicInformation,
-                previousArtists = commonArtistUseCase.getArtistsOfMusic(music = state.initialMusic).firstOrNull() ?: emptyList(),
                 newArtistsNames = cleanedNewArtistsName,
             )
 

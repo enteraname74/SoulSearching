@@ -1,9 +1,7 @@
 package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.first
@@ -22,11 +20,11 @@ class GetCorrespondingAlbumUseCase(
         albumName: String,
         artistId: UUID
     ): Album? {
-        val allAlbumsWithArtists: List<AlbumWithArtist> = albumRepository.getAllAlbumsWithArtist().first()
-        return allAlbumsWithArtists
+        val allAlbums: List<Album> = albumRepository.getAll().first()
+        return allAlbums
             .firstOrNull {
-                it.album.albumName == albumName && it.artist?.artistId == artistId
-            }?.album
+                it.albumName == albumName && it.artist.artistId == artistId
+            }
     }
 
     /**
@@ -36,25 +34,17 @@ class GetCorrespondingAlbumUseCase(
         albumName: String,
         artistName: String,
     ): Album? {
-        val allAlbumsWithArtists: List<AlbumWithArtist> = albumRepository.getAllAlbumsWithArtist().first()
-        return allAlbumsWithArtists
+        val allAlbums: List<Album> = albumRepository.getAll().first()
+        return allAlbums
             .firstOrNull {
-                it.album.albumName == albumName && it.artist?.artistName == artistName
-            }?.album
+                it.albumName == albumName && it.artist.artistName == artistName
+            }
     }
-
-    /**
-     * Tries to retrieve the corresponding album of a music.
-     */
-    suspend operator fun invoke(
-        music: Music
-    ): Album? =
-        albumRepository.getFromId(albumId = music.albumId).firstOrNull()
 
     suspend fun withMusics(
         musicId: UUID
     ): AlbumWithMusics? {
-        val albumId: UUID = musicRepository.getFromId(musicId).firstOrNull()?.albumId ?: return null
+        val albumId: UUID = musicRepository.getFromId(musicId).firstOrNull()?.album?.albumId ?: return null
         return albumRepository.getAlbumWithMusics(albumId = albumId).first()
     }
 }

@@ -169,7 +169,7 @@ private fun RowScope.MusicInformationWideView(
             fontWeight = fontWeight
         )
         Text(
-            text = music.album,
+            text = music.album.albumName,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             color = textColor,
@@ -179,7 +179,7 @@ private fun RowScope.MusicInformationWideView(
             fontWeight = fontWeight
         )
         Text(
-            text = music.artist,
+            text = music.artistsNames,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             color = textColor,

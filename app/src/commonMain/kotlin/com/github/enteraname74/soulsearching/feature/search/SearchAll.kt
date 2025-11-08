@@ -125,7 +125,7 @@ fun SearchAll(
         }
 
         val foundedAlbums = allAlbumsState.albums.filter {
-            it.artist?.artistName?.lowercase()?.contains(searchText.lowercase()) == true ||
+            it.album.artist.artistName.lowercase().contains(searchText.lowercase()) ||
                     it.album.albumName.lowercase().contains(searchText.lowercase())
         }
         if (foundedAlbums.isNotEmpty()) {
@@ -148,7 +148,7 @@ fun SearchAll(
                     modifier = Modifier
                         .animateItem(),
                     title = albumWithMusics.album.albumName,
-                    text = if (albumWithMusics.artist != null) albumWithMusics.artist!!.artistName else "",
+                    text = albumWithMusics.album.artist.artistName,
                     onClick = {
                         focusManager.clearFocus()
                         navigateToAlbum(albumWithMusics.album.albumId.toString())
@@ -163,10 +163,11 @@ fun SearchAll(
             }
         }
 
+        // TODO: Normalise with accents.
         val foundedMusics = musicState.musics.filter {
             it.name.lowercase().contains(searchText.lowercase())
-                    || it.artist.lowercase().contains(searchText.lowercase())
-                    || it.album.lowercase().contains(searchText.lowercase())
+                    || it.artistsNames.lowercase().contains(searchText.lowercase())
+                    || it.album.albumName.lowercase().contains(searchText.lowercase())
 
         }
 

@@ -11,7 +11,6 @@ import java.util.*
  */
 abstract class MultipleArtistManager {
     protected abstract suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album>
-    protected abstract suspend fun createNewArtist(artistName: String): Artist
     protected abstract suspend fun getArtistFromName(artistName: String): Artist?
     protected abstract suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist>
 
@@ -24,14 +23,15 @@ abstract class MultipleArtistManager {
     protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
     protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
 
-    protected abstract suspend fun linkSongsToArtist(
-        musicIds: List<UUID>,
-        artistId: UUID,
+    protected abstract suspend fun linkMusicToArtists(
+        musicId: UUID,
+        artists: List<Artist>,
     )
 
     protected abstract suspend fun linkAlbumToArtist(
         album: Album,
         artist: Artist,
+        multipleArtistName: String,
     )
 
     /**
@@ -82,12 +82,14 @@ abstract class MultipleArtistManager {
                     multipleArtistName = multipleArtist.artistName,
                 )
             } else {
+                val artist = (existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
+                    firstArtistName
+                ) ?: Artist(artistName = firstArtistName))
+
                 linkAlbumToArtist(
                     album = album,
-                    artist = (
-                            existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
-                                firstArtistName
-                            ) ?: createNewArtist(firstArtistName)),
+                    artist = artist,
+                    multipleArtistName = multipleArtist.artistName,
                 )
             }
         }
@@ -102,15 +104,16 @@ abstract class MultipleArtistManager {
         allArtistsName: List<String>,
         existingArtists: List<Artist>,
     ) {
-        allArtistsName.forEach { name ->
-            val artistId: UUID =
-                (existingArtists.firstOrNull { it.artistName == name }
-                    ?: getArtistFromName(name)
-                    ?: createNewArtist(artistName = name)).artistId
+        val separatedArtists: List<Artist> = allArtistsName.map { name ->
+            existingArtists.firstOrNull { it.artistName == name }
+                ?: getArtistFromName(name)
+                ?: Artist(artistName = name)
+        }
 
-            linkSongsToArtist(
-                musicIds = musicIdsOfInitialArtist,
-                artistId = artistId,
+        musicIdsOfInitialArtist.forEach { musicId ->
+            linkMusicToArtists(
+                musicId = musicId,
+                artists = separatedArtists,
             )
         }
     }

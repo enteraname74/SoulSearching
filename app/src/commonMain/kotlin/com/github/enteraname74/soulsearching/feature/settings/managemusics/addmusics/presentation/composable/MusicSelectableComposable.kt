@@ -94,7 +94,7 @@ private fun InnerContent(
                     fontWeight = FontWeight.Normal
                 )
                 Text(
-                    text = "${music.artist} | ${music.album}",
+                    text = music.informationText,
                     color = textColor,
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,

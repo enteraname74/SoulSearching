@@ -10,7 +10,6 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
-import kotlinx.coroutines.flow.firstOrNull
 
 class UpdateMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -18,7 +17,6 @@ class UpdateMusicUseCase(
     private val musicArtistRepository: MusicArtistRepository,
     private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val updateArtistNameOfMusicUseCase: UpdateArtistNameOfMusicUseCase,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
     private suspend fun getOrCreateArtist(
@@ -62,9 +60,9 @@ class UpdateMusicUseCase(
         )
 
         updateAlbumOfMusicUseCase(
-            artistId = existingNewArtist.artistId,
+            artist = existingNewArtist,
             legacyMusic = legacyMusic,
-            newAlbumName = newMusicInformation.album,
+            newAlbum = newMusicInformation.album,
         )
     }
 
@@ -122,30 +120,11 @@ class UpdateMusicUseCase(
      */
     suspend operator fun invoke(
         legacyMusic: Music,
-        previousArtists: List<Artist>,
         newArtistsNames: List<String>,
         newMusicInformation: Music,
     ) {
-        /*
-        We will put the album artist with the other artists.
-        It will be in the first place as it's the artist that possess the album.
-         */
-        val allPreviousArtists: List<Artist> = buildList {
-            legacyMusic.albumArtist?.let { name ->
-                artistRepository.getFromName(artistName = name)?.let { add(it) }
-            }
-            addAll(previousArtists)
-        }.distinctBy { it.artistName }
-
-        /*
-        Same for the new artists. It will be easier to handle them all at once.
-         */
-        val allNewArtistsNames: List<String> = buildList {
-            newMusicInformation.albumArtist?.let {
-                add(it)
-            }
-            addAll(newArtistsNames)
-        }.distinct()
+        val allPreviousArtists: List<Artist> = legacyMusic.artists.distinctBy { it.artistName }
+        val allNewArtistsNames: List<String> = newArtistsNames.distinct()
 
         val hasArtistsChanged = allPreviousArtists.map { it.artistName } != allNewArtistsNames
 
@@ -157,30 +136,15 @@ class UpdateMusicUseCase(
                 newArtistsName = allNewArtistsNames,
             )
         } else if (legacyMusic.album != newMusicInformation.album) {
-            val artistForAlbum: Artist? = if (newMusicInformation.albumArtist != null) {
-                getOrCreateArtist(
-                    artistName = newMusicInformation.albumArtist.orEmpty(),
-                    music = newMusicInformation,
-                )
-            } else {
-                commonArtistUseCase.getArtistsOfMusic(music = legacyMusic)
-                    .firstOrNull()
-                    ?.firstOrNull()
-            }
-
-            artistForAlbum?.let { artist ->
-                updateAlbumOfMusicUseCase(
-                    legacyMusic = legacyMusic,
-                    newAlbumName = newMusicInformation.album,
-                    artistId = artist.artistId
-                )
-            }
+            updateAlbumOfMusicUseCase(
+                legacyMusic = legacyMusic,
+                newAlbum = newMusicInformation.album,
+                artist = legacyMusic.artists.first()
+            )
         }
 
         musicRepository.upsert(
-            newMusicInformation.copy(
-                artist = updateArtistNameOfMusicUseCase.buildUpdatedMusicArtistsString(music = newMusicInformation),
-            )
+            newMusicInformation
         )
         musicFileUpdater.updateMusic(music = newMusicInformation)
     }

@@ -17,5 +17,4 @@ val fileManagerModule: Module = module {
     singleOf(::UpdateMusicUseCase)
     singleOf(::UpdateAlbumUseCase)
     singleOf(::UpdateArtistUseCase)
-    singleOf(::UpdateArtistNameOfMusicUseCase)
 }

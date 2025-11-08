@@ -9,7 +9,6 @@ import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.lyrics.MusicLyrics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.lyrics.CommonLyricsUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
@@ -48,7 +47,6 @@ class PlayerViewModel(
     private val commonLyricsUseCase: CommonLyricsUseCase,
     private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase,
     private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
-    private val commonArtistUseCase: CommonArtistUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
@@ -79,21 +77,6 @@ class PlayerViewModel(
 
                 PlaybackManagerState.Stopped -> {
                     flowOf(false)
-                }
-            }
-        }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val currentMusicArtists: Flow<List<Artist>> =
-        playbackManager.mainState.flatMapLatest { playbackState ->
-            when (playbackState) {
-                is PlaybackManagerState.Data -> {
-                    commonArtistUseCase.getArtistsOfMusic(
-                        music = playbackState.currentMusic,
-                    )
-                }
-                PlaybackManagerState.Stopped -> {
-                    flowOf(emptyList())
                 }
             }
         }
@@ -160,13 +143,11 @@ class PlayerViewModel(
         playbackManager.mainState,
         commonPlaylistUseCase.getAllWithMusics(),
         currentMusicFavoriteStatusState,
-        currentMusicArtists
-    ) { playbackMainState, playlists, isCurrentMusicInFavorite, currentMusicArtists ->
+    ) { playbackMainState, playlists, isCurrentMusicInFavorite ->
         when (playbackMainState) {
             is PlaybackManagerState.Data -> {
                 PlayerViewState.Data(
                     currentMusic = playbackMainState.currentMusic,
-                    artistsOfCurrentMusic = currentMusicArtists,
                     currentMusicIndex = playbackMainState.currentMusicIndex,
                     isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     playedList = playbackMainState.playedList,
@@ -329,7 +310,7 @@ class PlayerViewModel(
         (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
             screenModelScope.launch {
                 _navigationState.value = PlayerNavigationState.ToAlbum(
-                    albumId = currentMusic.albumId,
+                    albumId = currentMusic.album.albumId,
                 )
             }
         }

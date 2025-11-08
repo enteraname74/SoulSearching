@@ -1,14 +1,15 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
-import com.github.enteraname74.domain.model.*
-import com.github.enteraname74.soulsearching.features.musicmanager.domain.AlbumInformation
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.features.musicmanager.domain.OptimizedCachedData
 import org.koin.core.component.KoinComponent
-import java.util.*
 
 /**
  * Utilities for fetching musics on current device.
  */
+// TODO: Fix support for album artist
 abstract class MusicFetcher : KoinComponent {
     /**
      * Fetch all musics on the device.
@@ -27,34 +28,6 @@ abstract class MusicFetcher : KoinComponent {
 
     var optimizedCachedData = OptimizedCachedData()
         protected set
-
-    private fun createAlbumOfSong(
-        music: Music,
-        albumId: UUID,
-        artistId: UUID,
-    ) {
-        val albumToAdd = Album(
-            albumId = albumId,
-            albumName = music.album,
-            artistId = artistId,
-        )
-        optimizedCachedData.albumsByInfo[AlbumInformation(
-            name = albumToAdd.albumName,
-            artist = music.artistOfAlbum,
-        )] = albumToAdd
-    }
-
-
-    private fun createArtist(
-        name: String,
-        id: UUID,
-    ) {
-        val artistToAdd = Artist(
-            artistId = id,
-            artistName = name,
-        )
-        optimizedCachedData.artistsByName[artistToAdd.artistName] = artistToAdd
-    }
 
     suspend fun cacheSelectedMusics(
         musics: List<Music>,
@@ -83,67 +56,26 @@ abstract class MusicFetcher : KoinComponent {
         // If the song has already been saved once, we do nothing.
         if (optimizedCachedData.musicsByPath[musicToAdd.path] != null) return
 
-        val correspondingArtist: Artist? = optimizedCachedData.artistsByName[musicToAdd.artist]
-        val correspondingAlbumArtist: Artist? = optimizedCachedData.artistsByName[musicToAdd.artistOfAlbum]
-
-        val correspondingAlbum: Album? = correspondingAlbumArtist?.let { artist ->
-            val info = AlbumInformation(
-                name = musicToAdd.album,
-                artist = artist.artistName,
-            )
-            optimizedCachedData.albumsByInfo[info]
-        }
-
-        val albumId = correspondingAlbum?.albumId ?: UUID.randomUUID()
-        val artistId = correspondingArtist?.artistId ?: UUID.randomUUID()
-        val albumArtistId: UUID? = if (musicToAdd.hasDifferentAlbumArtist()) {
-            correspondingAlbumArtist?.artistId ?: UUID.randomUUID()
-        } else {
-            null
-        }
-
-        if (correspondingArtist == null) {
-            createArtist(
-                name = musicToAdd.artist,
-                id = artistId,
-            )
-        }
-
-        if (correspondingAlbumArtist == null && albumArtistId != null) {
-            musicToAdd.albumArtist?.let { albumArtistName ->
-                createArtist(
-                    name = albumArtistName,
-                    id = albumArtistId,
-                )
+        /*
+        We updated the list of artist of the music to check if an artist might already exist.
+        If that is the case, we replace the musicToAdd's artist with the existing one to avoid duplicates of a same artist.
+         */
+        val updatedListOfArtist: List<Artist> = musicToAdd.artists.map { artist ->
+            val existingArtist = optimizedCachedData.musicsByPath.values.firstNotNullOfOrNull { music ->
+                music.artists.find { it.artistName == artist.artistName }
             }
+            existingArtist ?: artist
         }
-
-        if (correspondingAlbum == null) {
-
-            createAlbumOfSong(
-                music = musicToAdd,
-                albumId = albumId,
-                artistId = albumArtistId ?: artistId,
-            )
-        }
+        val updatedAlbum: Album = optimizedCachedData.musicsByPath.values.find { music ->
+            // TODO: Add artist name check from album
+            music.album.albumName == musicToAdd.album.albumName
+                    && music.album.artist.artistName == musicToAdd.album.artist.artistName
+        }?.album ?: musicToAdd.album.copy(artist = updatedListOfArtist.first())
 
         optimizedCachedData.musicsByPath[musicToAdd.path] = musicToAdd.copy(
-            albumId = albumId,
+            album = updatedAlbum,
+            artists = updatedListOfArtist,
         )
-        optimizedCachedData.musicArtists.add(
-            MusicArtist(
-                musicId = musicToAdd.musicId,
-                artistId = artistId,
-            )
-        )
-        albumArtistId?.let { safeId ->
-            optimizedCachedData.musicArtists.add(
-                MusicArtist(
-                    musicId = musicToAdd.musicId,
-                    artistId = safeId,
-                )
-            )
-        }
         onSongSaved()
     }
 }

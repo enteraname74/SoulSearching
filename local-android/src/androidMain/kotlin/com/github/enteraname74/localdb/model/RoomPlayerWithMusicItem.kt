@@ -12,22 +12,12 @@ internal data class RoomPlayerWithMusicItem(
     @Relation(
         parentColumn = "playerMusicId",
         entityColumn = "musicId",
+        entity = RoomMusic::class,
     )
-    val roomMusic: RoomMusic? = null
-)
-
-/**
- * Converts a RoomPlayerWithMusicItem to a PlayerWithMusicItem.
- */
-internal fun RoomPlayerWithMusicItem.toPlayerWithMusicItem(): PlayerWithMusicItem = PlayerWithMusicItem(
-    playerMusic = roomPlayerMusic.toPlayerMusic(),
-    music = roomMusic?.toMusic()
-)
-
-/**
- * Converts a PlayerWithMusicItem to a RoomPlayerWithMusicItem.
- */
-internal fun PlayerWithMusicItem.toRoomPlayerWithMusicItem(): RoomPlayerWithMusicItem = RoomPlayerWithMusicItem(
-    roomPlayerMusic = playerMusic.toRoomPlayerMusic(),
-    roomMusic = music?.toRoomMusic()
-)
+    val roomMusic: RoomCompleteMusic? = null
+) {
+    fun toPlayerWithMusicItem(): PlayerWithMusicItem = PlayerWithMusicItem(
+        playerMusic = roomPlayerMusic.toPlayerMusic(),
+        music = roomMusic?.toMusic()
+    )
+}

@@ -65,7 +65,7 @@ class SelectedAlbumViewModel(
                     albumWithMusics == null -> SelectedAlbumState.Error
                     else -> SelectedAlbumState.Data(
                         playlistDetail = albumWithMusics.toPlaylistDetail(),
-                        artistId = albumWithMusics.artist?.artistId,
+                        artistId = albumWithMusics.album.artist.artistId,
                     )
                 }
             }

@@ -34,12 +34,12 @@ class MusicFileUpdater : KoinComponent {
             val tag = audioFile.tag
 
             tag.setField(FieldKey.TITLE, music.name)
-            tag.setField(FieldKey.ALBUM, music.album)
-            tag.setField(FieldKey.ARTIST, music.artist)
-            if (music.albumArtist?.takeIf { it.isNotBlank() } == null) {
+            tag.setField(FieldKey.ALBUM, music.album.albumName)
+            tag.setField(FieldKey.ARTIST, music.artistsNames)
+            if (!music.withAlbumArtist) {
                 tag.deleteField(FieldKey.ALBUM_ARTIST)
             } else {
-                tag.setField(FieldKey.ALBUM_ARTIST, music.albumArtist)
+                tag.setField(FieldKey.ALBUM_ARTIST, music.album.artist.artistName)
             }
             music.albumPosition?.let { position ->
                 tag.setField(FieldKey.TRACK, position.toString())

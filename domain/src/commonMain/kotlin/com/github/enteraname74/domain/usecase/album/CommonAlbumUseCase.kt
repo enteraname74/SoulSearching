@@ -1,7 +1,6 @@
 package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,9 +18,6 @@ class CommonAlbumUseCase(
 
     fun getAll(): Flow<List<Album>> =
         albumRepository.getAll()
-
-    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> =
-        albumRepository.getAllAlbumsWithArtist()
 
     fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> =
         albumRepository.getAllAlbumWithMusics()
@@ -59,13 +55,13 @@ class CommonAlbumUseCase(
         albumName: String,
         artistId: UUID
     ): Album? {
-        val allAlbumsWithArtists: List<AlbumWithArtist> = albumRepository.getAllAlbumsWithArtist().first()
-        return allAlbumsWithArtists
+        val allAlbums: List<Album> = albumRepository.getAll().first()
+        return allAlbums
             .firstOrNull {
-                it.album.albumName == albumName &&
-                        it.artist?.artistId == artistId &&
-                        it.album.albumId != albumId
-            }?.album
+                it.albumName == albumName &&
+                        it.artist.artistId == artistId &&
+                        it.albumId != albumId
+            }
     }
 
     suspend fun incrementAlbumNbPlayed(albumId: UUID) {

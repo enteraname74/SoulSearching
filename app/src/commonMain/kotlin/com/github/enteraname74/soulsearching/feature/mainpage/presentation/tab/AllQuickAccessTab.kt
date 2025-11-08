@@ -64,7 +64,7 @@ private fun QuickAccessible.toPreview(
                 modifier = modifier,
                 cover = this.cover,
                 title = this.album.albumName,
-                text = this.artist?.artistName.orEmpty(),
+                text = this.album.artist.artistName,
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }
@@ -86,9 +86,9 @@ private fun QuickAccessible.toPreview(
         is Music -> {
             BigPreviewComposable(
                 modifier = modifier,
-                cover = this.cover,
-                title = this.name,
-                text = this.album,
+                cover = cover,
+                title = name,
+                text = album.albumName,
                 imageSize = null,
                 onClick = {
                     val musicListSingleton = arrayListOf(this@toPreview)

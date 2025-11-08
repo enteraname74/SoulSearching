@@ -106,20 +106,8 @@ class SettingsAddMusicsViewModel(
 
     private fun getMultipleArtists(
         selectedMusics: List<Music>,
-    ): List<Artist> {
-        val multipleArtistNameOfSelectedMusics = selectedMusics
-            .filter { it.hasPotentialMultipleArtists() }
-            .map { it.artist }
-            .distinct()
-
-        val multipleArtists = musicFetcher
-            .optimizedCachedData
-            .artistsByName
-            .filter { it.value.artistName in multipleArtistNameOfSelectedMusics }
-            .map { it.value }
-
-        return multipleArtists
-    }
+    ): List<Artist> =
+        selectedMusics.flatMap { it.artists }.filter { it.isComposedOfMultipleArtists() }
 
     fun saveSelectedSongs() {
         val fetchedMusics = (state.value as? SettingsAddMusicsState.Data)?.fetchedMusics ?: return

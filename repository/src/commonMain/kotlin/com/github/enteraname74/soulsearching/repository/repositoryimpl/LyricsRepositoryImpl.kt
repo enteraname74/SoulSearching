@@ -20,7 +20,7 @@ class LyricsRepositoryImpl(
         val principalArtistName: String = artistDataSource.getArtistsOfMusic(musicId = music.musicId)
             .firstOrNull()
             ?.firstOrNull()
-            ?.artistName ?: music.artist
+            ?.artistName ?: music.artistsNames
 
         return lyricsRemoteDataSource.getLyricsOfSong(
             music = music,

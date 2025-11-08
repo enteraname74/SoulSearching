@@ -3,6 +3,8 @@ package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
@@ -49,21 +51,29 @@ internal class MusicFetcherAndroidImpl(
         )
     }
 
+    private fun Cursor.getFilteredSafeString(index: Int): String =
+        getString(index)?.trim().orEmpty()
 
     private fun Cursor.toMusic(): Music? =
         try {
+            val defaultArtist = Artist(
+                artistName = this.getFilteredSafeString(1),
+            )
+
             Music(
-                name = this.getString(0).trim(),
-                album = this.getString(2).trim(),
-                albumArtist = this.getString(6).takeIf { it.isNotBlank() },
-                artist = this.getString(1).trim(),
+                name = this.getFilteredSafeString(0),
+                album = Album(
+                    albumName = this.getFilteredSafeString(2),
+                    artist = defaultArtist,
+                ),
+                withAlbumArtist = this.getFilteredSafeString(6).isNotBlank(),
+                // At this stage, we consider that there is only one artist
+                artists = listOf(defaultArtist),
                 duration = this.getLong(3),
-                path = this.getString(4),
-                folder = File(this.getString(4)).parent ?: "",
-                cover = Cover.CoverFile(initialCoverPath = this.getString(4)),
-                albumPosition = this.getString(5)?.toIntOrNull(),
-                // Will be set after, when caching the music.
-                albumId = UUID.randomUUID(),
+                path = this.getFilteredSafeString(4),
+                folder = File(this.getFilteredSafeString(4)).parent ?: "",
+                cover = Cover.CoverFile(initialCoverPath = this.getFilteredSafeString(4)),
+                albumPosition = this.getFilteredSafeString(5).toIntOrNull(),
             )
         } catch (e: Exception) {
             println("MusicFetcher -- Exception while fetching song on the device: $e")

@@ -1,11 +1,8 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.localdb.AppDatabase
-import com.github.enteraname74.localdb.model.toAlbum
-import com.github.enteraname74.localdb.model.toAlbumWithMusics
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
 import kotlinx.coroutines.flow.Flow
@@ -84,12 +81,6 @@ internal class RoomAlbumDataSourceImpl(
     override fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>> {
         return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
             list.map { it.toAlbumWithMusics() }
-        }
-    }
-
-    override fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>> {
-        return appDatabase.albumDao.getAllAlbumWithMusics().map { list ->
-            list.map { it.toAlbumWithArtist() }
         }
     }
 }

@@ -37,7 +37,7 @@ fun AlbumWithMusics.toPlaylistDetail(): PlaylistDetail =
         id = this.album.albumId,
         type = PlaylistDetailType.Album,
         title = this.album.albumName,
-        subTitle = this.artist?.artistName,
+        subTitle = this.album.artist.artistName,
         cover = this.cover,
         musics = this.musics,
     )

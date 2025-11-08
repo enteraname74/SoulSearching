@@ -5,7 +5,6 @@ import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 
 class DeleteArtistUseCase(
     private val commonAlbumUseCase: CommonAlbumUseCase,
@@ -18,16 +17,7 @@ class DeleteArtistUseCase(
         These songs will be deleted, but we must fetch all the related artists to check if we can delete them afterward.
         (if they are empty).
          */
-        val linkedArtists: List<Artist> = buildList {
-            artistWithMusics.musics.forEach { music ->
-                commonArtistUseCase.getArtistsOfMusic(
-                    music = music,
-                    withAlbumArtist = true,
-                ).firstOrNull()?.let {
-                    addAll(it)
-                }
-            }
-        }
+        val linkedArtists: List<Artist> = artistWithMusics.musics.flatMap { it.artists }
             .filter { it.artistId != artistWithMusics.artist.artistId }
             .distinctBy { it.artistId }
 

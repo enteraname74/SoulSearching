@@ -39,7 +39,7 @@ sealed interface ModifyAlbumFormState {
                     .fillMaxWidth(),
                 id = ARTIST_NAME,
                 isValid = { it.isNotBlank() },
-                initialValue = initialAlbum.artist?.artistName.orEmpty(),
+                initialValue = initialAlbum.album.artist.artistName,
                 updateProposedValues = updateFoundArtists,
                 getLabel = { strings.artistName },
                 style = SoulTextFieldStyle.Bottom,

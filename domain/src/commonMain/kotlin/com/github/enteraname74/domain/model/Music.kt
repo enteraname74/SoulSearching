@@ -10,33 +10,31 @@ import java.util.*
 data class Music(
     val musicId: UUID = UUID.randomUUID(),
     val name: String,
-    val album: String,
-    val albumArtist: String?,
-    val artist: String,
+    val album: Album,
+    val withAlbumArtist: Boolean,
+    val artists: List<Artist>,
     val cover: Cover,
-    val duration: Long = 0L,
     val albumPosition: Int?,
     val path: String,
     val folder: String,
+    val duration: Long = 0L,
     val addedDate: LocalDateTime = LocalDateTime.now(),
     val nbPlayed: Int = 0,
     override val isInQuickAccess: Boolean = false,
     val isHidden: Boolean = false,
-    val albumId: UUID,
 ) : QuickAccessible {
-    val informationText: String = "$artist | $album"
+    val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 
-    fun hasPotentialMultipleArtists(): Boolean = artist.split(",", "&").size > 1
+    val artistsNames: String = artists.joinToString { it.artistName }
 
-    /**
-     * The optimal artist of the album this music should belong to.
-     */
-    val artistOfAlbum: String
-        get() = albumArtist ?: artist
+    fun hasPotentialMultipleArtists(): Boolean = artists
+        .any {
+            it
+                .artistName
+                .split(",", "&")
+                .size > 1
+        }
 
-    /**
-     * Checks if the album artist is different from the artist of the music.
-     */
-    fun hasDifferentAlbumArtist(): Boolean =
-        albumArtist != null && albumArtist.trim() != artist.trim()
+    override fun toString(): String =
+        "Music(name: $name, album: $album, artists: $artists)"
 }
