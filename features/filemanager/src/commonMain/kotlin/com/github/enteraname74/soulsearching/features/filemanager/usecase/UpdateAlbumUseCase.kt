@@ -7,7 +7,6 @@ import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import kotlinx.coroutines.flow.first
 import java.util.*
 
 class UpdateAlbumUseCase(
@@ -19,24 +18,19 @@ class UpdateAlbumUseCase(
     private val musicArtistRepository: MusicArtistRepository,
 ) {
     suspend operator fun invoke(
-        newAlbumWithArtistInformation: Album,
-    ) {
-        val initialArtist: Artist = artistRepository.getFromId(
-            artistId = newAlbumWithArtistInformation.artist.artistId
-        ).first() ?: return
-
-
-        var albumArtistToSave = initialArtist
-        if (newAlbumWithArtistInformation.artist.artistName != initialArtist.artistName) {
+        updateInformation: UpdateInformation
+    ): Album {
+        var albumArtistToSave = updateInformation.legacyAlbum.artist
+        if (updateInformation.newArtistName != updateInformation.legacyAlbum.artist.artistName) {
             // We first try to find if there is an existing artist with the new artist name.
             var newArtist = artistRepository.getFromName(
-                artistName = newAlbumWithArtistInformation.artist.artistName
+                artistName = updateInformation.newArtistName
             )
             // If this artist doesn't exist, we create it.
             if (newArtist == null) {
                 newArtist = Artist(
-                    artistName = newAlbumWithArtistInformation.artist.artistName,
-                    cover = newAlbumWithArtistInformation.cover,
+                    artistName = updateInformation.newArtistName,
+                    cover = updateInformation.newCover,
                 )
                 artistRepository.upsert(
                     artist = newArtist
@@ -47,15 +41,16 @@ class UpdateAlbumUseCase(
 
         // We then check if there is an album with the same name and artist that already exist.
         val duplicateAlbum: Album? = commonAlbumUseCase.getDuplicatedAlbum(
-            albumId = newAlbumWithArtistInformation.albumId,
-            albumName = newAlbumWithArtistInformation.albumName,
+            albumId = updateInformation.legacyAlbum.albumId,
+            albumName = updateInformation.newName,
             artistId = albumArtistToSave.artistId
         )
 
-        val updatedAlbum = newAlbumWithArtistInformation.copy(
+        val updatedAlbum = updateInformation.legacyAlbum.copy(
             artist = albumArtistToSave,
-            isInQuickAccess = newAlbumWithArtistInformation.isInQuickAccess
+            isInQuickAccess = updateInformation.legacyAlbum.isInQuickAccess
                     || duplicateAlbum?.isInQuickAccess == true,
+            cover = updateInformation.newCover,
         )
 
         // If so, we need to merge the two album.
@@ -64,7 +59,7 @@ class UpdateAlbumUseCase(
         // We then need to update the musics of the album (new artist, album name and cover).
         updateMusicsOfAlbum(
             newAlbum = updatedAlbum,
-            legacyArtist = initialArtist,
+            legacyArtist = updateInformation.legacyAlbum.artist,
             newArtist = albumArtistToSave,
         )
 
@@ -72,7 +67,9 @@ class UpdateAlbumUseCase(
         albumRepository.upsert(updatedAlbum)
 
         // We check and delete the initial artist if it no longer possess songs.
-        commonArtistUseCase.deleteIfEmpty(artistId = initialArtist.artistId)
+        commonArtistUseCase.deleteIfEmpty(artistId = updateInformation.legacyAlbum.artist.artistId)
+
+        return updatedAlbum
     }
 
     private suspend fun replaceArtistOfMusic(
@@ -148,4 +145,11 @@ class UpdateAlbumUseCase(
             album = from
         )
     }
+
+    data class UpdateInformation(
+        val legacyAlbum: Album,
+        val newName: String,
+        val newArtistName: String,
+        val newCover: Cover?,
+    )
 }

@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbu
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -164,22 +163,21 @@ class ModifyAlbumViewModel(
                     newCoverId
                 } ?: (state.initialAlbum.album.cover as? Cover.CoverFile)?.fileCoverId
 
-                val albumInformationFromForm: Album = state.initialAlbum.album.copy(
-                    albumName = form.getAlbumName().trim(),
-                    artist = state.initialAlbum.album.artist.copy(
-                        artistName = form.getArtistName().trim(),
-                    ),
-                    cover = (state.initialAlbum.album.cover as? Cover.CoverFile)?.copy(
-                        fileCoverId = coverFile,
-                    ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
-                )
-
                 // We update the information of the album.
-                updateAlbumUseCase(newAlbumWithArtistInformation = albumInformationFromForm)
+                val updatedAlbum = updateAlbumUseCase(
+                    updateInformation = UpdateAlbumUseCase.UpdateInformation(
+                        legacyAlbum = state.initialAlbum.album,
+                        newName = form.getAlbumName().trim(),
+                        newArtistName = form.getArtistName().trim(),
+                        newCover = (state.initialAlbum.album.cover as? Cover.CoverFile)?.copy(
+                            fileCoverId = coverFile,
+                        ) ?: coverFile?.let { Cover.CoverFile(fileCoverId = it) }
+                    )
+                )
 
                 // We retrieve the updated album
                 val newAlbumWithMusics: AlbumWithMusics = commonAlbumUseCase.getAlbumWithMusics(
-                    albumId = albumInformationFromForm.albumId
+                    albumId = updatedAlbum.albumId
                 ).first() ?: return@withLoading
 
                 // We need to update the album's songs that are in the played list.

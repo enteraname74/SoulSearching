@@ -24,7 +24,10 @@ data class Music(
 ) : QuickAccessible {
     val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 
-    val artistsNames: String = artists.joinToString { it.artistName }
+    val artistsNames: String = buildList {
+        add(album.artist.artistName)
+        addAll(artists.map { it.artistName })
+    }.distinct().joinToString { it }
 
     fun hasPotentialMultipleArtists(): Boolean = artists
         .any {
