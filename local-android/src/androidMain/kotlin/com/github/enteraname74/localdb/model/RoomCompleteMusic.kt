@@ -26,7 +26,6 @@ internal data class RoomCompleteMusic(
             musicId = music.musicId,
             name = music.name,
             album = completeAlbum.toAlbum(),
-            withAlbumArtist = music.withAlbumArtist,
             artists = artists.map { it.toArtist() },
             cover = Cover.CoverFile(
                 initialCoverPath = music.path,

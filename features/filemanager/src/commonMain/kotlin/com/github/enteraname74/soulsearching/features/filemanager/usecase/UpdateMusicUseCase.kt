@@ -1,5 +1,6 @@
 package com.github.enteraname74.soulsearching.features.filemanager.usecase
 
+import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
@@ -7,21 +8,38 @@ import com.github.enteraname74.domain.model.MusicArtist
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.domain.repository.MusicArtistRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import com.github.enteraname74.domain.usecase.album.DeleteAlbumIfEmptyUseCase
+import com.github.enteraname74.domain.usecase.album.GetCorrespondingAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
-import com.github.enteraname74.domain.usecase.music.UpdateAlbumOfMusicUseCase
 import com.github.enteraname74.soulsearching.features.filemanager.util.MusicFileUpdater
 
 class UpdateMusicUseCase(
     private val musicRepository: MusicRepository,
     private val artistRepository: ArtistRepository,
     private val musicArtistRepository: MusicArtistRepository,
-    private val updateAlbumOfMusicUseCase: UpdateAlbumOfMusicUseCase,
+    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
+    private val deleteAlbumIfEmptyUseCase: DeleteAlbumIfEmptyUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val musicFileUpdater: MusicFileUpdater,
 ) {
+    private suspend fun getOrCreateAlbum(
+        artist: Artist,
+        updateInformation: UpdateInformation,
+    ): Album =
+        getCorrespondingAlbumUseCase(
+            albumName = updateInformation.newAlbumName,
+            artistId = artist.artistId,
+        ) ?: Album(
+            albumName = updateInformation.newAlbumName,
+            cover = (updateInformation.legacyMusic.cover as? Cover.CoverFile)?.fileCoverId?.let {
+                Cover.CoverFile(fileCoverId = it)
+            },
+            artist = artist,
+        )
+
     private suspend fun getOrCreateArtist(
         artistName: String,
-        music: Music,
+        musicCover: Cover,
     ): Artist {
         var existingNewArtist = artistRepository.getFromName(artistName = artistName)
 
@@ -29,7 +47,7 @@ class UpdateMusicUseCase(
         if (existingNewArtist == null) {
             existingNewArtist = Artist(
                 artistName = artistName,
-                cover = (music.cover as? Cover.CoverFile)?.fileCoverId?.let { fileCoverId ->
+                cover = (musicCover as? Cover.CoverFile)?.fileCoverId?.let { fileCoverId ->
                     Cover.CoverFile(
                         fileCoverId = fileCoverId,
                     )
@@ -41,111 +59,129 @@ class UpdateMusicUseCase(
         return existingNewArtist
     }
 
-    private suspend fun handlePrimaryArtistOfMusic(
-        legacyMusic: Music,
-        newMusicInformation: Music,
-        newArtist: String,
-    ) {
-        val existingNewArtist = getOrCreateArtist(
-            artistName = newArtist,
-            music = newMusicInformation
-        )
-
-        // We update the link between the artist and the music.
-        musicArtistRepository.upsertMusicIntoArtist(
-            musicArtist = MusicArtist(
-                musicId = newMusicInformation.musicId,
-                artistId = existingNewArtist.artistId,
-            ),
-        )
-
-        updateAlbumOfMusicUseCase(
-            artist = existingNewArtist,
-            legacyMusic = legacyMusic,
-            newAlbum = newMusicInformation.album,
-        )
-    }
-
     private suspend fun handleArtists(
-        legacyMusic: Music,
-        newMusicInformation: Music,
-        previousArtists: List<Artist>,
-        newArtistsName: List<String>,
-    ) {
+        updateInformation: UpdateInformation,
+    ): InformationToSave {
         // We will remove the link of the music to all its other previous artists
-        previousArtists.forEach { artist ->
+        updateInformation.legacyMusic.artists.forEach { artist ->
             musicArtistRepository.deleteMusicArtist(
                 musicArtist = MusicArtist(
-                    musicId = legacyMusic.musicId,
+                    musicId = updateInformation.legacyMusic.musicId,
                     artistId = artist.artistId,
                 )
             )
         }
 
-        // We then need to handle the primary artist of the song (it's the one that possess the album of the song)
-        handlePrimaryArtistOfMusic(
-            legacyMusic = legacyMusic,
-            newMusicInformation = newMusicInformation,
-            newArtist = newArtistsName.first(),
+        val primaryArtist = getOrCreateArtist(
+            artistName = updateInformation.sortedNewArtistsNames.first(),
+            musicCover = updateInformation.newCover,
         )
 
-        // We then link the music to its new artists
-        newArtistsName.subList(1, newArtistsName.size).forEach { newArtistName ->
-            val newArtist: Artist = getOrCreateArtist(
+        val secondaryArtists = updateInformation.sortedNewArtistsNames.subList(
+            1,
+            updateInformation.sortedNewArtistsNames.size,
+        ).map { newArtistName ->
+            getOrCreateArtist(
                 artistName = newArtistName,
-                music = newMusicInformation
-            )
-            musicArtistRepository.upsertMusicIntoArtist(
-                musicArtist = MusicArtist(
-                    musicId = newMusicInformation.musicId,
-                    artistId = newArtist.artistId,
-                )
+                musicCover = updateInformation.newCover,
             )
         }
 
-        // We finally check if the previous artists can be deleted :
-        previousArtists.forEach { artist ->
-            commonArtistUseCase.deleteIfEmpty(
-                artistId = artist.artistId,
-            )
-        }
+        val updatedAlbum = getOrCreateAlbum(
+            artist = primaryArtist,
+            updateInformation = updateInformation,
+        )
+
+        return InformationToSave(
+            album = updatedAlbum,
+            primaryArtist = primaryArtist,
+            secondaryArtists = secondaryArtists,
+        )
     }
+
+    private fun buildNewMusic(
+        updateInformation: UpdateInformation,
+        informationToSave: InformationToSave,
+    ): Music =
+        updateInformation.legacyMusic.copy(
+            name = updateInformation.newName,
+            cover = updateInformation.newCover,
+            albumPosition = updateInformation.newAlbumPosition,
+            album = informationToSave.album,
+            artists = buildList {
+                add(informationToSave.primaryArtist)
+                addAll(informationToSave.secondaryArtists)
+            }
+        )
 
     /**
      * Update a music.
      *
-     * @param legacyMusic the information of the previous version of the music to update
-     * (used for comparison between the legacy and new music information for better updating).
-     * @param newMusicInformation the new music information to save.
      */
     suspend operator fun invoke(
-        legacyMusic: Music,
-        newArtistsNames: List<String>,
-        newMusicInformation: Music,
-    ) {
-        val allPreviousArtists: List<Artist> = legacyMusic.artists.distinctBy { it.artistName }
-        val allNewArtistsNames: List<String> = newArtistsNames.distinct()
+        updateInformation: UpdateInformation,
+    ): Music {
+        val allPreviousArtists: List<Artist> = updateInformation.legacyMusic.artists.distinctBy { it.artistName }
+        val allNewArtistsNames: List<String> = updateInformation.sortedNewArtistsNames.distinct()
 
         val hasArtistsChanged = allPreviousArtists.map { it.artistName } != allNewArtistsNames
 
-        if (hasArtistsChanged) {
-            handleArtists(
-                legacyMusic = legacyMusic,
-                newMusicInformation = newMusicInformation,
-                previousArtists = allPreviousArtists,
-                newArtistsName = allNewArtistsNames,
+        val informationToSave: InformationToSave = if (hasArtistsChanged) {
+            handleArtists(updateInformation = updateInformation)
+        } else if (updateInformation.legacyMusic.album.albumName != updateInformation.newAlbumName) {
+            InformationToSave(
+                album = getOrCreateAlbum(
+                    artist = updateInformation.legacyMusic.artists.first(),
+                    updateInformation = updateInformation,
+                ),
+                primaryArtist = updateInformation.legacyMusic.artists.first(),
+                secondaryArtists = updateInformation.legacyMusic.artists.drop(1),
             )
-        } else if (legacyMusic.album != newMusicInformation.album) {
-            updateAlbumOfMusicUseCase(
-                legacyMusic = legacyMusic,
-                newAlbum = newMusicInformation.album,
-                artist = legacyMusic.artists.first()
+        } else {
+            InformationToSave(
+                album = updateInformation.legacyMusic.album,
+                primaryArtist = updateInformation.legacyMusic.artists.first(),
+                secondaryArtists = updateInformation.legacyMusic.artists.drop(1),
             )
         }
 
-        musicRepository.upsert(
-            newMusicInformation
+        val updatedMusic = buildNewMusic(
+            updateInformation = updateInformation,
+            informationToSave = informationToSave,
         )
-        musicFileUpdater.updateMusic(music = newMusicInformation)
+        musicRepository.upsert(updatedMusic)
+
+        // Check if we can delete legacy album and artists if empty
+        deleteAlbumIfEmptyUseCase(albumId = updateInformation.legacyMusic.album.albumId)
+        updateInformation.legacyMusic.artists.forEach { artist ->
+            commonArtistUseCase.deleteIfEmpty(
+                artistId = artist.artistId,
+            )
+        }
+        musicFileUpdater.updateMusic(music = updatedMusic)
+        return updatedMusic
     }
+
+    data class UpdateInformation(
+        val legacyMusic: Music,
+        val newName: String,
+        val newAlbumName: String,
+        val newCover: Cover,
+        val newAlbumPosition: Int?,
+        val newAlbumArtistName: String,
+        private val newArtistsNames: List<String>
+    ) {
+        val sortedNewArtistsNames: List<String> = buildList {
+            newAlbumArtistName.takeIf { it.isNotBlank() }?.let {
+                add(it)
+            }
+            addAll(newArtistsNames)
+        }.distinct()
+    }
+
+    data class InformationToSave(
+        val album: Album,
+        val primaryArtist: Artist,
+        val secondaryArtists: List<Artist>,
+    )
 }

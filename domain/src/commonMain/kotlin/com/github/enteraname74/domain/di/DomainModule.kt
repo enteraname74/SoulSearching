@@ -56,7 +56,6 @@ val domainModule = module {
     factoryOf(::GetAllMusicsSortedUseCase)
     factoryOf(::IsMusicInFavoritePlaylistUseCase)
     factoryOf(::ToggleMusicFavoriteStatusUseCase)
-    factoryOf(::UpdateAlbumOfMusicUseCase)
 
     // MusicArtist
     factoryOf(::CommonMusicArtistUseCase)

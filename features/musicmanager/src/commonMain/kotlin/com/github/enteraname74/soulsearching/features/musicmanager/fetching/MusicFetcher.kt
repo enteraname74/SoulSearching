@@ -67,7 +67,6 @@ abstract class MusicFetcher : KoinComponent {
             existingArtist ?: artist
         }
         val updatedAlbum: Album = optimizedCachedData.musicsByPath.values.find { music ->
-            // TODO: Add artist name check from album
             music.album.albumName == musicToAdd.album.albumName
                     && music.album.artist.artistName == musicToAdd.album.artist.artistName
         }?.album ?: musicToAdd.album.copy(artist = updatedListOfArtist.first())

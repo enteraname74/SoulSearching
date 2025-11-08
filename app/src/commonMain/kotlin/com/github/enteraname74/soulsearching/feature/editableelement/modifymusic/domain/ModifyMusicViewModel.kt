@@ -101,7 +101,9 @@ class ModifyMusicViewModel(
                         initialMusic = music,
                         updateFoundAlbums = { commonAlbumUseCase.getAlbumsNameFromSearch(it) },
                         updateFoundArtists = { commonArtistUseCase.getArtistsNameFromSearch(it) },
-                        artistsOfMusic = music.artists.plus(addedArtists).filter { it.artistId !in ids },
+                        artistsOfMusic = music.artists
+                            .plus(addedArtists)
+                            .filter { it.artistId !in ids },
                         onDeleteArtist = { artistId ->
                             deletedArtistIds.value = deletedArtistIds.value.plus(artistId)
                         },
@@ -226,26 +228,23 @@ class ModifyMusicViewModel(
                 .filter { it.isNotEmpty() }
                 .distinct()
 
-            val newMusicInformation = state.initialMusic.copy(
-                cover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
-                    fileCoverId = coverFile,
-                ) ?: state.initialMusic.cover,
-                name = form.getMusicName().trim(),
-                // TODO: Better update system
-//                album = form.getAlbumName().trim(),
-                albumPosition = form.getPositionInAlbum().trim().toIntOrNull(),
-//                artist = cleanedNewArtistsName.joinToString(separator = ", "),
+            val updatedMusic = updateMusicUseCase(
+                updateInformation = UpdateMusicUseCase.UpdateInformation(
+                    legacyMusic = state.initialMusic,
+                    newName = form.getMusicName().trim(),
+                    newAlbumName = form.getAlbumName().trim(),
+                    newCover = (state.initialMusic.cover as? Cover.CoverFile)?.copy(
+                        fileCoverId = coverFile,
+                    ) ?: state.initialMusic.cover,
+                    newAlbumPosition = form.getAlbumPosition().trim().toIntOrNull(),
+                    newAlbumArtistName = form.getAlbumArtist().trim(),
+                    newArtistsNames = cleanedNewArtistsName,
+                )
             )
 
-            updateMusicUseCase(
-                legacyMusic = state.initialMusic,
-                newMusicInformation = newMusicInformation,
-                newArtistsNames = cleanedNewArtistsName,
-            )
-
-            playbackManager.updateMusic(newMusicInformation)
+            playbackManager.updateMusic(updatedMusic)
             if (
-                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = newMusicInformation.musicId)
+                playbackManager.isSameMusicAsCurrentPlayedOne(musicId = updatedMusic.musicId)
                 && state.editableElement.newCover != null
             ) {
                 playbackManager.updateCover(

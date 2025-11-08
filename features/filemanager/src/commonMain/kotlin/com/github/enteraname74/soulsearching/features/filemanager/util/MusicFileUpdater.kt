@@ -36,11 +36,7 @@ class MusicFileUpdater : KoinComponent {
             tag.setField(FieldKey.TITLE, music.name)
             tag.setField(FieldKey.ALBUM, music.album.albumName)
             tag.setField(FieldKey.ARTIST, music.artistsNames)
-            if (!music.withAlbumArtist) {
-                tag.deleteField(FieldKey.ALBUM_ARTIST)
-            } else {
-                tag.setField(FieldKey.ALBUM_ARTIST, music.album.artist.artistName)
-            }
+            tag.setField(FieldKey.ALBUM_ARTIST, music.album.artist.artistName)
             music.albumPosition?.let { position ->
                 tag.setField(FieldKey.TRACK, position.toString())
             }

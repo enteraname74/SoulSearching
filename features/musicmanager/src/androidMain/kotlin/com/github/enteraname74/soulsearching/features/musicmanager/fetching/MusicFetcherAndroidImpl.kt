@@ -56,19 +56,23 @@ internal class MusicFetcherAndroidImpl(
 
     private fun Cursor.toMusic(): Music? =
         try {
-            val defaultArtist = Artist(
-                artistName = this.getFilteredSafeString(1),
-            )
+            val albumArtist = this.getFilteredSafeString(6).takeIf { it.isNotBlank() }
+            val artist = this.getFilteredSafeString(1)
+
+            val artists: List<Artist> = buildList {
+                if (albumArtist != null && albumArtist != artist) {
+                    add(Artist(artistName = albumArtist))
+                }
+                add(Artist(artistName = artist))
+            }
 
             Music(
                 name = this.getFilteredSafeString(0),
                 album = Album(
                     albumName = this.getFilteredSafeString(2),
-                    artist = defaultArtist,
+                    artist = artists.first(),
                 ),
-                withAlbumArtist = this.getFilteredSafeString(6).isNotBlank(),
-                // At this stage, we consider that there is only one artist
-                artists = listOf(defaultArtist),
+                artists = artists,
                 duration = this.getLong(3),
                 path = this.getFilteredSafeString(4),
                 folder = File(this.getFilteredSafeString(4)).parent ?: "",

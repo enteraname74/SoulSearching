@@ -24,6 +24,10 @@ internal data class RoomCompleteAlbumWithMusics(
      */
     internal fun toAlbumWithMusics(): AlbumWithMusics = AlbumWithMusics(
         album = completeAlbum.toAlbum(),
-        musics = roomMusics.map { it.toMusic() },
+        musics = roomMusics.map { it.toMusic() }.sortedWith(
+            compareBy(nullsLast()) {
+                it.albumPosition
+            }
+        ),
     )
 }

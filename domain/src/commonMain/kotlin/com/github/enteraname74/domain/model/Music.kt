@@ -11,7 +11,6 @@ data class Music(
     val musicId: UUID = UUID.randomUUID(),
     val name: String,
     val album: Album,
-    val withAlbumArtist: Boolean,
     val artists: List<Artist>,
     val cover: Cover,
     val albumPosition: Int?,
