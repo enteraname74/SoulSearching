@@ -50,8 +50,16 @@ open class FetchAllMultipleArtistManagerImpl(
         val musicToUpdate = musicEntry.values.firstOrNull() ?: return
 
         optimizedCachedData.musicsByPath[key] = musicToUpdate.copy(
-            artists = artists,
+            artists = (musicToUpdate.artists + artists).distinctBy { it.artistId },
         )
+    }
+
+    override suspend fun unlinkMusicsOfArtist(artist: Artist) {
+        optimizedCachedData.musicsByPath.forEach { (key, value) ->
+            optimizedCachedData.musicsByPath[key] = value.copy(
+                artists = value.artists.filter { it.artistId != artist.artistId }
+            )
+        }
     }
 
     override suspend fun linkAlbumToArtist(

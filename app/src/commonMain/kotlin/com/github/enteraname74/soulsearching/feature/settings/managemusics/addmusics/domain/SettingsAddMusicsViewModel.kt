@@ -107,7 +107,10 @@ class SettingsAddMusicsViewModel(
     private fun getMultipleArtists(
         selectedMusics: List<Music>,
     ): List<Artist> =
-        selectedMusics.flatMap { it.artists }.filter { it.isComposedOfMultipleArtists() }
+        selectedMusics
+            .flatMap { it.artists }
+            .filter { it.isComposedOfMultipleArtists() }
+            .distinctBy { it.artistId }
 
     fun saveSelectedSongs() {
         val fetchedMusics = (state.value as? SettingsAddMusicsState.Data)?.fetchedMusics ?: return
@@ -136,7 +139,7 @@ class SettingsAddMusicsViewModel(
             )
             if (multipleArtistManager.doMusicsHaveMultipleArtists(musics = selectedMusics)) {
                 _navigationState.value = SettingsAddMusicsNavigationState.ToMultipleArtists(
-                    multipleArtists = getMultipleArtists(selectedMusics)
+                    multipleArtists = getMultipleArtists(musicFetcher.optimizedCachedData.musicsByPath.values.toList())
                 )
             } else {
                 MusicPersistence(musicFetcher.optimizedCachedData).saveAll()

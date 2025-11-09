@@ -73,6 +73,10 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
         )
     }
 
+    override suspend fun unlinkMusicsOfArtist(artist: Artist) {
+        commonMusicArtistUseCase.deleteOfArtist(artistId = artist.artistId)
+    }
+
     override suspend fun linkAlbumToArtist(
         album: Album,
         artist: Artist,
@@ -112,9 +116,6 @@ class RepositoryMultipleArtistManagerImpl : MultipleArtistManager(), KoinCompone
         commonMusicArtistUseCase.upsertAll(cachedMusicArtists)
         commonAlbumUseCase.upsertAll(cachedAlbums)
 
-        artistsToDivide.forEach { artist ->
-            commonMusicArtistUseCase.deleteOfArtist(artistId = artist.artistId)
-        }
         commonArtistUseCase.deleteAll(artistsIds = artistsToDivide.map { it.artistId })
     }
 }

@@ -27,6 +27,10 @@ abstract class MultipleArtistManager {
     protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
     protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
 
+    protected abstract suspend fun unlinkMusicsOfArtist(
+        artist: Artist,
+    )
+
     protected abstract suspend fun linkMusicToArtists(
         musicId: UUID,
         artists: List<Artist>,
@@ -81,6 +85,7 @@ abstract class MultipleArtistManager {
                 albumName = album.albumName,
                 firstArtistName = firstArtistName,
             )
+
             if (albumWithSingleArtist != null) {
                 moveSongsOfAlbum(
                     fromAlbum = album,
@@ -142,6 +147,8 @@ abstract class MultipleArtistManager {
             )
 
             val allArtistsName: List<String> = multipleArtist.getMultipleArtists()
+
+            unlinkMusicsOfArtist(artist = multipleArtist)
 
             divideArtistAndLinkSongsToThem(
                 musicIdsOfInitialArtist = musicIdsOfMultipleArtist,

@@ -75,6 +75,7 @@ abstract class MusicFetcher : KoinComponent {
             album = updatedAlbum,
             artists = updatedListOfArtist,
         )
+
         onSongSaved()
     }
 }
