@@ -1,6 +1,5 @@
 package com.github.enteraname74.soulsearching.features.serialization
 
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 actual object SerializationUtils {

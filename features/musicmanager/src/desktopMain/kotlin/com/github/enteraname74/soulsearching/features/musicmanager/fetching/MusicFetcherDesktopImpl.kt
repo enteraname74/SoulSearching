@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
@@ -79,11 +81,23 @@ internal class MusicFetcherDesktopImpl(
                     val audioFile: AudioFile = AudioFileIO.read(file)
                     val tag: Tag = audioFile.tag
 
+                    val albumArtist = tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() }
+                    val artist = tag.getFirst(FieldKey.ARTIST)
+
+                    val artists: List<Artist> = buildList {
+                        if (albumArtist != null && albumArtist != artist) {
+                            add(Artist(artistName = albumArtist))
+                        }
+                        add(Artist(artistName = artist))
+                    }
+
                     val musicToAdd = Music(
                         name = tag.getFirst(FieldKey.TITLE),
-                        album = tag.getFirst(FieldKey.ALBUM),
-                        albumArtist = tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() },
-                        artist = tag.getFirst(FieldKey.ARTIST),
+                        album = Album(
+                            albumName = tag.getFirst(FieldKey.ALBUM),
+                            artist = artists.first(),
+                        ),
+                        artists = artists,
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
                         folder = file.parent,
@@ -91,8 +105,6 @@ internal class MusicFetcherDesktopImpl(
                             initialCoverPath = file.path,
                         ),
                         albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
-                        // Will be set after, when caching the music.
-                        albumId = UUID.randomUUID(),
                     )
                     onMusicFetched(musicToAdd)
                 } catch (e: Exception) {

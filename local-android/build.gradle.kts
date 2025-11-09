@@ -1,28 +1,30 @@
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     id("com.android.library")
     alias(libs.plugins.kotlinMultiplatform)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 kotlin {
+    jvmToolchain(17)
     androidTarget()
+    jvm("desktop")
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        // Common compiler options applied to all Kotlin source sets for expect / actual implementations
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
 
     sourceSets {
         androidMain {
             dependencies {
-                implementation(libs.room)
                 // Used for injecting app context in database module
                 implementation(libs.koin.androidx.compose)
-
-                configurations.getByName("kapt").dependencies.add(
-                    DefaultExternalModuleDependency(
-                        "androidx.room",
-                        "room-compiler",
-                        libs.versions.room.get()
-                    )
-                )
+                implementation(libs.androidx.room.sqlite.wrapper)
             }
         }
         commonMain {
@@ -31,9 +33,21 @@ kotlin {
                 implementation(project(":repository"))
                 implementation(project(":filemanager"))
                 implementation(libs.koin.core)
+
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.sqlite.bundled)
             }
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspDesktop", libs.androidx.room.compiler)
 }
 
 android {

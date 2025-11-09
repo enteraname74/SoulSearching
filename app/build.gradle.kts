@@ -76,7 +76,6 @@ kotlin {
             dependencies {
                 implementation(libs.koin.androidx.compose)
                 implementation(libs.bundles.androidx)
-                implementation(libs.room)
 
                 implementation(libs.bundles.accompanist)
             }

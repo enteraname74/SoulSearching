@@ -19,7 +19,6 @@ import com.github.enteraname74.soulsearching.di.appModule
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.application.ApplicationViewModel
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import com.github.enteraname74.soulsearching.shareddi.LocalDatabaseInitializer
 import io.github.vinceglb.filekit.FileKit
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.KoinApplication
@@ -90,7 +89,6 @@ fun main() = application {
 
 @Composable
 private fun SoulSearchingDesktop() {
-    LocalDatabaseInitializer.init()
     val applicationViewModel = injectElement<ApplicationViewModel>()
 
     with(applicationViewModel) {
