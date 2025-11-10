@@ -28,7 +28,7 @@ kotlin {
             implementation(project(":playback"))
             implementation(project(":filemanager"))
             implementation(project(":musicmanager"))
-            implementation(project(":local-android"))
+            implementation(project(":local"))
 
         }
     }
