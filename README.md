@@ -29,7 +29,7 @@ You can have a theme that depends on your system settings or the current music c
 ## Features
 
 - Listen all the songs on your device
-- See **lyrics** (classic and **synced**) of songs
+- See **lyrics** (classic and **synced**) of songs, either from your local files or fetched online
 - Customizable UI
 - Multiple **playing modes**
 - Modify songs, albums and artists on app and on the **device**
@@ -37,6 +37,7 @@ You can have a theme that depends on your system settings or the current music c
 - Create and manage **playlists**
 - Add an album, artist, playlist or even a song in **quick access**
 - Smart system for managing albums and songs without covers
+- Artist covers can be fetched from images in device system
 - Manage current played music list with ease
 - Search throughout all your elements
 - See songs by **added month** or **folders**
