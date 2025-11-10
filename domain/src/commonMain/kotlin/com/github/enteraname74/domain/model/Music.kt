@@ -9,19 +9,34 @@ import java.util.*
  */
 data class Music(
     val musicId: UUID = UUID.randomUUID(),
-    var name: String = "",
-    val album: String = "",
-    val artist: String = "",
-    var cover: Cover,
-    var duration: Long = 0L,
-    var path: String = "",
-    var folder: String = "",
-    var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0,
-    override var isInQuickAccess: Boolean = false,
-    var isHidden: Boolean = false
-): QuickAccessible {
-    val informationText: String = "$artist | $album"
+    val name: String,
+    val album: Album,
+    val artists: List<Artist>,
+    val cover: Cover,
+    val albumPosition: Int?,
+    val path: String,
+    val folder: String,
+    val duration: Long = 0L,
+    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val nbPlayed: Int = 0,
+    override val isInQuickAccess: Boolean = false,
+    val isHidden: Boolean = false,
+) : QuickAccessible {
+    val informationText: String = "${artists.joinToString { it.artistName }} | ${album.albumName}"
 
-    fun hasPotentialMultipleArtists(): Boolean = artist.split(",", "&").size > 1
+    val artistsNames: String = buildList {
+        add(album.artist.artistName)
+        addAll(artists.map { it.artistName })
+    }.distinct().joinToString { it }
+
+    fun hasPotentialMultipleArtists(): Boolean = artists
+        .any {
+            it
+                .artistName
+                .split(",", "&")
+                .size > 1
+        }
+
+    override fun toString(): String =
+        "Music(name: $name, album: $album, artists: $artists)"
 }

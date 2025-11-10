@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackM
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import androidx.core.graphics.scale
 
 /**
  * Manage media session related things.
@@ -27,12 +28,9 @@ class MediaSessionManager(
     private var mediaSession: MediaSessionCompat? = null
     private var seekToJob: Job? = null
 
-    private val standardNotificationBitmap: Bitmap = Bitmap.createScaledBitmap(
-        BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default),
-        DEFAULT_NOTIFICATION_SIZE,
-        DEFAULT_NOTIFICATION_SIZE,
-        false
-    )
+    private val standardNotificationBitmap: Bitmap =
+        BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
+            .scale(DEFAULT_NOTIFICATION_SIZE, DEFAULT_NOTIFICATION_SIZE, false)
 
     suspend fun getUpdatedMediaSessionToken(
         playbackState: PlaybackManagerState.Data,
@@ -145,7 +143,7 @@ class MediaSessionManager(
                 )
                 .putString(
                     MediaMetadata.METADATA_KEY_ARTIST,
-                    playbackState.currentMusic.artist
+                    playbackState.currentMusic.artistsNames
                 )
                 // A small bitmap for the artwork is also recommended
                 .putBitmap(

@@ -3,17 +3,15 @@ package com.github.enteraname74.domain.usecase.album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
-import com.github.enteraname74.domain.usecase.artist.DeleteArtistIfEmptyUseCase
-import com.github.enteraname74.domain.usecase.artist.GetArtistsOfMusicUseCase
+import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 
 class DeleteAlbumUseCase(
     private val albumRepository: AlbumRepository,
     private val musicRepository: MusicRepository,
-    private val getArtistsOfMusicUseCase: GetArtistsOfMusicUseCase,
-    private val deleteArtistIfEmptyUseCase: DeleteArtistIfEmptyUseCase,
+    private val commonArtistUseCase: CommonArtistUseCase,
 ) {
     suspend operator fun invoke(albumId: UUID) {
         val albumWithMusics = albumRepository.getAlbumWithMusics(albumId = albumId).first() ?: return
@@ -23,14 +21,8 @@ class DeleteAlbumUseCase(
         These songs will be deleted, but we must fetch all the related artists to check if we can delete them afterward.
         (if they are empty).
          */
-        val linkedArtists: List<Artist> = buildList {
-            albumWithMusics.musics.forEach { music ->
-                getArtistsOfMusicUseCase(musicId = music.musicId).firstOrNull()?.let {
-                    addAll(it)
-                }
-            }
-        }
-            .filter { it.artistId != albumWithMusics.artist?.artistId }
+        val linkedArtists: List<Artist> = albumWithMusics.musics.flatMap { it.artists }
+            .filter { it.artistId != albumWithMusics.album.artist.artistId }
             .distinctBy { it.artistId }
 
         // We first delete the musics of the album.
@@ -41,15 +33,13 @@ class DeleteAlbumUseCase(
         albumRepository.delete(albumWithMusics.album)
 
         // Finally we can check if we can delete the artist of the deleted album.
-        albumWithMusics.artist?.let {
-            deleteArtistIfEmptyUseCase(
-                artistId = it.artistId,
-            )
-        }
+        commonArtistUseCase.deleteIfEmpty(
+            artistId = albumWithMusics.album.artist.artistId,
+        )
 
         // We delete the linked artists of songs that were deleted if they now are empty
         linkedArtists.forEach {
-            deleteArtistIfEmptyUseCase(it.artistId)
+            commonArtistUseCase.deleteIfEmpty(it.artistId)
         }
     }
 

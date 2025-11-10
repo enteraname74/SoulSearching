@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulButtonDefaults
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.ext.chainIf
+import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 
 @Composable
@@ -31,6 +32,7 @@ fun SoulTopBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .disableFocus()
             .background(colors.containerColorWithElevation(isElevated))
             .chainIf(withStatusBarPadding) {
                 Modifier.statusBarsPadding()

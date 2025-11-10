@@ -28,6 +28,7 @@ fun SoulDropdownTextField(
     onValueChange: (String) -> Unit,
     labelName: String?,
     error: String?,
+    isReadOnly: Boolean,
     isInError: Boolean,
     modifier: Modifier = Modifier,
     colors : SoulTextFieldColors = SoulTextFieldDefaults.secondaryColors(),
@@ -70,6 +71,7 @@ fun SoulDropdownTextField(
                 },
                 labelName = labelName,
                 isInError = isInError,
+                isReadOnly = isReadOnly,
                 error = error,
                 focusManager = focusManager,
                 modifier = modifier
@@ -127,6 +129,7 @@ class SoulDropdownTextFieldHolderImpl(
     getLabel: @Composable () -> String?,
     getError: @Composable () -> String?,
     getColors: @Composable () -> SoulTextFieldColors = { SoulTextFieldDefaults.secondaryColors() },
+    private val isReadOnly: Boolean = false,
     private val leadingIconSpec: SoulTextFieldLeadingIconSpec? = null,
     private val modifier: Modifier = Modifier,
     private val updateProposedValues: suspend (fieldValue: String) -> List<String>,
@@ -176,6 +179,7 @@ class SoulDropdownTextFieldHolderImpl(
             error = error,
             leadingIconSpec = leadingIconSpec,
             keyboardOptions = keyboardOptions,
+            isReadOnly = isReadOnly,
         )
     }
 }

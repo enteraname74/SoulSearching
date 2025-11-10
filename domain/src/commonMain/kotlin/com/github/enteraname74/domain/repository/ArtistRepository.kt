@@ -2,6 +2,7 @@ package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -34,6 +35,8 @@ interface ArtistRepository {
     suspend fun getFromName(artistName: String): Artist?
 
     suspend fun getAllFromName(artistsNames: List<String>): List<Artist>
+
+    suspend fun toggleCoverFolderMode(isActivated: Boolean)
 
     /**
      * Retrieves a flow of all Artist.

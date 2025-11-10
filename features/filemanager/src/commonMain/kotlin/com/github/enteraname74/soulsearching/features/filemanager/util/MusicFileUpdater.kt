@@ -34,8 +34,12 @@ class MusicFileUpdater : KoinComponent {
             val tag = audioFile.tag
 
             tag.setField(FieldKey.TITLE, music.name)
-            tag.setField(FieldKey.ALBUM, music.album)
-            tag.setField(FieldKey.ARTIST, music.artist)
+            tag.setField(FieldKey.ALBUM, music.album.albumName)
+            tag.setField(FieldKey.ARTIST, music.artistsNames)
+            tag.setField(FieldKey.ALBUM_ARTIST, music.album.artist.artistName)
+            music.albumPosition?.let { position ->
+                tag.setField(FieldKey.TRACK, position.toString())
+            }
 
             (music.cover as? Cover.CoverFile)?.fileCoverId?.let { coverId ->
                 val coverData: ByteArray? = coverFileManager.getCoverData(coverId = coverId)

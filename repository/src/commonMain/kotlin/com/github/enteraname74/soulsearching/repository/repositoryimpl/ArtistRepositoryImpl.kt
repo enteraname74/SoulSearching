@@ -52,6 +52,10 @@ class ArtistRepositoryImpl(
     override suspend fun getAllFromName(artistsNames: List<String>): List<Artist> =
         artistDataSource.getAllFromName(artistsNames)
 
+    override suspend fun toggleCoverFolderMode(isActivated: Boolean) {
+        artistDataSource.toggleCoverFolderMode(isActivated)
+    }
+
     /**
      * Retrieves a flow of all Artist, sorted by name asc.
      */
@@ -73,6 +77,5 @@ class ArtistRepositoryImpl(
         )
 
     override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
-        artistDataSource.getArtistsOfMusic(musicId)
-
+        artistDataSource.getArtistsOfMusic(musicId = musicId)
 }

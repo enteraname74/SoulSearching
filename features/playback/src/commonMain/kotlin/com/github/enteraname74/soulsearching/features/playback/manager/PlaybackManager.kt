@@ -6,12 +6,12 @@ import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
-import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListCallbacks
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListManager
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListState
 import com.github.enteraname74.soulsearching.features.playback.notification.SoulSearchingNotification
+import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJob
 import com.github.enteraname74.soulsearching.features.playback.progressjob.PlaybackProgressJobCallbacks
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ import java.util.*
 class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
 
     private val playerMusicRepository: PlayerMusicRepository by inject()
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase by inject()
+    private val commonMusicUseCase: CommonMusicUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
 
     val player: SoulSearchingPlayer by inject()
@@ -63,7 +63,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
             },
             player = player,
             playerMusicRepository = playerMusicRepository,
-            updateMusicNbPlayedUseCase = updateMusicNbPlayedUseCase,
+            commonMusicUseCase = commonMusicUseCase,
         )
 
     init {
@@ -251,7 +251,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     suspend fun getPreviousMusic(): Music? =
         playbackListManager.getPreviousMusic()
 
-    suspend fun skipAndRemoveCurrentSong() {
+    private suspend fun skipAndRemoveCurrentSong() {
         if (!playbackListManager.hasData()) return
 
         playbackListManager.getNextMusic()?.let { nextMusic ->
@@ -282,7 +282,17 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     }
 
     suspend fun addMusicToPlayNext(music: Music) {
-        playbackListManager.addMusicToPlayNext(music = music)
+        playbackListManager.addMusicToList(
+            music = music,
+            mode = PlaybackListManager.AddMusicMode.Next,
+        )
+    }
+
+    suspend fun addMusicToQueue(music: Music) {
+        playbackListManager.addMusicToList(
+            music = music,
+            mode = PlaybackListManager.AddMusicMode.Queue,
+        )
     }
 
     /**
@@ -295,7 +305,17 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     }
 
     suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
-        playbackListManager.addMultipleMusicsToPlayNext(musics = musics)
+        playbackListManager.addMultipleMusicsToList(
+            musics = musics,
+            mode = PlaybackListManager.AddMusicMode.Next,
+        )
+    }
+
+    suspend fun addMultipleMusicsToQueue(musics: List<Music>) {
+        playbackListManager.addMultipleMusicsToList(
+            musics = musics,
+            mode = PlaybackListManager.AddMusicMode.Queue,
+        )
     }
 
     fun isSameMusicAsCurrentPlayedOne(musicId: UUID): Boolean =

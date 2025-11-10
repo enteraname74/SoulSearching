@@ -1,12 +1,13 @@
 package com.github.enteraname74.soulsearching.features.musicmanager.fetching
 
+import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
-import com.github.enteraname74.domain.usecase.playlist.GetFavoritePlaylistWithMusicsUseCase
-import com.github.enteraname74.domain.usecase.playlist.UpsertPlaylistUseCase
+import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.soulsearching.coreui.strings.strings
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import org.jaudiotagger.audio.AudioFile
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
@@ -21,8 +22,7 @@ import java.util.*
  * Class handling music fetching for desktop application.
  */
 internal class MusicFetcherDesktopImpl(
-    private val upsertPlaylistUseCase: UpsertPlaylistUseCase,
-    private val getFavoritePlaylistWithMusicsUseCase: GetFavoritePlaylistWithMusicsUseCase,
+    private val commonPlaylistUseCase: CommonPlaylistUseCase,
 ) : MusicFetcher() {
 
     private val foldersNamesBlackList: List<String> = listOf(
@@ -81,20 +81,34 @@ internal class MusicFetcherDesktopImpl(
                     val audioFile: AudioFile = AudioFileIO.read(file)
                     val tag: Tag = audioFile.tag
 
+                    val albumArtist = tag.getFirst(FieldKey.ALBUM_ARTIST)?.takeIf { it.isNotBlank() }
+                    val artist = tag.getFirst(FieldKey.ARTIST)
+
+                    val artists: List<Artist> = buildList {
+                        if (albumArtist != null && albumArtist != artist) {
+                            add(Artist(artistName = albumArtist))
+                        }
+                        add(Artist(artistName = artist))
+                    }
+
                     val musicToAdd = Music(
                         name = tag.getFirst(FieldKey.TITLE),
-                        album = tag.getFirst(FieldKey.ALBUM),
-                        artist = tag.getFirst(FieldKey.ARTIST),
+                        album = Album(
+                            albumName = tag.getFirst(FieldKey.ALBUM),
+                            artist = artists.first(),
+                        ),
+                        artists = artists,
                         duration = (audioFile.audioHeader.trackLength * 1_000).toLong(),
                         path = file.path,
                         folder = file.parent,
                         cover = Cover.CoverFile(
                             initialCoverPath = file.path,
-                        )
+                        ),
+                        albumPosition = tag.getFirst(FieldKey.TRACK)?.toIntOrNull(),
                     )
                     onMusicFetched(musicToAdd)
-                } catch (_: Exception) {
-                    println("Failed to access information about the following file: ${file.path}")
+                } catch (e: Exception) {
+                    println("Failed to access information about the following file: ${file.path} with error: $e")
                 }
             }
 
@@ -118,8 +132,8 @@ internal class MusicFetcherDesktopImpl(
             updateProgress = updateProgress,
             onMusicFetched = ::cacheMusic
         )
-        if (getFavoritePlaylistWithMusicsUseCase().first() == null) {
-            upsertPlaylistUseCase(
+        if (commonPlaylistUseCase.getFavorite().firstOrNull() == null) {
+            commonPlaylistUseCase.upsert(
                 Playlist(
                     playlistId = UUID.randomUUID(),
                     name = strings.favorite,

@@ -7,7 +7,7 @@ import com.github.enteraname74.domain.model.PlayerMusic
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
-import com.github.enteraname74.domain.usecase.music.UpdateMusicNbPlayedUseCase
+import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingPlayer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ internal class PlaybackListManager(
     private val player: SoulSearchingPlayer,
     private val settings: SoulSearchingSettings,
     private val playerMusicRepository: PlayerMusicRepository,
-    private val updateMusicNbPlayedUseCase: UpdateMusicNbPlayedUseCase,
+    private val commonMusicUseCase: CommonMusicUseCase,
 ) {
     private val _state: MutableStateFlow<PlaybackListState> = MutableStateFlow(PlaybackListState.NoData)
     val state: StateFlow<PlaybackListState> = _state.asStateFlow()
@@ -53,12 +53,15 @@ internal class PlaybackListManager(
     }
 
     /**
-     * Add a music to play next.
+     * Add a music to the list.
      * Does nothing if we try to add the current music.
      * If the playlist is empty (nothing is playing), we load the music.
      * It will remove the previous apparition of the music if there was one.
      */
-    suspend fun addMusicToPlayNext(music: Music) {
+    suspend fun addMusicToList(
+        music: Music,
+        mode: AddMusicMode,
+    ) {
         if (_state.value is PlaybackListState.NoData) {
             // We will initialize the player:
             val singletonList = listOf(music)
@@ -96,15 +99,23 @@ internal class PlaybackListManager(
                 )
                 playbackCallback.onlyLoadMusic(music = music)
             } else {
-                // Finally, we add the new next music :
-                val nextSongIndex = updatedPlayedList
-                    .indexOf(
-                        updatedPlayedList.find { it.musicId == currentMusic.musicId }
-                    ) + 1
-                if (nextSongIndex > updatedPlayedList.lastIndex) {
-                    updatedPlayedList.add(music)
-                } else {
-                    updatedPlayedList.add(nextSongIndex, music)
+                // Else, we add to the requested position
+                when (mode) {
+                    AddMusicMode.Next -> {
+                        val nextSongIndex = updatedPlayedList
+                            .indexOf(
+                                updatedPlayedList.find { it.musicId == currentMusic.musicId }
+                            ) + 1
+                        if (nextSongIndex > updatedPlayedList.lastIndex) {
+                            updatedPlayedList.add(music)
+                        } else {
+                            updatedPlayedList.add(nextSongIndex, music)
+                        }
+                    }
+
+                    AddMusicMode.Queue -> {
+                        updatedPlayedList.add(music)
+                    }
                 }
 
                 _state.value = this.copy(
@@ -140,25 +151,50 @@ internal class PlaybackListManager(
         }
     }
 
-    suspend fun addMultipleMusicsToPlayNext(musics: List<Music>) {
+    suspend fun addMultipleMusicsToList(
+        musics: List<Music>,
+        mode: AddMusicMode,
+    ) {
         if (musics.isEmpty()) return
-        /*
-        If we have not initialized the player and if we have more than 2 songs, we need to do the following :
-        - Add the first song
-        - Add all the other songs in reverse.
-         */
-        if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
-            addMusicToPlayNext(music = musics[0])
-            if (musics.size > 1) {
-                musics.subList(1, musics.size).reversed().forEach { music ->
-                    addMusicToPlayNext(music = music)
+        when (mode) {
+            AddMusicMode.Next -> {
+                /*
+                If we have not initialized the player and if we have more than 2 songs, we need to do the following :
+                - Add the first song
+                - Add all the other songs in reverse.
+                 */
+                if (_state.value is PlaybackListState.NoData || (_state.value as? PlaybackListState.Data)?.playedList?.isEmpty() == true) {
+                    addMusicToList(
+                        music = musics[0],
+                        mode = mode,
+                    )
+                    if (musics.size > 1) {
+                        musics.subList(1, musics.size).reversed().forEach { music ->
+                            addMusicToList(
+                                music = music,
+                                mode = mode,
+                            )
+                        }
+                    }
+                }
+
+                if (_state.value is PlaybackListState.Data) {
+                    musics.reversed().forEach { music ->
+                        addMusicToList(
+                            music = music,
+                            mode = mode,
+                        )
+                    }
                 }
             }
-        }
 
-        if (_state.value is PlaybackListState.Data) {
-            musics.reversed().forEach { music ->
-                addMusicToPlayNext(music = music)
+            AddMusicMode.Queue -> {
+                musics.forEach {
+                    addMusicToList(
+                        music = it,
+                        mode = mode,
+                    )
+                }
             }
         }
     }
@@ -388,7 +424,7 @@ internal class PlaybackListManager(
             updateMusicNbPlayedJob?.cancel()
             updateMusicNbPlayedJob = CoroutineScope(Dispatchers.IO).launch {
                 delay(WAIT_TIME_BEFORE_UPDATE_NB_PLAYED)
-                updateMusicNbPlayedUseCase(musicId = music.musicId)
+                commonMusicUseCase.incrementNbPlayed(musicId = music.musicId)
             }
         }
     }
@@ -573,6 +609,16 @@ internal class PlaybackListManager(
 
         setAndPlayMusic(music = musicList[0])
         savePlayedList(list = musicList)
+    }
+
+    /**
+     * Mode when a user adds a music to the list.
+     * [AddMusicMode.Next] is for adding after the currently played song.
+     * [AddMusicMode.Queue] is for adding to the end of the list.
+     */
+    enum class AddMusicMode {
+        Next,
+        Queue;
     }
 
     companion object {

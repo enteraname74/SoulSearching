@@ -42,7 +42,8 @@ interface Strings {
     val activateRemoteLyricsFetchText: String
     val activateRemoteLyricsFetchHint: String
     val noLyricsFound: String
-    val lyricsProvider: String
+    val localLyricsProvider: String
+    val remoteLyricsProvider: String
     val lyricsProviderName: String get() = "LrcLib"
 
     val completeApplicationTitle: String
@@ -71,10 +72,9 @@ interface Strings {
     val searchForMusics: String
     val searchAll: String
 
-    val sortByDateAdded: String
+    val sortByAddedDate: String
     val sortByMostListened: String
     val sortByName: String
-    val sortByAscOrDesc: String
 
     val removeFromQuickAccess: String
     val removeFromPlaylist: String
@@ -93,7 +93,9 @@ interface Strings {
     val createPlaylistDialogTitle: String
     val playlistName: String
     val musicName: String
+    val musicAlbumPosition: String
     val albumName: String
+    val albumArtistName: String
     val artistName: String
     val playlistCover: String
     val albumCover: String
@@ -146,6 +148,7 @@ interface Strings {
     val deleteSelectedMusics: String
 
     val playNext: String
+    val addToQueue: String
 
     val personalizedThemeTitle: String
     val personalizedThemeText: String
@@ -165,6 +168,30 @@ interface Strings {
 
     val splitMultipleArtistsTitle: String
     val splitMultipleArtistsText: String
+
+    val artistCoverMethodTitle: String
+    val artistCoverMethodText: String
+    val activateArtistCoverMethod: String
+    val artistCoverMethodDynamicNameTitle: String
+
+    val coverFolderRetrieverPathSelectionTitle: String
+    val coverFolderRetrieverPathSelectionNoPathSelected: String
+
+    val coverFolderRetrieverFileExtension: String
+
+    val coverFolderRetrieverFolderTitle: String
+    val coverFolderRetrieverFolderText: String
+    val coverFolderRetrieverFolderIncomplete: String
+    val coverFolderRetrieverRulesWhiteSpace: String
+    val coverFolderRetrieverRulesReplacement: String
+    val coverFolderRetrieverRulesDynamicNameUppercase: String
+    val coverFolderRetrieverRulesDynamicNameNoTreatment: String
+    val coverFolderRetrieverRulesDynamicNameLowercase: String
+
+    val coverFolderRetrieverFileTitle: String
+    val coverFolderRetrieverFileText: String
+
+    val coverFolderRetrieverDynamicFileTitle: String
 
     val activateGithubReleaseFetchTitle: String
     val activateGithubReleaseFetchText: String
@@ -246,6 +273,7 @@ interface Strings {
     val multipleSelection: String
 
     val fieldCannotBeEmpty: String
+    val fieldMustBeANumber: String
 
     val playerVolume: String
 
@@ -296,4 +324,9 @@ interface Strings {
      * Shows a text indicating the detail of the new latest release of Soul Searching
      */
     fun newReleaseAvailableText(releaseName: String): String
+
+    /**
+     * Builds the title of the example part of the artist cover method screen.
+     */
+    fun artistCoverMethodExampleTitle(artist: String): String
 }

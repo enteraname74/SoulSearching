@@ -1,14 +1,12 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.MusicArtist
-import java.util.UUID
+import java.util.*
 
 /**
  * Data source of a MusicArtist.
  */
 interface MusicArtistDataSource {
-    suspend fun getAll(): List<MusicArtist>
-
     suspend fun get(artistId: UUID, musicId: UUID): MusicArtist?
 
     /**
@@ -20,4 +18,6 @@ interface MusicArtistDataSource {
     suspend fun upsertAll(musicArtists: List<MusicArtist>)
 
     suspend fun deleteMusicArtist(musicArtist: MusicArtist)
+
+    suspend fun deleteOfArtist(artistId: UUID)
 }

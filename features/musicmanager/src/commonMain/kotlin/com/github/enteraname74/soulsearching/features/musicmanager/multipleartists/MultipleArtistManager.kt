@@ -11,8 +11,11 @@ import java.util.*
  */
 abstract class MultipleArtistManager {
     protected abstract suspend fun getAlbumsOfMultipleArtist(artist: Artist): List<Album>
-    protected abstract suspend fun createNewArtist(artistName: String): Artist
     protected abstract suspend fun getArtistFromName(artistName: String): Artist?
+
+    /**
+     * Retrieve all artists from a list of names, from a storage.
+     */
     protected abstract suspend fun getAllArtistFromName(artistsNames: List<String>): List<Artist>
 
     /**
@@ -24,14 +27,19 @@ abstract class MultipleArtistManager {
     protected abstract suspend fun getMusicIdsOfArtist(artist: Artist): List<UUID>
     protected abstract suspend fun getAlbumIdsOfArtist(artist: Artist): List<UUID>
 
-    protected abstract suspend fun linkSongsToArtist(
-        musicIds: List<UUID>,
-        artistId: UUID,
+    protected abstract suspend fun unlinkMusicsOfArtist(
+        artist: Artist,
+    )
+
+    protected abstract suspend fun linkMusicToArtists(
+        musicId: UUID,
+        artists: List<Artist>,
     )
 
     protected abstract suspend fun linkAlbumToArtist(
-        albumId: UUID,
-        artistId: UUID,
+        album: Album,
+        artist: Artist,
+        multipleArtistName: String,
     )
 
     /**
@@ -51,6 +59,8 @@ abstract class MultipleArtistManager {
         toAlbum: Album,
         multipleArtistName: String,
     )
+
+    protected abstract fun createNewArtist(artistName: String): Artist
 
     /**
      * For a song with multiple artists, its albums should be linked to the first artist.
@@ -75,6 +85,7 @@ abstract class MultipleArtistManager {
                 albumName = album.albumName,
                 firstArtistName = firstArtistName,
             )
+
             if (albumWithSingleArtist != null) {
                 moveSongsOfAlbum(
                     fromAlbum = album,
@@ -82,12 +93,14 @@ abstract class MultipleArtistManager {
                     multipleArtistName = multipleArtist.artistName,
                 )
             } else {
+                val artist = (existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
+                    firstArtistName
+                ) ?: createNewArtist(artistName = firstArtistName))
+
                 linkAlbumToArtist(
-                    albumId = album.albumId,
-                    artistId = (
-                            existingArtists.find { it.artistName == firstArtistName } ?: getArtistFromName(
-                                firstArtistName
-                            ) ?: createNewArtist(firstArtistName)).artistId,
+                    album = album,
+                    artist = artist,
+                    multipleArtistName = multipleArtist.artistName,
                 )
             }
         }
@@ -102,15 +115,16 @@ abstract class MultipleArtistManager {
         allArtistsName: List<String>,
         existingArtists: List<Artist>,
     ) {
-        allArtistsName.forEach { name ->
-            val artistId: UUID =
-                (existingArtists.firstOrNull { it.artistName == name }
-                    ?: getArtistFromName(name)
-                    ?: createNewArtist(artistName = name)).artistId
+        val separatedArtists: List<Artist> = allArtistsName.map { name ->
+            existingArtists.firstOrNull { it.artistName == name }
+                ?: getArtistFromName(name)
+                ?: createNewArtist(artistName = name)
+        }
 
-            linkSongsToArtist(
-                musicIds = musicIdsOfInitialArtist,
-                artistId = artistId,
+        musicIdsOfInitialArtist.forEach { musicId ->
+            linkMusicToArtists(
+                musicId = musicId,
+                artists = separatedArtists,
             )
         }
     }
@@ -134,6 +148,8 @@ abstract class MultipleArtistManager {
 
             val allArtistsName: List<String> = multipleArtist.getMultipleArtists()
 
+            unlinkMusicsOfArtist(artist = multipleArtist)
+
             divideArtistAndLinkSongsToThem(
                 musicIdsOfInitialArtist = musicIdsOfMultipleArtist,
                 allArtistsName = allArtistsName,
@@ -153,7 +169,4 @@ abstract class MultipleArtistManager {
 
     fun doMusicsHaveMultipleArtists(musics: List<Music>): Boolean =
         musics.any { it.hasPotentialMultipleArtists() }
-
-    fun doArtistsHaveMultipleArtists(artists: List<Artist>): Boolean =
-        artists.any { it.isComposedOfMultipleArtists() }
 }

@@ -17,5 +17,3 @@ local.properties
 database.db
 
 .kotlin
-
-desktopApp/*.log

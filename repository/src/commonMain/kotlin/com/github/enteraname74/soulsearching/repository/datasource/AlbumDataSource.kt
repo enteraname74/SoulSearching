@@ -1,10 +1,9 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Album
-import com.github.enteraname74.domain.model.AlbumWithArtist
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import java.util.*
 
 /**
  * Data source of an Album.
@@ -53,9 +52,4 @@ interface AlbumDataSource {
      * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
      */
     fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
-
-    /**
-     * Retrieves all AlbumsWithArtist.
-     */
-    fun getAllAlbumsWithArtist(): Flow<List<AlbumWithArtist>>
 }

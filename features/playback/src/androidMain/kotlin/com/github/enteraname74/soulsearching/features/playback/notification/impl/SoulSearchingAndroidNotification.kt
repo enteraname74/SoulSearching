@@ -63,7 +63,7 @@ abstract class SoulSearchingAndroidNotification(
         this
             .setSmallIcon(R.drawable.app_logo)
             .setContentTitle(state.music.name)
-            .setContentText(state.music.artist)
+            .setContentText(state.music.artistsNames)
             .setContentIntent(activityPendingIntent)
             .setDeleteIntent(deleteNotificationIntent)
             .setSilent(true)

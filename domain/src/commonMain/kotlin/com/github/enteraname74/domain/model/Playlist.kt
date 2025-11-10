@@ -9,10 +9,10 @@ import java.util.UUID
  */
 data class Playlist(
     val playlistId: UUID = UUID.randomUUID(),
-    var name: String = "",
-    var cover: Cover? = null,
+    val name: String = "",
+    val cover: Cover? = null,
     val isFavorite: Boolean = false,
-    var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val nbPlayed: Int = 0,
+    val isInQuickAccess: Boolean = false
 )

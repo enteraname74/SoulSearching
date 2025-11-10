@@ -4,7 +4,6 @@ import com.github.enteraname74.domain.ext.coverFromSongs
 import com.github.enteraname74.domain.model.MonthMusics
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
-import com.github.enteraname74.domain.usecase.music.GetAllMusicUseCase
 import com.github.enteraname74.domain.usecase.music.GetAllMusicsSortedUseCase
 import com.github.enteraname74.domain.util.DateUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi

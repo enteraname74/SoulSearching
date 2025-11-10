@@ -11,8 +11,8 @@ class GetAllAlbumWithMusicsSortedUseCase(
     private val albumRepository: AlbumRepository,
 ) {
     operator fun invoke(
-        sortDirection: Int,
-        sortType: Int,
+        sortDirection: SortDirection,
+        sortType: SortType,
     ): Flow<List<AlbumWithMusics>> =
         albumRepository.getAllAlbumWithMusics().map { list ->
             list.sorted(
@@ -21,19 +21,19 @@ class GetAllAlbumWithMusicsSortedUseCase(
             )
         }
 
-    private fun List<AlbumWithMusics>.sortedByType(sortType: Int): List<AlbumWithMusics> =
+    private fun List<AlbumWithMusics>.sortedByType(sortType: SortType): List<AlbumWithMusics> =
         when (sortType) {
             SortType.NB_PLAYED -> this.sortedBy { it.album.nbPlayed }
             SortType.ADDED_DATE -> this.sortedBy{ it.album.addedDate }
-            else -> this.sortedBy { it.album.albumName }
+            SortType.NAME -> this.sortedBy { it.album.albumName }
         }
 
     private fun List<AlbumWithMusics>.sorted(
-        sortDirection: Int,
-        sortType: Int,
+        sortDirection: SortDirection,
+        sortType: SortType,
     ): List<AlbumWithMusics> =
         when(sortDirection) {
             SortDirection.DESC -> this.sortedByType(sortType).asReversed()
-            else -> this.sortedByType(sortType)
+            SortDirection.ASC -> this.sortedByType(sortType)
         }
 }

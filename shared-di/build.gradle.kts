@@ -28,14 +28,8 @@ kotlin {
             implementation(project(":playback"))
             implementation(project(":filemanager"))
             implementation(project(":musicmanager"))
-        }
-        androidMain.dependencies {
-            implementation(project(":local-android"))
-        }
-        val desktopMain by getting {
-            dependencies {
-                implementation(project(":local-desktop"))
-            }
+            implementation(project(":local"))
+
         }
     }
 }

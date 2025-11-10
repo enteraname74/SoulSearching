@@ -32,11 +32,6 @@ class MusicRepositoryImpl(
         musicId = musicId
     )
 
-    override suspend fun getFromPath(musicPath: String): Music? =
-        musicDataSource.getFromPath(
-            musicPath = musicPath,
-        )
-
     override fun getAll(): Flow<List<Music>> =
         musicDataSource.getAll()
 
@@ -44,4 +39,8 @@ class MusicRepositoryImpl(
         musicDataSource.getAllMusicFromAlbum(
             albumId = albumId
         )
+
+    override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
+        musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)
+    }
 }

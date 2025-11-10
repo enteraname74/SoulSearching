@@ -26,6 +26,8 @@ interface ArtistDataSource {
 
     suspend fun getArtistNamesContainingSearch(search: String): List<String>
 
+    suspend fun toggleCoverFolderMode(isActivated: Boolean)
+
     /**
      * Retrieves an Artist from its id.
      */

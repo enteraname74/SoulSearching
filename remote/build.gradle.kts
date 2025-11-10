@@ -33,12 +33,8 @@ kotlin {
         }
         val desktopMain by getting {
             dependencies {
-                implementation(libs.ktor.serialization.gson)
+                implementation(libs.ktor.serialization.kotlinx.json)
             }
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }

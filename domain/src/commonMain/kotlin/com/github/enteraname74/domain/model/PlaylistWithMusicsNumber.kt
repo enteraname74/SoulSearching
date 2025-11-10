@@ -7,5 +7,5 @@ data class PlaylistWithMusicsNumber(
     val playlist: Playlist,
     val musicsNumber : Int,
     val cover: Cover?,
-    override var isInQuickAccess: Boolean = playlist.isInQuickAccess,
+    override val isInQuickAccess: Boolean = playlist.isInQuickAccess,
 ): QuickAccessible

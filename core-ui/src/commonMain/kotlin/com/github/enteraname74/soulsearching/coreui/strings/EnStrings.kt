@@ -24,13 +24,16 @@ object EnStrings : Strings {
     override val lyrics = "Lyrics"
     override val activateRemoteLyricsFetchTitle = "Enable remote lyrics fetch"
     override val activateRemoteLyricsFetchText by lazy {
-        "The app needs your permission to search for the lyrics of the current music via an external service ($lyricsProviderName)."
+        "The app needs your permission to search for the lyrics of the current song via an external service ($lyricsProviderName) " +
+                "when no lyrics is found in the song's file."
     }
     override val activateRemoteLyricsFetchHint by lazy {
-        "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName)."
+        "The application will use a song's name, album and artist to find lyrics from a remote source ($lyricsProviderName) " +
+                "when no lyrics where found in the song's file."
     }
     override val noLyricsFound = "No lyrics found for this song"
-    override val lyricsProvider = "Lyrics proposed by LrcLib"
+    override val localLyricsProvider = "Lyrics from the metadata of the music file"
+    override val remoteLyricsProvider = "Lyrics proposed by LrcLib"
 
     override val completeApplicationTitle = "Complete music application"
     override val completeApplicationText = "Listen to all your songs, albums, artists, playlists."
@@ -61,10 +64,9 @@ object EnStrings : Strings {
     override val byMonths = "By months"
     override val quickAccess = "Quick Access"
 
-    override val sortByDateAdded = "Sort by date added"
-    override val sortByMostListened = "Sort by most listened"
-    override val sortByName = "Sort by name"
-    override val sortByAscOrDesc = "ascending or descending Sort"
+    override val sortByAddedDate = "Added date"
+    override val sortByMostListened = "Most listened"
+    override val sortByName = "Alphabetical"
 
     override val removeFromQuickAccess = "Remove from quick access"
     override val removeFromPlaylist = "Remove from playlist"
@@ -82,7 +84,9 @@ object EnStrings : Strings {
     override val createPlaylistDialogTitle = "Create a new playlist"
     override val playlistName = "Playlist's name"
     override val musicName = "Song's name"
+    override val musicAlbumPosition = "Position in album"
     override val albumName = "Album's name"
+    override val albumArtistName = "Album's artist name"
     override val artistName = "Artist's name"
     override val playlistCover = "Playlist's cover"
     override val albumCover = "Album's cover"
@@ -136,6 +140,7 @@ object EnStrings : Strings {
     override val deleteSelectedMusics = "Delete selected songs"
 
     override val playNext = "Play next"
+    override val addToQueue = "Add to queue"
 
     override val personalizedThemeTitle = "Personalized theme"
     override val personalizedThemeText = "Apply dynamic theme on:"
@@ -155,6 +160,30 @@ object EnStrings : Strings {
 
     override val splitMultipleArtistsTitle = "Split artists"
     override val splitMultipleArtistsText = "Select and split artists composed of multiple artists"
+
+    override val artistCoverMethodTitle: String = "Artists covers source"
+    override val artistCoverMethodText: String = "Select artists cover retrieve mode"
+    override val activateArtistCoverMethod: String = "Enable fetch by path"
+    override val artistCoverMethodDynamicNameTitle: String = "Artist name processing"
+
+    override val coverFolderRetrieverPathSelectionTitle: String = "Select parent folder"
+    override val coverFolderRetrieverPathSelectionNoPathSelected: String = "No folder selected"
+
+    override val coverFolderRetrieverFileExtension: String = "Image extension"
+
+    override val coverFolderRetrieverFolderTitle: String = "Dynamic folder"
+    override val coverFolderRetrieverFolderText: String = "The folder name corresponds to the artist's name"
+    override val coverFolderRetrieverFolderIncomplete: String = "The required data is incomplete"
+    override val coverFolderRetrieverRulesWhiteSpace: String = "Replace whitespaces"
+    override val coverFolderRetrieverRulesReplacement: String = "Replacement"
+    override val coverFolderRetrieverRulesDynamicNameUppercase: String = "Uppercase"
+    override val coverFolderRetrieverRulesDynamicNameNoTreatment: String = "No treatment"
+    override val coverFolderRetrieverRulesDynamicNameLowercase: String = "Lowercase"
+
+    override val coverFolderRetrieverFileTitle: String = "Dynamic cover file"
+    override val coverFolderRetrieverFileText: String = "The image file name corresponds to the artist's name"
+
+    override val coverFolderRetrieverDynamicFileTitle: String = "Cover file name"
 
     override val activateGithubReleaseFetchTitle = "Enable checking for new versions from GitHub"
     override val activateGithubReleaseFetchHint = "You will receive an in-app notification when a new version of the app is available on GitHub."
@@ -242,6 +271,7 @@ object EnStrings : Strings {
     override val multipleSelection = "Multiple selection"
 
     override val fieldCannotBeEmpty = "Field cannot be empty"
+    override val fieldMustBeANumber = "Field must be a number"
 
     override val playerVolume = "Player volume"
 
@@ -295,4 +325,7 @@ object EnStrings : Strings {
 
     override fun newReleaseAvailableText(releaseName: String): String =
         "A new release is available, ready to be downloaded: $releaseName"
+
+    override fun artistCoverMethodExampleTitle(artist: String): String =
+        "Path example with artist $artist:"
 }

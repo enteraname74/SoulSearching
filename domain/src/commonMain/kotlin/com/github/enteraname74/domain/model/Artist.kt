@@ -14,16 +14,19 @@ import java.util.*
 data class Artist(
     @Serializable(with = UUIDSerializer::class)
     val artistId: UUID = UUID.randomUUID(),
-    var artistName: String = "",
-    var cover: Cover? = null,
+    val artistName: String,
+    val cover: Cover? = null,
     @Serializable(with = LocalDateTimeSerializer::class)
-    var addedDate: LocalDateTime = LocalDateTime.now(),
-    var nbPlayed: Int = 0,
-    var isInQuickAccess: Boolean = false
+    val addedDate: LocalDateTime = LocalDateTime.now(),
+    val nbPlayed: Int = 0,
+    val isInQuickAccess: Boolean = false
 ) {
     fun isComposedOfMultipleArtists(): Boolean =
         artistName.split(",", "&").size > 1
 
     fun getMultipleArtists(): List<String> =
         artistName.split(",", "&").map { it.trim() }
+
+    override fun toString(): String =
+        "Artist(name: $artistName, id: $artistId)"
 }

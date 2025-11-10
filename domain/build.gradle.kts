@@ -19,6 +19,11 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
             }
         }
+
+        commonTest.dependencies {
+            implementation(project(":serialization"))
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

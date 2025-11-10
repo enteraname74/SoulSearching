@@ -25,8 +25,6 @@ interface MusicRepository {
      */
     fun getFromId(musicId: UUID): Flow<Music?>
 
-    suspend fun getFromPath(musicPath: String): Music?
-
     /**
      * Retrieves a flow of all Music.
      */
@@ -36,4 +34,6 @@ interface MusicRepository {
      * Retrieves all musics of an Album.
      */
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
+
+    suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
 }

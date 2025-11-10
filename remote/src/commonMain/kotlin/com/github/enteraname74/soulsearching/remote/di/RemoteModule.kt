@@ -2,7 +2,7 @@ package com.github.enteraname74.soulsearching.remote.di
 
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.LyricsRemoteDataSourceImpl
 import com.github.enteraname74.soulsearching.remote.datasourceimpl.ReleaseDataSourceImpl
-import com.github.enteraname74.soulsearching.repository.datasource.LyricsRemoteDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.lyrics.LyricsRemoteDataSource
 import com.github.enteraname74.soulsearching.repository.datasource.ReleaseDataSource
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
