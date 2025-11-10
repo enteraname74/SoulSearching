@@ -6,6 +6,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpAndroidManager
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
+import com.github.enteraname74.soulsearching.util.FileOperation
 import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
@@ -23,5 +24,8 @@ actual val platformModule = module {
                 )
             )
         )
+    }
+    factory {
+        FileOperation(androidApplication())
     }
 }

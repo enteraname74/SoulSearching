@@ -53,6 +53,28 @@ data class CoverFolderRetriever(
         }
     }
 
+    fun buildSafeDynamicCoverPath(
+        dynamicName: String,
+        safeBuilder: (parent: String, child: String) -> String?
+    ): String? {
+        if (!isValid()) return null
+
+        val finalDynamicName = dynamicName
+            .applyLowerCaseRule()
+            .applyWhiteSpaceRule()
+
+        return when(mode) {
+            DynamicMode.Folder -> safeBuilder(folderModePath.orEmpty(), "$finalDynamicName/$coverFileName")
+            DynamicMode.File -> {
+                if (fileExtension == null) {
+                    return null
+                }
+                val cleanedExtension = fileExtension.replace(".", "")
+                safeBuilder(fileModePath.orEmpty(), "$finalDynamicName.$cleanedExtension")
+            }
+        }
+    }
+
     enum class DynamicMode {
         Folder,
         File;

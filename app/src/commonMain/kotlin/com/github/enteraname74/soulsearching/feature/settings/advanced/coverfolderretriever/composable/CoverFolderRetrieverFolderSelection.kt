@@ -15,19 +15,29 @@ import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.button.SoulIconButton
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
+import com.github.enteraname74.soulsearching.di.injectElement
+import com.github.enteraname74.soulsearching.util.FileOperation
+import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.absolutePath
+import io.github.vinceglb.filekit.bookmarkData
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
+import io.github.vinceglb.filekit.fromBookmarkData
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun CoverFolderRetrieverFolderSelection(
     onSelectedFolder: (newFolderPath: String) -> Unit,
     currentFolder: String?,
+    fileOperation: FileOperation = injectElement(),
 ) {
     val folderPicker = rememberDirectoryPickerLauncher(
         title = strings.coverFolderRetrieverPathSelectionTitle,
     ) { platformFile ->
-        platformFile?.absolutePath()?.let {
-            onSelectedFolder(it)
+        runBlocking {
+            platformFile?.let {
+                val path = PlatformFile.fromBookmarkData(platformFile.bookmarkData()).absolutePath()
+                onSelectedFolder(path)
+            }
         }
     }
 

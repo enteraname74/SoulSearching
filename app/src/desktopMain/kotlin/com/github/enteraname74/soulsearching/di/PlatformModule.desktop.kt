@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopU
 import com.github.enteraname74.soulsearching.coreui.feedbackmanager.FeedbackPopUpManager
 import com.github.enteraname74.soulsearching.domain.model.settings.SoulSearchingSettingsImpl
 import com.github.enteraname74.soulsearching.features.playback.player.SoulSearchingDesktopPlayerImpl
+import com.github.enteraname74.soulsearching.util.FileOperation
 import com.russhwolf.settings.PreferencesSettings
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -27,5 +28,8 @@ actual val platformModule: Module = module {
                 delegate = Preferences.userRoot().node("com/github/enteraname74/soulsearching$suffix")
             )
         )
+    }
+    factory {
+        FileOperation()
     }
 }

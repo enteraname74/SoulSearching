@@ -78,6 +78,8 @@ kotlin {
                 implementation(libs.bundles.androidx)
 
                 implementation(libs.bundles.accompanist)
+                // https://mvnrepository.com/artifact/androidx.documentfile/documentfile
+                implementation(libs.androidx.documentfile)
             }
         }
     }

@@ -36,6 +36,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
 import com.github.enteraname74.soulsearching.features.serialization.SerializationUtils
+import com.github.enteraname74.soulsearching.util.FileOperation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -189,8 +190,9 @@ private fun CoverFolderImage(
     onSuccess: ((bitmap: ImageBitmap?) -> Unit)? = null,
     builderOptions: ImageRequest.Builder.() -> ImageRequest.Builder,
     settings: SoulSearchingSettings = injectElement(),
+    fileOperation: FileOperation = injectElement()
 ) {
-    var path: String? by rememberSaveable {
+    var inputStream: String? by rememberSaveable {
         mutableStateOf(null)
     }
     var shouldUseFallback: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -202,16 +204,17 @@ private fun CoverFolderImage(
         }
 
         job = CoroutineScope(Dispatchers.IO).launch {
-            val fetchedPath: String? = settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER)
+            inputStream = settings.get(SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER)
                 .takeIf { it.isNotBlank() }?.let {
                     runCatching {
                         val coverFolderRetriever: CoverFolderRetriever = SerializationUtils.deserialize(it)
-                        coverFolderRetriever.buildDynamicCoverPath(dynamicName = devicePathSpec.dynamicElementName)
+                        coverFolderRetriever.buildSafeDynamicCoverPath(
+                            dynamicName = devicePathSpec.dynamicElementName,
+                            safeBuilder = fileOperation::buildSafePath,
+                        )
                     }.getOrNull()
                 }
-            shouldUseFallback = fetchedPath == null
-            println("IMAGE DEBUG -- Fetched path: $fetchedPath")
-            path = fetchedPath
+            shouldUseFallback = inputStream == null
         }
     }
 
@@ -226,16 +229,18 @@ private fun CoverFolderImage(
                 builderOptions = builderOptions,
             )
         }
-        path == null -> {
+
+        inputStream == null -> {
             TemplateImage(
                 modifier = modifier,
                 contentScale = contentScale,
                 tint = tint,
             )
         }
+
         else -> {
             DataImage(
-                data = path,
+                data = inputStream,
                 modifier = modifier,
                 contentScale = contentScale,
                 builderOptions = builderOptions,
@@ -341,7 +346,6 @@ fun DataImage(
 
     AsyncImage(
         onSuccess = { result ->
-            println("IMAGE DEBUG -- SUCCESS: $result")
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
                 onSuccess?.let {
@@ -350,7 +354,6 @@ fun DataImage(
             }
         },
         onError = {
-            println("IMAGE DEBUG -- ERROR: $it")
             onSuccess?.let {
                 previousSavedImage = null
                 it(null)
