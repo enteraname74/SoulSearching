@@ -91,8 +91,8 @@ android {
         applicationId = "com.github.enteraname74.soulsearching"
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = 32
-        versionName = "0.12.2"
+        versionCode = 33
+        versionName = "0.13.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -228,7 +228,7 @@ tasks {
         archiveFileName = "soulsearching-$version-linux.tar.gz"
     }
 
-    task("packageFlatpakReleaseDistributable") {
+    register("packageFlatpakReleaseDistributable") {
         group = "compose desktop"
         description = "Builds a flatpak and stores it in the build/flatpak folder."
         dependsOn("packageTarReleaseDistributable")

@@ -1,21 +1,10 @@
 package com.github.enteraname74.localdb
 
-import androidx.room.ConstructedBy
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.RoomDatabaseConstructor
-import androidx.room.TypeConverters
-import androidx.sqlite.SQLiteDriver
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import androidx.room.*
 import com.github.enteraname74.domain.util.LocalDatabaseVersion
 import com.github.enteraname74.localdb.converters.Converters
 import com.github.enteraname74.localdb.dao.*
-import com.github.enteraname74.localdb.migration.EndMigrationCallback
-import com.github.enteraname74.localdb.migration.Migration16To17
-import com.github.enteraname74.localdb.migration.Migration17To18
-import com.github.enteraname74.localdb.migration.Migration18To19
 import com.github.enteraname74.localdb.model.*
-import kotlinx.coroutines.CoroutineDispatcher
 
 
 @Database(
@@ -45,7 +34,6 @@ abstract class AppDatabase : RoomDatabase() {
 }
 
 // The Room compiler generates the `actual` implementations.
-@Suppress("KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }

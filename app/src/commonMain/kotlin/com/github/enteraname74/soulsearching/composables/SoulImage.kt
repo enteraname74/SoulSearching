@@ -210,6 +210,7 @@ private fun CoverFolderImage(
                     }.getOrNull()
                 }
             shouldUseFallback = fetchedPath == null
+            println("IMAGE DEBUG -- Fetched path: $fetchedPath")
             path = fetchedPath
         }
     }
@@ -340,6 +341,7 @@ fun DataImage(
 
     AsyncImage(
         onSuccess = { result ->
+            println("IMAGE DEBUG -- SUCCESS: $result")
             if (result.result.image != previousSavedImage) {
                 previousSavedImage = result.result.image
                 onSuccess?.let {
@@ -348,6 +350,7 @@ fun DataImage(
             }
         },
         onError = {
+            println("IMAGE DEBUG -- ERROR: $it")
             onSuccess?.let {
                 previousSavedImage = null
                 it(null)

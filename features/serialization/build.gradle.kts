@@ -26,7 +26,7 @@ kotlin {
         }
         val desktopMain by getting {
             dependencies {
-                implementation(libs.gson)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

@@ -3,6 +3,7 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.SwipeableState
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

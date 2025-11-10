@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.utils
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.palette.graphics.Palette
+import com.kmpalette.palette.graphics.Palette
 import com.kmpalette.PaletteState
 import com.kmpalette.loader.ImageBitmapLoader
 import kotlinx.coroutines.runBlocking

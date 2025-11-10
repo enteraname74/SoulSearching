@@ -1,13 +1,16 @@
 package com.github.enteraname74.soulsearching.features.serialization
 
-import com.google.gson.Gson
+import kotlinx.serialization.json.Json
 
 actual object SerializationUtils {
-    val gson = Gson()
-    
+    val JSON = Json {
+        encodeDefaults = true
+        ignoreUnknownKeys = true
+    }
+
     actual inline fun <reified T> deserialize(json: String): T =
-        gson.fromJson(json, T::class.java)
+        JSON.decodeFromString(json)
 
     actual inline fun <reified T> serialize(obj: T): String =
-        gson.toJson(obj)
+        JSON.encodeToString(obj)
 }

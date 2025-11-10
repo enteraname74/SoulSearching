@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.palette.graphics.Palette
+import com.kmpalette.palette.graphics.Palette
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.theme.color.*

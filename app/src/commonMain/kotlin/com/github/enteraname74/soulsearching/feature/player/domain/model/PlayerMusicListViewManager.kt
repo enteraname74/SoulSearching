@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.player.domain.model
 
 import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.SwipeableState
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
