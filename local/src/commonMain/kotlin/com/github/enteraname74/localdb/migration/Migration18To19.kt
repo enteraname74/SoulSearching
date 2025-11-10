@@ -210,12 +210,10 @@ class Migration18To19(
     }
 
     override fun migrate(connection: SQLiteConnection) {
-        println("Doint migration")
         artistMigration(connection)
         musicArtistMigration(connection)
         musicPlaylistMigration(connection)
         albumMigration(connection)
-        println("just before music")
 
         musicMigration(connection)
     }
