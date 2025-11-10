@@ -21,13 +21,8 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
+        commonMain.dependencies {
             implementation(libs.kotlinx.serialization.json)
-        }
-        val desktopMain by getting {
-            dependencies {
-                implementation(libs.kotlinx.serialization.json)
-            }
         }
     }
 }
