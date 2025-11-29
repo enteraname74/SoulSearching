@@ -2,6 +2,8 @@ package com.github.enteraname74.domain.usecase.music
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -32,8 +34,14 @@ class CommonMusicUseCase(
     fun getAll(): Flow<List<Music>> =
         musicRepository.getAll()
 
-    fun getAllPaged(): Flow<PagingData<Music>> =
-        musicRepository.getAllPaged()
+    fun getAllPaged(
+        sortDirection: SortDirection,
+        sortType: SortType,
+    ): Flow<PagingData<Music>> =
+        musicRepository.getAllPaged(
+            sortDirection = sortDirection,
+            sortType = sortType,
+        )
 
     fun getFromId(musicId: UUID): Flow<Music?> =
         musicRepository.getFromId(musicId = musicId)

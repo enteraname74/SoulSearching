@@ -40,7 +40,27 @@ interface MusicDao {
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
-    fun getAllPaged(): PagingSource<Int, RoomCompleteMusic>
+    fun getAllPagedByNameAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name DESC")
+    fun getAllPagedByNameDesc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate ASC")
+    fun getAllPagedByDateAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY addedDate DESC")
+    fun getAllPagedByDateDesc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed ASC")
+    fun getAllPagedByNbPlayedAsc(): PagingSource<Int, RoomCompleteMusic>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY nbPlayed DESC")
+    fun getAllPagedByNbPlayedDesc(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")

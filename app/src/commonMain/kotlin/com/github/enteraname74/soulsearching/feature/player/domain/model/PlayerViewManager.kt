@@ -27,6 +27,9 @@ class PlayerViewManager {
 
     private val _previousState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
     val previousState = _previousState.asStateFlow()
+    
+    private val _nextState: MutableStateFlow<BottomSheetStates?> = MutableStateFlow(null)
+    val nextState = _nextState.asStateFlow()
 
     val isAnimationRunning: Boolean
         get() = playerDraggableState.isAnimationRunning
@@ -38,15 +41,16 @@ class PlayerViewManager {
     val offset: Float
         get() = playerDraggableState.offset.value
 
-    suspend fun animateTo(newState: BottomSheetStates) {
-        playerDraggableState.animateTo(
-            targetValue = newState,
-            anim = tween(UiConstants.AnimationDuration.normal),
-        )
+    fun animateTo(newState: BottomSheetStates) {
+        _nextState.value = newState
     }
 
     fun consumePreviousState() {
         _previousState.value = null
+    }
+    
+    fun consumeNextState() {
+        _nextState.value = null
     }
 
     fun updateState(newState: BottomSheetStates) {

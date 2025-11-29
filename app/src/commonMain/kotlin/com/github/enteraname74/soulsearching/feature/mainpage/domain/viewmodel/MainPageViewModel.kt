@@ -148,19 +148,15 @@ class MainPageViewModel(
             initialValue = emptyList()
         )
 
-    // TODO: Reuse once sorting is done from DB.
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    private val _musics = musicSortingInformation.flatMapLatest { sortingInformation ->
-//        getAllMusicsSortedUseCase(
-//            sortDirection = sortingInformation.direction,
-//            sortType = sortingInformation.type,
-//        )
-//    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
-        .getAllPaged()
-        .cachedIn(viewModelScope)
+    private val _musics: Flow<PagingData<Music>> = musicSortingInformation.flatMapLatest {
+        commonMusicUseCase
+            .getAllPaged(
+                sortDirection = it.direction,
+                sortType = it.type,
+            )
+            .cachedIn(viewModelScope)
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _artists = artistSortingInformation.flatMapLatest { sortingInformation ->

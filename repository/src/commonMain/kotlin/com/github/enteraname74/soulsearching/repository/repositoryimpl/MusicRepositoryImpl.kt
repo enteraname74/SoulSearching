@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.repository.MusicRepository
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
@@ -36,8 +38,14 @@ class MusicRepositoryImpl(
     override fun getAll(): Flow<List<Music>> =
         musicDataSource.getAll()
 
-    override fun getAllPaged(): Flow<PagingData<Music>> =
-        musicDataSource.getAllPaged()
+    override fun getAllPaged(
+        sortDirection: SortDirection,
+        sortType: SortType,
+    ): Flow<PagingData<Music>> =
+        musicDataSource.getAllPaged(
+            sortDirection = sortDirection,
+            sortType = sortType,
+        )
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         musicDataSource.getAllMusicFromAlbum(

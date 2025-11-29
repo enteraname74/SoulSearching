@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.repository.datasource
 
 import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -33,7 +35,10 @@ interface MusicDataSource {
      */
     fun getAll(): Flow<List<Music>>
 
-    fun getAllPaged(): Flow<PagingData<Music>>
+    fun getAllPaged(
+        sortDirection: SortDirection,
+        sortType: SortType,
+    ): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.

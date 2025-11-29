@@ -31,7 +31,10 @@ interface MusicRepository {
      */
     fun getAll(): Flow<List<Music>>
 
-    fun getAllPaged(): Flow<PagingData<Music>>
+    fun getAllPaged(
+        sortDirection: SortDirection,
+        sortType: SortType,
+    ): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.
