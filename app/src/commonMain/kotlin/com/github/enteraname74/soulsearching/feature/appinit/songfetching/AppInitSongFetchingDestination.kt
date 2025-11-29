@@ -14,7 +14,6 @@ data object AppInitSongFetchingDestination : NavKey {
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
     ) {
-        // TODO: Add slide animation
         entryProviderScope.entry<AppInitSongFetchingDestination> {
             AppInitSongFetchingRoute(
                 onNavigationState = {

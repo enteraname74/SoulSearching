@@ -4,6 +4,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.MultipleArtistsChoiceNavigationState
+import com.github.enteraname74.soulsearching.navigation.NavigationAnimations
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -18,7 +19,9 @@ data class MultipleArtistsChoiceDestination(
             entryProviderScope: EntryProviderScope<NavKey>,
             navigator: Navigator,
         ) {
-            entryProviderScope.entry<MultipleArtistsChoiceDestination> { key ->
+            entryProviderScope.entry<MultipleArtistsChoiceDestination>(
+                metadata = NavigationAnimations.horizontal,
+            ) { key ->
                 MultipleArtistsChoiceRoute(
                     viewModel = koinViewModel {
                         parametersOf(key)

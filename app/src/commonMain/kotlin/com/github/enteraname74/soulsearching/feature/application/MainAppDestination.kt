@@ -90,16 +90,10 @@ private fun MainAppRoute(
             navigator = navigator,
             playerViewModel = playerViewModel,
         ) {
-            Box(
-                modifier = Modifier
-                    // TODO: remove padding ?
-                    .padding(paddingValues = WindowInsets.navigationBars.asPaddingValues())
-            ) {
-                MainAppNavigationHandler(
-                    navigator = navigator,
-                    backStack = backStack,
-                )
-            }
+            MainAppNavigationHandler(
+                navigator = navigator,
+                backStack = backStack,
+            )
         }
     }
 }
