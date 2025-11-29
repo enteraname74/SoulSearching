@@ -1,5 +1,6 @@
 package com.github.enteraname74.localdb.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -36,6 +37,10 @@ interface MusicDao {
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
+
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
+    fun getAllPaged(): PagingSource<Int, RoomCompleteMusic>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE musicId IN (:ids)")

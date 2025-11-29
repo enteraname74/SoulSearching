@@ -1,5 +1,6 @@
 package com.github.enteraname74.domain.repository
 
+import androidx.paging.PagingData
 import com.github.enteraname74.domain.model.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -29,6 +30,8 @@ interface MusicRepository {
      * Retrieves a flow of all Music.
      */
     fun getAll(): Flow<List<Music>>
+
+    fun getAllPaged(): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.

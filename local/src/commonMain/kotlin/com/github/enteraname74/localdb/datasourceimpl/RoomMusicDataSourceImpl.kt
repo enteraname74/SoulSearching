@@ -1,5 +1,9 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.AppDatabase
@@ -7,6 +11,7 @@ import com.github.enteraname74.localdb.ext.toRoomMusicArtists
 import com.github.enteraname74.localdb.model.toRoomAlbum
 import com.github.enteraname74.localdb.model.toRoomArtist
 import com.github.enteraname74.localdb.model.toRoomMusic
+import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -107,6 +112,17 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMusic() }
         }
     }
+
+    override fun getAllPaged(): Flow<PagingData<Music>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = PagingUtils.PAGE_SIZE,
+                enablePlaceholders = false,
+            ),
+            pagingSourceFactory = { appDatabase.musicDao.getAllPaged() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toMusic() }
+        }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =
         appDatabase.musicDao.getAllMusicFromAlbum(

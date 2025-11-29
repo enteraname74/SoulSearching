@@ -2,7 +2,6 @@ package com.github.enteraname74.soulsearching.feature.mainpage.presentation.comp
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.runtime.Composable
@@ -10,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
@@ -25,6 +25,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMu
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,6 +44,8 @@ fun AllMusicsComposable(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val currentPlayedSong: Music? by playbackManager.currentSong.collectAsState()
+
+    val musics = musicState.musics.collectAsLazyPagingItems()
 
     LazyColumnCompat(
         modifier = Modifier
@@ -75,12 +78,13 @@ fun AllMusicsComposable(
                     SoulIconButton(
                         icon = Icons.Rounded.Shuffle,
                         contentDescription = strings.shuffleButton,
-                        enabled = musicState.musics.isNotEmpty(),
+                        enabled = musics.itemCount != 0,
                         onClick = {
-                            if (musicState.musics.isNotEmpty()) {
+                            if (musics.itemCount != 0) {
                                 coroutineScope.launch {
-                                    playbackManager.playShuffle(musicList = musicState.musics)
-                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                                    // TODO: make it work with all musics by launching it from the view model.
+//                                    playbackManager.playShuffle(musicList = musicState.musics)
+//                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                                 }
                             }
                         }
@@ -88,37 +92,40 @@ fun AllMusicsComposable(
                 }
             )
         }
-        if (musicState.musics.isNotEmpty()) {
+        if (musics.itemCount != 0) {
             items(
-                key = { it.musicId },
+                key = { musics[it]?.musicId ?: UUID.randomUUID() },
                 contentType = { ALL_MUSICS_CONTENT_TYPE },
-                items = musicState.musics
-            ) { elt ->
-                MusicItemComposable(
-                    modifier = Modifier
-                        .animateItem(),
-                    music = elt,
-                    onClick = {
-                        coroutineScope.launch {
-                            playbackManager.setCurrentPlaylistAndMusic(
-                                music = elt,
-                                musicList = musicState.musics,
-                                isMainPlaylist = true,
-                                playlistId = null,
-                            )
-                            playerViewManager.animateTo(BottomSheetStates.EXPANDED)
-                        }
-                    },
-                    onMoreClicked = {
-                        coroutineScope.launch {
-                            onMoreClick(elt)
-                        }
-                    },
-                    onLongClick = { onLongClick(elt) },
-                    isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
-                    isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
-                    isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                )
+                count = musics.itemCount,
+            ) { index ->
+                musics[index]?.let { elt ->
+                    MusicItemComposable(
+                        modifier = Modifier
+                            .animateItem(),
+                        music = elt,
+                        onClick = {
+                            coroutineScope.launch {
+                                // TODO: Make it work again from viewModel
+//                                playbackManager.setCurrentPlaylistAndMusic(
+//                                    music = elt,
+//                                    musicList = musicState.musics,
+//                                    isMainPlaylist = true,
+//                                    playlistId = null,
+//                                )
+                                playerViewManager.animateTo(BottomSheetStates.EXPANDED)
+                            }
+                        },
+                        onMoreClicked = {
+                            coroutineScope.launch {
+                                onMoreClick(elt)
+                            }
+                        },
+                        onLongClick = { onLongClick(elt) },
+                        isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
+                        isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
+                        isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    )
+                }
             }
             item(
                 key = ALL_MUSICS_SPACER_KEY,

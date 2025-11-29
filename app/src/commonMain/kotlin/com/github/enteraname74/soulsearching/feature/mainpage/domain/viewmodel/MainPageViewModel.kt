@@ -7,6 +7,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -146,13 +148,19 @@ class MainPageViewModel(
             initialValue = emptyList()
         )
 
+    // TODO: Reuse once sorting is done from DB.
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    private val _musics = musicSortingInformation.flatMapLatest { sortingInformation ->
+//        getAllMusicsSortedUseCase(
+//            sortDirection = sortingInformation.direction,
+//            sortType = sortingInformation.type,
+//        )
+//    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _musics = musicSortingInformation.flatMapLatest { sortingInformation ->
-        getAllMusicsSortedUseCase(
-            sortDirection = sortingInformation.direction,
-            sortType = sortingInformation.type,
-        )
-    }
+    private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _artists = artistSortingInformation.flatMapLatest { sortingInformation ->
@@ -190,12 +198,11 @@ class MainPageViewModel(
     )
 
     val allMusicsState: StateFlow<AllMusicsState> = combine(
-        _musics,
         musicSortingInformation,
         getAllMonthMusicUseCase(),
-    ) { musics, sortingInformation, allMonthMusics ->
+    ) { sortingInformation, allMonthMusics ->
         AllMusicsState(
-            musics = musics,
+            musics = _musics,
             sortType = sortingInformation.type,
             sortDirection = sortingInformation.direction,
             monthMusics = allMonthMusics,
@@ -203,7 +210,7 @@ class MainPageViewModel(
     }.stateIn(
         scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
-        initialValue = AllMusicsState()
+        initialValue = AllMusicsState(),
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -342,12 +349,10 @@ class MainPageViewModel(
         )
 
         CoroutineScope(Dispatchers.IO).launch {
-            allMusicsState.collect { musicState ->
-                if (musicState.musics.isNotEmpty() && !cleanMusicsLaunched) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        cleanMusicsLaunched = true
-                        checkAndDeleteMusicIfNotExist()
-                    }
+            if (!cleanMusicsLaunched) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    cleanMusicsLaunched = true
+                    checkAndDeleteMusicIfNotExist()
                 }
             }
         }
@@ -409,7 +414,9 @@ class MainPageViewModel(
     fun checkAndDeleteMusicIfNotExist() {
         CoroutineScope(Dispatchers.IO).launch {
             var deleteCount = 0
-            for (music in allMusicsState.value.musics) {
+            // TODO: Improve check?
+            val all = commonMusicUseCase.getAll().first()
+            for (music in all) {
                 if (!File(music.path).exists()) {
                     playbackManager.removeSongsFromPlayedPlaylist(
                         musicIds = listOf(music.musicId)

@@ -165,12 +165,14 @@ fun SearchAll(
         }
 
         // TODO: Normalise with accents.
-        val foundedMusics = musicState.musics.filter {
-            it.name.lowercase().contains(searchText.lowercase())
-                    || it.artistsNames.lowercase().contains(searchText.lowercase())
-                    || it.album.albumName.lowercase().contains(searchText.lowercase())
-
-        }
+        // TODO: Move search in viewModel.
+        val foundedMusics = emptyList<Music>()
+//        musicState.musics.filter {
+//            it.name.lowercase().contains(searchText.lowercase())
+//                    || it.artistsNames.lowercase().contains(searchText.lowercase())
+//                    || it.album.albumName.lowercase().contains(searchText.lowercase())
+//
+//        }
 
         if (foundedMusics.isNotEmpty()) {
             stickyHeader(

@@ -34,7 +34,10 @@ kotlin {
                 implementation(project(":filemanager"))
                 implementation(libs.koin.core)
 
+                implementation(libs.androidx.paging.common)
+
                 implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.room.paging)
                 implementation(libs.androidx.sqlite.bundled)
             }
         }

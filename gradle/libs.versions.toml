@@ -1,11 +1,11 @@
 [versions]
 accompanist = "0.36.0"
 accompanist-system-ui-controller = "0.36.0"
-agp = "8.12.3"
+agp = "8.13.1"
 android-target-sdk = "36"
 android-compile-sdk = "36"
 android-min-sdk = "26"
-androidx-activity-compose = "1.11.0"
+androidx-activity-compose = "1.12.0"
 androidx-core = "1.17.0"
 androidx-lifecycle = "2.10.0"
 annotation = "1.9.1"
@@ -26,17 +26,17 @@ kmpalette = "3.1.0"
 kotlin = "2.2.21"
 kotlinx-serialization = "1.9.0"
 koin = "4.1.1"
-ksp = "2.3.2"
+ksp = "2.3.3"
 ktor = "2.3.12"
 media = "1.7.1"
 multiplatform-settings = "1.3.0"
 nav3-core = "1.0.0"
 reorderable = "3.0.0"
 room = "2.8.4"
-sqlite = "2.6.1"
+sqlite = "2.6.2"
 vlcj = "4.11.0"
-voyager = "1.1.0-beta03"
 media3-exoplayer = "1.8.0"
+paging = "3.4.0-alpha04"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
@@ -54,6 +54,8 @@ androidx-media = { module = "androidx.media:media", version.ref = "media" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3-core" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3-core" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -100,6 +102,7 @@ vlcj = { module  = "uk.co.caprica:vlcj", version.ref = "vlcj"}
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3-exoplayer" }
 
