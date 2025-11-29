@@ -7,52 +7,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import com.github.enteraname74.soulsearching.app.generated.resources.Res
+import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_main
+import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorThemeType
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.ColorThemeCard
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.composable.PersonalizedColorThemeCard
-import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionScreen
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
-import com.github.enteraname74.soulsearching.app.generated.resources.Res
-import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_main
-import com.github.enteraname74.soulsearching.app.generated.resources.dynamic_player
 import com.github.enteraname74.soulsearching.theme.ColorThemeSettings
+import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Represent the view of the color theme screen.
- */
-class SettingsColorThemeScreen: Screen, SettingPage {
+@Composable
+fun SettingsColorThemeRoute(
+    navigateBack: () -> Unit,
+    toThemeSelection: () -> Unit,
+) {
+    val viewModel: SettingsColorThemeViewModel = koinViewModel()
+    val state: SettingsColorThemeState by viewModel.colorThemeSettingsState.collectAsState()
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel: SettingsColorThemeViewModel = koinScreenModel()
-        val state: SettingsColorThemeState by screenModel.colorThemeSettingsState.collectAsState()
-
-        SettingsColorThemeScreenView(
-            state = state,
-            updateColorTheme = screenModel::updateColorTheme,
-            navigateBack = {
-                navigator.pop()
-            },
-            navigateToThemeSelection = {
-                navigator.safePush(
-                    SettingsThemeSelectionScreen()
-                )
-            },
-            togglePersonalizedDynamicPlayerTheme = screenModel::togglePersonalizedDynamicPlayerTheme,
-            togglePersonalizedDynamicPlaylistTheme = screenModel::togglePersonalizedDynamicPlaylistTheme,
-            togglePersonalizedDynamicOtherViewsTheme = screenModel::togglePersonalizedDynamicOtherViewsTheme,
-        )
-    }
+    SettingsColorThemeScreenView(
+        state = state,
+        updateColorTheme = viewModel::updateColorTheme,
+        navigateBack = navigateBack,
+        navigateToThemeSelection = toThemeSelection,
+        togglePersonalizedDynamicPlayerTheme = viewModel::togglePersonalizedDynamicPlayerTheme,
+        togglePersonalizedDynamicPlaylistTheme = viewModel::togglePersonalizedDynamicPlaylistTheme,
+        togglePersonalizedDynamicOtherViewsTheme = viewModel::togglePersonalizedDynamicOtherViewsTheme,
+    )
 }
 
 @Composable

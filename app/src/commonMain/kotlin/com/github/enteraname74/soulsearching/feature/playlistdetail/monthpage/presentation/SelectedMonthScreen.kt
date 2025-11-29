@@ -1,79 +1,42 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation
 
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthViewModel
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
-/**
- * Represent the view of the selected month screen.
- */
-data class SelectedMonthScreen(
-    private val month: String
-): PlaylistDetailScreen(month) {
-    @Composable
-    override fun Content() {
-        val screenModel = koinScreenModel<SelectedMonthViewModel>()
+@Composable
+fun SelectedMonthRoute(
+    viewModel: SelectedMonthViewModel,
+    onNavigationState: (SelectedMonthNavigationState) -> Unit,
+) {
+    val bottomSheetState by viewModel.bottomSheetState.collectAsState()
+    val dialogState by viewModel.dialogState.collectAsState()
+    val navigationState by viewModel.navigationState.collectAsState()
+    val addToPlaylistBottomSheet by viewModel.addToPlaylistBottomSheet.collectAsState()
 
-        val navigator = LocalNavigator.currentOrThrow
-        val colorThemeManager = injectElement<ColorThemeManager>()
+    bottomSheetState?.BottomSheet()
+    dialogState?.Dialog()
+    addToPlaylistBottomSheet?.BottomSheet()
 
-        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
-        val dialogState by screenModel.dialogState.collectAsState()
-        val navigationState by screenModel.navigationState.collectAsState()
-        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
-
-        bottomSheetState?.BottomSheet()
-        dialogState?.Dialog()
-        addToPlaylistBottomSheet?.BottomSheet()
-
-        LaunchedEffect(navigationState) {
-            when(navigationState) {
-                SelectedMonthNavigationState.Idle -> { /*no-op*/  }
-                is SelectedMonthNavigationState.ToModifyMusic -> {
-                    val selectedMusic = (navigationState as SelectedMonthNavigationState.ToModifyMusic).music
-                    navigator.safePush(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
-                    screenModel.consumeNavigation()
-                }
-            }
-        }
-
-        var isMonthFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        if (!isMonthFetched) {
-            screenModel.init(month = month)
-            isMonthFetched = true
-        }
-
-        SelectedMonthScreenView(
-            selectedMonthViewModel = screenModel,
-            navigateBack = {
-                if (!navigator.isPreviousScreenAPlaylistDetails()) {
-                    colorThemeManager.removePlaylistTheme()
-                }
-                navigator.pop()
-            },
-        )
+    LaunchedEffect(navigationState) {
+        onNavigationState(navigationState)
+        viewModel.consumeNavigation()
     }
+
+    SelectedMonthScreenView(
+        selectedMonthViewModel = viewModel,
+        navigateBack = viewModel::navigateBack,
+    )
 }
 
 @Composable

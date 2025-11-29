@@ -4,8 +4,14 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import com.github.enteraname74.domain.repository.MusicRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import java.util.*
 
 class GetCorrespondingAlbumUseCase(
@@ -41,10 +47,13 @@ class GetCorrespondingAlbumUseCase(
             }
     }
 
-    suspend fun withMusics(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun withMusics(
         musicId: UUID
-    ): AlbumWithMusics? {
-        val albumId: UUID = musicRepository.getFromId(musicId).firstOrNull()?.album?.albumId ?: return null
-        return albumRepository.getAlbumWithMusics(albumId = albumId).first()
-    }
+    ): Flow<AlbumWithMusics?> =
+        musicRepository.getFromId(musicId).flatMapLatest { music ->
+            music?.let {
+                albumRepository.getAlbumWithMusics(albumId = music.album.albumId)
+            } ?: flowOf()
+        }
 }

@@ -11,80 +11,74 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.coreui.screen.SoulScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.ListenedElement
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsState
 import com.github.enteraname74.soulsearching.feature.settings.statistics.domain.SettingsStatisticsViewModel
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable.SettingsStatisticsSection
 import com.github.enteraname74.soulsearching.feature.settings.statistics.presentation.composable.SettingsStatisticsSectionIndicatorList
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
-class SettingsStatisticsScreen: Screen, SettingPage {
+@Composable
+fun SettingsStatisticsRoute(
+    viewModel: SettingsStatisticsViewModel = koinViewModel(),
+    navigateBack: () -> Unit,
+) {
+    val state: SettingsStatisticsState by viewModel.state.collectAsState()
 
-    @Composable
-    override fun Content() {
-        val screenModel: SettingsStatisticsViewModel = koinScreenModel()
-        val state: SettingsStatisticsState by screenModel.state.collectAsState()
-        val navigator = LocalNavigator.currentOrThrow
+    DataScreen(
+        state = state,
+        navigateBack = navigateBack,
+    )
+}
 
-        DataScreen(
-            state = state,
-            navigateBack = { navigator.pop() }
-        )
-    }
+@Composable
+private fun DataScreen(
+    state: SettingsStatisticsState,
+    navigateBack: () -> Unit,
+) {
+    val coroutineScope = rememberCoroutineScope()
 
-    @Composable
-    private fun DataScreen(
-        state: SettingsStatisticsState,
-        navigateBack: () -> Unit,
-    ) {
-        val coroutineScope = rememberCoroutineScope()
-
-        SoulScreen {
-            Column {
-                SoulTopBar(
-                    title = strings.statisticsTitle,
-                    leftAction = TopBarNavigationAction(
-                        onClick = navigateBack,
-                    )
+    SoulScreen {
+        Column {
+            SoulTopBar(
+                title = strings.statisticsTitle,
+                leftAction = TopBarNavigationAction(
+                    onClick = navigateBack,
                 )
-                val pagerState = rememberPagerState(
-                    pageCount = { TOTAL_PAGES }
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SettingsStatisticsSectionIndicatorList(
-                        selectedIndex = pagerState.currentPage,
-                        listSize = pagerState.pageCount,
-                        onClick = { selectedIndex ->
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(
-                                    page = selectedIndex,
-                                )
-                            }
+            )
+            val pagerState = rememberPagerState(
+                pageCount = { TOTAL_PAGES }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                SettingsStatisticsSectionIndicatorList(
+                    selectedIndex = pagerState.currentPage,
+                    listSize = pagerState.pageCount,
+                    onClick = { selectedIndex ->
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(
+                                page = selectedIndex,
+                            )
                         }
-                    )
-                }
-                HorizontalPager(
-                    modifier = Modifier,
-                    state = pagerState,
-                ) {index ->
-                    SettingsStatisticsSection(
-                        title = state.title(index),
-                        elements = state.elements(index),
-                    )
-                }
+                    }
+                )
+            }
+            HorizontalPager(
+                modifier = Modifier,
+                state = pagerState,
+            ) {index ->
+                SettingsStatisticsSection(
+                    title = title(index),
+                    elements = state.elements(index),
+                )
             }
         }
     }
@@ -101,7 +95,7 @@ private fun SettingsStatisticsState.elements(index: Int): List<ListenedElement> 
     }
 
 @Composable
-private fun SettingsStatisticsState.title(index: Int): String =
+private fun title(index: Int): String =
     when(index) {
         0 -> strings.mostPlayedSongs
         1 -> strings.mostPlayedArtists

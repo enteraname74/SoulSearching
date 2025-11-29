@@ -3,8 +3,8 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation.p
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -18,7 +18,7 @@ import kotlin.math.max
 
 class SettingsPlayerPersonalisationViewModel(
     private val settings: SoulSearchingSettings,
-) : ScreenModel {
+) : ViewModel() {
     val state: StateFlow<SettingsPlayerPersonalisationState> = combine(
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED),
         settings.getFlowOn(SoulSearchingSettingsKeys.Player.IS_REWIND_ENABLED),
@@ -32,7 +32,7 @@ class SettingsPlayerPersonalisationViewModel(
             playerVolume = playerVolume,
         )
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SettingsPlayerPersonalisationState(
             isPlayerSwipeEnabled = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,

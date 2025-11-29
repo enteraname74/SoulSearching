@@ -2,11 +2,11 @@
 
 package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
-import androidx.compose.material.ExperimentalMaterialApi
 //noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -73,7 +73,7 @@ class MainPageViewModel(
     getAllMonthMusicUseCase: GetAllMonthMusicUseCase,
     getAllMusicFolderListUseCase: GetAllMusicFolderListUseCase,
     getAllQuickAccessElementsUseCase: GetAllQuickAccessElementsUseCase,
-) : ScreenModel, KoinComponent,
+) : ViewModel(), KoinComponent,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     ArtistBottomSheetDelegate by artistBottomSheetDelegateImpl,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
@@ -102,14 +102,14 @@ class MainPageViewModel(
 
     val shouldShowNewVersionPin: StateFlow<Boolean> = shouldInformOfNewReleaseUseCase()
         .stateIn(
-            scope = screenModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(Dispatchers.IO),
             started = SharingStarted.Eagerly,
             initialValue = false
         )
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList())
         )
@@ -122,7 +122,7 @@ class MainPageViewModel(
         val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
         buildTabs(elements = elementEnums)
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = emptyList()
     )
@@ -130,7 +130,7 @@ class MainPageViewModel(
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
     ).stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = true,
     )
@@ -141,7 +141,7 @@ class MainPageViewModel(
 
     private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
-            scope = screenModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(Dispatchers.IO),
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
@@ -184,7 +184,7 @@ class MainPageViewModel(
             allQuickAccess = elements,
         )
     }.stateIn(
-        screenModelScope,
+        viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         AllQuickAccessState()
     )
@@ -201,7 +201,7 @@ class MainPageViewModel(
             monthMusics = allMonthMusics,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = AllMusicsState()
     )
@@ -213,7 +213,7 @@ class MainPageViewModel(
                 allMusicFolders = allMusicFolders.sortedBy { it.name },
             )
         }.stateIn(
-            scope = screenModelScope.plus(Dispatchers.IO),
+            scope = viewModelScope.plus(Dispatchers.IO),
             started = SharingStarted.Eagerly,
             initialValue = AllMusicFoldersState()
         )
@@ -228,7 +228,7 @@ class MainPageViewModel(
             sortDirection = sortingInformation.direction,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = AllArtistsState()
     )
@@ -243,7 +243,7 @@ class MainPageViewModel(
             sortDirection = sortingInformation.direction,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = AllAlbumsState()
     )
@@ -258,7 +258,7 @@ class MainPageViewModel(
             sortDirection = sortingInformation.direction,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = AllPlaylistsState()
     )
@@ -435,7 +435,7 @@ class MainPageViewModel(
             onDismiss = { _dialogState.value = null },
             onConfirm = { playlistName ->
                 if (playlistName.isNotBlank()) {
-                    screenModelScope.launch {
+                    viewModelScope.launch {
                         commonPlaylistUseCase.upsert(
                             playlist = Playlist(name = playlistName)
                         )
@@ -613,8 +613,54 @@ class MainPageViewModel(
         }
     }
 
+    fun toPlaylist(playlistId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToPlaylist(
+            playlistId = playlistId,
+        )
+    }
+
+    fun toAlbum(albumId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToAlbum(
+            albumId = albumId,
+        )
+    }
+
+    fun toArtist(artistId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToArtist(
+            artistId = artistId,
+        )
+    }
+
+    fun toSettings() {
+        _navigationState.value = MainPageNavigationState.ToSettings
+    }
+
+    fun toFolder(folderPath: String) {
+        _navigationState.value = MainPageNavigationState.ToFolder(
+            folderPath = folderPath,
+        )
+    }
+
+    fun toModifyAlbum(albumId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToModifyAlbum(
+            albumId = albumId,
+        )
+    }
+
+    fun toModifyArtist(artistId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToModifyArtist(
+            artistId = artistId,
+        )
+    }
+
+    fun toModifyPlaylist(playlistId: UUID) {
+        _navigationState.value = MainPageNavigationState.ToModifyPlaylist(
+            playlistId = playlistId,
+        )
+    }
+
     fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             when (multiSelectionManagerImpl.selectionMode) {
                 SelectionMode.Music -> handleMultiSelectionMusicBottomSheet()
                 SelectionMode.Playlist -> handleMultiSelectionPlaylistBottomSheet()

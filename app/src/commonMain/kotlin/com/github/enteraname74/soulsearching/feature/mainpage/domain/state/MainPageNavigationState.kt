@@ -15,6 +15,7 @@ sealed interface MainPageNavigationState {
     data class ToArtist(val artistId: UUID): MainPageNavigationState
     data class ToMonth(val month: String): MainPageNavigationState
     data class ToFolder(val folderPath: String): MainPageNavigationState
+    data object ToSettings: MainPageNavigationState
 
     data class ToAdvancedSettings(
         val focusedElement: SettingsAdvancedScreenFocusedElement?,

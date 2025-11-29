@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 class SettingsColorThemeViewModel(
     colorThemeManager: ColorThemeManager,
     private val settings: SoulSearchingSettings,
-) : ScreenModel {
+) : ViewModel() {
     val colorThemeSettingsState: StateFlow<SettingsColorThemeState> = combine(
         colorThemeManager.currentColorThemeSettings,
         settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.DYNAMIC_PLAYER_THEME),
@@ -27,7 +27,7 @@ class SettingsColorThemeViewModel(
             hasPersonalizedDynamicOtherTheme = dynamicOthers,
         )
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SettingsColorThemeState(),
     )

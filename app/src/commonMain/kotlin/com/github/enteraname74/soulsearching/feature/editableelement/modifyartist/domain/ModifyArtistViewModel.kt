@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.domain.state.ModifyArtistState
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistDestination
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateArtistUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -31,8 +32,9 @@ class ModifyArtistViewModel(
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
     private val coverRetriever: CoverRetriever,
-) : ScreenModel {
-    private val artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    destination: ModifyArtistDestination,
+) : ViewModel() {
+    private val artistId: UUID = destination.selectedArtistId
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyArtistNavigationState> = MutableStateFlow(
         ModifyArtistNavigationState.Idle,
@@ -43,13 +45,8 @@ class ModifyArtistViewModel(
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val initialArtist: Flow<ArtistWithMusics?> = artistId.flatMapLatest { id ->
-        if (id == null) {
-            flowOf(null)
-        } else {
-            commonArtistUseCase.getArtistWithMusic(artistId = id)
-        }
-    }
+    private val initialArtist: Flow<ArtistWithMusics?> = commonArtistUseCase
+        .getArtistWithMusic(artistId = artistId)
 
     val state: StateFlow<ModifyArtistState> = combine(
         initialArtist,
@@ -66,7 +63,7 @@ class ModifyArtistViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyArtistState.Loading,
     )
@@ -82,7 +79,7 @@ class ModifyArtistViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyArtistFormState.NoData,
     )
@@ -95,24 +92,21 @@ class ModifyArtistViewModel(
                     covers = state.initialArtist.musics.map { it.cover }
                 )
             )
+
             ModifyArtistState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
-
-    fun init(artistId: UUID) {
-        this.artistId.value = artistId
-    }
 
     fun consumeNavigation() {
         _navigationState.value = ModifyArtistNavigationState.Idle
     }
 
     private fun setNewCover(imageFile: PlatformFile) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
     }
@@ -174,5 +168,9 @@ class ModifyArtistViewModel(
 
             _navigationState.value = ModifyArtistNavigationState.Back
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = ModifyArtistNavigationState.Back
     }
 }

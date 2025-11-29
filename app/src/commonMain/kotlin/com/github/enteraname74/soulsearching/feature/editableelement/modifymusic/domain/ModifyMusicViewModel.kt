@@ -1,9 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.enteraname74.domain.model.AlbumWithMusics
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
@@ -20,6 +19,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.domain.state.ModifyMusicState
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.MusicCoversBottomSheet
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CachedCoverManager
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverFileManager
@@ -36,18 +36,19 @@ import java.util.*
 
 class ModifyMusicViewModel(
     private val playbackManager: PlaybackManager,
-    private val commonMusicUseCase: CommonMusicUseCase,
+    commonMusicUseCase: CommonMusicUseCase,
     private val commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
-    private val getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
+    getCorrespondingAlbumUseCase: GetCorrespondingAlbumUseCase,
     private val commonCoverUseCase: CommonCoverUseCase,
     private val updateMusicUseCase: UpdateMusicUseCase,
     private val loadingManager: LoadingManager,
     private val cachedCoverManager: CachedCoverManager,
     private val coverFileManager: CoverFileManager,
     private val coverRetriever: CoverRetriever,
-) : ScreenModel {
-    private val musicId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    destination: ModifyMusicDestination,
+) : ViewModel() {
+    private val musicId: UUID = destination.selectedMusicId
     private val deletedArtistIds: MutableStateFlow<List<UUID>> = MutableStateFlow(emptyList())
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyMusicNavigationState> = MutableStateFlow(
@@ -59,13 +60,7 @@ class ModifyMusicViewModel(
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val initialMusic: Flow<Music?> = musicId.flatMapLatest { id ->
-        if (id == null) {
-            flowOf(null)
-        } else {
-            commonMusicUseCase.getFromId(musicId = id)
-        }
-    }
+    private val initialMusic: Flow<Music?> = commonMusicUseCase.getFromId(musicId = musicId)
 
     val state: StateFlow<ModifyMusicState> = combine(
         initialMusic,
@@ -82,7 +77,7 @@ class ModifyMusicViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyMusicState.Loading,
     )
@@ -116,15 +111,14 @@ class ModifyMusicViewModel(
             }
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyMusicFormState.NoData,
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val coversOfAlbum: StateFlow<CoverListState> = musicId.mapLatest { id ->
-        if (id != null) {
-            val album: AlbumWithMusics? = getCorrespondingAlbumUseCase.withMusics(musicId = id)
+    private val coversOfAlbum: StateFlow<CoverListState> =
+        getCorrespondingAlbumUseCase.withMusics(musicId = musicId).mapLatest { album ->
             CoverListState.Data(
                 covers = album?.let {
                     coverRetriever.getAllUniqueCover(
@@ -132,29 +126,18 @@ class ModifyMusicViewModel(
                     )
                 } ?: emptyList()
             )
-        } else {
-            CoverListState.Loading
-        }
-    }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = CoverListState.Loading,
-    )
-
-    /**
-     * Define the selected music in the state from a given id.
-     * It will also fetch the cover of the music.
-     */
-    fun init(musicId: UUID) {
-        this.musicId.value = musicId
-    }
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = CoverListState.Loading,
+        )
 
     fun consumeNavigation() {
         _navigationState.value = ModifyMusicNavigationState.Idle
     }
 
     private fun setNewCoverFromStorage(imageFile: PlatformFile) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
     }
@@ -258,5 +241,9 @@ class ModifyMusicViewModel(
 
             _navigationState.value = ModifyMusicNavigationState.Back
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = ModifyMusicNavigationState.Back
     }
 }

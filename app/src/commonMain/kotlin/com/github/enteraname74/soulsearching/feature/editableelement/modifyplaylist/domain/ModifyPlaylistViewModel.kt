@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
@@ -15,6 +15,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.domain.state.ModifyPlaylistState
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
@@ -27,9 +28,9 @@ class ModifyPlaylistViewModel(
     private val commonCoverUseCase: CommonCoverUseCase,
     private val loadingManager: LoadingManager,
     private val coverRetriever: CoverRetriever,
-) : ScreenModel {
-
-    private val playlistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    destination: ModifyPlaylistDestination,
+) : ViewModel() {
+    private val playlistId: UUID = destination.selectedPlaylistId
     private val _navigationState: MutableStateFlow<ModifyPlaylistNavigationState> = MutableStateFlow(
         ModifyPlaylistNavigationState.Idle
     )
@@ -39,13 +40,8 @@ class ModifyPlaylistViewModel(
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val initialPlaylist: Flow<PlaylistWithMusics?> = playlistId.flatMapLatest { id ->
-        if (id == null) {
-            flowOf(null)
-        } else {
-            commonPlaylistUseCase.getWithMusics(playlistId = id)
-        }
-    }
+    private val initialPlaylist: Flow<PlaylistWithMusics?> = commonPlaylistUseCase
+        .getWithMusics(playlistId = playlistId)
 
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
 
@@ -64,7 +60,7 @@ class ModifyPlaylistViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyPlaylistState.Loading,
     )
@@ -77,7 +73,7 @@ class ModifyPlaylistViewModel(
             ModifyPlaylistFormState.Data(initialPlaylist = playlistWithMusics.playlist)
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyPlaylistFormState.NoData,
     )
@@ -94,7 +90,7 @@ class ModifyPlaylistViewModel(
             ModifyPlaylistState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
@@ -158,12 +154,12 @@ class ModifyPlaylistViewModel(
     }
 
     private fun setNewCover(imageFile: PlatformFile) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
     }
 
-    fun init(playlistId: UUID) {
-        this.playlistId.value = playlistId
+    fun navigateBack() {
+        _navigationState.value = ModifyPlaylistNavigationState.Back
     }
 }

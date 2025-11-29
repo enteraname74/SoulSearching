@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
+import androidx.lifecycle.ViewModel
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingTheme
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 class SettingsThemeSelectionViewModel(
     private val settings: SoulSearchingSettings,
     colorThemeManager: ColorThemeManager,
-) : ScreenModel {
+) : ViewModel() {
 
     val state: StateFlow<DefaultThemeSettings> = colorThemeManager.currentDefaultThemeSettings
 

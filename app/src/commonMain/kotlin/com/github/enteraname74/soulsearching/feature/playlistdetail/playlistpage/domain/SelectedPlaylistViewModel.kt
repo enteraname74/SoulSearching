@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -19,6 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
+import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -30,7 +31,8 @@ class SelectedPlaylistViewModel(
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-) : ScreenModel,
+    destination: SelectedPlaylistDestination,
+) : ViewModel(),
     PlaylistDetailListener,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
@@ -38,41 +40,31 @@ class SelectedPlaylistViewModel(
 
     val multiSelectionState = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
 
-    private val _playlistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    private val playlistId: UUID = destination.selectedPlaylistId
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = _playlistId.flatMapLatest { playlistId ->
-        if (playlistId == null) {
-            flowOf(SelectedPlaylistState.Loading)
-        } else {
-            commonPlaylistUseCase.getWithMusics(playlistId).mapLatest { playlistWithMusics ->
-                when {
-                    playlistWithMusics == null -> SelectedPlaylistState.Error
-                    else -> SelectedPlaylistState.Data(
-                        playlistDetail = playlistWithMusics.toPlaylistDetail(),
-                        selectedPlaylist = playlistWithMusics.playlist,
-                    )
-                }
-            }.stateIn(
-                scope = screenModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = SelectedPlaylistState.Loading
+    var state = commonPlaylistUseCase.getWithMusics(playlistId).mapLatest { playlistWithMusics ->
+        when {
+            playlistWithMusics == null -> SelectedPlaylistState.Error
+            else -> SelectedPlaylistState.Data(
+                playlistDetail = playlistWithMusics.toPlaylistDetail(),
+                selectedPlaylist = playlistWithMusics.playlist,
             )
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SelectedPlaylistState.Loading
     )
@@ -95,7 +87,7 @@ class SelectedPlaylistViewModel(
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it) },
+            onModifyMusic = { _navigationState.value = SelectedPlaylistNavigationState.ToModifyMusic(it.musicId) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.PLAYLIST,
@@ -116,25 +108,18 @@ class SelectedPlaylistViewModel(
         _navigationState.value = SelectedPlaylistNavigationState.Idle
     }
 
-    /**
-     * Set the selected playlist.
-     */
-    fun init(playlistId: UUID) {
-        _playlistId.value = playlistId
-    }
-
     override val onEdit: (() -> Unit) = {
-        _navigationState.value = SelectedPlaylistNavigationState.ToEdit
+        _navigationState.value = SelectedPlaylistNavigationState.ToEdit(playlistId = playlistId)
     }
 
     override fun onUpdateNbPlayed(musicId: UUID) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
 
     override fun onUpdateNbPlayed() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val playlistId: UUID = (state.value as? SelectedPlaylistState.Data)?.playlistDetail?.id
                 ?: return@launch
             commonPlaylistUseCase.incrementNbPlayed(playlistId = playlistId)
@@ -150,7 +135,7 @@ class SelectedPlaylistViewModel(
     }
 
     private fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             val currentPlaylist = (state.value as SelectedPlaylistState.Data).selectedPlaylist
             if (selectedIds.size == 1) {
@@ -165,5 +150,9 @@ class SelectedPlaylistViewModel(
                 )
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = SelectedPlaylistNavigationState.Back
     }
 }
