@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
@@ -33,6 +35,7 @@ class SelectedAlbumViewModel(
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    settings: SoulSearchingSettings,
     destination: SelectedAlbumDestination,
 ) :
     ViewModel(),
@@ -59,11 +62,17 @@ class SelectedAlbumViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var state: StateFlow<SelectedAlbumState> =
-        commonAlbumUseCase.getAlbumWithMusics(albumId = albumId).mapLatest { albumWithMusics ->
+
+        combine(
+            commonAlbumUseCase.getAlbumWithMusics(albumId = albumId),
+            settings.getFlowOn(SoulSearchingSettingsKeys.Ui.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
+        ) { albumWithMusics, showTrackPosition ->
             when {
                 albumWithMusics == null -> SelectedAlbumState.Error
                 else -> SelectedAlbumState.Data(
-                    playlistDetail = albumWithMusics.toPlaylistDetail(),
+                    playlistDetail = albumWithMusics.toPlaylistDetail(
+                        shouldShowTrackPosition = showTrackPosition,
+                    ),
                     artistId = albumWithMusics.album.artist.artistId,
                 )
             }

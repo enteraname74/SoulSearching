@@ -178,7 +178,7 @@ private fun Content(
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                         isSelected = multiSelectionState.selectedIds.contains(music.musicId),
                         isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
-                        leadingSpec = playlistDetail.type.toMusicItemLeadingSpec(musicPosition = pos)
+                        leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                     )
                 }
                 item {

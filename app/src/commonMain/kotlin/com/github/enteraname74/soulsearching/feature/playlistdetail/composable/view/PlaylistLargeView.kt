@@ -148,7 +148,7 @@ fun PlaylistLargeView(
                 padding = PaddingValues(
                     vertical = UiConstants.Spacing.medium,
                 ),
-                leadingSpec = playlistDetail.type.toMusicItemLeadingSpec(musicPosition = pos)
+                leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
             )
         }
         item { SoulPlayerSpacer() }
