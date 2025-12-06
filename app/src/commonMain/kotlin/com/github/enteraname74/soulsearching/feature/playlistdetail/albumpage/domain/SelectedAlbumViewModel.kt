@@ -65,7 +65,7 @@ class SelectedAlbumViewModel(
 
         combine(
             commonAlbumUseCase.getAlbumWithMusics(albumId = albumId),
-            settings.getFlowOn(SoulSearchingSettingsKeys.Ui.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
+            settings.getFlowOn(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW),
         ) { albumWithMusics, showTrackPosition ->
             when {
                 albumWithMusics == null -> SelectedAlbumState.Error
