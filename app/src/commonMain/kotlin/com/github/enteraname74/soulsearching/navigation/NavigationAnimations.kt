@@ -37,4 +37,6 @@ object NavigationAnimations {
         NavDisplay.transitionSpec { horizontalTransitionSpec() } +
                 NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
                 NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
+
+    val predictivePop: ContentTransform = fadeIn() togetherWith fadeOut()
 }
