@@ -2,6 +2,8 @@ package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.soulsearching.composables.MusicItemComposable
+import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.*
 
@@ -19,7 +21,16 @@ enum class PlaylistDetailType {
     Album,
     Artist,
     Month,
-    Folder,
+    Folder;
+
+    fun toMusicItemLeadingSpec(
+        musicPosition: Int,
+    ): MusicItemLeadingSpec =
+        if (this == Album) {
+            MusicItemLeadingSpec.Position(pos = musicPosition)
+        } else {
+            MusicItemLeadingSpec.Cover
+        }
 }
 
 fun PlaylistWithMusics.toPlaylistDetail(): PlaylistDetail =

@@ -104,7 +104,7 @@ object UiConstants {
         )
         val bodyTitle: TextStyle = TextStyle(
             fontSize = 18.sp,
-            fontWeight = FontWeight(500),
+            fontWeight = FontWeight.Medium,
         )
         val bodyMediumTitle: TextStyle = TextStyle(
             fontSize = 18.sp,

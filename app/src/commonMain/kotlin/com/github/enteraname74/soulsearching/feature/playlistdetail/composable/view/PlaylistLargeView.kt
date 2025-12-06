@@ -116,10 +116,12 @@ fun PlaylistLargeView(
             PlaylistPartTitle(title = strings.elementDetailTitles)
         }
         items(
-            items = playlistDetail.musics,
-            key = { it.musicId },
+            count = playlistDetail.musics.size,
+            key = { playlistDetail.musics[it].musicId },
             contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
-        ) { elt ->
+        ) { pos ->
+
+            val elt = playlistDetail.musics[pos]
             MusicItemComposable(
                 modifier = Modifier
                     .animateItem()
@@ -145,7 +147,8 @@ fun PlaylistLargeView(
                 isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 padding = PaddingValues(
                     vertical = UiConstants.Spacing.medium,
-                )
+                ),
+                leadingSpec = playlistDetail.type.toMusicItemLeadingSpec(musicPosition = pos)
             )
         }
         item { SoulPlayerSpacer() }

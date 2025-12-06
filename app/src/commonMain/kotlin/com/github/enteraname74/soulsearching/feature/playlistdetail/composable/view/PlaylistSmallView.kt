@@ -173,10 +173,11 @@ fun PlaylistSmallView(
                 optionalContent()
             }
             items(
-                items = playlistDetail.musics,
-                key = { it.musicId },
+                count = playlistDetail.musics.size,
+                key = { playlistDetail.musics[it].musicId },
                 contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
-            ) { elt ->
+            ) { pos ->
+                val elt = playlistDetail.musics[pos]
                 MusicItemComposable(
                     music = elt,
                     onClick = { music ->
@@ -197,6 +198,7 @@ fun PlaylistSmallView(
                     isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
                     isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
                     isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    leadingSpec = playlistDetail.type.toMusicItemLeadingSpec(musicPosition = pos)
                 )
             }
             item { SoulPlayerSpacer() }
