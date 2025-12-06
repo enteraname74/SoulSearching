@@ -15,6 +15,8 @@ interface Strings {
     val appLogo: String
     val cannotRetrieveSongs: String
     val noElements: String
+    val emptyQuickAccess: String
+    val quickAccessExplanation: String
     val backButton: String
     val headerBarRightButton: String
     val image: String

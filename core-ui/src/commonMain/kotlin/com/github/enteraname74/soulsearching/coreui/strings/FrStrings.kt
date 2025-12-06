@@ -6,6 +6,9 @@ package com.github.enteraname74.soulsearching.coreui.strings
 object FrStrings : Strings {
     override val appLogo = "Logo de l'application"
     override val noElements = "Aucun élément"
+    override val emptyQuickAccess = "Aucun élément dans les accès rapides"
+    override val quickAccessExplanation = "Ajoutez une musique, un album, un artiste ou une playlist dans les accès rapides " +
+            "pour les voir apparaître ici."
     override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"

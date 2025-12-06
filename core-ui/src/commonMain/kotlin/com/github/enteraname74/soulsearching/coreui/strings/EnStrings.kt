@@ -6,6 +6,9 @@ package com.github.enteraname74.soulsearching.coreui.strings
 object EnStrings : Strings {
     override val appLogo = "Application's logo"
     override val noElements = "No elements"
+    override val emptyQuickAccess = "No items in quick access"
+    override val quickAccessExplanation: String = "Add a song, album, artist, or playlist to quick access " +
+            "to see it appear here."
     override val cannotRetrieveSongs: String = "Cannot retrieve songs!"
     override val backButton = "Back button"
     override val createPlaylistButton = "Create playlist button"
