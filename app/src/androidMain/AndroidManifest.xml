@@ -30,7 +30,7 @@
             />
 
         <receiver
-            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.ChangeFavoriteStateNotificationReceiver"
+            android:name="com.github.enteraname74.soulsearching.features.playback.notification.receivers.ToggleFavoriteNotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
