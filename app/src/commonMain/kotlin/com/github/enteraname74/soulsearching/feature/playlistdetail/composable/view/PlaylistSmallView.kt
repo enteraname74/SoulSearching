@@ -50,6 +50,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PageHeader
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPanel
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
@@ -206,20 +207,7 @@ fun PlaylistSmallView(
                     isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
                 )
             }
-            item {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(UiConstants.Spacing.medium),
-                    textAlign = TextAlign.Center,
-                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                    text = strings.duration(musics = playlistDetail.musics),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 15.sp
-                )
-            }
+            item { DurationIndication(musics = playlistDetail.musics) }
             item { SoulPlayerSpacer() }
         }
     }
