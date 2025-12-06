@@ -1,6 +1,10 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.domain.ext.duration
+import com.github.enteraname74.domain.model.Music
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 val strings = when(Locale.current.language) {
     "fr" -> FrStrings
@@ -295,6 +299,8 @@ interface Strings {
     val elementDetailShuffle: String
     val elementDetailTitles: String
 
+    val and: String
+
     /**
      * Shows a text indicating the number of musics.
      */
@@ -329,4 +335,20 @@ interface Strings {
      * Builds the title of the example part of the artist cover method screen.
      */
     fun artistCoverMethodExampleTitle(artist: String): String
+
+    fun duration(musics: List<Music>): String {
+        val totalDuration: Duration = musics.duration()
+
+        val hours = totalDuration.inWholeHours
+        return if (hours > 0) {
+            "$hours ${hours(hours)} $and ${minutes(totalDuration.inWholeMinutes.mod(60).toLong())}"
+        } else {
+            minutes(totalDuration.inWholeMinutes)
+        }
+    }
+
+    fun hours(hours: Long): String
+
+    fun minutes(minutes: Long): String =
+        if (minutes == 1L) "$minutes minute" else "$minutes minutes"
 }

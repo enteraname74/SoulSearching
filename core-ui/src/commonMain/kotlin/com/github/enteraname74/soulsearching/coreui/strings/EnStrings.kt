@@ -291,6 +291,8 @@ object EnStrings : Strings {
     override val elementDetailShuffle = "Shuffle"
     override val elementDetailTitles = "Title"
 
+    override val and: String = "and"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"
@@ -328,4 +330,7 @@ object EnStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Path example with artist $artist:"
+
+    override fun hours(hours: Long): String =
+        if (hours == 1L) "hour" else "hours"
 }

@@ -292,6 +292,7 @@ object FrStrings : Strings {
     override val elementDetailShuffle = "Aléatoire"
     override val elementDetailTitles = "Titres"
 
+    override val and = "et"
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"
@@ -329,4 +330,7 @@ object FrStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Exemple de chemin avec l'artiste $artist :"
+
+    override fun hours(hours: Long): String =
+        if (hours == 1L) "heure" else "heures"
 }
