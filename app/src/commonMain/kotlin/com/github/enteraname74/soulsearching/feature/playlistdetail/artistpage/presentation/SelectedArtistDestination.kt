@@ -10,6 +10,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.modifyartis
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain.SelectedArtistNavigationState
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailPage
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import kotlinx.serialization.Serializable
@@ -21,7 +22,7 @@ import java.util.*
 data class SelectedArtistDestination(
     @Serializable(UUIDSerializer::class)
     val selectedArtistId: UUID
-) : NavKey {
+) : NavKey, PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,

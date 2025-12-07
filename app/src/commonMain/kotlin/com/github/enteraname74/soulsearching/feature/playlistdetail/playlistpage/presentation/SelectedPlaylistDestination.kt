@@ -7,6 +7,7 @@ import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistDestination
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailPage
 import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.domain.SelectedPlaylistNavigationState
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -19,7 +20,7 @@ import java.util.UUID
 data class SelectedPlaylistDestination(
     @Serializable(UUIDSerializer::class)
     val selectedPlaylistId: UUID
-): NavKey {
+) : NavKey, PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
@@ -37,6 +38,7 @@ data class SelectedPlaylistDestination(
                             SelectedPlaylistNavigationState.Idle -> {
                                 /*no-op*/
                             }
+
                             is SelectedPlaylistNavigationState.ToEdit -> {
                                 navigator.navigate(
                                     ModifyPlaylistDestination(
@@ -44,6 +46,7 @@ data class SelectedPlaylistDestination(
                                     )
                                 )
                             }
+
                             is SelectedPlaylistNavigationState.ToModifyMusic -> {
                                 navigator.navigate(
                                     ModifyMusicDestination(
