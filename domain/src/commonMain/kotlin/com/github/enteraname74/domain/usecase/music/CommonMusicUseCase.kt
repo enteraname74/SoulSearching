@@ -8,7 +8,7 @@ import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 class CommonMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -19,12 +19,12 @@ class CommonMusicUseCase(
         )
     }
 
-    fun getAllFromFolderPath(folderPath: String): Flow<List<Music>> =
-        musicRepository.getAll().map { list ->
-            list.filter {
-                it.folder == folderPath
-            }
-        }
+    suspend fun deleteAllFromUnselectedFolders() {
+        musicRepository.deleteAllFromUnselectedFolders()
+    }
+
+    suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
+        musicRepository.getAllIdsFromUnselectedFolders()
 
     fun getAllFromQuickAccess(): Flow<List<Music>> =
         musicRepository.getAll().map { list ->

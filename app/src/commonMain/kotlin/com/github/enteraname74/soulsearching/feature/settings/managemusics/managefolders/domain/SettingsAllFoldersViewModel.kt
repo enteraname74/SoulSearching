@@ -3,23 +3,25 @@ package com.github.enteraname74.soulsearching.feature.settings.managemusics.mana
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.folder.CommonFolderUseCase
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 
 class SettingsAllFoldersViewModel(
     private val commonFolderUseCase: CommonFolderUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
-    private val commonAlbumsUseCase: CommonAlbumUseCase,
-    private val commonArtistUseCase: CommonArtistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
 ): ViewModel() {
@@ -75,35 +77,14 @@ class SettingsAllFoldersViewModel(
     fun saveSelection() {
         CoroutineScope(Dispatchers.IO).launch {
             loadingManager.withLoading {
-                folders.value.forEach { folder ->
-                    commonFolderUseCase.upsert(
-                        Folder(
-                            folderPath = folder.folderPath,
-                            isSelected = folder.isSelected
-                        )
-                    )
+                val folders = folders.value
 
-                    if (!folder.isSelected) {
-                        val musicsFromFolder: List<UUID> = commonMusicUseCase.getAllFromFolderPath(folder.folderPath)
-                            .first()
-                            .map { it.musicId }
-                        commonMusicUseCase.deleteAll(ids = musicsFromFolder)
-                        playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicsFromFolder)
-
-                        val albumsToDelete = commonAlbumsUseCase.getAllAlbumsWithMusics()
-                            .first()
-                            .filter { it.musics.isEmpty() }
-                            .map { it.album.albumId }
-
-                        val artistsToDelete = commonArtistUseCase.getAllArtistWithMusics()
-                            .first()
-                            .filter { it.musics.isEmpty() }
-                            .map { it.artist.artistId }
-
-                        commonAlbumsUseCase.deleteAll(albumsIds = albumsToDelete)
-                        commonArtistUseCase.deleteAll(artistsIds = artistsToDelete)
-                    }
-                }
+                commonFolderUseCase.upsertAll(
+                    allFolders = folders
+                )
+                val musicIds: List<UUID> = commonMusicUseCase.getAllIdsFromUnselectedFolders()
+                commonMusicUseCase.deleteAllFromUnselectedFolders()
+                playbackManager.removeSongsFromPlayedPlaylist(musicIds = musicIds)
             }
             updateFolders()
         }

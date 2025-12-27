@@ -24,6 +24,14 @@ interface ArtistDao {
     @Query("DELETE FROM RoomArtist WHERE artistId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query(
+        """
+            DELETE FROM RoomArtist
+            WHERE (SELECT COUNT(*) FROM RoomMusicArtist WHERE RoomMusicArtist.artistId = RoomArtist.artistId) = 0
+        """
+    )
+    suspend fun deleteAllEmpty()
+
     @Query("UPDATE RoomArtist SET coverFolderKey = :key")
     suspend fun activateCoverFolderMode(key: String)
 

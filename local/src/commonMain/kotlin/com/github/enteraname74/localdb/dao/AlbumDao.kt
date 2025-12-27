@@ -28,6 +28,14 @@ interface AlbumDao {
     @Query("DELETE FROM RoomAlbum WHERE albumId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
+    @Query(
+        """
+            DELETE FROM RoomAlbum
+            WHERE (SELECT COUNT(*) FROM RoomMusic WHERE RoomMusic.albumId = RoomAlbum.albumId) = 0
+        """
+    )
+    suspend fun deleteAllEmpty()
+
     @Query("SELECT albumName FROM RoomAlbum WHERE LOWER(albumName) LIKE LOWER('%' || :search || '%')")
     suspend fun getAlbumNamesContainingSearch(search: String): List<String>
 

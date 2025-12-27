@@ -14,6 +14,7 @@ class IsCoverUsedUseCase(
     private val artistRepository: ArtistRepository,
     private val albumRepository: AlbumRepository,
 ) {
+    // TODO: Move into single SQL query
     suspend operator fun invoke(coverId: UUID): Boolean =
         musicRepository.getAll().first().any { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }
                 || albumRepository.getAll().first().any { (it.cover as? Cover.CoverFile)?.fileCoverId == coverId }

@@ -27,6 +27,12 @@ interface MusicDao {
     @Delete
     suspend fun delete(roomMusic : RoomMusic)
 
+    @Query("""
+        DELETE FROM RoomMusic WHERE 
+        folder IN (SELECT RoomFolder.folderPath FROM RoomFolder WHERE RoomFolder.isSelected = 0)
+    """)
+    suspend fun deleteFromUnselectedFolders()
+
     @Query("DELETE FROM RoomMusic WHERE musicId IN (:ids)")
     suspend fun deleteAll(ids: List<UUID>)
 
@@ -37,6 +43,14 @@ interface MusicDao {
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
+
+    @Query(
+        """
+            SELECT musicId FROM RoomMusic WHERE 
+            folder IN (SELECT RoomFolder.folderPath FROM RoomFolder WHERE RoomFolder.isSelected = 0)
+        """
+    )
+    suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
 
     @Transaction
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")

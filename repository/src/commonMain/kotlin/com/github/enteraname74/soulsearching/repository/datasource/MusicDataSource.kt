@@ -25,10 +25,14 @@ interface MusicDataSource {
 
     suspend fun deleteAll(ids: List<UUID>)
 
+    suspend fun deleteAllFromUnselectedFolders()
+
     /**
      * Retrieve a music from its id.
      */
     fun getFromId(musicId: UUID): Flow<Music?>
+
+    suspend fun getAllIdsFromUnselectedFolders(): List<UUID>
 
     /**
      * Retrieves a flow of all Music, sorted by name asc.

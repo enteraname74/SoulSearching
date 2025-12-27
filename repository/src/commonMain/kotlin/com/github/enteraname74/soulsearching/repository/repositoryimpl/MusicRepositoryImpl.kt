@@ -31,9 +31,16 @@ class MusicRepositoryImpl(
         musicDataSource.deleteAll(ids = ids)
     }
 
+    override suspend fun deleteAllFromUnselectedFolders() {
+        musicDataSource.deleteAllFromUnselectedFolders()
+    }
+
     override fun getFromId(musicId: UUID): Flow<Music?> = musicDataSource.getFromId(
         musicId = musicId
     )
+
+    override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
+        musicDataSource.getAllIdsFromUnselectedFolders()
 
     override fun getAll(): Flow<List<Music>> =
         musicDataSource.getAll()

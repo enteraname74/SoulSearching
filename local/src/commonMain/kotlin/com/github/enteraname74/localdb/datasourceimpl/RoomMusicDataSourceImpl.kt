@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import androidx.room.useReaderConnection
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
@@ -59,49 +60,30 @@ internal class RoomMusicDataSourceImpl(
 
     override suspend fun delete(music: Music) {
         appDatabase.useWriterConnection {
-            appDatabase.musicDao.delete(
-                roomMusic = music.toRoomMusic()
-            )
-
-            val isAlbumEmpty = appDatabase.musicDao.getAllMusicFromAlbum(albumId = music.album.albumId).isEmpty()
-            if (isAlbumEmpty) {
-                appDatabase.albumDao.delete(id = music.album.albumId)
-            }
-
-            val artistsWithMusics = music.artists.mapNotNull {
-                appDatabase.artistDao.getArtistWithMusics(artistId = it.artistId).firstOrNull()
-            }
-
-            appDatabase.artistDao.deleteAll(
-                ids = artistsWithMusics.filter { it.roomMusics.isEmpty() }.map { it.roomArtist.artistId }
-            )
+            appDatabase.musicDao.delete(roomMusic = music.toRoomMusic())
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
-
     }
 
     override suspend fun deleteAll(ids: List<UUID>) {
         appDatabase.useWriterConnection {
-            val musics = appDatabase.musicDao.getAllFromId(ids = ids)
-            appDatabase.musicDao.deleteAll(
-                ids = ids,
-            )
-
-            appDatabase.albumDao.deleteAll(
-                ids = musics
-                    .filter { appDatabase.musicDao.getAllMusicFromAlbum(albumId = it.completeAlbum.roomAlbum.albumId).isEmpty() }
-                    .map { it.completeAlbum.roomAlbum.albumId }
-            )
-
-            val artistsWithMusics = musics.flatMap { music ->
-                music.artists.mapNotNull {
-                    appDatabase.artistDao.getArtistWithMusics(artistId = it.artistId).firstOrNull()
-                }
-            }
-            appDatabase.artistDao.deleteAll(
-                ids = artistsWithMusics.filter { it.roomMusics.isEmpty() }.map { it.roomArtist.artistId }
-            )
+            appDatabase.musicDao.deleteAll(ids = ids)
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
         }
     }
+
+    override suspend fun deleteAllFromUnselectedFolders() {
+        appDatabase.useWriterConnection {
+            appDatabase.musicDao.deleteFromUnselectedFolders()
+            appDatabase.albumDao.deleteAllEmpty()
+            appDatabase.artistDao.deleteAllEmpty()
+        }
+    }
+
+    override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
+        appDatabase.musicDao.getAllIdsFromUnselectedFolders()
 
     override fun getFromId(musicId: UUID): Flow<Music?> {
         return appDatabase.musicDao.getFromId(

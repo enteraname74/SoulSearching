@@ -19,9 +19,6 @@ class CommonAlbumUseCase(
     fun getAll(): Flow<List<Album>> =
         albumRepository.getAll()
 
-    fun getAllAlbumsWithMusics(): Flow<List<AlbumWithMusics>> =
-        albumRepository.getAllAlbumWithMusics()
-
     fun getAllFromQuickAccess(): Flow<List<AlbumWithMusics>> =
         albumRepository.getAllAlbumWithMusics().map { list ->
             list.filter { it.album.isInQuickAccess }

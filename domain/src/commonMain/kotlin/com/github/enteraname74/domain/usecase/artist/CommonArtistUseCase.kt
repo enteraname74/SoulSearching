@@ -52,9 +52,6 @@ class CommonArtistUseCase(
                 list.sortedByDescending { it.musics.size }
             }
 
-    fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
-        artistRepository.getAllArtistWithMusics()
-
     suspend fun getArtistsNameFromSearch(searchString: String): List<String> =
         if (searchString.isBlank()) {
             emptyList()
