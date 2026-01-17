@@ -42,6 +42,7 @@ class MusicRepositoryImpl(
     override suspend fun getAllIdsFromUnselectedFolders(): List<UUID> =
         musicDataSource.getAllIdsFromUnselectedFolders()
 
+    @Deprecated("Avoid fetching all music from DB because of performance issue")
     override fun getAll(): Flow<List<Music>> =
         musicDataSource.getAll()
 

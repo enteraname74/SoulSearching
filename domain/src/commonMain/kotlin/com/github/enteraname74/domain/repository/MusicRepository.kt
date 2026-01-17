@@ -33,6 +33,7 @@ interface MusicRepository {
     /**
      * Retrieves a flow of all Music.
      */
+    @Deprecated("Avoid fetching all music from DB because of performance issue")
     fun getAll(): Flow<List<Music>>
 
     fun getAllPaged(

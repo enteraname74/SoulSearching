@@ -44,6 +44,10 @@ interface MusicDao {
     @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 ORDER BY name ASC")
     fun getAll(): Flow<List<RoomCompleteMusic>>
 
+    @Transaction
+    @Query("SELECT * FROM RoomMusic WHERE isHidden = 0 AND isInQuickAccess = 1 ORDER BY name ASC")
+    fun getAllFromQuickAccess(): Flow<List<RoomCompleteMusic>>
+
     @Query(
         """
             SELECT musicId FROM RoomMusic WHERE 
