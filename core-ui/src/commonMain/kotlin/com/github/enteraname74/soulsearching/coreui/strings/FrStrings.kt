@@ -1,5 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
+
 /**
  * French translation for application strings
  */
@@ -218,6 +220,9 @@ object FrStrings : Strings {
     override val duskTheme = "Crépuscule"
     override val greeneryTheme = "Verdure"
     override val treeBarkTheme = "Écorce"
+    override val extractedColorTitle = "Couleur extraite de l'image"
+    override val extractedColorText = "Définir la graine utilisée pour générer un thème de couleurs dynamique"
+    override val extractedColorInfo = "La couleur Dominante sera utilisée si la couleur choisie n'a pu être extraite."
 
     override val mainPageTitle = "Page principale"
     override val mainPageText = "Gérer la vue de la page principale"
@@ -329,4 +334,15 @@ object FrStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Exemple de chemin avec l'artiste $artist :"
+
+    override fun colorPaletteSeed(seed: ColorPaletteSeed): String =
+        when (seed) {
+            ColorPaletteSeed.DarkVibrant -> "Sombre et vive"
+            ColorPaletteSeed.DarkMuted -> "Sombre et discrète"
+            ColorPaletteSeed.LightMuted -> "Claire et discrète"
+            ColorPaletteSeed.LightVibrant -> "Claire et vive"
+            ColorPaletteSeed.Dominant -> "Dominante"
+            ColorPaletteSeed.Muted -> "Discrète"
+            ColorPaletteSeed.Vibrant -> "Vive"
+        }
 }

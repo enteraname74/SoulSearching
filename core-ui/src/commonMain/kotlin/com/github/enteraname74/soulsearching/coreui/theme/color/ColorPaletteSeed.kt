@@ -1,13 +1,13 @@
-package com.github.enteraname74.soulsearching.theme
+package com.github.enteraname74.soulsearching.coreui.theme.color
 
 enum class ColorPaletteSeed {
     DarkVibrant,
     DarkMuted,
-    LightMuted,
     LightVibrant,
+    LightMuted,
     Dominant,
-    Muted,
-    Vibrant;
+    Vibrant,
+    Muted;
 
     companion object {
         fun fromString(string: String): ColorPaletteSeed? =

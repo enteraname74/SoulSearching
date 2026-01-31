@@ -2,27 +2,21 @@ package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
-import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.ext.COLOR_PALETTE_SEED
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
+import com.github.enteraname74.soulsearching.ext.COLOR_PALETTE_SEED_SETTINGS_ELEMENT
 import com.kmpalette.PaletteState
 import com.kmpalette.loader.ImageBitmapLoader
 import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 
 class ColorPaletteGenerator(
     settings: SoulSearchingSettings,
 ) {
     private val cover: MutableStateFlow<ImageBitmap?> = MutableStateFlow(null)
     private val colorPaletteSeed: Flow<ColorPaletteSeed> =
-        settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.COLOR_PALETTE_SEED).map { seedString ->
+        settings.getFlowOn(COLOR_PALETTE_SEED_SETTINGS_ELEMENT).map { seedString ->
             ColorPaletteSeed.fromString(string = seedString) ?: ColorPaletteSeed.Default
         }
     val paletteSwatch: StateFlow<Palette.Swatch?> = combine(

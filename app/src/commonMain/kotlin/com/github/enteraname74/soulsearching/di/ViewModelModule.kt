@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.Multi
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
 import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
@@ -44,6 +45,7 @@ internal val viewModelModule: Module = module {
     viewModelOf(::SettingsPlayerPersonalisationViewModel)
     viewModelOf(::SettingsStatisticsViewModel)
     viewModelOf(::SettingsThemeSelectionViewModel)
+    viewModelOf(::SettingsColorSeedViewModel)
     viewModelOf(::SettingsAdvancedViewModel)
     viewModelOf(::SettingsArtistCoverMethodViewModel)
     viewModelOf(::SettingsAboutViewModel)

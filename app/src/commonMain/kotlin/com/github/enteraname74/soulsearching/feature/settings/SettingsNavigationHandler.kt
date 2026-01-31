@@ -6,6 +6,7 @@ import com.github.enteraname74.soulsearching.feature.settings.aboutpage.Settings
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersDestination
@@ -50,6 +51,11 @@ object SettingsNavigationHandler: NavKey {
         )
 
         SettingsThemeSelectionDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+
+        SettingsColorSeedDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
@@ -105,6 +111,7 @@ object SettingsNavigationHandler: NavKey {
             subclass(SettingsArtistCoverMethodDestination::class, SettingsArtistCoverMethodDestination.serializer())
             subclass(SettingsAdvancedDestination::class, SettingsAdvancedDestination.serializer())
             subclass(SettingsThemeSelectionDestination::class, SettingsThemeSelectionDestination.serializer())
+            subclass(SettingsColorSeedDestination::class, SettingsColorSeedDestination.serializer())
             subclass(SettingsColorThemeDestination::class, SettingsColorThemeDestination.serializer())
             subclass(SettingsAddMusicsDestination::class, SettingsAddMusicsDestination.serializer())
             subclass(SettingsUsedFoldersDestination::class, SettingsUsedFoldersDestination.serializer())

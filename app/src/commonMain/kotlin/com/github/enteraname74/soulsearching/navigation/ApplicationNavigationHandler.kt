@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.*
 import androidx.navigation3.ui.NavDisplay
@@ -17,6 +19,8 @@ fun ApplicationNavigationHandler(
     val entryProvider = buildEntryProvider(navigator = navigator)
 
     NavDisplay(
+        modifier = Modifier
+            .fillMaxSize(),
         backStack = backStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
