@@ -19,6 +19,9 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 fun QuickAccessExplanation() {
     Card(
         modifier = Modifier
+            .padding(
+                top = UiConstants.Spacing.large,
+            )
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
             contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
