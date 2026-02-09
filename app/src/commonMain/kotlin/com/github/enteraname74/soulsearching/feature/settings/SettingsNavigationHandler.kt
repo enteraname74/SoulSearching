@@ -11,6 +11,7 @@ import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmu
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationDestination
+import com.github.enteraname74.soulsearching.feature.settings.personalisation.album.SettingsAlbumViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation.SettingsMainPagePersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.music.SettingsMusicViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
@@ -93,6 +94,11 @@ object SettingsNavigationHandler: NavKey {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+
+        SettingsAlbumViewPersonalisationDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -113,6 +119,7 @@ object SettingsNavigationHandler: NavKey {
             subclass(SettingsMainPagePersonalisationDestination::class, SettingsMainPagePersonalisationDestination.serializer())
             subclass(SettingsPlayerPersonalisationDestination::class, SettingsPlayerPersonalisationDestination.serializer())
             subclass(SettingsMusicViewPersonalisationDestination::class, SettingsMusicViewPersonalisationDestination.serializer())
+            subclass(SettingsAlbumViewPersonalisationDestination::class, SettingsAlbumViewPersonalisationDestination.serializer())
         }
     }
 }

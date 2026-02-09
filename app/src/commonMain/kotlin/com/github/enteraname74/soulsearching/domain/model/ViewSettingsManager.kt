@@ -14,10 +14,19 @@ import kotlinx.coroutines.flow.combine
 class ViewSettingsManager(
     private val settings: SoulSearchingSettings
 ) {
-    var isMusicFileModificationOn by mutableStateOf(true)
+    var isMusicFileModificationOn by mutableStateOf(
+        SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON.defaultValue
+    )
         private set
 
-    var areMusicsByMonthsShown by mutableStateOf(false)
+    var areMusicsByMonthsShown by mutableStateOf(
+        SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN.defaultValue
+    )
+        private set
+
+    var shouldShowAlbumTrackNumber by mutableStateOf(
+        SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW.defaultValue,
+    )
         private set
 
     init {
@@ -47,6 +56,7 @@ class ViewSettingsManager(
         with(settings) {
             isMusicFileModificationOn = get(SoulSearchingSettingsKeys.IS_MUSIC_FILE_MODIFICATION_ON)
             areMusicsByMonthsShown = get(SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN)
+            shouldShowAlbumTrackNumber = get(SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW)
         }
     }
 
@@ -69,6 +79,14 @@ class ViewSettingsManager(
         settings.set(
             key = SoulSearchingSettingsKeys.MainPage.ARE_MUSICS_BY_MONTHS_SHOWN.key,
             value = areMusicsByMonthsShown
+        )
+    }
+
+    fun toggleShowAlbumTrackNumber() {
+        shouldShowAlbumTrackNumber = !shouldShowAlbumTrackNumber
+        settings.set(
+            key = SoulSearchingSettingsKeys.Album.SHOULD_SHOW_TRACK_POSITION_IN_ALBUM_VIEW.key,
+            value = shouldShowAlbumTrackNumber
         )
     }
 }

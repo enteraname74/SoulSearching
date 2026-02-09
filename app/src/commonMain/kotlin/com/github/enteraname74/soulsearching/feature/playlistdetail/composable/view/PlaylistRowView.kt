@@ -161,10 +161,11 @@ private fun Content(
                 }
 
                 items(
-                    items = playlistDetail.musics,
-                    key = { it.musicId },
-                    contentType = { PLAYLIST_MUSICS_CONTENT_TYPE },
-                ) { music ->
+                    count = playlistDetail.musics.size,
+                    key = { playlistDetail.musics[it].musicId },
+                    contentType = { PLAYLIST_MUSICS_CONTENT_TYPE }
+                ) { pos ->
+                    val music = playlistDetail.musics[pos]
                     MusicItemComposable(
                         modifier = Modifier
                             .animateItem(),
@@ -186,6 +187,7 @@ private fun Content(
                         isPlayedMusic = currentPlayedSong?.musicId == music.musicId,
                         isSelected = multiSelectionState.selectedIds.contains(music.musicId),
                         isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                        leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                     )
                 }
                 item { DurationIndication(musics = playlistDetail.musics) }

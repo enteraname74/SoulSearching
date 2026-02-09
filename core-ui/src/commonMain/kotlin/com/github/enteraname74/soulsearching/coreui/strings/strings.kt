@@ -67,6 +67,8 @@ interface Strings {
     val personalizeMainPageTitle: String
     val personalizeMainPageText: String
 
+    val manageAlbumViewTitle: String
+    val manageAlbumViewText: String
     val managePlayerTitle: String
     val managePlayerText: String
     val playerSwipeTitle: String
@@ -243,6 +245,7 @@ interface Strings {
     val manageMusicsViewText: String
     val showMusicsByFolders: String
     val showMusicsByMonths: String
+    val showAlbumTrackNumber: String
     val useVerticalAccessBarTitle: String
     val useHorizontalAccessBarText: String
 

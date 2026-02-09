@@ -1,4 +1,4 @@
-package com.github.enteraname74.soulsearching.feature.settings.personalisation.music
+package com.github.enteraname74.soulsearching.feature.settings.personalisation.album
 
 import androidx.compose.runtime.Composable
 import com.github.enteraname74.soulsearching.coreui.UiConstants
@@ -9,17 +9,16 @@ import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 
 @Composable
-fun SettingsMusicViewPersonalisationRoute(
+fun SettingsAlbumViewPersonalisationRoute(
     navigateBack: () -> Unit,
 ) {
-
-    SettingsMusicViewPersonalisationScreenView(
+    SettingsAlbumViewPersonalisationScreenView(
         navigateBack = navigateBack,
     )
 }
 
 @Composable
-private fun SettingsMusicViewPersonalisationScreenView(
+private fun SettingsAlbumViewPersonalisationScreenView(
     navigateBack: () -> Unit,
     viewSettingsManager: ViewSettingsManager = injectElement()
 ) {
@@ -30,9 +29,9 @@ private fun SettingsMusicViewPersonalisationScreenView(
     ) {
         item {
             SoulMenuSwitch(
-                title = strings.showMusicsByMonths,
-                toggleAction = { viewSettingsManager.toggleMusicsByMonthsVisibility() },
-                isChecked = viewSettingsManager.areMusicsByMonthsShown
+                title = strings.showAlbumTrackNumber,
+                toggleAction = { viewSettingsManager.toggleShowAlbumTrackNumber() },
+                isChecked = viewSettingsManager.shouldShowAlbumTrackNumber
             )
         }
     }

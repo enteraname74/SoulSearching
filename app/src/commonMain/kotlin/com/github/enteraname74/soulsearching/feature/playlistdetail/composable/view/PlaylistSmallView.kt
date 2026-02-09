@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -32,10 +31,9 @@ import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.soulsearching.composables.MusicItemComposable
 import com.github.enteraname74.soulsearching.composables.SoulImage
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.ext.blurCompat
-import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 import com.github.enteraname74.soulsearching.coreui.ext.toDp
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
@@ -181,10 +179,11 @@ fun PlaylistSmallView(
                 optionalContent()
             }
             items(
-                items = playlistDetail.musics,
-                key = { it.musicId },
+                count = playlistDetail.musics.size,
+                key = { playlistDetail.musics[it].musicId },
                 contentType = { PLAYLIST_MUSIC_CONTENT_TYPE }
-            ) { elt ->
+            ) { pos ->
+                val elt = playlistDetail.musics[pos]
                 MusicItemComposable(
                     music = elt,
                     onClick = { music ->
@@ -205,6 +204,7 @@ fun PlaylistSmallView(
                     isPlayedMusic = currentPlayedSong?.musicId == elt.musicId,
                     isSelected = multiSelectionState.selectedIds.contains(elt.musicId),
                     isSelectionModeOn = multiSelectionState.selectedIds.isNotEmpty(),
+                    leadingSpec = playlistDetail.musicItemLeadingSpec(pos)
                 )
             }
             item { DurationIndication(musics = playlistDetail.musics) }

@@ -230,9 +230,13 @@ object EnStrings : Strings {
     override val manageMusicsViewText = "Manage songs view"
     override val showMusicsByFolders = "Show songs by folders"
     override val showMusicsByMonths = "Show songs by months"
+    override val showAlbumTrackNumber = "Show tracks number"
     override val useVerticalAccessBarTitle = "Use vertical access bar"
     override val useHorizontalAccessBarText = "Use horizontal access bar"
 
+
+    override val manageAlbumViewTitle = "Album view"
+    override val manageAlbumViewText = "Manage album view"
     override val managePlayerTitle = "Music player"
     override val managePlayerText = "Manage music player"
     override val playerSwipeTitle = "Swipe the song cover to move forward or backward in the played list"
