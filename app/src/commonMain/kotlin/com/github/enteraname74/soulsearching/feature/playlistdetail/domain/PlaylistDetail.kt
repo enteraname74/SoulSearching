@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 
+import com.github.enteraname74.domain.ext.duration
 import com.github.enteraname74.domain.model.*
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.*
@@ -9,7 +10,7 @@ data class PlaylistDetail(
     val id: UUID?,
     val type: PlaylistDetailType,
     val title: String,
-    val subTitle: String?,
+    val subTitle: String,
     val cover: Cover?,
     val musics: List<Music>
 )

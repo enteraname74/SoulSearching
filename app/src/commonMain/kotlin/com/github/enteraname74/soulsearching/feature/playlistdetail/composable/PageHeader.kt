@@ -54,19 +54,17 @@ fun PageHeader(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 24.sp
                 )
-                playlistDetail.subTitle?.let {
-                    Text(
-                        modifier = Modifier.clickableWithHandCursor {
-                            onSubTitleClicked()
-                        },
-                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                        text = it,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
+                Text(
+                    modifier = Modifier.clickableWithHandCursor {
+                        onSubTitleClicked()
+                    },
+                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    text = playlistDetail.subTitle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 15.sp
+                )
             }
         }
     } else {
@@ -105,20 +103,18 @@ fun PageHeader(
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 26.sp
                 )
-                playlistDetail.subTitle?.let {
-                    Text(
-                        modifier = Modifier.clickableWithHandCursor {
-                            onSubTitleClicked()
-                        },
-                        textAlign = TextAlign.Center,
-                        color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
-                        text = it,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 15.sp
-                    )
-                }
+                Text(
+                    modifier = Modifier.clickableWithHandCursor {
+                        onSubTitleClicked()
+                    },
+                    textAlign = TextAlign.Center,
+                    color = SoulSearchingColorTheme.colorScheme.subPrimaryText,
+                    text = playlistDetail.subTitle,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 15.sp
+                )
             }
         }
     }

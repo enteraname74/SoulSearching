@@ -51,6 +51,7 @@ import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowWidthDp
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.DurationIndication
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistPartTitle
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetail
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
@@ -148,6 +149,7 @@ fun PlaylistLargeView(
                 )
             )
         }
+        item { DurationIndication(musics = playlistDetail.musics) }
         item { SoulPlayerSpacer() }
     }
 }
