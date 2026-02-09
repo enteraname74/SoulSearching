@@ -48,7 +48,7 @@ fun AlbumWithMusics.toPlaylistDetail(
         musics = this.musics,
         musicItemLeadingSpec = { musicPosition ->
             if (shouldShowTrackPosition) {
-                MusicItemLeadingSpec.Position(pos = musicPosition)
+                MusicItemLeadingSpec.Position(pos = musicPosition + 1)
             } else {
                 MusicItemLeadingSpec.Cover
             }
