@@ -38,5 +38,9 @@ object NavigationAnimations {
                 NavDisplay.popTransitionSpec { horizontalPopTransitionSpec() } +
                 NavDisplay.predictivePopTransitionSpec { horizontalPopTransitionSpec() }
 
-    val predictivePop: ContentTransform = fadeIn() togetherWith fadeOut()
+    val default: ContentTransform = fadeIn(
+        tween(UiConstants.AnimationDuration.normal)
+    ) togetherWith fadeOut(
+        tween(UiConstants.AnimationDuration.normal)
+    )
 }

@@ -22,7 +22,7 @@ import java.util.*
 data class SelectedArtistDestination(
     @Serializable(UUIDSerializer::class)
     val selectedArtistId: UUID
-) : NavKey, PlaylistDetailPage {
+) : PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,

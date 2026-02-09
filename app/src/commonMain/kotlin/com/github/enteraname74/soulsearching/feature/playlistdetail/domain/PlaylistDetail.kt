@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.domain
 
 
+import com.github.enteraname74.domain.ext.duration
 import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.soulsearching.composables.MusicItemLeadingSpec
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import java.util.*
 
@@ -9,9 +11,10 @@ data class PlaylistDetail(
     val id: UUID?,
     val type: PlaylistDetailType,
     val title: String,
-    val subTitle: String?,
+    val subTitle: String,
     val cover: Cover?,
-    val musics: List<Music>
+    val musics: List<Music>,
+    val musicItemLeadingSpec: (musicPosition: Int) -> MusicItemLeadingSpec,
 )
 
 enum class PlaylistDetailType {
@@ -19,7 +22,7 @@ enum class PlaylistDetailType {
     Album,
     Artist,
     Month,
-    Folder,
+    Folder;
 }
 
 fun PlaylistWithMusics.toPlaylistDetail(): PlaylistDetail =
@@ -30,9 +33,12 @@ fun PlaylistWithMusics.toPlaylistDetail(): PlaylistDetail =
         subTitle = strings.musics(this.musics.size),
         cover = this.cover,
         musics = this.musics,
+        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
-fun AlbumWithMusics.toPlaylistDetail(): PlaylistDetail =
+fun AlbumWithMusics.toPlaylistDetail(
+    shouldShowTrackPosition: Boolean,
+): PlaylistDetail =
     PlaylistDetail(
         id = this.album.albumId,
         type = PlaylistDetailType.Album,
@@ -40,6 +46,13 @@ fun AlbumWithMusics.toPlaylistDetail(): PlaylistDetail =
         subTitle = this.album.artist.artistName,
         cover = this.cover,
         musics = this.musics,
+        musicItemLeadingSpec = { musicPosition ->
+            if (shouldShowTrackPosition) {
+                MusicItemLeadingSpec.Position(pos = musicPosition)
+            } else {
+                MusicItemLeadingSpec.Cover
+            }
+        }
     )
 
 fun ArtistWithMusics.toPlaylistDetail(): PlaylistDetail =
@@ -50,6 +63,7 @@ fun ArtistWithMusics.toPlaylistDetail(): PlaylistDetail =
         subTitle = strings.musics(this.musics.size),
         cover = this.cover,
         musics = this.musics,
+        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
 fun MonthMusicList.toPlaylistDetail(): PlaylistDetail =
@@ -60,6 +74,7 @@ fun MonthMusicList.toPlaylistDetail(): PlaylistDetail =
         subTitle = strings.musics(this.musics.size),
         cover = this.cover,
         musics = this.musics,
+        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )
 
 fun MusicFolderList.toPlaylistDetail(): PlaylistDetail =
@@ -70,4 +85,5 @@ fun MusicFolderList.toPlaylistDetail(): PlaylistDetail =
         subTitle = strings.musics(this.musics.size),
         cover = this.cover,
         musics = this.musics,
+        musicItemLeadingSpec = { MusicItemLeadingSpec.Cover },
     )

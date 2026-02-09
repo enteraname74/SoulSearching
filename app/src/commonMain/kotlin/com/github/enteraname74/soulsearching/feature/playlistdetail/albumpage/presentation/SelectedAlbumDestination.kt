@@ -21,7 +21,7 @@ import java.util.*
 data class SelectedAlbumDestination(
     @Serializable(UUIDSerializer::class)
     val selectedAlbumId: UUID,
-): NavKey, PlaylistDetailPage {
+): PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,

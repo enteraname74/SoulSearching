@@ -1,10 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
@@ -30,6 +28,7 @@ fun <T> MainPageList(
     isUsingSort: Boolean = true,
     key: ((T) -> Any)?,
     contentType: (T) -> Any,
+    emptyView: @Composable () -> Unit = { NoElementView() },
     item: @Composable LazyGridItemScope.(element: T) -> Unit,
 ) {
 
@@ -47,27 +46,32 @@ fun <T> MainPageList(
             isUsingSort = isUsingSort
         )
         innerComposable?.let { it() }
-        if (list.isNotEmpty()) {
-            LazyVerticalGridCompat(
-                columns = GridCells.Adaptive(UiConstants.ImageSize.veryLarge),
-                contentPadding = PaddingValues(
-                    start = UiConstants.Spacing.medium,
-                    end = UiConstants.Spacing.medium,
-                    bottom = PlayerMinimisedHeight.toDp() + OptionalPaddingForPlayerSpacer
-                ),
-                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-                horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-            ) {
-                items(
-                    items = list,
-                    key = key,
-                    contentType = contentType,
-                ) { element ->
-                    item(element)
+        LazyVerticalGridCompat(
+            modifier = Modifier.fillMaxWidth(),
+            columns = GridCells.Adaptive(UiConstants.ImageSize.veryLarge),
+            contentPadding = PaddingValues(
+                start = UiConstants.Spacing.medium,
+                end = UiConstants.Spacing.medium,
+                bottom = PlayerMinimisedHeight.toDp() + OptionalPaddingForPlayerSpacer
+            ),
+            verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+            horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+        ) {
+            items(
+                items = list,
+                key = key,
+                contentType = contentType,
+            ) { element ->
+                item(element)
+            }
+
+            if (list.isEmpty()) {
+                item(
+                    span = { GridItemSpan(maxLineSpan) }
+                ) {
+                    emptyView()
                 }
             }
-        } else {
-            NoElementView()
         }
     }
 }

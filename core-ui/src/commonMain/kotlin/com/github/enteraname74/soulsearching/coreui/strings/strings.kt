@@ -2,6 +2,10 @@ package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
 import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
+import com.github.enteraname74.domain.ext.duration
+import com.github.enteraname74.domain.model.Music
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 val strings = when(Locale.current.language) {
     "fr" -> FrStrings
@@ -16,6 +20,8 @@ interface Strings {
     val appLogo: String
     val cannotRetrieveSongs: String
     val noElements: String
+    val emptyQuickAccess: String
+    val quickAccessExplanation: String
     val backButton: String
     val headerBarRightButton: String
     val image: String
@@ -62,6 +68,8 @@ interface Strings {
     val personalizeMainPageTitle: String
     val personalizeMainPageText: String
 
+    val manageAlbumViewTitle: String
+    val manageAlbumViewText: String
     val managePlayerTitle: String
     val managePlayerText: String
     val playerSwipeTitle: String
@@ -242,6 +250,7 @@ interface Strings {
     val manageMusicsViewText: String
     val showMusicsByFolders: String
     val showMusicsByMonths: String
+    val showAlbumTrackNumber: String
     val useVerticalAccessBarTitle: String
     val useHorizontalAccessBarText: String
 
@@ -300,6 +309,8 @@ interface Strings {
     val elementDetailShuffle: String
     val elementDetailTitles: String
 
+    val and: String
+
     /**
      * Shows a text indicating the number of musics.
      */
@@ -334,6 +345,20 @@ interface Strings {
      * Builds the title of the example part of the artist cover method screen.
      */
     fun artistCoverMethodExampleTitle(artist: String): String
-
     fun colorPaletteSeed(seed: ColorPaletteSeed): String
+    fun duration(musics: List<Music>): String {
+        val totalDuration: Duration = musics.duration()
+
+        val hours = totalDuration.inWholeHours
+        return if (hours > 0) {
+            "$hours ${hours(hours)} $and ${minutes(totalDuration.inWholeMinutes.mod(60).toLong())}"
+        } else {
+            minutes(totalDuration.inWholeMinutes)
+        }
+    }
+
+    fun hours(hours: Long): String
+
+    fun minutes(minutes: Long): String =
+        if (minutes == 1L) "$minutes minute" else "$minutes minutes"
 }

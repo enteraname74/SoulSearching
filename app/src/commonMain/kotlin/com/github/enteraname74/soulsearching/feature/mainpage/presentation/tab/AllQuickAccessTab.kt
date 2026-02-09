@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.Pager
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel.MainPageViewModel
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageList
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.QuickAccessExplanation
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
@@ -35,7 +36,8 @@ fun allQuickAccessTab(
             title = strings.quickAccess,
             isUsingSort = false,
             key = null,
-            contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE }
+            contentType = { ALL_QUICK_ACCESS_CONTENT_TYPE },
+            emptyView = { QuickAccessExplanation() }
         ) { element ->
             element.toPreview(
                 modifier = Modifier

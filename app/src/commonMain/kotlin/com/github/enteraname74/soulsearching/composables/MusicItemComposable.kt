@@ -43,7 +43,8 @@ fun MusicItemComposable(
     reorderableModifier: Modifier? = null,
     isSelected: Boolean = false,
     isSelectionModeOn: Boolean = false,
-    padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium)
+    padding: PaddingValues = PaddingValues(UiConstants.Spacing.medium),
+    leadingSpec: MusicItemLeadingSpec = MusicItemLeadingSpec.Cover,
 ) {
     BoxWithConstraints(
         modifier = modifier,
@@ -69,14 +70,39 @@ fun MusicItemComposable(
                 horizontalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                FlippableImage(
-                    shouldRotate = isSelected,
-                    cover = music.cover,
-                    tint = textColor,
-                    selectedIconColors = selectedIconColors,
-                )
-
                 val fontWeight = if (isPlayedMusic) FontWeight.Bold else FontWeight.Normal
+
+
+                FlippableContent(
+                    shouldRotate = isSelected,
+                    selectedIconColors = selectedIconColors,
+                ) {
+                    when (leadingSpec) {
+                        MusicItemLeadingSpec.Cover -> {
+                            SoulImage(
+                                cover = music.cover,
+                                size = UiConstants.CoverSize.small,
+                                tint = textColor,
+                            )
+                        }
+                        is MusicItemLeadingSpec.Position -> {
+                            Box(
+                                modifier = Modifier
+                                    .size( UiConstants.CoverSize.small),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = leadingSpec.pos.toString(),
+                                    color = textColor,
+                                    style = UiConstants.Typography.bodyTitle,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontWeight = fontWeight
+                                )
+                            }
+                        }
+                    }
+                }
 
                 when {
                     this@BoxWithConstraints.maxWidth > WindowSize.Medium.maxValue -> {
@@ -86,6 +112,7 @@ fun MusicItemComposable(
                             fontWeight = fontWeight,
                         )
                     }
+
                     else -> {
                         MusicInformationDefaultView(
                             music = music,
@@ -192,11 +219,10 @@ private fun RowScope.MusicInformationWideView(
 }
 
 @Composable
-private fun FlippableImage(
+private fun FlippableContent(
     shouldRotate: Boolean,
-    cover: Cover,
-    tint: Color,
     selectedIconColors: SoulSelectedIconColors,
+    content: @Composable () -> Unit,
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (shouldRotate) MAX_ROTATION else 0f,
@@ -213,11 +239,7 @@ private fun FlippableImage(
             }
     ) {
         if (rotation <= MAX_ROTATION / 2) {
-            SoulImage(
-                cover = cover,
-                size = UiConstants.CoverSize.small,
-                tint = tint,
-            )
+            content()
         } else {
             SoulSelectedIcon(
                 colors = selectedIconColors,
@@ -229,6 +251,11 @@ private fun FlippableImage(
             )
         }
     }
+}
+
+sealed interface MusicItemLeadingSpec {
+    data object Cover : MusicItemLeadingSpec
+    data class Position(val pos: Int) : MusicItemLeadingSpec
 }
 
 private const val MAX_ROTATION: Float = 180f

@@ -16,7 +16,7 @@ import org.koin.core.parameter.parametersOf
 @Serializable
 data class SelectedMonthDestination(
     val month: String,
-) : NavKey, PlaylistDetailPage {
+) : PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,
