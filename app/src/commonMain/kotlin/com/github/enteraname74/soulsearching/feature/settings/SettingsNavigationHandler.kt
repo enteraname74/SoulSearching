@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutDestination
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
@@ -37,6 +38,11 @@ object SettingsNavigationHandler {
         )
 
         SettingsAboutDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+
+        SettingsDevelopersDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
