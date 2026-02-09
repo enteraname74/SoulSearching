@@ -7,6 +7,7 @@ import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.repository.PlayerMusicRepository
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
+import com.github.enteraname74.domain.usecase.music.IsMusicInFavoritePlaylistUseCase
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListCallbacks
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListManager
 import com.github.enteraname74.soulsearching.features.playback.list.PlaybackListState
@@ -28,6 +29,8 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
     private val playerMusicRepository: PlayerMusicRepository by inject()
     private val commonMusicUseCase: CommonMusicUseCase by inject()
     private val settings: SoulSearchingSettings by inject()
+
+    private val isMusicInFavoritePlaylistUseCase: IsMusicInFavoritePlaylistUseCase by inject()
 
     val player: SoulSearchingPlayer by inject()
     val notification: SoulSearchingNotification by inject()
@@ -70,12 +73,24 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
         player.registerListener(this)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val currentMusicFavoriteStatusState: Flow<Boolean> =
+        playbackListManager.state.flatMapLatest { playbackListState ->
+            when (playbackListState) {
+                is PlaybackListState.Data -> isMusicInFavoritePlaylistUseCase(
+                    musicId = playbackListState.currentMusic.musicId
+                )
+                PlaybackListState.NoData -> flowOf(false)
+            }
+        }
+
     val mainState: StateFlow<PlaybackManagerState> by lazy {
         combine(
             playbackListManager.state,
             player.state,
             _currentCoverState,
-        ) { listState, playerState, cover ->
+            currentMusicFavoriteStatusState
+        ) { listState, playerState, cover, isCurrentMusicInFavorite ->
             when (listState) {
                 is PlaybackListState.NoData -> {
                     notification.dismissNotification()
@@ -89,6 +104,7 @@ class PlaybackManager : KoinComponent, SoulSearchingPlayer.Listener {
                         isPlaying = playerState,
                         playerMode = listState.playerMode,
                         minimisePlayer = listState.minimisePlayer,
+                        isCurrentMusicInFavorite = isCurrentMusicInFavorite,
                     )
                     playbackProgressJob.launchDurationJobIfNecessary()
                     notification.updateNotification(

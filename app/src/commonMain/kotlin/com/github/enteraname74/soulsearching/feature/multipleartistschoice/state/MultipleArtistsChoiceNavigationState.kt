@@ -3,4 +3,5 @@ package com.github.enteraname74.soulsearching.feature.multipleartistschoice.stat
 sealed interface MultipleArtistsChoiceNavigationState {
     data object Idle: MultipleArtistsChoiceNavigationState
     data object Quit: MultipleArtistsChoiceNavigationState
+    data object NavigateBack: MultipleArtistsChoiceNavigationState
 }

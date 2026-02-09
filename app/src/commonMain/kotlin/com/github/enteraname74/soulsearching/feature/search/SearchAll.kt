@@ -27,6 +27,7 @@ import com.github.enteraname74.soulsearching.feature.search.composable.LinearPre
 import com.github.enteraname74.soulsearching.feature.search.composable.SearchType
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -40,9 +41,9 @@ fun SearchAll(
     onSelectedAlbumForBottomSheet: (AlbumWithMusics) -> Unit,
     onSelectedPlaylistForBottomSheet: (PlaylistWithMusicsNumber) -> Unit,
     onSelectedArtistForBottomSheet: (ArtistWithMusics) -> Unit,
-    navigateToPlaylist: (String) -> Unit,
-    navigateToArtist: (String) -> Unit,
-    navigateToAlbum: (String) -> Unit,
+    navigateToPlaylist: (UUID) -> Unit,
+    navigateToArtist: (UUID) -> Unit,
+    navigateToAlbum: (UUID) -> Unit,
     isMainPlaylist: Boolean,
     focusManager: FocusManager,
     playbackManager: PlaybackManager = injectElement(),
@@ -78,7 +79,7 @@ fun SearchAll(
                     text = strings.musics(playlistWithMusics.musicsNumber),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToPlaylist(playlistWithMusics.playlist.playlistId.toString())
+                        navigateToPlaylist(playlistWithMusics.playlist.playlistId)
                     },
                     onLongClick = {
                         onSelectedPlaylistForBottomSheet(playlistWithMusics)
@@ -114,7 +115,7 @@ fun SearchAll(
                     text = strings.musics(artistWithMusics.musics.size),
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToArtist(artistWithMusics.artist.artistId.toString())
+                        navigateToArtist(artistWithMusics.artist.artistId)
                     },
                     onLongClick = {
                         onSelectedArtistForBottomSheet(artistWithMusics)
@@ -151,7 +152,7 @@ fun SearchAll(
                     text = albumWithMusics.album.artist.artistName,
                     onClick = {
                         focusManager.clearFocus()
-                        navigateToAlbum(albumWithMusics.album.albumId.toString())
+                        navigateToAlbum(albumWithMusics.album.albumId)
                     },
                     onLongClick = {
                         coroutineScope.launch {

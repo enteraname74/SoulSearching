@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
@@ -19,6 +19,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
+import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -28,10 +29,11 @@ class SelectedFolderViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    private val getMusicFolderListUseCase: GetMusicFolderListUseCase,
+    getMusicFolderListUseCase: GetMusicFolderListUseCase,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-) : ScreenModel,
+    destination: SelectedFolderDestination,
+) : ViewModel(),
     PlaylistDetailListener,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
@@ -39,37 +41,31 @@ class SelectedFolderViewModel(
 
     val multiSelectionState = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val _folderPath: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val folderPath: String = destination.selectedFolderPath
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList(),
         )
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state: StateFlow<SelectedFolderState> = _folderPath.flatMapLatest { folderPath ->
-        if (folderPath == null) {
-            flowOf(SelectedFolderState.Loading)
-        } else {
-            getMusicFolderListUseCase(path = folderPath).mapLatest { musicFolderList ->
-                when {
-                    musicFolderList == null -> SelectedFolderState.Error
-                    else -> SelectedFolderState.Data(
-                        playlistDetail = musicFolderList.toPlaylistDetail()
-                    )
-                }
-            }
+    var state: StateFlow<SelectedFolderState> = getMusicFolderListUseCase(path = folderPath).mapLatest { musicFolderList ->
+        when {
+            musicFolderList == null -> SelectedFolderState.Error
+            else -> SelectedFolderState.Data(
+                playlistDetail = musicFolderList.toPlaylistDetail()
+            )
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SelectedFolderState.Loading
     )
@@ -92,7 +88,7 @@ class SelectedFolderViewModel(
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it) },
+            onModifyMusic = { _navigationState.value = SelectedFolderNavigationState.ToModifyMusic(it.musicId) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
@@ -111,18 +107,10 @@ class SelectedFolderViewModel(
         _navigationState.value = SelectedFolderNavigationState.Idle
     }
 
-
-    /**
-     * Set the selected playlist.
-     */
-    fun init(folderPath: String) {
-        _folderPath.value = folderPath
-    }
-
     override val onEdit: (() -> Unit)? = null
 
     override fun onUpdateNbPlayed(musicId: UUID) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
@@ -140,7 +128,7 @@ class SelectedFolderViewModel(
     }
 
     private fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
                 val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
@@ -149,5 +137,9 @@ class SelectedFolderViewModel(
                 showMultiMusicBottomSheet()
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = SelectedFolderNavigationState.Back
     }
 }

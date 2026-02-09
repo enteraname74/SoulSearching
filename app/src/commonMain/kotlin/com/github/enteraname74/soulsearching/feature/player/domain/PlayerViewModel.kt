@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.player.domain
 
 import androidx.compose.ui.graphics.ImageBitmap
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -52,7 +52,7 @@ class PlayerViewModel(
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
     private val commonMusicUseCase: CommonMusicUseCase,
     commonPlaylistUseCase: CommonPlaylistUseCase,
-) : ScreenModel,
+) : ViewModel(),
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
     MultiSelectionManager by multiSelectionManagerImpl {
@@ -60,7 +60,7 @@ class PlayerViewModel(
 
     val multiSelectionState: StateFlow<MultiSelectionState> = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
@@ -117,7 +117,7 @@ class PlayerViewModel(
             }
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = LyricsFetchState.FetchingLyrics
     )
@@ -131,7 +131,7 @@ class PlayerViewModel(
             isMinimisedSongProgressionShown = isMinimisedSongProgressionShown,
         )
     }.stateIn(
-        screenModelScope,
+        viewModelScope,
         SharingStarted.Eagerly,
         PlayerViewSettingsState(
             canSwipeCover = SoulSearchingSettingsKeys.Player.IS_PLAYER_SWIPE_ENABLED.defaultValue,
@@ -165,7 +165,7 @@ class PlayerViewModel(
             }
         }
     }.stateIn(
-        screenModelScope,
+        viewModelScope,
         SharingStarted.Eagerly,
         PlayerViewState.Closed
     )
@@ -250,7 +250,7 @@ class PlayerViewModel(
      * Set the current music position.
      */
     fun seekTo(position: Int) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             playbackManager.seekToPosition(position = position)
         }
     }
@@ -308,7 +308,7 @@ class PlayerViewModel(
 
     fun navigateToAlbum() {
         (state.value as? PlayerViewState.Data)?.currentMusic?.let { currentMusic ->
-            screenModelScope.launch {
+            viewModelScope.launch {
                 _navigationState.value = PlayerNavigationState.ToAlbum(
                     albumId = currentMusic.album.albumId,
                 )
@@ -321,7 +321,7 @@ class PlayerViewModel(
     }
 
     fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
                 val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch

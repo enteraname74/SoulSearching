@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.statistics.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.ext.getFirstsOrMax
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
@@ -23,7 +23,7 @@ class SettingsStatisticsViewModel(
     getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
     commonArtistUseCase: CommonArtistUseCase,
-) : ScreenModel {
+) : ViewModel() {
     val state: StateFlow<SettingsStatisticsState> = combine(
         getAllMusicsSortedUseCase(
             sortDirection = SortDirection.DESC,
@@ -65,7 +65,7 @@ class SettingsStatisticsViewModel(
                 .map { it.toMostSongsListenedElement() },
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = SettingsStatisticsState(),
     )

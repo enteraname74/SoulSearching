@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Cover
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -16,6 +16,7 @@ import com.github.enteraname74.soulsearching.feature.editableelement.domain.Edit
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumFormState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumNavigationState
 import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.domain.state.ModifyAlbumState
+import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumDestination
 import com.github.enteraname74.soulsearching.features.filemanager.cover.CoverRetriever
 import com.github.enteraname74.soulsearching.features.filemanager.usecase.UpdateAlbumUseCase
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -33,8 +34,9 @@ class ModifyAlbumViewModel(
     private val playbackManager: PlaybackManager,
     private val loadingManager: LoadingManager,
     private val coverRetriever: CoverRetriever,
-) : ScreenModel {
-    private val albumId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    destination: ModifyAlbumDestination,
+) : ViewModel() {
+    private val albumId = destination.selectedAlbumId
     private val newCover: MutableStateFlow<ByteArray?> = MutableStateFlow(null)
     private val _navigationState: MutableStateFlow<ModifyAlbumNavigationState> = MutableStateFlow(
         ModifyAlbumNavigationState.Idle,
@@ -45,13 +47,7 @@ class ModifyAlbumViewModel(
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val initialAlbum: Flow<AlbumWithMusics?> = albumId.flatMapLatest { id ->
-        if (id == null) {
-            flowOf(null)
-        } else {
-            commonAlbumUseCase.getAlbumWithMusics(albumId = id)
-        }
-    }
+    private val initialAlbum: Flow<AlbumWithMusics?> = commonAlbumUseCase.getAlbumWithMusics(albumId = albumId)
 
     val state: StateFlow<ModifyAlbumState> = combine(
         initialAlbum,
@@ -68,7 +64,7 @@ class ModifyAlbumViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyAlbumState.Loading,
     )
@@ -85,7 +81,7 @@ class ModifyAlbumViewModel(
             )
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = ModifyAlbumFormState.NoData,
     )
@@ -102,29 +98,22 @@ class ModifyAlbumViewModel(
             ModifyAlbumState.Loading -> CoverListState.Loading
         }
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = CoverListState.Loading,
     )
 
     /**
-     * Set the selected album for the modify screen information.
-     */
-    fun init(albumId: UUID) {
-        this.albumId.value = albumId
-    }
-
-    /**
      * Set the new cover name to show to the user.
      */
     private fun setNewCover(imageFile: PlatformFile) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             newCover.value = imageFile.readBytes()
         }
     }
 
     fun consumeNavigation() {
-        _navigationState.value = ModifyAlbumNavigationState.Back
+        _navigationState.value = ModifyAlbumNavigationState.Idle
     }
 
     fun showCoversBottomSheet() {
@@ -187,5 +176,9 @@ class ModifyAlbumViewModel(
 
             _navigationState.value = ModifyAlbumNavigationState.Back
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = ModifyAlbumNavigationState.Back
     }
 }

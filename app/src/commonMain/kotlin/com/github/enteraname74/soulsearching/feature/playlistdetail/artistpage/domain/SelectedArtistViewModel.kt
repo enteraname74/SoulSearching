@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
@@ -18,6 +18,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectionState
 import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
+import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +28,7 @@ import java.util.*
 
 class SelectedArtistViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
-    private val commonAlbumUseCase: CommonAlbumUseCase,
+    commonAlbumUseCase: CommonAlbumUseCase,
     private val commonArtistUseCase: CommonArtistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
@@ -35,8 +36,9 @@ class SelectedArtistViewModel(
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     private val multiAlbumBottomSheetDelegateImpl: MultiAlbumBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
+    destination: SelectedArtistDestination,
 ) :
-    ScreenModel,
+    ViewModel(),
     PlaylistDetailListener,
     AlbumBottomSheetDelegate by albumBottomSheetDelegateImpl,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
@@ -46,40 +48,34 @@ class SelectedArtistViewModel(
 
     val multiSelectionState = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val _artistId: MutableStateFlow<UUID?> = MutableStateFlow(null)
+    private val artistId: UUID = destination.selectedArtistId
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList(),
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state: StateFlow<SelectedArtistState> = _artistId.flatMapLatest { artistId ->
-        if (artistId == null) {
-            flowOf(SelectedArtistState.Loading)
-        } else {
-            combine(
-                commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
-                commonArtistUseCase.getArtistWithMusic(artistId = artistId),
-            ) { albums, artistWithMusics ->
-                when {
-                    artistWithMusics == null -> SelectedArtistState.Error
-                    else -> SelectedArtistState.Data(
-                        playlistDetail = artistWithMusics.toPlaylistDetail(),
-                        artistAlbums = albums,
-                    )
-                }
-            }
+    var state: StateFlow<SelectedArtistState> = combine(
+        commonAlbumUseCase.getAlbumsWithMusicsOfArtist(artistId = artistId),
+        commonArtistUseCase.getArtistWithMusic(artistId = artistId),
+    ) { albums, artistWithMusics ->
+        when {
+            artistWithMusics == null -> SelectedArtistState.Error
+            else -> SelectedArtistState.Data(
+                playlistDetail = artistWithMusics.toPlaylistDetail(),
+                artistAlbums = albums,
+            )
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = SelectedArtistState.Loading
     )
@@ -102,7 +98,7 @@ class SelectedArtistViewModel(
         albumBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = SelectedArtistNavigationState.ToModifyAlbum(it) },
+            onModifyAlbum = { _navigationState.value = SelectedArtistNavigationState.ToModifyAlbum(it.albumId) },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
@@ -115,7 +111,7 @@ class SelectedArtistViewModel(
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedArtistNavigationState.ToModifyMusic(it) },
+            onModifyMusic = { _navigationState.value = SelectedArtistNavigationState.ToModifyMusic(it.musicId) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             musicBottomSheetState = MusicBottomSheetState.ALBUM_OR_ARTIST,
@@ -136,29 +132,22 @@ class SelectedArtistViewModel(
         _navigationState.value = SelectedArtistNavigationState.Idle
     }
 
-    /**
-     * Set the selected artist.
-     */
-    fun init(artistId: UUID) {
-        _artistId.value = artistId
-    }
-
     fun toAlbum(albumId: UUID) {
         _navigationState.value = SelectedArtistNavigationState.ToAlbum(albumId = albumId)
     }
 
     override val onEdit: (() -> Unit) = {
-        _navigationState.value = SelectedArtistNavigationState.ToEdit
+        _navigationState.value = SelectedArtistNavigationState.ToEdit(artistId = artistId)
     }
 
     override fun onUpdateNbPlayed(musicId: UUID) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
 
     override fun onUpdateNbPlayed() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val artistId: UUID = (state.value as? SelectedArtistState.Data)?.playlistDetail?.id ?: return@launch
             commonArtistUseCase.incrementArtistNbPlayed(artistId = artistId)
         }
@@ -196,7 +185,7 @@ class SelectedArtistViewModel(
     }
 
     private fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
 
             if (multiSelectionManagerImpl.selectionMode == SelectionMode.Music) {
                 handleMultiSelectionMusicBottomSheet()
@@ -204,5 +193,9 @@ class SelectedArtistViewModel(
                 handleMultiSelectionAlbumBottomSheet()
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = SelectedArtistNavigationState.Back
     }
 }

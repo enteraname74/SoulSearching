@@ -1,78 +1,42 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.multiselection.SelectionMode
 import com.github.enteraname74.soulsearching.coreui.screen.SoulErrorScreen
 import com.github.enteraname74.soulsearching.coreui.screen.SoulLoadingScreen
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
-import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistScreen
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderNavigationState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.domain.SelectedFolderViewModel
-import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 
-/**
- * Represent the view of the selected folder screen.
- */
-data class SelectedFolderScreen(
-    private val folderPath: String
-): PlaylistDetailScreen(folderPath) {
-    @Composable
-    override fun Content() {
-        val screenModel = koinScreenModel<SelectedFolderViewModel>()
+@Composable
+fun SelectedFolderRoute(
+    viewModel: SelectedFolderViewModel,
+    onNavigationState: (SelectedFolderNavigationState) -> Unit,
+) {
+    val bottomSheetState by viewModel.bottomSheetState.collectAsState()
+    val dialogState by viewModel.dialogState.collectAsState()
+    val navigationState by viewModel.navigationState.collectAsState()
+    val addToPlaylistBottomSheet by viewModel.addToPlaylistBottomSheet.collectAsState()
 
-        val navigator = LocalNavigator.currentOrThrow
-        val colorThemeManager = injectElement<ColorThemeManager>()
+    bottomSheetState?.BottomSheet()
+    dialogState?.Dialog()
+    addToPlaylistBottomSheet?.BottomSheet()
 
-        val bottomSheetState by screenModel.bottomSheetState.collectAsState()
-        val dialogState by screenModel.dialogState.collectAsState()
-        val navigationState by screenModel.navigationState.collectAsState()
-        val addToPlaylistBottomSheet by screenModel.addToPlaylistBottomSheet.collectAsState()
-
-        bottomSheetState?.BottomSheet()
-        dialogState?.Dialog()
-        addToPlaylistBottomSheet?.BottomSheet()
-
-        LaunchedEffect(navigationState) {
-            when(navigationState) {
-                SelectedFolderNavigationState.Idle -> { /*no-op*/  }
-                is SelectedFolderNavigationState.ToModifyMusic -> {
-                    val selectedMusic = (navigationState as SelectedFolderNavigationState.ToModifyMusic).music
-                    navigator.safePush(ModifyMusicScreen(selectedMusicId = selectedMusic.musicId.toString()))
-                    screenModel.consumeNavigation()
-                }
-            }
-        }
-
-        var isFolderFetched by rememberSaveable {
-            mutableStateOf(false)
-        }
-
-        if (!isFolderFetched) {
-            screenModel.init(folderPath = folderPath)
-            isFolderFetched = true
-        }
-
-        SelectedFolderScreenView(
-            selectedFolderViewModel = screenModel,
-            navigateBack = {
-                if (!navigator.isPreviousScreenAPlaylistDetails()) {
-                    colorThemeManager.removePlaylistTheme()
-                }
-                navigator.pop()
-            },
-        )
+    LaunchedEffect(navigationState) {
+        onNavigationState(navigationState)
+        viewModel.consumeNavigation()
     }
+
+    SelectedFolderScreenView(
+        selectedFolderViewModel = viewModel,
+        navigateBack = viewModel::navigateBack,
+    )
 }
 
 @Composable

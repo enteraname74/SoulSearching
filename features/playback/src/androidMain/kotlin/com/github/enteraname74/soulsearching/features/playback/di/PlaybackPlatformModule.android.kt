@@ -29,6 +29,7 @@ internal actual val playbackPlatformModule: Module = module {
         SoulSearchingAndroidNotification.buildNotification(
             context = get(),
             playbackManager = get(),
+            toggleMusicFavoriteStatusUseCase = get(),
         )
     }.binds(
         arrayOf(

@@ -60,7 +60,6 @@ kotlin {
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)
-                implementation(libs.bundles.voyager)
 
                 implementation(libs.coroutines.core)
 
@@ -70,6 +69,10 @@ kotlin {
                 implementation(libs.coil.compose)
 
                 implementation(libs.reorderable)
+
+                implementation(libs.androidx.navigation3.runtime)
+                implementation(libs.androidx.navigation3.ui)
+                implementation(libs.androidx.lifecycle.viewmodel.navigation3)
             }
         }
         androidMain {
@@ -93,8 +96,8 @@ android {
         applicationId = "com.github.enteraname74.soulsearching"
         minSdk = libs.versions.android.min.sdk.get().toInt()
         targetSdk = libs.versions.android.target.sdk.get().toInt()
-        versionCode = 33
-        versionName = "0.13.0"
+        versionCode = 34
+        versionName = "0.14.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

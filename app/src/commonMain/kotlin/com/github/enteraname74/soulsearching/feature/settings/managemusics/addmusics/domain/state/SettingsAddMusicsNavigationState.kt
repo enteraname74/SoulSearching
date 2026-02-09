@@ -7,4 +7,5 @@ sealed interface SettingsAddMusicsNavigationState {
     data class ToMultipleArtists(
         val multipleArtists: List<Artist>,
     ): SettingsAddMusicsNavigationState
+    data object NavigateBack: SettingsAddMusicsNavigationState
 }

@@ -1,7 +1,9 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
@@ -10,6 +12,7 @@ import com.github.enteraname74.domain.usecase.music.CommonMusicUseCase
 import com.github.enteraname74.soulsearching.coreui.ext.coerceForProgressBar
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsNavigationState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain.state.SettingsAddMusicsState
+import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.SelectableMusicItem
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
@@ -25,7 +28,18 @@ class SettingsAddMusicsViewModel(
     private val commonFolderUseCase: CommonFolderUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val multipleArtistListener: MultipleArtistListener,
-) : ScreenModel {
+    settingsAddMusicsDestination: SettingsAddMusicsDestination,
+) : ViewModel() {
+    private val shouldShowSaveScreen = settingsAddMusicsDestination.shouldShowSaveScreen
+
+    init {
+        if (shouldShowSaveScreen) {
+            showSaveScreen()
+        } else {
+            fetchSongs()
+        }
+    }
+
     private val _state: MutableStateFlow<SettingsAddMusicsState> = MutableStateFlow(
         SettingsAddMusicsState.Fetching
     )
@@ -46,7 +60,7 @@ class SettingsAddMusicsViewModel(
             SettingsAddMusicsState.SongsSaved -> state
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SettingsAddMusicsState.Fetching
     )
@@ -70,7 +84,7 @@ class SettingsAddMusicsViewModel(
         }
     }
 
-    fun showSaveScreen() {
+    private fun showSaveScreen() {
         _state.value = SettingsAddMusicsState.SongsSaved
     }
 
@@ -146,6 +160,10 @@ class SettingsAddMusicsViewModel(
                 _state.value = SettingsAddMusicsState.SongsSaved
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = SettingsAddMusicsNavigationState.NavigateBack
     }
 
     fun consumeNavigation() {

@@ -17,10 +17,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Release
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.ext.clickableWithHandCursor
@@ -31,146 +27,140 @@ import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.AppVersion
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.settings.SettingPage
-import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersScreen
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutState
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.composable.SettingPage
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Represent the view of the settings about screen.
- */
-class SettingsAboutScreen : Screen, SettingPage {
-    private val CardMinWidth: Dp = 0.dp
-    private val CardMaxWidth: Dp = 500.dp
+private val CardMinWidth: Dp = 0.dp
+private val CardMaxWidth: Dp = 500.dp
 
-    @Composable
-    override fun Content() {
-        val screenModel = koinScreenModel<SettingsAboutViewModel>()
-        val navigator = LocalNavigator.currentOrThrow
+@Composable
+fun SettingsAboutRoute(
+    navigateBack: () -> Unit,
+    toDevelopers: () -> Unit,
+) {
+    val viewModel = koinViewModel<SettingsAboutViewModel>()
 
-        val state by screenModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-        Screen(
-            navigateToDevelopers = { navigator.safePush(SettingsDevelopersScreen()) },
-            navigateBack = { navigator.pop() },
-            state = state,
-        )
-    }
+    Screen(
+        navigateToDevelopers = toDevelopers,
+        navigateBack = navigateBack,
+        state = state,
+    )
+}
 
-    @Composable
-    private fun LatestReleaseCard(
-        release: Release,
+@Composable
+private fun LatestReleaseCard(
+    release: Release,
+) {
+    val uriHandler = LocalUriHandler.current
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(UiConstants.Spacing.large),
+        contentAlignment = Alignment.Center,
     ) {
-        val uriHandler = LocalUriHandler.current
-
-        Box(
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(UiConstants.Spacing.large),
-            contentAlignment = Alignment.Center,
+                .widthIn(
+                    min = CardMinWidth,
+                    max = CardMaxWidth,
+                ),
+            colors = CardDefaults.cardColors(
+                contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
+                containerColor = SoulSearchingColorTheme.colorScheme.secondary
+            )
         ) {
-            Card(
+            Column(
                 modifier = Modifier
-                    .widthIn(
-                        min = CardMinWidth,
-                        max = CardMaxWidth,
-                    ),
-                colors = CardDefaults.cardColors(
-                    contentColor = SoulSearchingColorTheme.colorScheme.onSecondary,
-                    containerColor = SoulSearchingColorTheme.colorScheme.secondary
-                )
+                    .clickableWithHandCursor {
+                        uriHandler.openUri(release.githubUrl)
+                    }
+                    .fillMaxWidth()
+                    .padding(UiConstants.Spacing.large),
+                verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
-                    modifier = Modifier
-                        .clickableWithHandCursor {
-                            uriHandler.openUri(release.githubUrl)
-                        }
-                        .fillMaxWidth()
-                        .padding(UiConstants.Spacing.large),
-                    verticalArrangement = Arrangement.spacedBy(UiConstants.Spacing.medium),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    SoulIcon(
-                        icon = Icons.Rounded.NewReleases,
-                        size = UiConstants.ImageSize.mediumPlus,
-                        tint = SoulSearchingColorTheme.colorScheme.onSecondary,
-                    )
-                    Text(
-                        text = strings.newReleaseAvailableTitle,
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                        textAlign = TextAlign.Center,
-                        style = UiConstants.Typography.bodyTitle,
-                    )
-                    Text(
-                        text = strings.newReleaseAvailableText(
-                            releaseName = release.name,
-                        ),
-                        color = SoulSearchingColorTheme.colorScheme.onSecondary,
-                        textAlign = TextAlign.Center,
-                        style = UiConstants.Typography.body,
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun Screen(
-        state: SettingsAboutState,
-        navigateToDevelopers: () -> Unit,
-        navigateBack: () -> Unit,
-        feedbackPopUpManager: FeedbackPopUpManager = injectElement()
-    ) {
-        var clickCount by rememberSaveable {
-            mutableIntStateOf(0)
-        }
-
-        val coroutineScope = rememberCoroutineScope()
-
-        SettingPage(
-            navigateBack = navigateBack,
-            title = strings.aboutTitle,
-        ) {
-            item {
-                AnimatedVisibility(
-                    visible = state.moreRecentRelease != null,
-                    enter = slideInVertically(),
-                    exit = slideOutVertically(),
-                ) {
-                    state.moreRecentRelease?.let {
-                        LatestReleaseCard(it)
-                    }
-                }
-            }
-            item {
-                SoulMenuElement(
-                    title = strings.developersTitle,
-                    subTitle = strings.developersText,
-                    onClick = navigateToDevelopers
+                SoulIcon(
+                    icon = Icons.Rounded.NewReleases,
+                    size = UiConstants.ImageSize.mediumPlus,
+                    tint = SoulSearchingColorTheme.colorScheme.onSecondary,
                 )
-            }
-            item {
-                SoulMenuElement(
-                    title = strings.versionNameTitle,
-                    subTitle = AppVersion.versionName,
-                    onClick = {
-                        clickCount += 1
-                        if (clickCount == 10) {
-                            coroutineScope.launch {
-                                feedbackPopUpManager.showFeedback(
-                                    feedback = strings.versionNameActionText,
-                                )
-                            }
-                            clickCount = 0
-                        }
-                    }
+                Text(
+                    text = strings.newReleaseAvailableTitle,
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    textAlign = TextAlign.Center,
+                    style = UiConstants.Typography.bodyTitle,
+                )
+                Text(
+                    text = strings.newReleaseAvailableText(
+                        releaseName = release.name,
+                    ),
+                    color = SoulSearchingColorTheme.colorScheme.onSecondary,
+                    textAlign = TextAlign.Center,
+                    style = UiConstants.Typography.body,
                 )
             }
         }
     }
 }
 
+@Composable
+private fun Screen(
+    state: SettingsAboutState,
+    navigateToDevelopers: () -> Unit,
+    navigateBack: () -> Unit,
+    feedbackPopUpManager: FeedbackPopUpManager = injectElement()
+) {
+    var clickCount by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    SettingPage(
+        navigateBack = navigateBack,
+        title = strings.aboutTitle,
+    ) {
+        item {
+            AnimatedVisibility(
+                visible = state.moreRecentRelease != null,
+                enter = slideInVertically(),
+                exit = slideOutVertically(),
+            ) {
+                state.moreRecentRelease?.let {
+                    LatestReleaseCard(it)
+                }
+            }
+        }
+        item {
+            SoulMenuElement(
+                title = strings.developersTitle,
+                subTitle = strings.developersText,
+                onClick = navigateToDevelopers
+            )
+        }
+        item {
+            SoulMenuElement(
+                title = strings.versionNameTitle,
+                subTitle = AppVersion.versionName,
+                onClick = {
+                    clickCount += 1
+                    if (clickCount == 10) {
+                        coroutineScope.launch {
+                            feedbackPopUpManager.showFeedback(
+                                feedback = strings.versionNameActionText,
+                            )
+                        }
+                        clickCount = 0
+                    }
+                }
+            )
+        }
+    }
+}
 
