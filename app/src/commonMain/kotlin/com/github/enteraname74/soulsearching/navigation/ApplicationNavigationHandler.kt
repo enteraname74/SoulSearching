@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
@@ -8,6 +10,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingDestination
 import com.github.enteraname74.soulsearching.feature.application.MainAppDestination
 import com.github.enteraname74.soulsearching.feature.migration.MigrationDestination
@@ -17,8 +21,10 @@ import com.github.enteraname74.soulsearching.feature.multipleartistschoice.Multi
 fun ApplicationNavigationHandler(
     navigator: Navigator,
     backStack: NavBackStack<NavKey>,
+    loadingManager: LoadingManager = injectElement(),
 ) {
     val entryProvider = buildEntryProvider(navigator = navigator)
+    val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
 
     NavDisplay(
         backStack = backStack,
@@ -26,7 +32,11 @@ fun ApplicationNavigationHandler(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
-        onBack = navigator::goBack,
+        onBack = {
+            if (!isLoading) {
+                navigator.goBack()
+            }
+        },
         entryProvider = entryProvider,
     )
 }

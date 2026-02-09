@@ -19,8 +19,7 @@ fun SoulSearchingApplication(
         ) {
             LoadingScaffold(
                 loadingManager = loadingManager
-            ) { isLoading ->
-                // TODO: Use isLoading?
+            ) {
                 ApplicationRoute()
             }
         }

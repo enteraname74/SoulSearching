@@ -46,6 +46,9 @@ class MusicRepositoryImpl(
     override fun getAll(): Flow<List<Music>> =
         musicDataSource.getAll()
 
+    override fun getAllFromQuickAccess(): Flow<List<Music>> =
+        musicDataSource.getAllFromQuickAccess()
+
     override fun getAllPaged(
         sortDirection: SortDirection,
         sortType: SortType,

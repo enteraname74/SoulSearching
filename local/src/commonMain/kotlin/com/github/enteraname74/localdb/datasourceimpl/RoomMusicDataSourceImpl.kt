@@ -97,6 +97,11 @@ internal class RoomMusicDataSourceImpl(
         }
     }
 
+    override fun getAllFromQuickAccess(): Flow<List<Music>> =
+        appDatabase.musicDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toMusic() }
+        }
+
     override fun getAllPaged(
         sortDirection: SortDirection,
         sortType: SortType,

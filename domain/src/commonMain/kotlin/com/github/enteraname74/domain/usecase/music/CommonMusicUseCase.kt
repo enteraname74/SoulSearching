@@ -7,8 +7,7 @@ import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import java.util.UUID
+import java.util.*
 
 class CommonMusicUseCase(
     private val musicRepository: MusicRepository,
@@ -27,9 +26,7 @@ class CommonMusicUseCase(
         musicRepository.getAllIdsFromUnselectedFolders()
 
     fun getAllFromQuickAccess(): Flow<List<Music>> =
-        musicRepository.getAll().map { list ->
-            list.filter { it.isInQuickAccess }
-        }
+        musicRepository.getAllFromQuickAccess()
 
     fun getAll(): Flow<List<Music>> =
         musicRepository.getAll()

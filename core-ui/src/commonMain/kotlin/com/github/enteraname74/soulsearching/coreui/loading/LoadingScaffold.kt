@@ -21,7 +21,7 @@ import com.github.enteraname74.soulsearching.coreui.ext.disableFocus
 @Composable
 fun LoadingScaffold(
     loadingManager: LoadingManager,
-    content: @Composable (isLoading: Boolean) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val state: Boolean by loadingManager.state.collectAsState()
 
@@ -29,7 +29,7 @@ fun LoadingScaffold(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        content(state)
+        content()
         AnimatedVisibility(
             visible = state,
             enter = fadeIn(

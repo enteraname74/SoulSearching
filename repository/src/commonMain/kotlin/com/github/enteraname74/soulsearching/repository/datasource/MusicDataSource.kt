@@ -39,6 +39,8 @@ interface MusicDataSource {
      */
     fun getAll(): Flow<List<Music>>
 
+    fun getAllFromQuickAccess(): Flow<List<Music>>
+
     fun getAllPaged(
         sortDirection: SortDirection,
         sortType: SortType,
