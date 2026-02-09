@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.ext.isPreviousScreenAPlaylistDetails
 import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
+import com.github.enteraname74.soulsearching.feature.playlistdetail.composable.PlaylistDetailPage
 import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain.SelectedMonthNavigationState
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
@@ -15,7 +16,7 @@ import org.koin.core.parameter.parametersOf
 @Serializable
 data class SelectedMonthDestination(
     val month: String,
-) : NavKey {
+) : PlaylistDetailPage {
     companion object {
         fun register(
             entryProviderScope: EntryProviderScope<NavKey>,

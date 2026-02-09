@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
 import androidx.compose.ui.text.intl.Locale
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
 import com.github.enteraname74.domain.ext.duration
 import com.github.enteraname74.domain.model.Music
 import kotlin.time.Duration
@@ -236,6 +237,10 @@ interface Strings {
     val greeneryTheme: String
     val treeBarkTheme: String
 
+    val extractedColorTitle: String
+    val extractedColorText: String
+    val extractedColorInfo: String
+
     val mainPageTitle: String
     val mainPageText: String
     val showQuickAccess: String
@@ -340,7 +345,7 @@ interface Strings {
      * Builds the title of the example part of the artist cover method screen.
      */
     fun artistCoverMethodExampleTitle(artist: String): String
-
+    fun colorPaletteSeed(seed: ColorPaletteSeed): String
     fun duration(musics: List<Music>): String {
         val totalDuration: Duration = musics.duration()
 

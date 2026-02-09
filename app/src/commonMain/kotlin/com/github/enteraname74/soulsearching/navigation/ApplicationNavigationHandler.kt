@@ -1,6 +1,8 @@
 package com.github.enteraname74.soulsearching.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -23,6 +25,8 @@ fun ApplicationNavigationHandler(
     val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
 
     NavDisplay(
+        modifier = Modifier
+            .fillMaxSize(),
         backStack = backStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
@@ -32,6 +36,12 @@ fun ApplicationNavigationHandler(
             if (!isLoading) {
                 navigator.goBack()
             }
+        },
+        transitionSpec = {
+            NavigationAnimations.default
+        },
+        popTransitionSpec = {
+            NavigationAnimations.default
         },
         entryProvider = entryProvider,
     )

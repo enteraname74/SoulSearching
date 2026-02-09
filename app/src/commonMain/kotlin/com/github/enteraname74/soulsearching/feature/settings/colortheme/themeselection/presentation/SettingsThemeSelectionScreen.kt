@@ -2,10 +2,13 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.themes
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Colorize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuElement
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingDarkLightThemes
@@ -19,6 +22,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SettingsThemeSelectionRoute(
     navigateBack: () -> Unit,
+    navigateToSeed: () -> Unit,
 ) {
     val viewModel: SettingsThemeSelectionViewModel = koinViewModel()
     val defaultThemeSettings: DefaultThemeSettings by viewModel.state.collectAsState()
@@ -29,6 +33,7 @@ fun SettingsThemeSelectionRoute(
         onThemeSelected = viewModel::selectTheme,
         setForceLightTheme = viewModel::forceLightTheme,
         setForceDarkTheme = viewModel::forceDarkTheme,
+        navigateToSeed = navigateToSeed,
     )
 }
 
@@ -36,6 +41,7 @@ fun SettingsThemeSelectionRoute(
 private fun DataScreen(
     defaultThemeSettings: DefaultThemeSettings,
     navigateBack: () -> Unit,
+    navigateToSeed: () -> Unit,
     setForceLightTheme: (Boolean) -> Unit,
     setForceDarkTheme: (Boolean) -> Unit,
     onThemeSelected: (themeId: SoulSearchingTheme) -> Unit,
@@ -44,6 +50,14 @@ private fun DataScreen(
         navigateBack = navigateBack,
         title = strings.themeSelectionTitle
     ) {
+        item {
+            SoulMenuElement(
+                title = strings.extractedColorTitle,
+                subTitle = strings.extractedColorText,
+                icon = Icons.Rounded.Colorize,
+                onClick = navigateToSeed,
+            )
+        }
         item {
             SoulMenuSwitch(
                 title = strings.forceLightThemeTitle,

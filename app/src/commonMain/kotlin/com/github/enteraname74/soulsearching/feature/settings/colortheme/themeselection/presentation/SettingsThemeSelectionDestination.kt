@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.colortheme.themes
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.Serializable
 
@@ -15,6 +16,9 @@ data object SettingsThemeSelectionDestination: SettingPage {
         entryProviderScope.entry<SettingsThemeSelectionDestination> {
             SettingsThemeSelectionRoute(
                 navigateBack = { navigator.goBack() },
+                navigateToSeed = {
+                    navigator.navigate(SettingsColorSeedDestination)
+                }
             )
         }
     }
