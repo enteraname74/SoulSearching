@@ -6,17 +6,22 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadata
 import android.media.session.PlaybackState
+import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.KeyEvent
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.core.graphics.scale
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManagerState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
-import androidx.core.graphics.scale
+import kotlinx.coroutines.launch
 
 /**
  * Manage media session related things.
@@ -24,9 +29,11 @@ import androidx.core.graphics.scale
 class MediaSessionManager(
     private val context: Context,
     private val playbackManager: PlaybackManager,
+    private val toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
 ) {
     private var mediaSession: MediaSessionCompat? = null
     private var seekToJob: Job? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val standardNotificationBitmap: Bitmap =
         BitmapFactory.decodeResource(context.resources, R.drawable.new_notification_default)
@@ -36,10 +43,16 @@ class MediaSessionManager(
         playbackState: PlaybackManagerState.Data,
     ): MediaSessionCompat.Token {
         if (mediaSession == null) {
-            init(playbackState.isPlaying)
+            init(
+                isPlaying = playbackState.isPlaying,
+                isFavorite = playbackState.isCurrentMusicInFavorite,
+            )
         } else {
             updateMetadata(playbackState)
-            updateState(playbackState.isPlaying)
+            updateState(
+                isPlaying = playbackState.isPlaying,
+                isFavorite = playbackState.isCurrentMusicInFavorite,
+            )
         }
         return mediaSession!!.sessionToken
     }
@@ -50,6 +63,7 @@ class MediaSessionManager(
     @Suppress("DEPRECATION")
     private fun init(
         isPlaying: Boolean,
+        isFavorite: Boolean,
     ) {
         mediaSession =
             MediaSessionCompat(context, context.packageName + "soulSearchingMediaSession")
@@ -95,8 +109,24 @@ class MediaSessionManager(
                     playbackManager.previous()
                 }
             }
+
+            override fun onCustomAction(action: String?, extras: Bundle?) {
+                super.onCustomAction(action, extras)
+                when (action) {
+                    FAVORITE_ACTION -> {
+                        playbackManager.currentSong.value?.musicId?.let {
+                            coroutineScope.launch {
+                                toggleMusicFavoriteStatusUseCase(musicId = it)
+                            }
+                        }
+                    }
+                }
+            }
         })
-        updateState(isPlaying = isPlaying)
+        updateState(
+            isPlaying = isPlaying,
+            isFavorite = isFavorite,
+        )
         mediaSession?.isActive = true
     }
 
@@ -158,13 +188,20 @@ class MediaSessionManager(
      * Update the state of the player's media session.
      */
     private fun updateState(
-        isPlaying: Boolean
+        isPlaying: Boolean,
+        isFavorite: Boolean,
     ) {
         val musicState = if (isPlaying) {
             PlaybackState.STATE_PLAYING
         } else {
             PlaybackState.STATE_PAUSED
         }
+
+        val favoriteCustomAction = PlaybackStateCompat.CustomAction.Builder(
+            FAVORITE_ACTION,
+            FAVORITE_ACTION,
+            if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite
+        ).build()
 
         mediaSession?.setPlaybackState(
             PlaybackStateCompat.Builder()
@@ -176,6 +213,7 @@ class MediaSessionManager(
                             or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                             or PlaybackStateCompat.ACTION_PLAY_PAUSE
                 )
+                .addCustomAction(favoriteCustomAction)
                 .setState(
                     musicState,
                     playbackManager.getMusicPosition().toLong(),
@@ -186,6 +224,7 @@ class MediaSessionManager(
     }
 
     companion object {
-        private const val DEFAULT_NOTIFICATION_SIZE = 300
+        private const val DEFAULT_NOTIFICATION_SIZE: Int = 300
+        private const val FAVORITE_ACTION: String = "FAVORITE_ACTION"
     }
 }

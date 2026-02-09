@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.github.enteraname74.soulsearching.features.playback.notification.impl.SoulSearchingAndroidNotification
+import com.github.enteraname74.soulsearching.features.playback.notification.impl.SoulSearchingNotificationBelowAndroid13
 
 /**
  * Receiver for playing the previous song in the queue.
@@ -11,7 +12,7 @@ import com.github.enteraname74.soulsearching.features.playback.notification.impl
 class PreviousMusicNotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         val intentForNotification = Intent(SoulSearchingAndroidNotification.BROADCAST_NOTIFICATION)
-        intentForNotification.putExtra(SoulSearchingAndroidNotification.PREVIOUS, true)
+        intentForNotification.putExtra(SoulSearchingNotificationBelowAndroid13.PREVIOUS, true)
         context.sendBroadcast(intentForNotification)
     }
 }
