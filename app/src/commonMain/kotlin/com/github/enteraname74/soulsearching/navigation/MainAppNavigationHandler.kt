@@ -1,9 +1,13 @@
 package com.github.enteraname74.soulsearching.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.*
 import androidx.navigation3.ui.NavDisplay
+import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
+import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.feature.editableelement.ModifyElementNavigationHandler
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.MainPageDestination
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceDestination
@@ -14,8 +18,10 @@ import com.github.enteraname74.soulsearching.feature.settings.SettingsNavigation
 fun MainAppNavigationHandler(
     backStack: NavBackStack<NavKey>,
     navigator: Navigator,
+    loadingManager: LoadingManager = injectElement(),
 ) {
     val entryProvider = buildEntryProvider(navigator = navigator)
+    val isLoading: Boolean by loadingManager.state.collectAsStateWithLifecycle()
 
     NavDisplay(
         backStack = backStack,
@@ -23,8 +29,12 @@ fun MainAppNavigationHandler(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
+        onBack = {
+            if (!isLoading) {
+                navigator.goBack()
+            }
+        },
         predictivePopTransitionSpec = { NavigationAnimations.predictivePop },
-        onBack = navigator::goBack,
         entryProvider = entryProvider,
     )
 }
