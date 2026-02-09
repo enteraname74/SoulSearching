@@ -1,8 +1,8 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced
 
 import androidx.compose.runtime.Composable
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
@@ -39,9 +39,13 @@ class SettingsAdvancedViewModel(
     private val coverFileManager: CoverFileManager,
     private val playbackManager: PlaybackManager,
     private val settings: SoulSearchingSettings,
-) : ScreenModel {
+    destination: SettingsAdvancedDestination
+) : ViewModel() {
+    private val focusedElement = destination.focusedElement
     private val _state: MutableStateFlow<SettingsAdvancedState> = MutableStateFlow(
-        SettingsAdvancedState()
+        SettingsAdvancedState(
+            focusedElement = focusedElement,
+        )
     )
     val state: StateFlow<SettingsAdvancedState> = _state.asStateFlow()
 
@@ -54,7 +58,7 @@ class SettingsAdvancedViewModel(
             isGitHubReleaseFetchPermissionEnabled = githubPermission,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = SettingsAdvancedPermissionState(
             isLyricsPermissionEnabled = settings.get(SoulSearchingSettingsKeys.Player.IS_REMOTE_LYRICS_FETCH_ENABLED),
@@ -118,6 +122,10 @@ class SettingsAdvancedViewModel(
 
             SettingsAdvancedAction.ShowGitHubReleasePermissionDialog -> {
                 showGitHubReleasePermissionDialog()
+            }
+
+            SettingsAdvancedAction.NavigateBack -> {
+                _navigationState.value = SettingsAdvancedNavigationState.NavigateBack
             }
         }
     }
@@ -203,7 +211,9 @@ class SettingsAdvancedViewModel(
                 checkAndReloadArtists()
                 checkAndReloadAlbums()
                 checkAndReloadPlaylists()
-                _state.value = SettingsAdvancedState()
+                _state.value = SettingsAdvancedState(
+                    focusedElement = focusedElement,
+                )
             }
         }
     }

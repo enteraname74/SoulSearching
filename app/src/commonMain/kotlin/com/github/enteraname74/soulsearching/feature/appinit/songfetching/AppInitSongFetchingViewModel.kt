@@ -1,6 +1,6 @@
 package com.github.enteraname74.soulsearching.feature.appinit.songfetching
 
-import cafe.adriel.voyager.core.model.ScreenModel
+import androidx.lifecycle.ViewModel
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingNavigationState
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.state.AppInitSongFetchingState
 import com.github.enteraname74.soulsearching.features.musicmanager.fetching.MusicFetcher
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class AppInitSongFetchingViewModel(
     private val musicFetcher: MusicFetcher
-) : ScreenModel {
+) : ViewModel() {
     private val _state: MutableStateFlow<AppInitSongFetchingState> = MutableStateFlow(
         AppInitSongFetchingState(
             currentProgression = 0f,

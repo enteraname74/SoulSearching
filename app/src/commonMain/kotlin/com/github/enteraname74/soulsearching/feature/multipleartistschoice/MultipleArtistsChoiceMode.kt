@@ -4,6 +4,7 @@ import com.github.enteraname74.domain.model.Artist
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.SerializersModuleBuilder
 
 @Serializable
 sealed interface MultipleArtistsChoiceMode {
@@ -25,28 +26,35 @@ sealed interface MultipleArtistsChoiceMode {
         )
 
     companion object {
+        fun serializerModule(
+            serializerModuleBuilder: SerializersModuleBuilder,
+        ) {
+            with(serializerModuleBuilder) {
+                polymorphic(
+                    MultipleArtistsChoiceMode::class,
+                    InitialFetch::class,
+                    InitialFetch.serializer(),
+                )
+                polymorphic(
+                    MultipleArtistsChoiceMode::class,
+                    GeneralCheck::class,
+                    GeneralCheck.serializer(),
+                )
+                polymorphic(
+                    MultipleArtistsChoiceMode::class,
+                    NewSongs::class,
+                    NewSongs.serializer(),
+                )
+            }
+        }
         private val jsonSerializer: Json
             get() = Json {
                 serializersModule = SerializersModule {
-                    polymorphic(
-                        MultipleArtistsChoiceMode::class,
-                        InitialFetch::class,
-                        InitialFetch.serializer(),
-                    )
-                    polymorphic(
-                        MultipleArtistsChoiceMode::class,
-                        GeneralCheck::class,
-                        GeneralCheck.serializer(),
-                    )
-                    polymorphic(
-                        MultipleArtistsChoiceMode::class,
-                        NewSongs::class,
-                        NewSongs.serializer(),
+                    serializerModule(
+                        serializerModuleBuilder = this,
                     )
                 }
             }
-
-
 
         fun deserialize(string: String): MultipleArtistsChoiceMode =
             jsonSerializer.decodeFromString(

@@ -34,6 +34,7 @@ import com.github.enteraname74.soulsearching.feature.player.presentation.screen.
 import com.github.enteraname74.soulsearching.theme.ColorThemeManager
 import com.github.enteraname74.soulsearching.theme.orDefault
 import kotlinx.coroutines.launch
+import java.util.UUID
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -42,9 +43,9 @@ import kotlin.math.roundToInt
 @Composable
 fun PlayerDraggableView(
     maxHeight: Float,
-    navigateToAlbum: (String) -> Unit,
-    navigateToArtist: (String) -> Unit,
-    navigateToModifyMusic: (String) -> Unit,
+    navigateToAlbum: (UUID) -> Unit,
+    navigateToArtist: (UUID) -> Unit,
+    navigateToModifyMusic: (UUID) -> Unit,
     navigateToRemoteLyricsSettings: () -> Unit,
     playerViewModel: PlayerViewModel,
     colorThemeManager: ColorThemeManager = injectElement(),
@@ -89,20 +90,20 @@ fun PlayerDraggableView(
                     playerViewManager.animateTo(newState = BottomSheetStates.MINIMISED)
                 }.invokeOnCompletion {
                     val selectedMusic = (navigationState as PlayerNavigationState.ToModifyMusic).music
-                    navigateToModifyMusic(selectedMusic.musicId.toString())
+                    navigateToModifyMusic(selectedMusic.musicId)
                     playerViewModel.consumeNavigation()
                 }
             }
 
             is PlayerNavigationState.ToAlbum -> {
                 val albumId = (navigationState as? PlayerNavigationState.ToAlbum)?.albumId ?: return@LaunchedEffect
-                navigateToAlbum(albumId.toString())
+                navigateToAlbum(albumId)
                 playerViewModel.consumeNavigation()
             }
 
             is PlayerNavigationState.ToArtist -> {
                 val artistId = (navigationState as? PlayerNavigationState.ToArtist)?.artistId ?: return@LaunchedEffect
-                navigateToArtist(artistId.toString())
+                navigateToArtist(artistId)
                 playerViewModel.consumeNavigation()
             }
 

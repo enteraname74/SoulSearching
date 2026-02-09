@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
@@ -22,7 +22,7 @@ class SettingsAllFoldersViewModel(
     private val commonArtistUseCase: CommonArtistUseCase,
     private val loadingManager: LoadingManager,
     private val playbackManager: PlaybackManager,
-): ScreenModel {
+): ViewModel() {
     private val isFetchingFolders: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val folders: MutableStateFlow<List<Folder>> = MutableStateFlow(emptyList())
     val state: StateFlow<FolderState> = combine(
@@ -34,7 +34,7 @@ class SettingsAllFoldersViewModel(
             else -> FolderState.Data(folders.sortedBy { it.folderPath })
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = FolderState.Fetching,
     )

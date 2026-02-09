@@ -9,13 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.domain.model.Folder
-import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.UiConstants
+import com.github.enteraname74.soulsearching.coreui.composable.SoulPlayerSpacer
 import com.github.enteraname74.soulsearching.coreui.list.LazyColumnCompat
 import com.github.enteraname74.soulsearching.coreui.menu.SoulMenuSwitch
 import com.github.enteraname74.soulsearching.coreui.strings.strings
@@ -23,31 +19,25 @@ import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingCol
 import com.github.enteraname74.soulsearching.coreui.topbar.SoulTopBar
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarNavigationAction
 import com.github.enteraname74.soulsearching.coreui.topbar.TopBarValidateAction
-import com.github.enteraname74.soulsearching.feature.settings.SettingPage
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.FolderState
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.domain.SettingsAllFoldersViewModel
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.composable.FolderStateComposable
+import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Represent the view of the used folders in the settings.
- */
-class SettingsUsedFoldersScreen : Screen, SettingPage {
-    @Composable
-    override fun Content() {
-        val screenModel = koinScreenModel<SettingsAllFoldersViewModel>()
-        val navigator = LocalNavigator.currentOrThrow
+@Composable
+fun SettingsUsedFoldersRoute(
+    navigateBack: () -> Unit,
+) {
+    val viewModel = koinViewModel<SettingsAllFoldersViewModel>()
 
-        val state: FolderState by screenModel.state.collectAsState()
+    val state: FolderState by viewModel.state.collectAsState()
 
-        SettingsUsedFoldersScreenView(
-            navigateBack = {
-                navigator.pop()
-            },
-            onSaveSelection = screenModel::saveSelection,
-            state = state,
-            setFolderSelectionStatus = screenModel::setFolderSelectionStatus,
-        )
-    }
+    SettingsUsedFoldersScreenView(
+        navigateBack = navigateBack,
+        onSaveSelection = viewModel::saveSelection,
+        state = state,
+        setFolderSelectionStatus = viewModel::setFolderSelectionStatus,
+    )
 }
 
 @Composable

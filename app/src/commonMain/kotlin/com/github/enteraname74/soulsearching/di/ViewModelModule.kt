@@ -25,53 +25,56 @@ import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsA
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain.SettingsAboutViewModel
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.MultipleArtistsChoiceViewModel
 import com.github.enteraname74.soulsearching.feature.appinit.songfetching.AppInitSongFetchingViewModel
+import com.github.enteraname74.soulsearching.feature.migration.MigrationViewModel
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodViewModel
 import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreenViewModel
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val viewModelModule: Module = module {
     // Settings
-    factoryOf(::SettingsScreenViewModel)
-    factoryOf(::SettingsAddMusicsViewModel)
-    factoryOf(::SettingsAllFoldersViewModel)
-    factoryOf(::SettingsColorThemeViewModel)
-    factoryOf(::SettingsMainPagePersonalisationViewModel)
-    factoryOf(::SettingsPlayerPersonalisationViewModel)
-    factoryOf(::SettingsStatisticsViewModel)
-    factoryOf(::SettingsThemeSelectionViewModel)
-    factoryOf(::SettingsAdvancedViewModel)
-    factoryOf(::SettingsArtistCoverMethodViewModel)
-    factoryOf(::SettingsAboutViewModel)
+    viewModelOf(::SettingsScreenViewModel)
+    viewModelOf(::SettingsAddMusicsViewModel)
+    viewModelOf(::SettingsAllFoldersViewModel)
+    viewModelOf(::SettingsColorThemeViewModel)
+    viewModelOf(::SettingsMainPagePersonalisationViewModel)
+    viewModelOf(::SettingsPlayerPersonalisationViewModel)
+    viewModelOf(::SettingsStatisticsViewModel)
+    viewModelOf(::SettingsThemeSelectionViewModel)
+    viewModelOf(::SettingsAdvancedViewModel)
+    viewModelOf(::SettingsArtistCoverMethodViewModel)
+    viewModelOf(::SettingsAboutViewModel)
 
     // Main page
-    singleOf(::MainPageViewModel)
-    singleOf(::ApplicationViewModel)
+    viewModelOf(::MainPageViewModel)
+    viewModelOf(::ApplicationViewModel)
 
     // Song fetching and management
-    factoryOf(::AppInitSongFetchingViewModel)
-    factoryOf(::MultipleArtistsChoiceViewModel)
+    viewModelOf(::AppInitSongFetchingViewModel)
+    viewModelOf(::MultipleArtistsChoiceViewModel)
 
     // Modify elements
-    factoryOf(::ModifyAlbumViewModel)
-    factoryOf(::ModifyMusicViewModel)
-    factoryOf(::ModifyArtistViewModel)
-    factoryOf(::ModifyPlaylistViewModel)
+    viewModelOf(::ModifyAlbumViewModel)
+    viewModelOf(::ModifyMusicViewModel)
+    viewModelOf(::ModifyArtistViewModel)
+    viewModelOf(::ModifyPlaylistViewModel)
 
     // Selected elements
-    factoryOf(::SelectedAlbumViewModel)
-    factoryOf(::SelectedArtistViewModel)
-    factoryOf(::SelectedPlaylistViewModel)
-    factoryOf(::SelectedFolderViewModel)
-    factoryOf(::SelectedMonthViewModel)
+    viewModelOf(::SelectedAlbumViewModel)
+    viewModelOf(::SelectedArtistViewModel)
+    viewModelOf(::SelectedPlaylistViewModel)
+    viewModelOf(::SelectedFolderViewModel)
+    viewModelOf(::SelectedMonthViewModel)
 
     // Player
-    singleOf(::PlayerViewModel)
+    viewModelOf(::PlayerViewModel)
 
     // Other
     singleOf(::ColorThemeManager)
     singleOf(::ViewSettingsManager)
 
+    viewModelOf(::MigrationViewModel)
 }

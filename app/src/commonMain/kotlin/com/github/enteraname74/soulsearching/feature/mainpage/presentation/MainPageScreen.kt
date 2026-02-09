@@ -1,6 +1,8 @@
 @file:Suppress("Deprecation")
+
 package com.github.enteraname74.soulsearching.feature.mainpage.presentation
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,17 +13,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.SwipeableState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.koinScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.coreui.UiConstants
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -34,11 +30,6 @@ import com.github.enteraname74.soulsearching.coreui.utils.getNavigationBarPaddin
 import com.github.enteraname74.soulsearching.coreui.utils.rememberWindowSize
 import com.github.enteraname74.soulsearching.di.injectElement
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyalbum.presentation.ModifyAlbumScreen
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyartist.presentation.ModifyArtistScreen
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
-import com.github.enteraname74.soulsearching.feature.editableelement.modifyplaylist.presentation.ModifyPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
@@ -47,173 +38,62 @@ import com.github.enteraname74.soulsearching.feature.mainpage.presentation.compo
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageHorizontalShortcut
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.MainPageVerticalShortcut
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.folderpage.presentation.SelectedFolderScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.playlistpage.presentation.SelectedPlaylistScreen
 import com.github.enteraname74.soulsearching.feature.search.SearchAll
 import com.github.enteraname74.soulsearching.feature.search.SearchView
-import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
-import com.github.enteraname74.soulsearching.feature.settings.presentation.SettingsScreen
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
-/**
- * Represent the view of the main page screen.
- */
 @OptIn(ExperimentalMaterialApi::class)
-class MainPageScreen : Screen {
+@Composable
+fun MainPageRoute(
+    mainPageViewModel: MainPageViewModel = koinViewModel(),
+    onNavigation: (MainPageNavigationState) -> Unit,
+) {
+    val playerViewManager: PlayerViewManager = injectElement()
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+    val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
+    val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
+    val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
+    val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
 
-        val mainPageViewModel = koinScreenModel<MainPageViewModel>()
-        val playerViewManager: PlayerViewManager = injectElement()
+    val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
+    val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
+    val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
+    val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
 
-        val musicState: AllMusicsState by mainPageViewModel.allMusicsState.collectAsState()
-        val playlistState: AllPlaylistsState by mainPageViewModel.allPlaylistsState.collectAsState()
-        val albumState: AllAlbumsState by mainPageViewModel.allAlbumsState.collectAsState()
-        val artistState: AllArtistsState by mainPageViewModel.allArtistsState.collectAsState()
+    val searchDraggableState = mainPageViewModel.searchDraggableState
 
-        val tabs: List<PagerScreen> by mainPageViewModel.tabs.collectAsState()
-        val currentPage: ElementEnum? by mainPageViewModel.currentPage.collectAsState()
-        val isUsingVerticalAccessBar: Boolean by mainPageViewModel.isUsingVerticalAccessBar.collectAsState()
-        val shouldShowNewVersionPin: Boolean by mainPageViewModel.shouldShowNewVersionPin.collectAsState()
+    val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsState()
+    val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsState()
+    val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsState()
+    val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsState()
+    bottomSheetState?.BottomSheet()
+    addToPlaylistsBottomSheetState?.BottomSheet()
+    dialogState?.Dialog()
 
-        val searchDraggableState = mainPageViewModel.searchDraggableState
-
-        val bottomSheetState: SoulBottomSheet? by mainPageViewModel.bottomSheetState.collectAsState()
-        val addToPlaylistsBottomSheetState: AddToPlaylistBottomSheet? by mainPageViewModel.addToPlaylistsBottomSheetState.collectAsState()
-        val dialogState: SoulDialog? by mainPageViewModel.dialogState.collectAsState()
-        val navigationState: MainPageNavigationState by mainPageViewModel.navigationState.collectAsState()
-        bottomSheetState?.BottomSheet()
-        addToPlaylistsBottomSheetState?.BottomSheet()
-        dialogState?.Dialog()
-
-        LaunchedEffect(playerViewManager.currentValue) {
-            if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
-                mainPageViewModel.clearMultiSelection()
-            }
+    LaunchedEffect(playerViewManager.currentValue) {
+        if (playerViewManager.currentValue == BottomSheetStates.EXPANDED) {
+            mainPageViewModel.clearMultiSelection()
         }
-
-        LaunchedEffect(navigationState) {
-            handleMainPageNavigation(
-                navigator = navigator,
-                navigationState = navigationState,
-                consumeNavigation = mainPageViewModel::consumeNavigation,
-            )
-        }
-
-        MainPageScreenView(
-            mainPageViewModel = mainPageViewModel,
-            navigateToPlaylist = { playlistId ->
-                navigator.safePush(
-                    SelectedPlaylistScreen(selectedPlaylistId = playlistId)
-                )
-            },
-            navigateToAlbum = { albumId ->
-                navigator.safePush(
-                    SelectedAlbumScreen(selectedAlbumId = albumId)
-                )
-            },
-            navigateToArtist = { artistId ->
-                navigator.safePush(
-                    SelectedArtistScreen(selectedArtistId = artistId)
-                )
-            },
-            navigateToSettings = {
-                navigator.safePush(
-                    SettingsScreen()
-                )
-            },
-            searchDraggableState = searchDraggableState,
-            musicState = musicState,
-            allPlaylistsState = playlistState,
-            allAlbumsState = albumState,
-            allArtistsState = artistState,
-            tabs = tabs,
-            currentEnumPage = currentPage,
-            isUsingVerticalAccessBar = isUsingVerticalAccessBar,
-            shouldShowNewVersionPin = shouldShowNewVersionPin,
-        )
     }
 
-
-    private fun handleMainPageNavigation(
-        navigator: Navigator,
-        navigationState: MainPageNavigationState,
-        consumeNavigation: () -> Unit,
-    ) {
-        when (navigationState) {
-            MainPageNavigationState.Idle -> {
-                /*no-op*/
-            }
-
-            is MainPageNavigationState.ToAlbum -> {
-                navigator.safePush(
-                    SelectedAlbumScreen(selectedAlbumId = navigationState.albumId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToArtist -> {
-                navigator.safePush(
-                    SelectedArtistScreen(selectedArtistId = navigationState.artistId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToFolder -> {
-                navigator.safePush(
-                    SelectedFolderScreen(folderPath = navigationState.folderPath)
-                )
-            }
-
-            is MainPageNavigationState.ToModifyAlbum -> {
-                navigator.safePush(
-                    ModifyAlbumScreen(selectedAlbumId = navigationState.albumId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToModifyArtist -> {
-                navigator.safePush(
-                    ModifyArtistScreen(selectedArtistId = navigationState.artistId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToModifyMusic -> {
-                navigator.safePush(
-                    ModifyMusicScreen(selectedMusicId = navigationState.musicId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToModifyPlaylist -> {
-                navigator.safePush(
-                    ModifyPlaylistScreen(selectedPlaylistId = navigationState.playlistId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToMonth -> {
-                navigator.safePush(
-                    SelectedMonthScreen(month = navigationState.month)
-                )
-            }
-
-            is MainPageNavigationState.ToPlaylist -> {
-                navigator.safePush(
-                    SelectedPlaylistScreen(selectedPlaylistId = navigationState.playlistId.toString())
-                )
-            }
-
-            is MainPageNavigationState.ToAdvancedSettings -> {
-                navigator.safePush(
-                    SettingsAdvancedScreen(
-                        focusedElement = navigationState.focusedElement,
-                    )
-                )
-            }
-        }
-        consumeNavigation()
+    LaunchedEffect(navigationState) {
+        onNavigation(navigationState)
+        mainPageViewModel.consumeNavigation()
     }
+
+    MainPageScreenView(
+        mainPageViewModel = mainPageViewModel,
+        searchDraggableState = searchDraggableState,
+        musicState = musicState,
+        allPlaylistsState = playlistState,
+        allAlbumsState = albumState,
+        allArtistsState = artistState,
+        tabs = tabs,
+        currentEnumPage = currentPage,
+        isUsingVerticalAccessBar = isUsingVerticalAccessBar,
+        shouldShowNewVersionPin = shouldShowNewVersionPin,
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -221,10 +101,6 @@ class MainPageScreen : Screen {
 @Suppress("Deprecation")
 fun MainPageScreenView(
     mainPageViewModel: MainPageViewModel,
-    navigateToPlaylist: (playlistId: String) -> Unit,
-    navigateToAlbum: (albumId: String) -> Unit,
-    navigateToArtist: (artistId: String) -> Unit,
-    navigateToSettings: () -> Unit,
     searchDraggableState: SwipeableState<BottomSheetStates>,
     musicState: AllMusicsState,
     allPlaylistsState: AllPlaylistsState,
@@ -273,7 +149,7 @@ fun MainPageScreenView(
             ) {
                 MainMenuHeaderComposable(
                     shouldShowNewReleasePin = shouldShowNewVersionPin,
-                    settingsAction = navigateToSettings,
+                    settingsAction = mainPageViewModel::toSettings,
                     searchAction = {
                         coroutineScope.launch {
                             searchDraggableState.animateTo(
@@ -371,9 +247,9 @@ fun MainPageScreenView(
                     onSelectedAlbumForBottomSheet = mainPageViewModel::showAlbumBottomSheet,
                     onSelectedPlaylistForBottomSheet = mainPageViewModel::showPlaylistBottomSheet,
                     onSelectedArtistForBottomSheet = mainPageViewModel::showArtistBottomSheet,
-                    navigateToPlaylist = navigateToPlaylist,
-                    navigateToArtist = navigateToArtist,
-                    navigateToAlbum = navigateToAlbum,
+                    navigateToPlaylist = mainPageViewModel::toPlaylist,
+                    navigateToArtist = mainPageViewModel::toArtist,
+                    navigateToAlbum = mainPageViewModel::toAlbum,
                     isMainPlaylist = false,
                     focusManager = focusManager,
                 )

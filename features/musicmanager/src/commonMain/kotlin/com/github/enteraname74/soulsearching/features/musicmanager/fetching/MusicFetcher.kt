@@ -9,7 +9,6 @@ import org.koin.core.component.KoinComponent
 /**
  * Utilities for fetching musics on current device.
  */
-// TODO: Fix support for album artist
 abstract class MusicFetcher : KoinComponent {
     /**
      * Fetch all musics on the device.

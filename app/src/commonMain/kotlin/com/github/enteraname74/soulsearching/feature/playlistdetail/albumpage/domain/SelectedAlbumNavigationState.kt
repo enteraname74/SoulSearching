@@ -1,11 +1,11 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.domain
 
-import com.github.enteraname74.domain.model.Music
-import java.util.UUID
+import java.util.*
 
 sealed interface SelectedAlbumNavigationState {
     data object Idle: SelectedAlbumNavigationState
-    data class ToModifyMusic(val music: Music): SelectedAlbumNavigationState
-    data object ToEdit: SelectedAlbumNavigationState
+    data class ToModifyMusic(val musicId: UUID): SelectedAlbumNavigationState
+    data class ToEdit(val albumId: UUID): SelectedAlbumNavigationState
     data class ToArtist(val artistId: UUID): SelectedAlbumNavigationState
+    data object Back: SelectedAlbumNavigationState
 }

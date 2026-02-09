@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.domain.model.ViewSettingsManager
@@ -13,7 +13,7 @@ import kotlinx.coroutines.plus
 class SettingsMainPagePersonalisationViewModel(
     private val settings: SoulSearchingSettings,
     viewSettingsManager: ViewSettingsManager,
-) : ScreenModel {
+) : ViewModel() {
     val state: StateFlow<SettingsMainPagePersonalisationState> = combine(
         viewSettingsManager.visibleElements,
         settings.getFlowOn(SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR),
@@ -23,7 +23,7 @@ class SettingsMainPagePersonalisationViewModel(
             isUsingVerticalAccessBar = isUsingVerticalAccess,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = SettingsMainPagePersonalisationState.Loading
     )

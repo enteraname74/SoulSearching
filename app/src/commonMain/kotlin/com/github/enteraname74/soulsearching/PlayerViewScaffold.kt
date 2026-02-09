@@ -8,24 +8,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import cafe.adriel.voyager.navigator.Navigator
 import com.github.enteraname74.soulsearching.coreui.theme.color.SoulSearchingColorTheme
 import com.github.enteraname74.soulsearching.di.injectElement
-import com.github.enteraname74.soulsearching.ext.safePush
-import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicScreen
+import com.github.enteraname74.soulsearching.feature.editableelement.modifymusic.presentation.ModifyMusicDestination
 import com.github.enteraname74.soulsearching.feature.player.domain.PlayerViewModel
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.player.presentation.PlayerDraggableView
-import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumScreen
-import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistScreen
-import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreen
+import com.github.enteraname74.soulsearching.feature.playlistdetail.albumpage.presentation.SelectedAlbumDestination
+import com.github.enteraname74.soulsearching.feature.playlistdetail.artistpage.presentation.SelectedArtistDestination
+import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
+import com.github.enteraname74.soulsearching.navigation.Navigator
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PlayerViewScaffold(
     playerViewModel: PlayerViewModel,
-    generalNavigator: Navigator?,
+    navigator: Navigator,
     playerViewManager: PlayerViewManager = injectElement(),
     content: @Composable () -> Unit,
 ) {
@@ -54,25 +53,25 @@ fun PlayerViewScaffold(
         PlayerDraggableView(
             maxHeight = maxHeight,
             navigateToAlbum = { albumId ->
-                generalNavigator?.safePush(
-                    SelectedAlbumScreen(selectedAlbumId = albumId)
+                navigator.navigate(
+                    SelectedAlbumDestination(selectedAlbumId = albumId)
                 )
             },
             navigateToArtist = { artistId ->
-                generalNavigator?.safePush(
-                    SelectedArtistScreen(selectedArtistId = artistId)
+                navigator.navigate(
+                    SelectedArtistDestination(selectedArtistId = artistId)
                 )
             },
             navigateToModifyMusic = { musicId ->
-                generalNavigator?.safePush(
-                    ModifyMusicScreen(
+                navigator.navigate(
+                    ModifyMusicDestination(
                         selectedMusicId = musicId
                     )
                 )
             },
             navigateToRemoteLyricsSettings = {
-                generalNavigator?.safePush(
-                    SettingsAdvancedScreen(
+                navigator.navigate(
+                    SettingsAdvancedDestination(
                         focusedElement = SettingsAdvancedScreenFocusedElement.LyricsPermission,
                     )
                 )

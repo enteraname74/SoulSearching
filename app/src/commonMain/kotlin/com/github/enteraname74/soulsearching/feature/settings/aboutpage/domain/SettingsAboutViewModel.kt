@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.aboutpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
 import com.github.enteraname74.soulsearching.ext.isNewerThanCurrentVersion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.stateIn
 
 class SettingsAboutViewModel(
     private val commonReleaseUseCase: CommonReleaseUseCase,
-): ScreenModel {
+): ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<SettingsAboutState> = commonReleaseUseCase.getLatest().mapLatest { latestRelease ->
@@ -22,7 +22,7 @@ class SettingsAboutViewModel(
             }
         )
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SettingsAboutState(
             moreRecentRelease = null,

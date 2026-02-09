@@ -60,7 +60,6 @@ kotlin {
 
                 implementation(libs.jaudiotagger)
                 implementation(libs.androidx.annotation)
-                implementation(libs.bundles.voyager)
 
                 implementation(libs.coroutines.core)
 
@@ -70,6 +69,10 @@ kotlin {
                 implementation(libs.coil.compose)
 
                 implementation(libs.reorderable)
+
+                implementation(libs.androidx.navigation3.runtime)
+                implementation(libs.androidx.navigation3.ui)
+                implementation(libs.androidx.lifecycle.viewmodel.navigation3)
             }
         }
         androidMain {

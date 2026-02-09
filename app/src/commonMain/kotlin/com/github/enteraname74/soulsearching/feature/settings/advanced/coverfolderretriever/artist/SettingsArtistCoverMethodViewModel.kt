@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.CoverFolderRetriever
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
@@ -18,7 +18,7 @@ import kotlinx.coroutines.plus
 class SettingsArtistCoverMethodViewModel(
     settings: SoulSearchingSettings,
     private val artistCoverFolderRetrieverViewModelDelegate: ArtistCoverFolderRetrieverViewModelDelegate,
-): ScreenModel, CoverFolderRetrieverActions by artistCoverFolderRetrieverViewModelDelegate {
+): ViewModel(), CoverFolderRetrieverActions by artistCoverFolderRetrieverViewModelDelegate {
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<CoverFolderRetrieverState> = settings.getFlowOn(
         settingElement = SoulSearchingSettingsKeys.Cover.ARTIST_COVER_FOLDER_RETRIEVER
@@ -32,7 +32,7 @@ class SettingsArtistCoverMethodViewModel(
             coverFolderRetriever = deserialized,
         )
     }.stateIn(
-        scope = screenModelScope.plus(Dispatchers.IO),
+        scope = viewModelScope.plus(Dispatchers.IO),
         started = SharingStarted.Eagerly,
         initialValue = CoverFolderRetrieverState(
             coverFolderRetriever = CoverFolderRetriever.default,

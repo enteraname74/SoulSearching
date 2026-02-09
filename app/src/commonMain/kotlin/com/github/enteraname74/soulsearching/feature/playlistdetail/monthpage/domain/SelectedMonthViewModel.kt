@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.domain
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.usecase.month.GetMonthMusicListUseCase
@@ -20,6 +20,7 @@ import com.github.enteraname74.soulsearching.coreui.multiselection.MultiSelectio
 import com.github.enteraname74.soulsearching.domain.model.types.MusicBottomSheetState
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.PlaylistDetailListener
 import com.github.enteraname74.soulsearching.feature.playlistdetail.domain.toPlaylistDetail
+import com.github.enteraname74.soulsearching.feature.playlistdetail.monthpage.presentation.SelectedMonthDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -29,10 +30,11 @@ class SelectedMonthViewModel(
     commonPlaylistUseCase: CommonPlaylistUseCase,
     private val commonMusicUseCase: CommonMusicUseCase,
     private val musicBottomSheetDelegateImpl: MusicBottomSheetDelegateImpl,
-    private val getMonthMusicListUseCase: GetMonthMusicListUseCase,
+    getMonthMusicListUseCase: GetMonthMusicListUseCase,
     private val multiMusicBottomSheetDelegateImpl: MultiMusicBottomSheetDelegateImpl,
     val multiSelectionManagerImpl: MultiSelectionManagerImpl,
-) : ScreenModel,
+    destination: SelectedMonthDestination,
+) : ViewModel(),
     PlaylistDetailListener,
     MusicBottomSheetDelegate by musicBottomSheetDelegateImpl,
     MultiMusicBottomSheetDelegate by multiMusicBottomSheetDelegateImpl,
@@ -40,36 +42,30 @@ class SelectedMonthViewModel(
 
     val multiSelectionState = multiSelectionManagerImpl.state
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = MultiSelectionState(emptyList()),
         )
 
-    private val _month: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val month: String = destination.month
 
     private val allPlaylists: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
         .stateIn(
-            scope = screenModelScope,
+            scope = viewModelScope,
             started = SharingStarted.Eagerly,
             initialValue = emptyList(),
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var state = _month.flatMapLatest { month ->
-        if (month == null) {
-            flowOf(SelectedMonthState.Loading)
-        } else {
-            getMonthMusicListUseCase(month = month).mapLatest { monthMusicList ->
-                when {
-                    monthMusicList == null -> SelectedMonthState.Error
-                    else -> SelectedMonthState.Data(
-                        playlistDetail = monthMusicList.toPlaylistDetail(),
-                    )
-                }
-            }
+    var state = getMonthMusicListUseCase(month = month).mapLatest { monthMusicList ->
+        when {
+            monthMusicList == null -> SelectedMonthState.Error
+            else -> SelectedMonthState.Data(
+                playlistDetail = monthMusicList.toPlaylistDetail(),
+            )
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = SelectedMonthState.Loading,
     )
@@ -92,7 +88,7 @@ class SelectedMonthViewModel(
         musicBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyMusic = { _navigationState.value = SelectedMonthNavigationState.ToModifyMusic(it) },
+            onModifyMusic = { _navigationState.value = SelectedMonthNavigationState.ToModifyMusic(it.musicId) },
             getAllPlaylistsWithMusics = { allPlaylists.value },
             setAddToPlaylistBottomSheetState = { _addToPlaylistBottomSheet.value = it },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
@@ -112,17 +108,10 @@ class SelectedMonthViewModel(
         _navigationState.value = SelectedMonthNavigationState.Idle
     }
 
-    /**
-     * Set the selected playlist.
-     */
-    fun init(month: String) {
-        _month.value = month
-    }
-
     override val onEdit: (() -> Unit)? = null
 
     override fun onUpdateNbPlayed(musicId: UUID) {
-        screenModelScope.launch {
+        viewModelScope.launch {
             commonMusicUseCase.incrementNbPlayed(musicId = musicId)
         }
     }
@@ -140,7 +129,7 @@ class SelectedMonthViewModel(
     }
 
     private fun handleMultiSelectionBottomSheet() {
-        screenModelScope.launch {
+        viewModelScope.launch {
             val selectedIds = multiSelectionState.value.selectedIds
             if (selectedIds.size == 1) {
                 val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return@launch
@@ -149,5 +138,9 @@ class SelectedMonthViewModel(
                 showMultiMusicBottomSheet()
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = SelectedMonthNavigationState.Back
     }
 }

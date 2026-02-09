@@ -13,4 +13,5 @@ sealed interface SettingsAdvancedAction {
     data object ShowGitHubReleasePermissionDialog: SettingsAdvancedAction
     data object ToggleExpandReloadImage: SettingsAdvancedAction
     data object ReloadImages: SettingsAdvancedAction
+    data object NavigateBack: SettingsAdvancedAction
 }

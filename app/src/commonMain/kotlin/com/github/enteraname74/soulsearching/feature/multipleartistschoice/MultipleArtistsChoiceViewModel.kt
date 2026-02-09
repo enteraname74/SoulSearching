@@ -1,7 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.multipleartistschoice
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.soulsearching.coreui.loading.LoadingManager
 import com.github.enteraname74.soulsearching.feature.multipleartistschoice.state.ArtistChoice
@@ -14,14 +14,19 @@ import com.github.enteraname74.soulsearching.features.musicmanager.multipleartis
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.FetchAllMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.multipleartists.RepositoryMultipleArtistManagerImpl
 import com.github.enteraname74.soulsearching.features.musicmanager.persistence.MusicPersistence
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class MultipleArtistsChoiceViewModel(
     private val musicFetcher: MusicFetcher,
     private val loadingManager: LoadingManager,
     private val multipleArtistListener: MultipleArtistListener,
-): ScreenModel {
+    destination: MultipleArtistsChoiceDestination,
+): ViewModel() {
+    val mode = destination.mode
     private val artists: MutableStateFlow<List<ArtistChoice>?> = MutableStateFlow(null)
     private val toggleState: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
@@ -43,7 +48,7 @@ class MultipleArtistsChoiceViewModel(
             else -> MultipleArtistChoiceState.Loading
         }
     }.stateIn(
-        scope = screenModelScope,
+        scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = MultipleArtistChoiceState.Loading,
     )
@@ -53,13 +58,7 @@ class MultipleArtistsChoiceViewModel(
     )
     val navigationState: StateFlow<MultipleArtistsChoiceNavigationState> = _navigationState.asStateFlow()
 
-    private var mode: MultipleArtistsChoiceMode = MultipleArtistsChoiceMode.InitialFetch
-
-    fun init(
-        mode: MultipleArtistsChoiceMode,
-    ) {
-        this.mode = mode
-
+    fun init() {
         CoroutineScope(Dispatchers.IO).launch {
             artists.value = when (mode) {
                 MultipleArtistsChoiceMode.GeneralCheck -> RepositoryMultipleArtistManagerImpl()
@@ -78,6 +77,10 @@ class MultipleArtistsChoiceViewModel(
                 multipleArtistListener.toStep(MultipleArtistHandlingStep.UserChoice)
             }
         }
+    }
+
+    fun navigateBack() {
+        _navigationState.value = MultipleArtistsChoiceNavigationState.NavigateBack
     }
 
     fun consumeNavigation() {
