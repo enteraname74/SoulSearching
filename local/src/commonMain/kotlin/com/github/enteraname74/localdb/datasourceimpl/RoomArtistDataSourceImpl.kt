@@ -159,4 +159,8 @@ internal class RoomArtistDataSourceImpl(
         appDatabase.artistDao.getStatisticsData().map { list ->
             list.map { it.toArtistPreview() }
         }
+
+    override suspend fun cleanAllCovers() {
+        appDatabase.artistDao.cleanAllCovers()
+    }
 }

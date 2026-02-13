@@ -68,8 +68,8 @@ class CommonAlbumUseCase(
         albumRepository.upsertAll(albums)
     }
 
-    suspend fun cleanAllMusicCovers() {
-        albumRepository.cleanAllMusicCovers()
+    suspend fun cleanAllCovers() {
+        albumRepository.cleanAllCovers()
     }
 
 }

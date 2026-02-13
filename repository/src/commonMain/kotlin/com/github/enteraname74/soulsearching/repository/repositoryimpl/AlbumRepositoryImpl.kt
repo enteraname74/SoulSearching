@@ -61,8 +61,8 @@ class AlbumRepositoryImpl(
     override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
         albumDataSource.getAllFromQuickAccess()
 
-    override suspend fun cleanAllMusicCovers() {
-        albumDataSource.cleanAllMusicCovers()
+    override suspend fun cleanAllCovers() {
+        albumDataSource.cleanAllCovers()
     }
 
     override suspend fun getDuplicatedAlbum(

@@ -92,4 +92,8 @@ class CommonArtistUseCase(
     suspend fun toggleCoverFolderMode(isActivated: Boolean) {
         artistRepository.toggleCoverFolderMode(isActivated)
     }
+
+    suspend fun cleanAllCovers() {
+        artistRepository.cleanAllCovers()
+    }
 }

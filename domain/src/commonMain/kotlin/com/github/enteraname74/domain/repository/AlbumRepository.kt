@@ -54,7 +54,7 @@ interface AlbumRepository {
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 
-    suspend fun cleanAllMusicCovers()
+    suspend fun cleanAllCovers()
 
     suspend fun getDuplicatedAlbum(
         albumId: UUID,

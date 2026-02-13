@@ -369,4 +369,7 @@ interface ArtistDao {
         """
     )
     fun getStatisticsData(): Flow<List<RoomArtistPreview>>
+
+    @Query("UPDATE RoomArtist SET coverId = NULL")
+    suspend fun cleanAllCovers()
 }

@@ -3,7 +3,6 @@ package com.github.enteraname74.soulsearching.feature.settings.advanced
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
@@ -275,22 +274,13 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadAlbums() {
         if (_state.value.shouldReloadAlbumsCovers) {
-            commonAlbumUseCase.cleanAllMusicCovers()
+            commonAlbumUseCase.cleanAllCovers()
         }
     }
 
     private suspend fun checkAndReloadArtists() {
         if (_state.value.shouldReloadArtistsCovers) {
-            val allArtists: List<Artist> = commonArtistUseCase.getAll().first()
-            commonArtistUseCase.upsertAll(
-                allArtists = allArtists.map { artist ->
-                    artist.cover?.ifCoverFile { coverFile ->
-                        artist.copy(
-                            cover = coverFile.copy(fileCoverId = null)
-                        )
-                    } ?: artist
-                }
-            )
+            commonArtistUseCase.cleanAllCovers()
         }
     }
 }

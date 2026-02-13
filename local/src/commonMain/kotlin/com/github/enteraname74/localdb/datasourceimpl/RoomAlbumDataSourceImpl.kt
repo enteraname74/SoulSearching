@@ -132,8 +132,8 @@ internal class RoomAlbumDataSourceImpl(
             list.map { it.toAlbumPreview() }
         }
 
-    override suspend fun cleanAllMusicCovers() {
-        appDatabase.albumDao.cleanAllMusicCovers()
+    override suspend fun cleanAllCovers() {
+        appDatabase.albumDao.cleanAllCovers()
     }
 
     override suspend fun getDuplicatedAlbum(

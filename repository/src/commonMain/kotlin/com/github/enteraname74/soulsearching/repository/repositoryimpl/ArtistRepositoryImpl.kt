@@ -100,4 +100,8 @@ class ArtistRepositoryImpl(
 
     override fun getStatisticsData(): Flow<List<ArtistPreview>> =
         artistDataSource.getStatisticsData()
+
+    override suspend fun cleanAllCovers() {
+        artistDataSource.cleanAllCovers()
+    }
 }

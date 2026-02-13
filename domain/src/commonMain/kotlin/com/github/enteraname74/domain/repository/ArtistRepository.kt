@@ -72,4 +72,6 @@ interface ArtistRepository {
     ): ArtistWithMusics?
 
     fun getStatisticsData(): Flow<List<ArtistPreview>>
+
+    suspend fun cleanAllCovers()
 }

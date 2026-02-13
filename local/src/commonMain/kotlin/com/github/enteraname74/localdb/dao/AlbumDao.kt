@@ -276,7 +276,7 @@ interface AlbumDao {
     fun getAllFromQuickAccess(): Flow<List<RoomAlbumPreview>>
 
     @Query("UPDATE RoomAlbum SET coverId = NULL")
-    suspend fun cleanAllMusicCovers()
+    suspend fun cleanAllCovers()
 
     @Transaction
     @Query(
