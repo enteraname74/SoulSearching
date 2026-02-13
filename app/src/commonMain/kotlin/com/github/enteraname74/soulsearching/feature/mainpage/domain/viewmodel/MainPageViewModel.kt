@@ -17,8 +17,6 @@ import com.github.enteraname74.domain.model.Playlist
 import com.github.enteraname74.domain.model.PlaylistWithMusics
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.model.QuickAccessible
-import com.github.enteraname74.domain.model.SortDirection
-import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -64,7 +62,6 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortingInformation
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
@@ -88,19 +85,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.cache
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -204,14 +197,9 @@ class MainPageViewModel(
             )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _musics: Flow<PagingData<Music>> = musicSortingInformation.flatMapLatest {
-        commonMusicUseCase
-            .getAllPaged(
-                sortDirection = it.direction,
-                sortType = it.type,
-            )
-            .cachedIn(viewModelScope)
-    }
+    private val _musics: Flow<PagingData<Music>> = commonMusicUseCase
+        .getAllPaged()
+        .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _artists = artistSortingInformation.flatMapLatest { sortingInformation ->

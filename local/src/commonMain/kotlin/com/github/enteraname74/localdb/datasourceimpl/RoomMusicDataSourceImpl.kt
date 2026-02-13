@@ -4,11 +4,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import androidx.room.useReaderConnection
 import androidx.room.useWriterConnection
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
+import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.ext.toRoomMusicArtists
 import com.github.enteraname74.localdb.model.toRoomAlbum
@@ -16,8 +17,9 @@ import com.github.enteraname74.localdb.model.toRoomArtist
 import com.github.enteraname74.localdb.model.toRoomMusic
 import com.github.enteraname74.localdb.utils.PagingUtils
 import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 
@@ -25,7 +27,8 @@ import java.util.UUID
  * Implementation of the MusicDataSource with Room's DAO.
  */
 internal class RoomMusicDataSourceImpl(
-    private val appDatabase: AppDatabase
+    private val appDatabase: AppDatabase,
+    private val settings: SoulSearchingSettings,
 ) : MusicDataSource {
     override suspend fun upsert(music: Music) {
         appDatabase.useWriterConnection {
@@ -102,35 +105,40 @@ internal class RoomMusicDataSourceImpl(
             list.map { it.toMusic() }
         }
 
-    override fun getAllPaged(
-        sortDirection: SortDirection,
-        sortType: SortType,
-    ): Flow<PagingData<Music>> =
-        Pager(
-            config = PagingConfig(
-                pageSize = PagingUtils.PAGE_SIZE,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = {
-                when(sortDirection) {
-                    SortDirection.ASC -> {
-                        when (sortType) {
-                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
-                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
-                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getAllPaged(): Flow<PagingData<Music>> =
+        settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_DIRECTION_KEY).flatMapLatest { direction ->
+            settings.getFlowOn(SoulSearchingSettingsKeys.Sort.SORT_MUSICS_TYPE_KEY).flatMapLatest { type ->
+                val sortDirection = SortDirection.from(direction) ?: SortDirection.DEFAULT
+                val sortType = SortType.from(type) ?: SortType.DEFAULT
+
+                Pager(
+                    config = PagingConfig(
+                        pageSize = PagingUtils.PAGE_SIZE,
+                        enablePlaceholders = false,
+                    ),
+                    pagingSourceFactory = {
+                        when(sortDirection) {
+                            SortDirection.ASC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameAsc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateAsc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedAsc()
+                                }
+                            }
+                            SortDirection.DESC -> {
+                                when (sortType) {
+                                    SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
+                                    SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
+                                    SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
+                                }
+                            }
                         }
                     }
-                    SortDirection.DESC -> {
-                        when (sortType) {
-                            SortType.NAME -> appDatabase.musicDao.getAllPagedByNameDesc()
-                            SortType.ADDED_DATE -> appDatabase.musicDao.getAllPagedByDateDesc()
-                            SortType.NB_PLAYED -> appDatabase.musicDao.getAllPagedByNbPlayedDesc()
-                        }
-                    }
+                ).flow.map { pagingData ->
+                    pagingData.map { it.toMusic() }
                 }
             }
-        ).flow.map { pagingData ->
-            pagingData.map { it.toMusic() }
         }
 
     override suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music> =

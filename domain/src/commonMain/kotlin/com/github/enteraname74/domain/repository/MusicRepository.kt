@@ -1,9 +1,9 @@
 package com.github.enteraname74.domain.repository
 
 import androidx.paging.PagingData
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 interface MusicRepository {
 
@@ -38,10 +38,7 @@ interface MusicRepository {
 
     fun getAllFromQuickAccess(): Flow<List<Music>>
 
-    fun getAllPaged(
-        sortDirection: SortDirection,
-        sortType: SortType,
-    ): Flow<PagingData<Music>>
+    fun getAllPaged(): Flow<PagingData<Music>>
 
     /**
      * Retrieves all musics of an Album.

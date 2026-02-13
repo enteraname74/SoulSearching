@@ -1,12 +1,26 @@
 package com.github.enteraname74.localdb
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.github.enteraname74.localdb.datasourceimpl.*
+import com.github.enteraname74.localdb.datasourceimpl.RoomAlbumDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomArtistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomFolderDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomMusicArtistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomMusicDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomMusicPlaylistDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomPlayerMusicDataSourceImpl
+import com.github.enteraname74.localdb.datasourceimpl.RoomPlaylistDataSourceImpl
 import com.github.enteraname74.localdb.migration.EndMigrationCallback
 import com.github.enteraname74.localdb.migration.Migration16To17
 import com.github.enteraname74.localdb.migration.Migration17To18
 import com.github.enteraname74.localdb.migration.Migration18To19
-import com.github.enteraname74.soulsearching.repository.datasource.*
+import com.github.enteraname74.soulsearching.repository.datasource.AlbumDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.FolderDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.MusicArtistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.MusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.MusicPlaylistDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.PlayerMusicDataSource
+import com.github.enteraname74.soulsearching.repository.datasource.PlaylistDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
@@ -25,7 +39,7 @@ private fun Scope.getAppDatabase(builder: RoomPlatformBuilder, dispatcher: Corou
             Migration17To18,
             Migration18To19(
                 musicMetadataHelper = get(),
-            )
+            ),
         )
         .addCallback(
             EndMigrationCallback(
@@ -50,7 +64,7 @@ val localModule: Module = module {
     single<ArtistDataSource> { RoomArtistDataSourceImpl(get()) }
     single<FolderDataSource> { RoomFolderDataSourceImpl(get()) }
     single<MusicArtistDataSource> { RoomMusicArtistDataSourceImpl(get()) }
-    single<MusicDataSource> { RoomMusicDataSourceImpl(get()) }
+    single<MusicDataSource> { RoomMusicDataSourceImpl(get(), get()) }
     single<MusicPlaylistDataSource> { RoomMusicPlaylistDataSourceImpl(get()) }
     single<PlayerMusicDataSource> { RoomPlayerMusicDataSourceImpl(get()) }
     single<PlaylistDataSource> { RoomPlaylistDataSourceImpl(get()) }

@@ -6,11 +6,10 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.localdb.model.RoomCompleteMusic
 import com.github.enteraname74.localdb.model.RoomMusic
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * DAO of a Music.

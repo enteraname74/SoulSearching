@@ -2,9 +2,9 @@ package com.github.enteraname74.soulsearching.feature.mainpage.domain.viewmodel
 
 import com.github.enteraname74.domain.model.SortDirection
 import com.github.enteraname74.domain.model.SortType
+import com.github.enteraname74.domain.model.SortingInformation
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortingInformation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
