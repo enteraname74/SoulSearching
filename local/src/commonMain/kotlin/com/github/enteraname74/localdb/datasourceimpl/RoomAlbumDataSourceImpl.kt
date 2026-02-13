@@ -1,6 +1,7 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.localdb.AppDatabase
 import com.github.enteraname74.localdb.model.toRoomAlbum
@@ -83,4 +84,9 @@ internal class RoomAlbumDataSourceImpl(
             list.map { it.toAlbumWithMusics() }
         }
     }
+
+    override fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
+        appDatabase.albumDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toAlbumPreview() }
+        }
 }

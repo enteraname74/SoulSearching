@@ -9,7 +9,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.github.enteraname74.domain.model.*
+import com.github.enteraname74.domain.model.AlbumPreview
+import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.Music
+import com.github.enteraname74.domain.model.Playlist
+import com.github.enteraname74.domain.model.PlaylistWithMusics
+import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
+import com.github.enteraname74.domain.model.QuickAccessible
+import com.github.enteraname74.domain.model.SortDirection
+import com.github.enteraname74.domain.model.SortType
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
@@ -27,7 +36,18 @@ import com.github.enteraname74.domain.usecase.playlist.CommonPlaylistUseCase
 import com.github.enteraname74.domain.usecase.playlist.GetAllPlaylistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.quickaccess.GetAllQuickAccessElementsUseCase
 import com.github.enteraname74.domain.usecase.release.CommonReleaseUseCase
-import com.github.enteraname74.soulsearching.commondelegate.*
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.AlbumBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.ArtistBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiAlbumBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiArtistBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiMusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MultiPlaylistBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.MusicBottomSheetDelegateImpl
+import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegate
+import com.github.enteraname74.soulsearching.commondelegate.PlaylistBottomSheetDelegateImpl
 import com.github.enteraname74.soulsearching.composables.bottomsheets.music.AddToPlaylistBottomSheet
 import com.github.enteraname74.soulsearching.composables.dialog.CreatePlaylistDialog
 import com.github.enteraname74.soulsearching.coreui.bottomsheet.SoulBottomSheet
@@ -44,19 +64,50 @@ import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetState
 import com.github.enteraname74.soulsearching.domain.usecase.ShouldInformOfNewReleaseUseCase
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.ElementEnum
 import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.PagerScreen
-import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.*
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.model.SortingInformation
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllAlbumsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllArtistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicFoldersState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllMusicsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllPlaylistsState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.AllQuickAccessState
+import com.github.enteraname74.soulsearching.feature.mainpage.domain.state.MainPageNavigationState
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.GitHubReleaseBottomSheet
 import com.github.enteraname74.soulsearching.feature.mainpage.presentation.composable.SoulMixDialog
-import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.*
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allAlbumsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allArtistsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicFoldersTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allMusicsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allPlaylistsTab
+import com.github.enteraname74.soulsearching.feature.mainpage.presentation.tab.allQuickAccessTab
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedScreenFocusedElement
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.cache
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
-import java.util.*
+import java.util.UUID
 
 @Suppress("Deprecation")
 class MainPageViewModel(
@@ -122,14 +173,15 @@ class MainPageViewModel(
     val currentPage: StateFlow<ElementEnum?> = _currentPage.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tabs: StateFlow<List<PagerScreen>> = viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
-        val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
-        buildTabs(elements = elementEnums)
-    }.stateIn(
-        scope = viewModelScope.plus(Dispatchers.IO),
-        started = SharingStarted.Eagerly,
-        initialValue = emptyList()
-    )
+    val tabs: StateFlow<List<PagerScreen>> =
+        viewSettingsManager.visibleElements.mapLatest { elementsVisibility ->
+            val elementEnums = buildListOfElementEnums(elementsVisibility = elementsVisibility)
+            buildTabs(elements = elementEnums)
+        }.stateIn(
+            scope = viewModelScope.plus(Dispatchers.IO),
+            started = SharingStarted.Eagerly,
+            initialValue = emptyList()
+        )
 
     val isUsingVerticalAccessBar: StateFlow<Boolean> = settings.getFlowOn(
         SoulSearchingSettingsKeys.MainPage.IS_USING_VERTICAL_ACCESS_BAR,
@@ -143,12 +195,13 @@ class MainPageViewModel(
     val searchDraggableState: SwipeableState<BottomSheetStates> =
         SwipeableState(initialValue = BottomSheetStates.COLLAPSED)
 
-    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> = commonPlaylistUseCase.getAllWithMusics()
-        .stateIn(
-            scope = viewModelScope.plus(Dispatchers.IO),
-            started = SharingStarted.Eagerly,
-            initialValue = emptyList()
-        )
+    private val allPlaylistsForBottomSheet: StateFlow<List<PlaylistWithMusics>> =
+        commonPlaylistUseCase.getAllWithMusics()
+            .stateIn(
+                scope = viewModelScope.plus(Dispatchers.IO),
+                started = SharingStarted.Eagerly,
+                initialValue = emptyList()
+            )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _musics: Flow<PagingData<Music>> = musicSortingInformation.flatMapLatest {
@@ -185,15 +238,16 @@ class MainPageViewModel(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val allQuickAccessState: StateFlow<AllQuickAccessState> = getAllQuickAccessElementsUseCase().mapLatest { elements ->
-        AllQuickAccessState(
-            allQuickAccess = elements,
+    val allQuickAccessState: StateFlow<AllQuickAccessState> =
+        getAllQuickAccessElementsUseCase().mapLatest { elements ->
+            AllQuickAccessState(
+                allQuickAccess = elements,
+            )
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            AllQuickAccessState()
         )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        AllQuickAccessState()
-    )
 
     val allMusicsState: StateFlow<AllMusicsState> = combine(
         musicSortingInformation,
@@ -271,7 +325,8 @@ class MainPageViewModel(
     private val _bottomSheetState: MutableStateFlow<SoulBottomSheet?> = MutableStateFlow(null)
     val bottomSheetState: StateFlow<SoulBottomSheet?> = _bottomSheetState.asStateFlow()
 
-    private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> = MutableStateFlow(null)
+    private val _addToPlaylistsBottomSheetState: MutableStateFlow<AddToPlaylistBottomSheet?> =
+        MutableStateFlow(null)
     val addToPlaylistsBottomSheetState: StateFlow<AddToPlaylistBottomSheet?> =
         _addToPlaylistsBottomSheetState.asStateFlow()
 
@@ -296,28 +351,36 @@ class MainPageViewModel(
             setBottomSheetState = { _bottomSheetState.value = it },
             setAddToPlaylistBottomSheetState = { _addToPlaylistsBottomSheetState.value = it },
             getAllPlaylistsWithMusics = { allPlaylistsForBottomSheet.value },
-            onModifyMusic = { _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId) },
+            onModifyMusic = {
+                _navigationState.value = MainPageNavigationState.ToModifyMusic(it.musicId)
+            },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         artistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyArtist = { _navigationState.value = MainPageNavigationState.ToModifyArtist(it.artistId) },
+            onModifyArtist = {
+                _navigationState.value = MainPageNavigationState.ToModifyArtist(it.artistId)
+            },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         albumBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyAlbum = { _navigationState.value = MainPageNavigationState.ToModifyAlbum(it.albumId) },
+            onModifyAlbum = {
+                _navigationState.value = MainPageNavigationState.ToModifyAlbum(it.albumId)
+            },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
         playlistBottomSheetDelegateImpl.initDelegate(
             setDialogState = { _dialogState.value = it },
             setBottomSheetState = { _bottomSheetState.value = it },
-            onModifyPlaylist = { _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId) },
+            onModifyPlaylist = {
+                _navigationState.value = MainPageNavigationState.ToModifyPlaylist(it.playlistId)
+            },
             multiSelectionManagerImpl = multiSelectionManagerImpl,
         )
 
@@ -371,34 +434,36 @@ class MainPageViewModel(
         }
 
         coroutineScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED).collectLatest { isEnabled ->
-                if (isEnabled) {
-                    commonReleaseUseCase.fetchLatest()
-                } else {
-                    commonReleaseUseCase.deleteLatest()
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.IS_FETCH_RELEASE_FROM_GITHUB_ENABLED)
+                .collectLatest { isEnabled ->
+                    if (isEnabled) {
+                        commonReleaseUseCase.fetchLatest()
+                    } else {
+                        commonReleaseUseCase.deleteLatest()
+                    }
                 }
-            }
         }
 
         coroutineScope.launch {
-            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT).collectLatest { shouldShow ->
-                if (shouldShow) {
-                    _bottomSheetState.value = GitHubReleaseBottomSheet(
-                        onClose = {
-                            _bottomSheetState.value = null
-                            settings.set(
-                                key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
-                                value = false,
-                            )
-                        },
-                        onNavigateToGithubReleasePermission = {
-                            _navigationState.value = MainPageNavigationState.ToAdvancedSettings(
-                                focusedElement = SettingsAdvancedScreenFocusedElement.ReleasePermission,
-                            )
-                        }
-                    )
+            settings.getFlowOn(SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT)
+                .collectLatest { shouldShow ->
+                    if (shouldShow) {
+                        _bottomSheetState.value = GitHubReleaseBottomSheet(
+                            onClose = {
+                                _bottomSheetState.value = null
+                                settings.set(
+                                    key = SoulSearchingSettingsKeys.Release.SHOULD_SHOW_RELEASE_BOTTOM_ENABLE_HINT.key,
+                                    value = false,
+                                )
+                            },
+                            onNavigateToGithubReleasePermission = {
+                                _navigationState.value = MainPageNavigationState.ToAdvancedSettings(
+                                    focusedElement = SettingsAdvancedScreenFocusedElement.ReleasePermission,
+                                )
+                            }
+                        )
+                    }
                 }
-            }
         }
     }
 
@@ -459,8 +524,8 @@ class MainPageViewModel(
 
     private fun navigateToQuickAccessible(quickAccessible: QuickAccessible) {
         _navigationState.value = when (quickAccessible) {
-            is AlbumWithMusics -> MainPageNavigationState.ToAlbum(
-                albumId = quickAccessible.album.albumId,
+            is AlbumPreview -> MainPageNavigationState.ToAlbum(
+                albumId = quickAccessible.id,
             )
 
             is ArtistWithMusics -> MainPageNavigationState.ToArtist(
@@ -475,22 +540,26 @@ class MainPageViewModel(
     }
 
     private fun showQuickAccessBottomSheet(quickAccessible: QuickAccessible) {
-        when (quickAccessible) {
-            is AlbumWithMusics -> showAlbumBottomSheet(
-                albumWithMusics = quickAccessible,
-            )
+        coroutineScope.launch {
+            when (quickAccessible) {
+                is AlbumPreview -> commonAlbumUseCase
+                    .getAlbumWithMusics(albumId = quickAccessible.id)
+                    .firstOrNull()?.let {
+                        showAlbumBottomSheet(it)
+                    }
 
-            is ArtistWithMusics -> showArtistBottomSheet(
-                selectedArtist = quickAccessible,
-            )
+                is ArtistWithMusics -> showArtistBottomSheet(
+                    selectedArtist = quickAccessible,
+                )
 
-            is Music -> showMusicBottomSheet(
-                selectedMusic = quickAccessible,
-            )
+                is Music -> showMusicBottomSheet(
+                    selectedMusic = quickAccessible,
+                )
 
-            is PlaylistWithMusicsNumber -> showPlaylistBottomSheet(
-                selectedPlaylist = quickAccessible,
-            )
+                is PlaylistWithMusicsNumber -> showPlaylistBottomSheet(
+                    selectedPlaylist = quickAccessible,
+                )
+            }
         }
     }
 
@@ -578,7 +647,8 @@ class MainPageViewModel(
     private suspend fun handleMultiSelectionMusicBottomSheet() {
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
-            val selectedMusic: Music = commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
+            val selectedMusic: Music =
+                commonMusicUseCase.getFromId(musicId = selectedIds[0]).firstOrNull() ?: return
             showMusicBottomSheet(selectedMusic = selectedMusic)
         } else {
             multiMusicBottomSheetDelegateImpl.showMultiMusicBottomSheet()
@@ -589,7 +659,8 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedAlbum: AlbumWithMusics =
-                commonAlbumUseCase.getAlbumWithMusics(albumId = selectedIds[0]).firstOrNull() ?: return
+                commonAlbumUseCase.getAlbumWithMusics(albumId = selectedIds[0]).firstOrNull()
+                    ?: return
             showAlbumBottomSheet(albumWithMusics = selectedAlbum)
         } else {
             multiAlbumBottomSheetDelegateImpl.showMultiAlbumBottomSheet()
@@ -600,7 +671,8 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedArtist: ArtistWithMusics =
-                commonArtistUseCase.getArtistWithMusic(artistId = selectedIds[0]).firstOrNull() ?: return
+                commonArtistUseCase.getArtistWithMusic(artistId = selectedIds[0]).firstOrNull()
+                    ?: return
             showArtistBottomSheet(selectedArtist = selectedArtist)
         } else {
             multiArtistBottomSheetDelegateImpl.showMultiArtistBottomSheet()
@@ -611,7 +683,8 @@ class MainPageViewModel(
         val selectedIds = multiSelectionState.value.selectedIds
         if (selectedIds.size == 1) {
             val selectedPlaylist: PlaylistWithMusics =
-                commonPlaylistUseCase.getWithMusics(playlistId = selectedIds[0]).firstOrNull() ?: return
+                commonPlaylistUseCase.getWithMusics(playlistId = selectedIds[0]).firstOrNull()
+                    ?: return
             showPlaylistBottomSheet(selectedPlaylist = selectedPlaylist.toPlaylistWithMusicsNumber())
         } else {
             multiPlaylistBottomSheetDelegateImpl.showMultiPlaylistBottomSheet()

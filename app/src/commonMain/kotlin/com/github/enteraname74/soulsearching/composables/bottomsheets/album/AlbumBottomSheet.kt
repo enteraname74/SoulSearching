@@ -48,7 +48,7 @@ class AlbumBottomSheet(
                 closeWithAnim()
                 toggleQuickAccess()
             },
-            isInQuickAccess = selectedAlbum.isInQuickAccess,
+            isInQuickAccess = selectedAlbum.album.isInQuickAccess,
             selectedAlbum = selectedAlbum,
             playNextAction = {
                 closeWithAnim()

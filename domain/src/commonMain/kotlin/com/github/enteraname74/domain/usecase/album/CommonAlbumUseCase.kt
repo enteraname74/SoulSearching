@@ -1,12 +1,12 @@
 package com.github.enteraname74.domain.usecase.album
 
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import com.github.enteraname74.domain.repository.AlbumRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 class CommonAlbumUseCase(
     private val albumRepository: AlbumRepository
@@ -19,10 +19,8 @@ class CommonAlbumUseCase(
     fun getAll(): Flow<List<Album>> =
         albumRepository.getAll()
 
-    fun getAllFromQuickAccess(): Flow<List<AlbumWithMusics>> =
-        albumRepository.getAllAlbumWithMusics().map { list ->
-            list.filter { it.album.isInQuickAccess }
-        }
+    fun getAllFromQuickAccess(): Flow<List<AlbumPreview>> =
+        albumRepository.getAllFromQuickAccess()
 
     suspend fun deleteAll(albumsIds: List<UUID>) {
         albumRepository.deleteAll(

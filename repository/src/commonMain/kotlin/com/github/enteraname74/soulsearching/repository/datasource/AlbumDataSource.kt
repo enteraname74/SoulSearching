@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.datasource
 
 import com.github.enteraname74.domain.model.Album
+import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -52,4 +53,6 @@ interface AlbumDataSource {
      * Retrieves a flow of all AlbumsWithMusics, sorted by name asc.
      */
     fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
+
+    fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>
 }
