@@ -46,17 +46,6 @@ class CommonAlbumUseCase(
             artistId = artistId,
         )
 
-    suspend fun getDuplicatedAlbum(
-        albumId: UUID,
-        albumName: String,
-        artistId: UUID
-    ): Album? =
-        albumRepository.getDuplicatedAlbum(
-            albumId = albumId,
-            albumName = albumName,
-            artistId = artistId,
-        )
-
     suspend fun incrementAlbumNbPlayed(albumId: UUID) {
         val album: Album = albumRepository.getFromId(albumId = albumId).first() ?: return
         albumRepository.upsert(

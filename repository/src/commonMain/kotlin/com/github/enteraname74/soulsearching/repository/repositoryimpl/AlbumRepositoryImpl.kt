@@ -78,4 +78,22 @@ class AlbumRepositoryImpl(
             albumName = albumName,
             artistId = artistId,
         )
+
+    override suspend fun getFromInformation(
+        albumName: String,
+        artistName: String
+    ): Album? =
+        albumDataSource.getFromInformation(
+            albumName = albumName,
+            artistName = artistName,
+        )
+
+    override suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID
+    ): Album? =
+        albumDataSource.getFromArtistId(
+            albumName = albumName,
+            artistId = artistId,
+        )
 }

@@ -152,4 +152,22 @@ internal class RoomAlbumDataSourceImpl(
             albumName = albumName,
             artistId = artistId,
         )?.toAlbum()
+
+    override suspend fun getFromInformation(
+        albumName: String,
+        artistName: String
+    ): Album? =
+        appDatabase.albumDao.getFromInformation(
+            albumName = albumName,
+            artistName = artistName,
+        )?.toAlbum()
+
+    override suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID
+    ): Album? =
+        appDatabase.albumDao.getFromArtistId(
+            albumName = albumName,
+            artistId = artistId,
+        )?.toAlbum()
 }

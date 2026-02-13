@@ -66,4 +66,14 @@ interface AlbumDataSource {
         albumName: String,
         artistId: UUID
     ): Album?
+
+    suspend fun getFromInformation(
+        albumName: String,
+        artistName: String,
+    ): Album?
+
+    suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID,
+    ): Album?
 }

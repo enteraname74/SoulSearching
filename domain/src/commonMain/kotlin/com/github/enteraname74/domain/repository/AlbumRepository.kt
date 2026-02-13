@@ -5,7 +5,7 @@ import com.github.enteraname74.domain.model.Album
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 /**
  * Repository of an Album.
@@ -65,5 +65,15 @@ interface AlbumRepository {
         albumId: UUID,
         albumName: String,
         artistId: UUID
+    ): Album?
+
+    suspend fun getFromInformation(
+        albumName: String,
+        artistName: String,
+    ): Album?
+
+    suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID,
     ): Album?
 }

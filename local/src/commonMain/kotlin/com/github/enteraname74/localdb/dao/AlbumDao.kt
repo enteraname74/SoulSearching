@@ -293,4 +293,30 @@ interface AlbumDao {
         albumName: String,
         artistId: UUID
     ): RoomCompleteAlbum?
+
+    @Query(
+        """
+            SELECT album.* FROM RoomAlbum AS album
+            WHERE album.albumName = :albumName 
+            AND (SELECT artistName FROM RoomArtist WHERE artistId = album.artistId) = :artistName 
+            LIMIT 1
+        """
+    )
+    suspend fun getFromInformation(
+        albumName: String,
+        artistName: String,
+    ): RoomCompleteAlbum?
+
+    @Query(
+        """
+            SELECT * FROM RoomAlbum 
+            WHERE albumName = :albumName 
+            AND artistId = :artistId
+            LIMIT 1
+        """
+    )
+    suspend fun getFromArtistId(
+        albumName: String,
+        artistId: UUID,
+    ): RoomCompleteAlbum?
 }
