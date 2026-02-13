@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 class GetAllMusicsSortedUseCase(
     private val musicRepository: MusicRepository,
 ) {
-    // TODO: Sorting should be done from db directly
+    // TODO OPTIMIZATION: Sorting should be done from db directly
     operator fun invoke(
         sortDirection: SortDirection,
         sortType: SortType,

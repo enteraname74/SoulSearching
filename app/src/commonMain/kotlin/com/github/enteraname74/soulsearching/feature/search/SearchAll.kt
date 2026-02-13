@@ -165,7 +165,7 @@ fun SearchAll(
         }
 
         // TODO: Normalise with accents.
-        // TODO: Move search in viewModel.
+        // TODO OPTIMIZATION: Move search in viewModel.
         val foundedMusics = emptyList<Music>()
 //        musicState.musics.filter {
 //            it.name.lowercase().contains(searchText.lowercase())

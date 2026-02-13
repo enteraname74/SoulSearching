@@ -28,6 +28,7 @@ class CommonMusicUseCase(
     fun getAllFromQuickAccess(): Flow<List<Music>> =
         musicRepository.getAllFromQuickAccess()
 
+    @Deprecated("Avoid fetching all music from DB because of performance issue")
     fun getAll(): Flow<List<Music>> =
         musicRepository.getAll()
 
@@ -63,4 +64,11 @@ class CommonMusicUseCase(
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         musicRepository.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
+
+    suspend fun cleanAllMusicCovers() {
+        musicRepository.cleanAllMusicCovers()
+    }
+
+    suspend fun getAllMusicPath(): List<String> =
+        musicRepository.getAllMusicPath()
 }

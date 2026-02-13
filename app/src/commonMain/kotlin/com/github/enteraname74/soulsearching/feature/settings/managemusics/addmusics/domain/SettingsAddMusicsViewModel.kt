@@ -1,9 +1,7 @@
 package com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.domain
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.github.enteraname74.domain.model.Artist
 import com.github.enteraname74.domain.model.Folder
 import com.github.enteraname74.domain.model.Music
@@ -96,7 +94,7 @@ class SettingsAddMusicsViewModel(
             multipleArtistListener.consumeStep()
 
             val hiddenFoldersPaths: List<String> = commonFolderUseCase.getHiddenFoldersPath()
-            val allMusicsPaths: List<String> = commonMusicUseCase.getAll().first().map { it.path }
+            val allMusicsPaths: List<String> = commonMusicUseCase.getAllMusicPath()
 
             _state.value = SettingsAddMusicsState.Fetching
 

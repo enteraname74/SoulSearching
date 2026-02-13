@@ -90,4 +90,10 @@ interface MusicDao {
 
     @Query("UPDATE RoomMusic SET albumId = :newAlbumId WHERE albumId = :legacyAlbumId")
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+
+    @Query("UPDATE RoomMusic SET coverId = NULL")
+    suspend fun cleanAllMusicCovers()
+
+    @Query("SELECT path FROM RoomMusic")
+    suspend fun getAllMusicPath(): List<String>
 }

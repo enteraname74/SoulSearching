@@ -66,4 +66,11 @@ class MusicRepositoryImpl(
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         musicDataSource.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
+
+    override suspend fun cleanAllMusicCovers() {
+        musicDataSource.cleanAllMusicCovers()
+    }
+
+    override suspend fun getAllMusicPath(): List<String> =
+        musicDataSource.getAllMusicPath()
 }

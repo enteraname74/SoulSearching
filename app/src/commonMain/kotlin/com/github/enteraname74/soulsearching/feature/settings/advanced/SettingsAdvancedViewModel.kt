@@ -244,16 +244,14 @@ class SettingsAdvancedViewModel(
 
     private suspend fun checkAndReloadSongs() {
         if (_state.value.shouldReloadSongsCovers) {
+            // TODO OPTIMIZATION: Remove call to all songs
             val allSongs: List<Music> = commonMusicUseCase.getAll().first()
 
-            commonMusicUseCase.upsertAll(
-                allMusics = allSongs.map { music ->
-                    playbackManager.updateMusic(music)
-                    music.copy(
-                        cover = coverFileManager.getCleanFileCoverForMusic(music)
-                    )
-                }
-            )
+            commonMusicUseCase.cleanAllMusicCovers()
+
+            allSongs.forEach { music ->
+                playbackManager.updateMusic(music)
+            }
         }
     }
 

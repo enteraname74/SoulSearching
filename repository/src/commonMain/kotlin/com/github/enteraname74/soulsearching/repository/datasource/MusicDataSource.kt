@@ -52,4 +52,8 @@ interface MusicDataSource {
     suspend fun getAllMusicFromAlbum(albumId: UUID): List<Music>
 
     suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID)
+
+    suspend fun cleanAllMusicCovers()
+
+    suspend fun getAllMusicPath(): List<String>
 }

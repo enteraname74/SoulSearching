@@ -410,7 +410,7 @@ class MainPageViewModel(
     fun checkAndDeleteMusicIfNotExist() {
         CoroutineScope(Dispatchers.IO).launch {
             var deleteCount = 0
-            // TODO: Improve check?
+            // TODO OPTIMIZATION: Improve check?
             val all = commonMusicUseCase.getAll().first()
             for (music in all) {
                 if (!File(music.path).exists()) {

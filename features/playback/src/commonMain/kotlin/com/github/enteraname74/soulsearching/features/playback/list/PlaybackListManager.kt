@@ -527,6 +527,7 @@ internal class PlaybackListManager(
         }
     }
 
+    // TODO OPTIMIZATION: We should listen to DB changes to automatically retrieve updated music
     suspend fun updateMusic(music: Music) {
         withDataState {
             val newCurrentSong = if (currentMusic.musicId.compareTo(music.musicId) == 0) {

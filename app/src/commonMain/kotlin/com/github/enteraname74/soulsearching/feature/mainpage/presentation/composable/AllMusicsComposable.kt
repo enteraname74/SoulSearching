@@ -82,7 +82,7 @@ fun AllMusicsComposable(
                         onClick = {
                             if (musics.itemCount != 0) {
                                 coroutineScope.launch {
-                                    // TODO: make it work with all musics by launching it from the view model.
+                                    // TODO OPTIMIZATION: make it work with all musics by launching it from the view model.
 //                                    playbackManager.playShuffle(musicList = musicState.musics)
 //                                    playerViewManager.animateTo(BottomSheetStates.EXPANDED)
                                 }
@@ -105,7 +105,7 @@ fun AllMusicsComposable(
                         music = elt,
                         onClick = {
                             coroutineScope.launch {
-                                // TODO: Make it work again from viewModel
+                                // TODO OPTIMIZATION: Make it work again from viewModel
 //                                playbackManager.setCurrentPlaylistAndMusic(
 //                                    music = elt,
 //                                    musicList = musicState.musics,

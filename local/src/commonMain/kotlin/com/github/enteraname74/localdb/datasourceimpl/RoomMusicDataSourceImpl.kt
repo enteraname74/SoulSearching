@@ -141,4 +141,11 @@ internal class RoomMusicDataSourceImpl(
     override suspend fun updateMusicsAlbum(newAlbumId: UUID, legacyAlbumId: UUID) {
         appDatabase.musicDao.updateMusicsAlbum(newAlbumId, legacyAlbumId)
     }
+
+    override suspend fun cleanAllMusicCovers() {
+        appDatabase.musicDao.cleanAllMusicCovers()
+    }
+
+    override suspend fun getAllMusicPath(): List<String> =
+        appDatabase.musicDao.getAllMusicPath()
 }
