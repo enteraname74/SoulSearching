@@ -11,6 +11,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.enteraname74.domain.model.AlbumPreview
 import com.github.enteraname74.domain.model.AlbumWithMusics
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.Playlist
@@ -20,7 +21,6 @@ import com.github.enteraname74.domain.model.QuickAccessible
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.domain.usecase.album.CommonAlbumUseCase
-import com.github.enteraname74.domain.usecase.album.GetAllAlbumWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.artist.CommonArtistUseCase
 import com.github.enteraname74.domain.usecase.artist.GetAllArtistWithMusicsSortedUseCase
 import com.github.enteraname74.domain.usecase.cover.CommonCoverUseCase
@@ -113,7 +113,6 @@ class MainPageViewModel(
     private val sortingInformationDelegateImpl: SortingInformationDelegateImpl,
     private val artistBottomSheetDelegateImpl: ArtistBottomSheetDelegateImpl,
     private val getAllArtistWithMusicsSortedUseCase: GetAllArtistWithMusicsSortedUseCase,
-    private val getAllAlbumWithMusicsSortedUseCase: GetAllAlbumWithMusicsSortedUseCase,
     private val getAllPlaylistWithMusicsSortedUseCase: GetAllPlaylistWithMusicsSortedUseCase,
     private val playlistBottomSheetDelegateImpl: PlaylistBottomSheetDelegateImpl,
     private val albumBottomSheetDelegateImpl: AlbumBottomSheetDelegateImpl,
@@ -512,8 +511,8 @@ class MainPageViewModel(
                 albumId = quickAccessible.id,
             )
 
-            is ArtistWithMusics -> MainPageNavigationState.ToArtist(
-                artistId = quickAccessible.artist.artistId,
+            is ArtistPreview -> MainPageNavigationState.ToArtist(
+                artistId = quickAccessible.id,
             )
 
             is Music -> MainPageNavigationState.Idle
@@ -529,12 +528,14 @@ class MainPageViewModel(
                 is AlbumPreview -> commonAlbumUseCase
                     .getAlbumWithMusics(albumId = quickAccessible.id)
                     .firstOrNull()?.let {
-                        showAlbumBottomSheet(it)
+                        showAlbumBottomSheet(albumWithMusics = it)
                     }
 
-                is ArtistWithMusics -> showArtistBottomSheet(
-                    selectedArtist = quickAccessible,
-                )
+                is ArtistPreview -> commonArtistUseCase
+                    .getArtistWithMusic(artistId = quickAccessible.id)
+                    .firstOrNull()?.let {
+                        showArtistBottomSheet(selectedArtist = it)
+                    }
 
                 is Music -> showMusicBottomSheet(
                     selectedMusic = quickAccessible,

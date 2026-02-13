@@ -1,23 +1,23 @@
 package com.github.enteraname74.domain.usecase.artist
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import java.util.*
+import java.util.UUID
 
 class CommonArtistUseCase(
     private val artistRepository: ArtistRepository,
 ) {
+    @Deprecated("Avoid fetching all artist from DB because of performance issue")
     fun getAll(): Flow<List<Artist>> =
         artistRepository.getAll()
 
-    fun getAllFromQuickAccess(): Flow<List<ArtistWithMusics>> =
-        artistRepository.getAllArtistWithMusics().map { list ->
-            list.filter { it.artist.isInQuickAccess }
-        }
+    fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        artistRepository.getAllFromQuickAccess()
 
     suspend fun delete(artist: Artist) {
         artistRepository.delete(

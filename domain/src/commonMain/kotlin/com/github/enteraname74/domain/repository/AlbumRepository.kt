@@ -55,6 +55,7 @@ interface AlbumRepository {
     /**
      * Retrieves a flow of all AlbumsWithMusics.
      */
+    @Deprecated("Avoid fetching all album from DB because of performance issue")
     fun getAllAlbumWithMusics(): Flow<List<AlbumWithMusics>>
 
     fun getAllFromQuickAccess(): Flow<List<AlbumPreview>>

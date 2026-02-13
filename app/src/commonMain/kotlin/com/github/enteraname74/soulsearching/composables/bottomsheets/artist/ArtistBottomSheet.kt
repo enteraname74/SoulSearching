@@ -48,7 +48,7 @@ class ArtistBottomSheet(
                 closeWithAnim()
                 toggleQuickAccess()
             },
-            isInQuickAccess = selectedArtist.isInQuickAccess,
+            isInQuickAccess = selectedArtist.artist.isInQuickAccess,
             selectedArtist = selectedArtist,
             playNextAction = {
                 closeWithAnim()

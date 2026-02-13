@@ -1,6 +1,7 @@
 package com.github.enteraname74.localdb.datasourceimpl
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.localdb.AppDatabase
@@ -67,7 +68,7 @@ internal class RoomArtistDataSourceImpl(
 
     override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> {
         return appDatabase.artistDao.getAllArtistWithMusics().map { list ->
-            list.filterNotNull().map { it.toArtistWithMusics() }
+            list.map { it.toArtistWithMusics() }
         }
     }
 
@@ -91,5 +92,10 @@ internal class RoomArtistDataSourceImpl(
     override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
         appDatabase.artistDao.getArtistsOfMusic(musicId = musicId).map { list ->
             list.map { it.toArtist() }
+        }
+
+    override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        appDatabase.artistDao.getAllFromQuickAccess().map { list ->
+            list.map { it.toArtistPreview() }
         }
 }

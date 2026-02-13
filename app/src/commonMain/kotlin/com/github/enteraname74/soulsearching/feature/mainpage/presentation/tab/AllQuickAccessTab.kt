@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.github.enteraname74.domain.model.AlbumPreview
-import com.github.enteraname74.domain.model.ArtistWithMusics
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.Music
 import com.github.enteraname74.domain.model.PlaylistWithMusicsNumber
 import com.github.enteraname74.domain.model.QuickAccessible
@@ -77,12 +77,12 @@ private fun QuickAccessible.ToPreview(
             )
         }
 
-        is ArtistWithMusics -> {
+        is ArtistPreview -> {
             BigPreviewComposable(
                 modifier = modifier,
                 cover = this.cover,
-                title = this.artist.artistName,
-                text = strings.musics(total = this.musics.size),
+                title = this.name,
+                text = strings.musics(total = this.totalMusics),
                 imageSize = null,
                 onClick = { onClick(this) },
                 onLongClick = { onLongClick(this) }

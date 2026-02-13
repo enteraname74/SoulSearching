@@ -74,8 +74,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -104,8 +104,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -134,8 +134,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -164,8 +164,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -194,8 +194,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -224,8 +224,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -266,8 +266,8 @@ interface AlbumDao {
                 SELECT music.path FROM RoomMusic AS music 
                 WHERE music.albumId = album.albumId AND music.isHidden = 0 ORDER BY 
                 CASE WHEN music.albumPosition IS NULL THEN 1 ELSE 0 END, 
-                music.albumPosition, 
-                CASE WHEN music.path IS NULL THEN 1 ELSE 0 END
+                music.albumPosition 
+                LIMIT 1 
             ) AS musicCoverPath,
             album.isInQuickAccess 
             FROM RoomAlbum AS album 
@@ -279,6 +279,7 @@ interface AlbumDao {
     @Query("UPDATE RoomAlbum SET coverId = NULL")
     suspend fun cleanAllMusicCovers()
 
+    @Transaction
     @Query(
         """
             SELECT * FROM RoomAlbum 
@@ -294,6 +295,7 @@ interface AlbumDao {
         artistId: UUID
     ): RoomCompleteAlbum?
 
+    @Transaction
     @Query(
         """
             SELECT album.* FROM RoomAlbum AS album
@@ -307,6 +309,7 @@ interface AlbumDao {
         artistName: String,
     ): RoomCompleteAlbum?
 
+    @Transaction
     @Query(
         """
             SELECT * FROM RoomAlbum 

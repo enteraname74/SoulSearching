@@ -1,6 +1,7 @@
 package com.github.enteraname74.soulsearching.repository.repositoryimpl
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.repository.ArtistRepository
 import com.github.enteraname74.soulsearching.repository.datasource.ArtistDataSource
@@ -59,12 +60,14 @@ class ArtistRepositoryImpl(
     /**
      * Retrieves a flow of all Artist, sorted by name asc.
      */
+    @Deprecated("Avoid fetching all artist from DB because of performance issue")
     override fun getAll(): Flow<List<Artist>> =
         artistDataSource.getAll()
 
     /**
      * Retrieves a flow of all ArtistWithMusics, sorted by name asc.
      */
+    @Deprecated("Avoid fetching all artist from DB because of performance issue")
     override fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>> =
         artistDataSource.getAllArtistWithMusics()
 
@@ -78,4 +81,7 @@ class ArtistRepositoryImpl(
 
     override fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>> =
         artistDataSource.getArtistsOfMusic(musicId = musicId)
+
+    override fun getAllFromQuickAccess(): Flow<List<ArtistPreview>> =
+        artistDataSource.getAllFromQuickAccess()
 }

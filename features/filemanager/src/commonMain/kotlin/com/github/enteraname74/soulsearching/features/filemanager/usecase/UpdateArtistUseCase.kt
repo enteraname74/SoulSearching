@@ -44,7 +44,7 @@ class UpdateArtistUseCase(
         artistRepository.upsert(
             newArtistWithMusicsInformation.artist.copy(
                 isInQuickAccess = newArtistWithMusicsInformation.artist.isInQuickAccess ||
-                possibleDuplicatedArtist?.isInQuickAccess == true
+                possibleDuplicatedArtist?.artist?.isInQuickAccess == true
             )
         )
     }

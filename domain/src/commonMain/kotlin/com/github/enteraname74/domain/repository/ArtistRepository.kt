@@ -1,6 +1,7 @@
 package com.github.enteraname74.domain.repository
 
 import com.github.enteraname74.domain.model.Artist
+import com.github.enteraname74.domain.model.ArtistPreview
 import com.github.enteraname74.domain.model.ArtistWithMusics
 import com.github.enteraname74.domain.model.Music
 import kotlinx.coroutines.flow.Flow
@@ -41,11 +42,13 @@ interface ArtistRepository {
     /**
      * Retrieves a flow of all Artist.
      */
+    @Deprecated("Avoid fetching all artist from DB because of performance issue")
     fun getAll(): Flow<List<Artist>>
 
     /**
      * Retrieves a flow of all ArtistWithMusics.
      */
+    @Deprecated("Avoid fetching all artist from DB because of performance issue")
     fun getAllArtistWithMusics(): Flow<List<ArtistWithMusics>>
 
     /**
@@ -57,4 +60,6 @@ interface ArtistRepository {
      * Retrieves all artists linked to a music.
      */
     fun getArtistsOfMusic(musicId: UUID): Flow<List<Artist>>
+
+    fun getAllFromQuickAccess(): Flow<List<ArtistPreview>>
 }
