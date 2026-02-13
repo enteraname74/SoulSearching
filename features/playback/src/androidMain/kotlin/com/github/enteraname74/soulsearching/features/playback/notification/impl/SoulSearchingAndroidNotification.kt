@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.app.NotificationCompat
+import com.github.enteraname74.domain.usecase.music.ToggleMusicFavoriteStatusUseCase
 import com.github.enteraname74.soulsearching.features.playback.PlayerService
 import com.github.enteraname74.soulsearching.features.playback.R
 import com.github.enteraname74.soulsearching.features.playback.manager.PlaybackManager
@@ -95,7 +96,8 @@ abstract class SoulSearchingAndroidNotification(
                     music = playbackManagerState.currentMusic,
                     cover = cover,
                     isPlaying = playbackManagerState.isPlaying,
-                    mediaSessionToken = mediaSessionToken
+                    mediaSessionToken = mediaSessionToken,
+                    isInFavorite = playbackManagerState.isCurrentMusicInFavorite,
                 )
             )
             if (!hasServiceBeenLaunched) {
@@ -117,6 +119,7 @@ abstract class SoulSearchingAndroidNotification(
         fun buildNotification(
             context: Context,
             playbackManager: PlaybackManager,
+            toggleMusicFavoriteStatusUseCase: ToggleMusicFavoriteStatusUseCase,
         ): SoulSearchingNotification =
             if (Build.VERSION.SDK_INT >= 33) {
                 SoulSearchingNotificationAndroid13(
@@ -126,6 +129,7 @@ abstract class SoulSearchingAndroidNotification(
                 SoulSearchingNotificationBelowAndroid13(
                     context = context,
                     playbackManager = playbackManager,
+                    toggleMusicFavoriteStatusUseCase = toggleMusicFavoriteStatusUseCase,
                 )
             }
 
@@ -133,9 +137,5 @@ abstract class SoulSearchingAndroidNotification(
         const val CHANNEL_ID = 69
 
         const val BROADCAST_NOTIFICATION = "BROADCAST_NOTIFICATION"
-        const val STOP_RECEIVE = "STOP RECEIVE"
-        const val NEXT = "NEXT"
-        const val PREVIOUS = "PREVIOUS"
-        const val TOGGLE_PLAY_PAUSE = "TOGGLE PLAY PAUSE"
     }
 }

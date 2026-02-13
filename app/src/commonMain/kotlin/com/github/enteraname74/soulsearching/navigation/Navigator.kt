@@ -49,6 +49,9 @@ class Navigator(private val backStack: NavBackStack<NavKey>) {
     }
 
     fun goBack(to: NavKey? = null) {
+        // Ensure that we will not have an empty backstack -> leads to crashes
+        if (stack.size == 1) return
+
         if (to != null) {
             backStack.removeLastWhile { it != to }
         } else {

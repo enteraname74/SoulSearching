@@ -113,7 +113,7 @@ class ModifyAlbumViewModel(
     }
 
     fun consumeNavigation() {
-        _navigationState.value = ModifyAlbumNavigationState.Back
+        _navigationState.value = ModifyAlbumNavigationState.Idle
     }
 
     fun showCoversBottomSheet() {

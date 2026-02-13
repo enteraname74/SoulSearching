@@ -3,6 +3,7 @@ package com.github.enteraname74.soulsearching.feature.settings.personalisation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.SettingPage
+import com.github.enteraname74.soulsearching.feature.settings.personalisation.album.SettingsAlbumViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation.SettingsMainPagePersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.music.SettingsMusicViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
@@ -25,6 +26,11 @@ data object SettingsPersonalisationDestination: SettingPage {
                     override val toMusicViewPersonalisation: () -> Unit = {
                         navigator.navigate(SettingsMusicViewPersonalisationDestination)
                     }
+
+                    override val toAlbumViewPersonalisation: () -> Unit = {
+                        navigator.navigate(SettingsAlbumViewPersonalisationDestination)
+                    }
+
                     override val toPlayerPersonalisation: () -> Unit = {
                         navigator.navigate(SettingsPlayerPersonalisationDestination)
                     }

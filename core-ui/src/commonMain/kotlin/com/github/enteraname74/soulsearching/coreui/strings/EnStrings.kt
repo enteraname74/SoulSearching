@@ -1,11 +1,16 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
+
 /**
  * English translation for application strings
  */
 object EnStrings : Strings {
     override val appLogo = "Application's logo"
     override val noElements = "No elements"
+    override val emptyQuickAccess = "No items in quick access"
+    override val quickAccessExplanation: String = "Add a song, album, artist, or playlist to quick access " +
+            "to see it appear here."
     override val cannotRetrieveSongs: String = "Cannot retrieve songs!"
     override val backButton = "Back button"
     override val createPlaylistButton = "Create playlist button"
@@ -217,6 +222,9 @@ object EnStrings : Strings {
     override val duskTheme = "Dusk"
     override val greeneryTheme = "Greenery"
     override val treeBarkTheme = "Tree bark"
+    override val extractedColorTitle = "Extracted color from cover"
+    override val extractedColorText = "Define the seed used to generate a dynamic color theme"
+    override val extractedColorInfo = "The Dominant color will be used if the selected color couldn't be extracted."
 
     override val mainPageTitle = "Main page"
     override val mainPageText = "Manage main page view"
@@ -227,9 +235,13 @@ object EnStrings : Strings {
     override val manageMusicsViewText = "Manage songs view"
     override val showMusicsByFolders = "Show songs by folders"
     override val showMusicsByMonths = "Show songs by months"
+    override val showAlbumTrackNumber = "Show tracks number"
     override val useVerticalAccessBarTitle = "Use vertical access bar"
     override val useHorizontalAccessBarText = "Use horizontal access bar"
 
+
+    override val manageAlbumViewTitle = "Album view"
+    override val manageAlbumViewText = "Manage album view"
     override val managePlayerTitle = "Music player"
     override val managePlayerText = "Manage music player"
     override val playerSwipeTitle = "Swipe the song cover to move forward or backward in the played list"
@@ -291,6 +303,8 @@ object EnStrings : Strings {
     override val elementDetailShuffle = "Shuffle"
     override val elementDetailTitles = "Title"
 
+    override val and: String = "and"
+
     override fun musics(total: Int): String {
         return when (total) {
             0 -> "No songs"
@@ -328,4 +342,16 @@ object EnStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Path example with artist $artist:"
+    override fun colorPaletteSeed(seed: ColorPaletteSeed): String =
+        when (seed) {
+            ColorPaletteSeed.DarkVibrant -> "Dark vibrant"
+            ColorPaletteSeed.DarkMuted -> "Dark muted"
+            ColorPaletteSeed.LightMuted -> "Light muted"
+            ColorPaletteSeed.LightVibrant -> "Light vibrant"
+            ColorPaletteSeed.Dominant -> "Dominant"
+            ColorPaletteSeed.Muted -> "Muted"
+            ColorPaletteSeed.Vibrant -> "Vibrant"
+        }
+    override fun hours(hours: Long): String =
+        if (hours == 1L) "hour" else "hours"
 }

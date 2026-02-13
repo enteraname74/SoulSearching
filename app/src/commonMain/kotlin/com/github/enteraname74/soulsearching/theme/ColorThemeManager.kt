@@ -1,13 +1,12 @@
 package com.github.enteraname74.soulsearching.theme
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.kmpalette.palette.graphics.Palette
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettings
 import com.github.enteraname74.domain.model.settings.SoulSearchingSettingsKeys
 import com.github.enteraname74.soulsearching.coreui.theme.color.*
-import com.github.enteraname74.soulsearching.coreui.utils.ColorPaletteUtils
 import com.github.enteraname74.soulsearching.domain.model.types.BottomSheetStates
 import com.github.enteraname74.soulsearching.feature.player.domain.model.PlayerViewManager
+import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -19,14 +18,16 @@ class ColorThemeManager(
     settings: SoulSearchingSettings,
     playerViewManager: PlayerViewManager,
 ) {
+
+    private val playerPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(settings = settings)
+    private val playlistPaletteGenerator: ColorPaletteGenerator = ColorPaletteGenerator(settings = settings)
+    
     var isInDarkMode: Boolean
         get() = isInDarkTheme.value
         set(value) {
             isInDarkTheme.value = value
         }
     private val isInDarkTheme: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    private val currentPlayerMusicPalette: MutableStateFlow<Palette.Swatch?> = MutableStateFlow(null)
-    private val playlistDetailCover: MutableStateFlow<PlaylistDetailCover?> = MutableStateFlow(null)
 
     val currentDefaultThemeSettings: StateFlow<DefaultThemeSettings> = combine(
         settings.getFlowOn(SoulSearchingSettingsKeys.ColorTheme.USED_COLOR_THEME_ID_KEY),
@@ -74,8 +75,8 @@ class ColorThemeManager(
 
     val appColorPalette: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
-        currentPlayerMusicPalette,
-        playlistDetailCover,
+        playerPaletteGenerator.paletteSwatch,
+        playlistPaletteGenerator.paletteSwatch,
         isInDarkTheme,
         playerViewManager.state,
         currentDefaultThemeSettings,
@@ -83,7 +84,7 @@ class ColorThemeManager(
 
         val colorThemeSettings: ColorThemeSettings = it[0] as ColorThemeSettings
         val currentPlayerMusicPalette: Palette.Swatch? = it[1] as Palette.Swatch?
-        val playlistDetailCover: PlaylistDetailCover? = it[2] as PlaylistDetailCover?
+        val playlistPaletteSwatch: Palette.Swatch? = it[2] as Palette.Swatch?
         val isInDarkTheme: Boolean = it[3] as Boolean
         val playerViewState: BottomSheetStates = it[4] as BottomSheetStates
         val defaultThemeSettings: DefaultThemeSettings = it[5] as DefaultThemeSettings
@@ -104,10 +105,10 @@ class ColorThemeManager(
             If we are on a PlaylistDetailScreen (playlist palette used),
             we base the color to the playlist panel
              */
-            playlistDetailCover != null -> {
+            playlistPaletteSwatch != null -> {
                 buildPlaylistTheme(
                     colorThemeSettings = colorThemeSettings,
-                    playlistDetailCover = playlistDetailCover,
+                    playlistPaletteSwatch = playlistPaletteSwatch,
                     isInDarkTheme = isInDarkTheme,
                     currentPlayerMusicPalette = currentPlayerMusicPalette,
                     defaultThemeSettings = defaultThemeSettings,
@@ -139,8 +140,8 @@ class ColorThemeManager(
 
     val playerColorTheme: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
-        currentPlayerMusicPalette,
-        playlistDetailCover,
+        playerPaletteGenerator.paletteSwatch,
+        playlistPaletteGenerator.paletteSwatch,
         isInDarkTheme,
         playerViewManager.state,
         playerViewManager.targetState,
@@ -148,7 +149,7 @@ class ColorThemeManager(
     ) {
         val colorThemeSettings: ColorThemeSettings = it[0] as ColorThemeSettings
         val currentPlayerMusicPalette: Palette.Swatch? = it[1] as Palette.Swatch?
-        val playlistDetailCover: PlaylistDetailCover? = it[2] as PlaylistDetailCover?
+        val playlistPaletteSwatch: Palette.Swatch? = it[2] as Palette.Swatch?
         val isInDarkTheme: Boolean = it[3] as Boolean
         val playerViewState: BottomSheetStates = it[4] as BottomSheetStates
         val playerTargetState: BottomSheetStates = it[5] as BottomSheetStates
@@ -166,7 +167,7 @@ class ColorThemeManager(
 
             else -> buildMinimisedPlayerTheme(
                 currentPlayerMusicPalette = currentPlayerMusicPalette,
-                playlistDetailCover = playlistDetailCover,
+                playlistPaletteSwatch = playlistPaletteSwatch,
                 colorThemeSettings = colorThemeSettings,
                 isInDarkTheme = isInDarkTheme,
                 defaultThemeSettings = defaultThemeSettings,
@@ -180,17 +181,17 @@ class ColorThemeManager(
 
     val playlistsColorTheme: StateFlow<SoulSearchingPalette?> = combine(
         currentColorThemeSettings,
-        currentPlayerMusicPalette,
-        playlistDetailCover,
+        playerPaletteGenerator.paletteSwatch,
+        playlistPaletteGenerator.paletteSwatch,
         isInDarkTheme,
         currentDefaultThemeSettings,
-    ) { colorThemeSettings, currentPlayerMusicPalette, playlistDetailCover, isInDarkTheme, defaultThemeSettings ->
+    ) { colorThemeSettings, currentPlayerMusicPalette, playlistPaletteSwatch, isInDarkTheme, defaultThemeSettings ->
         when {
             // If personalized theme is enabled for playlist
             colorThemeSettings.canShowDynamicPlaylistsTheme() ->
                 buildPlaylistTheme(
                     colorThemeSettings = colorThemeSettings,
-                    playlistDetailCover = playlistDetailCover,
+                    playlistPaletteSwatch = playlistPaletteSwatch,
                     isInDarkTheme = isInDarkTheme,
                     currentPlayerMusicPalette = currentPlayerMusicPalette,
                     defaultThemeSettings = defaultThemeSettings,
@@ -216,7 +217,7 @@ class ColorThemeManager(
 
     private fun buildMinimisedPlayerTheme(
         currentPlayerMusicPalette: Palette.Swatch?,
-        playlistDetailCover: PlaylistDetailCover?,
+        playlistPaletteSwatch: Palette.Swatch?,
         colorThemeSettings: ColorThemeSettings,
         isInDarkTheme: Boolean,
         defaultThemeSettings: DefaultThemeSettings,
@@ -229,11 +230,11 @@ class ColorThemeManager(
             If we are on a PlaylistDetailScreen,
             we base the color to the playlist panel
              */
-            playlistDetailCover != null -> {
+            playlistPaletteSwatch != null -> {
                 buildPlaylistTheme(
                     currentPlayerMusicPalette = currentPlayerMusicPalette,
                     colorThemeSettings = colorThemeSettings,
-                    playlistDetailCover = playlistDetailCover,
+                    playlistPaletteSwatch = playlistPaletteSwatch,
                     isInDarkTheme = isInDarkTheme,
                     defaultThemeSettings = defaultThemeSettings,
                 )
@@ -289,19 +290,19 @@ class ColorThemeManager(
 
     private fun buildPlaylistTheme(
         colorThemeSettings: ColorThemeSettings,
-        playlistDetailCover: PlaylistDetailCover?,
+        playlistPaletteSwatch: Palette.Swatch?,
         currentPlayerMusicPalette: Palette.Swatch?,
         isInDarkTheme: Boolean,
         defaultThemeSettings: DefaultThemeSettings
     ): SoulSearchingPalette =
         // If we have enabled the dynamic theme for playlist, we use the playlist cover for building a theme
-        if (colorThemeSettings.canShowDynamicPlaylistsTheme() && playlistDetailCover != null) {
+        if (colorThemeSettings.canShowDynamicPlaylistsTheme() && playlistPaletteSwatch != null) {
             buildDynamicTheme(
-                palette = (playlistDetailCover as? PlaylistDetailCover.Cover)?.palette,
+                palette = playlistPaletteSwatch,
                 isInDarkTheme = isInDarkTheme,
                 defaultThemeSettings = defaultThemeSettings,
             )
-        } else if (colorThemeSettings.canShowDynamicOtherViewsTheme() && playlistDetailCover == null) {
+        } else if (colorThemeSettings.canShowDynamicOtherViewsTheme() && playlistPaletteSwatch == null) {
             // To fix abrupt transition before the playlist cover is set and if we have a dynamic other view theme
             val playlistTheme = buildDynamicTheme(
                 palette = currentPlayerMusicPalette,
@@ -337,22 +338,27 @@ class ColorThemeManager(
 
 
     fun setCurrentCover(cover: ImageBitmap?) {
-        currentPlayerMusicPalette.value = ColorPaletteUtils.getPaletteFromAlbumArt(
-            image = cover
-        )
+        playerPaletteGenerator.setCover(cover = cover)
     }
 
     /**
      * Define the current playlist cover.
      */
     fun setNewPlaylistCover(playlistDetailCover: PlaylistDetailCover) {
-        this.playlistDetailCover.value = playlistDetailCover
+        when (playlistDetailCover) {
+            is PlaylistDetailCover.Cover -> playlistPaletteGenerator.setCover(
+                cover = playlistDetailCover.playlistImage
+            )
+            PlaylistDetailCover.NoCover -> playlistPaletteGenerator.setCover(
+                cover = null
+            )
+        }
     }
 
     /**
      * Remove playlist theme.
      */
     fun removePlaylistTheme() {
-        playlistDetailCover.value = null
+        playlistPaletteGenerator.setCover(cover = null)
     }
 }

@@ -1,11 +1,16 @@
 package com.github.enteraname74.soulsearching.coreui.strings
 
+import com.github.enteraname74.soulsearching.coreui.theme.color.ColorPaletteSeed
+
 /**
  * French translation for application strings
  */
 object FrStrings : Strings {
     override val appLogo = "Logo de l'application"
     override val noElements = "Aucun élément"
+    override val emptyQuickAccess = "Aucun élément dans les accès rapides"
+    override val quickAccessExplanation = "Ajoutez une musique, un album, un artiste ou une playlist dans les accès rapides " +
+            "pour les voir apparaître ici."
     override val cannotRetrieveSongs = "Impossible de récupérer des musiques !"
     override val backButton = "Bouton de retour"
     override val createPlaylistButton = "Bouton pour créer une playlist"
@@ -218,6 +223,9 @@ object FrStrings : Strings {
     override val duskTheme = "Crépuscule"
     override val greeneryTheme = "Verdure"
     override val treeBarkTheme = "Écorce"
+    override val extractedColorTitle = "Couleur extraite de l'image"
+    override val extractedColorText = "Définir la graine utilisée pour générer un thème de couleurs dynamique"
+    override val extractedColorInfo = "La couleur Dominante sera utilisée si la couleur choisie n'a pu être extraite."
 
     override val mainPageTitle = "Page principale"
     override val mainPageText = "Gérer la vue de la page principale"
@@ -228,9 +236,13 @@ object FrStrings : Strings {
     override val manageMusicsViewText = "Gérer la vue des musiques"
     override val showMusicsByFolders = "Afficher les musiques par dossiers"
     override val showMusicsByMonths = "Afficher les musiques par mois"
+    override val showAlbumTrackNumber = "Afficher la position des musiques"
     override val useVerticalAccessBarTitle = "Utiliser la barre d'accès verticale"
     override val useHorizontalAccessBarText = "Utiliser la barre d'accès horizontale"
 
+
+    override val manageAlbumViewTitle = "Vue d'un album"
+    override val manageAlbumViewText = "Gérer la vue d'un album"
     override val managePlayerTitle = "Lecteur de musique"
     override val managePlayerText = "Gérer le lecteur de musique"
     override val playerSwipeTitle =
@@ -292,6 +304,7 @@ object FrStrings : Strings {
     override val elementDetailShuffle = "Aléatoire"
     override val elementDetailTitles = "Titres"
 
+    override val and = "et"
     override fun musics(total: Int): String {
         return when (total) {
             1 -> "1 musique"
@@ -329,4 +342,16 @@ object FrStrings : Strings {
 
     override fun artistCoverMethodExampleTitle(artist: String): String =
         "Exemple de chemin avec l'artiste $artist :"
+    override fun colorPaletteSeed(seed: ColorPaletteSeed): String =
+        when (seed) {
+            ColorPaletteSeed.DarkVibrant -> "Sombre et vive"
+            ColorPaletteSeed.DarkMuted -> "Sombre et discrète"
+            ColorPaletteSeed.LightMuted -> "Claire et discrète"
+            ColorPaletteSeed.LightVibrant -> "Claire et vive"
+            ColorPaletteSeed.Dominant -> "Dominante"
+            ColorPaletteSeed.Muted -> "Discrète"
+            ColorPaletteSeed.Vibrant -> "Vive"
+        }
+    override fun hours(hours: Long): String =
+        if (hours == 1L) "heure" else "heures"
 }

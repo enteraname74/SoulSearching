@@ -3,14 +3,17 @@ package com.github.enteraname74.soulsearching.feature.settings
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.enteraname74.soulsearching.feature.settings.aboutpage.SettingsAboutDestination
+import com.github.enteraname74.soulsearching.feature.settings.aboutpage.developers.SettingsDevelopersDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.SettingsAdvancedDestination
 import com.github.enteraname74.soulsearching.feature.settings.advanced.coverfolderretriever.artist.SettingsArtistCoverMethodDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.SettingsColorThemeDestination
+import com.github.enteraname74.soulsearching.feature.settings.colortheme.colorseed.SettingsColorSeedDestination
 import com.github.enteraname74.soulsearching.feature.settings.colortheme.themeselection.presentation.SettingsThemeSelectionDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.addmusics.presentation.SettingsAddMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.managefolders.presentation.SettingsUsedFoldersDestination
 import com.github.enteraname74.soulsearching.feature.settings.managemusics.presentation.SettingsManageMusicsDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.SettingsPersonalisationDestination
+import com.github.enteraname74.soulsearching.feature.settings.personalisation.album.SettingsAlbumViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.mainpage.presentation.SettingsMainPagePersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.music.SettingsMusicViewPersonalisationDestination
 import com.github.enteraname74.soulsearching.feature.settings.personalisation.player.presentation.SettingsPlayerPersonalisationDestination
@@ -19,7 +22,7 @@ import com.github.enteraname74.soulsearching.feature.settings.statistics.present
 import com.github.enteraname74.soulsearching.navigation.Navigator
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
-object SettingsNavigationHandler: NavKey {
+object SettingsNavigationHandler {
     fun register(
         entryProviderScope: EntryProviderScope<NavKey>,
         navigator: Navigator,
@@ -39,6 +42,11 @@ object SettingsNavigationHandler: NavKey {
             navigator = navigator,
         )
 
+        SettingsDevelopersDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+
         SettingsArtistCoverMethodDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
@@ -50,6 +58,11 @@ object SettingsNavigationHandler: NavKey {
         )
 
         SettingsThemeSelectionDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
+
+        SettingsColorSeedDestination.register(
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
@@ -93,6 +106,11 @@ object SettingsNavigationHandler: NavKey {
             entryProviderScope = entryProviderScope,
             navigator = navigator,
         )
+
+        SettingsAlbumViewPersonalisationDestination.register(
+            entryProviderScope = entryProviderScope,
+            navigator = navigator,
+        )
     }
 
     fun serializerModule(
@@ -105,6 +123,7 @@ object SettingsNavigationHandler: NavKey {
             subclass(SettingsArtistCoverMethodDestination::class, SettingsArtistCoverMethodDestination.serializer())
             subclass(SettingsAdvancedDestination::class, SettingsAdvancedDestination.serializer())
             subclass(SettingsThemeSelectionDestination::class, SettingsThemeSelectionDestination.serializer())
+            subclass(SettingsColorSeedDestination::class, SettingsColorSeedDestination.serializer())
             subclass(SettingsColorThemeDestination::class, SettingsColorThemeDestination.serializer())
             subclass(SettingsAddMusicsDestination::class, SettingsAddMusicsDestination.serializer())
             subclass(SettingsUsedFoldersDestination::class, SettingsUsedFoldersDestination.serializer())
@@ -113,6 +132,7 @@ object SettingsNavigationHandler: NavKey {
             subclass(SettingsMainPagePersonalisationDestination::class, SettingsMainPagePersonalisationDestination.serializer())
             subclass(SettingsPlayerPersonalisationDestination::class, SettingsPlayerPersonalisationDestination.serializer())
             subclass(SettingsMusicViewPersonalisationDestination::class, SettingsMusicViewPersonalisationDestination.serializer())
+            subclass(SettingsAlbumViewPersonalisationDestination::class, SettingsAlbumViewPersonalisationDestination.serializer())
         }
     }
 }

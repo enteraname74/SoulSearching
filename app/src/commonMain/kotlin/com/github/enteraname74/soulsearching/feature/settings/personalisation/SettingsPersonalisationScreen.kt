@@ -18,6 +18,7 @@ fun SettingsPersonalisationRoute(
         onMainPageClick = navScope.toMainPagePersonalisation,
         onMusicPageClick = navScope.toMusicViewPersonalisation,
         onPlayerPageClick = navScope.toPlayerPersonalisation,
+        onAlbumViewPageClick = navScope.toAlbumViewPersonalisation,
     )
 }
 
@@ -26,7 +27,8 @@ private fun SettingsPersonalisationScreenView(
     navigateBack: () -> Unit,
     onMainPageClick: () -> Unit,
     onMusicPageClick: () -> Unit,
-    onPlayerPageClick: () -> Unit
+    onPlayerPageClick: () -> Unit,
+    onAlbumViewPageClick: () -> Unit,
 ) {
     SettingPage(
         navigateBack = navigateBack,
@@ -46,6 +48,14 @@ private fun SettingsPersonalisationScreenView(
                 subTitle = strings.manageMusicsViewText,
                 icon = Icons.Rounded.MusicNote,
                 onClick = onMusicPageClick
+            )
+        }
+        item {
+            SoulMenuElement(
+                title = strings.manageAlbumViewTitle,
+                subTitle = strings.manageAlbumViewText,
+                icon = Icons.Rounded.MusicNote,
+                onClick = onAlbumViewPageClick,
             )
         }
         item {
